@@ -1,0 +1,561 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType 
+	
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+	java.util.LinkedList
+	
+"
+class="OracleOutputMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	
+	String cid = node.getUniqueName();
+	
+	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+	
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	
+	List<Map<String, String>> addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
+	
+	String incomingConnName = null;
+	List<IMetadataColumn> columnList = null;
+	
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if(conns!=null && conns.size()>0){
+		IConnection conn = conns.get(0);
+		incomingConnName = conn.getName();
+	}
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	
+	if(metadatas != null && metadatas.size()>0){
+		IMetadataTable metadata = metadatas.get(0);
+		if(metadata != null){
+			columnList = metadata.getListColumns();
+		}
+	}
+	
+////////////////////////////////////////////////////////////
+class Column{
+
+	IMetadataColumn column;
+	
+	String name;
+	
+	String sqlStmt;
+	
+	String value;
+	
+	boolean addCol;
+	
+	List<Column> replacement = new ArrayList<Column>();
+	
+	public Column(String colName,String sqlStmt,boolean addCol){
+		this.column = null;
+		this.name = colName;
+		this.sqlStmt = sqlStmt;
+		this.value = "?";
+		this.addCol =addCol;
+	}
+	
+	public Column(IMetadataColumn column){
+		this.column = column;
+		this.name = column.getLabel();
+		this.sqlStmt = "=?";
+		this.value = "?";
+		this.addCol =false;
+	}
+	
+	public boolean isReplaced(){
+		return replacement.size()>0;
+	}
+	
+	public void replace(Column column){
+		this.replacement.add(column);
+	}
+	
+	public List<Column> getReplacement(){
+		return this.replacement;
+	}
+	
+	public void setColumn(IMetadataColumn column){
+		this.column = column;
+	}
+	
+	public IMetadataColumn getColumn(){
+		return this.column;
+	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
+
+	public String getName(){
+		return this.name;
+	}
+	
+	public void setIsAddCol(boolean isadd){
+		this.addCol = isadd;
+	}
+	
+	public boolean isAddCol(){
+		return this.addCol;
+	}
+	
+	public void setSqlStmt(String sql){
+		this.sqlStmt = sql;
+	}
+	
+	public String getSqlStmt(){
+		return this.sqlStmt;
+	}
+	
+	public void setValue(String value){
+		this.value = value;
+	}
+	
+	public String getValue(){
+		return this.value;
+	}
+}
+	StringBuffer insertColName = new StringBuffer();
+	
+	StringBuffer insertValueStmt = new StringBuffer();
+	
+	StringBuffer updateSetStmt = new StringBuffer();
+	
+	StringBuffer updateWhereStmt = new StringBuffer();
+	
+	List<Column> stmtStructure =  new LinkedList<Column>();
+	
+for(IMetadataColumn column:columnList){
+	stmtStructure.add(new Column(column));
+}
+
+for(IMetadataColumn column:columnList){
+	if(addCols != null && addCols.size()>0){
+		for(Map<String, String> addCol:addCols){
+			if(addCol.get("REFCOL").equals(column.getLabel())){
+				int stmtIndex = 0;
+				
+				for(Column stmtStr:stmtStructure){					
+					if(stmtStr.getName().equals(addCol.get("REFCOL"))){
+						break;
+					}
+					stmtIndex++;
+				}
+				
+				if(addCol.get("POS").equals("AFTER")){
+					Column insertAfter = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					stmtStructure.add(stmtIndex+1,insertAfter);
+				}else if(addCol.get("POS").equals("BEFORE")){
+					Column insertBefore = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					stmtStructure.add(stmtIndex,insertBefore);
+				}else if(addCol.get("POS").equals("REPLACE")){
+					Column replacementCol = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					Column replacedCol = (Column) stmtStructure.get(stmtIndex);
+					replacedCol.replace(replacementCol);
+				}
+			}
+		}
+	}
+}
+
+
+////////////////////////////////////////////////////////////
+List<Column> colStruct =  new ArrayList();
+for(Column colStmt:stmtStructure){
+	if(!colStmt.isReplaced()&&!colStmt.isAddCol()){
+		colStruct.add(colStmt);
+	}
+}
+///////////////////////////////////////////////////////////
+
+if(incomingConnName != null && columnList != null){
+	if(dataAction.equals("INSERT")){
+		int counter = 1;
+		
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        	<%			
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        	<%			
+			}else{
+			%>
+		
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
+        	<%
+        	}
+        	counter++;
+		}
+	%>
+
+pstmt_<%=cid %>.executeUpdate();
+nb_line_inserted_<%=cid%>++;
+	<%
+	}else if(dataAction.equals("UPDATE")){
+		int counterCol = 1;
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(!column.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+        		}
+        		counterCol++;
+			}
+		}
+
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(column.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+        		}
+        		counterCol++;
+			}
+		}
+
+	%>
+pstmt_<%=cid %>.executeUpdate();
+nb_line_update_<%=cid%> ++;
+	<%
+	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+%>
+
+
+if(!executeUpdate_<%=cid%>){
+<%
+		int counterInsert = 1;
+			for(Column columnInsert:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+	pstmtInsert_<%=cid %>.setString(<%=counterInsert%>,String.valueOf(<%=incomingConnName%>.<%=columnInsert.getName()%>));
+    	    <%
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,new java.sql.Date(<%=incomingConnName%>.<%=columnInsert.getName()%>.getTime()));
+        	<%		
+			}else{
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,<%=incomingConnName%>.<%=columnInsert.getName()%>);
+        	<%
+        	}
+        	counterInsert++;
+		}
+	%>
+	
+	try{
+
+		pstmtInsert_<%=cid %>.executeUpdate();
+	
+		nb_line_inserted_<%=cid%>++;
+	
+	}catch(Exception e){
+	
+		executeUpdate_<%=cid%> = true;
+		
+		throw e;
+	
+	}
+	
+}else{
+
+<%
+		int counterCol = 1;
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(!column.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+        		}
+        		counterCol++;
+			}
+		}
+
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(column.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        		<%				
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+        		}
+        		counterCol++;
+			}
+		}
+
+	%>
+	pstmtUpdate_<%=cid %>.executeUpdate();
+	
+	nb_line_update_<%=cid%> ++;
+	<%
+%>	
+}
+	<%
+	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+%>
+if(!executeInsert_<%=cid%>){
+
+<%
+		int counterColUpdate = 1;
+		for(Column columnUpdate:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(!columnUpdate.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
+        		<%					
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+        		<%	
+        		}
+        		counterColUpdate++;
+			}
+		}
+
+		for(Column columnUpdate:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(columnUpdate.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
+        		<%				
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+        		<%
+        		}
+        		counterColUpdate++;
+			}
+		}
+	%>
+	try{
+	
+		pstmtUpdate_<%=cid %>.executeUpdate();
+	
+		nb_line_update_<%=cid%> ++;
+		
+	}catch(Exception e){
+		
+		executeInsert_<%=cid%> =true;
+		
+		throw e;
+	}
+	<%
+	
+%>
+}else{
+<%
+		int counter = 1;
+		
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+	pstmtInsert_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        	<%			
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        	<%			
+			}else{
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
+        	<%
+        	}
+        	counter++;
+		}
+	%>
+
+	pstmtInsert_<%=cid %>.executeUpdate();
+	
+	nb_line_inserted_<%=cid%>++;
+	<%
+	
+%>
+}
+<%
+	
+	}else if (dataAction.equals("DELETE")){
+		int keyCounter = 1;
+		for(Column column:colStruct){
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+			if(typeToGenerate.equals("byte[]")){
+ 	  			typeToGenerate = "Bytes";
+ 	   		}else if(typeToGenerate.equals("java.util.Date")){
+ 	   			typeToGenerate = "Date";
+ 	  	 	}else{
+				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+			}
+			
+			if(column.getColumn().isKey()){
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setString(<%=keyCounter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+        		<%		
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+        		}
+        		keyCounter++;
+			}
+		}
+	%>
+pstmt_<%=cid %>.executeUpdate();
+nb_line_deleted_<%=cid%>++;
+	<%
+	}
+}
+%>
