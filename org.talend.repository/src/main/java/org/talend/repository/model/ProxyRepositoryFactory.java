@@ -28,14 +28,13 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -747,8 +746,6 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
      */
     public void logOnProject(Project project) throws PersistenceException, LoginException {
-        CorePlugin.getDefault().getLibrariesService().syncLibraries();
-        
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true);
@@ -760,6 +757,12 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
         String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
         log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
+
+        try {
+            CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
 
         service.executeProjectTasks(project, false);
     }
