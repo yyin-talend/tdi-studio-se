@@ -82,7 +82,6 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"
     >
-      <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">

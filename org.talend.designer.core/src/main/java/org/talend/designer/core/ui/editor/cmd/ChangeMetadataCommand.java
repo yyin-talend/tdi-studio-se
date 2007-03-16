@@ -115,7 +115,7 @@ public class ChangeMetadataCommand extends Command {
         setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }
 
-    protected void setRepositoryMode(boolean repositoryMode) {
+    public void setRepositoryMode(boolean repositoryMode) {
         this.repositoryMode = repositoryMode;
     }
 

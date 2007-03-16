@@ -686,7 +686,8 @@ public class EmfComponent implements IComponent {
             }
 
             if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                    && !param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
