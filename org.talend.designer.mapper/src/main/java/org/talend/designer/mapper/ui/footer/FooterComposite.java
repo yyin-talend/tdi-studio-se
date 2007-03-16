@@ -99,6 +99,7 @@ public class FooterComposite extends Composite {
         }
 
         Button okButton = new Button(this, SWT.NONE);
+        okButton.setEnabled(!mapperManager.componentIsReadOnly());
         okButton.setText(Messages.getString("FooterComposite.button.OK")); //$NON-NLS-1$
         FormData okFormData = new FormData();
 

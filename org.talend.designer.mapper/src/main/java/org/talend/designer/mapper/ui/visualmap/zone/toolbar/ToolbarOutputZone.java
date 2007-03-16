@@ -73,6 +73,7 @@ public class ToolbarOutputZone extends ToolbarZone {
     private void createComponents() {
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
+        addOutputItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
         addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
                 .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
@@ -88,6 +89,7 @@ public class ToolbarOutputZone extends ToolbarZone {
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
 
         guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
+        guessItem.setEnabled(!getMapperManager().componentIsReadOnly());
         guessItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.mapInputAndOutput")); //$NON-NLS-1$
         guessItem.setText(Messages.getString("ToolbarOutputZone.widgetText.autoMap")); //$NON-NLS-1$
 
@@ -156,7 +158,9 @@ public class ToolbarOutputZone extends ToolbarZone {
      * @param b
      */
     public void setEnabledRemoveTableButton(boolean enabled) {
-        removeOutputItem.setEnabled(enabled);
+        if (!getMapperManager().componentIsReadOnly()) {
+            removeOutputItem.setEnabled(enabled);
+        }
     }
 
 }

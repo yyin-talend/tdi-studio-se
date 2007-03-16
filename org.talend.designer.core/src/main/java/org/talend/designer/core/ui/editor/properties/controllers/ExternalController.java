@@ -108,7 +108,7 @@ public class ExternalController extends AbstractElementPropertySectionController
         FormData data;
         btnEdit.setData(NAME, EXTERNAL);
         btnEdit.setData(PROPERTY, param.getName());
-        btnEdit.setEnabled(!param.isReadOnly());
+//        btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
         if (elem instanceof Node) {
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());

@@ -66,7 +66,8 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class OutputDataMapTableView extends DataMapTableView {
 
-    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
+    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+            MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
@@ -88,7 +89,7 @@ public class OutputDataMapTableView extends DataMapTableView {
             }
 
         });
-        column.setModifiable(true);
+        column.setModifiable(!mapperManager.componentIsReadOnly());
         column.setDefaultInternalValue(""); //$NON-NLS-1$
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
@@ -147,8 +148,8 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     protected void createFiltersTable() {
 
-        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(((OutputTable) abstractDataMapTable)
-                .getTableFiltersEntriesModel(), centerComposite) {
+        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(
+                ((OutputTable) abstractDataMapTable).getTableFiltersEntriesModel(), centerComposite) {
 
             @Override
             protected void createColumns(TableViewerCreator<FilterTableEntry> tableViewerCreator, Table table) {
@@ -188,8 +189,10 @@ public class OutputDataMapTableView extends DataMapTableView {
         tableForConstraintsGridData.exclude = !tableConstraintsVisible;
         tableForConstraints.setVisible(tableConstraintsVisible);
 
-        new DragNDrop(mapperManager, tableForConstraints, false, true);
-
+        if (!mapperManager.componentIsReadOnly()) {
+            new DragNDrop(mapperManager, tableForConstraints, false, true);
+        }
+        
         tableViewerCreatorForFilters.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
 
             public void cellValueModified(TableCellValueModifiedEvent e) {
@@ -205,8 +208,8 @@ public class OutputDataMapTableView extends DataMapTableView {
                 ISelection selection = event.getSelection();
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection), true,
-                        false);
+                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection),
+                        true, false);
             }
 
         });
@@ -276,8 +279,8 @@ public class OutputDataMapTableView extends DataMapTableView {
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForFilters
-                        .getExtendedTableModel());
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                        extendedTableViewerForFilters.getExtendedTableModel());
                 mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();
@@ -320,6 +323,10 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     public boolean toolbarNeededToBeRightStyle() {
         return false;
+    }
+
+    public OutputTable getOutputTable() {
+        return (OutputTable) abstractDataMapTable;
     }
 
 }

@@ -23,6 +23,9 @@ package org.talend.designer.mapper.model.table;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -36,8 +39,6 @@ import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
  * 
  */
 public class InputTable extends AbstractInOutTable {
-
-    private IOConnection connection;
 
     /**
      * if innerJoin is true and current lookup row not found, current main row will be rejected.
@@ -53,8 +54,7 @@ public class InputTable extends AbstractInOutTable {
      * @param mainConnection
      */
     public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
-        super(mapperManager, connection.getTable(), name);
-        this.connection = connection;
+        super(mapperManager, connection, name);
     }
 
     
@@ -84,11 +84,11 @@ public class InputTable extends AbstractInOutTable {
 
     @Override
     public String getName() {
-        return connection.getName();
+        return getConnection().getName();
     }
 
     public boolean isMainConnection() {
-        return EConnectionType.FLOW_MAIN == connection.getConnectionType();
+        return EConnectionType.FLOW_MAIN == getConnection().getConnectionType();
     }
 
     /**
@@ -109,4 +109,40 @@ public class InputTable extends AbstractInOutTable {
         this.innerJoin = innerJoin;
     }
 
+
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.table.AbstractInOutTable#hasReadOnlyMetadataColumns()
+     */
+    @Override
+    public boolean hasReadOnlyMetadataColumns() {
+
+        boolean hasReadOnlyMetadataColumns = false;
+
+        IOConnection connection = getConnection();
+        
+        if (connection != null) {
+            INode source = connection.getSource();
+            if (source != null) {
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate()
+                        || source.isReadOnly() || !source.isActivate();
+                
+                if (!hasReadOnlyMetadataColumns) {
+                    for (IElementParameter param : source.getElementParameters()) {
+                        if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                            if (param.isReadOnly()) {
+                                hasReadOnlyMetadataColumns = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return hasReadOnlyMetadataColumns;
+    }
+
+
+    
+    
 }

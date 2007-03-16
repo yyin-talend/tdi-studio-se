@@ -642,8 +642,9 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
                     && (funColumn.getId().equals(KEY_ID_COLUMN) || funColumn.getId().equals(NULLABLE_ID_COLUMN))) {
-                funColumn.setTableEditorContent(new CheckboxTableEditorContent(isReadOnly()));
+                funColumn.setTableEditorContent(new CheckboxTableEditorContent());
             }
+            funColumn.setModifiable(isReadOnly());
             funColumn.setMinimumWidth(35);
             funColumn.getTableColumn().setWidth(65);
             funColumn.getTableColumn().setText(currTitle);

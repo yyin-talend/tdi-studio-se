@@ -88,10 +88,12 @@ public class VarsDataMapTableView extends DataMapTableView {
         tableViewerCreatorForColumns.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
 
             public void handle(LineSelectionEvent e) {
-                boolean atLeastOneItemIsSelected = tableViewerCreatorForColumns.getTable().getSelectionCount() > 0;
-                removeEntryItem.setEnabled(atLeastOneItemIsSelected);
-                moveUpEntryItem.setEnabled(atLeastOneItemIsSelected);
-                moveDownEntryItem.setEnabled(atLeastOneItemIsSelected);
+                if (!getMapperManager().componentIsReadOnly()) {
+                    boolean atLeastOneItemIsSelected = tableViewerCreatorForColumns.getTable().getSelectionCount() > 0;
+                    removeEntryItem.setEnabled(atLeastOneItemIsSelected);
+                    moveUpEntryItem.setEnabled(atLeastOneItemIsSelected);
+                    moveDownEntryItem.setEnabled(atLeastOneItemIsSelected);
+                }
             }
 
         });
@@ -138,7 +140,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
         });
-        column.setModifiable(true);
+        column.setModifiable(!mapperManager.componentIsReadOnly());
         column.setDefaultInternalValue(""); //$NON-NLS-1$
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         if (codeLanguage == ECodeLanguage.JAVA) {
@@ -189,7 +191,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 }
 
             });
-            column.setModifiable(true);
+            column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setWeight(18);
             column.setCellEditor(new ComboBoxCellEditor(tableViewerCreatorForColumns.getTable(), arrayTalendTypes),
                     comboValueAdapter);
@@ -208,7 +210,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 }
 
             });
-            column.setModifiable(true);
+            column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setWidth(12);
             column.setDisplayedValue("");
             column.setResizable(false);
@@ -233,7 +235,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
         });
-        column.setModifiable(true);
+        column.setModifiable(!mapperManager.componentIsReadOnly());
         if (codeLanguage == ECodeLanguage.JAVA) {
             column.setWeight(25);
         } else {
@@ -318,6 +320,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         // /////////////////////////////////////////////////////////////////
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
+        addEntryItem.setEnabled(!getMapperManager().componentIsReadOnly());
         addEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.addVariable")); //$NON-NLS-1$
         addEntryItem.setImage(org.talend.commons.ui.image.ImageProvider
                 .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));

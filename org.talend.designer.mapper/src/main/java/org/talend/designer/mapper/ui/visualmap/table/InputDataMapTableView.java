@@ -72,7 +72,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 }
 
             });
-            column.setModifiable(true);
+            column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setDefaultInternalValue(""); //$NON-NLS-1$
             createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
             column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
@@ -115,6 +115,7 @@ public class InputDataMapTableView extends DataMapTableView {
         if (!getInputTable().isMainConnection()) {
 
             final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
+            rejectConstraintCheck.setEnabled(!mapperManager.componentIsReadOnly());
             rejectConstraintCheck.setToolTipText(Messages
                     .getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();

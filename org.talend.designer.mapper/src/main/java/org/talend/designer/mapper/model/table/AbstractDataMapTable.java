@@ -47,6 +47,8 @@ public abstract class AbstractDataMapTable {
 
     protected MapperManager mapperManager;
 
+    private boolean readOnly;
+
     
     
     /**
@@ -136,5 +138,22 @@ public abstract class AbstractDataMapTable {
         return this.mapperManager;
     }
 
+    /**
+     * DOC amaumont Comment method "isReadOnly".
+     * @return
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Sets the readOnly.
+     * @param readOnly the readOnly to set
+     */
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    
     
 }

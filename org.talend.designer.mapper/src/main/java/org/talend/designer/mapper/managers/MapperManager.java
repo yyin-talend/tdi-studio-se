@@ -813,6 +813,8 @@ public class MapperManager {
         return this.problemsManager;
     }
 
-    
+    public boolean componentIsReadOnly() {
+        return getComponent().isReadOnly() || getComponent().getProcess().isReadOnly();
+    }
     
 }

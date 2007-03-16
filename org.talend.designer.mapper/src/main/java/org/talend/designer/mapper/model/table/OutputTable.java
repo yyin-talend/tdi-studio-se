@@ -27,6 +27,10 @@ import java.util.List;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -127,4 +131,35 @@ public class OutputTable extends AbstractInOutTable {
         return this.tableFiltersEntriesModel;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.table.AbstractInOutTable#hasReadOnlyMetadataColumns()
+     */
+    @Override
+    public boolean hasReadOnlyMetadataColumns() {
+        boolean hasReadOnlyMetadataColumns = false;
+
+        IOConnection connection = getConnection();
+        
+        if (connection != null) {
+            INode target = connection.getTarget();
+            if (target != null) {
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate()
+                        || target.isReadOnly() || !target.isActivate();
+                
+                if (!hasReadOnlyMetadataColumns) {
+                    for (IElementParameter param : target.getElementParameters()) {
+                        if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                            if (param.isReadOnly()) {
+                                hasReadOnlyMetadataColumns = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return hasReadOnlyMetadataColumns;
+    }
+
+    
 }

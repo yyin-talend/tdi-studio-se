@@ -27,6 +27,10 @@ import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -42,6 +46,8 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     protected IMetadataTable metadataTable;
 
+    private IOConnection connection;
+
     /**
      * 
      * DOC amaumont AbstractInOutTable constructor comment.
@@ -53,6 +59,18 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     public AbstractInOutTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
         super(mapperManager, name);
         this.metadataTable = metadataTable;
+    }
+
+    /**
+     * DOC amaumont AbstractInOutTable constructor comment.
+     * 
+     * @param mapperManager
+     * @param connection2
+     * @param name
+     */
+    public AbstractInOutTable(MapperManager mapperManager, IOConnection connection, String name) {
+        this(mapperManager, connection.getTable(), name);
+        this.connection = connection;
     }
 
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
@@ -81,6 +99,16 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     public IMetadataTable getMetadataTable() {
         return this.metadataTable;
+    }
+
+    public abstract boolean hasReadOnlyMetadataColumns();
+    /**
+     * Getter for connection.
+     * 
+     * @return the connection
+     */
+    protected IOConnection getConnection() {
+        return this.connection;
     }
 
 }

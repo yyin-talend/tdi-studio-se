@@ -177,7 +177,8 @@ public class UIManager {
      * @param useNewCommand
      * @param selectAllEntries TODO
      */
-    public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand, boolean selectAllEntries) {
+    public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand,
+            boolean selectAllEntries) {
 
         TabFolderEditors tabFolderEditors = mapperUI.getTabFolderEditors();
         // tabFolderEditors.setSelection(TabFolderEditors.INDEX_TAB_METADATA_EDITOR);
@@ -190,17 +191,23 @@ public class UIManager {
         DataMapTableView previousSelectedTableView = null;
 
         if (currentZone == Zone.INPUTS) {
-            metadataTableEditorView = tabFolderEditors.getInputMetaEditor();
-            otherMetadataTableEditorView = tabFolderEditors.getOutputMetaEditor();
+            metadataTableEditorView = tabFolderEditors.getInputMetaEditorView();
+            otherMetadataTableEditorView = tabFolderEditors.getOutputMetaEditorView();
             tables = mapperManager.getInputTables();
             previousSelectedTableView = this.currentSelectedInputTableView;
             this.currentSelectedInputTableView = (InputDataMapTableView) dataMapTableView;
+            metadataTableEditorView.setReadOnly(this.currentSelectedInputTableView.getInputTable()
+                    .hasReadOnlyMetadataColumns()
+                    || mapperManager.componentIsReadOnly());
         } else if (currentZone == Zone.OUTPUTS) {
-            metadataTableEditorView = tabFolderEditors.getOutputMetaEditor();
-            otherMetadataTableEditorView = tabFolderEditors.getInputMetaEditor();
+            metadataTableEditorView = tabFolderEditors.getOutputMetaEditorView();
+            otherMetadataTableEditorView = tabFolderEditors.getInputMetaEditorView();
             tables = mapperManager.getOutputTables();
             previousSelectedTableView = this.currentSelectedOutputTableView;
             this.currentSelectedOutputTableView = (OutputDataMapTableView) dataMapTableView;
+            metadataTableEditorView.setReadOnly(this.currentSelectedOutputTableView.getOutputTable()
+                    .hasReadOnlyMetadataColumns()
+                    || mapperManager.componentIsReadOnly());
         }
 
         if (currentZone != Zone.VARS) {
@@ -216,13 +223,13 @@ public class UIManager {
                     && !currentMetadataTableEditor.getMetadataTable().equals(abstractDataMapTable.getMetadataTable())) {
 
                 if (useNewCommand) {
-                    DataMapTableViewSelectedCommand command = new DataMapTableViewSelectedCommand(this, previousSelectedTableView,
-                            dataMapTableView);
+                    DataMapTableViewSelectedCommand command = new DataMapTableViewSelectedCommand(this,
+                            previousSelectedTableView, dataMapTableView);
                     mapperManager.executeCommand(command);
                 }
 
-                currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(), abstractDataMapTable
-                        .getName());
+                currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
+                        abstractDataMapTable.getName());
 
                 currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
 
@@ -230,8 +237,8 @@ public class UIManager {
                 final TableViewerCreator metadataTVCreator = metadataTableEditorViewFinal.getTableViewerCreator();
                 final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
 
-                modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator, metadataTableEditor,
-                        dataMapTableView, previousSelectedTableView);
+                modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator,
+                        metadataTableEditor, dataMapTableView, previousSelectedTableView);
 
                 // init actions listeners for list which contains metadata
                 metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
@@ -252,8 +259,8 @@ public class UIManager {
                             if (event.index != null) {
                                 int index = event.index;
                                 for (IMetadataColumn metadataColumn : metadataColumns) {
-                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView, metadataColumn,
-                                            index++));
+                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
+                                            metadataColumn, index++));
                                 }
                             } else if (event.indicesTarget != null) {
                                 List<Integer> indicesTarget = event.indicesTarget;
@@ -261,8 +268,8 @@ public class UIManager {
                                 for (int i = 0; i < lstSize; i++) {
                                     Integer indice = indicesTarget.get(i);
                                     IMetadataColumn metadataColumn = metadataColumns.get(i);
-                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView, metadataColumn,
-                                            indice));
+                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
+                                            metadataColumn, indice));
                                 }
 
                             } else {
@@ -276,7 +283,8 @@ public class UIManager {
                             } else if (event.indicesTarget != null) {
                                 dataMapTableViewer.refresh();
                                 dataMapTableView.changeSize(view.getPreferredSize(false, true, false), true, true);
-                                int[] selection = ArrayUtils.toPrimitive((Integer[]) event.indicesTarget.toArray(new Integer[0]));
+                                int[] selection = ArrayUtils.toPrimitive((Integer[]) event.indicesTarget
+                                        .toArray(new Integer[0]));
                                 dataMapTVCreator.getSelectionHelper().setSelection(selection);
                             }
                         }
@@ -285,8 +293,9 @@ public class UIManager {
                             // metadataEditorTableViewer.refresh();
                             List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.removedObjects;
                             for (IMetadataColumn metadataColumn : metadataColumns) {
-                                ITableEntry metadataTableEntry = mapperManager.retrieveTableEntry(new TableEntryLocation(
-                                        abstractDataMapTable.getName(), metadataColumn.getLabel()));
+                                ITableEntry metadataTableEntry = mapperManager
+                                        .retrieveTableEntry(new TableEntryLocation(abstractDataMapTable.getName(),
+                                                metadataColumn.getLabel()));
                                 mapperManager.removeTableEntry(metadataTableEntry);
                             }
                             dataMapTableViewer.refresh();
@@ -306,9 +315,11 @@ public class UIManager {
                     }
 
                 });
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(
+                        false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper()
+                        .setActiveFireSelectionChanged(true);
                 metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
@@ -319,7 +330,8 @@ public class UIManager {
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
                     DataMapTableView otherDataMapTableView = mapperManager.retrieveAbstractDataMapTableView(table);
-                    otherDataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+                    otherDataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(
+                            SWT.COLOR_WIDGET_LIGHT_SHADOW));
                 }
                 dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
             }
@@ -340,7 +352,8 @@ public class UIManager {
 
         if (selectAllEntries && currentZone == Zone.VARS) {
             selectAllLinks(dataMapTableView);
-            mapperManager.getUiManager().getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable().selectAll();
+            mapperManager.getUiManager().getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable()
+                    .selectAll();
         }
 
         if (otherMetadataTableEditorView != null) {
@@ -368,22 +381,25 @@ public class UIManager {
         toolbar.setEnabledMoveTableButton(false, isTableViewMoveable(currentZone, false));
     }
 
-    private void modifySelectionChangedListener(final Zone currentZone, final MetadataTableEditorView metadataTableEditorViewFinal,
-            final TableViewerCreator metadataTVCreator, final MetadataTableEditor metadataTableEditor,
-            final DataMapTableView dataMapTableView, DataMapTableView previousSelectedTableView) {
+    private void modifySelectionChangedListener(final Zone currentZone,
+            final MetadataTableEditorView metadataTableEditorViewFinal, final TableViewerCreator metadataTVCreator,
+            final MetadataTableEditor metadataTableEditor, final DataMapTableView dataMapTableView,
+            DataMapTableView previousSelectedTableView) {
 
         final TableViewer tableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
 
         IModifiedBeanListener<IMetadataColumn> modifiedBeanListener = new IModifiedBeanListener<IMetadataColumn>() {
 
             public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
-                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId()) && !event.previousValue.equals(event.newValue)) {
+                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())
+                        && !event.previousValue.equals(event.newValue)) {
                     IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
                     if (modifiedObject != null) {
-                        TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView.getDataMapTable().getName(),
-                                (String) event.previousValue);
+                        TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView
+                                .getDataMapTable().getName(), (String) event.previousValue);
                         final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
-                        processColumnNameChanged((String) event.previousValue, (String) event.newValue, dataMapTableView, dataMapTableEntry);
+                        processColumnNameChanged((String) event.previousValue, (String) event.newValue,
+                                dataMapTableView, dataMapTableEntry);
                     }
                     // dataMapTableViewer.refresh(event.bean, true);
                     tableViewer.refresh(true);
@@ -436,8 +452,8 @@ public class UIManager {
             // metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
             metadataTVCreator.getSelectionHelper().removeAfterSelectionListener(previousSelectionChangedListener);
             if (previousSelectedTableView != null) {
-                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
-                        previousSelectionChangedListener);
+                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper()
+                        .removeAfterSelectionListener(previousSelectionChangedListener);
             }
         }
 
@@ -463,21 +479,23 @@ public class UIManager {
 
                 public void widgetDisposed(DisposeEvent e) {
                     if (inputsSelectionChangedListener != null) {
-                        getMetadataEditorView(Zone.INPUTS).getTableViewerCreator().getSelectionHelper().removeAfterSelectionListener(
-                                inputsSelectionChangedListener);
+                        getMetadataEditorView(Zone.INPUTS).getTableViewerCreator().getSelectionHelper()
+                                .removeAfterSelectionListener(inputsSelectionChangedListener);
                     }
                     if (outputsSelectionChangedListener != null) {
-                        getMetadataEditorView(Zone.OUTPUTS).getTableViewerCreator().getSelectionHelper().removeAfterSelectionListener(
-                                outputsSelectionChangedListener);
+                        getMetadataEditorView(Zone.OUTPUTS).getTableViewerCreator().getSelectionHelper()
+                                .removeAfterSelectionListener(outputsSelectionChangedListener);
                     }
                     if (inputModifiedBeanListener != null) {
-                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.INPUTS).getMetadataTableEditor();
+                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.INPUTS)
+                                .getMetadataTableEditor();
                         if (metadataTableEditor != null) {
                             metadataTableEditor.removeModifiedBeanListener(inputModifiedBeanListener);
                         }
                     }
                     if (outputModifiedBeanListener != null) {
-                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.OUTPUTS).getMetadataTableEditor();
+                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.OUTPUTS)
+                                .getMetadataTableEditor();
                         if (metadataTableEditor != null) {
                             metadataTableEditor.removeModifiedBeanListener(outputModifiedBeanListener);
                         }
@@ -646,8 +664,8 @@ public class UIManager {
 
         dataMapTableView.setTableSelection(selectionIndices);
 
-        List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns().getTableViewer()
-                .getSelection());
+        List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns()
+                .getTableViewer().getSelection());
         selectLinks(dataMapTableView, list, false, false);
     }
 
@@ -670,7 +688,8 @@ public class UIManager {
         }
         if (metadataTableEditorView != null) {
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
-            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
+            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(
+                    selectionIndices);
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
             metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
@@ -717,7 +736,8 @@ public class UIManager {
         if (selectColumnAndFiltersLinks) {
             hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForColumns().getInputList());
             if (currentZone == Zone.OUTPUTS) {
-                hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
+                hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForFilters()
+                        .getInputList());
             }
         } else {
             hashSelectedMetadataTableEntries.addAll(selectedMetadataTableEntries);
@@ -726,9 +746,11 @@ public class UIManager {
         // ////////////////////////////////////////////////////////////////////////
         // Unselect all links and tableEntries if Ctrl or Shift keys are not pressed or if zone different of last
         // selection
-        boolean zoneHasChanged = (previousSelectedZone == Zone.INPUTS || previousSelectedZone == Zone.VARS) && currentZone == Zone.OUTPUTS
-                || (currentZone == Zone.INPUTS || currentZone == Zone.VARS) && previousSelectedZone == Zone.OUTPUTS;
-        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected && currentZone == Zone.OUTPUTS;
+        boolean zoneHasChanged = (previousSelectedZone == Zone.INPUTS || previousSelectedZone == Zone.VARS)
+                && currentZone == Zone.OUTPUTS || (currentZone == Zone.INPUTS || currentZone == Zone.VARS)
+                && previousSelectedZone == Zone.OUTPUTS;
+        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected
+                && currentZone == Zone.OUTPUTS;
         boolean resetHighlightObjectsForOtherTables = !uiManager.isDragging()
                 && (!uiManager.isCtrlPressed() && !uiManager.isShiftPressed() || zoneHasChanged);
         if (resetHighlightObjectsForOtherTables || forceResetHighlightLinksForOtherTables) {
@@ -789,7 +811,8 @@ public class UIManager {
             }
             for (IMapperLink link : linksFromSource) {
                 ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
-                if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link) && linkState == LinkState.UNSELECTED) {
+                if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link)
+                        && linkState == LinkState.UNSELECTED) {
                     link.setState(linkState);
                     if (linkState == LinkState.SELECTED) {
                         linksAlreadySelected.add(link);
@@ -800,7 +823,8 @@ public class UIManager {
             }
             for (IMapperLink link : linksFromTarget) {
                 ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
-                if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link) && linkState == LinkState.UNSELECTED) {
+                if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link)
+                        && linkState == LinkState.UNSELECTED) {
                     link.setState(linkState);
                     if (linkState == LinkState.SELECTED) {
                         linksAlreadySelected.add(link);
@@ -879,7 +903,8 @@ public class UIManager {
                 pointFromTableViewOrigin.y = tableViewBounds.height - TableEntriesManager.HEIGHT_REACTION;
             }
 
-            returnedPoint = convertPointToReferenceOrigin(getReferenceComposite(), pointFromTableViewOrigin, dataMapTableView);
+            returnedPoint = convertPointToReferenceOrigin(getReferenceComposite(), pointFromTableViewOrigin,
+                    dataMapTableView);
             tableEntryProperties.position = returnedPoint;
         }
         return returnedPoint;
@@ -901,11 +926,11 @@ public class UIManager {
     }
 
     public MetadataTableEditorView getInputMetaEditorView() {
-        return mapperUI.getTabFolderEditors().getInputMetaEditor();
+        return mapperUI.getTabFolderEditors().getInputMetaEditorView();
     }
 
     public MetadataTableEditorView getOutputMetaEditorView() {
-        return mapperUI.getTabFolderEditors().getOutputMetaEditor();
+        return mapperUI.getTabFolderEditors().getOutputMetaEditorView();
     }
 
     /**
@@ -917,7 +942,8 @@ public class UIManager {
      * @param currentModifiedObject
      */
     public void parseNewExpression(String expression, ITableEntry currentModifiedITableEntry, boolean appliedOrCanceled) {
-        ParseExpressionResult result = parseExpression(expression, currentModifiedITableEntry, true, true, appliedOrCanceled);
+        ParseExpressionResult result = parseExpression(expression, currentModifiedITableEntry, true, true,
+                appliedOrCanceled);
         if (result.isAtLeastOneLinkHasBeenAddedOrRemoved()) {
             mapperManager.getUiManager().refreshBackground(false, false);
         }
@@ -970,14 +996,17 @@ public class UIManager {
      * @return true if a link has been added or removed, false else
      */
     public ParseExpressionResult parseExpression(String expression, ITableEntry currentModifiedITableEntry,
-            boolean linkMustHaveSelectedState, boolean checkInputKeyAutomatically, boolean inputExpressionAppliedOrCanceled) {
+            boolean linkMustHaveSelectedState, boolean checkInputKeyAutomatically,
+            boolean inputExpressionAppliedOrCanceled) {
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedITableEntry);
         boolean linkHasBeenAdded = false;
         boolean linkHasBeenRemoved = false;
 
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
-        TableEntryLocation[] tableEntriesLocationsSources = dataMapExpressionParser.parseTableEntryLocations(expression);
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
+                .getCurrentLanguage());
+        TableEntryLocation[] tableEntriesLocationsSources = dataMapExpressionParser
+                .parseTableEntryLocations(expression);
         Set<TableEntryLocation> alreadyProcessed = new HashSet<TableEntryLocation>();
         Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(currentModifiedITableEntry);
         Set<ITableEntry> sourcesForTargetToDelete = new HashSet<ITableEntry>(sourcesForTarget);
@@ -990,18 +1019,21 @@ public class UIManager {
             // tests to know if link must be removed if key is unchecked
             boolean dontRemoveLink = (!isInputEntry || isInputEntry
                     && (inputExpressionAppliedOrCanceled || !inputExpressionAppliedOrCanceled
-                            && !mapperManager.checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
+                            && !mapperManager
+                                    .checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
 
-            if (!alreadyProcessed.contains(location) && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
-                    && dontRemoveLink) {
+            if (!alreadyProcessed.contains(location)
+                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry) && dontRemoveLink) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
                 if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)
 
                 ) {
                     DataMapTableView sourceDataMapTableView = mapperManager.retrieveDataMapTableView(sourceTableEntry);
-                    IMapperLink link = new Link(new PointLinkDescriptor(sourceTableEntry, sourceDataMapTableView.getZone()),
-                            new PointLinkDescriptor(currentModifiedITableEntry, dataMapTableView.getZone()), mapperManager);
+                    IMapperLink link = new Link(new PointLinkDescriptor(sourceTableEntry, sourceDataMapTableView
+                            .getZone()),
+                            new PointLinkDescriptor(currentModifiedITableEntry, dataMapTableView.getZone()),
+                            mapperManager);
                     link.setState(linkMustHaveSelectedState ? LinkState.SELECTED : LinkState.UNSELECTED);
                     mapperManager.addLink(link);
                     linkHasBeenAdded = true;
@@ -1022,7 +1054,8 @@ public class UIManager {
 
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             if (linkHasBeenAdded || linkHasBeenRemoved) {
-                checkTargetInputKey(currentModifiedITableEntry, checkInputKeyAutomatically, inputExpressionAppliedOrCanceled);
+                checkTargetInputKey(currentModifiedITableEntry, checkInputKeyAutomatically,
+                        inputExpressionAppliedOrCanceled);
             }
             if (inputExpressionAppliedOrCanceled) {
                 openChangeKeysDialog((InputDataMapTableView) dataMapTableView);
@@ -1079,7 +1112,8 @@ public class UIManager {
      * @param checkInputKeyAutomatically
      * @param appliedOrCanceled TODO
      */
-    private void checkTargetInputKey(ITableEntry currentModifiedTableEntry, boolean checkInputKeyAutomatically, boolean appliedOrCanceled) {
+    private void checkTargetInputKey(ITableEntry currentModifiedTableEntry, boolean checkInputKeyAutomatically,
+            boolean appliedOrCanceled) {
         // check key
         if (checkInputKeyAutomatically && currentModifiedTableEntry instanceof InputColumnTableEntry) {
 
@@ -1098,12 +1132,14 @@ public class UIManager {
      */
     private void refreshInOutTableAndMetaTable(AbstractInOutTableEntry currentModifiedTableEntry) {
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedTableEntry);
-        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable()).getMetadataTable();
+        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable())
+                .getMetadataTable();
         dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentModifiedTableEntry);
         MetadataTableEditorView metadataEditorView = getMetadataEditorView(dataMapTableView.getZone());
         if (metadataEditorView != null && metadataEditorView.getMetadataTableEditor() != null
                 && metadataEditorView.getMetadataTableEditor().getMetadataTable() == metadataTableTarget) {
-            metadataEditorView.getTableViewerCreator().getTableViewer().refresh(currentModifiedTableEntry.getMetadataColumn());
+            metadataEditorView.getTableViewerCreator().getTableViewer().refresh(
+                    currentModifiedTableEntry.getMetadataColumn());
             metadataEditorView.getTableViewerCreator().refreshTableEditorControls();
         }
     }
@@ -1115,7 +1151,8 @@ public class UIManager {
      * @param dataMapTableView
      */
     private void refreshInOutTableAndMetaTable(DataMapTableView dataMapTableView) {
-        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable()).getMetadataTable();
+        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable())
+                .getMetadataTable();
         dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh();
         MetadataTableEditorView metadataEditorView = getMetadataEditorView(dataMapTableView.getZone());
         if (metadataEditorView != null && metadataEditorView.getMetadataTableEditor() != null
@@ -1164,14 +1201,16 @@ public class UIManager {
 
                 public void run() {
 
-                    TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), Messages
-                            .getString("UIManager.propagateTitle"), //$NON-NLS-1$
+                    TableViewerCreator tableViewerCreatorForColumns = dataMapTableView
+                            .getTableViewerCreatorForColumns();
+                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(),
+                            Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
                             Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
                     if (propagate) {
-                        TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
-                                previousColumnName);
-                        TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(), newColumnName);
+                        TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry
+                                .getParentName(), previousColumnName);
+                        TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry
+                                .getParentName(), newColumnName);
                         mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
                     }
                 }
@@ -1179,9 +1218,10 @@ public class UIManager {
         }
     }
 
-    public OutputDataMapTableView createNewOutputTableView(Control previousControl, AbstractDataMapTable abstractDataMapTable,
-            Composite parent) {
-        OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable, mapperManager);
+    public OutputDataMapTableView createNewOutputTableView(Control previousControl,
+            AbstractDataMapTable abstractDataMapTable, Composite parent) {
+        OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable,
+                mapperManager);
         FormData formData = new FormData();
         formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(100, 0);
@@ -1276,7 +1316,8 @@ public class UIManager {
     public String openNewOutputCreationDialog() {
         final IProcess process = mapperManager.getComponent().getProcess();
         String outputName = process.generateUniqueConnectionName("newOutput"); //$NON-NLS-1$
-        InputDialog id = new InputDialog(getMapperContainer().getShell(), Messages.getString("UIManager.addNewOutputTable"), //$NON-NLS-1$
+        InputDialog id = new InputDialog(getMapperContainer().getShell(), Messages
+                .getString("UIManager.addNewOutputTable"), //$NON-NLS-1$
                 Messages.getString("UIManager.typeTableName"), outputName, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
@@ -1306,9 +1347,11 @@ public class UIManager {
             public void run() {
 
                 if (hasInvalidInputExpressionKeys(inputDataMapTableView)) {
-                    if (MessageDialog.openConfirm(inputDataMapTableView.getShell(), Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
-                            Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
-                                    + "'")) { //$NON-NLS-1$
+                    if (MessageDialog
+                            .openConfirm(inputDataMapTableView.getShell(),
+                                    Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
+                                    Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
+                                            + "'")) { //$NON-NLS-1$
                         removeInvalidInputKeys(inputDataMapTableView);
                     }
                     refreshInOutTableAndMetaTable(inputDataMapTableView);
@@ -1355,7 +1398,8 @@ public class UIManager {
 
     public void moveOutputScrollBarZoneToMax() {
         ScrolledComposite scrolledCompositeViewOutputs = getScrolledCompositeViewOutputs();
-        setPositionOfVerticalScrollBarZone(scrolledCompositeViewOutputs, scrolledCompositeViewOutputs.getVerticalBar().getMaximum());
+        setPositionOfVerticalScrollBarZone(scrolledCompositeViewOutputs, scrolledCompositeViewOutputs.getVerticalBar()
+                .getMaximum());
     }
 
     public void moveScrollBarZoneAtSelectedTable(Zone zone) {
@@ -1625,8 +1669,8 @@ public class UIManager {
         }
         mapperManager.removeTablePair(dataMapTableViewToRemove);
         MetadataTableEditorView outputMetaEditorView = getOutputMetaEditorView();
-        if (outputMetaEditorView.getMetadataTableEditor().getMetadataTable() == ((OutputTable) dataMapTableViewToRemove.getDataMapTable())
-                .getMetadataTable()) {
+        if (outputMetaEditorView.getMetadataTableEditor().getMetadataTable() == ((OutputTable) dataMapTableViewToRemove
+                .getDataMapTable()).getMetadataTable()) {
             getOutputMetaEditorView().setMetadataTableEditor(null);
         }
         dataMapTableViewToRemove.dispose();

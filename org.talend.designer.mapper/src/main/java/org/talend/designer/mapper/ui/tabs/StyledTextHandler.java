@@ -82,7 +82,7 @@ public class StyledTextHandler {
      * DOC amaumont Comment method "init".
      */
     private void init() {
-        if (this.contentProposalAdapter == null) {
+        if (this.contentProposalAdapter == null && !mapperManager.componentIsReadOnly()) {
             this.contentProposalAdapter = ProposalUtils.getCommonProposal(styledText);
         }
         addListeners();
@@ -163,7 +163,8 @@ public class StyledTextHandler {
         styledText.addVerifyKeyListener(new VerifyKeyListener() {
 
             public void verifyKey(VerifyEvent verifyEvent) {
-                if (verifyEvent.character == '\r' && contentProposalAdapter.isProposalOpened()) {
+                if (verifyEvent.character == '\r' && contentProposalAdapter != null
+                        && contentProposalAdapter.isProposalOpened()) {
                     verifyEvent.doit = false;
                 } else {
                     verifyEvent.doit = true;
@@ -190,7 +191,8 @@ public class StyledTextHandler {
 
     private void updateCellExpression() {
 
-        if (!styledText.getText().equals(currentEntry.getExpression())) {
+        if (styledText.getText() != null && currentEntry != null
+                && !styledText.getText().equals(currentEntry.getExpression())) {
             mapperManager.changeEntryExpression(currentEntry, styledText.getText());
         }
 
@@ -238,11 +240,13 @@ public class StyledTextHandler {
     }
 
     private void refreshProposalSize() {
-        Rectangle maxSize = new Rectangle(0, 0, MAX_WIDTH_PROPOSAL_STYLED_TEXT, MAX_HEIGHT_PROPOSAL_STYLED_TEXT);
-        Rectangle boundsStyledText = StyledTextHandler.this.getStyledText().getBounds();
-        Rectangle intersect = boundsStyledText.intersection(maxSize);
-        Point sizeProposal = new Point(intersect.width, intersect.height);
-        contentProposalAdapter.setPopupSize(sizeProposal);
+        if (contentProposalAdapter != null) {
+            Rectangle maxSize = new Rectangle(0, 0, MAX_WIDTH_PROPOSAL_STYLED_TEXT, MAX_HEIGHT_PROPOSAL_STYLED_TEXT);
+            Rectangle boundsStyledText = StyledTextHandler.this.getStyledText().getBounds();
+            Rectangle intersect = boundsStyledText.intersection(maxSize);
+            Point sizeProposal = new Point(intersect.width, intersect.height);
+            contentProposalAdapter.setPopupSize(sizeProposal);
+        }
     }
 
     public ContentProposalAdapterExtended getContentProposalAdapter() {

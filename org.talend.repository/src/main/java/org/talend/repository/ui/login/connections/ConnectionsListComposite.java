@@ -163,10 +163,10 @@ public class ConnectionsListComposite extends Composite {
 
                 });
                 comleteColumn.setWeight(5);
-                comleteColumn.setModifiable(false);
+                comleteColumn.setModifiable(true);
                 comleteColumn.setMinimumWidth(5);
                 comleteColumn.setDisplayedValue(""); //$NON-NLS-1$
-                CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent(true);
+                CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
                 comleteColumn.setTableEditorContent(checkboxTableEditorContent);
             }
 

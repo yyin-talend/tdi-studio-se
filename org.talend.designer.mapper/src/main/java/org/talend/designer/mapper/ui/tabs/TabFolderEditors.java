@@ -136,11 +136,11 @@ public class TabFolderEditors extends CTabFolder {
         return styledText;
     }
 
-    public MetadataTableEditorView getInputMetaEditor() {
+    public MetadataTableEditorView getInputMetaEditorView() {
         return this.inputMetaEditor;
     }
 
-    public MetadataTableEditorView getOutputMetaEditor() {
+    public MetadataTableEditorView getOutputMetaEditorView() {
         return this.outputMetaEditor;
     }
 
