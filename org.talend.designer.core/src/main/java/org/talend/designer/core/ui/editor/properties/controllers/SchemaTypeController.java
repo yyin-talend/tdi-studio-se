@@ -189,12 +189,12 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             if (param.isReadOnly() || node.isReadOnly()) {
                 outputReadOnly = true;
             }
-             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
-            ///Modify the sentence for bug 657 by qzhang
+            IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
+            // /Modify the sentence for bug 657 by qzhang
             IMetadataTable originaleOutputTable2 = (IMetadataTable) dynamicTabbedPropertySection.getRepositoryTableMap().get(
                     node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
-            /////
-            if (!originaleOutputTable.equals(originaleOutputTable2)) {
+            // ///
+            if (originaleOutputTable2 != null && !originaleOutputTable.equals(originaleOutputTable2)) {
                 originaleOutputTable = originaleOutputTable2;
             }
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
