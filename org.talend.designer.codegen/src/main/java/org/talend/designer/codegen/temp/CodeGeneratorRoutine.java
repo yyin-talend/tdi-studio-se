@@ -30,7 +30,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.CodeGeneratorActivator;
@@ -52,8 +54,8 @@ public final class CodeGeneratorRoutine {
 
     // PTODO mhelleboid
     public static List<String> getRoutineName() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
         List<String> toReturn = new ArrayList<String>();
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -62,13 +64,22 @@ public final class CodeGeneratorRoutine {
 
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
+
+        String builtInPath = ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + "::" + "system" + "::";
+        String userPath = ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + "::" + project.getTechnicalLabel() + "::";
+
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
                 if (currentLanguage.equals(ECodeLanguage.JAVA)) {
                     toReturn.add(routine.getLabel());
                 } else {
-                    toReturn.add(project.getTechnicalLabel() + "__" + routine.getLabel());
+                    RoutineItem item = (RoutineItem) routine.getProperty().getItem();
+                    if (item.isBuiltIn()) {
+                        toReturn.add(builtInPath + routine.getLabel());
+                    } else {
+                        toReturn.add(userPath + routine.getLabel());
+                    }
                 }
             }
         } catch (PersistenceException e) {

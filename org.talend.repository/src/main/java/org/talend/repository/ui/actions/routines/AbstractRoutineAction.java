@@ -24,16 +24,13 @@ package org.talend.repository.ui.actions.routines;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -72,7 +69,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             throw new UnsupportedOperationException("Unknow language " + lang);
         }
 
-        IFile file = routineSynchronizer.syncRoutine(routineItem);
+        IFile file = routineSynchronizer.syncRoutine(routineItem, true);
         RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
         input.setReadOnly(readOnly);
 

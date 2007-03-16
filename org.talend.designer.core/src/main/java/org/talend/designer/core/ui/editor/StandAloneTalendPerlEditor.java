@@ -33,10 +33,12 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -132,6 +134,10 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             repFactory.save(item);
+
+            ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                    ICodeGeneratorService.class);
+            codeGenService.createPerlRoutineSynchronizer().syncRoutine(item, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -38,8 +38,8 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -76,7 +76,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
 
         for (IRepositoryObject routine : routines) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-            syncRoutine(routineItem);
+            syncRoutine(routineItem, false);
         }
 
         try {
@@ -102,7 +102,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
      * 
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend.core.model.properties.RoutineItem)
      */
-    public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
+    public IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
@@ -112,7 +112,9 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
-            routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+            if (copyToTemp) {
+                routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+            }
             if (!file.exists()) {
                 file.refreshLocal(1, null);
             }
