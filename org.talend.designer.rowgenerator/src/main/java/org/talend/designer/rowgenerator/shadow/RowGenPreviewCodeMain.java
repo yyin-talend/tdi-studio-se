@@ -172,7 +172,9 @@ public class RowGenPreviewCodeMain {
                                 is.read(data);
                                 String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
                                 new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(),
-                                        RowGeneratorPlugin.PLUGIN_ID, mainMsg, new String(data));
+                                        RowGeneratorPlugin.PLUGIN_ID, mainMsg, Messages
+                                                .getString("RowGenPreivewCodeMain.Run.ErrorInfo")
+                                                + "\n" + new String(data));
                             }
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
