@@ -154,7 +154,12 @@
              class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
              id="org.talend.repository.actions.generateDocAsHTML"
              level="98"
-             name="Generate Doc as HTML"/>     
+             name="Generate Doc as HTML"/> 
+       <Action
+             class="org.talend.repository.ui.actions.ImportJAR4RoutineAction"
+             id="org.talend.repository.actions.ImportExternalJAR"
+             level="97"
+             name="Import External JARs"/>    
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
