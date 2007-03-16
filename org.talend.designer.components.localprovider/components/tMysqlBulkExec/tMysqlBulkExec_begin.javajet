@@ -1,0 +1,40 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="MysqlBulkExecBegin" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String charset = "utf8";
+if(encoding.equals("\"GBK\"")){
+	charset = "gbk";
+}else if(encoding.equals("\"GB2312\"")){
+	charset = "gb2312";
+}else if(encoding.equals("\"ISO-8859-1\"")){
+	charset = "latin1";
+}else if(encoding.equals("\"ISO-8859-2\"")){
+	charset = "latin2";
+}else if(encoding.equals("\"ISO-8859-15\"")){
+	charset = "latin1";//?not sure if this is true for iso-8859-15
+}else if(encoding.equals("\"Big5\"")){
+	charset = "big5";
+}else if(encoding.equals("\"UCS-2\"")){
+	charset = "ucs2";
+}
+%> 
+String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
+String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
+Class.forName("com.mysql.jdbc.Driver").newInstance();
+java.sql.Connection con=java.sql.DriverManager.getConnection("jdbc:MySQL://<%=ElementParameterParser.getValue(node, "__HOST__") %>:<%=ElementParameterParser.getValue(node, "__PORT__") %>/<%=ElementParameterParser.getValue(node, "__DBNAME__") %>","<%=ElementParameterParser.getValue(node, "__USER__") %>","<%=ElementParameterParser.getValue(node, "__PASS__") %>");
+java.sql.Statement stmt=con.createStatement();
+stmt.execute("SET character_set_database=<%=charset %>");
+stmt.execute("LOAD DATA INFILE '"+file_<%=cid %>+"' INTO TABLE <%=ElementParameterParser.getValue(node, "__TABLE__") %> FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
+stmt.close();
+con.close();
