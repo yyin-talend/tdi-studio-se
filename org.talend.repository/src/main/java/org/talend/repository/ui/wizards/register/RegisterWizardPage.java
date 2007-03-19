@@ -244,7 +244,8 @@ public class RegisterWizardPage extends WizardPage {
         localComposite.setLayoutData(gd);
 
         Label legalInfos = new Label(localComposite, SWT.NONE);
-        legalInfos.setText(Messages.getString("RegisterWizardPage.legalinfos")); //$NON-NLS-1$
+        legalInfos.setText(Messages
+                .getString("RegisterWizardPage.legalinfos", BrandingService.getInstance().getCorporationName())); //$NON-NLS-1$
     }
 
     protected void createHttpProxy(Composite composite, int columnSpan) {
