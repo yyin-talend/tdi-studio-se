@@ -107,18 +107,14 @@ public class EntryContentProposal implements IContentProposal {
                         .append(Messages.getString("EntryContentProposal.type")).append(format(metadataColumn.getTalendType())); //$NON-NLS-1$
             }
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb
-                    .append(separator)
-                    .append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
-            if(metadataColumn.getLength() > 0) {
+            sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
+            if (metadataColumn.getLength() != null && metadataColumn.getLength() > 0) {
                 sb.append(format(metadataColumn.getLength()));
             }
-            
+
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
-            sb
-                    .append(separator)
-                    .append(Messages.getString("EntryContentProposal.precision")); //$NON-NLS-1$
-            if(metadataColumn.getPrecision() > 0) {
+            sb.append(separator).append(Messages.getString("EntryContentProposal.precision")); //$NON-NLS-1$
+            if (metadataColumn.getPrecision() != null && metadataColumn.getPrecision() > 0) {
                 sb.append(format(metadataColumn.getPrecision()));
             }
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);

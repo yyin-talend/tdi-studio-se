@@ -91,29 +91,39 @@ public class EntryContentProposal implements IContentProposal {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
 
             IMetadataColumn metadataColumn = inputEntry.getMetadataColumn();
-            sb.append(Messages.getString("EntryContentProposal.metadataColumn")).append(" '").append(metadataColumn.getLabel()) //$NON-NLS-1$ //$NON-NLS-2$
+            sb
+                    .append(Messages.getString("EntryContentProposal.metadataColumn")).append(" '").append(metadataColumn.getLabel()) //$NON-NLS-1$ //$NON-NLS-2$
                     .append("' "); //$NON-NLS-1$
             sb.append(Messages.getString("EntryContentProposal.properties")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
-            sb.append(separator).append(Messages.getString("EntryContentProposal.column")).append(metadataColumn.getLabel()); //$NON-NLS-1$
+            sb.append(separator)
+                    .append(Messages.getString("EntryContentProposal.column")).append(metadataColumn.getLabel()); //$NON-NLS-1$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.key")).append(metadataColumn.isKey()); //$NON-NLS-1$
             if (!MapperMain.isStandAloneMode()) {
                 sb.append(AbstractLanguage.CARRIAGE_RETURN);
-                sb.append(separator)
+                sb
+                        .append(separator)
                         .append(Messages.getString("EntryContentProposal.type")).append(format(metadataColumn.getTalendType())); //$NON-NLS-1$
             }
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
-            sb.append(separator)
-                    .append(Messages.getString("EntryContentProposal.length")).append(format(metadataColumn.getLength())); //$NON-NLS-1$
+            sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
+            if (metadataColumn.getLength() != null && metadataColumn.getLength() > 0) {
+                sb.append(format(metadataColumn.getLength()));
+            }
+
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
-            sb.append(separator)
-                    .append(Messages.getString("EntryContentProposal.precision")).append(format(metadataColumn.getPrecision())); //$NON-NLS-1$
+            sb.append(separator).append(Messages.getString("EntryContentProposal.precision")); //$NON-NLS-1$
+            if (metadataColumn.getPrecision() != null && metadataColumn.getPrecision() > 0) {
+                sb.append(format(metadataColumn.getPrecision()));
+            }
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
-            sb.append(separator)
+            sb
+                    .append(separator)
                     .append(Messages.getString("EntryContentProposal.default")).append(format(metadataColumn.getDefault())); //$NON-NLS-1$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
-            sb.append(separator)
+            sb
+                    .append(separator)
                     .append(Messages.getString("EntryContentProposal.comment")).append(format(metadataColumn.getComment())); //$NON-NLS-1$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.expressionKey")); //$NON-NLS-1$
@@ -121,7 +131,8 @@ public class EntryContentProposal implements IContentProposal {
             sb.append(format(entry.getExpression()));
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
         } else if (entry instanceof VarTableEntry) {
-            sb.append(Messages.getString("EntryContentProposal.variable")).append(" '").append(entry.getName()).append("' :"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            sb
+                    .append(Messages.getString("EntryContentProposal.variable")).append(" '").append(entry.getName()).append("' :"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.expressionKey")); //$NON-NLS-1$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
