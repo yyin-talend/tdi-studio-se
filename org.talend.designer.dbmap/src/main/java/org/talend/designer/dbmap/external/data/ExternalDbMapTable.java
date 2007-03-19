@@ -22,6 +22,7 @@
 package org.talend.designer.dbmap.external.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * $Id: ExternalMapperTable.java 898 2006-12-07 11:06:17Z amaumont $
  * 
  */
-public class ExternalDbMapTable implements Serializable {
+public class ExternalDbMapTable implements Serializable, Cloneable {
 
     /**
      * 
@@ -196,6 +197,33 @@ public class ExternalDbMapTable implements Serializable {
      */
     public void setTableName(String tableName) {
         this.tableName = tableName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#clone()
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ExternalDbMapTable cloned = (ExternalDbMapTable) super.clone();
+        if (customConditionsEntries != null) {
+            cloned.customConditionsEntries = (List<ExternalDbMapEntry>) ((ArrayList) customConditionsEntries).clone();
+            int listSizecustomConditionsEntries = customConditionsEntries.size();
+            for (int i = 0; i < listSizecustomConditionsEntries; i++) {
+                cloned.customConditionsEntries.set(i, (ExternalDbMapEntry) cloned.customConditionsEntries.get(i)
+                        .clone());
+            }
+        }
+        if (metadataTableEntries != null) {
+            cloned.metadataTableEntries = (List<ExternalDbMapEntry>) ((ArrayList) metadataTableEntries).clone();
+            int listSizemetadataTableEntries = metadataTableEntries.size();
+            for (int i = 0; i < listSizemetadataTableEntries; i++) {
+                cloned.metadataTableEntries.set(i, (ExternalDbMapEntry) cloned.metadataTableEntries.get(i).clone());
+            }
+        }
+        return cloned;
     }
 
     // /**

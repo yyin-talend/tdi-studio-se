@@ -29,7 +29,7 @@ import java.io.Serializable;
  * $Id$
  * 
  */
-public class ExternalMapperTableEntry implements Serializable {
+public class ExternalMapperTableEntry implements Serializable, Cloneable {
 
     /**
      * 
@@ -117,4 +117,14 @@ public class ExternalMapperTableEntry implements Serializable {
         this.nullable = nullable;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    
+    
 }

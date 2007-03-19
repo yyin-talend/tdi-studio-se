@@ -31,7 +31,7 @@ import java.util.List;
  * $Id$
  * 
  */
-public class ExternalMapperData implements Serializable {
+public class ExternalMapperData implements Serializable, Cloneable {
 
     /**
      * 
@@ -76,6 +76,34 @@ public class ExternalMapperData implements Serializable {
 
     public void setUiProperties(ExternalMapperUiProperties layoutProperties) {
         this.uiProperties = layoutProperties;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#clone()
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ExternalMapperData cloned = (ExternalMapperData) super.clone();
+        cloned.uiProperties = (ExternalMapperUiProperties) uiProperties.clone();
+        cloned.inputTables = (List<ExternalMapperTable>) ((ArrayList) inputTables).clone();
+        int inputTablesListSize = inputTables.size();
+        for (int i = 0; i < inputTablesListSize; i++) {
+            cloned.inputTables.set(i, (ExternalMapperTable) cloned.inputTables.get(i).clone());
+        }
+        cloned.outputTables = (List<ExternalMapperTable>) ((ArrayList) outputTables).clone();
+        int listSizeoutputTables = outputTables.size();
+        for (int i = 0; i < listSizeoutputTables; i++) {
+            cloned.outputTables.set(i, (ExternalMapperTable) cloned.outputTables.get(i).clone());
+        }
+        cloned.varsTables = (List<ExternalMapperTable>) ((ArrayList) varsTables).clone();
+        int listSizevarsTables = varsTables.size();
+        for (int i = 0; i < listSizevarsTables; i++) {
+            cloned.varsTables.set(i, (ExternalMapperTable) cloned.varsTables.get(i).clone());
+        }
+        return cloned;
     }
 
 }

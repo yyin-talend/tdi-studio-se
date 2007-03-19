@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * $Id$
  * 
  */
-public class ExternalMapperUiProperties implements Serializable {
+public class ExternalMapperUiProperties implements Serializable, Cloneable {
 
     /**
      * 
@@ -101,4 +101,18 @@ public class ExternalMapperUiProperties implements Serializable {
         this.weightsMainSashForm = weightsMainSashForm;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ExternalMapperUiProperties cloned = (ExternalMapperUiProperties) super.clone();
+        cloned.boundsMapper = new Rectangle(this.boundsMapper.x, this.boundsMapper.y, this.boundsMapper.width, this.boundsMapper.height);
+        cloned.weightsMainSashForm = weightsMainSashForm.clone();
+        cloned.weightsDatasFlowViewSashForm = weightsDatasFlowViewSashForm.clone();
+        return cloned;
+    }
+
+    
+    
 }

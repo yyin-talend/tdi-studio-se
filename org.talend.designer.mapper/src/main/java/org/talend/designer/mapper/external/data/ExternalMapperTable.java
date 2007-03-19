@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.external.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * $Id$
  * 
  */
-public class ExternalMapperTable implements Serializable {
+public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * 
@@ -146,6 +147,36 @@ public class ExternalMapperTable implements Serializable {
      */
     public void setInnerJoin(boolean innerJoin) {
         this.innerJoin = innerJoin;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#clone()
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        ExternalMapperTable cloned = (ExternalMapperTable) super.clone();
+        if (constraintTableEntries != null) {
+            cloned.constraintTableEntries = (List<ExternalMapperTableEntry>) ((ArrayList) constraintTableEntries)
+                    .clone();
+            int listSizeconstraintTableEntries = constraintTableEntries.size();
+            for (int i = 0; i < listSizeconstraintTableEntries; i++) {
+                cloned.constraintTableEntries.set(i, (ExternalMapperTableEntry) cloned.constraintTableEntries.get(i)
+                        .clone());
+            }
+        }
+        if (metadataTableEntries != null) {
+            cloned.metadataTableEntries = (List<ExternalMapperTableEntry>) ((ArrayList) metadataTableEntries).clone();
+            int listSizemetadataTableEntries = metadataTableEntries.size();
+            for (int i = 0; i < listSizemetadataTableEntries; i++) {
+                cloned.metadataTableEntries.set(i, (ExternalMapperTableEntry) cloned.metadataTableEntries.get(i)
+                        .clone());
+
+            }
+        }
+        return cloned;
     }
 
 }
