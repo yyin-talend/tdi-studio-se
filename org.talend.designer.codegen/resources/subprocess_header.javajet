@@ -91,7 +91,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 				if (column.isKey()) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 	%>
-				result = prime * result + this.<%=column.getLabel() %>;
+				result = prime * result + (int) this.<%=column.getLabel() %>;
 	<%
 				} else {
 	%>
