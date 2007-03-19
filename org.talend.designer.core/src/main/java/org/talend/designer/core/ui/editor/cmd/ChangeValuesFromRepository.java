@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -34,7 +33,6 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -63,6 +61,10 @@ public class ChangeValuesFromRepository extends Command {
     private String propertyName;
 
     private String oldMetadata;
+
+    private Map<String, List<String>> tablesmap;
+
+    private Map<String, List<String>> queriesmap;
 
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
@@ -101,8 +103,7 @@ public class ChangeValuesFromRepository extends Command {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { 
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -119,8 +120,7 @@ public class ChangeValuesFromRepository extends Command {
                         if (param.getField().equals(EParameterFieldType.TABLE)
                                 && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem
-                                    .getPropertyValue(param.getName());
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                             RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
@@ -132,13 +132,40 @@ public class ChangeValuesFromRepository extends Command {
         }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
             elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
-            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
-            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+            setOtherProperties();
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
+            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
+            if (queriesmap == null || queriesmap.get(value).isEmpty()) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+            }
+            if (tablesmap == null || tablesmap.get(value).isEmpty()) {
+                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            }
+
         }
         refreshPropertyView();
+    }
+
+    /**
+     * qzhang Comment method "setOtherProperties".
+     */
+    private void setOtherProperties() {
+        if (value.equals(EmfComponent.BUILTIN)) {
+            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+        } else {
+            if (tablesmap != null
+                    && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+            }
+            if (queriesmap != null
+                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+            }
+        }
     }
 
     @Override
@@ -171,10 +198,17 @@ public class ChangeValuesFromRepository extends Command {
                 elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
             } else {
                 elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             }
         } else {
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), oldMetadata);
         }
         refreshPropertyView();
+    }
+
+    public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap) {
+        this.tablesmap = tablesmap;
+        this.queriesmap = queriesmap;
     }
 }

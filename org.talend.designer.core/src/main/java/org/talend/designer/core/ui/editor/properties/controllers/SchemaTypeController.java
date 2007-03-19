@@ -551,8 +551,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
             combo.setText(strValue);
 
-            IMetadataTable table = (IMetadataTable) dynamicTabbedPropertySection.getRepositoryTableMap().get(value).clone();
+            IMetadataTable table = (IMetadataTable) dynamicTabbedPropertySection.getRepositoryTableMap().get(value);
             if (table != null) {
+                table = table.clone();
                 Node node;
                 if (elem instanceof Node) {
                     node = (Node) elem;
