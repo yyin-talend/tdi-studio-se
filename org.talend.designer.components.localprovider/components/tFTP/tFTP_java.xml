@@ -61,6 +61,13 @@ COMPATIBILITY="ALL"
         <ITEM NAME="RENAME" VALUE="rename" />
         <ITEM NAME="DELETE" VALUE="delete" />
       </ITEMS>
+    </PARAMETER>   
+     
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="5" SHOW_IF="(ACTION == 'PUT' or ACTION == 'GET')">
+      <ITEMS DEFAULT="ascii">
+     	<ITEM NAME="ASCII"  VALUE="ascii" />
+        <ITEM NAME="BINARY"  VALUE="binary" />        
+      </ITEMS>
     </PARAMETER>
 
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">

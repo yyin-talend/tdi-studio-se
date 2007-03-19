@@ -27,7 +27,19 @@
 <%
 	if (action.equals("get")) {
 %>
-	{	
+	{
+<% 
+	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
+%>	
+	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+<%
+  }	else {  
+%>	
+	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
+<%
+ }
+%>
+		
 	String localdir<%=cid %>  = <%=localdir%>;
 	String root<%=cid %> = ftp<%=cid %>.pwd();
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
@@ -69,6 +81,17 @@
 
 ////////////////////////////////////////////
 {
+<% 
+	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
+%>	
+	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.BINARY);
+<%
+  }	else {  
+%>	
+	ftp<%=cid %>.setType(com.enterprisedt.net.ftp.FTPTransferType.ASCII);
+<%
+ }
+%>
 	String localdir<%=cid %>  = <%=localdir%>;	
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{
