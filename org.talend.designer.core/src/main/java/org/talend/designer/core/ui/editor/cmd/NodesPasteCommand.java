@@ -69,7 +69,7 @@ public class NodesPasteCommand extends Command {
         setLabel(Messages.getString("NodesPasteCommand.label")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private String createNewConnectionName(String oldName) {
         String newName = new String(oldName);
 
@@ -91,7 +91,7 @@ public class NodesPasteCommand extends Command {
      * @param location
      * @return
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Point findLocationForNode(final Point location) {
         Point newLocation = new Point(location);
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
@@ -104,7 +104,7 @@ public class NodesPasteCommand extends Command {
         return newLocation;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void createNodeContainerList() {
         nodeContainerList = new ArrayList<NodeContainer>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
@@ -112,8 +112,7 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(
-                    ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
+            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
 
             Point location = copiedNode.getLocation();
             if (process.isGridEnabled()) {
@@ -125,7 +124,7 @@ public class NodesPasteCommand extends Command {
             }
             pastedNode.setLocation(findLocationForNode(location));
 
-            if (pastedNode.getExternalNode() == null) {
+            if (pastedNode.getExternalNode() == null || pastedNode.getPluginFullName().equals("org.talend.designer.rowgenerator")) {
                 IMetadataTable metaTable = copiedNode.getMetadataList().get(0);
                 IMetadataTable newMetaTable = metaTable.clone();
                 newMetaTable.setTableName(pastedNode.getUniqueName());
@@ -204,19 +203,18 @@ public class NodesPasteCommand extends Command {
                         pastedSourceNode.getMetadataList().add(newMetaTable);
 
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
-                            .getLineStyle(), metaTableName, newConnectionName);
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
+                            metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
-                    pastedConnection.getConnectionLabel().setOffset(
-                            new Point(connection.getConnectionLabel().getOffset()));
+                    pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
                 }
             }
         }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void execute() {
         // create the node container list to paste
@@ -254,7 +252,7 @@ public class NodesPasteCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void undo() {
         // remove the current selection
