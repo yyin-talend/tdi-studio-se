@@ -107,7 +107,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_SYNONYM:
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
-                return node.getLabel();
+                return object.getLabel();
             default:
                 break;
             }
