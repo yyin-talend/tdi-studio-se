@@ -538,8 +538,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
-        elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getRepositoryValue();
-
         oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (oldPropertyType != null) {
             if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
