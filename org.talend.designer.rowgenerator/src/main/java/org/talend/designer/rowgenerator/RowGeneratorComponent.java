@@ -49,6 +49,7 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -95,7 +96,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
-    public Object getExternalData() {
+    public IExternalData getExternalData() {
         return null;
     }
 
@@ -146,7 +147,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#setPersistentData(java.lang.Object)
      */
-    public void setExternalData(Object externalData) {
+    public void setExternalData(IExternalData externalData) {
         // this.externalData = (ExternalRowGeneratorData) externalData;
     }
 

@@ -37,6 +37,7 @@ import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
@@ -83,7 +84,7 @@ public class DataProcess {
         } else {
             // mapper
             dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
-            Object externalData = graphicalNode.getExternalData();
+            IExternalData externalData = graphicalNode.getExternalData();
             if (externalData != null) {
                 ((IExternalNode) dataNode).setExternalData(externalData);
             }

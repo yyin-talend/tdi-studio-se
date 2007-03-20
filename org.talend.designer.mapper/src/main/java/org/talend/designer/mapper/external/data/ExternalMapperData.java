@@ -25,13 +25,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.IExternalData;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class ExternalMapperData implements Serializable, Cloneable {
+public class ExternalMapperData implements IExternalData {
 
     /**
      * 
@@ -85,7 +87,7 @@ public class ExternalMapperData implements Serializable, Cloneable {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public IExternalData clone() throws CloneNotSupportedException {
         ExternalMapperData cloned = (ExternalMapperData) super.clone();
         cloned.uiProperties = (ExternalMapperUiProperties) uiProperties.clone();
         cloned.inputTables = (List<ExternalMapperTable>) ((ArrayList) inputTables).clone();

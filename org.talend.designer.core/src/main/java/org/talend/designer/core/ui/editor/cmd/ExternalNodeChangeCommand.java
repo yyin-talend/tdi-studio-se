@@ -37,6 +37,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -58,11 +59,11 @@ public class ExternalNodeChangeCommand extends Command {
 
     private Node node;
 
-    private Object oldExternalData;
+    private IExternalData oldExternalData;
 
     private List<IMetadataTable> oldMetaDataList;
 
-    private Object newExternalData;
+    private IExternalData newExternalData;
 
     private List<IMetadataTable> newMetaDataList;
 

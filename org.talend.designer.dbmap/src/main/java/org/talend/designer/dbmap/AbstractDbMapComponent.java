@@ -43,6 +43,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -90,7 +91,7 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
-    public Object getExternalData() {
+    public IExternalData getExternalData() {
         if (this.externalData == null) {
             this.externalData = new ExternalDbMapData();
         }
@@ -192,7 +193,7 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#setPersistentData(java.lang.Object)
      */
-    public void setExternalData(Object externalData) {
+    public void setExternalData(IExternalData externalData) {
         this.externalData = (ExternalDbMapData) externalData;
     }
 

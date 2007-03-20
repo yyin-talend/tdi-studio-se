@@ -55,6 +55,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -132,7 +133,7 @@ public class Node extends Element implements INode {
 
     private IExternalNode externalNode = null; // null if no external component defined
 
-    private Object externalData = null;
+    private IExternalData externalData = null;
 
     private NodeContainer nodeContainer;
 
@@ -551,11 +552,11 @@ public class Node extends Element implements INode {
         this.externalNode = externalNode;
     }
 
-    public Object getExternalData() {
+    public IExternalData getExternalData() {
         return this.externalData;
     }
 
-    public void setExternalData(final Object persistantData) {
+    public void setExternalData(final IExternalData persistantData) {
         this.externalData = persistantData;
     }
 

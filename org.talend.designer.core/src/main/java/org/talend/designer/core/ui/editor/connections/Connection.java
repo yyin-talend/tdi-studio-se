@@ -70,12 +70,12 @@ public class Connection extends Element implements IConnection {
     private boolean readOnly = false;
 
     private String traceData;
-    
-    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName, String uniqueName) {
+
+    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName,
+            String uniqueName) {
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, metaName, linkName);
     }
-
 
     /**
      * The connection can be created with a given node source, target and line style The line style are described in the
@@ -90,7 +90,7 @@ public class Connection extends Element implements IConnection {
     public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName) {
         init(source, target, lineStyle, metaName, linkName);
     }
-    
+
     private void init(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName) {
         this.lineStyle = lineStyle;
         this.metaName = metaName;
@@ -135,14 +135,14 @@ public class Connection extends Element implements IConnection {
      * @return
      */
     public String getUniqueName() {
-//        if (source != null) {
-//            if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
-//                return metaName;
-//            }
-//        }
+        // if (source != null) {
+        // if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+        // return metaName;
+        // }
+        // }
         return uniqueName;
     }
-    
+
     public void setUniqueName(String uniqueName) {
         this.uniqueName = uniqueName;
     }
@@ -190,6 +190,11 @@ public class Connection extends Element implements IConnection {
                 table.setTableName(name);
                 // metaName = name;
             }
+        }
+
+        if (source != null && (lineStyle == EConnectionType.TABLE)) {
+            IMetadataTable table = getMetadataTable();
+            table.setLabel(name);
         }
 
         firePropertyChange(NAME, null, name);
@@ -267,14 +272,14 @@ public class Connection extends Element implements IConnection {
                 if (uniqueName == null) {
                     uniqueName = source.getProcess().generateUniqueConnectionName("table");
                 }
-                if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
-                    IMetadataTable table = getMetadataTable();
-                    table.setTableName(uniqueName);
-                    if (table.getLabel() == null) {
-                        table.setLabel(name);
-                    }
-                    metaName = uniqueName;
+                // if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+                IMetadataTable table = getMetadataTable();
+                table.setTableName(uniqueName);
+                if (table.getLabel() == null) {
+                    table.setLabel(name);
                 }
+                metaName = uniqueName;
+                // }
             }
             if (lineStyle.getCategory().equals(EConnectionCategory.MAIN)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {

@@ -34,6 +34,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -63,24 +65,76 @@ public class NodesPasteCommand extends Command {
 
     private List<NodePart> nodeParts;
 
+    private List<String> createdNames;
+
     public NodesPasteCommand(List<NodePart> nodeParts, Process process) {
         this.process = process;
-        this.nodeParts = nodeParts;
+        orderNodeParts(nodeParts);
         setLabel(Messages.getString("NodesPasteCommand.label")); //$NON-NLS-1$
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private String createNewConnectionName(String oldName) {
+        String newName = checkExistingNames(oldName);
+        newName = checkNewNames(newName);
+        createdNames.add(newName);
+        return newName;
+    }
+
+    private void orderNodeParts(List<NodePart> nodeParts) {
+        this.nodeParts = new ArrayList<NodePart>();
+
+        Point curLocation;
+
+        NodePart toAdd = null;
+
+        List<NodePart> restToOrder = new ArrayList<NodePart>();
+        restToOrder.addAll(nodeParts);
+
+        for (NodePart copiedNodePart : nodeParts) {
+            curLocation = null;
+            for (NodePart partToOrder : restToOrder) {
+                Node copiedNode = (Node) partToOrder.getModel();
+                if (curLocation == null) {
+                    curLocation = copiedNode.getLocation();
+                    toAdd = partToOrder;
+                } else {
+                    if (curLocation.y >= copiedNode.getLocation().y) {
+                        if (curLocation.x >= copiedNode.getLocation().x) {
+                            curLocation = copiedNode.getLocation();
+                            toAdd = partToOrder;
+                        }
+                    }
+                }
+            }
+            if (toAdd != null) {
+                this.nodeParts.add(toAdd);
+                restToOrder.remove(toAdd);
+            }
+        }
+    }
+
+    private String checkExistingNames(String oldName) {
         String newName = new String(oldName);
 
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
                 if (connection.getName().equals(newName)) {
-                    newName = createNewConnectionName("copyOf" + newName); //$NON-NLS-1$
+                    newName = checkExistingNames("copyOf" + newName); //$NON-NLS-1$
                 }
             }
         }
+        return newName;
+    }
 
+    private String checkNewNames(String oldName) {
+        String newName = new String(oldName);
+
+        for (String name : createdNames) {
+            if (name.equals(newName)) {
+                newName = checkNewNames("copyOf" + newName); //$NON-NLS-1$
+            }
+        }
         return newName;
     }
 
@@ -91,14 +145,33 @@ public class NodesPasteCommand extends Command {
      * @param location
      * @return
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Point findLocationForNode(final Point location) {
+        Point newLocation = findLocationForNodeInProcess(location);
+        newLocation = findLocationForNodeInContainerList(newLocation);
+        return newLocation;
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private Point findLocationForNodeInProcess(final Point location) {
         Point newLocation = new Point(location);
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             if ((node.getLocation().x == newLocation.x) && (node.getLocation().y == newLocation.y)) {
                 newLocation.x += TalendEditor.GRID_SIZE;
                 newLocation.y += TalendEditor.GRID_SIZE;
-                findLocationForNode(newLocation);
+                findLocationForNodeInProcess(newLocation);
+            }
+        }
+        return newLocation;
+    }
+
+    private Point findLocationForNodeInContainerList(final Point location) {
+        Point newLocation = new Point(location);
+        for (NodeContainer nodeContainer : nodeContainerList) {
+            Node node = nodeContainer.getNode();
+            if ((node.getLocation().x == newLocation.x) && (node.getLocation().y == newLocation.y)) {
+                newLocation.x += TalendEditor.GRID_SIZE;
+                newLocation.y += TalendEditor.GRID_SIZE;
+                findLocationForNodeInContainerList(newLocation);
             }
         }
         return newLocation;
@@ -107,12 +180,15 @@ public class NodesPasteCommand extends Command {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void createNodeContainerList() {
         nodeContainerList = new ArrayList<NodeContainer>();
+        createdNames = new ArrayList<String>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
+        Map<String, String> oldMetaToNewMeta = new HashMap<String, String>();
 
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
+            Node pastedNode = new Node(
+                    ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
 
             Point location = copiedNode.getLocation();
             if (process.isGridEnabled()) {
@@ -124,14 +200,36 @@ public class NodesPasteCommand extends Command {
             }
             pastedNode.setLocation(findLocationForNode(location));
 
-            if (pastedNode.getExternalNode() == null || pastedNode.getPluginFullName().equals("org.talend.designer.rowgenerator")) {
+            if (pastedNode.getExternalNode() == null) {
                 IMetadataTable metaTable = copiedNode.getMetadataList().get(0);
                 IMetadataTable newMetaTable = metaTable.clone();
                 newMetaTable.setTableName(pastedNode.getUniqueName());
                 pastedNode.getMetadataList().clear(); // remove the old "empty" metadata
                 pastedNode.getMetadataList().add(newMetaTable);
             } else {
-                pastedNode.setExternalData(copiedNode.getExternalData());
+                List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
+                for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
+                    IMetadataTable newTable = metaTable.clone();
+                    newTable.setTableName(createNewConnectionName(metaTable.getTableName()));
+                    oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable
+                            .getTableName());
+                    copyOfMetadataList.add(newTable);
+                }
+                pastedNode.setMetadataList(copyOfMetadataList);
+                IExternalNode externalNode = pastedNode.getExternalNode();
+                if (copiedNode.getExternalData() != null) {
+                    try {
+                        externalNode.setExternalData(copiedNode.getExternalData().clone());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                    pastedNode.setExternalData(externalNode.getExternalData());
+                }
+                for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
+                    String oldName = metaTable.getTableName();
+                    String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName());
+                    externalNode.renameOutputConnection(oldName, newName);
+                }
             }
             pastedNode.getNodeLabel().setOffset(new Point(copiedNode.getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
@@ -195,20 +293,35 @@ public class NodesPasteCommand extends Command {
                     if (pastedSourceNode.getExternalNode() == null) {
                         metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
                     } else {
-                        metaTableName = newConnectionName;
+                        metaTableName = connection.getMetaName();
 
-                        IMetadataTable metaTable = connection.getMetadataTable();
-                        IMetadataTable newMetaTable = metaTable.clone();
-                        newMetaTable.setTableName(metaTableName);
-                        pastedSourceNode.getMetadataList().add(newMetaTable);
+                        // IMetadataTable metaTable = connection.getMetadataTable();
+                        // IMetadataTable newMetaTable = metaTable.clone();
+                        // newMetaTable.setTableName(metaTableName);
+                        // pastedSourceNode.getMetadataList().add(newMetaTable);
 
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                            metaTableName, newConnectionName);
+                    String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
+                            + connection.getMetaName());
+                    if (meta != null) {
+                        newConnectionName = meta;
+                        metaTableName = meta;
+                    }
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
+                            .getLineStyle(), metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
-                    pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
+                    pastedConnection.getConnectionLabel().setOffset(
+                            new Point(connection.getConnectionLabel().getOffset()));
+                    INodeConnector connector = pastedSourceNode.getConnectorFromType(pastedConnection.getLineStyle());
+                    connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
+                    connector = pastedTargetNode.getConnectorFromType(pastedConnection.getLineStyle());
+                    connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
+                    IExternalNode externalNode = pastedTargetNode.getExternalNode();
+                    if (externalNode != null) {
+                        externalNode.renameInputConnection(connection.getName(), newConnectionName);
+                    }
                 }
             }
         }
