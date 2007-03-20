@@ -202,8 +202,11 @@ public final class CodeGeneratorEmittersPoolFactory {
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
 
-        // PTODO MHIRT Tmp Solution, correct ASAP
-        jetBean.addClassPath("TMP_DBMAP", DbMapActivator.PLUGIN_ID);
+        for (String pluginDependency : component.getPluginDependencies()) {
+            jetBean
+                    .addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES",
+                            pluginDependency);
+        }
 
         if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
             jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
@@ -269,14 +272,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
                         jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-
-                        // PTODO MHIRT Tmp Solution for TELT Map Components, correct ASAP
-                        if ((!jetBean.getClassName().substring(jetBean.getClassName().lastIndexOf(".") + 1).startsWith(
-                                "TELTMysqlMap"))
-                                && (!jetBean.getClassName().substring(jetBean.getClassName().lastIndexOf(".") + 1)
-                                        .startsWith("TELTOracleMap"))) {
-                            alreadyCompiledEmitters.add(jetBean);
-                        }
+                        alreadyCompiledEmitters.add(jetBean);
                     }
                 } catch (JETException e) {
                     log.error("Error during JetEmitter initalization " + e.getMessage(), e);
