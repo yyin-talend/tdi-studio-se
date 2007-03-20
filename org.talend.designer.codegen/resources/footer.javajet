@@ -43,8 +43,8 @@
 	    		context = new java.util.Properties(defaultProps);
 	    	}
     		
-    		if (contextStr.compareTo("Context")!=0) {
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Shadow.properties");
+    		if (contextStr.compareTo("Default")!=0) {
+    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
     			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();

@@ -12,7 +12,7 @@
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
 	for (IContextParameter parameter : parameterList) {
 %>
-<%=parameter.getName() %>=<%=parameter.getValue() %>
+<%=parameter.getName() %>=<%=parameter.getValue() %><%="\r\n" %>
 <%
 	}
 %>
