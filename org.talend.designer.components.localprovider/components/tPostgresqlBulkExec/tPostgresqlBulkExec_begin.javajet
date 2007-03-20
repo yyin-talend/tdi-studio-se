@@ -1,0 +1,30 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="PostgresqlBulkExecBegin" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+%> 
+String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
+String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
+String host_<%=cid %> = <%=ElementParameterParser.getValue(node, "__HOST__") %>;
+String port_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PORT__") %>;
+String db_<%=cid %> = <%=ElementParameterParser.getValue(node, "__DBNAME__") %>;
+String user_<%=cid %> = <%=ElementParameterParser.getValue(node, "__USER__") %>;
+String pas_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PASS__") %>;
+String table_<%=cid %> = <%=ElementParameterParser.getValue(node, "__TABLE__") %>;
+
+Class.forName("org.postgresql.Driver").newInstance();
+java.sql.Connection con=java.sql.DriverManager.getConnection("jdbc:postgresql://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
+java.sql.Statement stmt=con.createStatement();
+//stmt.execute("SET client_encoding to 'UNICODE'");
+stmt.execute("copy "+table_<%=cid %>+" from '"+file_<%=cid %>+"' with delimiter '"+field_separator_<%=cid %>+"'");
+stmt.close();
+con.close();
