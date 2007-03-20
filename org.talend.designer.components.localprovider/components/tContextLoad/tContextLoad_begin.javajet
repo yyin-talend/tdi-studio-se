@@ -11,4 +11,5 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-	java.util.List<String> assignList = new java.util.ArrayList<String>();
+	java.util.List<String> assignList_<%=cid %> = new java.util.ArrayList<String>();
+	int nb_line_<%=cid %> = 0;

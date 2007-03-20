@@ -12,12 +12,14 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 %>
-	java.util.Enumeration<?> enu = context.propertyNames();
-    while(enu.hasMoreElements())
+	java.util.Enumeration<?> enu_<%=cid %> = context.propertyNames();
+    while(enu_<%=cid %>.hasMoreElements())
     {           
-    	String key = (String)enu.nextElement();
-        if(!assignList.contains(key))
+    	String key_<%=cid %> = (String)enu_<%=cid %>.nextElement();
+        if(!assignList_<%=cid %>.contains(key_<%=cid %>))
          {
-             System.out.println("Warning ! Parameter " + key + " has not been set by <%=cid %>");
+             System.out.println("Warning ! Parameter " + key_<%=cid %> + " has not been set by <%=cid %>");
          }          
     }
+    
+    globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
