@@ -52,6 +52,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForE
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.tabs.ShadowProcessPreview;
 
 /**
@@ -349,6 +350,12 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         String number = genTableEditor2.getGeneratorUI().getGeneratorManager().getRowGeneratorComponent().getNumber();
         if (number == null || "".equals(number)) {
             number = "100";
+        }
+        if (number.startsWith("'")) {
+            number = number.substring(1);
+        }
+        if (number.endsWith("'")) {
+            number = number.substring(0, number.length() - 1);
         }
         numRowText.setText(number);
     }
