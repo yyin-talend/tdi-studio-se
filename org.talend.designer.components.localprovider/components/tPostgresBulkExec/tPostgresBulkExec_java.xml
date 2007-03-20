@@ -110,15 +110,6 @@
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="10"
-      REQUIRED="true"
-    >
-      <DEFAULT>"UTF-8"</DEFAULT>
-    </PARAMETER>
-
    </PARAMETERS>
 
    <CODEGENERATION>
