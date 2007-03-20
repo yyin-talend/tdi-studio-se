@@ -40,6 +40,8 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreeEditPart;
@@ -94,6 +96,9 @@ public class GefEditorLabelProvider extends LabelProvider {
                 if (object instanceof ConnectionPart) {
                     return ImageProvider.getImage(EImage.RIGHT_ICON);
                 }
+                if (object instanceof NoteEditPart) {
+                    return ImageProvider.getImage(ECoreImage.CODE_ICON);
+                }
                 if (object instanceof ConnLabelEditPart) {
                     return ImageProvider.getImage(EImage.RIGHT_ICON);
                 }
@@ -144,6 +149,9 @@ public class GefEditorLabelProvider extends LabelProvider {
             if (object instanceof ConnectionPart) {
                 Connection conn = (Connection) ((ConnectionPart) object).getModel();
                 return conn.getName();
+            }
+            if (object instanceof NoteEditPart) {
+                return Note.class.getSimpleName();
             }
             if (object instanceof ConnLabelEditPart) {
                 Connection conn = (Connection) ((ConnectionLabel) ((ConnLabelEditPart) object).getModel())

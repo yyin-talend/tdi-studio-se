@@ -173,6 +173,9 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         if (Process.NODES.equals(prop)) {
             refreshChildren();
         }
+        if (Process.NOTES.equals(prop)) {
+            refreshChildren();
+        }
     }
 
     /**

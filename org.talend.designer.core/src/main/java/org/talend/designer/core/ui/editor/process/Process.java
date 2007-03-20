@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -99,6 +101,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -108,6 +111,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
+import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -126,12 +130,16 @@ public class Process extends Element implements IProcess {
 
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
+    
+    public static final String NOTES = "notes"; //$NON-NLS-1$
 
     public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
+
+    protected List<Note> notes = new ArrayList<Note>();
 
     private String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
@@ -710,6 +718,19 @@ public class Process extends Element implements IProcess {
             nList.add(nType);
         }
 
+        //Save notes
+        for (Note note : notes) {
+            NoteType noteType = fileFact.createNoteType();
+            noteType.setPosX(note.getLocation().x);
+            noteType.setPosY(note.getLocation().y);
+            noteType.setSizeWidth(note.getSize().width);
+            noteType.setSizeHeight(note.getSize().height);
+            noteType.setOpaque(note.isOpaque());
+            noteType.setText(note.getText());
+            
+            process.getNote().add(noteType);
+        }
+
         /**
          * Save the contexts informations
          */
@@ -751,10 +772,25 @@ public class Process extends Element implements IProcess {
 
         loadConnections(process, nodesHashtable);
         loadContexts(process);
+        loadNotes(process);
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
         // checkProcess();
+    }
+
+    private void loadNotes(ProcessType process) {
+        for (Iterator iter = process.getNote().iterator(); iter.hasNext();) {
+            NoteType noteType = (NoteType) iter.next();
+            
+            Note note = new Note();
+            note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
+            note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
+            note.setOpaque(noteType.isOpaque());
+            note.setText(noteType.getText());
+            
+            addNote(note);
+        }
     }
 
     private void initExternalComponents() {
@@ -1193,6 +1229,10 @@ public class Process extends Element implements IProcess {
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                 connec.setReadOnly(readOnly);
             }
+        }
+
+        for (Note note : notes) {
+            note.setReadOnly(readOnly);
         }
     }
 
@@ -1752,5 +1792,17 @@ public class Process extends Element implements IProcess {
 
     public void setRepositoryId(String repositoryId) {
         this.repositoryId = repositoryId;
+    }
+
+    public void addNote(Note note) {
+        elem.add(note);
+        notes.add(note);
+        fireStructureChange(NOTES, elem);
+    }
+
+    public void removeNote(Note note) {
+        elem.remove(note);
+        notes.remove(note);        
+        fireStructureChange(NOTES, elem);
     }
 }

@@ -157,6 +157,21 @@
                id="LogsProcessSection"
                tab="logsTab">
          </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertySection"
+               enablesFor="1"
+               id="TextNotePropertySection"
+               tab="mainTab">
+            <input type="org.talend.designer.core.ui.editor.notes.Note"/>
+         </propertySection>
+         <propertySection
+               afterSection="TextNotePropertySection"
+               class="org.talend.designer.core.ui.editor.properties.notes.TextNotePropertySection"
+               enablesFor="1"
+               id="OpaqueNotePropertySection"
+               tab="mainTab">
+            <input type="org.talend.designer.core.ui.editor.notes.Note"/>
+         </propertySection>
       </propertySections>
    </extension>
    <extension

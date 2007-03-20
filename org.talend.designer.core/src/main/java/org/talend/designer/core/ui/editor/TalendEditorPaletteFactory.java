@@ -28,6 +28,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
+import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteGroup;
@@ -39,11 +40,14 @@ import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
@@ -219,6 +223,14 @@ public final class TalendEditorPaletteFactory {
         // Add a marquee tool to the group
         // toolGroup.add(new MarqueeToolEntry());
 
+        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
+                Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+                Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
+                new NoteCreationFactory(), 
+                ImageProvider.getImageDesc(ECoreImage.CODE_ICON), 
+                ImageProvider.getImageDesc(ECoreImage.CODE_ICON)); 
+        toolGroup.add(noteCreationToolEntry);
+        
         // Add a (unnamed) separator to the group
         toolGroup.add(new PaletteSeparator());
 

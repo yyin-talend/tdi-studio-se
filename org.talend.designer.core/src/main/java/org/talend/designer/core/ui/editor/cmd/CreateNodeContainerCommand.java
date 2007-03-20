@@ -24,9 +24,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.gef.commands.Command;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -38,13 +36,9 @@ import org.talend.designer.core.ui.views.problems.Problems;
  * $Id$
  * 
  */
-public class CreateNodeContainerCommand extends Command {
-
-    private Process process;
+public class CreateNodeContainerCommand extends CreateCommand {
 
     private NodeContainer nodeContainer;
-
-    private Point location;
 
     /**
      * Create the node on the given diagram.
@@ -54,19 +48,8 @@ public class CreateNodeContainerCommand extends Command {
      * @param location
      */
     public CreateNodeContainerCommand(Process process, NodeContainer nodeContainer, Point location) {
-        this.process = process;
+        super(Messages.getString("CreateNodeCommand.Label"), process, location); //$NON-NLS-1$
         this.nodeContainer = nodeContainer;
-        this.location = location;
-
-        if (process.isGridEnabled()) {
-            // replace the component to set it on the grid if it's enabled
-            int tempVar = location.x / TalendEditor.GRID_SIZE;
-            this.location.x = tempVar * TalendEditor.GRID_SIZE;
-            tempVar = location.y / TalendEditor.GRID_SIZE;
-            this.location.y = tempVar * TalendEditor.GRID_SIZE;
-        }
-
-        setLabel(Messages.getString("CreateNodeCommand.Label")); //$NON-NLS-1$
     }
 
     @SuppressWarnings("unchecked") //$NON-NLS-1$
