@@ -1,0 +1,23 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+	class="ContextLoadEnd"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>
+	java.util.Enumeration<?> enu = context.propertyNames();
+    while(enu.hasMoreElements())
+    {           
+    	String key = (String)enu.nextElement();
+        if(!assignList.contains(key))
+         {
+             System.out.println("Warning ! Parameter " + key + " has not been set by <%=cid %>");
+         }          
+    }
