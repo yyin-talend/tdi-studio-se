@@ -85,7 +85,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	}
 	else  {
-		System.out.println("<%=cid %>, invalid parameter name : " + key_<%=cid %>);
+		System.err.println("<%=cid %>, invalid parameter name : " + key_<%=cid %>);
 	}
 	nb_line_<%=cid %>++;
 <%
