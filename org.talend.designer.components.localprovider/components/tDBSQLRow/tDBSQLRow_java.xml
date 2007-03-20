@@ -33,7 +33,7 @@
     <PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true" NUM_ROW="1" REPOSITORY_VALUE="DATABASE" />
 
     <PARAMETER NAME="TYPE" FIELD="CLOSED_LIST" NUM_ROW="2" REPOSITORY_VALUE="TYPE">
-      <ITEMS DEFAULT="mysql;mysql">
+      <ITEMS DEFAULT="mysql;org.gjt.mm.mysql.Driver">
         <ITEM NAME="MYSQL"      VALUE="mysql;org.gjt.mm.mysql.Driver" REPOSITORY_ITEM="MYSQL"/>
         <ITEM NAME="PGSQL"      VALUE="postgresql;org.postgresql.Driver" REPOSITORY_ITEM="POSTGRESQL"/>
         <ITEM NAME="ORACLE"     VALUE="oracle;oracle.jdbc.driver.OracleDriver" REPOSITORY_ITEM="ORACLE"/>
