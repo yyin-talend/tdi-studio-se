@@ -129,4 +129,7 @@
    <RETURNS>
    </RETURNS>
    
+   <PLUGINDEPENDENCIES>
+   	<PLUGINDEPENDENCY ID="org.talend.designer.dbmap" />
+   </PLUGINDEPENDENCIES>
 </COMPONENT>

@@ -21,7 +21,6 @@
   >
     <SIGNATURE/>
   </HEADER>
-
   <DOCUMENTATION>
     <URL/>
   </DOCUMENTATION>
@@ -125,8 +124,11 @@
        <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
-
+   
    <RETURNS>
    </RETURNS>
    
+   <PLUGINDEPENDENCIES>
+   	<PLUGINDEPENDENCY ID="org.talend.designer.dbmap" />
+   </PLUGINDEPENDENCIES>
 </COMPONENT>
