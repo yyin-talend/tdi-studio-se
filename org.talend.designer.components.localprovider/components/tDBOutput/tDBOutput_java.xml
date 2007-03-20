@@ -43,7 +43,7 @@
       NUM_ROW="2"
       REPOSITORY_VALUE="TYPE"
     >
-      <ITEMS DEFAULT="mysql;mysql;MYSQL">
+      <ITEMS DEFAULT="mysql;org.gjt.mm.mysql.Driver;MYSQL;Mysql5.1">
 <!-- in the value, we give "Perl dbtype; Perl driver; Talend dbtype". -->
 <!-- See org.talend.core/mappingMetadataTypes.xml for Talend dbtypes  -->
         <ITEM
