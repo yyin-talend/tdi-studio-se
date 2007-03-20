@@ -55,7 +55,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if (!filename.equals("")) {
 %>
     my $dirname = dirname $where;
-    rename $where, File::Spec->catfile($dirname, <%=filename %>);
+    my $new_name = File::Spec->catfile($dirname, <%=filename %>);
+    rename $where, $new_name;
+    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $new_name;
+<%
+        }
+        else {
+%>
+    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $where;
 <%
         }
 %>
