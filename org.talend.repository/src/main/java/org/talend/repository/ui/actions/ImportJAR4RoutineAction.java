@@ -21,14 +21,17 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.talend.core.model.action.ImportExternalJarAction;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.wizards.importExternalLib.ImportExternalLibWizard;
 
 /**
  * An action used to import external jar. <br/>
@@ -55,23 +58,52 @@ public class ImportJAR4RoutineAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        boolean canWork = true;
-        List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
-        for (RepositoryNode node : nodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.ROUTINES) {
-                canWork = false;
-                break;
+        boolean canWork = selection.size() == 1;
+        if (canWork) {
+            for (Object o : ((IStructuredSelection) selection).toArray()) {
+                if (o instanceof RepositoryNode) {
+                    RepositoryNode node = (RepositoryNode) o;
+                    switch (node.getType()) {
+                    case REPOSITORY_ELEMENT:
+                        if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
+                            RoutineItem routine = (RoutineItem) node.getObject().getProperty().getItem();
+                            if (routine.isBuiltIn()) {
+                                canWork = false;
+                            } else {
+                                canWork = true;
+                            }
+                        } else {
+                            canWork = false;
+                        }
+                        break;
+                    default:
+                        canWork = false;
+                        break;
+                    }
+                }
             }
         }
         setEnabled(canWork);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.repository.ui.actions.AContextualAction#isVisible()
+     */
     public boolean isVisible() {
         return isEnabled();
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     public void run() {
-        realAction.run();
+        ImportExternalLibWizard wizard = new ImportExternalLibWizard();
+        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        wizard.init(workbench, (IStructuredSelection) this.getSelection());
+
+        Shell activeShell = Display.getCurrent().getActiveShell();
+        WizardDialog dialog = new WizardDialog(activeShell, wizard);
+        dialog.open();
     }
 
 }
