@@ -24,6 +24,7 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +70,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.Exp
 /**
  * Manages the job scripts to be exported. <br/>
  * 
- * $Id: JobScriptsManager.java 1 2006-12-14 下午05:06:49 bqian
+ * $Id: JobScriptsManager.java 1 2006-12-14 下午05:06:49 ftang
  * 
  */
 public class JobPerlScriptsManager extends JobScriptsManager {
@@ -83,8 +84,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     private static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
+    private static final String SYSTEM_ROUTINES_FOLDER_NAME = "system";
+
     /**
-     * qian Gets the export resources.
+     * Gets the export resources.
      * 
      * @param process
      * @param needLauncher
@@ -97,17 +100,30 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      */
     public List<ExportFileResource> getExportResources(ExportFileResource[] process,
             Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
+
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
             generatePerlFiles(exportChoice.get(ExportChoice.needGenerateCode), processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
                     escapeSpace(contextName), escapeSpace(launcher)));
-            resources.addAll(getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine)));
-            resources.addAll(getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine)));
+
+            List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+
+            process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
+                    + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+            try {
+                List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+                if (userRoutineList != null && userRoutineList.size() > 0) {
+                    process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
+                            + this.getCurrentProjectName(), userRoutineList);
+                }
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            }
+
             resources.add(getModel(exportChoice.get(ExportChoice.needModule)));
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
-
             List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
@@ -118,6 +134,63 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             getComponentModel(processItem, process[i]);
         }
         return Arrays.asList(process);
+    }
+
+    /**
+     * Gets user routine.
+     * 
+     * @param needUserRoutine
+     * @return
+     * @throws MalformedURLException
+     */
+    private List<URL> getUserRoutine(boolean needUserRoutine) throws MalformedURLException {
+        List<URL> list = new ArrayList();
+        if (!needUserRoutine) {
+            return list;
+        }
+        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+        String folderPath = librariesService.getLibrariesPath() + File.separatorChar
+                + librariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + this.getCurrentProjectName();
+        File file = new File(folderPath);
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                File tempFile = files[i];
+                list.add(tempFile.toURL());
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Gets system routine.
+     * 
+     * @param needSystemRoutine
+     * @return
+     */
+    private List<URL> getSystemRoutine(boolean needSystemRoutine) {
+        List<URL> list = new ArrayList();
+        if (!needSystemRoutine) {
+            return list;
+        }
+        if (needSystemRoutine) {
+            ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+            String path = librariesService.getLibrariesPath() + File.separatorChar
+                    + librariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + SYSTEM_ROUTINES_FOLDER_NAME;
+            File file = new File(path);
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File tempFile = files[i];
+                try {
+                    list.add(tempFile.toURL());
+                } catch (MalformedURLException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
+        }
+        return list;
     }
 
     private void getComponentModel(ProcessItem processItem, ExportFileResource resource) {
@@ -298,20 +371,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets system routines.
-     * 
-     * @param needSystemRoutine
-     * @return
-     */
-    private List<URL> getSystemRoutine(boolean needSystemRoutine) {
-        List list = new ArrayList();
-        if (needSystemRoutine) {
-            getRoutineNames(list, true);
-        }
-        return getResourcesURL(getAllPerlFiles(), list);
-    }
-
-    /**
      * Gets resources' URL.
      * 
      * @param resources
@@ -416,20 +475,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
-    }
-
-    /**
-     * Gets user routine.
-     * 
-     * @param needModel
-     * @return
-     */
-    private List<URL> getUserRoutine(boolean needModel) {
-        List list = new ArrayList();
-        if (needModel) {
-            getRoutineNames(list, false);
-        }
-        return getResourcesURL(getAllPerlFiles(), list);
     }
 
     /**
