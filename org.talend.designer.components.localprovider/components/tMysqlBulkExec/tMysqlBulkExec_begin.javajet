@@ -42,6 +42,6 @@ Class.forName("com.mysql.jdbc.Driver").newInstance();
 java.sql.Connection con=java.sql.DriverManager.getConnection("jdbc:MySQL://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
 java.sql.Statement stmt=con.createStatement();
 stmt.execute("SET character_set_database=<%=charset %>");
-stmt.execute("LOAD DATA INFILE '"+file_<%=cid %>+"' INTO TABLE "+table_<%=cid %>+" FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
+stmt.execute("LOAD DATA LOCAL INFILE '"+file_<%=cid %>+"' INTO TABLE "+table_<%=cid %>+" FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
 stmt.close();
 con.close();

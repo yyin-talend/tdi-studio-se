@@ -72,7 +72,7 @@ if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
 
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     sprintf(
-        'LOAD DATA INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
+        'LOAD DATA LOCAL INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
         $desc_<%=cid %>{table},
     )
 );
