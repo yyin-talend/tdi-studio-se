@@ -32,11 +32,8 @@ package="org.talend.designer.codegen.translators"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ExternalMapperData data = (ExternalMapperData) node.getExternalData();
-
         List<ExternalMapperTable> varsTables = data.getVarsTables();
-
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
-
         JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
 %>

@@ -41,13 +41,9 @@ package="org.talend.designer.codegen.translators"
         List<ExternalMapperTable> outputTables = data.getOutputTables();
 
         String cr = "\n";
-
         int indent = 1;
-
         ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
-
         PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
-
         StringBuilder sb = new StringBuilder();
 
         gm.setInputTables(inputTables);
