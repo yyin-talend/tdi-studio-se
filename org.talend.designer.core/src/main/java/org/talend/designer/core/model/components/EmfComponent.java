@@ -73,6 +73,7 @@ import org.talend.designer.core.model.utils.emf.component.RETURNType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
+import org.talend.designer.core.model.utils.emf.component.impl.PLUGINDEPENDENCYTypeImpl;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -1244,6 +1245,18 @@ public class EmfComponent implements IComponent {
 
     public List<ECodePart> getAvailableCodeParts() {
         return codePartList;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getPluginDependencies() {
+        List<String> pluginDependencyList = new ArrayList<String>();
+        if (this.compType.getPLUGINDEPENDENCIES() != null) {
+            List<PLUGINDEPENDENCYTypeImpl> pti = this.compType.getPLUGINDEPENDENCIES().getPLUGINDEPENDENCY();
+            for (PLUGINDEPENDENCYTypeImpl pt : pti) {
+                pluginDependencyList.add(pt.getID());
+            }
+        }
+        return pluginDependencyList;
     }
 
 }
