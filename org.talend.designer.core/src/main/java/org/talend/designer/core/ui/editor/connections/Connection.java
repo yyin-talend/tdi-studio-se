@@ -281,7 +281,7 @@ public class Connection extends Element implements IConnection {
                 metaName = uniqueName;
                 // }
             }
-            if (lineStyle.getCategory().equals(EConnectionCategory.MAIN)) {
+            if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }
@@ -299,7 +299,7 @@ public class Connection extends Element implements IConnection {
     public void disconnect() {
         if (isConnected) {
             if (!source.getConnectorFromType(lineStyle).isBuiltIn()) {
-                if (lineStyle.getCategory().equals(EConnectionCategory.MAIN)) {
+                if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
