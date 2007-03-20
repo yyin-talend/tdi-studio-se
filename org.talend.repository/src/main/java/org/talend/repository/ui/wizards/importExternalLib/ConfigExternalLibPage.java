@@ -21,18 +21,10 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.importExternalLib;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -41,7 +33,7 @@ import org.talend.repository.model.RepositoryNode;
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
-public abstract class ImportExternalLibPage extends WizardPage {
+public abstract class ConfigExternalLibPage extends WizardPage {
 
     private IStructuredSelection selection;
 
@@ -61,7 +53,7 @@ public abstract class ImportExternalLibPage extends WizardPage {
      * @param title
      * @param titleImage
      */
-    public ImportExternalLibPage(String name, IStructuredSelection selection) {
+    public ConfigExternalLibPage(String name, IStructuredSelection selection) {
         super(name);
         this.selection = selection;
     }
@@ -77,6 +69,12 @@ public abstract class ImportExternalLibPage extends WizardPage {
 
     public RepositoryNode getSelectedRepositoryNode() {
         return (RepositoryNode) this.getSelection().getFirstElement();
+    }
+
+    public RoutineItem getSelectedRoutine() {
+        RepositoryNode node = getSelectedRepositoryNode();
+        Item item = node.getObject().getProperty().getItem();
+        return (RoutineItem) item;
     }
 
 }

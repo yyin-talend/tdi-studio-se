@@ -27,11 +27,14 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.i18n.Messages;
 import org.talend.core.model.action.ImportExternalJarAction;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.wizards.importExternalLib.ImportExternalLibWizard;
+import org.talend.repository.ui.wizards.importExternalLib.ConfigExternalLibWizard;
 
 /**
  * An action used to import external jar. <br/>
@@ -39,16 +42,14 @@ import org.talend.repository.ui.wizards.importExternalLib.ImportExternalLibWizar
  * $Id: ImportExternalJARAction.java Mar 16, 20074:20:34 PM bqian $
  * 
  */
-public class ImportJAR4RoutineAction extends AContextualAction {
+public class ConfigRoutineLibraryAction extends AContextualAction {
 
-    private ImportExternalJarAction realAction;
-
-    public ImportJAR4RoutineAction() {
+    public ConfigRoutineLibraryAction() {
         super();
-        realAction = new ImportExternalJarAction();
-        this.setText(realAction.getText());
-        this.setDescription(realAction.getDescription());
-        this.setImageDescriptor(realAction.getImageDescriptor());
+        String label = org.talend.repository.i18n.Messages.getString("ConfigRoutineLibraryAction.actionLabel"); //$NON-NLS-1$
+        this.setText(label);
+        this.setDescription(label);
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.IMPORT_JAR));
     }
 
     /*
@@ -86,18 +87,22 @@ public class ImportJAR4RoutineAction extends AContextualAction {
         setEnabled(canWork);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.ui.actions.AContextualAction#isVisible()
      */
     public boolean isVisible() {
         return isEnabled();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        ImportExternalLibWizard wizard = new ImportExternalLibWizard();
+        ConfigExternalLibWizard wizard = new ConfigExternalLibWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         wizard.init(workbench, (IStructuredSelection) this.getSelection());
 

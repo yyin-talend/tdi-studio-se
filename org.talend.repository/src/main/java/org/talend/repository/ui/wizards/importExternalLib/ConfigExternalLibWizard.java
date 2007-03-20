@@ -26,6 +26,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -34,16 +37,16 @@ import org.talend.repository.i18n.Messages;
  * $Id: JobScriptsExportWizard.java 1 2006-12-13 下午03:13:18 bqian
  * 
  */
-public class ImportExternalLibWizard extends Wizard {
+public class ConfigExternalLibWizard extends Wizard {
 
     private IStructuredSelection selection;
 
-    private ImportExternalLibPage mainPage;
+    private ConfigExternalLibPage mainPage;
 
     /**
      * Creates a wizard for importing the external library for java and perl.
      */
-    public ImportExternalLibWizard() {
+    public ConfigExternalLibWizard() {
         this.setWindowTitle(Messages.getString("ImportExternalLibWizard.windows.title")); //$NON-NLS-1$
     }
 
@@ -52,7 +55,17 @@ public class ImportExternalLibWizard extends Wizard {
      */
     public void addPages() {
         super.addPages();
-        mainPage = new ImportExternalJarPage(selection);
+
+        switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage()) {
+        case JAVA:
+            mainPage = new ConfigExternalJarPage(selection);
+            break;
+        case PERL:
+            mainPage = new ConfigExternalPerlModulePage(selection);
+            break;
+        }
+
         addPage(mainPage);
     }
 
@@ -61,7 +74,6 @@ public class ImportExternalLibWizard extends Wizard {
      */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         this.selection = currentSelection;
-       
 
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
