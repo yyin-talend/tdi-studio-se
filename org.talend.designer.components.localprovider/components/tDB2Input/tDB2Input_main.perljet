@@ -7,7 +7,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 "
-class="SybaseInputMain"
+class="DB2InputMain"
 %>
 
 <%
