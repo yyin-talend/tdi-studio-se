@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -54,7 +55,9 @@ public abstract class AbstractCreateAction extends AContextualAction {
             return;
         }
         init((RepositoryNode) o);
-
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            setEnabled(false);
+        }
     }
 
     protected abstract void init(RepositoryNode node);

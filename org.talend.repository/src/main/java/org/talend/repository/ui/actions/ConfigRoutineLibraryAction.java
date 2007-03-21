@@ -28,11 +28,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.i18n.Messages;
-import org.talend.core.model.action.ImportExternalJarAction;
-import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalLibWizard;
 
@@ -67,12 +68,11 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
                     switch (node.getType()) {
                     case REPOSITORY_ELEMENT:
                         if (node.getObjectType() == ERepositoryObjectType.ROUTINES) {
-                            RoutineItem routine = (RoutineItem) node.getObject().getProperty().getItem();
-                            if (routine.isBuiltIn()) {
-                                canWork = false;
-                            } else {
-                                canWork = true;
-                            }
+                            IRepositoryObject repObj = node.getObject();
+                            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                            ERepositoryStatus status = repFactory.getStatus(repObj);
+                            boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
+                            canWork = isEditable;
                         } else {
                             canWork = false;
                         }

@@ -52,6 +52,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
+import org.talend.core.model.properties.UserProjectAuthorization;
+import org.talend.core.model.properties.UserProjectAuthorizationType;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -367,7 +369,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#deleteObjectLogical(org.talend.core.model.repository.IRepositoryObject)
      */
-    public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException {
+    public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException, BusinessException {
+        checkAvailability(objToDelete);
         this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
@@ -394,7 +397,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#restoreObject(org.talend.core.model.repository.IRepositoryObject,
      * org.eclipse.core.runtime.IPath)
      */
-    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException {
+    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException, BusinessException {
+        checkAvailability(objToRestore);
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
 
         // i18n
@@ -417,7 +421,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
-        checkDisponibilite(objToMove);
+        checkAvailability(objToMove);
         checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
 
@@ -429,8 +433,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
-    private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
-        if (!isEditableAndLockIfPossible(objToMove)) {
+    private void checkAvailability(IRepositoryObject objToMove) throws BusinessException {
+        if (!isEditableAndLockIfPossible(objToMove) || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
@@ -796,6 +800,21 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return false;
     }
 
+    public boolean isUserReadOnlyOnCurrentProject() {
+        RepositoryContext repositoryContext = getRepositoryContext();
+        User user = repositoryContext.getUser();
+        EList projectAuthorization = user.getProjectAuthorization();
+        for (Object o : projectAuthorization) {
+            UserProjectAuthorization userProjectAuthorization = (UserProjectAuthorization) o;
+            if (userProjectAuthorization.getProject() == repositoryContext.getProject()) {
+                UserProjectAuthorizationType type = userProjectAuthorization.getType();
+                return type.getValue() == UserProjectAuthorizationType.READ_ONLY;
+            }
+        }
+
+        return true;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -803,11 +822,18 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public ERepositoryStatus getStatus(Item item) {
         // PTODO SML [FOLDERS] temp code
+        ERepositoryStatus toReturn;
         if (item instanceof FolderItem) {
-            return ERepositoryStatus.EDITABLE;
+            toReturn = ERepositoryStatus.EDITABLE;
+        } else {
+            toReturn = this.repositoryFactoryFromProvider.getStatus(item);
         }
 
-        return this.repositoryFactoryFromProvider.getStatus(item);
+        if (toReturn != ERepositoryStatus.DELETED && isUserReadOnlyOnCurrentProject()) {
+            return ERepositoryStatus.READ_ONLY;
+        }
+
+        return toReturn;
     }
 
     /*

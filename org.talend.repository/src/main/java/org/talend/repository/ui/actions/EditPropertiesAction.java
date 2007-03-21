@@ -31,7 +31,11 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.PropertiesWizard;
@@ -67,7 +71,6 @@ public class EditPropertiesAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = selection.size() == 1;
-
         for (Object o : ((IStructuredSelection) selection).toArray()) {
             if (canWork) {
                 if (o instanceof RepositoryNode) {
@@ -77,7 +80,11 @@ public class EditPropertiesAction extends AContextualAction {
                         if (node.getObjectType() == ERepositoryObjectType.BUSINESS_PROCESS
                                 || node.getObjectType() == ERepositoryObjectType.PROCESS
                                 || node.getObjectType() == ERepositoryObjectType.ROUTINES) {
-                            canWork = true;
+                            IRepositoryObject repObj = node.getObject();
+                            IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                            ERepositoryStatus status = repFactory.getStatus(repObj);
+                            boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
+                            canWork = isEditable;
                         } else {
                             canWork = false;
                         }

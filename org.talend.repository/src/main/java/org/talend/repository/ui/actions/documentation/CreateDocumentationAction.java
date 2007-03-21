@@ -35,6 +35,7 @@ import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -70,6 +71,9 @@ public class CreateDocumentationAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            canWork = false;
+        }
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             switch (node.getType()) {

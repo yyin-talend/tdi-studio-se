@@ -24,6 +24,7 @@ package org.talend.repository.ui.actions;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -73,7 +74,7 @@ public class RestoreAction extends AContextualAction {
                     }
                     refresh();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
         }
@@ -87,7 +88,9 @@ public class RestoreAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty();
-
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            canWork = false;
+        }
         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
         for (Object o : ((IStructuredSelection) selection).toArray()) {
             if (canWork) {

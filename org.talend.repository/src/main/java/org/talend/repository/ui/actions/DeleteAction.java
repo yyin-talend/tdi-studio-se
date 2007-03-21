@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
@@ -105,6 +106,8 @@ public class DeleteAction extends AContextualAction {
                     }
                 } catch (PersistenceException e) {
                     MessageBoxExceptionHandler.process(e);
+                } catch (BusinessException e) {
+                    MessageBoxExceptionHandler.process(e);
                 }
             }
         }
@@ -121,7 +124,9 @@ public class DeleteAction extends AContextualAction {
         visible = !selection.isEmpty();
         boolean enabled = true;
         this.setText(null);
-
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            visible = false;
+        }
         for (Object o : ((IStructuredSelection) selection).toArray()) {
             if (visible) {
                 RepositoryNode node = (RepositoryNode) o;
