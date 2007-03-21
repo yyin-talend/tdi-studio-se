@@ -34,7 +34,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.wizards.importExternalLib.ConfigExternalLibWizard;
+import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalLibWizard;
 
 /**
  * An action used to import external jar. <br/>

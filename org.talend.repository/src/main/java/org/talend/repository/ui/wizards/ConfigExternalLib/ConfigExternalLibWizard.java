@@ -20,7 +20,7 @@
 //
 // ============================================================================
 
-package org.talend.repository.ui.wizards.importExternalLib;
+package org.talend.repository.ui.wizards.ConfigExternalLib;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
