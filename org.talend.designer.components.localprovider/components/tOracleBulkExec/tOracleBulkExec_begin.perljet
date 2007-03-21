@@ -1,0 +1,160 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="OracleBulkExecBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+   IMetadataTable metadata = metadatas.get(0);
+   if (metadata!=null) {
+       String cid = metadata.getTableName();
+       String servicename = ElementParameterParser.getValue(node, "__SERVICE_NAME__");
+       String filename = ElementParameterParser.getValue(node, "__DATA__");
+       String dbuser   = ElementParameterParser.getValue(node, "__USER__");
+       String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
+       String table    = ElementParameterParser.getValue(node, "__TABLE__");
+       String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
+       String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+       String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
+       String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+       String command       = ElementParameterParser.getValue(node, "__COMMAND__");
+       String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+%>
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+use DBI;
+use talend::filesOp;
+use FileHandle ;
+
+
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'dbi:Oracle:%s',
+        <%=servicename %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+)
+    or die <%=cid %>, " can't connect to database";
+
+my $query = sprintf('select * from %s where 1=2', <%=table %>);
+
+my $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query) 
+    or die <%=cid %>, " can't prepare ", <%=table %>, " column description statement\n" ;
+
+$sth_<%=cid %>->execute()
+    or die <%=cid %>, "can't retrieve ", <%=table %>, "column description\n" ;
+
+my $nb_fields = $sth_<%=cid %>->{NUM_OF_FIELDS};
+my $<%=cid %>_cols = [];
+for ( my $i = 0 ;$i < $nb_fields ; $i++ ) {
+    push @$<%=cid %>_cols, $sth_<%=cid %>->{NAME}->[$i];
+}
+
+
+my $control_PAR_<%=cid %> = sprintf("LOAD DATA \nCHARACTERSET %s\nINTO TABLE %s \n%s\nFIELDS TERMINATED BY \'%s\' OPTIONALLY ENCLOSED BY \'%s\'\n",
+        <%=encoding %>,
+        <%=table %>,
+        <%=data_action %>,
+        <%=fields_terminated_by %>,
+        <%=fields_enclosed_by %>,
+    );
+$control_PAR_<%=cid %> .= sprintf('( %s )', join(', ', @$<%=cid %>_cols )) ;
+
+my $control_FH_<%=cid %> = new FileHandle;
+
+open($control_FH_<%=cid %>, '>', join('.', <%=filename %>, 'ctl' ) )
+    or die 'cannot create file ',  join('.', <%=filename %>, 'ctl' ) ;
+
+print $control_FH_<%=cid %> $control_PAR_<%=cid %>
+    or die 'cannot write to file ',  join('.', <%=filename %>, 'ctl' ) ;
+close $control_FH_<%=cid %> ;
+
+if ( -e join('.', <%=filename %>, 'bad' ) ){
+    unlink join('.', <%=filename %>, 'bad' ) ;
+}
+
+my $command = sprintf(
+        "sqlldr %s/%s@%s DATA=%s, CONTROL=%s, BAD=%s, DISCARD=%s, LOG=%s ",
+        <%=dbuser %>,
+        <%=dbpass %>,
+        <%=servicename %>,
+        "<%=filename %>",
+        join('.', <%=filename %>, 'ctl'),
+        join('.', <%=filename %>, 'bad'),
+        join('.', <%=filename %>, 'dis'),
+        join('.', <%=filename %>, 'log'),
+    );
+
+
+<%
+if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+system($command);
+
+<%
+}
+else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+$_globals{<%=cid %>}{OUTPUT} = `$command`;
+<%
+}
+%>
+if ($? == -1) {
+    die "failed to execute sqlldr : $!\n";
+    $_globals{<%=cid %>}{PERL_ERROR_CODE} = $?;
+    $_globals{<%=cid %>}{PERL_ERROR_MESSAGE} = "failed to execute: $!";
+}
+else {
+    $_globals{<%=cid %>}{NB_LINE_DATA} = talend::filesOp::tFileRowCount( filename => <%=filename %>, rowseparator => "\n" ) ;
+    if(-e join('.', <%=filename %>, 'bad')){
+        $_globals{<%=cid %>}{NB_LINE_BAD} = talend::filesOp::tFileRowCount( filename => join('.', <%=filename %>, 'bad'), rowseparator => "\n" ) ;
+    }
+    else {
+    	$_globals{<%=cid %>}{NB_LINE_BAD} = 0 ;
+    }
+    $_globals{<%=cid %>}{NB_LINE_INSERTED} = $_globals{<%=cid %>}{ROWCOUNT_DATA} -  $_globals{<%=cid %>}{ROWCOUNT_BAD} ;
+    $_globals{<%=cid %>}{PERL_ERROR_CODE} = $? >> 8;
+    if ($_globals{<%=cid %>}{PERL_ERROR_CODE} != 0) {
+        die sprintf(
+            "sqlldr exited with value %d\n",
+            $_globals{<%=cid %>}{PERL_ERROR_CODE}
+        );
+    }
+}
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0, 2);
+<%
+        }
+%>
+
+<%
+    }
+}
+%>
+
+
