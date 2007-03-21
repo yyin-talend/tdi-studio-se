@@ -8,7 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 " 
-class="OracleRowBegin" 
+class="DB2RowBegin" 
 %>
 
 <%
