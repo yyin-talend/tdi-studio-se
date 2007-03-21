@@ -11,7 +11,6 @@ imports="
 		org.talend.core.model.metadata.types.JavaType
 		
 		java.util.List	
-	
 	"
 class="MysqlRowMain"
 %>
@@ -20,7 +19,12 @@ class="MysqlRowMain"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid =  node.getUniqueName();
-
+String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+commitCounter_<%=cid%>++;
+<%
+}
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
 
@@ -70,10 +74,21 @@ pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.
 						parameterIndex++;
 					}
 	%>
+	
 pstmt_<%=cid %>.execute();
 	<%
 				}
 			}
 	}
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 
+	conn_<%=cid%>.commit();
+	
+	commitCounter_<%=cid%>=0;
+	
+}
+<%
+}
 %>

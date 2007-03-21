@@ -22,7 +22,7 @@ class="MysqlRowBegin"
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");    
-    
+    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
 java.lang.Class.forName("org.gjt.mm.mysql.Driver");
 
@@ -36,5 +36,16 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
+<%
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
 
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+int commitCounter_<%=cid%> = 0;
+
+conn_<%=cid%>.setAutoCommit(false);
+<%
+}
+%>
 
