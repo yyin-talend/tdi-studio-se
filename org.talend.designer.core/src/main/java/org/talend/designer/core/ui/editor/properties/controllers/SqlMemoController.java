@@ -187,8 +187,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
-            OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
-                    propertyName, getCommandStack());
+            connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+            OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
+                    getCommandStack());
 
             IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                     IWorkbenchSiteProgressService.class);
@@ -207,8 +208,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                     for (String key : this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().keySet()) {
 
                         if (key.equals(value)) {
-                            repositoryName = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap()
-                                    .get(key).getProperty().getLabel();
+                            repositoryName = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(key)
+                                    .getProperty().getLabel();
 
                         }
                     }
