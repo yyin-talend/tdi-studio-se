@@ -34,7 +34,7 @@
         for (int i<%=cid%> = 0; i<%=cid%> < files<%=cid %>.length; i<%=cid%>++){
 			if(!fileNamePattern<%=cid %>.matcher(files<%=cid %>[i<%=cid%>].getName()).find()){
 				continue;
-			}               
+			}
 			String currentFileName_<%=cid%> = files<%=cid %>[i<%=cid%>].getName(); 
             String currentFilePath_<%=cid%> = files<%=cid %>[i<%=cid%>].getAbsolutePath();
             

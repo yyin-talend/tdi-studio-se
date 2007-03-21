@@ -12,7 +12,7 @@
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
 	"
-	class="ContextLoad"
+	class="ContextLoadMain"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;

@@ -1,7 +1,0 @@
-<%@ jet 
-package="org.talend.designer.codegen.translators" 
-imports="
-		
-		"
-class="MysqlInputMain"
-%>

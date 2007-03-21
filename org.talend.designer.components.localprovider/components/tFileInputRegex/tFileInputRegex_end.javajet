@@ -7,7 +7,7 @@
 		org.talend.core.model.process.ElementParameterParser 
 		java.util.List
 	" 
-	class="FileInputDelimitedEnd" 
+	class="FileInputRegexEnd" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;

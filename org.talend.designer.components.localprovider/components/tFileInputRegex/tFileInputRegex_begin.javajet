@@ -12,7 +12,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 	" 
-	class="FileInputDelimitedBegin" 
+	class="FileInputRegexBegin" 
 %>
 
 	

@@ -1,7 +1,0 @@
-<%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	class="JavaMain"
-%>
-
-// nothing to do right here
-
