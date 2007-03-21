@@ -1,0 +1,29 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+	class="FileZipMain"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+%>	
+        
+      java.util.zip.ZipOutputStream out_<%=cid %> = null;
+      if (subFiles_<%=cid %>.length > 0) {
+        out_<%=cid %> = new java.util.zip.ZipOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipFile_<%=cid %>))); 
+        out_<%=cid %>.setLevel(level_<%=cid %>);
+        // here get the file list
+        for (int i_<%=cid %> = 0; i_<%=cid %> < subFiles_<%=cid %>.length; i_<%=cid %>++) {
+            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(subFiles_<%=cid %>[i_<%=cid %>]));
+            out_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(subFiles_<%=cid %>[i_<%=cid %>].getName()));
+                        
+            int readLen_<%=cid %>;
+            byte[] buf_<%=cid %>=new byte[1024];
+            while ((readLen_<%=cid %> = in_<%=cid %>.read(buf_<%=cid %>,0,1024)) != -1)  out_<%=cid %>.write(buf_<%=cid %>, 0, readLen_<%=cid %>);
+            in_<%=cid %>.close();        
+        }
+      }

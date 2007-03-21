@@ -1,0 +1,80 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		java.util.Map
+	"
+	class="FileZipBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+
+	String directory = ElementParameterParser.getValue(node, "__SOURCE__");
+	String zipFile = ElementParameterParser.getValue(node, "__TARGET__");
+	String level = ElementParameterParser.getValue(node, "__LEVEL__");
+	boolean isAllFile = ElementParameterParser.getValue(node, "__ALL_FILES__").equals("false");
+	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
+%>
+
+
+        String sourceDir_<%=cid %> = <%=directory %>;      
+        java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);
+        String zipFile_<%=cid %> = <%=zipFile %>;
+        int level_<%=cid %> = <%=level %>;
+          
+<% 
+	if (isAllFile==true) { 
+%>  
+    	
+    	String[] patterns_<%=cid %> = new String[] {
+<%
+    for (int i=0; i < masks.size(); i++) {
+       Map<String, String> line = masks.get(i);
+%> 
+        			<%= line.get("FILEMASK") %>,        
+<%
+   }	
+%>        
+  		};  
+  		
+  		StringBuffer sbf_<%=cid %> = new StringBuffer(); 
+        sbf_<%=cid %>.append("(");
+        for (int i_<%=cid %> = 0; i_<%=cid %> < patterns_<%=cid %>.length; i_<%=cid %>++) {
+            sbf_<%=cid %>.append(patterns_<%=cid %>[i_<%=cid %>].replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+            if(i_<%=cid %> != patterns_<%=cid %>.length-1) sbf_<%=cid %>.append("|");
+        }        
+        sbf_<%=cid %>.append(")");
+        final String maskStr_<%=cid %> = new String(sbf_<%=cid %>.toString());
+        
+        java.io.File[] subFiles_<%=cid %> = file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+
+            public boolean accept(java.io.File dir, String name) {
+                if (new java.io.File(dir, name).isFile()) {                            
+                    if (name.matches(maskStr_<%=cid %>)) {
+                        return true;
+                    }               
+                }
+                return false;
+            }
+        });
+<% 
+   } else {
+%> 
+        java.io.File[] subFiles_<%=cid %> = file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+
+            public boolean accept(java.io.File dir, String name) {
+                if (new java.io.File(dir, name).isFile()) {
+                        return true;
+                }
+                return false;
+            }
+        });
+<%
+   }
+%>
