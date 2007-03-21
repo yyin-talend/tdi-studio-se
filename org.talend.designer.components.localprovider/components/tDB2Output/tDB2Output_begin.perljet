@@ -12,7 +12,7 @@ imports="
     java.util.ArrayList
     org.talend.commons.utils.StringUtils
 " 
-class="OracleOutputBegin" 
+class="DB2OutputBegin" 
 %>
 
 <%
