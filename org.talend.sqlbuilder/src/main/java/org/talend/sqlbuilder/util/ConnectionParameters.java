@@ -27,6 +27,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
@@ -42,6 +43,8 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    private IMetadataTable metadataTable;
+    
     private String query;
 
     private String port;
@@ -444,6 +447,16 @@ public class ConnectionParameters {
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
         return (codeLanguage == ECodeLanguage.JAVA);
+    }
+
+    
+    public IMetadataTable getMetadataTable() {
+        return this.metadataTable;
+    }
+
+    
+    public void setMetadataTable(IMetadataTable metadataTable) {
+        this.metadataTable = metadataTable;
     }
 
 }

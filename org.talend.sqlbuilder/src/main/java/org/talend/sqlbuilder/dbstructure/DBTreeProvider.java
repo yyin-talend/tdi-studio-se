@@ -71,7 +71,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
 ITableColorProvider {
     private static final String IMAGES_CLOSED_FOLDER = "Images.closedFolder"; //$NON-NLS-1$
-	private static final String BUILT_IN = "Built-In"; //$NON-NLS-1$
+	public static final String BUILT_IN = "Built-In"; //$NON-NLS-1$
 	private static final String IMAGES_DATABASE_ICON = "Images.DatabaseIcon"; //$NON-NLS-1$
 	private static final String IMAGES_CONNECTION_ICON = "Images.ConnectionIcon"; //$NON-NLS-1$
 	private static final String IMAGES_APPEND_TO_EDITOR = "Images.AppendToEditor"; //$NON-NLS-1$

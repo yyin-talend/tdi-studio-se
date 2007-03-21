@@ -284,7 +284,13 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @param sashFormStructureAndEditor
      */
     private void createDatabaseStructure(SashForm sashFormStructureAndEditor) {
-        structureComposite = new DBStructureComposite(sashFormStructureAndEditor, SWT.BORDER, this);
+        if (connParameters.isRepository()) {
+            structureComposite = new DBStructureComposite(sashFormStructureAndEditor, SWT.BORDER, this);
+        } else {
+            BuildInDBStructure buildInDBStructure = new BuildInDBStructure(sashFormStructureAndEditor, SWT.NONE | SWT.VERTICAL,
+                    this, connParameters.getMetadataTable());
+            structureComposite = buildInDBStructure.getDbstructureCom();
+        }
         structureComposite.setProgressMonitor(this.getProgressMonitor());
     }
 
@@ -401,7 +407,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         if (connParameters.isJavaProject()) {
             sql = sql.replace("\"", "\\" + "\"");
         }
-        
+
         connParameters.setQuery(sql);
         super.okPressed();
     }
