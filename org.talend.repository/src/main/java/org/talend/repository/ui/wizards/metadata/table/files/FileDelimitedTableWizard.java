@@ -57,8 +57,8 @@ public class FileDelimitedTableWizard extends RepositoryWizard implements INewWi
      * @param ISelection
      */
     @SuppressWarnings("unchecked") //$NON-NLS-1$
-    public FileDelimitedTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable) {
-        super(workbench, creation);
+    public FileDelimitedTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,boolean forceReadOnly) {
+        super(workbench, creation,forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         setNeedsProgressMonitor(true);

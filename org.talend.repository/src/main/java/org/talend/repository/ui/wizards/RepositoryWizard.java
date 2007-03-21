@@ -63,10 +63,17 @@ public abstract class RepositoryWizard extends Wizard {
 
     private boolean repositoryObjectEditable = true;
 
+    private boolean forceReadOnly;
+
     public RepositoryWizard(IWorkbench workbench, boolean creation) {
+        this(workbench, creation, false);
+    }
+
+    public RepositoryWizard(IWorkbench workbench, boolean creation, boolean forceReadOnly) {
         super();
         this.workbench = workbench;
         this.creation = creation;
+        this.forceReadOnly = forceReadOnly;
     }
 
     /**
@@ -104,7 +111,8 @@ public abstract class RepositoryWizard extends Wizard {
 
     /**
      * DOC mhelleboid Comment method "reload".
-     * @throws PersistenceException 
+     * 
+     * @throws PersistenceException
      */
     private void reload() throws PersistenceException {
         if (repositoryObject != null) {
@@ -131,7 +139,7 @@ public abstract class RepositoryWizard extends Wizard {
      * @return boolean
      */
     public boolean isRepositoryObjectEditable() {
-        return repositoryObjectEditable;
+        return repositoryObjectEditable && !forceReadOnly;
     }
 
     /**
@@ -140,7 +148,7 @@ public abstract class RepositoryWizard extends Wizard {
      * @return
      */
     private void calculateRepositoryObjectEditable() {
-        if (repositoryObject != null) {
+        if (repositoryObject != null && !forceReadOnly) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             repositoryObjectEditable = factory.isEditableAndLockIfPossible(repositoryObject);
         }

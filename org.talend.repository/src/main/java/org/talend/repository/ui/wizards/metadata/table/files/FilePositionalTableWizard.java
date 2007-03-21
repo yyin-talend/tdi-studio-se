@@ -56,10 +56,10 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
      * 
      * @param ISelection
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public FilePositionalTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable) {
-        super(workbench, creation);
+            MetadataTable metadataTable, boolean forceReadOnly) {
+        super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         setNeedsProgressMonitor(true);

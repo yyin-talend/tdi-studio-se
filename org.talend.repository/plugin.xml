@@ -36,6 +36,11 @@
             level="15"
             name="Metadata/Create table"/>
       <Action
+            class="org.talend.repository.ui.actions.metadata.ReadTableAction"
+            id="org.talend.repository.actions.readtable"
+            level="18"
+            name="Metadata/Read table"/>
+      <Action
             class="org.talend.repository.ui.actions.metadata.DeleteTableAction"
             id="org.talend.repository.actions.deletetable"
             level="40"

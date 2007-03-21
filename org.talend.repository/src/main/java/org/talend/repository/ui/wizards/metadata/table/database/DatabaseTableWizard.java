@@ -69,10 +69,10 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * @param metadataTable
      * @param existingNames
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
-    public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] existingNames) {
-        super(workbench, creation);
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly) {
+        super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.existingNames = existingNames;
@@ -90,13 +90,14 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     public void addPages() {
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
-        
+
         boolean skipStep = false;
 
         ManagerConnection managerConnection = new ManagerConnection();
         managerConnection.check(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
         if (managerConnection.getIsValide()) {
-            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper
+                    .convert((DatabaseConnection) connectionItem.getConnection()));
             if (itemTableName == null || itemTableName.isEmpty()) {
                 skipStep = true;
             }
@@ -109,13 +110,15 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         tableWizardpage = new DatabaseTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation && !skipStep) {
-            selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
-                    + "\""); //$NON-NLS-1$
+            selectorWizardPage
+                    .setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                            + "\""); //$NON-NLS-1$
             selectorWizardPage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
             selectorWizardPage.setPageComplete(true);
 
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
-                    + "\""); //$NON-NLS-1$
+            tableWizardpage
+                    .setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                            + "\""); //$NON-NLS-1$
             tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
 
@@ -123,8 +126,9 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
             addPage(tableWizardpage);
 
         } else {
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
-                    + "\""); //$NON-NLS-1$
+            tableWizardpage
+                    .setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                            + "\""); //$NON-NLS-1$
             tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionUpdate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
             addPage(tableWizardpage);

@@ -56,9 +56,10 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
      * 
      * @param ISelection
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
-    public FileRegexpTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable) {
-        super(workbench, creation);
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public FileRegexpTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
+            MetadataTable metadataTable, boolean forceReadOnly) {
+        super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         setNeedsProgressMonitor(true);
@@ -77,7 +78,8 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
         tableWizardpage = new FileTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation) {
-            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel())); //$NON-NLS-1$
+            tableWizardpage.setTitle(Messages.getString(
+                    "FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel())); //$NON-NLS-1$
             tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionCreate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
         } else {
@@ -100,7 +102,8 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
                 closeLockStrategy();
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return true;
