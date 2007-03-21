@@ -104,7 +104,6 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                     dialog, nodes);
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
             sqlDesigner.setEditorContent(connParam);
-            sqlDesigner.setRepositoryNode(rootNode);
 
             sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
             sqlDesigner.setMaxResult(sqlEdit.getMaxResult());
@@ -113,7 +112,6 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             sqlDesigner.setMultiPageEditor(this);
 
             erDiagramComposite = sqlDesigner.getErDiagramComposite();
-            EMFRepositoryNodeManager.getInstance().setRoot(rootNode);
             index = addPage(sqlDesigner);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
         } catch (Exception e) {

@@ -255,8 +255,10 @@ public final class EMFRepositoryNodeManager {
         string = string.replaceAll("\"", "");
         string = string.replaceAll("\'", "");
         if (!string.startsWith("select ")) {
-            MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
-                    .getString("EMFRepositoryNodeManager.Notice.info3"));
+            if (isPrompt) {
+                MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
+                        .getString("EMFRepositoryNodeManager.Notice.info3"));
+            }
             return null;
         }
         if (isForce != null && !isForce.booleanValue()) {
@@ -279,7 +281,7 @@ public final class EMFRepositoryNodeManager {
             throws Exception {
         if (toSql != null && !"".equals(toSql) && isModified) {
             String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
-            MessageDialog.openInformation(new Shell(), Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
+            MessageDialog.openInformation(new Shell(), Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info);
 
             List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
             if (nodeSel == null || nodeSel.isEmpty()) {
