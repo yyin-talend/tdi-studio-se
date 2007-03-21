@@ -33,7 +33,7 @@
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateTableAction"
             id="org.talend.repository.actions.createtable"
-            level="10"
+            level="15"
             name="Metadata/Create table"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.DeleteTableAction"

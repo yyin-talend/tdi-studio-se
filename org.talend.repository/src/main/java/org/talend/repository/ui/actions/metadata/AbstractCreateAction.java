@@ -56,7 +56,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
         }
         init((RepositoryNode) o);
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            setEnabled(false);
+          //  setEnabled(false);
         }
     }
 
