@@ -108,13 +108,16 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
                     escapeSpace(contextName), escapeSpace(launcher)));
 
+            // Gets system routines.
             List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
-
-            process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
-                    + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+            if (systemRoutineList.size() > 0) {
+                process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
+                        + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+            }
+            // Gets user routines.
             try {
                 List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
-                if (userRoutineList != null && userRoutineList.size() > 0) {
+                if (userRoutineList.size() > 0) {
                     process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
                             + this.getCurrentProjectName(), userRoutineList);
                 }
@@ -574,9 +577,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
 
             String processName = escapeSpace(processLabel);
-            String jobScriptName = projectName + ".job_" + processName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$
+            String jobScriptName = projectName + ".job_" + processName + ".pl"; //$NON-NLS-1$
             String contextName = escapeSpace(jType.getContext());
-            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ 
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
