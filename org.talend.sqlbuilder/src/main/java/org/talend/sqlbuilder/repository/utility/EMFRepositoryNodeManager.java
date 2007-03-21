@@ -25,6 +25,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.Preferences;
@@ -254,7 +255,7 @@ public final class EMFRepositoryNodeManager {
         string = string.replaceAll("\"", "");
         string = string.replaceAll("\'", "");
         if (!string.startsWith("select ")) {
-            MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
+            MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
                     .getString("EMFRepositoryNodeManager.Notice.info3"));
             return null;
         }
@@ -270,16 +271,15 @@ public final class EMFRepositoryNodeManager {
 
     /**
      * qzhang Comment method "updateErDiagram".
+     * 
      * @param toSql
      * @throws Exception
      */
-    public void updateErDiagram(boolean isModified, ErDiagramComposite editor, String toSql, RepositoryNode rootNode) throws Exception {
+    public void updateErDiagram(boolean isModified, ErDiagramComposite editor, String toSql, RepositoryNode rootNode)
+            throws Exception {
         if (toSql != null && !"".equals(toSql) && isModified) {
             String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
-            // "GUI Sql Editor maybe not show all features of your Sql Statement!\n And your full sql Statement
-            // will show in buttom of the GUI.";
-            MessageDialog.openInformation(new Shell(),
-                    Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
+            MessageDialog.openInformation(new Shell(), Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
 
             List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
             if (nodeSel == null || nodeSel.isEmpty()) {
@@ -289,13 +289,12 @@ public final class EMFRepositoryNodeManager {
         }
         editor.setModified(false);
     }
-    
-    
+
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
         sql = initSqlStatement(sql, true);
         if (sql == null || "".equals(sql)) {
-            return null;
+            return Collections.EMPTY_LIST;
         }
         List<String> tableNames = new ArrayList<String>();
         List<String> columnsNames = new ArrayList<String>();
@@ -312,7 +311,7 @@ public final class EMFRepositoryNodeManager {
                 } else {
                     tableLabel = tableNode.getObject().getLabel();
                 }
-                
+
                 boolean isNeed = false;
                 if (cols.length == 1 && cols[0].equals("*")) {
                     for (String string : tableNames) {

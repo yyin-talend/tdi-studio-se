@@ -101,6 +101,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         dialog = d;
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
+        isOpen = isDefaultEditor;
         this.connParam = connParam;
         repositoryNode = node;
         initialContent(this, nodes);
@@ -228,6 +229,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
     
     private ToolBarManager sessionToolBarMgr;
     
+    private boolean isOpen = true;
     /**
      * qzhang Comment method "addDefaultActions".
      * 
@@ -453,7 +455,11 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
      */
     public void setEditorContent(String string) {
         try {
-            EMFRepositoryNodeManager.getInstance().updateErDiagram(true, erDiagramComposite, string, repositoryNode);
+            if (isOpen) {
+                isOpen = false;
+            } else {
+                EMFRepositoryNodeManager.getInstance().updateErDiagram(true, erDiagramComposite, string, repositoryNode);
+            }
         } catch (Exception e) {
             SqlBuilderPlugin.log(string, e);
         }
