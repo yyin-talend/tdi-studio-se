@@ -49,9 +49,9 @@ public class DataStringConnection {
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[7];
+        dataConnection = new DataConnection[8];
 
-        defaultTable = new String[7];
+        defaultTable = new String[8];
 
         dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -76,10 +76,10 @@ public class DataStringConnection {
         dataConnection[6] = new DataConnection("Sybase ASE", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "5001"); //$NON-NLS-1$ //$NON-NLS-2$
 
-//        dataConnection[8] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//                ":" + port + "/" + sid, "50000"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//
-//        dataConnection[7] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        dataConnection[7] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                ":" + port + "/" + sid, "50000"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+//        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 //                + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
