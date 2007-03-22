@@ -33,6 +33,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -97,6 +98,11 @@ public class OpenDiagramAction extends AContextualAction {
                 }
             }
         }
+        
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            enabled = false;
+        }
+        
         setEnabled(enabled);
     }
 

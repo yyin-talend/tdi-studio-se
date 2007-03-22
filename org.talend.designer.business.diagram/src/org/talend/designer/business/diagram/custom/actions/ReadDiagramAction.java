@@ -99,14 +99,4 @@ public class ReadDiagramAction extends AContextualAction {
         }
         setEnabled(enabled);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.actions.AContextualView#getClassForDoubleClick()
-     */
-    @Override
-    public Class getClassForDoubleClick() {
-        return BusinessProcessItem.class;
-    }
 }
