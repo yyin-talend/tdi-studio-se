@@ -1,0 +1,83 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	"
+	class="FileUnzipBegin"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+
+	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+	String zipFile = ElementParameterParser.getValue(node, "__ZIPFILE__");
+	boolean rootName = ElementParameterParser.getValue(node, "__ROOTNAME__").equals("true");
+	boolean extractPath = ElementParameterParser.getValue(node, "__EXTRACTPATH__").equals("true");	
+%>      
+        
+        String zipFileURL_<%=cid %> = <%=zipFile %>;
+        String outputPath_<%=cid %> = <%=directory %>;
+        
+        org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+<%
+	if (rootName==true) {
+%>        
+        java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>);        
+        String name_<%=cid %> = file_<%=cid %>.getName();        
+        int i_<%=cid %> = name_<%=cid %>.lastIndexOf('.');        
+        String root_<%=cid %> = name_<%=cid %>.substring(0, i_<%=cid %>!=-1? i_<%=cid %> : name_<%=cid %>.length());        
+        new java.io.File(outputPath_<%=cid %>, root_<%=cid %>).mkdir();
+        outputPath_<%=cid %> = outputPath_<%=cid %> +"/" + root_<%=cid %>;
+<%
+  }
+%>    
+<%
+	if (extractPath==true) {
+%>         
+        
+        java.util.Enumeration enuDirs_<%=cid %> = zip_<%=cid %>.getEntries();               
+        while (enuDirs_<%=cid %>.hasMoreElements()) {
+            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuDirs_<%=cid %>.nextElement();            
+            if (entry_<%=cid %>.isDirectory()) {  
+                java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,entry_<%=cid %>.getName());
+                f_<%=cid %>.mkdir();
+            }  
+        }
+<%
+  }
+%> 
+     
+        java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+        while (enuFiles_<%=cid %>.hasMoreElements()) {
+            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();          
+            if (!entry_<%=cid %>.isDirectory()) {
+<%
+	if (extractPath==true) {
+%>          
+               java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,entry_<%=cid %>.getName());
+<%
+  }  else {
+%>            
+                int m_<%=cid %>= entry_<%=cid %>.getName().lastIndexOf('/');        
+                String shortName_<%=cid %> = entry_<%=cid %>.getName().substring(m_<%=cid %>!=-1? m_<%=cid %>+1 : 0);  
+  				java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,shortName_<%=cid %>);
+<%
+  }
+%>                  
+                f_<%=cid %>.createNewFile();
+                java.io.FileOutputStream fos_<%=cid %> = new java.io.FileOutputStream(f_<%=cid %>);
+                byte[] buffer_<%=cid %> = new byte[1024];
+                java.io.InputStream is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
+                for (int len_<%=cid %> = is_<%=cid %>.read(buffer_<%=cid %>, 0, 1024); len_<%=cid %> != -1; len_<%=cid %> = is_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) {
+                    fos_<%=cid %>.write(buffer_<%=cid %>, 0, len_<%=cid %>);
+                }
+                fos_<%=cid %>.close();
+                
+                String currentFileName_<%=cid %> = f_<%=cid %>.getName(); 
+                String currentFilePath_<%=cid %> = f_<%=cid %>.getAbsolutePath();
+                
+                globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid %>);
+                globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid %>);
