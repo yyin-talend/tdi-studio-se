@@ -398,7 +398,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException, BusinessException {
-        checkAvailability(objToRestore);
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+        }
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
 
         // i18n
