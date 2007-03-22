@@ -163,19 +163,9 @@ public final class EMFRepositoryNodeManager {
      * qzhang Comment method "setRoot".
      */
     public void setRoot(RepositoryNode rootNode) {
-        IMetadataConnection iMetadataConnection;
+        // IMetadataConnection iMetadataConnection;
         if (rootNode != null) {
             root = rootNode;
-        }
-        if (root != null) {
-            try {
-                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                        .getConnection());
-                dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
-            } catch (Exception e) {
-                String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
-                new ErrorDialogWidthDetailArea(new Shell(), SqlBuilderPlugin.PLUGIN_ID, mainMsg, e.getMessage());
-            }
         }
     }
 
@@ -183,6 +173,16 @@ public final class EMFRepositoryNodeManager {
         List<String[]> fks = new ArrayList<String[]>();
         String fk = ""; //$NON-NLS-1$
         String pk = ""; //$NON-NLS-1$
+        if (root != null) {
+            try {
+                IMetadataConnection iMetadataConnection = ConvertionHelper
+                .convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root).getConnection());
+                dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
+            } catch (Exception e) {
+                String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(new Shell(), SqlBuilderPlugin.PLUGIN_ID, mainMsg, e.getMessage());
+            }
+        }
         for (MetadataTable table : tables) {
             try {
                 if (dbMetaData != null) {

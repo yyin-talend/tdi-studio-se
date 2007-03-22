@@ -21,14 +21,19 @@
 // ============================================================================
 package org.talend.sqlbuilder.erdiagram.ui.commands;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.ErDiagram;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Table;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
@@ -63,6 +68,8 @@ public class CreateTableCommand extends Command {
         }
     }
 
+    private List<String[]> fks;
+
     @Override
     public void execute() {
         for (MetadataTable metadataTable : metaTables) {
@@ -74,7 +81,19 @@ public class CreateTableCommand extends Command {
                 erDiagram.getMetadataTables().add(metadataTable);
             }
         }
-        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables());
+        IRunnableWithProgress progress = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                try {
+                    fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables());
+                } finally {
+                    monitor.done();
+                }
+            }
+        };
+        ISQLBuilderDialog dialog = erDiagram.getErDiagramComposite().getDialog();
+        UIUtils.runWithProgress(progress, true, dialog.getProgressMonitor(), dialog.getShell());
         erDiagram.setRelations(fks);
     }
 

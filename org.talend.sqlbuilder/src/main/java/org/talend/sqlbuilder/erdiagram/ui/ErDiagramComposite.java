@@ -391,4 +391,10 @@ public class ErDiagramComposite extends SashForm {
     public void updateSql() {
         setSqlText(getSqlStatement());
     }
+
+    
+    public ISQLBuilderDialog getDialog() {
+        return this.dialog;
+    }
+    
 }

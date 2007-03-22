@@ -50,26 +50,26 @@ public class ErDiagram extends Element {
     private List<MetadataTable> metadataTables;
 
     private boolean isDirty = false;
-    
-    
+
     /**
      * Getter for isDirty.
+     * 
      * @return the isDirty
      */
     public boolean isDirty() {
         return this.isDirty;
     }
-    
-    
+
     /**
      * Sets the isDirty.
+     * 
      * @param isDirty the isDirty to set
      */
     public void setDirty(boolean isDirty) {
         this.isDirty = isDirty;
         fireStructureChange(PROP_ISDIRTY, this.isDirty);
     }
-    
+
     /**
      * admin ErDiagram constructor comment.
      */
@@ -77,28 +77,30 @@ public class ErDiagram extends Element {
         tables = new ArrayList<Table>();
     }
 
-    private ErDiagramComposite  erDiagramComposite;
-    
-    
+    private ErDiagramComposite erDiagramComposite;
+
     /**
      * Sets the erDiagramComposite.
+     * 
      * @param erDiagramComposite the erDiagramComposite to set
      */
     public void setErDiagramComposite(ErDiagramComposite erDiagramComposite) {
         this.erDiagramComposite = erDiagramComposite;
     }
-    
-    
+
     /**
      * Getter for erDiagramComposite.
+     * 
      * @return the erDiagramComposite
      */
     public ErDiagramComposite getErDiagramComposite() {
         return this.erDiagramComposite;
     }
+
     public void updateSqlText() {
         erDiagramComposite.updateSql();
     }
+
     /**
      * 
      */
@@ -137,7 +139,9 @@ public class ErDiagram extends Element {
     @SuppressWarnings("unchecked")
     public void setRelations(List<String[]> relations) {
         this.relations = relations;
-
+        if (relations == null) {
+            return;
+        }
         Map<String, Column> allColumns = new HashMap<String, Column>();
         for (Table table : tables) {
             for (Column column : (List<Column>) table.getColumns()) {
