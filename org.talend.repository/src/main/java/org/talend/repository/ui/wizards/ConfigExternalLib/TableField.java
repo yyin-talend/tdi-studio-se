@@ -199,9 +199,8 @@ public abstract class TableField {
         GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(label);
 
         viewer = getTableControl(parent);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.verticalAlignment = GridData.FILL;
-        gd.grabExcessHorizontalSpace = true;
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        gd.heightHint=150;
         viewer.getTable().setLayoutData(gd);
 
         buttonBox = getButtonBoxControl(parent);

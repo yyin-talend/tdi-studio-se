@@ -21,18 +21,32 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.ConfigExternalLib;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FileFieldEditor;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
+import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -43,15 +57,15 @@ import org.eclipse.swt.widgets.Text;
 public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
 
     /**
-     * DOC acer ImportExternalJarPage constructor comment.
+     * ConfigExternalPerlModulePage.
      * 
      * @param pageName
      * @param title
      * @param titleImage
      */
     public ConfigExternalPerlModulePage(IStructuredSelection selection) {
-        super("Import External Jar", selection);
-        this.setMessage("Import external JAR");
+        super(Messages.getString("ConfigExternalPerlModulePage.title"), selection); //$NON-NLS-1$
+        this.setMessage(Messages.getString("ConfigExternalPerlModulePage.message")); //$NON-NLS-1$
     }
 
     /*
@@ -67,35 +81,193 @@ public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
         composite.setLayout(new GridLayout(3, false));
         composite.setFont(parent.getFont());
 
-        Label descriptionLabel = new Label(composite, SWT.NONE);
-        descriptionLabel.setText("Description:");
-        GridDataFactory.fillDefaults().applyTo(descriptionLabel);
+        LibraryField libField = new EditPerlRoutineExternalModuleField(Messages
+                .getString("ConfigExternalPerlModulePage.moduleFieldLabel"), composite); //$NON-NLS-1$
 
-        Text descriptionText = new Text(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(descriptionText);
+        RoutineItem routine = getSelectedRoutine();
+        EList routines = routine.getImports();
 
-        Button requiredButton = new Button(composite, SWT.CHECK);
-        requiredButton.setText("Required");
-        GridDataFactory.fillDefaults().span(3, 1).applyTo(requiredButton);
+        libField.setInput(routines);
 
-        FileFieldEditor fileField = new FileFieldEditor("ImportExternalJarPage.fileField", "Jar File:", composite);
-        fileField.setFileExtensions(new String[] { "*.jar" });
-        // createDestinationGroup(composite);
-        //
-        // createOptionsGroup(composite);
-        //
-        // restoreResourceSpecificationWidgetValues(); // ie.- local
-        // restoreWidgetValues(); // ie.- subclass hook
-        //
-        // updateWidgetEnablements();
-        // setPageComplete(determinePageCompletion());
         setErrorMessage(null); // should not initially have error message
 
         setControl(composite);
-
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.importExternalLib.ImportExternalLibPage#finish()
+     */
     public boolean finish() {
+        BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+
+            public void run() {
+                CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+            }
+        });
+
         return true;
     }
+
+    /**
+     * subclass of the LibraryField. <br/>
+     * 
+     * $Id: ImportExternalJarPage.java Mar 20, 20074:15:28 PM bqian $
+     * 
+     */
+    class EditPerlRoutineExternalModuleField extends LibraryField {
+
+        /**
+         * 
+         * @param name
+         * @param parent
+         */
+        public EditPerlRoutineExternalModuleField(String name, Composite parent) {
+            super(name, parent);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.repository.ui.wizards.importExternalLib.TableField#afterDeleteSelection(java.util.List)
+         */
+        protected void afterDeleteSelection(List list) {
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.repository.ui.wizards.importExternalLib.LibraryField#getNewInputObject()
+         */
+        protected List<IMPORTType> getNewInputObject() {
+            List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
+            ModulePropertyDialog dialog = new ModulePropertyDialog(this.getShell());
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                IMPORTType type = dialog.getImportType();
+                RoutineItem routine = getSelectedRoutine();
+                type.setNAME(routine.getProperty().getLabel());
+                importTypes.add(type);
+            }
+            return importTypes;
+        }
+    }
+
+    /**
+     * ConfigExternalPerlModulePage class global comment. Detailled comment <br/>
+     * 
+     * $Id: ConfigExternalPerlModulePage.java Mar 21, 20074:07:54 PM bqian $
+     * 
+     */
+    class ModulePropertyDialog extends Dialog {
+
+        /**
+         * DOC acer ModulePropertyDialog constructor comment.
+         * 
+         * @param parentShell
+         */
+        public ModulePropertyDialog(Shell parentShell) {
+            super(parentShell);
+            setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
+        }
+
+        private IMPORTType importType = null;
+
+        private Button requiredButton;
+
+        private Text desText;
+
+        private Text moduletext;
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+         */
+        @Override
+        protected void okPressed() {
+            IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
+            type.setMESSAGE(desText.getText());
+
+            type.setMODULE(moduletext.getText());
+            type.setREQUIRED(requiredButton.getSelection());
+            this.importType = type;
+            super.okPressed();
+        }
+
+        /**
+         * Getter for importType.
+         * 
+         * @return the importType
+         */
+        public IMPORTType getImportType() {
+            return this.importType;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+         */
+        protected void configureShell(Shell shell) {
+            super.configureShell(shell);
+
+            shell.setText(Messages.getString("ConfigExternalPerlModulePage.title.newModule")); //$NON-NLS-1$
+
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+         */
+        @Override
+        protected Control createDialogArea(Composite parent) {
+
+            // create composite
+            Composite composite = (Composite) super.createDialogArea(parent);
+            GridLayout layout = (GridLayout) composite.getLayout();
+            layout.numColumns = 2;
+
+            // create message
+            Label label = new Label(composite, SWT.NONE);
+            label.setText(Messages.getString("ConfigExternalPerlModulePage.moduleLabel")); //$NON-NLS-1$
+            GridData data = new GridData();
+            // data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+            label.setLayoutData(data);
+            label.setFont(parent.getFont());
+
+            moduletext = new Text(composite, SWT.SINGLE | SWT.BORDER);
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            gd.widthHint = 300;
+            moduletext.setLayoutData(gd);
+
+            requiredButton = new Button(composite, SWT.CHECK);
+            String labelText = Messages.getString("ConfigExternalPerlModulePage.required.label"); //$NON-NLS-1$
+            requiredButton.setText(labelText);
+            requiredButton.setToolTipText(labelText);
+            requiredButton.setSelection(true);
+            data = new GridData(GridData.FILL_HORIZONTAL);
+            data.horizontalSpan = 2;
+            requiredButton.setLayoutData(data);
+
+            Label desLabel = new Label(composite, SWT.NONE);
+            desLabel.setText(Messages.getString("ConfigExternalPerlModulePage.description.label")); //$NON-NLS-1$
+            data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+            // data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+            desLabel.setLayoutData(data);
+            desLabel.setFont(parent.getFont());
+
+            desText = new Text(composite, SWT.MULTI | SWT.BORDER);
+            gd = new GridData(GridData.FILL_BOTH);
+            gd.heightHint = 80;
+            desText.setLayoutData(gd);
+
+            applyDialogFont(composite);
+            return composite;
+
+        }
+    }
+
 }

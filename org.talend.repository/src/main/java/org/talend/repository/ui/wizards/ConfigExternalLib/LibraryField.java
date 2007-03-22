@@ -21,27 +21,21 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.ConfigExternalLib;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.talend.core.model.properties.helper.StatusHelper;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.preference.StatusDialog;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -64,13 +58,21 @@ public class LibraryField extends TableField {
 
     @Override
     protected Table createTable(Composite parent) {
-        Table contextTable = new Table(parent, SWT.BORDER | SWT.SINGLE|SWT.BORDER);
+        Table contextTable = new Table(parent, SWT.SINGLE | SWT.BORDER);
         contextTable.setLinesVisible(false);
-        contextTable.setHeaderVisible(false);
+        contextTable.setHeaderVisible(true);
+
+        TableColumn moduleNameColumn = new TableColumn(contextTable, SWT.LEFT);
+        moduleNameColumn.setText(Messages.getString("LibraryField.moduleColumn")); //$NON-NLS-1$
+        moduleNameColumn.setWidth(120);
 
         TableColumn colName = new TableColumn(contextTable, SWT.NONE);
-        colName.setText(Messages.getString("StatusEditor.codeColumnTitle")); //$NON-NLS-1$
-        colName.setWidth(500);
+        colName.setText(Messages.getString("LibraryField.requiredColumn")); //$NON-NLS-1$
+        colName.setWidth(70);
+
+        TableColumn descriptionColumn = new TableColumn(contextTable, SWT.NONE);
+        descriptionColumn.setText(Messages.getString("LibraryField.descriptionColumn")); //$NON-NLS-1$
+        descriptionColumn.setWidth(200);
 
         return contextTable;
     }
@@ -97,18 +99,32 @@ public class LibraryField extends TableField {
         return new ITableLabelProvider() {
 
             public Image getColumnImage(Object element, int columnIndex) {
+                if (element instanceof IMPORTType) {
+                    IMPORTType type = (IMPORTType) element;
+                    if (columnIndex == 1) {
+                        if (type.isREQUIRED()) {
+                            return ImageProvider.getImage(ECoreImage.MODULE_REQUIRED_ICON);
+                        } else {
+                            return ImageProvider.getImage(ECoreImage.MODULE_NOTREQUIRED_ICON);
+                        }
+                    }
+                }
                 return null;
             }
 
             public String getColumnText(Object element, int columnIndex) {
-
-                if (columnIndex == 0) {
-                    if (element instanceof IMPORTType) {
-                        IMPORTType type = (IMPORTType) element;
+                if (element instanceof IMPORTType) {
+                    IMPORTType type = (IMPORTType) element;
+                    switch (columnIndex) {
+                    case 0:
                         return type.getMODULE();
+                    case 2:
+                        return type.getMESSAGE();
+                    default:
+                        return ""; //$NON-NLS-1$
                     }
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             public void addListener(ILabelProviderListener listener) {

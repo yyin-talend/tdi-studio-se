@@ -29,17 +29,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -56,14 +63,10 @@ import org.talend.repository.i18n.Messages;
  */
 public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
-    private Button requiredButton;
-
-    private Text descriptionText;
-
     private Map<IMPORTType, File> newJarFiles = new HashMap<IMPORTType, File>();
 
     /**
-     * DOC acer ImportExternalJarPage constructor comment.
+     * ConfigExternalJarPage.
      * 
      * @param pageName
      * @param title
@@ -87,18 +90,8 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         composite.setLayout(new GridLayout(3, false));
         composite.setFont(parent.getFont());
 
-        Label descriptionLabel = new Label(composite, SWT.NONE);
-        descriptionLabel.setText(Messages.getString("ImportExternalJarPage.descriptionText.label")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().applyTo(descriptionLabel);
-
-        descriptionText = new Text(composite, SWT.BORDER);
-        GridDataFactory.fillDefaults().span(2, 1).grab(true, false).applyTo(descriptionText);
-
-        requiredButton = new Button(composite, SWT.CHECK);
-        requiredButton.setText(Messages.getString("ImportExternalJarPage.requiredButton.label")); //$NON-NLS-1$
-        GridDataFactory.fillDefaults().span(3, 1).applyTo(requiredButton);
-
-        LibraryField libField = new EditJavaRoutineExternalJARField(Messages.getString("ImportExternalJarPage.fileField.label"), composite);
+        LibraryField libField = new EditJavaRoutineExternalJarField(Messages.getString("ImportExternalJarPage.fileField.label"), //$NON-NLS-1$
+                composite);
 
         RoutineItem routine = getSelectedRoutine();
         EList routines = routine.getImports();
@@ -120,17 +113,6 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
 
             public void run() {
-                // RoutineItem routine = getSelectedRoutine();
-                // final File file = new File(path);
-                //
-                // IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                // importType.setMESSAGE(descriptionText.getText());
-                //
-                // importType.setMODULE(file.getName());
-                // importType.setNAME(routine.getProperty().getLabel());
-                // importType.setREQUIRED(requiredButton.getSelection());
-                //
-                // routine.getImports().add(importType);
                 for (Iterator<File> iter = newJarFiles.values().iterator(); iter.hasNext();) {
                     File file = iter.next();
                     try {
@@ -147,23 +129,25 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
     }
 
     /**
-     * subclass of the LibraryField. <br/>
+     * Subclass of the LibraryField. <br/>
      * 
      * $Id: ImportExternalJarPage.java Mar 20, 20074:15:28 PM bqian $
      * 
      */
-    class EditJavaRoutineExternalJARField extends LibraryField {
+    class EditJavaRoutineExternalJarField extends LibraryField {
 
         /**
          * 
          * @param name
          * @param parent
          */
-        public EditJavaRoutineExternalJARField(String name, Composite parent) {
+        public EditJavaRoutineExternalJarField(String name, Composite parent) {
             super(name, parent);
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.repository.ui.wizards.importExternalLib.TableField#afterDeleteSelection(java.util.List)
          */
         protected void afterDeleteSelection(List list) {
@@ -172,35 +156,175 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             }
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.repository.ui.wizards.importExternalLib.LibraryField#getNewInputObject()
          */
         protected List<IMPORTType> getNewInputObject() {
             List<IMPORTType> importTypes = new ArrayList<IMPORTType>();
-
-            FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.MULTI);
-
-            dialog.setFilterExtensions(new String[] { "*.jar" });
-            dialog.open();
-            String path = dialog.getFilterPath();
-            String[] files = dialog.getFileNames();
-
-            RoutineItem routine = getSelectedRoutine();
-            for (int i = 0; i < files.length; i++) {
-                File file = new File(path + File.separatorChar + files[i]);
-
-                IMPORTType importType = ComponentFactory.eINSTANCE.createIMPORTType();
-                importType.setMESSAGE(descriptionText.getText());
-
-                importType.setMODULE(file.getName());
-                importType.setNAME(routine.getProperty().getLabel());
-                importType.setREQUIRED(requiredButton.getSelection());
-                importTypes.add(importType);
-
-                newJarFiles.put(importType, file);
+            ModulePropertyDialog dialog = new ModulePropertyDialog(this.getShell());
+            if (dialog.open() == IDialogConstants.OK_ID) {
+                IMPORTType type = dialog.getImportType();
+                RoutineItem routine = getSelectedRoutine();
+                type.setNAME(routine.getProperty().getLabel());
+                File jarFile = dialog.getFile();
+                newJarFiles.put(type, jarFile);
+                importTypes.add(type);
             }
-
             return importTypes;
         }
     }
+
+    /**
+     * ConfigExternalPerlModulePage class global comment. Detailled comment <br/>
+     * 
+     * $Id: ConfigExternalPerlModulePage.java Mar 21, 20074:07:54 PM bqian $
+     * 
+     */
+    class ModulePropertyDialog extends Dialog {
+
+        /**
+         * DOC acer ModulePropertyDialog constructor comment.
+         * 
+         * @param parentShell
+         */
+        public ModulePropertyDialog(Shell parentShell) {
+            super(parentShell);
+            setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
+        }
+
+        private IMPORTType importType = null;
+
+        private Button requiredButton;
+
+        private Text desText;
+
+        private FileFieldEditor fileField;
+
+        private File file;
+
+        /**
+         * Getter for file.
+         * 
+         * @return the file
+         */
+        public File getFile() {
+            return this.file;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+         */
+        @Override
+        protected void okPressed() {
+            IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
+            type.setMESSAGE(desText.getText());
+
+            file = new File(fileField.getStringValue());
+            type.setMODULE(file.getName());
+            type.setREQUIRED(requiredButton.getSelection());
+            this.importType = type;
+
+            super.okPressed();
+        }
+
+        /**
+         * Validate the ok button.
+         */
+        private void checkEnable() {
+            Button okButton = getButton(IDialogConstants.OK_ID);
+            String filePath = fileField.getStringValue();
+            File file = new File(filePath);
+            okButton.setEnabled(file.exists());
+        }
+
+        /**
+         * Getter for importType.
+         * 
+         * @return the importType
+         */
+        public IMPORTType getImportType() {
+            return this.importType;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+         */
+        protected void configureShell(Shell shell) {
+            super.configureShell(shell);
+            shell.setSize(400, 300);
+            shell.setText(Messages.getString("ConfigExternalJarPage.title")); //$NON-NLS-1$
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+         */
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            // create composite
+            Composite composite = (Composite) super.createDialogArea(parent);
+            GridLayout layout = (GridLayout) composite.getLayout();
+            layout.numColumns = 3;
+
+            GridLayout copyLayout = GridLayoutFactory.copyLayout(layout);
+
+            fileField = new FileFieldEditor(
+                    "JarFileFileEdior", Messages.getString("ConfigExternalJarPage.jarFile.label"), composite); //$NON-NLS-1$ //$NON-NLS-2$
+            Text filePathText = fileField.getTextControl(composite);
+            filePathText.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    checkEnable();
+                }
+            });
+
+            fileField.setFileExtensions(new String[] { "*.jar" }); //$NON-NLS-1$
+            composite.setLayout(copyLayout);
+
+            GridData data = new GridData();
+
+            requiredButton = new Button(composite, SWT.CHECK);
+            String labelText = Messages.getString("ConfigExternalJarPage.required.label"); //$NON-NLS-1$
+            requiredButton.setText(labelText);
+            requiredButton.setToolTipText(labelText);
+            requiredButton.setSelection(true);
+            data = new GridData(GridData.FILL_HORIZONTAL);
+            data.horizontalSpan = 3;
+            requiredButton.setLayoutData(data);
+
+            Label desLabel = new Label(composite, SWT.NONE);
+            desLabel.setText(Messages.getString("ConfigExternalJarPage.description.label")); //$NON-NLS-1$
+            data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+            desLabel.setLayoutData(data);
+            desLabel.setFont(parent.getFont());
+
+            desText = new Text(composite, SWT.MULTI | SWT.BORDER);
+            data = new GridData(GridData.FILL_BOTH);
+            data.heightHint = 80;
+            data.horizontalSpan = 2;
+            desText.setLayoutData(data);
+
+            applyDialogFont(composite);
+            return composite;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+         */
+        protected void createButtonsForButtonBar(Composite parent) {
+            super.createButtonsForButtonBar(parent);
+            checkEnable();
+        }
+
+    }
+
 }
