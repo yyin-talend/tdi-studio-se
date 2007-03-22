@@ -163,7 +163,7 @@
 	<%
 							} else {
 	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>]);
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>].trim());
 	<%
 							}
 	%>					
