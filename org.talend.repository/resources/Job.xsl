@@ -29,7 +29,10 @@
          </TR>  
       </TABLE>
       
-      <img src="{$job/preview/@picture}"/>
+      <xsl:variable name="jobPreviewPicture" select="$job/preview/@picture"/>
+			<xsl:if test="string-length($jobPreviewPicture)!=0">
+				<img src="{$jobPreviewPicture}"/>
+                       </xsl:if>
       <br/>
       Components Description:
       <br/>
