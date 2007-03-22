@@ -22,8 +22,10 @@
 package org.talend.repository.ui.wizards.register;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.ui.branding.BrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.ERepositoryImages;
 
 /**
  * Wizard for the creation of a new project. <br/> $Id: RegisterWizard.java 1 2006-09-29 17:06:40 +0000 (ven., 29 sept.
@@ -64,6 +66,7 @@ public class RegisterWizard extends Wizard {
         mainPage = new RegisterWizardPage();
         addPage(mainPage);
         setWindowTitle(Messages.getString("RegisterWizard.windowTitle", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.REGISTER_WIZ));
     }
 
     /**

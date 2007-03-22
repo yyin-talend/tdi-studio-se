@@ -22,7 +22,9 @@
 package org.talend.repository.ui.wizards.license;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.ERepositoryImages;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -55,7 +57,7 @@ public class LicenseWizard extends Wizard {
         mainPage = new LicenseWizardPage();
         addPage(mainPage);
         setWindowTitle(Messages.getString("LicenseWizard.windowTitle")); //$NON-NLS-1$
-        
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.LICENSE_WIZ));
     }
 
     /**
