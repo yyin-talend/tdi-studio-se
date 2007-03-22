@@ -69,7 +69,7 @@ java.io.BufferedWriter out_<%=cid%> = null;
 	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));	                                
 
 	 
-	strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
+	strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?>\n");
 	for (int i = 0; i < rootTag_<%=cid%>.length; i++) {
 		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i]+">");		            
     }
