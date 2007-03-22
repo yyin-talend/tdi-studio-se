@@ -117,8 +117,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
-        getDiagramGraphicalViewer().addDropTargetListener(
-                new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
+        getDiagramGraphicalViewer().addDropTargetListener(new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
     }
 
     RepositoryEditorInput repositoryEditorInput;
@@ -152,6 +151,10 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     public boolean isEditable() {
         if (repositoryEditorInput != null) {
+            if (repositoryEditorInput.isReadOnly()) {
+                return false;
+            }
+
             Item item = repositoryEditorInput.getItem();
             IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 

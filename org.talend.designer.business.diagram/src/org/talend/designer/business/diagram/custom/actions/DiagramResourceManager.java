@@ -76,8 +76,8 @@ public class DiagramResourceManager {
         String diagramKind = BusinessProcessEditPart.MODEL_ID;
         Shell shell = page.getWorkbenchWindow().getShell();
 
-        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName,
-                initialContents, diagramKind, shell, progressMonitor);
+        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName, initialContents,
+                diagramKind, shell, progressMonitor);
 
         return file;
     }
@@ -85,10 +85,9 @@ public class DiagramResourceManager {
     public void updateFromResource(BusinessProcessItem businessProcessItem, IFile file) {
         Resource resource = createResource(file);
 
-        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(),
-                BusinessPackage.eINSTANCE.getBusinessProcess());
-        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE
-                .getDiagram());
+        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(), BusinessPackage.eINSTANCE
+                .getBusinessProcess());
+        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE.getDiagram());
 
         businessProcessItem.setSemantic(semantic);
         businessProcessItem.setNotation(notation);
@@ -111,8 +110,8 @@ public class DiagramResourceManager {
         }
     }
 
-    public void openEditor(BusinessProcessItem businessProcessItem, IFile file) {
-        RepositoryEditionManager.getInstance().openEditor(page, file, businessProcessItem);
+    public void openEditor(BusinessProcessItem businessProcessItem, IFile file, boolean forceReadOnly) {
+        RepositoryEditionManager.getInstance().openEditor(page, file, businessProcessItem, forceReadOnly);
     }
 
     private Resource createResource(IFile file) {
