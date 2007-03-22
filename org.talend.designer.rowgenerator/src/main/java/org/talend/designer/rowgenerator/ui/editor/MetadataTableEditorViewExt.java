@@ -23,6 +23,7 @@ package org.talend.designer.rowgenerator.ui.editor;
 
 import java.util.Iterator;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -69,25 +70,12 @@ import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
  */
 public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
-    public static final String NAME_ID_COLUMN = ID_COLUMN_NAME; //$NON-NLS-1$
 
-    public static final String KEY_ID_COLUMN = ID_COLUMN_KEY; //$NON-NLS-1$
+    public static final String ID_COLUMN_PARAMETER = "ID_COLUMN_PARAMETER"; //$NON-NLS-1$
 
-    public static final String TYPE_ID_COLUMN = ID_COLUMN_TYPE; //$NON-NLS-1$
+    public static final String ID_COLUMN_FUNCTION = "ID_COLUMN_FUNCTION"; //$NON-NLS-1$
 
-    public static final String LENGTH_ID_COLUMN = "ID_COLUMN_LENGTH"; //$NON-NLS-1$
-
-    public static final String PRECISION_ID_COLUMN = "ID_COLUMN_PRECISION"; //$NON-NLS-1$
-
-    public static final String NULLABLE_ID_COLUMN = ID_COLUMN_NULLABLE; //$NON-NLS-1$
-
-    public static final String COMMENT_ID_COLUMN = "ID_COLUMN_COMMENT"; //$NON-NLS-1$
-
-    public static final String PARAMETER_ID_COLUMN = "ID_COLUMN_PARAMETER"; //$NON-NLS-1$
-
-    public static final String FUNCTION_ID_COLUMN = "ID_COLUMN_FUNCTION"; //$NON-NLS-1$
-
-    public static final String PREVIEW_ID_COLUMN = "ID_COLUMN_PREVIEW"; //$NON-NLS-1$
+    public static final String ID_COLUMN_PREVIEW = "ID_COLUMN_PREVIEW"; //$NON-NLS-1$
 
     private static final int TITLE_DEFAULT_HEIGHT = 25;
 
@@ -174,7 +162,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
      */
     private void configurePreviewColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setId(PREVIEW_ID_COLUMN);
+        column.setId(ID_COLUMN_PREVIEW);
         column.setTitle(Messages.getString("RowGenTableEditor2.Preview.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(getPreviewAccessor());
         column.setModifiable(false);
@@ -213,7 +201,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
      */
     private void configureParameterColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setId(PARAMETER_ID_COLUMN);
+        column.setId(ID_COLUMN_PARAMETER);
         column.setTitle(Messages.getString("RowGenTableEditor2.Parameters.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(getParameterAccessor());
         column.setModifiable(true);
@@ -257,7 +245,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
         column.setCellEditor(functComboBox, comboValueAdapter);
-        column.setId(FUNCTION_ID_COLUMN);
+        column.setId(ID_COLUMN_FUNCTION);
         column.setTitle(Messages.getString("RowGenTableEditor2.Fuctions.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(getFunctionAccessor(functComboBox));
         column.setModifiable(true);
@@ -314,7 +302,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     }
 
     protected ExtendedToolbarView initToolBar() {
-        extendedToolbar = new MetadataToolbarEditorViewExt(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(), this);
+        extendedToolbar = new MetadataToolbarEditorViewExt(getMainComposite(), SWT.NONE, getExtendedTableViewer(), this);
         return extendedToolbar;
     }
 
@@ -398,14 +386,24 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetSelected(SelectionEvent e) {
-                e.getSource();
-                if (e.detail == SWT.DRAG) {
-                    MetadataTableEditorViewExt.this.attachLabelPosition();
-                } else if (e.detail == SWT.NONE) {
-                    MetadataTableEditorViewExt.this.attachLabelPosition();
-                }
+                // if (e.detail == SWT.DRAG) {
+                int shift = horizontalBar.getSelection();
+                attachLabelPosition(shift);
+                // }
             }
         });
+    }
+
+    /**
+     * qzhang Comment method "attachLabelPosition".
+     * 
+     * @param shift
+     */
+    protected void attachLabelPosition(int shift) {
+        attachLabelPosition();
+        schCom.setLocation(-shift, schCom.getBounds().y);
+        funCom.setLocation(funCom.getBounds().x - shift, funCom.getBounds().y);
+        preCom.setLocation(preCom.getBounds().x - shift, preCom.getBounds().y);
     }
 
     private void addTableColumnsListener() {
@@ -458,7 +456,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         setHeaderText(titleLabel, funLabel, previewLabel);
         empty = new Label(headerTable, SWT.NONE);
         empty.setText("");
-        empty.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        empty.setLayoutData(new GridData(GridData.FILL_BOTH));
     }
 
     private void setHeaderText(Label titleLabel, Label funLabel, Label previewLabel) {
@@ -490,7 +488,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         gridLayout.marginHeight = 0;
         gridLayout.marginWidth = 0;
 
-        final GridData gridData = new GridData(GridData.FILL_BOTH);
+        final GridData gridData = new GridData();
         gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         // gridData.horizontalAlignment = SWT.LEFT;
         // gridData.verticalAlignment = SWT.CENTER;
@@ -545,7 +543,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
         funCom.setLayout(gridLayout);
 
-        final GridData gridData = new GridData(GridData.FILL_BOTH);
+        final GridData gridData = new GridData();
         gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         gridData.verticalIndent = 0;
         gridData.horizontalIndent = 0;
@@ -578,7 +576,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         gridLayout.marginHeight = 0;
         gridLayout.marginWidth = 0;
         schCom.setLayout(gridLayout);
-        final GridData gridData = new GridData(GridData.FILL_BOTH);
+        final GridData gridData = new GridData();
         gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         gridData.verticalIndent = 0;
         gridData.horizontalIndent = 0;
@@ -601,17 +599,40 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             TableViewerCreatorColumn element = (TableViewerCreatorColumn) iter.next();
             w += element.getTableColumn().getWidth();
         }
-        prewidth = w - getTableViewerCreator().getColumn(PREVIEW_ID_COLUMN).getTableColumn().getWidth();
+        prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();
 
-        funwidth = prewidth - getTableViewerCreator().getColumn(FUNCTION_ID_COLUMN).getTableColumn().getWidth()
-                - getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN).getTableColumn().getWidth();
+        funwidth = prewidth - getTableViewerCreator().getColumn(ID_COLUMN_FUNCTION).getTableColumn().getWidth()
+                - getTableViewerCreator().getColumn(ID_COLUMN_PARAMETER).getTableColumn().getWidth();
 
+        // GridDataFactory.swtDefaults().hint(funwidth, TITLE_DEFAULT_HEIGHT).applyTo(schCom);
         schCom.setSize(funwidth, TITLE_DEFAULT_HEIGHT);
-        funCom.setLocation(schCom.getBounds().x + funwidth, schCom.getBounds().y);
+        funCom.setLocation(funwidth, schCom.getBounds().y);
+        // GridDataFactory.swtDefaults().hint(prewidth - funwidth, TITLE_DEFAULT_HEIGHT).applyTo(funCom);
         funCom.setSize(prewidth - funwidth, TITLE_DEFAULT_HEIGHT);
-        preCom.setLocation(schCom.getBounds().x + prewidth, schCom.getBounds().y);
+        preCom.setLocation(prewidth, schCom.getBounds().y);
+        // GridDataFactory.swtDefaults().hint(w - prewidth, TITLE_DEFAULT_HEIGHT).applyTo(preCom);
         // preCom.setSize(w - prewidth, TITLE_DEFAULT_HEIGHT);
         // getTableViewerCreator().getColumn(PREVIEW_ID_COLUMN).getTableColumn().setWidth(preCom.getSize().x);
+        empty.setLocation(w, schCom.getBounds().y);
+    }
+
+    public void fixedLabelSize() {
+        int funwidth = 0;
+        int prewidth = 0;
+        int w = 0;
+        for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
+            TableViewerCreatorColumn element = (TableViewerCreatorColumn) iter.next();
+            w += element.getTableColumn().getWidth();
+        }
+        prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();
+
+        funwidth = prewidth - getTableViewerCreator().getColumn(ID_COLUMN_FUNCTION).getTableColumn().getWidth()
+                - getTableViewerCreator().getColumn(ID_COLUMN_PARAMETER).getTableColumn().getWidth();
+        GridDataFactory.swtDefaults().hint(funwidth, TITLE_DEFAULT_HEIGHT).applyTo(schCom);
+        funCom.setLocation(schCom.getBounds().x + funwidth, schCom.getBounds().y);
+        GridDataFactory.swtDefaults().hint(prewidth - funwidth, TITLE_DEFAULT_HEIGHT).applyTo(funCom);
+        preCom.setLocation(schCom.getBounds().x + prewidth, schCom.getBounds().y);
+        GridDataFactory.swtDefaults().hint(w - prewidth, TITLE_DEFAULT_HEIGHT).applyTo(preCom);
         empty.setLocation(schCom.getBounds().x + w, schCom.getBounds().y);
     }
 
@@ -627,13 +648,13 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             funColumn.setWidth(0);
             funColumn.getTableColumn().setResizable(false);
             funColumn.setMoveable(false);
-            if ((id.equals(FUNCTION_ID_COLUMN) && getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN).getTableColumn()
+            if ((id.equals(ID_COLUMN_FUNCTION) && getTableViewerCreator().getColumn(ID_COLUMN_PARAMETER).getTableColumn()
                     .getWidth() == 0)
-                    || ((id.equals(PARAMETER_ID_COLUMN)) && getTableViewerCreator().getColumn(FUNCTION_ID_COLUMN)
+                    || ((id.equals(ID_COLUMN_PARAMETER)) && getTableViewerCreator().getColumn(ID_COLUMN_FUNCTION)
                             .getTableColumn().getWidth() == 0)) {
                 funCom.setVisible(false);
             }
-            if (id.equals(PREVIEW_ID_COLUMN)) {
+            if (id.equals(ID_COLUMN_PREVIEW)) {
                 preCom.setVisible(false);
             }
             getTableViewerCreator().refreshTableEditorControls();
@@ -641,7 +662,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
             final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
-                    && (funColumn.getId().equals(KEY_ID_COLUMN) || funColumn.getId().equals(NULLABLE_ID_COLUMN))) {
+                    && (funColumn.getId().equals(ID_COLUMN_KEY) || funColumn.getId().equals(ID_COLUMN_NULLABLE))) {
                 funColumn.setTableEditorContent(new CheckboxTableEditorContent());
             }
             funColumn.setModifiable(isReadOnly());
@@ -651,10 +672,10 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             funColumn.getTableColumn().setResizable(true);
             funColumn.setTitle(currTitle);
             funColumn.setMoveable(true);
-            if (id.equals(FUNCTION_ID_COLUMN) || id.equals(PARAMETER_ID_COLUMN)) {
+            if (id.equals(ID_COLUMN_FUNCTION) || id.equals(ID_COLUMN_PARAMETER)) {
                 funCom.setVisible(true);
             }
-            if (id.equals(PREVIEW_ID_COLUMN)) {
+            if (id.equals(ID_COLUMN_PREVIEW)) {
                 preCom.setVisible(true);
             }
             getTableViewerCreator().refreshTableEditorControls();

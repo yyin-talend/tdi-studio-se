@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -50,9 +53,9 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.rowgenerator.i18n.Messages;
-import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.tabs.ShadowProcessPreview;
 
 /**
@@ -62,21 +65,6 @@ import org.talend.designer.rowgenerator.ui.tabs.ShadowProcessPreview;
  * 
  */
 public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
-
-    private static String[] items = new String[] { Messages.getString("RowGenTableEditor2.Key.TitleText"),
-            Messages.getString("RowGenTableEditor2.Type.TitleText"), Messages.getString("RowGenTableEditor2.Length.TitleText"),
-            Messages.getString("RowGenTableEditor2.Precision.TitleText"),
-            Messages.getString("RowGenTableEditor2.Nullable.TitleText"),
-            Messages.getString("RowGenTableEditor2.Comment.TitleText"),
-            Messages.getString("RowGenTableEditor2.Fuctions.TitleText"),
-            Messages.getString("RowGenTableEditor2.Parameters.TitleText"),
-            Messages.getString("RowGenTableEditor2.Preview.TitleText"), };
-
-    private static String[] ids = new String[] { MetadataTableEditorViewExt.KEY_ID_COLUMN,
-            MetadataTableEditorViewExt.TYPE_ID_COLUMN, MetadataTableEditorViewExt.LENGTH_ID_COLUMN,
-            MetadataTableEditorViewExt.PRECISION_ID_COLUMN, MetadataTableEditorViewExt.NULLABLE_ID_COLUMN,
-            MetadataTableEditorViewExt.COMMENT_ID_COLUMN, MetadataTableEditorViewExt.FUNCTION_ID_COLUMN,
-            MetadataTableEditorViewExt.PARAMETER_ID_COLUMN, MetadataTableEditorViewExt.PREVIEW_ID_COLUMN };
 
     private MetadataTableEditorViewExt genTableEditor2;
 
@@ -91,8 +79,26 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
             MetadataTableEditorViewExt editor2) {
         super(parent, style, extendedTableViewer);
         this.genTableEditor2 = editor2;
+        initStrings();
         createColumns();
+        columnsListmenu.getItems();
         createNumberRows();
+    }
+
+    /**
+     * qzhang Comment method "initStrings".
+     */
+    private void initStrings() {
+        items = new ArrayList<String>();
+        ids = new ArrayList<String>();
+        List<TableViewerCreatorColumn> columns = genTableEditor2.getTableViewerCreator().getColumns();
+        for (TableViewerCreatorColumn column : columns) {
+            if ((column.getId() != null && !"".equals(column.getId()))
+                    && (column.getTitle() != null && !"".equals(column.getTitle()))) {
+                ids.add(column.getId());
+                items.add(column.getTitle());
+            }
+        }
     }
 
     private Composite numRowComposite;
@@ -127,6 +133,10 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
     private ToolBar columnSelector;
 
+    private List<String> items;
+
+    private List<String> ids;
+
     /**
      * qzhang Comment method "createColumns".
      */
@@ -138,7 +148,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         columns.addSelectionListener(new SelectionAdapter() {
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
@@ -162,18 +172,17 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     private void createMenu(final ToolItem columns) {
         columnsListmenu = new Menu(columns.getParent().getShell());
-        for (int i = 0; i < items.length; i++) {
+        for (int i = 0; i < items.size(); i++) {
             MenuItem item = new MenuItem(columnsListmenu, SWT.CHECK);
-            item.setText(items[i]);
-            item.setData(ids[i]);
+            item.setText(items.get(i));
+            item.setData(ids.get(i));
             item.setSelection(true);
             final int j = i;
             item.addSelectionListener(new SelectionAdapter() {
 
                 public void widgetSelected(SelectionEvent e) {
                     MenuItem item = (MenuItem) e.widget;
-                    genTableEditor2.updateHeader(ids[j], items[j], !item.getSelection());
-
+                    genTableEditor2.updateHeader(ids.get(j), items.get(j), !item.getSelection());
                 }
             });
         }
@@ -263,7 +272,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveDownPushButton()
      */
@@ -272,7 +281,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         return new MoveDownPushButtonForExtendedTable(toolbar, extendedTableViewer) {
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton#afterCommandExecution(org.eclipse.gef.commands.Command)
              */
@@ -285,7 +294,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveUpPushButton()
      */
@@ -294,7 +303,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         return new MoveUpPushButtonForExtendedTable(toolbar, extendedTableViewer) {
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton#afterCommandExecution(org.eclipse.gef.commands.Command)
              */

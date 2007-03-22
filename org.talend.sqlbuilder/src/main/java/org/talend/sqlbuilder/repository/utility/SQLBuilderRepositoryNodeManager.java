@@ -778,9 +778,7 @@ public class SQLBuilderRepositoryNodeManager {
         try {
             DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
 
-            IMetadataTable metaTable1 = new org.talend.core.model.metadata.MetadataTable();
-            metaTable1.setLabel(table.getLabel());
-            metaTable1.setTableName(table.getSourceName());
+            IMetadataTable metaTable1 = ConvertionHelper.convert(table);
             metadataColumns = ExtractMetaDataFromDataBase.extractMetadataColumnsFormTable(dbMetaData, metaTable1,
                     iMetadataConnection.getDbType());
             ExtractMetaDataUtils.closeConnection();

@@ -154,6 +154,7 @@ public class RowGenMain {
 
             public void controlResized(ControlEvent e) {
                 generatorUI.getDataTableView().attachLabelPosition();
+                generatorUI.getDataTableView().fixedLabelSize();
             }
 
         });
