@@ -1,0 +1,114 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="SybaseBulkExecBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+   IMetadataTable metadata = metadatas.get(0);
+   if (metadata!=null) {
+       String cid = metadata.getTableName();
+       String server = ElementParameterParser.getValue(node, "__SERVER__");
+       String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+       String dbname   = ElementParameterParser.getValue(node, "__DBNAME__");
+       String dbuser   = ElementParameterParser.getValue(node, "__USER__");
+       String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
+       String table    = ElementParameterParser.getValue(node, "__TABLE__");
+       String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+       String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+       String command       = ElementParameterParser.getValue(node, "__COMMAND__");
+       String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+%>
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+use talend::filesOp;
+
+if ( -e join('.', <%=filename %>, 'bad' ) ){
+    unlink join('.', <%=filename %>, 'bad' ) ;
+}
+
+my $command = sprintf(
+        'bcp %s.dbo.%s in %s -e %s -c -t %s -J%s -S%s -U%s -P%s',
+        <%=dbname %>,
+        <%=table %>,
+        <%=filename %>,
+        join('.', <%=filename %>, 'bad'),
+        <%=fields_terminated_by %>,
+        <%=encoding %>,
+        <%=server %>,
+        <%=dbuser %>,
+        <%=dbpass %>,
+    );
+
+
+<%
+if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+
+system($command);
+
+<%
+}
+else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+$_globals{<%=cid %>}{OUTPUT} = `$command`;
+<%
+}
+%>
+if ($? == -1) {
+    die "failed to execute bcp : $!\n";
+    $_globals{<%=cid %>}{PERL_ERROR_CODE} = $?;
+    $_globals{<%=cid %>}{PERL_ERROR_MESSAGE} = "failed to execute: $!";
+}
+else {
+    $_globals{<%=cid %>}{PERL_ERROR_CODE} = $? >> 8;
+    $_globals{<%=cid %>}{NB_LINE_DATA} = talend::filesOp::tFileRowCount( filename => <%=filename %>, rowseparator => "\n" ) ;
+    if(-e join('.', <%=filename %>, 'bad')){
+        $_globals{<%=cid %>}{LINE_BAD} = 1 ;
+        $_globals{<%=cid %>}{PERL_ERROR_CODE} = 2 ;
+    }
+    else {
+    	$_globals{<%=cid %>}{LINE_BAD} = 0 ;
+    }
+    if ($_globals{<%=cid %>}{PERL_ERROR_CODE} != 0) {
+        die sprintf(
+            "bcp exited with value %d\n",
+            $_globals{<%=cid %>}{PERL_ERROR_CODE}
+        );
+    }
+}
+
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0, 2);
+<%
+        }
+%>
+
+<%
+    }
+}
+%>
+
