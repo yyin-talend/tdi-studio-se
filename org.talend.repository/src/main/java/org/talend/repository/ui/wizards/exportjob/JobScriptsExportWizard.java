@@ -64,7 +64,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JobScriptsExportWizardPage.STORE_MODEL_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
+//            section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
         }
         setDialogSettings(section);
     }

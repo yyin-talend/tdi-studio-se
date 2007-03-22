@@ -2,10 +2,10 @@
 package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    java.util.List
+    org.talend.designer.runprocess.ProcessorUtilities
+    org.talend.designer.runprocess.ProcessorException
 "
 class="RunJobMain"
 %>
@@ -14,62 +14,95 @@ class="RunJobMain"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();
+String process = ElementParameterParser.getValue(
+   node,
+   "__PROCESS_TYPE_PROCESS__"
+);
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-        if (metadata != null) {
-            String interpreterPath = "<perl_interpreter_path>";
-            if (codeGenArgument.getInterpreterPath() != null) {
-                interpreterPath = codeGenArgument.getInterpreterPath();
-                interpreterPath = interpreterPath.replace("\\","/");
-            }
+String context = ElementParameterParser.getValue(
+   node,
+   "__PROCESS_TYPE_CONTEXT__"
+);
 
-            String libPath = "<perl_library_path>";
-            if (codeGenArgument.getLibPath() != null) {
-                libPath = codeGenArgument.getLibPath();
-                libPath = libPath.replace("\\","/");
-            }
-
-            String runtimeFilePath = "<runtime_path>";
-            if (codeGenArgument.getRuntimeFilePath() != null) {
-                runtimeFilePath = codeGenArgument.getRuntimeFilePath();
-                runtimeFilePath = runtimeFilePath.replace("\\","/");
-            }
-
-            String currentProjectName = "<project_name>";
-            if (codeGenArgument.getCurrentProjectName() != null) {
-                currentProjectName = codeGenArgument.getCurrentProjectName();
-            }
-
-            String process = ElementParameterParser.getValue(
-                node,
-                "__PROCESS_TYPE_PROCESS__"
-            );
-
-            String context = ElementParameterParser.getValue(
-                node,
-                "__PROCESS_TYPE_CONTEXT__"
-            );
+// if it's a generation to run in talend.
+if (!ProcessorUtilities.isExportConfig()) {
+   process = process.replace("'", "");
+   context = context.replace("'", "");
+   String[] codeOptions = new String[] {"--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$).'"};
+   String[] commandLine = new String[] {"<command>"};
+   try {
+      commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
+   } catch (ProcessorException e) {
 %>
+	<%= e.getMessage() %>
+<%
+   }
+%>
+my @arguments = (
+<%
+   for (int i=0; i< commandLine.length; i++) {
+%>
+    '<%=commandLine[i] %>',
+<%
+   }
+%>
+);
+<%
+} else { // if it's a generation for an export
+   String interpreterPath = "<perl_interpreter_path>";
+   if (codeGenArgument.getInterpreterPath() != null) {
+       interpreterPath = codeGenArgument.getInterpreterPath();
+       interpreterPath = interpreterPath.replace("\\","/");
+   }
+
+   String libPath = "<perl_library_path>";
+   if (codeGenArgument.getLibPath() != null) {
+       libPath = codeGenArgument.getLibPath();
+       libPath = libPath.replace("\\","/");
+   }
+
+   String runtimeFilePath = "<runtime_path>";
+   if (codeGenArgument.getRuntimeFilePath() != null) {
+       runtimeFilePath = codeGenArgument.getRuntimeFilePath();
+       runtimeFilePath = runtimeFilePath.replace("\\","/");
+   }
+
+   String currentProjectName = "<project_name>";
+   if (codeGenArgument.getCurrentProjectName() != null) {
+       currentProjectName = codeGenArgument.getCurrentProjectName();
+   }
+%>
+use FindBin;
+use File::Spec;
+
+my $libPath = File::Spec->catfile(
+    $FindBin::Bin,
+    '<%=libPath %>'
+);
+
+$libPath =~ s/\\/\//g;
+
+my $runtimeFilePath = File::Spec->catfile(
+    $FindBin::Bin,
+    '<%=runtimeFilePath %>'
+);
+
+$runtimeFilePath =~ s/\\/\//g;
 
 my @arguments = (
-    '"<%=interpreterPath %>"',
-    '-I "<%=libPath %>"',
-    '-I "<%=runtimeFilePath %>"',
-    '"<%=runtimeFilePath %>/<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
+    '<%=interpreterPath %>',
+    '-I "' . $libPath . '"',
+    '-I "' . $runtimeFilePath . '"',
+    '"' . $runtimeFilePath . '<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
     '--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$),
     '--context='.<%=context %>,
 );
-
+<%
+}
+%>
 my $error = system(
     join(' ', @arguments)
 );
 if($error){
     die "Process <%=process %> died.\n" ;	
 }
-    
-<%
-		}
-	}
-%>

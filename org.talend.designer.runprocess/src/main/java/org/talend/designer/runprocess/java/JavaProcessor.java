@@ -224,8 +224,8 @@ public class JavaProcessor extends Processor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
-                        currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
+                        javaContext, currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -480,8 +480,10 @@ public class JavaProcessor extends Processor {
         }
         javaProject = JavaCore.create(prj);
 
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
+                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
+                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -507,7 +509,8 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
+                .size()]);
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
@@ -552,7 +555,8 @@ public class JavaProcessor extends Processor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
+            throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
@@ -620,7 +624,7 @@ public class JavaProcessor extends Processor {
         // init java interpreter
         String command;
         try {
-            command = setStringPath(getInterpreter());
+            command = getInterpreter();
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
@@ -645,7 +649,8 @@ public class JavaProcessor extends Processor {
         IPath classPath = getCodePath().removeFirstSegments(1);
         String className = classPath.toString().replace('/', '.');
 
-        return new String[] { command, "-Xms256M", "-Xmx1024M", "-cp", setStringPath(libPath + projectPath), className }; //$NON-NLS-1$
+        return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
+                new Path(libPath.toString()).toPortableString() + new Path(projectPath).toPortableString(), className };
     }
 
     /*

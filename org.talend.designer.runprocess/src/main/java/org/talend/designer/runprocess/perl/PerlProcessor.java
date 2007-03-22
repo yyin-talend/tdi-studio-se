@@ -142,13 +142,13 @@ public class PerlProcessor extends Processor {
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
-                String perlInterpreter = getPerlInterpreter();
-                String perlLib = getPerlLib();
+                String perlInterpreter = getInterpreter();
+                String perlLib = getLibraryPath();
                 String currentPerlProject = project.getTechnicalLabel();
-                String perlContext = getCodeContext();
+                String codeLocation = getCodeLocation();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
-                        currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
+                        codeLocation, currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -207,35 +207,6 @@ public class PerlProcessor extends Processor {
      */
     public String getCodeContext() {
         return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
-    }
-
-    /**
-     * DOC mhirt Comment method "getPerlLib".
-     * 
-     * @throws ProcessorException
-     */
-    public static String getPerlLib() throws ProcessorException {
-        String perlLib;
-        try {
-            perlLib = PerlUtils.getPerlModulePath().toOSString();
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
-        }
-        return perlLib;
-    }
-
-    /**
-     * DOC mhirt Comment method "getPerlInterpreter".
-     * 
-     * @throws ProcessorException
-     */
-    public static String getPerlInterpreter() throws ProcessorException {
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
-        }
-        return perlInterpreter;
     }
 
     private static String escapeFilename(final String filename) {
@@ -365,7 +336,8 @@ public class PerlProcessor extends Processor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
+        IConfigurationElement[] configElems = registry
+                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -402,13 +374,47 @@ public class PerlProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     public String getInterpreter() throws ProcessorException {
+        // if the interpreter has been set to a specific one (not standard), then this value won't be null
+        String interpreter = super.getInterpreter();
+        if (interpreter != null) {
+            return interpreter;
+        }
+        return getDefaultInterpreter();
+
+    }
+
+    public static String getDefaultInterpreter() throws ProcessorException {
+        String interpreter;
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
+        interpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        if (interpreter == null || interpreter.length() == 0) {
             throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
         }
-        return perlInterpreter;
+        return interpreter;
 
+    }
+
+    public String getLibraryPath() throws ProcessorException {
+        // if the library path has been set to a specific one (not standard), then this value won't be null
+        String libraryPath = super.getLibraryPath();
+        if (libraryPath != null) {
+            return libraryPath;
+        }
+        try {
+            libraryPath = PerlUtils.getPerlModulePath().toOSString();
+        } catch (CoreException e) {
+            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+        }
+        return libraryPath;
+    }
+
+    public String getCodeLocation() throws ProcessorException {
+        // if the routine path has been set to a specific one (not standard), then this value won't be null
+        String codeLocation = super.getCodeLocation();
+        if (codeLocation != null) {
+            return codeLocation;
+        }
+        return this.getCodeProject().getLocation().toOSString();
     }
 
     /*
@@ -447,7 +453,8 @@ public class PerlProcessor extends Processor {
         // String[] cmd = Processor.getCommandLine(absCodePath, contextName, perlInterpreterLibOption,
         // perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
-        String[] cmd = getCommandLineByCondition(absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
+        String[] cmd = getCommandLineByCondition(getDefaultInterpreter(), absCodePath, perlInterpreterLibOption,
+                perlModuleDirectoryOption);
         cmd = addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
         Processor.logCommandLine(cmd, level);
         try {
@@ -478,14 +485,9 @@ public class PerlProcessor extends Processor {
      * @return
      * @throws ProcessorException
      */
-    private static String[] getCommandLineByCondition(IPath absCodePath, String perlInterpreterLibOption,
-            String perlModuleDirectoryOption) throws ProcessorException {
+    private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath,
+            String perlInterpreterLibOption, String perlModuleDirectoryOption) throws ProcessorException {
         assert (absCodePath != null);
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
-        }
         String[] cmd = new String[] { setStringPath(perlInterpreter) };
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
@@ -533,28 +535,15 @@ public class PerlProcessor extends Processor {
     }
 
     public String[] getCommandLine() throws ProcessorException {
-        // String interpreter = getInterpreter();
-        // String[] cmd = new String[] { interpreter };
+        String interpreter = getInterpreter();
         String perlInterpreterLibOption = null;
         String perlModuleDirectoryOption = null;
-        String perlLib;
-        try {
-            perlLib = PerlUtils.getPerlModulePath().toOSString();
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
-        }
+        String perlLib = getLibraryPath();
         perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + setStringPath(perlLib) : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
-        // This is no usefull anymore since all libs are at the same place:
-        // try {
-        // perlModuleDirectoryOption = "-I" + setStringPath(PerlUtils.getPerlModuleDirectoryPath().toOSString());
-        // //$NON-NLS-1$
-        // } catch (CoreException e) {
-        // throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
-        // }
-
-        IPath absCodePath = this.getCodeProject().getLocation().append(this.getCodePath());
-        String[] cmd = getCommandLineByCondition(absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
+        IPath absCodePath = Path.fromOSString(getCodeLocation()).append(this.getCodePath());
+        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption,
+                perlModuleDirectoryOption);
         return cmd;
     }
 }

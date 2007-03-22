@@ -129,7 +129,7 @@ public class ExportFileResource {
     }
 
     /**
-     * Gets the count of the files
+     * Gets the count of the files.
      * 
      * @return
      */

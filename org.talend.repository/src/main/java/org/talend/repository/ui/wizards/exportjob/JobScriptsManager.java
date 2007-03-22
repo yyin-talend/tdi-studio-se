@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
 
 /**
@@ -37,7 +36,10 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.Exp
  */
 public abstract class JobScriptsManager {
 
-    protected String[] launcherPerlScriptFile = { "run.sh", "run.bat" }; //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final String UNIX_LAUNCHER = "run.sh";
+
+    protected static final String WINDOWS_LAUNCHER = "run.bat";
+
     /**
      * qian Gets the export resources.
      * 

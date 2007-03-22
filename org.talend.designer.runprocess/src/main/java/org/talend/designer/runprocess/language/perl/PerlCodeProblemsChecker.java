@@ -34,7 +34,6 @@ import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
-import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.perl.PerlProcessor;
@@ -244,8 +243,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
 
         // System.out.println(expression);
         try {
-            status = PerlProcessor.exec(out, err, null, null, 
-                    Level.TRACE, "-c", file.getAbsolutePath(), -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
+            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);

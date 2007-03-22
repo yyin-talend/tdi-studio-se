@@ -139,31 +139,6 @@ public class ComponentsFactory implements IComponentsFactory {
         return dir;
     }
 
-    /**
-     * Gets the model file of the component.
-     * 
-     * @param componentName
-     * @param modelFileSuffix
-     * @return
-     */
-    public List<URL> getComponentModel(String componentName, String modelFileSuffix) {
-        List<URL> list = new ArrayList<URL>();
-        File file = getComponentsLocation(COMPONENTS_FOLDER_NAME + componentName);
-        if (file.exists() && file.isDirectory()) {
-            File[] files = file.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].getName().endsWith(modelFileSuffix)) {
-                    try {
-                        list.add(files[i].toURL());
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
     private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source) {
         String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
         // String pluginFullName = currentComp.getPluginFullName();

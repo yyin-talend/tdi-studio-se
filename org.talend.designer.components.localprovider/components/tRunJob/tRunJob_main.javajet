@@ -5,7 +5,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.designer.runprocess.java.JavaProcessor
+    org.talend.designer.runprocess.ProcessorUtilities
+    org.talend.designer.runprocess.ProcessorException
     java.util.List
 "
 class="RunJobMain"
@@ -16,44 +17,62 @@ class="RunJobMain"
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	String interpreterPath = "<interpreter_path>";
-    if (codeGenArgument.getInterpreterPath() != null) {
-        interpreterPath = codeGenArgument.getInterpreterPath();
-        interpreterPath = interpreterPath.replace("\\","/");
-    }
+//	String interpreterPath = "<interpreter_path>";
+//    if (codeGenArgument.getInterpreterPath() != null) {
+//        interpreterPath = codeGenArgument.getInterpreterPath();
+//        interpreterPath = interpreterPath.replace("\\","/");
+//    }
 
-    String libPath = "<library_path>";
-    if (codeGenArgument.getLibPath() != null) {
-        libPath = codeGenArgument.getLibPath();
-        libPath = libPath.replace("\\","/");
-    }
+//    String libPath = "<library_path>";
+//    if (codeGenArgument.getLibPath() != null) {
+//        libPath = codeGenArgument.getLibPath();
+//        libPath = libPath.replace("\\","/");
+//    }
 
-    String runtimeFilePath = "<runtime_path>";
-    if (codeGenArgument.getRuntimeFilePath() != null) {
-        runtimeFilePath = codeGenArgument.getRuntimeFilePath();
-        runtimeFilePath = runtimeFilePath.replace("\\","/");
-    }
+//    String runtimeFilePath = "<runtime_path>";
+//    if (codeGenArgument.getRuntimeFilePath() != null) {
+//        runtimeFilePath = codeGenArgument.getRuntimeFilePath();
+//        runtimeFilePath = runtimeFilePath.replace("\\","/");
+//    }
 
-    String currentProjectName = "<project_name>";
-    if (codeGenArgument.getCurrentProjectName() != null) {
-        currentProjectName = codeGenArgument.getCurrentProjectName();
-    }
+//    String currentProjectName = "<project_name>";
+//    if (codeGenArgument.getCurrentProjectName() != null) {
+//        currentProjectName = codeGenArgument.getCurrentProjectName();
+//    }
     
-    String process = ElementParameterParser.getValue(node, "__PROCESS__");
-    
-    JavaProcessor jProcessor = new JavaProcessor(node.getProcess(), true);
+    String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
+    String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+    process = process.replace("'", "");
+    context = context.replace("'", "");
+    String[] codeOptions = new String[] {"--master_pid=0"};
+    String[] commandLine = new String[] {"<command>"};
+    try {
+       commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
+    } catch (ProcessorException e) {
+%>
+	<%= e.getMessage() %>
+<%
+   }
 %>
 
 Runtime runtime = Runtime.getRuntime();
-final Process ps<%=cid %> = runtime.exec(new String[] { "<%=interpreterPath %>", "-cp", "<%=libPath %>", "<%=runtimeFilePath %>", "", "--master_pid=" + masterPid, "--context=" + contextStr  } );
-java 
--cp 
-lib
-;
-D:\Mes documents\Developpement\runtime-EclipseApplication1\.Java\classes
-tutu.testsystem.testSystem 
---context=Default
---master_pid=toto
+final Process ps<%=cid %> = runtime.exec(new String[] {
+<%
+for (int i=0; i<commandLine.length; i++) {
+%>
+"<%=commandLine[i] %>"<%if (i <= (commandLine.length -2)) {%>,<%}%>
+<%
+}
+%>
+});
+//java 
+//-cp 
+//lib
+//;
+//D:\Mes documents\Developpement\runtime-EclipseApplication1\.Java\classes
+//tutu.testsystem.testSystem 
+//--context=Default
+//--master_pid=toto
 
 //my @arguments = (
 //    '"interpreterPath "',

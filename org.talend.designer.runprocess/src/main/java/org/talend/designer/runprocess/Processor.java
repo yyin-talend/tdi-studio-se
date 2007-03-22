@@ -58,6 +58,12 @@ public abstract class Processor implements IProcessor {
 
     private IContext context;
 
+    private String libraryPath;
+
+    private String interpreter;
+
+    private String codeLocation;
+
     /**
      * Construct a new Processor.
      * 
@@ -65,6 +71,11 @@ public abstract class Processor implements IProcessor {
      */
     public Processor() {
         super();
+        if (ProcessorUtilities.isExportConfig()) {
+            setInterpreter(ProcessorUtilities.getInterpreter());
+            setLibraryPath(ProcessorUtilities.getLibraryPath());
+            setCodeLocation(ProcessorUtilities.getCodeLocation());
+        }
     }
 
     /**
@@ -228,6 +239,7 @@ public abstract class Processor implements IProcessor {
 
     /**
      * Sets the externalUse.
+     * 
      * @param externalUse the externalUse to set
      */
     public static void setExternalUse(boolean externalUse) {
@@ -240,6 +252,60 @@ public abstract class Processor implements IProcessor {
         } else {
             return path;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getLibraryPath()
+     */
+    public String getLibraryPath() throws ProcessorException {
+        return libraryPath;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
+     */
+    public String getInterpreter() throws ProcessorException {
+        return interpreter;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setInterpreter(java.lang.String)
+     */
+    public void setInterpreter(String interpreter) {
+        this.interpreter = interpreter;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setLibraryPath(java.lang.String)
+     */
+    public void setLibraryPath(String libraryPath) {
+        this.libraryPath = libraryPath;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getCodeLocation()
+     */
+    public String getCodeLocation() throws ProcessorException {
+        return codeLocation;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setCodeLocation(java.lang.String)
+     */
+    public void setCodeLocation(String codeLocation) {
+        this.codeLocation = codeLocation;
     }
 
     /*
@@ -287,13 +353,6 @@ public abstract class Processor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     public abstract IPath getContextPath();
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
-     */
-    public abstract String getInterpreter() throws ProcessorException;
 
     /*
      * (non-Javadoc)

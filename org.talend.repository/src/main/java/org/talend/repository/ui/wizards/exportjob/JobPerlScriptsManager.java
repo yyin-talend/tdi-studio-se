@@ -44,7 +44,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -52,18 +51,15 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
 
@@ -78,9 +74,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     /**
      * 
      */
-    private static final String COMPONENTS_FOLDER_NAME = "components";//$NON-NLS-1$
+    private static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
 
     private static final String ALL_PERL_INTERPRETERS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
+
+    private static final String PERL_INTERPRETER_UNIX = "Unix"; //$NON-NLS-1$
+
+    private static final String PERL_INTERPRETER_WINDOWS = "Windows"; //$NON-NLS-1$
 
     private static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
@@ -101,40 +101,45 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process,
             Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
 
+        ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
+
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            generatePerlFiles(exportChoice.get(ExportChoice.needGenerateCode), processItem, contextName);
+            generatePerlFiles(processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
                     escapeSpace(contextName), escapeSpace(launcher)));
 
-            // Gets system routines.
-            List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
-            if (systemRoutineList.size() > 0) {
-                process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
-                        + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
-            }
-            // Gets user routines.
-            try {
-                List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
-                if (userRoutineList.size() > 0) {
-                    process[i].addResources(ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
-                            + this.getCurrentProjectName(), userRoutineList);
+            if (i == 0) { // i = 0 to export only once
+                // Gets system routines.
+                List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+                if (systemRoutineList.size() > 0) {
+                    process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar
+                            + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
+                            + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
                 }
-            } catch (MalformedURLException e) {
-                ExceptionHandler.process(e);
-            }
+                // Gets user routines.
+                try {
+                    List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+                    if (userRoutineList.size() > 0) {
+                        process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar
+                                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
+                                + this.getCurrentProjectName(), userRoutineList);
+                    }
+                } catch (MalformedURLException e) {
+                    ExceptionHandler.process(e);
+                }
 
-            resources.add(getModel(exportChoice.get(ExportChoice.needModule)));
+                List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
+                if (talendLibraries.size() > 0) {
+                    process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar + "talend", talendLibraries);
+                }
+            }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
-            List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
-            process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            resources.addAll(getChildrenScripts(processItem, needChildren));
+            addChildrenResources(processItem, needChildren, process[i], exportChoice);
             process[i].addResources(resources);
-
-            getComponentModel(processItem, process[i]);
         }
         return Arrays.asList(process);
     }
@@ -147,13 +152,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @throws MalformedURLException
      */
     private List<URL> getUserRoutine(boolean needUserRoutine) throws MalformedURLException {
-        List<URL> list = new ArrayList();
+        List<URL> list = new ArrayList<URL>();
         if (!needUserRoutine) {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String folderPath = librariesService.getLibrariesPath() + File.separatorChar
-                + librariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + this.getCurrentProjectName();
+                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + this.getCurrentProjectName();
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -173,14 +178,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     private List<URL> getSystemRoutine(boolean needSystemRoutine) {
-        List<URL> list = new ArrayList();
+        List<URL> list = new ArrayList<URL>();
         if (!needSystemRoutine) {
             return list;
         }
         if (needSystemRoutine) {
             ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
             String path = librariesService.getLibrariesPath() + File.separatorChar
-                    + librariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + SYSTEM_ROUTINES_FOLDER_NAME;
+                    + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + SYSTEM_ROUTINES_FOLDER_NAME;
             File file = new File(path);
             File[] files = file.listFiles();
             for (int i = 0; i < files.length; i++) {
@@ -196,16 +201,35 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return list;
     }
 
-    private void getComponentModel(ProcessItem processItem, ExportFileResource resource) {
+    private void addComponentModules(ProcessItem processItem, ExportFileResource resource) {
         EList nList = processItem.getProcess().getNode();
         Set set = new HashSet(nList);
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             NodeType nType = (NodeType) iter.next();
             String componentName = nType.getComponentName();
 
-            List<URL> models = ComponentsFactoryProvider.getInstance().getComponentModel(componentName, ".pm"); //$NON-NLS-1$
-            resource.addResources(COMPONENTS_FOLDER_NAME + File.separatorChar + componentName, models);
+            List<URL> modules = getComponentModules(componentName); //$NON-NLS-1$
+            resource.addResources(LIBRARY_FOLDER_NAME + File.separatorChar + componentName, modules);
         }
+    }
+
+    private List<URL> getComponentModules(String componentName) {
+        List<URL> modules = new ArrayList<URL>();
+        ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
+        String path = librariesService.getLibrariesPath() + File.separatorChar + componentName;
+        File file = new File(path);
+        if (file.exists()) {
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File tempFile = files[i];
+                try {
+                    modules.add(tempFile.toURL());
+                } catch (MalformedURLException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
+        return modules;
     }
 
     private List<URL> getSource(ProcessItem processItem, boolean needChoice) {
@@ -234,12 +258,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param contextName
      * @param process
      */
-    private void generatePerlFiles(boolean needGenerateCode, ProcessItem process, String contextName) {
-        if (!needGenerateCode) {
-            return;
-        }
-        ProcessItem item = process;
-        ProcessorUtilities.generateCode(item.getProperty().getLabel(), contextName);
+    private void generatePerlFiles(ProcessItem process, String contextName) {
+        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName); //$NON-NLS-1$
     }
 
     /**
@@ -255,26 +275,19 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (!needLauncher) {
             return list;
         }
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String primaryLauncher = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        String cmdPrimary = getCommandByTalendJob(getCurrentProjectName(), escapeFileNameSpace(process), contextName,
-                primaryLauncher);
-        String secondaryLauncher = prefStore.getString(ITalendCorePrefConstants.PERL_SECONDARY_INTERPRETER);
-        String cmdSecondary = getCommandByTalendJob(getCurrentProjectName(), escapeFileNameSpace(process), contextName,
-                secondaryLauncher);
-
+        String cmd = getCommandByTalendJob(escapeFileNameSpace(process), contextName);
         String tmpFold = getTmpFolder();
         File fileTemp = new File(tmpFold);
         if (!fileTemp.exists()) {
             fileTemp.mkdir();
         }
         if (launcher.equals(ALL_PERL_INTERPRETERS)) {
-            createLauncherFile(process, list, cmdPrimary, getPrimaryFileName(), tmpFold);
-            createLauncherFile(process, list, cmdSecondary, getSecondaryFileName(), tmpFold);
-        } else if (launcher.equals(primaryLauncher)) {
-            createLauncherFile(process, list, cmdPrimary, getPrimaryFileName(), tmpFold);
-        } else if (launcher.equals(secondaryLauncher)) {
-            createLauncherFile(process, list, cmdSecondary, getSecondaryFileName(), tmpFold);
+            createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
+            createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
+        } else if (launcher.equals(PERL_INTERPRETER_UNIX)) {
+            createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
+        } else if (launcher.equals(PERL_INTERPRETER_WINDOWS)) {
+            createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
         }
         return list;
     }
@@ -313,49 +326,18 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
     }
 
-    private String getPrimaryFileName() {
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            return launcherPerlScriptFile[1];
-        } else {
-            return launcherPerlScriptFile[0];
+    private String getCommandByTalendJob(String jobName, String context) {
+        String[] cmd = new String[] {};
+        try {
+            cmd = ProcessorUtilities.getCommandLine(true, jobName, context, new String[] {});
+        } catch (ProcessorException e) {
+            e.printStackTrace();
         }
-    }
-
-    private String getSecondaryFileName() {
-        if (Platform.getOS().equals(Platform.OS_WIN32)) {
-            return launcherPerlScriptFile[0];
-        } else {
-            return launcherPerlScriptFile[1];
-        }
-    }
-
-    // FIXME to reuse the exstentent code of this implementation
-    private String getCommandByTalendJob(String project, String jobName, String context, String perlInterpreter) {
-        String contextArg = "--context="; //$NON-NLS-1$
-
-        String projectSeparator = ".job"; //$NON-NLS-1$
-
-        String wordSeparator = "_"; //$NON-NLS-1$
-
-        String perlExt = ".pl"; //$NON-NLS-1$
-
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            perlInterpreter = "perl";//$NON-NLS-1$
-        }
-
-        String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
-
-        String contextCode = context;
-
-        String[] cmd = new String[] { perlInterpreter,
-                "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode }; //$NON-NLS-1$
-
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(s).append(' ');
         }
-        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 
@@ -365,11 +347,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     public String[] getLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.PERL_INTERPRETER);
-        String secondaryPerlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.PERL_SECONDARY_INTERPRETER);
-        String[] launchers = { ALL_PERL_INTERPRETERS, perlIntepreter, secondaryPerlIntepreter };
+        String[] launchers = { ALL_PERL_INTERPRETERS, PERL_INTERPRETER_UNIX, PERL_INTERPRETER_WINDOWS };
         return launchers;
     }
 
@@ -457,30 +435,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets routine names.
-     * 
-     * @param list
-     * @param isBuildin
-     */
-    private void getRoutineNames(List list, boolean isBuildin) {
-        String projectName = getCurrentProjectName();
-        try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
-                    ERepositoryObjectType.ROUTINES);
-            for (int i = 0; i < routines.size(); i++) {
-                RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
-                if (routine.isBuiltIn() == isBuildin) {
-                    String name = routine.getProperty().getLabel();
-                    name = projectName + "__" + name + ".pm"; //$NON-NLS-1$ //$NON-NLS-2$
-                    list.add(name);
-                }
-            }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
-    }
-
-    /**
      * Gets current project name.
      * 
      * @return
@@ -498,22 +452,22 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets required perl models.
+     * Gets required perl libraries.
      * 
      * @param needModel
      * @return
      */
-    private URL getModel(boolean needModel) {
-        URL list = null;
-        if (needModel) {
+    private List<URL> getTalendLibraries(boolean needLibraries) {
+        List<URL> libraries = new ArrayList<URL>();
+        if (needLibraries) {
             try {
                 ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
-                list = service.getTalendRoutinesFolder();
+                libraries = service.getTalendRoutines();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
         }
-        return list;
+        return libraries;
     }
 
     /**
@@ -541,13 +495,15 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
-    private List<URL> getChildrenScripts(ProcessItem process, boolean needChildren) {
+    private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -555,16 +511,20 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
 
         IResource[] resources = this.getAllPerlFiles();
-        return getResourcesURL(resources, list);
+        resource.addResources(getResourcesURL(resources, list));
     }
 
     private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
-            String projectName, List<ProcessItem> processedJob) {
+            String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
-            // pretent circle
+            // prevent circle
             return;
         }
         processedJob.add(process);
+        addComponentModules(process, resource);
+        List<URL> srcList = getSource(process, exportChoice.get(ExportChoice.needSource));
+        resource.addResources(JOB_SOURCE_FOLDER_NAME, srcList);
         if (process.getProcess().getRequired() == null) {
             return;
         }
@@ -588,7 +548,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (childProcess == null) {
                 return;
             }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob);
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource,
+                    exportChoice);
         }
     }
 
@@ -596,7 +557,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return ProcessorUtilities.getProcessItem(name);
     }
 
-    private void addToList(List list, Object o) {
+    private void addToList(List<String> list, String o) {
         if (!list.contains(o)) {
             list.add(o);
         }
@@ -619,7 +580,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
                 String contextName = iter.next();
                 contextName = escapeSpace(contextName);
-                String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                String contextFullName = projectName + ".job_" + processName + "_" //$NON-NLS-1$ //$NON-NLS-2$
+                        + contextName + ".pl"; //$NON-NLS-3$
                 list.add(contextFullName);
             }
         }
