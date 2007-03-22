@@ -30,25 +30,22 @@
 
   <PARAMETERS>
     <PARAMETER NAME="SOURCE" FIELD="DIRECTORY" REQUIRED="true" NUM_ROW="1">
-      <DEFAULT>"C:/zip"</DEFAULT>
+      <DEFAULT>"c:/zip"</DEFAULT>
     </PARAMETER>
-
+    
+    <PARAMETER NAME="SUB_DIRECTROY" FIELD="CHECK" REQUIRED="true" NUM_ROW="1">
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER NAME="TARGET" FIELD="FILE" REQUIRED="true" NUM_ROW="2">
       <DEFAULT>"c:/zip/12345.zip"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="LEVEL" FIELD="CLOSED_LIST" REQUIRED="true" NUM_ROW="3">
-      <ITEMS DEFAULT="9">
-        <ITEM NAME="LEVEL0" VALUE="0" />
-        <ITEM NAME="LEVEL1" VALUE="1" />
-        <ITEM NAME="LEVEL2" VALUE="2" />
-        <ITEM NAME="LEVEL3" VALUE="3" />
-        <ITEM NAME="LEVEL4" VALUE="4" />
-        <ITEM NAME="LEVEL5" VALUE="5" />
-        <ITEM NAME="LEVEL6" VALUE="6" />
-        <ITEM NAME="LEVEL7" VALUE="7" />
-        <ITEM NAME="LEVEL8" VALUE="8" />
-        <ITEM NAME="LEVEL9" VALUE="9" />
+      <ITEMS DEFAULT="4">
+        <ITEM NAME="BEST" VALUE="9" />
+        <ITEM NAME="NORMAL" VALUE="4" />
+        <ITEM NAME="FAST" VALUE="0" />
       </ITEMS>
     </PARAMETER>
 
@@ -63,7 +60,11 @@
     </PARAMETER>    
   </PARAMETERS>
 
-  <CODEGENERATION/> 
+   <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Ant-Zip" MODULE="ant.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION> 
   
   <RETURNS/>
   

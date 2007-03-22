@@ -3,6 +3,9 @@
 	imports="
 		org.talend.core.model.process.INode
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		java.util.Map
 	"
 	class="FileZipMain"
 %>
@@ -10,20 +13,111 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();	
-%>	
+
+	String directory = ElementParameterParser.getValue(node, "__SOURCE__");
+	String zipFile = ElementParameterParser.getValue(node, "__TARGET__");
+	String level = ElementParameterParser.getValue(node, "__LEVEL__");
+	boolean isAllFile = ElementParameterParser.getValue(node, "__ALL_FILES__").equals("false");
+	boolean subDir = ElementParameterParser.getValue(node, "__SUB_DIRECTROY__").equals("true");
+	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
+%>
+
+
+        String sourceDir_<%=cid %> = <%=directory %>;      
+        java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);
+        String zipFile_<%=cid %> = <%=zipFile %>;
+        int level_<%=cid %> = <%=level %>;
         
-      java.util.zip.ZipOutputStream out_<%=cid %> = null;
-      if (subFiles_<%=cid %>.length > 0) {
-        out_<%=cid %> = new java.util.zip.ZipOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipFile_<%=cid %>))); 
+        final java.util.List<java.io.File> list_<%=cid %> = new java.util.ArrayList<java.io.File>();  
+<% 
+	if (isAllFile==true) { 
+%>  
+    	
+    	String[] patterns_<%=cid %> = new String[] {
+<%
+    for (int i=0; i < masks.size(); i++) {
+       Map<String, String> line = masks.get(i);
+%> 
+        			<%= line.get("FILEMASK") %>,        
+<%
+   }	
+%>        
+  		};  
+  		
+  		StringBuffer sbf_<%=cid %> = new StringBuffer(); 
+        sbf_<%=cid %>.append("(");
+        for (int i_<%=cid %> = 0; i_<%=cid %> < patterns_<%=cid %>.length; i_<%=cid %>++) {
+            sbf_<%=cid %>.append(patterns_<%=cid %>[i_<%=cid %>].replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+            if(i_<%=cid %> != patterns_<%=cid %>.length-1) sbf_<%=cid %>.append("|");
+        }        
+        sbf_<%=cid %>.append(")");
+        final String maskStr_<%=cid %> = new String(sbf_<%=cid %>.toString());
+        
+        file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+
+            public boolean accept(java.io.File dir, String name) {
+                java.io.File file = new java.io.File(dir, name);
+                if (file.isFile()) {                            
+                    if (name.matches(maskStr_<%=cid %>)) {
+                        list_<%=cid %>.add(file);
+                        return true;
+                    }            
+                }
+<% 
+	if (isAllFile==true) { 
+%>  
+                else
+                {   
+                	file.listFiles(this);                    
+                }
+<%
+  }
+%>                  
+                return false;
+            }
+        });
+<% 
+   } else {
+%> 
+        file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+
+            public boolean accept(java.io.File dir, String name) {
+                java.io.File file = new java.io.File(dir, name);
+                if (file.isFile()) {
+                    list_<%=cid %>.add(file);
+                    return true;
+                }
+<% 
+	if (subDir==true) { 
+%>  
+                else
+                {   
+                	file.listFiles(this);                    
+                }
+<%
+  }
+%>   
+                return false;
+            }
+        });
+<%
+   }
+%>     
+      org.apache.tools.zip.ZipOutputStream out_<%=cid %> = null;
+      if (list_<%=cid %>.size() > 0) {
+      	int beginIndex_<%=cid %> = file_<%=cid %>.getPath().length()+1;
+        out_<%=cid %> = new org.apache.tools.zip.ZipOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipFile_<%=cid %>))); 
         out_<%=cid %>.setLevel(level_<%=cid %>);
         // here get the file list
-        for (int i_<%=cid %> = 0; i_<%=cid %> < subFiles_<%=cid %>.length; i_<%=cid %>++) {
-            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(subFiles_<%=cid %>[i_<%=cid %>]));
-            out_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(subFiles_<%=cid %>[i_<%=cid %>].getName()));
+        for (int i_<%=cid %> = 0; i_<%=cid %> < list_<%=cid %>.size(); i_<%=cid %>++) {
+            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(list_<%=cid %>.get(i_<%=cid %>)));
+            out_<%=cid %>.putNextEntry(new org.apache.tools.zip.ZipEntry(list_<%=cid %>.get(i_<%=cid %>).getPath().substring(beginIndex_<%=cid %>)));
                         
             int readLen_<%=cid %>;
             byte[] buf_<%=cid %>=new byte[1024];
             while ((readLen_<%=cid %> = in_<%=cid %>.read(buf_<%=cid %>,0,1024)) != -1)  out_<%=cid %>.write(buf_<%=cid %>, 0, readLen_<%=cid %>);
             in_<%=cid %>.close();        
-        }
+        }        
       }
+      
+      if (out_<%=cid %> != null)  out_<%=cid %>.close();
