@@ -55,7 +55,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
-      <DEFAULT>'\n'</DEFAULT>
+      <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -64,7 +64,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="FIELD_SEPARATOR"
     >
-      <DEFAULT>','</DEFAULT>
+      <DEFAULT>","</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -73,7 +73,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="ESCAPE_CHAR"
     >
-      <DEFAULT>'"'</DEFAULT>
+      <DEFAULT>"""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -82,7 +82,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="TEXT_ENCLOSURE"
     >
-      <DEFAULT>'"'</DEFAULT>
+      <DEFAULT>"""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

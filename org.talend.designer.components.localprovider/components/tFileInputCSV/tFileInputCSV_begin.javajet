@@ -32,27 +32,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if(limit.equals("")){
     		limit="-1";
     	}
-    	String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-    	String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
-    	String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
-    	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");   	
+    	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+    	String delim = delim1.substring(1,delim1.length()-1);
+    	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+    	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
+    	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+    	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
 %>		
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
 		int totalLine<%=cid %> = 0;
 		int limit<%=cid %> = <%= limit %>;
-		int lastLine<%=cid %> = -1;		
+		int lastLine<%=cid %> = -1;	
 		
 		com.csvreader.CsvReader csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=delim %>);
+                new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), '<%=delim %>');
                 
-		csvReader<%=cid %>.setRecordDelimiter(<%=rowSeparator %>);
-        //csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow.equals("true") %>);
-        csvReader<%=cid %>.setTextQualifier(<%=textEnclosure %>);                
+<%          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
+          	csvReader<%=cid %>.setRecordDelimiter('<%=rowSeparator  %>');
+<%				}
+%>
+        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
+        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
 
 <%
-        if(escapeChar.equals("'\\'")){
+        if(escapeChar.equals("\\\\")){
         %>
             csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
 <%
@@ -62,7 +69,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }else{
         %>
-            //?????
+            //?????doesn't work for other escapeChar
 <%
         }
         %>       
@@ -94,14 +101,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
           	csvReader<%=cid %>.close();
           
          	csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                  new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=delim %>);
-                  
-          	csvReader<%=cid %>.setRecordDelimiter(<%=rowSeparator %>);
-          	//csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow.equals("true") %>);
-          	csvReader<%=cid %>.setTextQualifier(<%=textEnclosure %>);                
+                  new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), '<%=delim %>');
+<%          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
+          	csvReader<%=cid %>.setRecordDelimiter('<%=rowSeparator  %>');
+<%				}
+%>
+        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
+        csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
 
 <%
-        if(escapeChar.equals("'\\'")){
+        if(escapeChar.equals("\\\\")){
         %>
             csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
 <%
@@ -111,10 +120,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }else{
         %>
-            //???????????
+            //?????doesn't work for other escapeChar
 <%
         }
-        %> 
+        %>  
           
         }
         
@@ -181,7 +190,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 						
 			
-				if(<%=i %> < row<%=cid %>.length){				
+				if(0 < row<%=cid %>.length){				
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
