@@ -5,34 +5,58 @@
 			<img src="{/project/@logo}"/>
 			<xsl:value-of select="/project/@title"/>
 		 	&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-		  Project:<xsl:value-of select="/project/@name"/> 
+		  Project:&#160;&#160;<xsl:value-of select="/project/@name"/> 
+		  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+		  Language:&#160;&#160;<xsl:value-of select="/project/@language"/> 
 			<xsl:variable name="job" select="/project/job"/>
 			
 			<TABLE border="1" width='100%'>			
          <TR>
-            <TD COLSPAN='2'>Name:<xsl:value-of select="$job/@name"/></TD>
+            <TD COLSPAN='2'>Name:&#160;&#160;<xsl:value-of select="$job/@name"/></TD>
          </TR>
          <TR>
-            <TD>Author:<xsl:value-of select="$job/@author"/></TD>
-            <TD>Version:<xsl:value-of select="$job/@version"/></TD>
+            <TD>Author:&#160;&#160;<xsl:value-of select="$job/@author"/></TD>
+            <TD>Version:&#160;&#160;<xsl:value-of select="$job/@version"/></TD>
          </TR>
          <TR>
-            <TD>Purpose:<xsl:value-of select="$job/@purpose"/></TD>
-            <TD>Status:<xsl:value-of select="$job/@status"/></TD>
+            <TD>Purpose:&#160;&#160;<xsl:value-of select="$job/@purpose"/></TD>
+            <TD>Status:&#160;&#160;<xsl:value-of select="$job/@status"/></TD>
          </TR>
          <TR>
-            <TD COLSPAN='2'>Description:<xsl:value-of select="$job/@description"/></TD>
+            <TD COLSPAN='2'>Description:&#160;&#160;<xsl:value-of select="$job/@description"/></TD>
          </TR>
          <TR>
-            <TD>Creation:<xsl:value-of select="$job/@creation"/></TD>
-            <TD>Modification:<xsl:value-of select="$job/@modification"/></TD>
+            <TD>Creation:&#160;&#160;<xsl:value-of select="$job/@creation"/></TD>
+            <TD>Modification:&#160;&#160;<xsl:value-of select="$job/@modification"/></TD>
          </TR>  
       </TABLE>
-      
+      <br/>
       <xsl:variable name="jobPreviewPicture" select="$job/preview/@picture"/>
 			<xsl:if test="string-length($jobPreviewPicture)!=0">
+			Job Preview Picture:<br/>
 				<img src="{$jobPreviewPicture}"/>
                        </xsl:if>
+      <br/>
+      <br/>                 
+      Component List:
+      <TABLE border="1" width="100%">
+                   		 <TR>
+                   		 <TH>Component Name</TH>
+                   		 <TH>Component Type</TH>
+                   		 </TR>
+                   		   <xsl:for-each select="$job/componentList/componentItem">                  
+                           <TR>
+                           		<xsl:if test="position() mod 2 != 0">
+                                <xsl:attribute name="bgcolor">#e0edff</xsl:attribute>
+                          		</xsl:if> 
+
+                              <TD><A href="#{@link}">
+				<xsl:value-of select="@name"/></A></TD>
+                              <TD><xsl:value-of select="@type"/></TD>                           
+                           </TR>
+                   		 </xsl:for-each>
+      </TABLE>                 
+                       
       <br/>
       Components Description:
       <br/>
@@ -40,15 +64,15 @@
 			<xsl:for-each select="$job/component">
 					<br/><br/><br/>
 					<img src="{@icon}"/>&#160;&#160;&#160;&#160;&#160;
-	      		Unique Name:	      		
+	      		Unique Name:&#160;&#160;	      		
 	      			<A name="{@uniqueName}">
 				</A>
 	      		<xsl:value-of select="@uniqueName"/>&#160;&#160;&#160;&#160;&#160;
-	      		Label:<xsl:value-of select="@label"/>
+	      		Label:&#160;&#160;<xsl:value-of select="@label"/>
 	      		<br/>
       
 	      		
-						Inputs:
+						Inputs:&#160;&#160;
          		<xsl:for-each select="input">         				
          				<xsl:choose>
         						<xsl:when test="text() = 'none'">
@@ -67,7 +91,7 @@
 						
 						
 	      &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-	      Outputs:
+	      Outputs:&#160;&#160;
          		<xsl:for-each select="output">         				
          				<xsl:choose>
         						<xsl:when test="text() = 'none'">
@@ -109,7 +133,7 @@
 	 														<TABLE width="100%" BORDERCOLOR="#000000" BORDER="1" CELLPADDING="0" CELLSPACING="0">
 	 															<TR>
 	 															<xsl:for-each select="column">			 														
-											  						<TD><xsl:value-of select="@name"/>: <xsl:value-of select="text()"/></TD>															
+											  						<TD><xsl:value-of select="@name"/>: &#160;&#160;<xsl:value-of select="text()"/></TD>															
 																</xsl:for-each>
 																</TR>
 									 						</TABLE>

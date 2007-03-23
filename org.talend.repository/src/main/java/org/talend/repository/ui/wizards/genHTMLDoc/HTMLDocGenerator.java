@@ -278,7 +278,30 @@ public class HTMLDocGenerator {
         IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
         List<INode> graphicalNodeList = (List<INode>) process.getGraphicalNodes();
 
+        List<INode> componentList = new ArrayList<INode>();
+        Map<String, String> componentNameTypeMap = new HashMap<String, String>();
         for (INode node : graphicalNodeList) {
+
+            // If component is not activate, do not need to get it's information
+            if (!node.isActivate()) {
+                continue;
+            }
+            componentList.add(node);
+        }
+        if (componentList.size() != 0) {
+            Element componentNameListElement = jobElement.addElement("componentList");
+            Element componentItemElement = null;
+            for (INode componentNode : componentList) {
+                componentItemElement = componentNameListElement.addElement("componentItem");
+                componentItemElement.addAttribute("name", componentNode.getUniqueName());
+                componentItemElement.addAttribute("link", componentNode.getUniqueName());
+                componentItemElement.addAttribute("type", componentNode.getComponent().getName());
+            }
+        }
+
+        for (INode node : graphicalNodeList) {
+
+            // If component is not activate, do not need to get it's information
             if (!node.isActivate()) {
                 continue;
             }
@@ -292,6 +315,7 @@ public class HTMLDocGenerator {
             componentElement.addAttribute("icon", PICTUREFOLDERPATH + componentIconFileName);
             componentElement.addAttribute("uniqueName", uniqueName);
 
+            // Stores the path of component icon.
             picFilePathMap.put(componentIconFileName, relativePath.substring(relativePath.indexOf("/") + 1,
                     relativePath.length() - 1));
             componentElement.addAttribute("label", uniqueName);
@@ -299,6 +323,7 @@ public class HTMLDocGenerator {
             boolean istMap = node.getComponent().getName().equals("tMap");
             String previewImagePath, storedPreviewImagePath = "";
 
+            // If component is tMap, gets its preview picture.
             if (istMap) {
                 previewImagePath = getPreviewImagePath(node.getElementParameters());
                 if (!previewImagePath.equals("")) {
@@ -312,24 +337,26 @@ public class HTMLDocGenerator {
 
             List<String> sourceList = sourceConnectionMap.get(uniqueName);
 
+            // Gets the input of current component.
             if (sourceList != null && sourceList.size() > 0) {
                 for (String string : sourceList) {
                     Element inputElement = componentElement.addElement("input");
                     inputElement.setText(checkString(string));
                 }
-            } else {
+            } else {// Sets the value of input to 'none'.
                 Element inputElement = componentElement.addElement("input");
                 inputElement.setText(EMPTY_ELEMENT_VALUE);
             }
 
             List<String> targetList = targetConnectionMap.get(uniqueName);
+            // Gets the output of current component.
             if (targetList != null && targetList.size() > 0) {
                 for (String string : targetList) {
                     Element outputElement = componentElement.addElement("output");
                     outputElement.addAttribute("link", string);
                     outputElement.setText(string);
                 }
-            } else {
+            } else {// Sets the value of output to 'none'.
                 Element inputElement = componentElement.addElement("output");
                 inputElement.setText(EMPTY_ELEMENT_VALUE);
             }
@@ -341,63 +368,7 @@ public class HTMLDocGenerator {
 
             List elementParameterList = node.getElementParameters();
 
-            if (elementParameterList != null && elementParameterList.size() != 0) {
-                if (istMap) {
-                    generateElementInfoOnlyFortMap(parametersElement, elementParameterList);
-                } else {
-
-                    int numRow = 1;
-                    boolean isNewParam = true;
-
-                    Element parameterElement = null;
-                    for (int j = 0; j < elementParameterList.size(); j++) {
-                        IElementParameter type = (IElementParameter) elementParameterList.get(j);
-                        if (type.isShow(elementParameterList)
-                                && ((type.getCategory().equals(EComponentCategory.PROPERTY) || (type.getCategory()
-                                        .equals(EComponentCategory.DOC)))) && (!type.getName().equals("SCHEMA"))
-                                && (!type.getName().equals("PROPERTY_TYPE"))
-                                && (!type.getName().equals("QUERYSTORE_TYPE")) && (!type.getName().equals("PROPERTY"))) {
-
-                            // Gets the display name of a selected combo item.
-                            if (type.getName().equals("TYPE")) {
-                                int index = type.getIndexOfItemFromList(type.getDisplayName());
-                                String displayName = type.getListItemsDisplayName()[index];
-                                parameterElement = parametersElement.addElement("parameter");
-                                Element columnElement = parameterElement.addElement("column");
-                                columnElement.addAttribute("name", checkString(type.getDisplayName()));
-                                columnElement.setText(displayName);
-                                continue;
-                            }
-
-                            // Always put Column 'COMMENT' in a new line.
-                            if (type.getNumRow() == numRow && (!type.getName().equals("COMMENT"))) {
-                                if (isNewParam) {
-                                    parameterElement = parametersElement.addElement("parameter");
-                                }
-                                Element columnElement = parameterElement.addElement("column");
-
-                                columnElement.addAttribute("name", checkString(type.getDisplayName()));
-
-                                if (type.getValue() != null) {
-                                    columnElement.setText(checkString(type.getValue().toString()));
-                                } else {
-                                    columnElement.setText("");
-                                }
-                                isNewParam = false;
-                            }
-
-                            else {
-                                parameterElement = parametersElement.addElement("parameter");
-                                Element columnElement = parameterElement.addElement("column");
-                                columnElement.addAttribute("name", checkString(type.getDisplayName()));
-                                columnElement.setText(type.getValue().toString());
-                                numRow = type.getNumRow();
-                                isNewParam = false;
-                            }
-                        }
-                    }
-                }
-            }
+            generateComponentElementParamInfo(istMap, parametersElement, elementParameterList);
 
             List metaDataList = node.getMetadataList();
             if (metaDataList != null && metaDataList.size() != 0) {
@@ -421,6 +392,74 @@ public class HTMLDocGenerator {
                         columnElement.addAttribute("nullable", checkString(columnType.isNullable() + ""));
                         columnElement.addAttribute("comment", checkString(ElementParameterParser.parse(node, columnType
                                 .getComment())));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Generates the element parameters information of component.
+     * 
+     * @param istMap
+     * @param parametersElement
+     * @param elementParameterList
+     */
+    private static void generateComponentElementParamInfo(boolean istMap, Element parametersElement,
+            List elementParameterList) {
+        if (elementParameterList != null && elementParameterList.size() != 0) {
+            if (istMap) {
+                generateElementInfoOnlyFortMap(parametersElement, elementParameterList);
+            } else {
+
+                int numRow = 1;
+                boolean isNewParam = true;
+
+                Element parameterElement = null;
+                for (int j = 0; j < elementParameterList.size(); j++) {
+                    IElementParameter type = (IElementParameter) elementParameterList.get(j);
+                    if (type.isShow(elementParameterList)
+                            && ((type.getCategory().equals(EComponentCategory.PROPERTY) || (type.getCategory()
+                                    .equals(EComponentCategory.DOC)))) && (!type.getName().equals("SCHEMA"))
+                            && (!type.getName().equals("PROPERTY_TYPE")) && (!type.getName().equals("QUERYSTORE_TYPE"))
+                            && (!type.getName().equals("PROPERTY"))) {
+
+                        // Gets the display name of a selected combo item.
+                        if (type.getName().equals("TYPE")) {
+                            int index = type.getIndexOfItemFromList(type.getDisplayName());
+                            String displayName = type.getListItemsDisplayName()[index];
+                            parameterElement = parametersElement.addElement("parameter");
+                            Element columnElement = parameterElement.addElement("column");
+                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
+                            columnElement.setText(displayName);
+                            continue;
+                        }
+
+                        // Always put Column 'COMMENT' in a new line.
+                        if (type.getNumRow() == numRow && (!type.getName().equals("COMMENT"))) {
+                            if (isNewParam) {
+                                parameterElement = parametersElement.addElement("parameter");
+                            }
+                            Element columnElement = parameterElement.addElement("column");
+
+                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
+
+                            if (type.getValue() != null) {
+                                columnElement.setText(checkString(type.getValue().toString()));
+                            } else {
+                                columnElement.setText("");
+                            }
+                            isNewParam = false;
+                        }
+
+                        else {
+                            parameterElement = parametersElement.addElement("parameter");
+                            Element columnElement = parameterElement.addElement("column");
+                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
+                            columnElement.setText(type.getValue().toString());
+                            numRow = type.getNumRow();
+                            isNewParam = false;
+                        }
                     }
                 }
             }
@@ -521,6 +560,7 @@ public class HTMLDocGenerator {
         projectElement.addAttribute("name", getProject().getLabel());
         projectElement.addAttribute("logo", PICTUREFOLDERPATH + TALEND_LOGO_FILE_NAME);
         projectElement.addAttribute("title", TITLE);
+        projectElement.addAttribute("language", getProject().getLanguage().getName());
         return projectElement;
     }
 
