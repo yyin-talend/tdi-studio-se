@@ -455,29 +455,7 @@ public class JavaProcessor extends Processor {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
 
-        // Does the java nature exists in the environment
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
-
-        if (!prj.exists()) {
-            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            final IProjectDescription desc = workspace.newProjectDescription(prj.getName());
-            if (nature != null) {
-                desc.setNatureIds(new String[] { JavaCore.NATURE_ID });
-            }
-            prj.create(null);
-            prj.open(IResource.BACKGROUND_REFRESH, null);
-            prj.setDescription(desc, null);
-        } else if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
-            IProjectDescription description = prj.getDescription();
-            String[] natures = description.getNatureIds();
-            String[] newNatures = new String[natures.length + 1];
-            System.arraycopy(natures, 0, newNatures, 0, natures.length);
-            newNatures[natures.length] = JavaCore.NATURE_ID;
-            description.setNatureIds(newNatures);
-            prj.open(IResource.BACKGROUND_REFRESH, null);
-            prj.setDescription(description, null);
-        }
+        initJavaProject(prj);
         javaProject = JavaCore.create(prj);
 
         IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
@@ -488,17 +466,6 @@ public class JavaProcessor extends Processor {
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
-        // classpath.add(libClasspathEntry);
-
-        IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
-        if (!runtimeFolder.exists()) {
-            runtimeFolder.create(false, true, null);
-        }
-
-        IFolder sourceFolder = prj.getFolder(new Path(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
-        if (!sourceFolder.exists()) {
-            sourceFolder.create(false, true, null);
-        }
 
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
@@ -520,6 +487,47 @@ public class JavaProcessor extends Processor {
 
         return prj;
 
+    }
+
+    /**
+     * DOC mhirt Comment method "initJavaProject".
+     * @param prj
+     * @throws CoreException
+     */
+    private static void initJavaProject(IProject prj) throws CoreException {
+        // Does the java nature exists in the environment
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
+
+        if (!prj.exists()) {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            final IProjectDescription desc = workspace.newProjectDescription(prj.getName());
+            if (nature != null) {
+                desc.setNatureIds(new String[] { JavaCore.NATURE_ID });
+            }
+            prj.create(null);
+            prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.setDescription(desc, null);
+            
+            IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
+            if (!runtimeFolder.exists()) {
+                runtimeFolder.create(false, true, null);
+            }
+
+            IFolder sourceFolder = prj.getFolder(new Path(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+            if (!sourceFolder.exists()) {
+                sourceFolder.create(false, true, null);
+            }
+        } else if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
+            IProjectDescription description = prj.getDescription();
+            String[] natures = description.getNatureIds();
+            String[] newNatures = new String[natures.length + 1];
+            System.arraycopy(natures, 0, newNatures, 0, natures.length);
+            newNatures[natures.length] = JavaCore.NATURE_ID;
+            description.setNatureIds(newNatures);
+            prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.setDescription(description, null);
+        }
     }
 
     /**
@@ -633,9 +641,10 @@ public class JavaProcessor extends Processor {
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
-            for (File externalLib : externalLibDirectory.listFiles()) {
+            for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile()) {
-                    libPath.append(externalLib.getAbsolutePath() + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                    libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
+                            + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
                 }
             }
         }
@@ -650,7 +659,7 @@ public class JavaProcessor extends Processor {
         String className = classPath.toString().replace('/', '.');
 
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
-                new Path(libPath.toString()).toPortableString() + new Path(projectPath).toPortableString(), className };
+                libPath.toString() + new Path(projectPath).toPortableString(), className };
     }
 
     /*
