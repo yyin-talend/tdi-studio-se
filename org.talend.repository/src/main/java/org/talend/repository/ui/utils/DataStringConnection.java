@@ -49,9 +49,9 @@ public class DataStringConnection {
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[8];
+        dataConnection = new DataConnection[9];
 
-        defaultTable = new String[8];
+        defaultTable = new String[9];
 
         dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -79,6 +79,10 @@ public class DataStringConnection {
         dataConnection[7] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 ":" + port + "/" + sid, "50000"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+        dataConnection[8] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
+                "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        
 //        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 //                + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -86,18 +90,15 @@ public class DataStringConnection {
         // dataConnection[3] = new DataConnection("Oracle Thin", "jdbc:oracle:thin:@<host>:<port>:<sid>",
         // "jdbc:oracle:thin:@" + host + ":"
         // + port + ":" + sid, "1521");
-        //        
+
         // dataConnection[4] = new DataConnection("Oracle Oci", "jdbc:oracle:oci:@<host>:<port>:<sid>",
         // "jdbc:oracle:oci:@" + host + ":"
         // + port + ":" + sid, "1521");
+
         // dataConnection[6] = new DataConnection("Sybase", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" +
         // host + ":" + port
         // + "/" + sid, "2048");
-        //
-        // dataConnection[7] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
-        // "jdbc:jtds:sqlserver://"
-        // + host + ":" + port + "/" + sid, "1433");
-        //
+
         // dataConnection[8] = new DataConnection("Microsoft Access",
         // "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>;UID=%<login>%;PWD=%<password>%",
         // "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + fileMdb + ";UID=%" + word + ";PWD=%" + word);

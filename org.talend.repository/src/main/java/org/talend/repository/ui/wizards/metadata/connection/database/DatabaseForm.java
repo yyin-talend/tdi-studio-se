@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.database;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -201,14 +206,20 @@ public class DatabaseForm extends AbstractForm {
         // Database Type Combo
         urlDataStringConnection = new DataStringConnection();
 
-        //PTODO cantoine : HIDDEN SYBASE connection in JAVA MODE.
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
-        } else {
-            String [] dbJava = { "MySQL", "PostgreSQL", "Oracle with SID", "Oracle with service name", "Generic ODBC", "Microsoft SQL Server (Odbc driver)"};
+        //PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            Collection<String> databaseJava = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
+            databaseJava.remove("IBM DB2");
+            databaseJava.remove("Microsoft SQL Server");
+            String [] dbJava = (String [])databaseJava.toArray(new String[databaseJava.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbJava, 2, true); //$NON-NLS-1$
+        } else {
+            Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
+            databasePerl.remove("SQL Server");
+            String [] dbPerl = (String [])databasePerl.toArray(new String[databasePerl.size()]);
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
         }
 
         
