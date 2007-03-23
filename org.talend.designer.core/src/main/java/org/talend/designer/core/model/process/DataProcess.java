@@ -40,6 +40,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -322,11 +323,26 @@ public class DataProcess {
             Map<IMultipleComponentItem, AbstractNode> itemsMap, Node graphicalNode) {
 
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
+        boolean targetFound;
+        INode targetNode = null;
+        for (int i = 0; i < itemList.size(); i++) {
+            targetNode = itemsMap.get(itemList.get(i));
+            targetFound = false;
+            for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
+                if (targetNode.getElementParameters().get(j).getName().equals(
+                        EParameterName.TSTATCATCHER_STATS.getName())) {
+                    IElementParameter param = targetNode.getElementParameters().get(j);
+                    param.setValue(graphicalNode.getPropertyValue(EParameterName.TSTATCATCHER_STATS.getName()));
+                    targetFound = true;
+                }
+            }
+        }
 
         // set the specific parameters value.
         for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
-            INode sourceNode = null, targetNode = null;
-            boolean sourceFound = false, targetFound = false;
+            INode sourceNode = null;
+            boolean sourceFound = false;
+            targetFound = false;
             for (int i = 0; i < itemList.size() && !targetFound; i++) {
                 if (itemList.get(i).getName().equals(param.getTargetComponent())) {
                     targetNode = itemsMap.get(itemList.get(i));
