@@ -133,7 +133,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
     protected static void performRefresh() {
         for (AbstractSection section : REGISTERED_SECTIONS) {
-            section.refresh();
+            if (section.getPart() != null) {
+                section.refresh();
+            }
         }
     }
 
@@ -181,13 +183,17 @@ public abstract class AbstractSection extends AbstractPropertySection {
      */
     private static void showControls(boolean visible) {
         for (AbstractSection section : REGISTERED_SECTIONS) {
-            section.showControl(visible);
+            if (section.getPart() != null) {
+                section.showControl(visible);
+            }
         }
     }
 
     private static void enableControls(boolean enable) {
         for (AbstractSection section : REGISTERED_SECTIONS) {
-            section.enableControl(enable);
+            if (section.getPart() != null) {
+                section.enableControl(enable);
+            }
         }
     }
 

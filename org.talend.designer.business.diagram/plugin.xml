@@ -537,6 +537,7 @@
       <Action
             class="org.talend.designer.business.diagram.custom.actions.OpenDiagramAction"
             id="org.talend.designer.business.diagram.Action2"
+            isEditAction="true"
             level="10"
             name="OpenDiagramAction"/>
       <Action
@@ -545,6 +546,7 @@
       <Action
             class="org.talend.designer.business.diagram.custom.actions.ReadDiagramAction"
             id="org.talend.designer.business.diagram.Action4"
+            isReadAction="true"
             level="20"
             name="ReadDiagramAction"/>
    </extension>

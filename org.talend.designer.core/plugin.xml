@@ -196,11 +196,13 @@
       <Action
             class="org.talend.designer.core.ui.action.EditProcess"
             id="org.talend.designer.core.actions.editprocess"
+            isEditAction="true"
             level="10"
             name="Edit process"/>
       <Action
             class="org.talend.designer.core.ui.action.ReadProcess"
             id="org.talend.designer.core.actions.readprocess"
+            isReadAction="true"
             level="11"
             name="Read process"/>
       <Action

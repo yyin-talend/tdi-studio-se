@@ -28,6 +28,8 @@
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateConnectionAction"
             id="org.talend.repository.actions.createconnection"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create connection"/>
       <Action
@@ -48,26 +50,36 @@
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction"
             id="org.talend.repository.actions.createfiledelimited"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create file delimited"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateFilePositionalAction"
             id="org.talend.repository.actions.createfilepositional"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create file positional"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileRegexpAction"
             id="org.talend.repository.actions.createfileregexp"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create file regexp"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileXmlAction"
             id="org.talend.repository.actions.createfilexml"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create file xml"/>
       <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileLdifAction"
             id="org.talend.repository.actions.createfileldif"
+            isEditAction="true"
+            isReadAction="true"
             level="10"
             name="Metadata/Create file ldif"/>
       <Action
@@ -92,6 +104,7 @@
       <Action
             class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
             id="org.talend.repository.actions.opendocumentation"
+            isReadAction="true"
             level="11"
             name="Open documentation"/>
       <Action
@@ -122,6 +135,7 @@
       <Action
             class="org.talend.repository.ui.actions.routines.EditRoutineAction"
             id="org.talend.repositorys.actions.editroutine"
+            isEditAction="true"
             level="10"
             name="Edit routine"/>
       <Action
@@ -132,6 +146,7 @@
       <Action
             class="org.talend.repository.ui.actions.routines.ReadRoutineAction"
             id="org.talend.repositorys.actions.readroutine"
+            isReadAction="true"
             level="12"
             name="Read routine"/>
        
@@ -153,6 +168,7 @@
        <Action
              class="org.talend.repository.ui.actions.context.EditContextAction"
              id="org.talend.repository.editcontext"
+             isEditAction="true"
              level="10"
              name="Edit Context"/>
        <Action
@@ -172,6 +188,7 @@
             contributorId="org.talend.repository.views.repository"
             labelProvider="org.talend.repository.ui.properties.PropsTitleLabelProvider">
          <propertyCategory category="main"/>
+         <propertyCategory category="version"/>
       </propertyContributor>
    </extension>
    <extension
@@ -181,6 +198,11 @@
                category="main"
                id="repository.maintab"
                label="%repository.prop.main"/>
+         <propertyTab
+               afterTab="main"
+               category="version"
+               id="repository.versiontab"
+               label="%repository.prop.version"/>
       </propertyTabs>
    </extension>
    <extension
@@ -221,6 +243,12 @@
                id="repository.namesection"
                tab="repository.maintab">
          </propertySection>
+         <propertySection
+               class="org.talend.repository.ui.properties.VersionSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.versionsection"
+               tab="repository.versiontab"/>
       </propertySections>
    </extension>
    <extension

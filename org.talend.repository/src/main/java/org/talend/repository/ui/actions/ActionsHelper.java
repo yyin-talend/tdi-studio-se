@@ -56,6 +56,8 @@ public class ActionsHelper {
                 try {
                     int level = Integer.parseInt(current.getAttribute("level")); //$NON-NLS-1$
                     currentAction.setLevel(level);
+                    currentAction.setReadAction("true".equals(current.getAttribute("isReadAction"))); ////$NON-NLS-1$
+                    currentAction.setEditAction("true".equals(current.getAttribute("isEditAction"))); ////$NON-NLS-1$
                 } catch (NumberFormatException e) {
                     currentAction.setLevel(1000);
                 }
