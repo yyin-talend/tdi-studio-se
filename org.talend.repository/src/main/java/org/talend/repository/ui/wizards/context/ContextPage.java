@@ -35,14 +35,16 @@ import org.talend.core.model.process.IContextManager;
 public class ContextPage extends WizardPage {
     
     IContextManager contextManager;
+    boolean readOnly;
 
-    protected ContextPage(String pageName, IContextManager contextManager) {
+    protected ContextPage(String pageName, IContextManager contextManager, boolean readOnly) {
         super(pageName);
         this.contextManager = contextManager;
+        this.readOnly = readOnly;
     }
 
     public void createControl(Composite parent) {
-        this.setControl(new ContextForm(parent, SWT.NONE, null, contextManager));
+        this.setControl(new ContextForm(parent, SWT.NONE, null, contextManager, readOnly));
     }
 
 }

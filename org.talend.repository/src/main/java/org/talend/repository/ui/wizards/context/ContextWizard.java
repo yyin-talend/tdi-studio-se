@@ -44,8 +44,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -125,7 +123,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
             contextWizardPage0.setPageComplete(false);
         }
 
-        ContextPage contextPage = new ContextPage("test", contextManager); //$NON-NLS-1$
+        ContextPage contextPage = new ContextPage("test", contextManager, !isRepositoryObjectEditable()); //$NON-NLS-1$
         addPage(contextPage);
     }
 

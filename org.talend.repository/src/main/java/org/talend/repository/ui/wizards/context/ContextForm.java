@@ -22,7 +22,6 @@
 package org.talend.repository.ui.wizards.context;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,7 +37,9 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
  */
 public class ContextForm extends AbstractForm {
 
-    IContextManager contextManager;
+    private IContextManager contextManager;
+
+    private boolean readOnly;
 
     /**
      * DOC nrousseau ContextForm constructor comment.
@@ -47,9 +48,11 @@ public class ContextForm extends AbstractForm {
      * @param style
      * @param existingNames
      */
-    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager) {
+    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager,
+            boolean readOnly) {
         super(parent, style, existingNames);
         this.contextManager = contextManager;
+        this.readOnly = readOnly;
         setupForm();
     }
 
@@ -60,8 +63,6 @@ public class ContextForm extends AbstractForm {
      */
     @Override
     protected void adaptFormToReadOnly() {
-        // TODO Auto-generated method stub
-
     }
 
     /*
@@ -80,6 +81,7 @@ public class ContextForm extends AbstractForm {
         gridData.horizontalAlignment = SWT.FILL;
         jobContext.setLayoutData(gridData);
         jobContext.setContextManager(contextManager);
+        jobContext.setReadOnly(readOnly);
         jobContext.addComponents();
         jobContext.refresh();
         contextManager.addContextListener(new IContextListener() {
