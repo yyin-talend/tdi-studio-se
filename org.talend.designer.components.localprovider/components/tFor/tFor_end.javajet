@@ -19,6 +19,6 @@ if (step.equals("")) {
 	step = "1";
 }
 %>
-	globalMap.put("<%=cid %>",((Integer)globalMap.get("<%=cid %>"))+ <%=step%>);
+	globalMap.put("<%=cid %>_CURRENT_ITERATION",((Integer)globalMap.get("<%=cid %>_CURRENT_ITERATION"))+ <%=step%>);
 }
 

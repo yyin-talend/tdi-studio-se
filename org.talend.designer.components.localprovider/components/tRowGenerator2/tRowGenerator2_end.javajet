@@ -12,4 +12,4 @@
 	INode node = (INode)codeGenArgument.getArgument();
 %>
 }
-globalMap.put("<%=node.getUniqueName() %>",nb_line_<%=node.getUniqueName() %>);
+globalMap.put("<%=node.getUniqueName() %>_NB_LINE",nb_line_<%=node.getUniqueName() %>);

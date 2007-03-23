@@ -28,7 +28,7 @@
 		if (metadata!=null) {
 %>
             in<%=cid %>.close();
-            globalMap.put("<%=cid %>",nb_line_<%=cid %>);
+            globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
 	}

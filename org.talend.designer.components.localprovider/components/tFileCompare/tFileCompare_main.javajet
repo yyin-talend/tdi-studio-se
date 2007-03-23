@@ -45,7 +45,7 @@ if (result<%=cid %>) {
 	message<%=cid %> = <%=differMessage%>;
 	difference<%=cid %> = 1;
 }
-globalMap.put("<%=cid %>",difference<%=cid %>);
+globalMap.put("<%=cid %>_DIFFERENCE",difference<%=cid %>);
 
 <%
 if (print) {

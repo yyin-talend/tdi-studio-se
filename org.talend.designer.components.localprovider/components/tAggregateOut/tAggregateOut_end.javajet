@@ -256,7 +256,7 @@ nb_line_<%=cid %>++;
 %>
 //generate result end
 globalMap.put("<%=destination %>",result_list_<%=cid %>);
-globalMap.put("<%=cid %>{NB_LINE}",nb_line_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%//start
 //
 	}
