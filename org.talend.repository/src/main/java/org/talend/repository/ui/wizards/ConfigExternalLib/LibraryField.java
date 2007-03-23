@@ -58,7 +58,7 @@ public class LibraryField extends TableField {
 
     @Override
     protected Table createTable(Composite parent) {
-        Table contextTable = new Table(parent, SWT.SINGLE | SWT.BORDER);
+        Table contextTable = new Table(parent, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION);
         contextTable.setLinesVisible(false);
         contextTable.setHeaderVisible(true);
 
