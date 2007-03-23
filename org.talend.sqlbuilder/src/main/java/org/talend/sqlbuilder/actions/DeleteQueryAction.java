@@ -66,6 +66,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
                 enabled = false;
             }
         }
+        enabled = enabled && !dialog.getConnParameters().isNodeReadOnly();
         setEnabled(enabled);
     }
 
