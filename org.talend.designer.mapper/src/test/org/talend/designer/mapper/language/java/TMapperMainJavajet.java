@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.talend.commons.utils.generation.CodeGenerationUtils;
@@ -68,18 +69,21 @@ public class TMapperMainJavajet {
 
         String uniqueNameComponent = null;
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
-        List<IConnection> connections;
+        List<IConnection> inputConnections;
+        List<IConnection> outputConnections;
         ExternalMapperData data;
         if (node != null) {
             // normal use
-            connections = (List<IConnection>) node.getIncomingConnections();
+            inputConnections = (List<IConnection>) node.getIncomingConnections();
+            outputConnections = (List<IConnection>) node.getOutgoingConnections();
             data = (ExternalMapperData) node.getExternalData();
             uniqueNameComponent = node.getUniqueName();
         } else {
             // Stand alone / tests
             MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(currentLanguage, false);
-            connections = testGenerator.getConnectionList();
+            inputConnections = testGenerator.getInputConnectionsList();
+            outputConnections = testGenerator.getOutputConnectionsList();
             data = (ExternalMapperData) testGenerator.getExternalData();
             uniqueNameComponent = "testUniqueNameNode";
         }
@@ -98,7 +102,8 @@ public class TMapperMainJavajet {
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
+        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(
+                currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 
@@ -114,7 +119,7 @@ public class TMapperMainJavajet {
         sb.append(cr + gm.indent(indent) + "// # Input tables (lookups)");
 
         HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
-        for (IConnection connection : connections) {
+        for (IConnection connection : inputConnections) {
             hNameToConnection.put(connection.getName(), connection);
         }
 
@@ -165,8 +170,8 @@ public class TMapperMainJavajet {
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues, indent,
-                                writeCommentedFieldKeys));
+                        sb.append(gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
+                                indent, writeCommentedFieldKeys));
                         validLookupTables.add(externalTable);
                     }
 
@@ -179,8 +184,8 @@ public class TMapperMainJavajet {
         for (ExternalMapperTable inputTable : lookupTables) {
             String tableName = inputTable.getName();
             if (validLookupTables.contains(inputTable)) {
-                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName + "FromHash == null )" + " ? "
-                        + tableName + "Default" + " : " + tableName + "FromHash;");
+                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
+                        + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName + "FromHash;");
             } else {
                 sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName + "Default;");
             }
@@ -219,7 +224,8 @@ public class TMapperMainJavajet {
                 String varsColumnName = varsTableEntry.getName();
                 String varExpression = varsTableEntry.getExpression();
                 if (varExpression == null || varExpression.trim().length() == 0) {
-                    varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(), varsTableEntry.isNullable());
+                    varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(),
+                            varsTableEntry.isNullable());
                 }
                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
                 ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
@@ -230,20 +236,22 @@ public class TMapperMainJavajet {
                 }
 
                 String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
-                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName, varsColumnName);
-                
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
+                        varsColumnName);
+
                 if (writeCommentedFieldKeys) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                 }
 
-                String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
-                        + varExpression + ";";
+                String expression = gm.indent(indent)
+                        + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = " + varExpression
+                        + ";";
                 sb.append(cr).append(expression);
 
                 if (writeCommentedFieldKeys) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                 }
-                
+
             }
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
@@ -289,13 +297,22 @@ public class TMapperMainJavajet {
         boolean atLeastOneRejectInnerJoin = false;
         boolean closeTestInnerJoinConditionsBracket = false;
 
-        int lstSize = outputTablesSortedByReject.size();
+        Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : outputConnections) {
+            nameToOutputConnection.put(connection.getName(), connection);
+        }
+
+        int lstSizeOutputs = outputTablesSortedByReject.size();
         // ///////////////////////////////////////////////////////////////////
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
-        for (int i = 0; i < lstSize; i++) {
+        for (int i = 0; i < lstSizeOutputs; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
 
             String outputTableName = outputTable.getName();
+
+            if (nameToOutputConnection.get(outputTableName) == null) {
+                continue;
+            }
 
             sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
 
@@ -328,7 +345,7 @@ public class TMapperMainJavajet {
         }
 
         // write conditions for inner join reject
-        if (validLookupTables.size() > 0) {
+        if (validLookupTables.size() > 0 && lstSizeOutputs > 0) {
             sb.append(cr + gm.indent(indent) + "if(");
             String and = null;
             for (ExternalMapperTable validLookupTable : validLookupTables) {
@@ -350,13 +367,15 @@ public class TMapperMainJavajet {
 
         // ///////////////////////////////////////////////////////////////////
         // run through output tables list for generating intilization of outputs arrays
-        for (int indexCurrentTable = 0; indexCurrentTable < lstSize; indexCurrentTable++) {
+        int dummyVarCounter = 0;
+        for (int indexCurrentTable = 0; indexCurrentTable < lstSizeOutputs; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
-            if (outputTableEntries == null) {
-                continue;
-            }
             String outputTableName = outputTable.getName();
+            boolean connectionExists = true;
+            if (outputTableEntries == null || nameToOutputConnection.get(outputTableName) == null) {
+                connectionExists = false;
+            }
 
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
 
@@ -388,8 +407,9 @@ public class TMapperMainJavajet {
             }
 
             // write filters conditions and code to execute
-            if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject
-                    && allNotRejectTablesHaveFilter || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+            if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
+                    && oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter
+                    || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
 
                 boolean closeFilterOrRejectBracket = false;
                 if (currentIsReject || currentIsRejectInnerJoin) {
@@ -441,7 +461,8 @@ public class TMapperMainJavajet {
 
                     indent++;
                     closeFilterOrRejectBracket = true;
-                    if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
+                    if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin)
+                            && atLeastOneReject) {
                         sb.append(cr + gm.indent(indent) + rejected + " = false;");
                     }
                 }
@@ -452,28 +473,39 @@ public class TMapperMainJavajet {
                         String outputColumnName = outputTableEntry.getName();
                         String outputExpression = outputTableEntry.getExpression();
                         if (outputExpression == null || outputExpression.trim().length() == 0) {
-                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry.getType(), outputTableEntry.isNullable());
+                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry
+                                    .getType(), outputTableEntry.isNullable());
                         }
 
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName, outputColumnName);
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
+                                outputColumnName);
                         if (writeCommentedFieldKeys) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                         }
 
-                        String expression = gm.indent(indent)
-                                + gm.getGeneratedCodeTableColumnVariable(outputTableName + "_tmp", outputColumnName) + " = "
-                                + outputExpression + ";";
+                        String assignationVar = null;
+                        if (connectionExists) {
+                            assignationVar = gm.getGeneratedCodeTableColumnVariable(outputTableName + "_tmp",
+                                    outputColumnName);
+                        } else {
+                            assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
+                                    outputTableEntry.isNullable())
+                                    + " dummyVar" + (dummyVarCounter++);
+                        }
+                        String expression = gm.indent(indent) + assignationVar + " = " + outputExpression + ";";
 
                         sb.append(cr).append(expression);
 
                         if (writeCommentedFieldKeys) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                         }
-                        
+
                     } // for entries
 
-                    sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");
+                    if (connectionExists) {
+                        sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");
+                    }
 
                 }
                 if (closeFilterOrRejectBracket) {
@@ -484,7 +516,7 @@ public class TMapperMainJavajet {
             }
             lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 
-            boolean isLastTable = indexCurrentTable == lstSize - 1;
+            boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
             if (closeTestInnerJoinConditionsBracket && isLastTable) {
                 indent--;
                 sb.append(cr + gm.indent(indent) + "}");

@@ -63,9 +63,9 @@ public class MapperDataTestGenerator {
 
     private static final String COLUMN_NAME = "column";
 
-    private static final String STRING_TYPE = "String";
+    private static final String STRING_TYPE = "id_String";
 
-    private static final String INTEGER_TYPE = "int";
+    private static final String INTEGER_TYPE = "id_Integer";
 
     private GenerationManager gen;
 
@@ -88,9 +88,11 @@ public class MapperDataTestGenerator {
         MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN,
         ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT,
         ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE,
+        THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION,
+        THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION,
     };
 
-    TEST currentTest = TEST.ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN;
+    TEST currentTest = TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION;
 
     public MapperDataTestGenerator(ILanguage language, boolean random) {
         super();
@@ -100,6 +102,7 @@ public class MapperDataTestGenerator {
         gen = GenerationManagerFactory.getInstance().getGenerationManager(language);
 
         generateConnectionListIn();
+        generateConnectionListOut();
         generateExternalData();
         // generateMetadataListOut();
     }
@@ -114,13 +117,15 @@ public class MapperDataTestGenerator {
 
     private boolean random;
 
-    private ArrayList<IConnection> connectionList;
+    private ArrayList<IConnection> inputConnectionList;
 
     private boolean useConnectionsToGenerateExternalTables = true;
 
     private ExternalMapperData externalData;
 
     private ArrayList<IMetadataTable> metadataListOut;
+
+    private ArrayList<IConnection> outputConnectionList;
 
     public void resetCounters() {
         inputsCounter = 0; // remove finally
@@ -197,7 +202,7 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("name");
         metadataColumn.setKey(false);
-        metadataColumn.setType("int");
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
         /*
          * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name2"); metadataColumn.setKey(false);
@@ -241,7 +246,7 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("newName");
         metadataColumn.setKey(false);
-        metadataColumn.setType("int");
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -293,7 +298,7 @@ public class MapperDataTestGenerator {
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>();
         if (this.useConnectionsToGenerateExternalTables && tableType == TableType.INPUT) {
 
-            for (IConnection connection : connectionList) {
+            for (IConnection connection : inputConnectionList) {
 
                 ExternalMapperTable mapperTable = new ExternalMapperTable();
 
@@ -414,7 +419,11 @@ public class MapperDataTestGenerator {
         if (currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN) {
             mapperTable.setInnerJoin(true);
         } else if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                
+        ) {
             mapperTable.setInnerJoin(false);
         } else {
             mapperTable.setInnerJoin(false);
@@ -427,19 +436,19 @@ public class MapperDataTestGenerator {
         ExternalMapperTableEntry mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id");
         mapperTableEntry.setExpression("test");
-        mapperTableEntry.setType("int");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("name");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("nb_pages");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("Integer");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -458,7 +467,10 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+        ) {
             mapperTable.setInnerJoin(false);
         } else {
             mapperTable.setInnerJoin(false);
@@ -469,19 +481,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("Integer");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "name"));
-        mapperTableEntry.setType("int");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -503,7 +515,9 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION) {
             mapperTable.setInnerJoin(true);
         } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER
@@ -519,13 +533,13 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
@@ -533,7 +547,7 @@ public class MapperDataTestGenerator {
         } else {
             mapperTableEntry = new ExternalMapperTableEntry();
             mapperTableEntry.setName("id_page");
-            mapperTableEntry.setType("String");
+            mapperTableEntry.setType(STRING_TYPE);
             mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_page") + " . "
                     + gen.getTableColumnVariable("book", "name"));
             tableEntries.add(mapperTableEntry);
@@ -566,7 +580,7 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("upperCaseContent");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         mapperTableEntry.setExpression("uc " + gen.getTableColumnVariable("page", "content") + " + "
                 + gen.getTableColumnVariable("book", "id_book") + " - 2 * "
                 + gen.getTableColumnVariable("book", "id_book"));
@@ -575,7 +589,7 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("newId");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book") + " + 1");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -606,19 +620,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("idUser");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("idBook");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -634,7 +648,9 @@ public class MapperDataTestGenerator {
 
         mapperTable.setConstraintTableEntries(tableEntries);
 
-        if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                ) {
             // nothing
         } else {
             tables.add(mapperTable);
@@ -651,18 +667,18 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("newIdBook");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         mapperTableEntry.setExpression("");
         tableEntries.add(mapperTableEntry);
 
@@ -675,7 +691,7 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setExpression(" test == 3 ");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         // mapperTableEntry = new ExternalMapperTableEntry();
@@ -698,6 +714,8 @@ public class MapperDataTestGenerator {
         if (currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
                 || currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
 
         ) {
 
@@ -747,20 +765,20 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("int");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry
                 .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -778,7 +796,9 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+
+        ) {
             // nothing
         } else {
             mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
@@ -787,7 +807,15 @@ public class MapperDataTestGenerator {
 
         mapperTable.setConstraintTableEntries(tableEntries);
 
-        tables.add(mapperTable);
+        if(
+                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                
+        ) {
+            
+        } else {
+            tables.add(mapperTable);
+        }
 
         // #########################################################################
         // #########################################################################
@@ -818,20 +846,20 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
-        mapperTableEntry.setType("String");
+        mapperTableEntry.setType(STRING_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry
                 .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
-        mapperTableEntry.setType("int");
+        mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -840,7 +868,11 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+
+        ) {
             // nothing
         } else if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN) {
             tables.add(mapperTable);
@@ -877,6 +909,21 @@ public class MapperDataTestGenerator {
     }
 
     /**
+     * DOC amaumont Comment method "generateMetadataListIn".
+     * 
+     * @return
+     */
+    public List<IConnection> generateConnectionListOut() {
+
+        if (random) {
+            throw new UnsupportedOperationException();
+        } else {
+            return generateConstantConnectionListOut();
+        }
+
+    }
+
+    /**
      * DOC amaumont Comment method "generateMetadataListOut".
      * 
      * @param b
@@ -898,7 +945,7 @@ public class MapperDataTestGenerator {
      */
     private List<IConnection> generateRandomConnectionListIn(TableType tableType) {
         List<IMetadataTable> metadataTableList = generateRandomMetadataList(tableType);
-        connectionList = new ArrayList<IConnection>();
+        inputConnectionList = new ArrayList<IConnection>();
         int i = 0;
         int indexMain = rand.nextInt(metadataTableList.size());
         for (IMetadataTable table : metadataTableList) {
@@ -906,10 +953,10 @@ public class MapperDataTestGenerator {
             connection.setName(table.getTableName());
             connection.setMetadataTable(table);
             connection.setConnectionType((i == indexMain) ? EConnectionType.FLOW_MAIN : EConnectionType.FLOW_REF);
-            connectionList.add(connection);
+            inputConnectionList.add(connection);
             i++;
         }
-        return connectionList;
+        return inputConnectionList;
     }
 
     private List<IMetadataTable> generateRandomMetadataList(TableType tableType) {
@@ -946,7 +993,7 @@ public class MapperDataTestGenerator {
      * @return
      */
     private List<IConnection> generateConstantConnectionListIn() {
-        connectionList = new ArrayList<IConnection>();
+        inputConnectionList = new ArrayList<IConnection>();
 
         Connection connection = new Connection();
         connection.setName("book");
@@ -979,7 +1026,7 @@ public class MapperDataTestGenerator {
 
         metadataTable.setListColumns(metadatColumns);
 
-        connectionList.add(connection);
+        inputConnectionList.add(connection);
 
         connection = new Connection();
         connection.setName("page");
@@ -1011,7 +1058,7 @@ public class MapperDataTestGenerator {
 
         metadataTable.setListColumns(metadatColumns);
 
-        connectionList.add(connection);
+        inputConnectionList.add(connection);
 
         connection = new Connection();
         connection.setName("userInput");
@@ -1043,9 +1090,145 @@ public class MapperDataTestGenerator {
 
         metadataTable.setListColumns(metadatColumns);
 
-        connectionList.add(connection);
+        inputConnectionList.add(connection);
 
-        return connectionList;
+        return inputConnectionList;
+    }
+
+    /**
+     * DOC amaumont Comment method "generateRandomMetadataListIn".
+     * 
+     * @return
+     */
+    private List<IConnection> generateConstantConnectionListOut() {
+        outputConnectionList = new ArrayList<IConnection>();
+
+        Connection connection = new Connection();
+        connection.setName("newBook");
+        connection.setConnectionType(EConnectionType.FLOW_MAIN);
+
+        MetadataTable metadataTable = new MetadataTable();
+        metadataTable.setTableName("newBook");
+
+        connection.setMetadataTable(metadataTable);
+
+        ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
+
+        MetadataColumn metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("newIdBook");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("name");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(STRING_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("nb_pages");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        if (
+                
+                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                
+        
+        ) {
+
+        } else {
+            outputConnectionList.add(connection);
+        }
+
+        connection = new Connection();
+        connection.setName("user");
+        connection.setConnectionType(EConnectionType.FLOW_REF);
+
+        metadataTable = new MetadataTable();
+        metadataTable.setTableName("user");
+
+        connection.setMetadataTable(metadataTable);
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("idUser");
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("idBook");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(STRING_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        if (
+                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                
+        
+        ) {
+
+        } else {
+            outputConnectionList.add(connection);
+        }
+
+        connection = new Connection();
+        connection.setName("newPageRejected");
+        connection.setConnectionType(EConnectionType.FLOW_REF);
+
+        metadataTable = new MetadataTable();
+        metadataTable.setTableName("newPageRejected");
+
+        connection.setMetadataTable(metadataTable);
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(INTEGER_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(STRING_TYPE);
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        if (
+                
+                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
+                
+        ) {
+
+        } else {
+            outputConnectionList.add(connection);
+        }
+
+        return outputConnectionList;
     }
 
     /**
@@ -1521,8 +1704,12 @@ public class MapperDataTestGenerator {
 
     }
 
-    public ArrayList<IConnection> getConnectionList() {
-        return this.connectionList;
+    public ArrayList<IConnection> getInputConnectionsList() {
+        return this.inputConnectionList;
+    }
+
+    public ArrayList<IConnection> getOutputConnectionsList() {
+        return this.outputConnectionList;
     }
 
     public ArrayList<IMetadataTable> getMetadataListOut() {

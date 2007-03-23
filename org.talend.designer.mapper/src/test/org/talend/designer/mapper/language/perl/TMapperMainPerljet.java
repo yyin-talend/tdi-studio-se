@@ -64,17 +64,20 @@ public class TMapperMainPerljet {
         // start of code to copy in template
 
         ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
-        List<IConnection> connections;
+        List<IConnection> inputConnections;
+        List<IConnection> outputConnections;
         ExternalMapperData data;
         if (node != null) {
             // normal use
-            connections = (List<IConnection>) node.getIncomingConnections();
+            inputConnections = (List<IConnection>) node.getIncomingConnections();
+            inputConnections = (List<IConnection>) node.getOutgoingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             // Stand alone / tests
             MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            connections = testGenerator.getConnectionList();
+            inputConnections = testGenerator.getInputConnectionsList();
+            outputConnections = testGenerator.getOutputConnectionsList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
@@ -106,7 +109,7 @@ public class TMapperMainPerljet {
         sb.append(cr + gm.indent(indent) + "# Input tables ");
 
         HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
-        for (IConnection connection : connections) {
+        for (IConnection connection : inputConnections) {
             hNameToConnection.put(connection.getName(), connection);
         }
 
@@ -245,16 +248,16 @@ public class TMapperMainPerljet {
         boolean atLeastOneRejectInnerJoin = false;
         boolean closeTestInnerJoinConditionsBracket = false;
 
-        int lstSize = outputTablesSortedByReject.size();
+        int lstSizeOutputs = outputTablesSortedByReject.size();
         // ///////////////////////////////////////////////////////////////////
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
-        for (int i = 0; i < lstSize; i++) {
+        for (int i = 0; i < lstSizeOutputs; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
-
+            
             String outputTableName = outputTable.getName();
 
             sb.append(cr + gm.indent(indent) + "$branch_" + outputTableName + "_is_active = false;");
-
+            
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
@@ -282,7 +285,7 @@ public class TMapperMainPerljet {
         }
 
         // write outputs arrays initialization with empty list for NOT reject tables
-        for (int indexReject = 0; indexReject < lstSize; indexReject++) {
+        for (int indexReject = 0; indexReject < lstSizeOutputs; indexReject++) {
             ExternalMapperTable outputNormalTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
             if (outputNormalTable.isReject() || outputNormalTable.isRejectInnerJoin()) {
                 break;
@@ -295,7 +298,7 @@ public class TMapperMainPerljet {
         }
 
         // write conditions for inner join reject
-        if (inputTablesWithInnerJoin.size() > 0) {
+        if (inputTablesWithInnerJoin.size() > 0 && lstSizeOutputs > 0) {
             sb.append(cr + gm.indent(indent) + "if(");
             String and = null;
             for (ExternalMapperTable inputTable : inputTablesWithInnerJoin) {
@@ -316,7 +319,7 @@ public class TMapperMainPerljet {
 
         // ///////////////////////////////////////////////////////////////////
         // run through output tables list for generating intilization of outputs arrays
-        for (int indexCurrentTable = 0; indexCurrentTable < lstSize; indexCurrentTable++) {
+        for (int indexCurrentTable = 0; indexCurrentTable < lstSizeOutputs; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
             if (outputTableEntries == null) {
@@ -352,7 +355,7 @@ public class TMapperMainPerljet {
 
                 sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
                 // write outputs arrays initialization with empty list for reject tables
-                for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
+                for (int indexReject = indexCurrentTable; indexReject < lstSizeOutputs; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
                     if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
                         sb.append(cr + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
@@ -400,7 +403,7 @@ public class TMapperMainPerljet {
                     }
                 }
 
-                sb.append(cr + gm.indent(indent) + "$branch_" + outputTableName + "_is_active = true;");
+                sb.append(cr + gm.indent(indent)  + "$branch_" + outputTableName + "_is_active = true;");
 
                 if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
                         && atLeastOneInputTableWithInnerJoin) {
@@ -427,7 +430,7 @@ public class TMapperMainPerljet {
             }
             lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 
-            boolean isLastTable = indexCurrentTable == lstSize - 1;
+            boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
             if (closeTestInnerJoinConditionsBracket && isLastTable) {
                 indent--;
                 sb.append(cr + gm.indent(indent) + "}");

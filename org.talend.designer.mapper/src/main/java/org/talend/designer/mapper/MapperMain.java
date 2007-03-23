@@ -66,7 +66,7 @@ public class MapperMain {
         MapperMain.setStandAloneMode(true);
         MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), true);
         mapperConnector.setExternalData(testGenerator.getExternalData());
-        mapperConnector.setIncomingConnections(testGenerator.getConnectionList());
+        mapperConnector.setIncomingConnections(testGenerator.getInputConnectionsList());
         mapperConnector.setMetadataList(testGenerator.getMetadataListOut());
         int response = mapperConnector.open(new Display());
         if (response == SWT.OK) {
