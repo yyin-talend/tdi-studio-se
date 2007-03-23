@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
@@ -279,7 +278,7 @@ public class RunProcessContext {
             clearTraceAction.setProcess(process);
             clearTraceAction.run();
             
-            final IProcessor processor = ProcessorUtilities.getProcessor(process);
+            final IProcessor processor = getProcessor(process);
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
                 progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
@@ -323,6 +322,14 @@ public class RunProcessContext {
         }
     }
 
+    /**
+     * DOC amaumont Comment method "getProcessor".
+     * @return
+     */
+    protected IProcessor getProcessor(IProcess process) {
+        return ProcessorUtilities.getProcessor(process);
+    }
+    
     /**
      * Kill the process.
      * 

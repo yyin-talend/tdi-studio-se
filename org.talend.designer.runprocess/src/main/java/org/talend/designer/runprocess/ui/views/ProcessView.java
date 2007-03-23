@@ -62,13 +62,14 @@ import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
  */
 public class ProcessView extends ViewPart {
 
-    private static Logger log = Logger.getLogger(ProcessView.class);
 
     public static final String ID = RunProcessPlugin.PLUGIN_ID + ".ui.view.processview"; //$NON-NLS-1$
 
+    private static Logger log = Logger.getLogger(ProcessView.class);
+    
     private Label processNameLab;
 
-    private ProcessComposite2 processComposite2;
+    private ProcessComposite2 processComposite;
 
     private PropertyChangeListener contextManagerListener;
 
@@ -76,11 +77,14 @@ public class ProcessView extends ViewPart {
 
     public RunAction runAction;
 
+    private DefaultProcessViewHelper processViewHelper;
+
     /**
      * Constructs a new ProcessView.
      */
     public ProcessView() {
         super();
+        setProcessViewHelper(new DefaultProcessViewHelper());
     }
 
     /*
@@ -110,8 +114,8 @@ public class ProcessView extends ViewPart {
         processNameLab.setFont(titleFont);
         processNameLab.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
 
-        processComposite2 = new ProcessComposite2(container, SWT.NONE);
-        processComposite2.setLayoutData(new GridData(GridData.FILL_BOTH));
+        processComposite = this.processViewHelper.getProcessComposite(container);
+        processComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // fillActionBars();
 
@@ -202,7 +206,7 @@ public class ProcessView extends ViewPart {
      */
     @Override
     public void setFocus() {
-        processComposite2.setFocus();
+        processComposite.setFocus();
 
         // IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
         // IContextService.class);
@@ -216,7 +220,7 @@ public class ProcessView extends ViewPart {
     public void refresh() {
         RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
-        processComposite2.setProcessContext(activeContext);
+        processComposite.setProcessContext(activeContext);
 
         if (activeContext != null) {
             setPartName(Messages.getString("ProcessView.title", activeContext.getProcess().getLabel())); //$NON-NLS-1$
@@ -255,8 +259,8 @@ public class ProcessView extends ViewPart {
                 e.printStackTrace();
             }
 
-            if (processComposite2.hasProcess()) {
-                processComposite2.exec();
+            if (processComposite.hasProcess()) {
+                processComposite.exec();
             }
         }
 
@@ -280,8 +284,8 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            if (processComposite2.hasProcess()) {
-                processComposite2.debug();
+            if (processComposite.hasProcess()) {
+                processComposite.debug();
             }
         }
 
@@ -305,10 +309,31 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            if (processComposite2.hasProcess()) {
-                processComposite2.kill();
+            if (processComposite.hasProcess()) {
+                processComposite.kill();
             }
         }
 
     }
+
+    
+    /**
+     * Getter for processViewHelper.
+     * @return the processViewHelper
+     */
+    public DefaultProcessViewHelper getProcessViewHelper() {
+        return this.processViewHelper;
+    }
+
+    
+    /**
+     * Sets the processViewHelper.
+     * @param processViewHelper the processViewHelper to set
+     */
+    public void setProcessViewHelper(DefaultProcessViewHelper processViewHelper) {
+        this.processViewHelper = processViewHelper;
+    }
+    
+    
+    
 }

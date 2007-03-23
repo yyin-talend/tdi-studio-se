@@ -88,8 +88,9 @@ public class ProcessContextComposite extends Composite {
         layout.marginWidth = 0;
         setLayout(layout);
 
-        Group contextGroup = new Group(this, SWT.NONE);
-        contextGroup.setText(Messages.getString("ProcessComposite.contextGroup")); //$NON-NLS-1$
+//        Group contextGroup = new Group(this, SWT.NONE);
+//        contextGroup.setText(Messages.getString("ProcessComposite.contextGroup")); //$NON-NLS-1$
+        Composite contextGroup = this;
 
         layout = new GridLayout();
         contextGroup.setLayout(layout);
@@ -101,7 +102,7 @@ public class ProcessContextComposite extends Composite {
         contextComboViewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         contextComboViewer.getControl().setEnabled(false);
 
-        Table contextTable = new Table(contextGroup, SWT.NONE);
+        Table contextTable = new Table(contextGroup, SWT.BORDER);
         contextTable.setLinesVisible(true);
         contextTable.setHeaderVisible(true);
 

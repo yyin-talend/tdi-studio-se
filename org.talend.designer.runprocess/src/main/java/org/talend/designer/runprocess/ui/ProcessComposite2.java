@@ -37,6 +37,8 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyleRange;
@@ -46,15 +48,19 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.ui.image.ImageProvider;
@@ -123,6 +129,10 @@ public class ProcessComposite2 extends Composite {
     /** RunProcessContext property change listener. */
     private PropertyChangeListener pcl;
 
+    private CTabItem targetExecutionTabItem;
+
+    private CTabFolder leftTabFolder;
+
     /**
      * DOC chuger ProcessComposite2 constructor comment.
      * 
@@ -131,7 +141,14 @@ public class ProcessComposite2 extends Composite {
      */
     public ProcessComposite2(Composite parent, int style) {
         super(parent, style);
+        initGraphicComponents(parent);
+    }
 
+    /**
+     * DOC amaumont Comment method "initGraphicComponents".
+     * @param parent
+     */
+    private void initGraphicComponents(Composite parent) {
         GridData data;
         GridLayout layout = new GridLayout();
         setLayout(layout);
@@ -140,9 +157,30 @@ public class ProcessComposite2 extends Composite {
         SashForm sash = new SashForm(this, SWT.HORIZONTAL | SWT.SMOOTH);
         sash.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // Group context
-        contextComposite = new ProcessContextComposite(sash, SWT.NONE);
+        layout = new GridLayout();
+        sash.setLayout(layout);
+        
+        leftTabFolder = new CTabFolder(sash, SWT.BORDER);
+        leftTabFolder.setSimple(false);
 
+        leftTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        // Group context
+        
+        CTabItem contextTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+        contextTabItem.setText(Messages.getString("ProcessComposite.contextTab")); //$NON-NLS-1$
+        contextComposite = new ProcessContextComposite(leftTabFolder, SWT.NONE);
+        contextComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        contextTabItem.setControl(contextComposite);
+
+        Composite targetExecutionComposite = createTargetExecutionComposite(leftTabFolder);
+        
+        targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
+        targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
+        targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+        targetExecutionTabItem.setControl(targetExecutionComposite);
+        
+        
         // Group execution
         Group execGroup = new Group(sash, SWT.NONE);
         execGroup.setText(Messages.getString("ProcessComposite.execGroup")); //$NON-NLS-1$
@@ -284,6 +322,28 @@ public class ProcessComposite2 extends Composite {
         };
 
         addListeners();
+    }
+
+    /**
+     * DOC amaumont Comment method "getTargetExecutionComposite".
+     * @param parent 
+     * @return
+     */
+    protected Composite createTargetExecutionComposite(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        composite.setLayout(layout);
+
+        StyledText text = new StyledText(composite, SWT.NONE);
+        text.setText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+        text.setWordWrap(true);
+        text.setEditable(false);
+        text.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        return composite;
     }
 
     public boolean hasProcess() {
@@ -558,4 +618,24 @@ public class ProcessComposite2 extends Composite {
         return Display.getDefault();
     }
 
+    
+    /**
+     * Getter for targetExecutionTabItem.
+     * @return the targetExecutionTabItem
+     */
+    public CTabItem getTargetExecutionTabItem() {
+        return this.targetExecutionTabItem;
+    }
+
+    
+    /**
+     * Getter for leftTabFolder.
+     * @return the leftTabFolder
+     */
+    public CTabFolder getLeftTabFolder() {
+        return this.leftTabFolder;
+    }
+
+    
+    
 }

@@ -29,10 +29,9 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
-import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProviders;
-import org.talend.commons.utils.workbench.extensions.ExtensionPointImpl;
-import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
-import org.talend.repository.i18n.Messages;
+import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
+import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
+import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -47,9 +46,9 @@ public class ActionsHelper {
     @SuppressWarnings("unchecked") //$NON-NLS-1$
     public static List<ITreeContextualAction> getRepositoryContextualsActions() {
         List<ITreeContextualAction> toReturn = new ArrayList<ITreeContextualAction>();
-        ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.core.repositoryContextualsActions", //$NON-NLS-1$
-                "Action", -1, -1); //$NON-NLS-1$
-        List<IConfigurationElement> extension = ExtensionImplementationProviders.getInstanceV2(actionExtensionPoint);
+        IExtensionPointLimiter actionExtensionPoint = new ExtensionPointLimiterImpl("org.talend.core.repositoryContextualsActions", //$NON-NLS-1$
+                "Action"); //$NON-NLS-1$
+        List<IConfigurationElement> extension = ExtensionImplementationProvider.getInstanceV2(actionExtensionPoint);
 
         for (IConfigurationElement current : extension) {
             try {

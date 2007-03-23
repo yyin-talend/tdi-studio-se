@@ -28,11 +28,6 @@ import org.eclipse.core.runtime.IPath;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
-import org.talend.designer.runprocess.data.PerformanceData;
-import org.talend.designer.runprocess.java.JavaProcessor;
-import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
-import org.talend.designer.runprocess.perl.PerlProcessor;
-import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * DOC qian class global comment. An implementation of the IRunProcessService. <br/>
@@ -42,122 +37,106 @@ import org.talend.designer.runprocess.perl.PerlUtils;
  */
 public class RunProcessService implements IRunProcessService {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#getSyntaxChecker(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
-        return SyntaxCheckerFactory.getInstance().getSyntaxChecker(codeLanguage);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#setActiveProcess(org.talend.core.model.process.IProcess)
-     */
-    public void setActiveProcess(IProcess activeProcess) {
-        RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess);
-    }
+    private IRunProcessService delegateService;
 
     /**
-     * DOC qian Removes IProcess.
-     * 
-     * @param activeProcess IProcess
+     * DOC amaumont RunProcessService constructor comment.
      */
-    public void removeProcess(IProcess activeProcess) {
-        RunProcessPlugin.getDefault().getRunProcessContextManager().removeProcess(activeProcess);
+    public RunProcessService() {
+        super();
+        setDelegateService(new DefaultRunProcessService());
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#exec(java.lang.StringBuffer, java.lang.StringBuffer,
-     * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String,
-     * int, int, java.lang.String)
-     */
-    public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
-            String perlInterpreterLibOption, String perlModuleDirectoryOption,
-            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
-
-        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
-                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
-     * boolean)
+     * @see org.talend.designer.runprocess.IRunProcessService#createCodeProcessor(org.talend.core.model.process.IProcess,
+     * org.talend.core.language.ECodeLanguage, boolean)
      */
     public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
-        switch (language) {
-        case PERL:
-            return createPerlProcessor(process, filenameFromLabel);
-        case JAVA:
-            return createJavaProcessor(process, filenameFromLabel);
-        default:
-            return createPerlProcessor(process, filenameFromLabel);
-        }
+        return delegateService.createCodeProcessor(process, language, filenameFromLabel);
     }
 
-    /**
-     * DOC xue Comment method "createPerlProcessor".
+    /*
+     * (non-Javadoc)
      * 
-     * @param process
-     * @param filenameFromLabel
-     * @return
+     * @see org.talend.designer.runprocess.IRunProcessService#createPerformanceData(java.lang.String)
      */
-    private IProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
-        return new PerlProcessor(process, filenameFromLabel);
-    }
-
-    /**
-     * DOC xue Comment method "createJavaProcessor".
-     * 
-     * @param process
-     * @param filenameFromLabel
-     * @return
-     */
-    private IProcessor createJavaProcessor(IProcess process, boolean filenameFromLabel) {
-        return new JavaProcessor(process, filenameFromLabel);
-    }
-
     public IPerformanceData createPerformanceData(String data) {
-        return new PerformanceData(data);
+        return delegateService.createPerformanceData(data);
     }
 
-    public String getRoutineFilenameExt() {
-        return PerlUtils.ROUTINE_FILENAME_EXT;
-    }
-
-//    /*
-//     * Get perl project.
-//     * 
-//     * @see org.talend.designer.runprocess.IRunProcessService#getPerlProject()
-//     */
-//    public IProject getPerlProject() throws CoreException {
-//        return PerlUtils.getProject();
-//    }
-//
-//    /*
-//     * Get java poject.
-//     * 
-//     * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
-//     */
-//    public IProject getJavaProject() throws CoreException {
-//        return JavaProcessor.getProcessorProject();
-//    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getProject(org.talend.core.language.ECodeLanguage)
+     */
     public IProject getProject(ECodeLanguage language) throws CoreException {
-        switch (language) {
-        case PERL:
-            return PerlUtils.getProject();
-        case JAVA:
-            return JavaProcessor.getProcessorProject();
-        default:
-            return PerlUtils.getProject();
+        return delegateService.getProject(language);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getRoutineFilenameExt()
+     */
+    public String getRoutineFilenameExt() {
+        return delegateService.getRoutineFilenameExt();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getSyntaxChecker(org.talend.core.language.ECodeLanguage)
+     */
+    public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
+        return delegateService.getSyntaxChecker(codeLanguage);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#perlExec(java.lang.StringBuffer, java.lang.StringBuffer,
+     * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String, java.lang.String,
+     * int, int, java.lang.String[])
+     */
+    public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
+            String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
+        return delegateService.perlExec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#removeProcess(org.talend.core.model.process.IProcess)
+     */
+    public void removeProcess(IProcess activeProcess) {
+        delegateService.removeProcess(activeProcess);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#setActiveProcess(org.talend.core.model.process.IProcess)
+     */
+    public void setActiveProcess(IProcess activeProcess) {
+        delegateService.setActiveProcess(activeProcess);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
+     */
+    public void setDelegateService(IRunProcessService delegateService) {
+        boolean isValidDelegate = delegateService != null && !(delegateService instanceof RunProcessService); 
+        if (isValidDelegate) {
+            this.delegateService = delegateService;
+        } else {
+            throw new IllegalArgumentException("delegateService can't be null and can't inherit from RunProcessService");
         }
     }
+
 }
