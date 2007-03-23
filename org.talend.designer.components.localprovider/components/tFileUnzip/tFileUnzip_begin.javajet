@@ -33,23 +33,8 @@
         outputPath_<%=cid %> = outputPath_<%=cid %> +"/" + root_<%=cid %>;
 <%
   }
-%>    
-<%
-	if (extractPath==true) {
-%>         
-        
-        java.util.Enumeration enuDirs_<%=cid %> = zip_<%=cid %>.getEntries();               
-        while (enuDirs_<%=cid %>.hasMoreElements()) {
-            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuDirs_<%=cid %>.nextElement();            
-            if (entry_<%=cid %>.isDirectory()) {  
-                java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,entry_<%=cid %>.getName());
-                f_<%=cid %>.mkdir();
-            }  
-        }
-<%
-  }
-%> 
-     
+%>
+  
         java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
         while (enuFiles_<%=cid %>.hasMoreElements()) {
             org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();          
@@ -61,12 +46,14 @@
 <%
   }  else {
 %>            
-                int m_<%=cid %>= entry_<%=cid %>.getName().lastIndexOf('/');        
-                String shortName_<%=cid %> = entry_<%=cid %>.getName().substring(m_<%=cid %>!=-1? m_<%=cid %>+1 : 0);  
-  				java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,shortName_<%=cid %>);
+                String tempName_<%=cid %> = entry_<%=cid %>.getName().replaceAll("\\\\", "/");
+                int m_<%=cid %> = tempName_<%=cid %>.lastIndexOf('/');        
+                String shortName_<%=cid %> = tempName_<%=cid %>.substring(m_<%=cid %>!=-1? m_<%=cid %>+1 : 0);  
+  				java.io.File f_<%=cid %> = new java.io.File(outputPath_<%=cid %>,shortName_<%=cid %>);  				
 <%
   }
-%>                  
+%>
+                f_<%=cid %>.getParentFile().mkdirs();
                 f_<%=cid %>.createNewFile();
                 java.io.FileOutputStream fos_<%=cid %> = new java.io.FileOutputStream(f_<%=cid %>);
                 byte[] buffer_<%=cid %> = new byte[1024];
