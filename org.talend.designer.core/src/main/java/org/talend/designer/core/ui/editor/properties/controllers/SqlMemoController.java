@@ -163,6 +163,16 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String propertyName = (String) openSQLEditorButton.getData(PROPERTY);
         String query = (String) elem.getPropertyValue(propertyName);
         query = this.removeStrInQuery(query);
+        List<? extends IElementParameter> list = elem.getElementParameters();
+        boolean end = false;
+        for (int i = 0; i < list.size() && !end; i++) {
+            IElementParameter param = list.get(i);
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                connParameters.setNodeReadOnly(param.isReadOnly());
+                end = true;
+            }
+            
+        }
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
@@ -187,6 +197,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
+            
             connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
             OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
                     getCommandStack());
@@ -230,7 +241,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setQuery(query);
             dial.setConnParameters(connParameters);
             if (Window.OK == dial.open()) {
-                if (!composite.isDisposed()) {
+                if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                     String sql = connParameters.getQuery();
                     sql = addStrInQuery(sql);
                     return new PropertyChangeCommand(elem, propertyName, sql);
@@ -306,7 +317,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         openSQLEditorButton.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
         buttonControl.setBackground(subComposite.getBackground());
-        openSQLEditorButton.setEnabled(!param.isReadOnly());
+        openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PROPERTY, param.getName());
 

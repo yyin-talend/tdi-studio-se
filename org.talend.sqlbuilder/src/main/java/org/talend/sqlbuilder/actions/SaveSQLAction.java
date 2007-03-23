@@ -26,6 +26,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -42,11 +43,11 @@ public class SaveSQLAction extends AbstractEditorAction {
 
     private Query query;
     
-    public SaveSQLAction(RepositoryNode repositoryNodeInput, Query query) {
-    	this.query = query;
+    public SaveSQLAction(RepositoryNode repositoryNodeInput, ConnectionParameters query) {
+    	this.query = query.getQueryObject();
         this.repositoryNode = repositoryNodeInput;
         SqlBuilderRepositoryObject o = (SqlBuilderRepositoryObject) repositoryNode.getObject();
-        boolean isBuildin = o.isBuildIn();
+        boolean isBuildin = o.isBuildIn() || query.isNodeReadOnly();
         setEnabled(!isBuildin);
     }
 

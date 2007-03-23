@@ -172,7 +172,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         openFileAction.setEditor(this);
         openFileAction.setParentId(ID);
 
-        saveSQLAction = new SaveSQLAction(repositoryNode, queryObject);
+        saveSQLAction = new SaveSQLAction(repositoryNode, connParam);
         saveSQLAction.setEditor(this);
         saveSQLAction.setParentId(ID);
 

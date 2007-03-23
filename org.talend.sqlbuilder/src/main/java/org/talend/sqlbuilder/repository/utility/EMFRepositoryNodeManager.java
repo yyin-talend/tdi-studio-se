@@ -196,11 +196,11 @@ public final class EMFRepositoryNodeManager {
                     while (resultSet.next()) {
                         for (int i = 0; i < relevantIndeces.length; i++) {
                             String key = metadata.getColumnName(relevantIndeces[i]);
-                            if (key.equals("FKCOLUMN_NAME")) { //$NON-NLS-1$
+                            if (key.toUpperCase().equals("FKCOLUMN_NAME")) { //$NON-NLS-1$
                                 fk += resultSet.getString(relevantIndeces[i]);
-                            } else if (key.equals("FKTABLE_NAME")) { //$NON-NLS-1$
+                            } else if (key.toUpperCase().equals("FKTABLE_NAME")) { //$NON-NLS-1$
                                 fk = resultSet.getString(relevantIndeces[i]) + "."; //$NON-NLS-1$
-                            } else if (key.equals("PKCOLUMN_NAME")) { //$NON-NLS-1$
+                            } else if (key.toUpperCase().equals("PKCOLUMN_NAME")) { //$NON-NLS-1$
                                 pk = table.getSourceName() + "." + resultSet.getString(relevantIndeces[i]); //$NON-NLS-1$
                             }
                         }

@@ -111,14 +111,14 @@ public class OpenSQLBuilderDialogJob extends Job {
                         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
                         dial.setConnParameters(connectionParameters);
                         if (Window.OK == dial.open()) {
-                            if (!composite.isDisposed()) {
+                            if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
                                 String sql = connectionParameters.getQuery();
                                 if (ConnectionParameters.isJavaProject()) {
                                     sql = "\"" + sql + "\"";
                                 } else {
                                     sql = "'" + sql + "'";
                                 }
-                                Command cmd = new PropertyChangeCommand(elem, propertyName, sql); 
+                                Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
                                 commandStack.execute(cmd);
                             }
                         }

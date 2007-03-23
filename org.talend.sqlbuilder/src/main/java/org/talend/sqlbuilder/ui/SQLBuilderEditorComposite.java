@@ -360,7 +360,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         openFileAction = new OpenFileAction();
         openFileAction.setEditor(this);
 
-        saveSQLAction = new SaveSQLAction(this.repositoryNode, connParam.getQueryObject());
+        saveSQLAction = new SaveSQLAction(this.repositoryNode, connParam);
         saveSQLAction.setEditor(this);
 
         exportAction = new SaveFileAsAction();

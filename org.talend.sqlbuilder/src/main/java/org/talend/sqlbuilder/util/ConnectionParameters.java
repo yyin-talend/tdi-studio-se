@@ -43,6 +43,8 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    private static boolean isNodeReadOnly;
+    
     private IMetadataTable metadataTable;
     
     private String query;
@@ -457,6 +459,16 @@ public class ConnectionParameters {
     
     public void setMetadataTable(IMetadataTable metadataTable) {
         this.metadataTable = metadataTable;
+    }
+
+    
+    public boolean isNodeReadOnly() {
+        return ConnectionParameters.isNodeReadOnly;
+    }
+
+    
+    public void setNodeReadOnly(boolean isNodeReadOnly) {
+        ConnectionParameters.isNodeReadOnly = isNodeReadOnly;
     }
 
 }
