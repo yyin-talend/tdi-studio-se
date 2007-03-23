@@ -44,14 +44,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -59,6 +62,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -69,6 +73,8 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  * 
  */
 public class SqlMemoController extends AbstractElementPropertySectionController {
+
+    private static final String INVIVALDSTR = "$_context{";
 
     private static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
@@ -156,12 +162,23 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      */
     @Override
     public Command createCommand() {
+
         ConnectionParameters connParameters = new ConnectionParameters();
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PROPERTY);
         String query = (String) elem.getPropertyValue(propertyName);
+        String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
+                : TalendTextUtils.SINGLE_QUOTE;
+        boolean isCanOpen = !query.contains(INVIVALDSTR) && query.startsWith(qoute) && query.endsWith(qoute);
+        if (!isCanOpen) {
+            String pid = SqlBuilderPlugin.PLUGIN_ID;
+            String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
+            String infoMsg = Messages.getString("SqlMemoController.QueryError.infoMsg", qoute);
+            new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, infoMsg);
+            return null;
+        }
         query = this.removeStrInQuery(query);
         List<? extends IElementParameter> list = elem.getElementParameters();
         boolean end = false;
@@ -171,7 +188,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 connParameters.setNodeReadOnly(param.isReadOnly());
                 end = true;
             }
-            
+
         }
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
@@ -197,7 +214,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
-            
+
             connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
             OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
                     getCommandStack());
