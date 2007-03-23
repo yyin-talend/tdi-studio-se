@@ -84,6 +84,8 @@ public class RepositoryNameSorter extends ViewerSorter {
             }
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
             return 20;
+        } else if (node.getType() == ENodeType.REFERENCED_PROJECT) {
+            return 40;
         } else {
             return 30;
         }

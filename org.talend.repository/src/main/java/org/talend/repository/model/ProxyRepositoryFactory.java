@@ -935,4 +935,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return item;
     }
 
+    public List<org.talend.core.model.properties.Project> getReferencedProjects() {
+        return this.repositoryFactoryFromProvider.getReferencedProjects();
+    }
+
 }

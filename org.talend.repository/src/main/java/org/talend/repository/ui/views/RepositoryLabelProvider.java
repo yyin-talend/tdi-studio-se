@@ -183,6 +183,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
     public Color getForeground(Object element) {
         RepositoryNode node = (RepositoryNode) element;
         switch (node.getType()) {
+        case REFERENCED_PROJECT:
+            return STABLE_PRIMARY_ENTRY_COLOR;
         case STABLE_SYSTEM_FOLDER:
             if (node.getLabel().equals(ERepositoryObjectType.SNIPPETS.toString())) {
                 return INACTIVE_ENTRY_COLOR;

@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -29,8 +30,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -41,6 +40,7 @@ import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
@@ -69,6 +69,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode root;
 
+    private IProxyRepositoryFactory factory;
+
     public RepositoryContentProvider(IRepositoryView view) {
         super();
         this.view = view;
@@ -76,7 +78,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
     }
-
+  
     public void dispose() {
     }
 
@@ -132,7 +134,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
 
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        factory = ProxyRepositoryFactory.getInstance();
         try {
             // 0. Recycle bin
             RepositoryNode recBinNode = new BinRepositoryNode(root);
@@ -256,15 +258,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
     }
 
-    private void convert(List<IRepositoryObject> list, RepositoryNode parent, ERepositoryObjectType type,
-            RepositoryNode recBinNode) {
-        for (IRepositoryObject obj : list) {
-            addNode(parent, type, recBinNode, obj);
-        }
-    }
-
     private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type,
             RepositoryNode recBinNode) {
+
+        handleReferenced(parent);
+
         if (fromModel.isEmpty()) {
             return;
         }
@@ -289,6 +287,19 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         for (Object obj : fromModel.getMembers()) {
             IRepositoryObject repositoryObject = (IRepositoryObject) obj;
             addNode(parent, type, recBinNode, repositoryObject);
+        }
+    }
+
+    private void handleReferenced(RepositoryNode parent) {
+        if (parent.getType().equals(ENodeType.SYSTEM_FOLDER)) {
+            for (Iterator iter = factory.getReferencedProjects().iterator(); iter.hasNext();) {
+                Project project = (Project) iter.next();
+
+                RepositoryNode referencedProjectNode = new RepositoryNode(null, parent, ENodeType.REFERENCED_PROJECT);
+                referencedProjectNode.setProperties(EProperties.LABEL, project.getLabel()); ////$NON-NLS-1$
+                referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+                parent.getChildren().add(referencedProjectNode);
+            }
         }
     }
 

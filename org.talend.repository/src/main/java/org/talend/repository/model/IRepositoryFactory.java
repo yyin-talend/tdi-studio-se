@@ -236,4 +236,6 @@ public interface IRepositoryFactory {
      * @throws PersistenceException
      */
     List<ContextItem> getContextItem() throws PersistenceException;
+
+    public List<org.talend.core.model.properties.Project> getReferencedProjects();
 }
