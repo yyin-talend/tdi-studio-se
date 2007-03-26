@@ -50,7 +50,8 @@ strBuffer_<%=cid%>.append(OUTPUT_FIELD_SEPARATOR_<%=cid %>);
 						}
 					}
 %>
-out_<%= cid %>.println(strBuffer_<%=cid%>.toString());
+
+System.out.println(strBuffer_<%=cid%>.toString());
 nb_line_<%=cid %>++;
 <%	
 				}
