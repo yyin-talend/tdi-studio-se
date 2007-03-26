@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:template match="/">
-		<html>				
+		<html>		
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
 			<img src="{/project/@logo}"/>
 			<xsl:value-of select="/project/@title"/>
-		 	&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-		  Project:&#160;&#160;<xsl:value-of select="/project/@name"/> 
-		  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-		  Language:&#160;&#160;<xsl:value-of select="/project/@language"/> 
+			<br/>
+			<br />
+			 Project Description:
+			 <br />
+			<TABLE border="1" width='100%'>			
+         <TR>
+            <TD COLSPAN='2'>Name:&#160;&#160;<xsl:value-of select="/project/@name"/></TD>
+         </TR>
+         <TR>
+            <TD COLSPAN='2'>Language:&#160;&#160;<xsl:value-of select="/project/@language"/></TD>
+         </TR>
+          <TR>
+            <TD COLSPAN='2'>Description:&#160;&#160;<xsl:value-of select="/project/@description"/></TD>
+         </TR>
+         </TABLE>
+		  <br/> 
+		  <br/>
 			<xsl:variable name="job" select="/project/job"/>
-			
+			Job Description:
+			<br />
 			<TABLE border="1" width='100%'>			
          <TR>
             <TD COLSPAN='2'>Name:&#160;&#160;<xsl:value-of select="$job/@name"/></TD>
@@ -37,7 +52,7 @@
 				<img src="{$jobPreviewPicture}"/>
                        </xsl:if>
       <br/>
-      <br/>                 
+      <br/>                
       Component List:
       <TABLE border="1" width="100%">
                    		 <TR>
@@ -62,7 +77,7 @@
       <br/>
       					
 			<xsl:for-each select="$job/component">
-					<br/><br/><br/>
+					<br/>
 					<img src="{@icon}"/>&#160;&#160;&#160;&#160;&#160;
 	      		Unique Name:&#160;&#160;	      		
 	      			<A name="{@uniqueName}">
@@ -109,7 +124,6 @@
          		</xsl:for-each>
 	      <br/>
 	      <br/>
-	      <br/>
 	      
 	      Component:&#160;&#160;<xsl:value-of select="componentType"/>	
 	      <br/>
@@ -120,7 +134,7 @@
 	      <br/>
 	      <br/>
 	      
-	      Component Parameters:<br/><br/>
+	      Component Parameters:<br/>
 	      			
 	      			<!--  <xsl:variable name="rowNumber" select="parameters/parameter[last()]/@row"/>
 	      				row number:<xsl:value-of select="parameters/parameter[last()]/@row"/>-->
@@ -141,11 +155,6 @@
 													</TR>
 										 </xsl:for-each>
 									</TABLE>
-	      			     			
-	
-	      
-	      
-	      
 	      
 	      <br/>
 	      <br/>
