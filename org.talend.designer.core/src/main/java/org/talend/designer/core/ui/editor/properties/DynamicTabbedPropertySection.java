@@ -136,6 +136,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private static CommandStackEventListener commandStackEventListener;
 
+    private String repositoryPropType = "";
+
     /**
      * ftang Comment method "showSchemaRepositoryList".
      * 
@@ -447,21 +449,25 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                     }
-                    if (!repositoryPropType.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
-                        if (repositoryTableNameList.length > 0) {
-                            List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName()));
-                            if (list2 != null && !list2.isEmpty()) {
-                                elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(true,
-                                        null));
+                    if ("".equals(repositoryPropType)) {
+                        getDefaultRepository(true, null);
+                    } else {
+                        if (!repositoryPropType.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                            if (repositoryTableNameList.length > 0) {
+                                List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                        .getName()));
+                                if (list2 != null && !list2.isEmpty()) {
+                                    elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
+                                            true, null));
+                                }
                             }
-                        }
-                        if (repositoryQueryNameList.length > 0) {
-                            List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName()));
-                            if (list2 != null && !list2.isEmpty()) {
-                                elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(
-                                        false, null));
+                            if (repositoryQueryNameList.length > 0) {
+                                List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                        .getName()));
+                                if (list2 != null && !list2.isEmpty()) {
+                                    elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                            getDefaultRepository(false, null));
+                                }
                             }
                         }
                     }
@@ -1157,8 +1163,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    private String repositoryPropType = "";
 
     /**
      * qzhang Comment method "getDefaultRepository".

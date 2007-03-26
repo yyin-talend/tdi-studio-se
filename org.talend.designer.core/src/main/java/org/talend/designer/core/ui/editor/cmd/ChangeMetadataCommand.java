@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.views.properties.tabbed.view.Tab;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -172,7 +173,11 @@ public class ChangeMetadataCommand extends Command {
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+        Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
+        if (currentTab == null) {
+            return;
+        }
+        ISection[] sections = currentTab.getSections();
         for (int i = 0; i < sections.length; i++) {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
                 DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
