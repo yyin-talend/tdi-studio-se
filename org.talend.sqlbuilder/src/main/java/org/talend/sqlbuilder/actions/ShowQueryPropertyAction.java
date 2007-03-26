@@ -70,6 +70,7 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
                 enabled = false;
             }
         }
+        enabled = enabled && !dialog.getConnParameters().isNodeReadOnly();
         setEnabled(enabled);
     }
 
