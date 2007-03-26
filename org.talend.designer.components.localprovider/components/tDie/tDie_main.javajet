@@ -21,7 +21,7 @@
 				for (INode logCatcher : logCatchers) {
 					if (ElementParameterParser.getValue(logCatcher, "__CATCH_TDIE__").equals("true")) {
 %>
-	<%=logCatcher.getUniqueName() %>.addMessage("tDie", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, "", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
+	<%=logCatcher.getUniqueName() %>.addMessage("tDie", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, <%=ElementParameterParser.getValue(node, "__CODE__") %>);
 	<%=logCatcher.getUniqueName() %>Process();
 <%
 					}

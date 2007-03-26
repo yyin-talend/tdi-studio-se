@@ -44,15 +44,12 @@ class="RunJobMain"
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
     process = process.replace("'", "");
     context = context.replace("'", "");
-    String[] codeOptions = new String[] {"--master_pid=0"};
+    String[] codeOptions = new String[] {"--father_pid=\"+pid+\"", "--root_pid=\"+rootPid+\""};
     String[] commandLine = new String[] {"<command>"};
     try {
-       commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
+    	commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
     } catch (ProcessorException e) {
-%>
-	<%= e.getMessage() %>
-<%
-   }
+    }
 %>
 
 Runtime runtime = Runtime.getRuntime();
@@ -65,24 +62,3 @@ for (int i=0; i<commandLine.length; i++) {
 }
 %>
 });
-//java 
-//-cp 
-//lib
-//;
-//D:\Mes documents\Developpement\runtime-EclipseApplication1\.Java\classes
-//tutu.testsystem.testSystem 
-//--context=Default
-//--master_pid=toto
-
-//my @arguments = (
-//    '"interpreterPath "',
-//    '-I "libPath"',
-//    '-I "=runtimeFilePath"',
-//    '"runtimeFilePath/currentProjectName.job_'.process.'.pl"',
-//    '--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$),
-//    '--context='.context,
-//);
-
-//system(
-//    join(' ', @arguments)
-//);

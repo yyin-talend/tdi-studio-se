@@ -37,9 +37,10 @@
       READONLY="true"
     >
       <TABLE>
-        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"y-M-d"'/>
-        <COLUMN NAME="pid" TYPE="id_Long" LENGTH="10"/>
-        <COLUMN NAME="master_pid" TYPE="id_Long" LENGTH="10"/>
+        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
+        <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="root_pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="father_pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>

@@ -21,7 +21,8 @@
 		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
 %>
 		<%=conn.getName() %>.pid = pid;
-		<%=conn.getName() %>.master_pid = masterPid;	
+		<%=conn.getName() %>.root_pid = rootPid;
+		<%=conn.getName() %>.father_pid = fatherPid;	
     	<%=conn.getName() %>.project = projectName;
     	<%=conn.getName() %>.job = jobName;
     	<%=conn.getName() %>.context = contextStr;

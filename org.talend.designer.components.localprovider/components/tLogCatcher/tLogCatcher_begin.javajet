@@ -23,15 +23,14 @@
 		<%=conn.getName() %>.type = lcm.getType();
 		<%=conn.getName() %>.origin = lcm.getOrigin();
 		<%=conn.getName() %>.priority = lcm.getPriority();
-		<%=conn.getName() %>.message = lcm.getErrorMessage();
-		<%=conn.getName() %>.java_error_message = lcm.getJavaErrorMessage();
-		<%=conn.getName() %>.java_error_code = lcm.getJavaErrorCode();
-		<%=conn.getName() %>.code = lcm.getJavaErrorCode();
+		<%=conn.getName() %>.message = lcm.getMessage();
+		<%=conn.getName() %>.code = lcm.getCode();
 		
 		<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
 	
     	<%=conn.getName() %>.pid = pid;
-		<%=conn.getName() %>.master_pid = masterPid;
+		<%=conn.getName() %>.root_pid = rootPid;
+		<%=conn.getName() %>.father_pid = fatherPid;
 	
     	<%=conn.getName() %>.project = projectName;
     	<%=conn.getName() %>.job = jobName;

@@ -21,7 +21,7 @@
 				for (INode logCatcher : logCatchers) {
 					if (ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__").equals("true")) {
 %>
-	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, "", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, 2);
+	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, 2);
 	<%=logCatcher.getUniqueName() %>Process();
 <%
 					}
