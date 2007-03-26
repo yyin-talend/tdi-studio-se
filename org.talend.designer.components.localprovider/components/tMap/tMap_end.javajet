@@ -26,7 +26,7 @@
     ExternalMapperData data = (ExternalMapperData) node.getExternalData();
 
 
-		// Temprary bug fix for bug issue bug:	
+		// Bug partially fixed, see bug:785	
         List<? extends INode> nodesOfType = node.getProcess().getNodesOfType("tFileList");
         boolean hasTFileList = nodesOfType.size() > 0;
         
