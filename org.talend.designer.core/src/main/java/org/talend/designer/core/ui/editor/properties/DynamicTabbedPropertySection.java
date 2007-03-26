@@ -138,6 +138,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private String repositoryPropType = "";
 
+    private String cuurentNodeUName = "";
+    
     /**
      * ftang Comment method "showSchemaRepositoryList".
      * 
@@ -449,7 +451,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                     }
-                    if ("".equals(repositoryPropType)) {
+                    if ("".equals(repositoryPropType) || !cuurentNodeUName.equals(((Node) elem).getUniqueName())) {
                         getDefaultRepository(true, null);
                     } else {
                         if (!repositoryPropType.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
@@ -1178,6 +1180,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             return "";
         }
         repositoryPropType = (String) propertyValue;
+        cuurentNodeUName = ((Node) elem).getUniqueName();
         if (istable) {
             if (tablesMap.get(propertyValue).size() > 0) {
                 return tablesMap.get(propertyValue).get(0);
