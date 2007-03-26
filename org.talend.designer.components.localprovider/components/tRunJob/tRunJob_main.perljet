@@ -28,7 +28,10 @@ String context = ElementParameterParser.getValue(
 if (!ProcessorUtilities.isExportConfig()) {
    process = process.replace("'", "");
    context = context.replace("'", "");
-   String[] codeOptions = new String[] {"--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$).'"};
+   String[] codeOptions = new String[] {
+       "--root_pid='.$_globals{root_pid}.'",
+       "--father_pid='.$_globals{pid}.'"
+   };
    String[] commandLine = new String[] {"<command>"};
    try {
       commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
@@ -94,7 +97,8 @@ my @arguments = (
     '-I "' . $libPath . '"',
     '-I "' . $runtimeFilePath . '"',
     '"' . $runtimeFilePath . '<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
-    '--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$),
+    '--root_pid='.$_globals{root_pid},
+    '--father_pid='.$_globals{pid},
     '--context='.<%=context %>,
 );
 <%
