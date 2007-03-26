@@ -1,32 +1,46 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="WarnMain"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="WarnMain"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String message = ElementParameterParser.getValue(
+            node,
+            "__MESSAGE__"
+        );
+
+        String priority = ElementParameterParser.getValue(
+            node,
+            "__PRIORITY__"
+        );
+
+        String code = ElementParameterParser.getValue(node, "__CODE__");
 %>
 
 if (defined &main::tLogCatcher_1_subprocess) {
     tLogCatcher_1_subprocess(
-        error_message => <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
+        message => <%=message%>,
+        code => <%=code%>,
         type => 'tWarn',
-        origin => '<%=metadata.getTableName()%>',
-        priority => <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>,
+        origin => '<%=cid%>',
+        priority => <%=priority%>,
     );
 }
     

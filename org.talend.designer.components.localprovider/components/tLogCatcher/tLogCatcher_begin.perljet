@@ -61,10 +61,8 @@ my @<%=cid %> = (
     $params{priority},
     $params{type},
     $params{origin},
-    $params{error_message},
-    $params{error_code},
-    $params{perl_error_message},
-    $params{perl_error_code},
+    $params{message},
+    $params{code},
 );
 
 $| = 1;

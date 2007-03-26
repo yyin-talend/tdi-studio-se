@@ -23,8 +23,8 @@
 
 if (defined &main::tLogCatcher_1_subprocess) {
     tLogCatcher_1_subprocess(
-        error_message => <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
-        error_code => <%=ElementParameterParser.getValue(node, "__CODE__") %>,
+        message => <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
+        code => <%=ElementParameterParser.getValue(node, "__CODE__") %>,
         type => 'tDie',
         origin => '<%=metadata.getTableName()%>',
         priority => <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>,

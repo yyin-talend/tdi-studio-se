@@ -130,18 +130,14 @@ sub global_die_catcher {
         my $exception = $_[0];
         chomp($exception);
 
-        $_globals{$dying_component}{ERROR_MESSAGE}      = $exception;
-        $_globals{$dying_component}{PERL_ERROR_MESSAGE} = $!;
-        $_globals{$dying_component}{PERL_ERROR_CODE}    = int($!);
+        $_globals{$dying_component}{ERROR_MESSAGE} = $exception;
 
         if (defined &main::tLogCatcher_1_subprocess) {
             tLogCatcher_1_subprocess(
                 type => 'Perl die',
                 origin => $dying_component,
                 priority => 100,
-                error_message => $_globals{$dying_component}{ERROR_MESSAGE},
-                perl_error_message => $_globals{$dying_component}{PERL_ERROR_MESSAGE},
-                perl_error_code => $_globals{$dying_component}{PERL_ERROR_CODE},
+                message => $_globals{$dying_component}{ERROR_MESSAGE},
             );
         }
 

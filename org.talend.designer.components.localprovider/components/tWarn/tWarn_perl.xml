@@ -1,14 +1,13 @@
-<!-- $Id$ -->
 <COMPONENT>
   <HEADER
     PLATEFORM="ALL"
-       SERIAL=""
-      VERSION="0.101"
-       STATUS="ALPHA"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
          
-COMPATIBILITY="ALL"
-       AUTHOR="Talend"
- RELEASE_DATE="20050320A"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+     RELEASE_DATE="20050320A"
     STARTABLE="true"
   >
     <SIGNATURE></SIGNATURE>
@@ -30,11 +29,30 @@ COMPATIBILITY="ALL"
   </CONNECTORS>
 
   <PARAMETERS>
-    <PARAMETER NAME="MESSAGE" FIELD="TEXT" REQUIRED="false" NUM_ROW="1">
+    <PARAMETER
+      NAME="MESSAGE"
+      FIELD="TEXT"
+      REQUIRED="false"
+      NUM_ROW="10"
+    >
       <DEFAULT>'this is a warning'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="PRIORITY" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+    <PARAMETER
+      NAME="CODE"
+      FIELD="TEXT"
+      REQUIRED="false"
+      NUM_ROW="20"
+    >
+      <DEFAULT>'42'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRIORITY"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="30"
+    >
       <DEFAULT>'50'</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
