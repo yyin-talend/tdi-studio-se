@@ -87,7 +87,7 @@ public class HTMLDocGenerator {
 
     private static final String TALEND_LOGO_FILE_NAME = "logo.jpg";
 
-    private static final String XSL_FILE_PATH = "resources/job.xsl";
+    private static final String XSL_FILE_PATH = "resources/Job.xsl";
 
     private static final String LOGO_FILE_PATH = "icons/logo.jpg";
 
