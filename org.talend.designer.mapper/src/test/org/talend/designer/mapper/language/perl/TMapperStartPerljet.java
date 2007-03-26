@@ -67,7 +67,7 @@ public class TMapperStartPerljet {
 
         int indent = 1;
 
-        ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
+        ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
 
         PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 

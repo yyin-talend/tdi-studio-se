@@ -70,7 +70,7 @@ public class TMapperMainPerljet {
         if (node != null) {
             // normal use
             inputConnections = (List<IConnection>) node.getIncomingConnections();
-            inputConnections = (List<IConnection>) node.getOutgoingConnections();
+            outputConnections = (List<IConnection>) node.getOutgoingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             // Stand alone / tests
