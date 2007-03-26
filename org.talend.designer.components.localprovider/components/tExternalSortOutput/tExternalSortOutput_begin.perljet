@@ -1,0 +1,127 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+class="ExternalSortOutputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        List<Map<String, String>> criteria =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__CRITERIA__"
+            );
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+
+        String tempDir = ElementParameterParser.getValue(
+            node,
+            "__TEMP_DIR__"
+        );
+
+        String maxMemory = ElementParameterParser.getValue(
+            node,
+            "__MAX_MEMORY__"
+        );
+%>
+
+my %desc_<%=cid %> = (
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    	{
+            name    => '<%=column.getLabel() %>',
+        },
+<%
+        }
+%>
+    ]
+);
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+        }
+
+        StringBuffer sb = new StringBuffer();
+
+        sb.append("sort");
+        sb.append(" -S '." + maxMemory + ".'");
+
+        if (!tempDir.equals("")) {
+            sb.append(" -T '." + tempDir + ".'");
+        }
+
+        sb.append(" -t \"'." + fieldSeparator + ".'\"");
+
+        for(int i=0; i<criteria.size(); i++) {
+            Map<String, String> line = criteria.get(i);
+            
+            String colname = line.get("COLNAME");
+            int colnum = 0;
+
+            int j = 1;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (colname.equals(column.getLabel())) {
+                    colnum = j;
+                }
+                j++;
+            }
+        
+            sb.append(" -k ");
+            sb.append(colnum);
+            sb.append(",");
+            sb.append(colnum);
+        
+            if (line.get("ORDER").toLowerCase().equals("desc")) {
+                sb.append("r");
+            }
+        
+            if (line.get("SORT").toLowerCase().startsWith("num")) {
+                sb.append("n");
+            }
+        }
+
+        sb.append(" -o ");
+%>
+
+my $nb_line_<%=cid %> = 0;
+open(my $sort_<%=cid%>, '|-', '<%=sb%>'.<%=filename%>);
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+    }
+}
+%>
