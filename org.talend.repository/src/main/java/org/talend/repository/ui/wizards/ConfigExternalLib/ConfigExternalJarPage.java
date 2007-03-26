@@ -31,7 +31,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -54,6 +53,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -121,7 +121,13 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                         ExceptionHandler.process(e);
                     }
                 }
+                try {
+                    CorePlugin.getDefault().getProxyRepositoryFactory().save(getSelectedRoutine());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+
             }
         });
 
@@ -257,7 +263,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          */
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
-            shell.setSize(400, 300);
+//            shell.setSize(400, 300);
             shell.setText(Messages.getString("ConfigExternalJarPage.title")); //$NON-NLS-1$
         }
 
@@ -308,6 +314,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             desText = new Text(composite, SWT.MULTI | SWT.BORDER);
             data = new GridData(GridData.FILL_BOTH);
             data.heightHint = 80;
+            data.widthHint=300;
             data.horizontalSpan = 2;
             desText.setLayoutData(data);
 

@@ -103,6 +103,11 @@ public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
         BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
 
             public void run() {
+                try {
+                    CorePlugin.getDefault().getProxyRepositoryFactory().save(getSelectedRoutine());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
                 CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
             }
         });
