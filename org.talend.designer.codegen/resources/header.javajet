@@ -125,7 +125,7 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
-			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 100, "", e.getMessage(), 1);
+			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 100, e.getMessage(), 1);
 <%
 					// 2) launch logCatcher subProcess
 %>
@@ -157,19 +157,33 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
 %>
-public void <%=node.getUniqueName() %>_error() {
+public void <%=node.getUniqueName() %>_error() throws TalendException {
+	end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 <%
-		List< ? extends IConnection> conns = node.getOutgoingConnections();
-    	for (IConnection conn : conns) {
-       		if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
+	String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+	if (statCatcher.compareTo("true")==0) {
+		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
+%>
+	<%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>");
+	<%=statCatcherNode.getUniqueName() %>.addMessage(
+	new PrintfFormat("%.1f seconds").sprintf((double)(end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"))/1000),"<%=node.getUniqueName() %>");
+	<%=statCatcherNode.getUniqueName() %>Process();
+<%
+		}
+	}
+
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
+   	for (IConnection conn : conns) {
+   		if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
 %>
 	try {
     	<%=conn.getTarget().getUniqueName() %>Process();
+    	status="end";
     } catch (Exception e) {
     	e.printStackTrace();
     }
 <%
-                }
+		}
 	}
 %>
 }

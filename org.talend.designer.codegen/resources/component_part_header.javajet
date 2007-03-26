@@ -22,8 +22,6 @@
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
  */
-currentComponent="<%=node.getUniqueName() %>";
-
 
 <%
 	if (codePart.equals(ECodePart.BEGIN)) {
@@ -43,6 +41,9 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 			}
 		}
 	}
+%>
+currentComponent="<%=node.getUniqueName() %>";
+<%
   	
   	if ((codePart.equals(ECodePart.BEGIN))&&(stat)) {
 %>

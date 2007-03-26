@@ -22,18 +22,24 @@
     public static int portStats = 3334;
     public static int portTraces = 4334;
     public static String contextStr = "<%=codeGenArgument.getContextName() %>";
-    public static long pid = 0;
-    public static long masterPid = 0;
+    public static String pid = "0";
+    public static String rootPid = null;
+    public static String fatherPid = null;
+    
+    public static String status= "";
     
     public static void main(String[] args) {
     	for (String arg : args) {
     		<%=process.getName() %>.evalParam(arg);
     	}
     	
-    	pid = Thread.currentThread().getId();
-    	if (masterPid==0) {
-    		masterPid = pid;
-    	} 
+    	pid = java.util.Calendar.getInstance().getTimeInMillis()+"_"+Math.round(Math.random()*1000);
+    	if (rootPid==null) {
+    		rootPid = pid;
+    	}
+    	if (fatherPid==null) {
+    		fatherPid = pid;
+    	}
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
@@ -81,9 +87,10 @@
 		}
 %>
 
+	long end = 0;
+	long start = java.util.Calendar.getInstance().getTimeInMillis();
+	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 	try {
-		long start = java.util.Calendar.getInstance().getTimeInMillis();
-		<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 <%
    	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
@@ -97,23 +104,30 @@
 		<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
 	}
-%>  
-		long end = java.util.Calendar.getInstance().getTimeInMillis();
+%>
+		status="end";
+	} catch(TalendException e) {
+		status="failure";
+		e.printStackTrace();
+	} finally {
+		end = java.util.Calendar.getInstance().getTimeInMillis();
 		if (watch) {
     		System.out.println((end-start)+" milliseconds");
 	    }
 <%
-   	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("end");
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status);
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(((end-start)/1000) + " seconds");
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+		try {
+			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 <%
     }
 %>
-	} catch(TalendException e) {
-		e.printStackTrace();
-	} 
+	}
 
 <%
     if (stats) {
@@ -138,8 +152,10 @@
     		portTraces = Integer.parseInt(arg.substring(13));
     	} else if (arg.startsWith("--context=")) {
     		contextStr = arg.substring(10);
-    	} else if (arg.startsWith("--masterpid=")) {
-    		masterPid = Long.parseLong(arg.substring(12));
+    	} else if (arg.startsWith("--father_pid=")) {
+    		fatherPid = arg.substring(13);
+    	} else if (arg.startsWith("--root_pid=")) {
+    		rootPid = arg.substring(11);
     	}
 	}
 }
