@@ -55,6 +55,7 @@ public class EditQueriesAction extends AContextualAction {
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         connParameters.setQuery(""); //$NON-NLS-1$
+        connParameters.setNodeReadOnly(false);
         dial.setConnParameters(connParameters);
         dial.open();
 

@@ -404,8 +404,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         String sql = ""; //$NON-NLS-1$
         // sql = editorComposite.getDefaultTabSql();
         sql = editorComposite.getCurrentTabSql();
-        if (connParameters.isJavaProject()) {
+        if (ConnectionParameters.isJavaProject()) {
             sql = sql.replace("\"", "\\" + "\"");
+        } else {
+            sql = sql.replace("'", "\\'");
         }
 
         connParameters.setQuery(sql);
