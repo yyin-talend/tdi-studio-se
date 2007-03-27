@@ -209,11 +209,17 @@ public class DatabaseTableForm extends AbstractForm {
     private void initTreeNavigatorNodes() {
 
         if (metadataTable == null) {
+            
             if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
+                boolean isAllDeleted = true;
                 for (int i = 0; i < getConnection().getTables().size(); i++) {
                     if (!TableHelper.isDeleted((MetadataTable) getConnection().getTables().get(i))) {
                         metadataTable = (MetadataTable) getConnection().getTables().get(i);
+                        isAllDeleted = false;
                     }
+                }
+                if (isAllDeleted) {
+                    addMetadataTable();
                 }
             } else {
                 addMetadataTable();
@@ -224,7 +230,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         String[] allTableLabel = TableHelper.getTableNames(getConnection());
         Arrays.sort(allTableLabel);
-
+    
         for (int i = 0; i < allTableLabel.length; i++) {
             if (allTableLabel[i].equals(metadataTable.getLabel())) {
                 TableItem subItem = new TableItem(tableNavigator, SWT.NONE);
