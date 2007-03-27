@@ -31,6 +31,7 @@ import java.util.Map;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +39,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -53,7 +56,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -175,7 +177,10 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 RoutineItem routine = getSelectedRoutine();
                 type.setNAME(routine.getProperty().getLabel());
                 File jarFile = dialog.getFile();
-                newJarFiles.put(type, jarFile);
+                if (jarFile != null) {
+                    newJarFiles.put(type, jarFile);
+                   
+                }
                 importTypes.add(type);
             }
             return importTypes;
@@ -210,6 +215,12 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
 
         private File file;
 
+        private Button typeNameRadioButton;
+
+        private Text nameText;
+
+        private Button fileRadioButton;
+
         /**
          * Getter for file.
          * 
@@ -229,8 +240,15 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             IMPORTType type = ComponentFactory.eINSTANCE.createIMPORTType();
             type.setMESSAGE(desText.getText());
 
-            file = new File(fileField.getStringValue());
-            type.setMODULE(file.getName());
+            String modelName = "modelName"; //$NON-NLS-1$
+            if (typeNameRadioButton.getSelection()) {
+                modelName = nameText.getText();
+            } else {
+                file = new File(fileField.getStringValue());
+                modelName = file.getName();
+            }
+
+            type.setMODULE(modelName);
             type.setREQUIRED(requiredButton.getSelection());
             this.importType = type;
 
@@ -242,9 +260,16 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          */
         private void checkEnable() {
             Button okButton = getButton(IDialogConstants.OK_ID);
-            String filePath = fileField.getStringValue();
-            File file = new File(filePath);
-            okButton.setEnabled(file.exists());
+
+            boolean ok = false;
+            if (typeNameRadioButton.getSelection()) {
+                ok = (nameText.getText().length() != 0);
+            } else {
+                String filePath = fileField.getStringValue();
+                File f = new File(filePath);
+                ok = f.exists();
+            }
+            okButton.setEnabled(ok);
         }
 
         /**
@@ -263,7 +288,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
          */
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
-//            shell.setSize(400, 300);
+            // shell.setSize(400, 300);
             shell.setText(Messages.getString("ConfigExternalJarPage.title")); //$NON-NLS-1$
         }
 
@@ -275,21 +300,54 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
         @Override
         protected Control createDialogArea(Composite parent) {
             // create composite
-            Composite composite = (Composite) super.createDialogArea(parent);
+            final Composite composite = (Composite) super.createDialogArea(parent);
             GridLayout layout = (GridLayout) composite.getLayout();
             layout.numColumns = 3;
 
             GridLayout copyLayout = GridLayoutFactory.copyLayout(layout);
 
-            fileField = new FileFieldEditor(
-                    "JarFileFileEdior", Messages.getString("ConfigExternalJarPage.jarFile.label"), composite); //$NON-NLS-1$ //$NON-NLS-2$
-            Text filePathText = fileField.getTextControl(composite);
-            filePathText.addModifyListener(new ModifyListener() {
+            typeNameRadioButton = new Button(composite, SWT.RADIO);
+            typeNameRadioButton.setText(Messages.getString("ConfigExternalJarPage.inputJARName")); //$NON-NLS-1$
+            GridDataFactory.fillDefaults().span(3, 1).applyTo(typeNameRadioButton);
+            typeNameRadioButton.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    nameText.setEnabled(true);
+                    fileField.setEnabled(false, composite);
+                    checkEnable();
+
+                }
+            });
+
+            ModifyListener modifyListener=  new ModifyListener() {
 
                 public void modifyText(ModifyEvent e) {
                     checkEnable();
                 }
+            };
+            
+            nameText = new Text(composite, SWT.BORDER);
+            nameText.addModifyListener(modifyListener);
+            GridDataFactory.fillDefaults().span(3, 1).applyTo(nameText);
+
+            fileRadioButton = new Button(composite, SWT.RADIO);
+            fileRadioButton.setText(Messages.getString("ConfigExternalJarPage.browseJARFile")); //$NON-NLS-1$
+            GridDataFactory.fillDefaults().span(3, 1).applyTo(fileRadioButton);
+
+            fileRadioButton.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    nameText.setEnabled(false);
+                    fileField.setEnabled(true, composite);
+                    checkEnable();
+
+                }
             });
+
+            fileField = new FileFieldEditor(
+                    "JarFileFileEdior", Messages.getString("ConfigExternalJarPage.jarFile.label"), composite); //$NON-NLS-1$ //$NON-NLS-2$
+            Text filePathText = fileField.getTextControl(composite);
+            filePathText.addModifyListener(modifyListener);
 
             fileField.setFileExtensions(new String[] { "*.jar" }); //$NON-NLS-1$
             composite.setLayout(copyLayout);
@@ -314,7 +372,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             desText = new Text(composite, SWT.MULTI | SWT.BORDER);
             data = new GridData(GridData.FILL_BOTH);
             data.heightHint = 80;
-            data.widthHint=300;
+            data.widthHint = 300;
             data.horizontalSpan = 2;
             desText.setLayoutData(data);
 
