@@ -4,15 +4,23 @@
 <toc label="Developer Guide">
     <topic label="Reference">
         <topic label="API Reference">
-            <topic label="All the plugins API" href="reference/api/index.html?overview-summary.html"/>
+            <topic label="All the plugins API" href="http://talendforge.org/tos-2.0.0/api/index.html?overview-summary.html"/>
             <topic label="..." />
         </topic>
         <topic label="Extension Points Reference">
-            <topic label="org_talend_repository_actions" href="reference/extension-points/repository/org_talend_repository_actions.html"/>
-            <topic label="org_talend_repository_components_provider" href="reference/extension-points/repository/org_talend_repository_components_provider.html"/>
-            <topic label="org_talend_repository_external_component" href="reference/extension-points/repository/org_talend_repository_external_component.html"/>
-            <topic label="org_talend_repository_filepreview_provider" href="reference/extension-points/repository/org_talend_repository_filepreview_provider.html"/>
-            <topic label="org_talend_repository_repository_provider" href="reference/extension-points/repository/org_talend_repository_repository_provider.html"/>
+            <topic label="org.talend.core.components.provider" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_components_provider.html"/>
+            <topic label="org.talend.core.external.component" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_external_component.html"/>
+            <topic label="org.talend.core.filepreview.provider" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_filepreview_provider.html"/>
+            <topic label="org.talend.core.global.actions" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_global_actions.html"/>
+            <topic label="org.talend.core.librariesNeeded" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_librariesNeeded.html"/>
+            <topic label="org.talend.core.migrationTask" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_migrationTask.html"/>
+            <topic label="org.talend.core.repositoryContextualsActions" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_repositoryContextualsActions.html"/>
+            <topic label="org.talend.core.repository.provider" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_repository_provider.html"/>
+            <topic label="org.talend.core.service" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_service.html"/>
+            <topic label="org.talend.core.talendperspectives" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_talendperspectives.html"/>
+            <topic label="org.talend.designer.core.generators" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_designer_core_generators.html"/>
+            <topic label="org.talend.designer.runprocess.runprocess.view.helper" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_designer_runprocess_runprocess_view_helper.html"/>
+            <topic label="org.talend.sqlbuilder.editorAction" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_sqlbuilder_editorAction.html"/>
         </topic>
     </topic>
 </toc>
