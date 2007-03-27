@@ -97,7 +97,7 @@ end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getT
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("end","<%=node.getUniqueName() %>");
 <%=statCatcherNode.getUniqueName() %>.addMessage(
-	new PrintfFormat("%.1f seconds").sprintf((double)(end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"))/1000),"<%=node.getUniqueName() %>");
+	new PrintfFormat("%.1f seconds").sprintf(((float)(end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>")))/(float)1000),"<%=node.getUniqueName() %>");
 <%=statCatcherNode.getUniqueName() %>Process();
 <%
 			}
