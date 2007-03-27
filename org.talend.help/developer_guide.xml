@@ -20,7 +20,6 @@
             <topic label="org.talend.core.talendperspectives" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_core_talendperspectives.html"/>
             <topic label="org.talend.designer.core.generators" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_designer_core_generators.html"/>
             <topic label="org.talend.designer.runprocess.runprocess.view.helper" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_designer_runprocess_runprocess_view_helper.html"/>
-            <topic label="org.talend.sqlbuilder.editorAction" href="http://talendforge.org/tos-2.0.0/extension-points/org_talend_sqlbuilder_editorAction.html"/>
         </topic>
     </topic>
 </toc>
