@@ -461,6 +461,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         tableViewerCreatorTarget.getSelectionHelper().setSelection(selection);
         ISelection iselection = tableViewerCreatorTarget.getTableViewer().getSelection();
         List<ITableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
+        tableViewerCreatorTarget.getTable().deselectAll();
 
         uiManager.unselectAllOutputMetaDataEntries();
         uiManager.unselectAllInputMetaDataEntries();

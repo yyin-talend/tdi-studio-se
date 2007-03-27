@@ -155,6 +155,7 @@ public class ExternalDataConverter {
     public ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections, ExternalMapperData externalData) {
         ArrayList<InputTable> inputDataMapTables = new ArrayList<InputTable>();
         ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(inputConnections);
+        // case externalData IS NOT initialized
         if (externalData == null || externalData.getInputTables().size() == 0) {
             for (IOConnection connection : inputConnections) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
@@ -162,6 +163,7 @@ public class ExternalDataConverter {
                 inputDataMapTables.add(inputTable);
             }
         } else {
+            // case externalData IS initialized
             Map<String, IOConnection> nameToInputConnection = new HashMap<String, IOConnection>();
             for (IOConnection connection : inputConnections) {
                 nameToInputConnection.put(connection.getName(), connection);
@@ -177,7 +179,9 @@ public class ExternalDataConverter {
                 }
             }
             for (IOConnection connection : remainingConnections) {
-                inputDataMapTables.add(new InputTable(this.mapperManager, connection, connection.getName()));
+                InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
+                inputTable.initFromExternalData(null);
+                inputDataMapTables.add(inputTable);
             }
         }
 
