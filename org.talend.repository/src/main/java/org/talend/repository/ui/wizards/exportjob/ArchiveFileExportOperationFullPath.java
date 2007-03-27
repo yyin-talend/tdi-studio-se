@@ -205,7 +205,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             Set<String> paths = fileResource.getRelativePathList();
             for (Iterator iter = paths.iterator(); iter.hasNext();) {
                 String relativePath = (String) iter.next();
-                List<URL> resource = fileResource.getResourcesByRelativePath(relativePath);
+                Set<URL> resource = fileResource.getResourcesByRelativePath(relativePath);
                 for (URL url : resource) {
                     String currentResource = url.getPath();
                     exportResource(rootName, relativePath, currentResource, 1);

@@ -24,6 +24,7 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class ExportFileResource {
     private String directoryName;
 
     // string is the relative path of the directoryName, where to store the resources in List.
-    private Map<String, List<URL>> map = new HashMap<String, List<URL>>();
+    private Map<String, Set<URL>> map = new HashMap<String, Set<URL>>();
 
     public String getDirectoryName() {
         return directoryName;
@@ -69,9 +70,10 @@ public class ExportFileResource {
      * @param resources
      */
     public void addResources(String relativePath, List<URL> resources) {
-        List<URL> storeList = map.get(relativePath);
+        Set<URL> storeList = map.get(relativePath);
         if (storeList == null) {
-            map.put(relativePath, resources);
+            Set<URL> set = new HashSet<URL>(resources);
+            map.put(relativePath, set);
         } else {
             storeList.addAll(resources);
         }
@@ -124,7 +126,7 @@ public class ExportFileResource {
         return map.keySet();
     }
 
-    public List<URL> getResourcesByRelativePath(String path) {
+    public Set<URL> getResourcesByRelativePath(String path) {
         return map.get(path);
     }
 
@@ -138,7 +140,7 @@ public class ExportFileResource {
         int result = 0;
         for (Iterator iter = paths.iterator(); iter.hasNext();) {
             String path = (String) iter.next();
-            List<URL> resource = getResourcesByRelativePath(path);
+            Set<URL> resource = getResourcesByRelativePath(path);
             for (Iterator iterator = resource.iterator(); iterator.hasNext();) {
                 URL url = (URL) iterator.next();
                 result += countChildrenOf(url.getPath());
