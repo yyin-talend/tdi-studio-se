@@ -44,8 +44,6 @@ COMPATIBILITY="ALL"
         <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="code" TYPE="id_Integer" LENGTH="3"/>
-        <COLUMN NAME="java_error_message" TYPE="id_String" LENGTH="255"/>
-        <COLUMN NAME="java_error_code" TYPE="id_Integer" LENGTH="3"/>
       </TABLE>
     </PARAMETER>
 
