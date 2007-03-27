@@ -200,7 +200,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setModifiable(param.isRepositoryValueUsed()
+                    column.setModifiable(param.isBasedOnSchema() || param.isRepositoryValueUsed()
                             || param.isReadOnly());                    
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     column.setDisplayedValue(""); //$NON-NLS-1$
