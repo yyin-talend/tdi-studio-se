@@ -145,26 +145,19 @@
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
+                        sb.append(cr + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
                                 indent, writeCommentedFieldKeys));
                         validLookupTables.add(externalTable);
+								sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
+                        	+ "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName + "FromHash;");
+                    } else {
+			               sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName + "Default;");
                     }
 
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
         } // for (IConnection connection : connections) {
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
-
-        // lookup inputs initialization
-        for (ExternalMapperTable inputTable : lookupTables) {
-            String tableName = inputTable.getName();
-            if (validLookupTables.contains(inputTable)) {
-                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
-                        + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName + "FromHash;");
-            } else {
-                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName + "Default;");
-            }
-        }
 
         sb.append(cr);
 
