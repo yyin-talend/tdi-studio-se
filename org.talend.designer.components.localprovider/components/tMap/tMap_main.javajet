@@ -278,6 +278,9 @@
 
             String outputTableName = outputTable.getName();
 
+            if (outputTable.isRejectInnerJoin()) {
+                atLeastOneRejectInnerJoin = true;
+            }
             if (nameToOutputConnection.get(outputTableName) == null) {
                 continue;
             }
@@ -295,34 +298,33 @@
                     atLeastOneReject = true;
                 }
             }
-            if (outputTable.isRejectInnerJoin()) {
-                atLeastOneRejectInnerJoin = true;
-            }
         }
         // ///////////////////////////////////////////////////////////////////
 
         sb.append(cr);
 
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
-            // write $oneNotRejectFilterValidated = false;
+            // write rejected = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = true;");
         }
         if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
-            // write $oneNotRejectFilterValidated = false;
+            // write rejectedInnerJoin = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejectedInnerJoin + " = true;");
         }
 
         // write conditions for inner join reject
-        if (validLookupTables.size() > 0 && lstSizeOutputs > 0) {
+        if (validLookupTables.size() > 0 && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
             sb.append(cr + gm.indent(indent) + "if(");
             String and = null;
             for (ExternalMapperTable validLookupTable : validLookupTables) {
-                if (and == null) {
+					if(validLookupTable.isInnerJoin()) {
+                	if (and == null) {
                     and = "";
-                } else {
+                	} else {
                     and = " &&";
-                }
-                sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
+                	}
+                	sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
+               }
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
