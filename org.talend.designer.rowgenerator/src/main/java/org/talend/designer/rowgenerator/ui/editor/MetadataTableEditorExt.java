@@ -49,7 +49,7 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
 
     public IMetadataColumn createNewMetadataColumn() {
         final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super.createNewMetadataColumn());
-        metadataColumnExt.setFunction((new FunctionManager()).getFunction(metadataColumnExt, metadataColumnExt.getTalendType()));
+        metadataColumnExt.setFunction((new FunctionManager()).getDefaultFunction(metadataColumnExt, metadataColumnExt.getTalendType()));
         return metadataColumnExt;
     }
 

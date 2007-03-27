@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,9 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ImportPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.ImportPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveDownPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveDownPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveUpPushButton;
@@ -53,6 +56,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.rowgenerator.i18n.Messages;
@@ -248,8 +252,16 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     @Override
     protected ExportPushButton createExportPushButton() {
-        // ExportPushButton exportPushButton2 = super.createExportPushButton();
-        return null;
+        return new ExportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+            @Override
+            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
+                MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
+                .getExtendedControlModel();
+                return new MetadataExportXmlCommandExt(tableEditorModel, file);
+            }
+
+        };
     }
 
     /*
@@ -259,8 +271,16 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     @Override
     public ImportPushButton createImportPushButton() {
-        // ImportPushButton importPushButton2 = super.createImportPushButton();
-        return null;
+        return new ImportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+            @Override
+            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
+                MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
+                .getExtendedControlModel();
+                return new MetadataImportXmlCommandExt(tableEditorModel, file);
+            }
+
+        };
     }
 
     /**

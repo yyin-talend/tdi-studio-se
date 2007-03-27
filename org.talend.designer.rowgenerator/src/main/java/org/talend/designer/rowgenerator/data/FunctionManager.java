@@ -141,7 +141,28 @@ public class FunctionManager {
         talendTypes = parser.getList();
     }
     
-    public Function getFunction(MetadataColumnExt bean, String talendType) {
+    public Function getCurrentFunction(String funName, MetadataColumnExt bean) {
+        Function currentFun = new Function();
+        List<Function> functions = getFunctionByName(bean.getTalendType());
+        String[] arrayTalendFunctions2 = new String[functions.size()];
+        if (functions.isEmpty()) {
+            currentFun.setDescription(""); //$NON-NLS-1$
+            currentFun.setPreview(""); //$NON-NLS-1$
+            currentFun.setParameters(new ArrayList<Parameter>());
+            bean.setArrayFunctions(arrayTalendFunctions2);
+        } else {
+            for (int i = 0; i < functions.size(); i++) {
+                arrayTalendFunctions2[i] = functions.get(i).getName();
+                if (funName.equals(functions.get(i).getName())) {
+                    currentFun = functions.get(i);
+                }
+            }
+            bean.setArrayFunctions(arrayTalendFunctions2);
+        }
+        return currentFun;
+    }
+    
+    public Function getDefaultFunction(MetadataColumnExt bean, String talendType) {
         Function currentFun = new Function();
         List<Function> functions = getFunctionByName(talendType);
         String[] arrayTalendFunctions2 = new String[functions.size()];

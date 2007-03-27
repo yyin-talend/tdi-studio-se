@@ -289,7 +289,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                 if (bean instanceof MetadataColumnExt) {
                     MetadataColumnExt ext = (MetadataColumnExt) bean;
                     ext.setTalendType(value);
-                    ext.setFunction(functionManager.getFunction(ext, value));
+                    ext.setFunction(functionManager.getDefaultFunction(ext, value));
                     ext.setChanged(true);
                 }
             }
@@ -410,11 +410,11 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         ControlListener controlListener = new ControlListener() {
 
             public void controlMoved(ControlEvent e) {
-                MetadataTableEditorViewExt.this.attachLabelPosition();
+                MetadataTableEditorViewExt.this.attachLabelPosition(getTable().getHorizontalBar().getSelection());
             }
 
             public void controlResized(ControlEvent e) {
-                MetadataTableEditorViewExt.this.attachLabelPosition();
+                MetadataTableEditorViewExt.this.attachLabelPosition(getTable().getHorizontalBar().getSelection());
             }
 
         };
@@ -663,7 +663,10 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
                     && (funColumn.getId().equals(ID_COLUMN_KEY) || funColumn.getId().equals(ID_COLUMN_NULLABLE))) {
-                funColumn.setTableEditorContent(new CheckboxTableEditorContent());
+                final CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
+                checkboxTableEditorContent.setToolTipText(currTitle);
+                checkboxTableEditorContent.createTableEditor(getTable());
+                funColumn.setTableEditorContent(checkboxTableEditorContent);
             }
             funColumn.setModifiable(isReadOnly());
             funColumn.setMinimumWidth(35);
