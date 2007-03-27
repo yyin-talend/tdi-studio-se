@@ -189,7 +189,11 @@ public class HTMLDocGenerator {
 
         File[] files = tmpFolder.listFiles();
         for (int i = 0; i < files.length; i++) {
-            list.add(files[i].toURL());
+            // Checks if current file is html file, xml file and Pictures folder which need be exported,
+            // otherwise ignore it.
+            if (!(files[i].isDirectory() && !files[i].toString().endsWith(PIC_FOLDER_NAME))) {
+                list.add(files[i].toURL());
+            }
         }
 
         return list;
