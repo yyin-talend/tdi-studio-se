@@ -43,8 +43,8 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
     @Override
     protected LayeredPane createPrintableLayers() {
         FreeformLayeredPane layeredPane = new FreeformLayeredPane();
-        layeredPane.add(new ConnectionLayer(), CONNECTION_LAYER);
         layeredPane.add(new FreeformLayer(), PRIMARY_LAYER);
+        layeredPane.add(new ConnectionLayer(), CONNECTION_LAYER);
         return layeredPane;
     }
 
