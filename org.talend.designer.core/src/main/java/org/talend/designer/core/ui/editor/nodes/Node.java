@@ -837,7 +837,7 @@ public class Node extends Element implements INode {
         }
     }
 
-    private int getCurrentActiveLinksNbInput(EConnectionType type) {
+    public int getCurrentActiveLinksNbInput(EConnectionType type) {
         int nb = 0;
         for (Connection connection : inputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
