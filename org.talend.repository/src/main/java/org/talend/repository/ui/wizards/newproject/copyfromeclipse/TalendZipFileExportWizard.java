@@ -23,18 +23,13 @@ package org.talend.repository.ui.wizards.newproject.copyfromeclipse;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.ZipFileExportWizard;
-
 
 /**
  * Copy of class org.eclipse.ui.wizards.datatransfer.ZipFileExportWizard. This copy has been done to filter some
@@ -44,6 +39,7 @@ import org.eclipse.ui.wizards.datatransfer.ZipFileExportWizard;
  * 
  */
 public class TalendZipFileExportWizard extends ZipFileExportWizard {
+
     private IStructuredSelection selection;
 
     private TalendWizardArchiveFileResourceExportPage1 mainPage;
@@ -52,28 +48,9 @@ public class TalendZipFileExportWizard extends ZipFileExportWizard {
      * Creates a wizard for exporting workspace resources to a zip file.
      */
     public TalendZipFileExportWizard() {
-        AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
-                .getPlugin(PlatformUI.PLUGIN_ID);
-        IDialogSettings workbenchSettings = plugin.getDialogSettings();
-        IDialogSettings section = workbenchSettings
-                .getSection("ZipFileExportWizard");//$NON-NLS-1$
-        if (section == null) {
-            section = workbenchSettings.addNewSection("ZipFileExportWizard");//$NON-NLS-1$
-        }
-        setDialogSettings(section);
+        super();
     }
 
-    /* (non-Javadoc)
-     * Method declared on IWizard.
-     */
-    public void addPages() {
-        mainPage = new TalendWizardArchiveFileResourceExportPage1(selection);
-        addPage(mainPage);
-    }
-
-    /* (non-Javadoc)
-     * Method declared on IWorkbenchWizard.
-     */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         this.selection = currentSelection;
         List selectedResources = IDE.computeSelectedResources(currentSelection);
@@ -86,10 +63,11 @@ public class TalendZipFileExportWizard extends ZipFileExportWizard {
         setNeedsProgressMonitor(true);
     }
 
-    /* (non-Javadoc)
-     * Method declared on IWizard.
+    /*
+     * (non-Javadoc) Method declared on IWizard.
      */
-    public boolean performFinish() {
-        return mainPage.finish();
+    public void addPages() {
+        mainPage = new TalendWizardArchiveFileResourceExportPage1(selection);
+        addPage(mainPage);
     }
 }
