@@ -22,10 +22,16 @@
 package org.talend.designer.runprocess.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -94,21 +100,22 @@ public class PromptDialog extends Dialog {
 
     @Override
     protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginWidth = MARGIN_WIDTH;
-        layout.marginHeight = MARGIN_HEIGHT;
-        composite.setLayout(layout);
+        final Composite composite = (Composite) super.createDialogArea(parent);
+        composite.setLayout(new FillLayout());
 
-        int position = 0;
+        final ScrolledComposite sc = new ScrolledComposite(composite, SWT.H_SCROLL | SWT.V_SCROLL);
+
+        final Composite child = new Composite(sc, SWT.NONE);
+        child.setLayout(new GridLayout(1, false));
+
         // Prompt for context values ?
         for (final IContextParameter parameter : context.getContextParameterList()) {
             if (parameter.isPromptNeeded()) {
-                Label label = new Label(composite, SWT.NONE);
+                Label label = new Label(child, SWT.NONE);
                 label.setText(parameter.getPrompt());
                 label.setAlignment(SWT.RIGHT);
 
-                final Text text = new Text(composite, SWT.SINGLE | SWT.BORDER);
+                final Text text = new Text(child, SWT.SINGLE | SWT.BORDER);
                 text.setText(parameter.getValue());
                 text.addModifyListener(new ModifyListener() {
 
@@ -127,16 +134,28 @@ public class PromptDialog extends Dialog {
                 GridData data = new GridData();
                 data.minimumWidth = MINIMUM_WIDTH;
                 label.setLayoutData(data);
-                data.horizontalSpan = 2;
-                
+
                 data = new GridData(GridData.FILL_HORIZONTAL);
-                data.horizontalSpan = 2;
                 data.minimumWidth = MINIMUM_WIDTH;
                 text.setLayoutData(data);
-
-                position += text.getLineHeight() + CELLPADDING;
             }
         }
+
+        sc.setContent(child);
+
+        // Set the minimum size
+        // sc.setMinSize(400, 400);
+
+        // Expand both horizontally and vertically
+        sc.setExpandHorizontal(true);
+        sc.setExpandVertical(true);
+        sc.addControlListener(new ControlAdapter() {
+
+            public void controlResized(ControlEvent e) {
+                Rectangle r = sc.getClientArea();
+                sc.setMinSize(child.computeSize(r.width, SWT.DEFAULT));
+            }
+        });
         return composite;
     }
 
@@ -169,7 +188,7 @@ public class PromptDialog extends Dialog {
                 nbParams++;
             }
         }
-        Point dialogSize = new Point(X_POSITION, (height * nbParams) + Y_POSITION);
+        Point dialogSize = new Point(X_POSITION, Math.min((height * nbParams) + Y_POSITION, 400));
         setSize(newShell, dialogSize);
 
         newShell.setText(Messages.getString("PromptDialog.title", context.getName())); //$NON-NLS-1$
