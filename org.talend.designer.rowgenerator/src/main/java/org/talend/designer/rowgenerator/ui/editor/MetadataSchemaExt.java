@@ -54,22 +54,28 @@ public class MetadataSchemaExt extends MetadataSchema {
         IMetadataColumn column = super.initializeOneColumn(metadataColumn, nodeMap);
         MetadataColumnExt columnExt = new MetadataColumnExt((MetadataColumn) column);
         Node function = nodeMap.getNamedItem("function"); //$NON-NLS-1$
-        Node parameter = nodeMap.getNamedItem("parameter"); //$NON-NLS-1$
-        Node preview = nodeMap.getNamedItem("preview"); //$NON-NLS-1$
-        Function function2 = new FunctionManager().getCurrentFunction(function.getNodeValue(), columnExt);
-        List<Parameter> parms = function2.getParameters();
-        String[] paraStr = parameter.getNodeValue().split(";");
-        for (String string : paraStr) {
-            String[] nv = string.split("=>");
-            for (Parameter para : parms) {
-                if (para.getName().equals(nv[0].trim())) {
-                    para.setValue(nv[1]);
-                    break;
+        if (function != null) {
+            Node parameter = nodeMap.getNamedItem("parameter"); //$NON-NLS-1$
+            Node preview = nodeMap.getNamedItem("preview"); //$NON-NLS-1$
+            Function function2 = new FunctionManager().getCurrentFunction(function.getNodeValue(), columnExt);
+            List<Parameter> parms = function2.getParameters();
+            String[] paraStr = parameter.getNodeValue().split(";");
+            for (String string : paraStr) {
+                String[] nv = string.split("=>");
+                for (Parameter para : parms) {
+                    if (para.getName().equals(nv[0].trim())) {
+                        para.setValue(nv[1]);
+                        break;
+                    }
                 }
             }
+            columnExt.setFunction(function2);
+            columnExt.setPreview(preview.getNodeValue());
+        } else {
+            Function function2 = new FunctionManager().getDefaultFunction(columnExt, columnExt.getTalendType());
+            columnExt.setFunction(function2);
+            columnExt.setPreview("");
         }
-        columnExt.setFunction(function2);
-        columnExt.setPreview(preview.getNodeValue());
         return columnExt;
     }
     protected void saveOneColumn(Document document, IMetadataColumn metadataColumn, Element column) {
