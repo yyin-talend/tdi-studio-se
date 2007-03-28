@@ -64,6 +64,8 @@ public class ConnectionReconnectCommand extends Command {
 
     private String oldSourceSchemaType, newSourceSchemaType;
 
+    private String newTargetSchemaType;
+
     /**
      * Initialisation of the command with the given connection. This will initialize the source and target before change
      * them.
@@ -295,12 +297,16 @@ public class ConnectionReconnectCommand extends Command {
             ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
+            newTargetSchemaType = (String) newTarget.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             connection.setLineStyle(newConnectionType);
             INodeConnector connector = oldTarget.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
             connection.reconnect(oldSource, newTarget);
+            if (newTargetSchemaType != null) {
+                newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            }
             ((Process) oldSource.getProcess()).checkStartNodes();
             ((Process) oldSource.getProcess()).checkProcess();
         } else {
@@ -374,6 +380,9 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
+            if (newTargetSchemaType != null) {
+                newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), newTargetSchemaType);
+            }
         }
         connection.reconnect(oldSource, oldTarget);
         ((Process) oldSource.getProcess()).checkStartNodes();
