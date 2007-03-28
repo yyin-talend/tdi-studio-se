@@ -1,0 +1,23 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="MSSqlRowEnd" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+	%>
+conn_<%=cid %>.commit();
+	<%
+	}
+%>
+pstmt_<%=cid %>.close();
+conn_<%=cid %> .close();
