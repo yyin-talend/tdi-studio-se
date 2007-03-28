@@ -93,6 +93,7 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
     public List getTypesForSource(IAdaptable target, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) target.getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
+                && relationshipType.getEClass() != null
                 && relationshipType.getEClass().getEAllSuperTypes().contains(
                         org.talend.designer.business.model.business.BusinessPackage.eINSTANCE
                                 .getBaseBusinessItemRelationship())) {
@@ -116,6 +117,7 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
     public List getTypesForTarget(IAdaptable source, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) source.getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
+                && relationshipType.getEClass() != null
                 && relationshipType.getEClass().getEAllSuperTypes().contains(
                         org.talend.designer.business.model.business.BusinessPackage.eINSTANCE
                                 .getBaseBusinessItemRelationship())) {
