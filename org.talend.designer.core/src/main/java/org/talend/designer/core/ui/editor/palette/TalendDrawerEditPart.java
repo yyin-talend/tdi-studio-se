@@ -33,13 +33,18 @@ import org.eclipse.gef.palette.PaletteDrawer;
  */
 public class TalendDrawerEditPart extends DrawerEditPart {
 
+    private int childLevel = 0;
+    
     public TalendDrawerEditPart(PaletteDrawer drawer) {
         super(drawer);
     }
 
     public IFigure createFigure() {
         if (getParent() instanceof TalendDrawerEditPart) {
-            DrawerFigure fig = new TalendDrawerFigure(getViewer().getControl()) {
+            TalendDrawerEditPart parent = (TalendDrawerEditPart) getParent();
+            childLevel = parent.childLevel + 1;
+
+            TalendDrawerFigure fig = new TalendDrawerFigure(getViewer().getControl(), childLevel) {
                 IFigure buildTooltip() {
                     return createToolTip();
                 }
