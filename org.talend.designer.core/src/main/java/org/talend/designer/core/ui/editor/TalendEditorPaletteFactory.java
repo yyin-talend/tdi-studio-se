@@ -60,7 +60,7 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
  */
 public final class TalendEditorPaletteFactory {
 
-    private static final String FAMILY_HIER_SEPARATOR = ">";
+    private static final String FAMILY_HIER_SEPARATOR = "/";
 
     private static final String FAMILY_SEPARATOR_REGEX = "\\|";
 
