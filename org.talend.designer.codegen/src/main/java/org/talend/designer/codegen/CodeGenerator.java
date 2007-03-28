@@ -80,6 +80,8 @@ public class CodeGenerator implements ICodeGenerator {
     private String currentProjectName;
 
     private String jobName;
+    
+    private boolean writeComments = false;
 
     private String contextName;
 
@@ -268,6 +270,7 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setCurrentProjectName(currentProjectName);
         codeGenArgument.setContextName(contextName);
         codeGenArgument.setJobName(jobName);
+        codeGenArgument.setWriteFieldsComment(writeComments);
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
@@ -405,6 +408,7 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setCurrentProjectName(currentProjectName);
         argument.setContextName(contextName);
         argument.setJobName(jobName);
+        argument.setWriteFieldsComment(writeComments);
 
         JetBean jetBean = initializeJetBean(argument);
 
@@ -483,7 +487,9 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add(process);
                 headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
-
+                
+                this.writeComments = true;
+                
                 try {
                     if (nodeConfigurer != null) {
                         nodeConfigurer.configure(node);
