@@ -363,7 +363,7 @@
                 if (closeTestInnerJoinConditionsBracket) {
                     indent--;
                     sb.append(cr + gm.indent(indent) + "}");
-                    if (atLeastOneReject) {
+                    if (atLeastOneReject && allNotRejectTablesHaveFilter) {
                         sb.append(" else {");
                         indent++;
                         sb.append(cr + gm.indent(indent) + rejected + " = false;");
