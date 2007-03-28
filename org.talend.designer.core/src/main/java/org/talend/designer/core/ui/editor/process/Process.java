@@ -668,67 +668,14 @@ public class Process extends Element implements IProcess {
         EList listParamType, listMetaType;
         IMetadataTable metaData;
         MetadataEmfFactory factory = new MetadataEmfFactory();
-        for (int i = 0; i < nodes.size(); i++) {
-            node = nodes.get(i);
-            nType = fileFact.createNodeType();
-            nType.setComponentVersion(node.getComponent().getVersion());
-            nType.setComponentName(node.getComponent().getName());
-            nType.setPosX(node.getLocation().x);
-            nType.setPosY(node.getLocation().y);
-            nType.setOffsetLabelX(node.getNodeLabel().getOffset().x);
-            nType.setOffsetLabelY(node.getNodeLabel().getOffset().y);
-            if (node.getExternalNode() != null) {
-                if (node.getExternalData() != null) {
-                    Data data = node.getExternalBytesData();
-                    nType.setBinaryData(data.getBytesData());
-                    nType.setStringData(data.getStringData());
-                }
+        
+        //save according to elem order to keep zorder (children insertion) in diagram
+        for (Element element : elem) {
+            if (element instanceof Node) {
+                saveNode(fileFact, process, nList, cList, (Node) element, factory);
+            } else if (element instanceof Note) {
+                saveNote(fileFact, process, (Note) element);
             }
-            listParamType = nType.getElementParameter();
-            paramList = node.getElementParameters();
-            saveElementParameters(fileFact, paramList, listParamType, process);
-            listMetaType = nType.getMetadata();
-            listMetaData = node.getMetadataList();
-            for (int j = 0; j < listMetaData.size(); j++) {
-                metaData = listMetaData.get(j);
-                factory.setMetadataTable(metaData);
-                listMetaType.add(factory.getMetadataType());
-            }
-
-            connList = (List<Connection>) node.getOutgoingConnections();
-            for (int j = 0; j < connList.size(); j++) {
-                connec = connList.get(j);
-                cType = fileFact.createConnectionType();
-                cType.setSource(node.getUniqueName());
-                cType.setTarget(connec.getTarget().getUniqueName());
-                cType.setLabel(connec.getName());
-                cType.setLineStyle(connec.getLineStyleId());
-                cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
-                cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
-                cType.setMetaname(connec.getMetaName());
-                int id = connec.getOutputId();
-                if (id >= 0) {
-                    cType.setOutputId(id);
-                }
-                listParamType = cType.getElementParameter();
-                paramList = connec.getElementParameters();
-                saveElementParameters(fileFact, paramList, listParamType, process);
-                cList.add(cType);
-            }
-            nList.add(nType);
-        }
-
-        //Save notes
-        for (Note note : notes) {
-            NoteType noteType = fileFact.createNoteType();
-            noteType.setPosX(note.getLocation().x);
-            noteType.setPosY(note.getLocation().y);
-            noteType.setSizeWidth(note.getSize().width);
-            noteType.setSizeHeight(note.getSize().height);
-            noteType.setOpaque(note.isOpaque());
-            noteType.setText(note.getText());
-            
-            process.getNote().add(noteType);
         }
 
         /**
@@ -748,6 +695,76 @@ public class Process extends Element implements IProcess {
 
         res.save(options);
         return process;
+    }
+
+    private void saveNote(TalendFileFactory fileFact, ProcessType process, Note note) {
+        NoteType noteType = fileFact.createNoteType();
+        noteType.setPosX(note.getLocation().x);
+        noteType.setPosY(note.getLocation().y);
+        noteType.setSizeWidth(note.getSize().width);
+        noteType.setSizeHeight(note.getSize().height);
+        noteType.setOpaque(note.isOpaque());
+        noteType.setText(note.getText());
+        
+        process.getNote().add(noteType);
+    }
+
+    private void saveNode(TalendFileFactory fileFact, ProcessType process, EList nList, EList cList, Node node, MetadataEmfFactory factory) {
+        NodeType nType;
+        List<Connection> connList;
+        Connection connec;
+        ConnectionType cType;
+        List<? extends IElementParameter> paramList;
+        List<IMetadataTable> listMetaData;
+        EList listParamType;
+        EList listMetaType;
+        IMetadataTable metaData;
+        nType = fileFact.createNodeType();
+        nType.setComponentVersion(node.getComponent().getVersion());
+        nType.setComponentName(node.getComponent().getName());
+        nType.setPosX(node.getLocation().x);
+        nType.setPosY(node.getLocation().y);
+        nType.setOffsetLabelX(node.getNodeLabel().getOffset().x);
+        nType.setOffsetLabelY(node.getNodeLabel().getOffset().y);
+        if (node.getExternalNode() != null) {
+            if (node.getExternalData() != null) {
+                Data data = node.getExternalBytesData();
+                nType.setBinaryData(data.getBytesData());
+                nType.setStringData(data.getStringData());
+            }
+        }
+        listParamType = nType.getElementParameter();
+        paramList = node.getElementParameters();
+        saveElementParameters(fileFact, paramList, listParamType, process);
+        listMetaType = nType.getMetadata();
+        listMetaData = node.getMetadataList();
+        for (int j = 0; j < listMetaData.size(); j++) {
+            metaData = listMetaData.get(j);
+            factory.setMetadataTable(metaData);
+            listMetaType.add(factory.getMetadataType());
+        }
+
+        connList = (List<Connection>) node.getOutgoingConnections();
+        for (int j = 0; j < connList.size(); j++) {
+            connec = connList.get(j);
+            cType = fileFact.createConnectionType();
+            cType.setSource(node.getUniqueName());
+            cType.setTarget(connec.getTarget().getUniqueName());
+            cType.setLabel(connec.getName());
+            cType.setLineStyle(connec.getLineStyleId());
+            cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
+            cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
+            cType.setMetaname(connec.getMetaName());
+            int id = connec.getOutputId();
+            if (id >= 0) {
+                cType.setOutputId(id);
+            }
+            listParamType = cType.getElementParameter();
+            paramList = connec.getElementParameters();
+            saveElementParameters(fileFact, paramList, listParamType, process);
+            cList.add(cType);
+        }
+        nList.add(nType);
     }
 
     /**

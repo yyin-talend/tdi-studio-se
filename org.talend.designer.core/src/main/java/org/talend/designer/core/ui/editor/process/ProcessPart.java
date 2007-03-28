@@ -57,7 +57,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
-    protected List getModelChildren() {
+    public List getModelChildren() {
         return ((Process) this.getModel()).getElements();
     }
 

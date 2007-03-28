@@ -27,6 +27,7 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
+import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -35,12 +36,16 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.action.BringForwardAction;
+import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.NodeSetActivateAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
+import org.talend.designer.core.ui.action.SendBackwardAction;
+import org.talend.designer.core.ui.action.SendToBackAction;
 
 /**
  * Class that manages the context menu in the Gef Editor. <br/>
@@ -79,6 +84,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         menu.add(new Separator(GEFActionConstants.GROUP_COPY));
         menu.add(new Separator(GEFActionConstants.GROUP_EDIT));
         menu.add(new Separator(GEFActionConstants.GROUP_REST));
+        menu.add(new Separator(GEFActionConstants.GROUP_VIEW));
 
         IAction action;
 
@@ -124,7 +130,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     subMenu.add(action);
                 }
             }
-            
+
             action = new ConnectionCreateAction(part, EConnectionType.ITERATE);
             ((ConnectionCreateAction) action).update();
             if (action.isEnabled()) {
@@ -187,6 +193,28 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             ((NodeBreakpointAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+            }
+
+            action = new BringForwardAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
+            }
+            action = new BringToFrontAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
+            }
+            
+            action = new SendBackwardAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
+            }
+            action = new SendToBackAction(part);
+            ((SelectionAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
             }
         }
     }
