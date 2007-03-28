@@ -1,0 +1,126 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+        java.util.Map
+        java.util.List
+" 
+class="WebServiceInputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        // component id
+        String cid = node.getUniqueName();
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");       
+        List<IMetadataColumn> listColumns = metadata.getListColumns(); 
+        
+        List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node,"__PARAMS__");
+        String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
+		String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
+		String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
+%>
+///////////////////////////////////
+        String wsdl_<%=cid %> = <%=ElementParameterParser.getValue(node,"__WSDL__") %>;
+        String method_<%=cid %> = <%=ElementParameterParser.getValue(node,"__METHOD__") %>;  
+        
+        Object[] params_<%=cid %> = new Object[] {         
+<%
+        for (int i = 0; i < params.size(); i++) {
+            Map<String, String> line = params.get(i);
+%>
+        <%= line.get("VALUE") %>,
+<%
+        }
+%>      
+        };   
+        
+        String[] filters_<%=cid %> = new String[] {         
+<%
+        for (IMetadataColumn column: listColumns) {
+%> 
+		"<%=column.getLabel() %>",
+<%
+        }
+%>        
+        };   
+        
+        String[] results_<%=cid %> = null;
+	    int nb_line_<%=cid %> = 0;	  
+
+		org.apache.axis.client.Service  service_<%=cid %> = new org.apache.axis.client.Service();
+		org.apache.axis.client.Call call_<%=cid %> = (org.apache.axis.client.Call) service_<%=cid %>.createCall();
+	    call_<%=cid %>.setTargetEndpointAddress(new java.net.URL(wsdl_<%=cid %>));
+<% 
+        if ("true".equals(needAuth)) {
+%> 
+        call_<%=cid %>.setProperty(org.apache.axis.client.Call.USERNAME_PROPERTY, <%=authUsername %>);
+        call_<%=cid %>.setProperty(org.apache.axis.client.Call.PASSWORD_PROPERTY, <%=authPassword %>);
+<%
+        }	
+%>
+	    call_<%=cid %>.setOperationName(method_<%=cid %>);
+<%
+        for (int i = 0; i < params.size(); i++) {            
+%>
+        call_<%=cid %>.addParameter( "op<%=i %>", org.apache.axis.encoding.XMLType.XSD_ANYTYPE, javax.xml.rpc.ParameterMode.IN );
+<%
+        }
+%>       
+	    call_<%=cid %>.setReturnType(org.apache.axis.encoding.XMLType.XSD_ANYTYPE);
+		//get the return value;
+		Object ret_<%=cid %> = call_<%=cid %>.invoke(params_<%=cid %>);
+
+		//create a array to hold the map
+		Object[] tempArray_<%=cid %> = null;
+		if (ret_<%=cid %> instanceof Object[]) {			
+			tempArray_<%=cid %> = (Object[]) ret_<%=cid %>;
+		} else {
+			tempArray_<%=cid %> = new Object[1];
+			tempArray_<%=cid %>[0] = ret_<%=cid %>;
+		}
+		
+		for (int i_<%=cid %> = 0; i_<%=cid %> < tempArray_<%=cid %>.length; i_<%=cid %>++) {
+		    results_<%=cid %> = new String[] {<%for (IMetadataColumn column : listColumns) {%>"",<%}%>};		    
+			if (tempArray_<%=cid %>[i_<%=cid %>] instanceof java.util.Map) {
+				java.util.Map map_<%=cid %> = (java.util.Map)tempArray_<%=cid %>[i_<%=cid %>];
+				for(int k_<%=cid %> = 0; k_<%=cid %> < filters_<%=cid %>.length; k_<%=cid %> ++ )
+				{   
+				    if (map_<%=cid %>.get(filters_<%=cid %>[k_<%=cid %>])!=null)
+				    results_<%=cid %>[k_<%=cid %>] = map_<%=cid %>.get(filters_<%=cid %>[k_<%=cid %>]).toString();				
+				}				
+			}
+	
+        nb_line_<%=cid %>++;
+	       
+<%  
+	List< ? extends IConnection> conns = node.getOutgoingConnections(); 
+    for (int j=0;j<conns.size();j++) { 
+       IConnection conn = conns.get(j);        
+       if (((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))))         
+       {
+       	 for (int m=0; m<listColumns.size(); m++) {
+%>            
+       <%=conn.getName() %>.<%=listColumns.get(m).getLabel() %> = results_<%=cid %>[<%=m %>];            
+<% 
+      		}
+  	   }
+    } 
+%>
+///////////////////////////////////        
+<%
+  }
+}  
+ %>
