@@ -30,7 +30,10 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -128,8 +131,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
-            final int numInRow, final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -217,7 +220,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * @param control
          * @param checkSyntax
          */
-        public void register(String parameterName, Control control, boolean checkSyntax) {
+        public void register(final String parameterName, final Control control, boolean checkSyntax) {
             if (parameterName == null || control == null) {
                 throw new NullPointerException();
             }
@@ -225,6 +228,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 IProcess process = part.getTalendEditor().getProcess();
                 this.extendedProposal = ProcessProposalUtils.installOn(control, process);
                 this.checkErrorsHelper.register(control, extendedProposal);
+                extendedProposal.addContentProposalListener(new IContentProposalListener() {
+                    public void proposalAccepted(IContentProposal proposal) {
+                        if (control instanceof Text) {
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
+                        } else if (control instanceof StyledText) {
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
+                        }
+                    }
+                });
                 // this.checkErrorsHelper.checkErrors(control, false);
                 ContextParameterExtractor.installOn(control, (Process) process, parameterName, elem);
             }
@@ -353,8 +365,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, Messages
-                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null,
+                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -420,7 +432,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             super();
         }
     }
-    
+
     protected Command getTextCommandForHelper(String paramName, String text) {
         return new PropertyChangeCommand(elem, paramName, text);
     }

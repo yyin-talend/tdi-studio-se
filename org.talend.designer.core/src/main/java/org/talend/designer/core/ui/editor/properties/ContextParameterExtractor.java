@@ -102,28 +102,28 @@ public final class ContextParameterExtractor {
                 }
             }
 
-            /**
-             * qzhang Comment method "saveContext".
-             * 
-             * @param parameterName
-             * @param elem
-             * @param replaceCode
-             */
-            private void saveContext(final String parameterName, final Element elem, String replaceCode) {
-                List<? extends IElementParameter> params = elem.getElementParameters();
-                boolean end = false;
-                for (int i = 0; i < params.size() && !end; i++) {
-                    IElementParameter parameter2 = params.get(i);
-                    if (parameter2.getName().equals(parameterName)) {
-                        parameter2.setValue(replaceCode);
-                        end = true;
-                    }
-
-                }
-            }
+            
         });
     }
+    /**
+     * qzhang Comment method "saveContext".
+     * 
+     * @param parameterName
+     * @param elem
+     * @param replaceCode
+     */
+    public static void saveContext(final String parameterName, final Element elem, String replaceCode) {
+        List<? extends IElementParameter> params = elem.getElementParameters();
+        boolean end = false;
+        for (int i = 0; i < params.size() && !end; i++) {
+            IElementParameter parameter2 = params.get(i);
+            if (parameter2.getName().equals(parameterName)) {
+                parameter2.setValue(replaceCode);
+                end = true;
+            }
 
+        }
+    }
     private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager,
             final String parameterName) {
         String nameProposal = ""; //$NON-NLS-1$
