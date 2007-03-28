@@ -1,0 +1,94 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		
+		java.util.List	
+"
+class="DB2RowMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid =  node.getUniqueName();
+String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+commitCounter_<%=cid%>++;
+<%
+}
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
+
+int counter = 0;
+int index=dbquery.indexOf("?");
+while (index>=0) {
+	counter++;
+	index=dbquery.indexOf("?",index+1);
+} 
+
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)&&!isSelectQuery) {
+		IMetadataTable metadata = metadatas.get(0);
+			if (metadata!=null) {
+				List< ? extends IConnection> conns = node.getIncomingConnections();
+				List<IMetadataColumn> columnList = metadata.getListColumns();
+			
+				if(conns != null && conns.size()>0){
+				IConnection conn = conns.get(0);
+				int parameterIndex = 1;
+					for(IMetadataColumn column:columnList){
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					if(typeToGenerate.equals("byte[]")){
+	 	  	   			typeToGenerate = "Bytes";
+ 	   	  			}else if(typeToGenerate.equals("java.util.Date")){
+	 	   	  			typeToGenerate = "Date";
+ 	   	  			}else if(typeToGenerate.equals("Integer")){
+ 	   	  				typeToGenerate = "Int";
+ 	   	 			}else{
+						typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+		  			}
+		  				if(parameterIndex<=counter){
+							if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+							%>						
+pstmt_<%=cid %>.setString(<%=parameterIndex%>,String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));					
+							<%
+							}else if(typeToGenerate.equals("Date")){
+							%>						
+pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Date(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));					
+							<%
+							}else{
+							%>						
+pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.<%=column.getLabel()%>);					
+							<%
+							}
+						}
+						parameterIndex++;
+					}
+	%>
+	
+pstmt_<%=cid %>.execute();
+	<%
+				}
+			}
+	}
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
+
+	conn_<%=cid%>.commit();
+	
+	commitCounter_<%=cid%>=0;
+	
+}
+<%
+}
+%>
