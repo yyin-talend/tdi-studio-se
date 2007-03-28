@@ -34,6 +34,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -103,7 +104,8 @@ public class ChangeValuesFromRepository extends Command {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) { 
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -120,7 +122,8 @@ public class ChangeValuesFromRepository extends Command {
                         if (param.getField().equals(EParameterFieldType.TABLE)
                                 && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
+                                    .getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                             RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
@@ -136,7 +139,18 @@ public class ChangeValuesFromRepository extends Command {
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
-            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            if (elem instanceof Node) {
+                Node node = (Node) elem;
+                boolean metadataInput = false;
+                if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+                        || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
+                        || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+                    metadataInput = true;
+                }
+                if (!metadataInput) {
+                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+                }
+            }
             elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
             if (queriesmap == null || queriesmap.get(value).isEmpty()) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
@@ -153,16 +167,31 @@ public class ChangeValuesFromRepository extends Command {
      * qzhang Comment method "setOtherProperties".
      */
     private void setOtherProperties() {
+        boolean metadataInput = false;
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+                    || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
+                    || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+                metadataInput = true;
+            }
+        }
         if (value.equals(EmfComponent.BUILTIN)) {
-            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
-            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
-        } else {
-            if (tablesmap != null
-                    && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+            if (!metadataInput) {
                 elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
             }
+            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+        } else {
+            if (!metadataInput) {
+                if (tablesmap != null
+                        && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                                .isEmpty()) {
+                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+                }
+            }
             if (queriesmap != null
-                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                            .isEmpty()) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
             }
         }
