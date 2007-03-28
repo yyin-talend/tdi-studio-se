@@ -99,6 +99,7 @@ public class TableController extends AbstractElementPropertySectionController {
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
+        tableEditorView.setReadOnly(param.isReadOnly());
 
         final Table table = tableEditorView.getTable();
 
@@ -152,7 +153,8 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
+                + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -185,10 +187,12 @@ public class TableController extends AbstractElementPropertySectionController {
         Object value = param.getValue();
         if (value instanceof List) {
             dynamicTabbedPropertySection.updateColumnList(null);
-            if (!tableViewerCreator.getInputList().equals(value)) {
-                tableViewerCreator.init((List) value);
+            if (tableViewerCreator != null) {
+                if (!tableViewerCreator.getInputList().equals(value)) {
+                    tableViewerCreator.init((List) value);
+                }
+                tableViewerCreator.getTableViewer().refresh();
             }
-            tableViewerCreator.getTableViewer().refresh();
         }
     }
     // /**
