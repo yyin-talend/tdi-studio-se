@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
-import org.eclipse.core.internal.resources.File;
-import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -71,6 +69,7 @@ import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
@@ -123,6 +122,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
@@ -742,5 +742,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public void dispose() {
         TalendEditorPaletteFactory.saveFamilyState(getPaletteViewerProvider().getEditDomain().getPaletteViewer());
         super.dispose();
+    }
+    
+    @Override
+    protected PaletteViewerProvider createPaletteViewerProvider() {
+        return new TalendPaletteViewerProvider(getEditDomain());
     }
 }

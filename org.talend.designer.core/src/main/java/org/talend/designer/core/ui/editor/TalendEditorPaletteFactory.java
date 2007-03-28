@@ -21,10 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -48,6 +49,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
+import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
@@ -57,6 +59,10 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
  * 
  */
 public final class TalendEditorPaletteFactory {
+
+    private static final String FAMILY_HIER_SEPARATOR = ">";
+
+    private static final String FAMILY_SEPARATOR_REGEX = "\\|";
 
     /** Preference ID used to persist the palette location. */
     public static final String PALETTE_DOCK_LOCATION = "TalendEditorPaletteFactory.Location"; //$NON-NLS-1$
@@ -73,7 +79,8 @@ public final class TalendEditorPaletteFactory {
     private static void createComponentsDrawer(final IComponentsFactory compFac) {
         PaletteDrawer componentsDrawer;
         String name, longName;
-        String family, prevFamily = null;
+        String family;
+        List<String> families = new ArrayList<String>();
 
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
@@ -98,20 +105,36 @@ public final class TalendEditorPaletteFactory {
             }
 
             if (xmlComponent.isLoaded()) {
+                family = xmlComponent.getFamily();
+                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    families.add(strings[j]);
+                }
+            }
+        }
+
+        Collections.sort(families);
+        
+        for (Iterator iter = families.iterator(); iter.hasNext();) {
+            family = (String) iter.next();
+            
+            componentsDrawer = ht.get(family);
+            if (componentsDrawer == null) {
+                componentsDrawer = createComponentDrawer(ht, family);
+            }
+        }
+        
+        for (int i = 0; i < componentList.size(); i++) {
+            IComponent xmlComponent = componentList.get(i);
+
+            if (!displayTechnical && !xmlComponent.isVisible()) {
+                continue;
+            }
+
+            if (xmlComponent.isLoaded()) {
                 name = xmlComponent.getTranslatedName();
                 family = xmlComponent.getFamily();
                 longName = xmlComponent.getLongName();
-
-                if (!family.equals(prevFamily)) {
-                    if (!ht.containsKey(family)) {
-                        componentsDrawer = new PaletteDrawer(family);
-                        componentsDrawer.setInitialState(loadFamilyState(family));
-                        ht.put(family, componentsDrawer);
-                    } else {
-                        componentsDrawer = ht.get(family);
-                    }
-                    prevFamily = family;
-                }
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
                 ImageDescriptor imageLarge = xmlComponent.getIcon24();
@@ -119,17 +142,44 @@ public final class TalendEditorPaletteFactory {
                 component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
                         xmlComponent), imageSmall, imageLarge);
                 component.setDescription(longName);
-                componentsDrawer.add(component);
+
+                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    componentsDrawer = ht.get(strings[j]);
+                    componentsDrawer.add(component);
+                }
             }
         }
-        Enumeration<String> keysEnum = ht.keys();
-        List<String> keysList = Collections.list(keysEnum);
+    }
 
-        Collections.sort(keysList);
+    private static PaletteDrawer createComponentDrawer(Hashtable<String, PaletteDrawer> ht, String familyToCreate) {
+        int index = familyToCreate.lastIndexOf(FAMILY_HIER_SEPARATOR);
+        String family;
+        PaletteDrawer parentPaletteDrawer = null;
+        
+        if (index > -1) {
+            family = familyToCreate.substring(index + 1);
+            String parentFamily = familyToCreate.substring(0, index);
 
-        for (String categoryName : keysList) {
-            palette.add(ht.get(categoryName));
+            parentPaletteDrawer = ht.get(parentFamily);
+            if (parentPaletteDrawer == null) {
+                parentPaletteDrawer = createComponentDrawer(ht, parentFamily);
+            }
+        } else {
+            family = familyToCreate;
         }
+
+        PaletteDrawer paletteDrawer = new TalendPaletteDrawer(family);
+        paletteDrawer.setInitialState(loadFamilyState(familyToCreate));
+        if (parentPaletteDrawer == null) {
+            palette.add(paletteDrawer);
+        } else {
+            parentPaletteDrawer.add(paletteDrawer);
+        }
+
+        ht.put(familyToCreate, paletteDrawer);
+        
+        return paletteDrawer;
     }
 
     /**
@@ -149,15 +199,27 @@ public final class TalendEditorPaletteFactory {
         for (Object o : palette.getChildren()) {
             if (o instanceof PaletteDrawer) {
                 PaletteDrawer paletteItem = (PaletteDrawer) o;
-                String family = paletteItem.getLabel();
-                int value;
-                if (viewer.isExpanded(paletteItem)) {
-                    value = PaletteDrawer.INITIAL_STATE_OPEN;
-                } else {
-                    value = PaletteDrawer.INITIAL_STATE_CLOSED;
-                }
-                paletteItem.setInitialState(value);
-                preferenceStore.setValue(PALETTE_STATE + family, value);
+                saveFamilyState(viewer, preferenceStore, paletteItem);
+            }
+        }
+    }
+
+    private static void saveFamilyState(PaletteViewer viewer, IPreferenceStore preferenceStore, PaletteDrawer paletteItem) {
+        String family = paletteItem.getLabel();
+        int value;
+        if (viewer.isExpanded(paletteItem)) {
+            value = PaletteDrawer.INITIAL_STATE_OPEN;
+        } else {
+            value = PaletteDrawer.INITIAL_STATE_CLOSED;
+        }
+        paletteItem.setInitialState(value);
+        preferenceStore.setValue(PALETTE_STATE + family, value);
+        
+        for (Iterator iter = paletteItem.getChildren().iterator(); iter.hasNext();) {
+            Object object = (Object) iter.next();
+            if (object instanceof PaletteDrawer) {
+                PaletteDrawer paletteDrawer = (PaletteDrawer) object;
+                saveFamilyState(viewer, preferenceStore, paletteDrawer);
             }
         }
     }
