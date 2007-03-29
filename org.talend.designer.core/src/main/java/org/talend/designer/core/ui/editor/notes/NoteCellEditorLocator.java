@@ -30,9 +30,11 @@ import org.eclipse.swt.widgets.Text;
  */
 public class NoteCellEditorLocator implements CellEditorLocator {
 
+    private static final int BORDER = 10;
+
     private NoteFigure noteFigure;
 
-    public NoteCellEditorLocator(NoteFigure noteFigure) {   
+    public NoteCellEditorLocator(NoteFigure noteFigure) {
         this.noteFigure = noteFigure;
     }
 
@@ -40,7 +42,7 @@ public class NoteCellEditorLocator implements CellEditorLocator {
         Text text = (Text) celleditor.getControl();
         Rectangle rect = noteFigure.getClientArea();
         noteFigure.translateToAbsolute(rect);
-        org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);
+        org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(BORDER, BORDER, -2 * BORDER, -2 * BORDER);
         rect.translate(trim.x, trim.y);
         rect.width += trim.width;
         rect.height += trim.height;
