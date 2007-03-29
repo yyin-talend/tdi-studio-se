@@ -516,7 +516,9 @@ public class ProcessComposite2 extends Composite {
 
     private void fillConsole(List<ProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
-        for (ProcessMessage message : messages) {
+        int messagesListSize = messages.size();
+        for (int i = 0; i < messagesListSize; i++) {
+            ProcessMessage message = (ProcessMessage) messages.get(i);
             doAppendToConsole(message);
         }
         scrollToEnd();
