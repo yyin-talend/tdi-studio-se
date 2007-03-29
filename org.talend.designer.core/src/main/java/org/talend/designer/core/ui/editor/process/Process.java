@@ -1414,18 +1414,15 @@ public class Process extends Element implements IProcess {
         Perl5Compiler compiler = new Perl5Compiler();
         Pattern pattern;
 
-        switch (processLanguage) {
-        case PERL:
-            try {
-                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
-                if (!matcher.matches(connectionName, pattern)) {
-                    return false;
-                }
-            } catch (MalformedPatternException e) {
-                throw new RuntimeException(e);
+        try {
+            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
+            if (!matcher.matches(connectionName, pattern)) {
+                return false;
             }
-        default:
+        } catch (MalformedPatternException e) {
+            throw new RuntimeException(e);
         }
+
         return true;
     }
 
