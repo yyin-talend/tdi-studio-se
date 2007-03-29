@@ -114,7 +114,11 @@ my %desc_<%=cid %> = (
 %>
 
 my $nb_line_<%=cid %> = 0;
-open(my $sort_<%=cid%>, '|-', '<%=sb%>'.<%=filename%>);
+open(
+    my $sort_<%=cid%>,
+    '|-',
+    '<%=sb%>'.<%=filename%>
+);
 
 <%
         if (stats) {
