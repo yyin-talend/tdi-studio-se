@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 /**
  */
@@ -47,4 +48,14 @@ public class NoteDirectEditManager extends DirectEditManager {
         getCellEditor().setValue(noteFigure.getText());
     }
 
+    @Override
+    public void show() {
+        super.show();
+
+        // unselect text in celleditor's control
+        if (getCellEditor().getControl() instanceof Text) {
+            Text text = (Text) getCellEditor().getControl();
+            text.setSelection(text.getText().length(), text.getText().length());
+        }
+    }
 }
