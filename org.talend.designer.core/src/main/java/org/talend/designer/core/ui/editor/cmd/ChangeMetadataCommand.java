@@ -37,10 +37,10 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionCategory;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
@@ -110,8 +110,26 @@ public class ChangeMetadataCommand extends Command {
             currentOutputMetadata = node.getMetadataList().get(0);
         }
         this.currentOutputMetadata = currentOutputMetadata;
+        List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
+        for (IMetadataColumn column : currentOutputMetadata.getListColumns()) {
+            if (column.isCustom()) {
+                columnToSave.add(column);
+            }
+        }
+
         oldOutputMetadata = currentOutputMetadata.clone();
         this.newOutputMetadata = newOutputMetadata;
+
+        List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
+        for (IMetadataColumn column : newOutputMetadata.getListColumns()) {
+            if (column.isCustom()) {
+                columnToRemove.add(column);
+            }
+        }
+        newOutputMetadata.getListColumns().removeAll(columnToRemove);
+        newOutputMetadata.getListColumns().addAll(columnToSave);
+        newOutputMetadata.sortCustomColumns();
+        newOutputMetadata.setReadOnly(currentOutputMetadata.isReadOnly());
         initializeContainer();
         setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }

@@ -50,6 +50,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -313,17 +314,6 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(true);
         param.setShow(true);
         listParam.add(param);
-
-        // param = new ElementParameter(node);
-        // param.setName(EParameterName.TRANSLATED_UNIQUE_NAME.getName());
-        // param.setValue("");
-        // param.setDisplayName(EParameterName.TRANSLATED_UNIQUE_NAME.getDisplayName());
-        // param.setField(EParameterFieldType.TEXT);
-        // param.setCategory(EComponentCategory.MAIN);
-        // param.setNumRow(1);
-        // param.setReadOnly(true);
-        // param.setShow(!getName().equals(getTranslatedName()));
-        // listParam.add(param);
 
         param = new ElementParameter(node);
         param.setName(EParameterName.COMPONENT_NAME.getName());
@@ -673,11 +663,9 @@ public class EmfComponent implements IComponent {
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
             case SCHEMA_TYPE:
-                if (node.getMetadataList().size() > 0) {
-                    IMetadataTable defaultTable = node.getMetadataList().get(0);
-                    initializeTableFromXml(defaultTable, xmlParam);
-                    param.setValue(defaultTable);
-                }
+                IMetadataTable defaultTable = new MetadataTable();
+                initializeTableFromXml(defaultTable, xmlParam);
+                param.setValue(defaultTable);
                 break;
             case PROCESS_TYPE:
                 param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
@@ -728,6 +716,10 @@ public class EmfComponent implements IComponent {
         List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
         IMetadataColumn talendColumn;
 
+        if (xmlParam.getTABLE().isSetREADONLY()) {
+            defaultTable.setReadOnly(xmlParam.getTABLE().isREADONLY());
+        }
+
         for (int i = 0; i < xmlColumnList.size(); i++) {
             xmlColumn = (COLUMNType) xmlColumnList.get(i);
             talendColumn = new MetadataColumn();
@@ -738,6 +730,15 @@ public class EmfComponent implements IComponent {
             talendColumn.setNullable(xmlColumn.isNULLABLE());
             talendColumn.setKey(xmlColumn.isKEY());
             talendColumn.setPattern(xmlColumn.getPATTERN());
+            if (xmlColumn.isSetREADONLY()) {
+                talendColumn.setReadOnly(xmlColumn.isREADONLY());
+            } else if (xmlParam.getTABLE().isSetREADONLY()) {
+                talendColumn.setReadOnly(xmlParam.getTABLE().isREADONLY());
+            } else {
+                talendColumn.setReadOnly(xmlParam.isREADONLY());
+            }
+            talendColumn.setCustom(true);
+            talendColumn.setCustomId(i);
             talendColumnList.add(talendColumn);
         }
 
@@ -894,21 +895,6 @@ public class EmfComponent implements IComponent {
     public Boolean hasConditionalOutputs() {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
-
-    // public Boolean isMultipleMethods() {
-    // Boolean multiple = Boolean.FALSE;
-    // TEMPLATEType tempType;
-    // EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
-    //
-    // for (Object object : listTempType) {
-    // tempType = (TEMPLATEType) object;
-    // if (tempType.isSetMULTIPLEMETHODS()) {
-    // multiple = new Boolean(tempType.isMULTIPLEMETHODS());
-    // }
-    // }
-    //
-    // return multiple;
-    // }
 
     public String getName() {
         return file.getParentFile().getName();
@@ -1223,24 +1209,6 @@ public class EmfComponent implements IComponent {
                 codePartList.add(part);
             }
         }
-
-        // if (multipleComponentManager != null) {
-        // TEMPLATESType templatesType;
-        // TEMPLATEType tempType;
-        //
-        // templatesType = compType.getCODEGENERATION().getTEMPLATES();
-        // EList listTempType = templatesType.getTEMPLATE();
-        // for (Object object : listTempType) {
-        // tempType = (TEMPLATEType) object;
-        // if (tempType.isSetMULTIPLEMETHODS()) {
-        // if (tempType.isMULTIPLEMETHODS()) {
-        // codePartList.add(ECodePart.BEGIN);
-        // codePartList.add(ECodePart.END);
-        // }
-        // codePartList.add(ECodePart.MAIN);
-        // }
-        // }
-        // }
     }
 
     public List<ECodePart> getAvailableCodeParts() {

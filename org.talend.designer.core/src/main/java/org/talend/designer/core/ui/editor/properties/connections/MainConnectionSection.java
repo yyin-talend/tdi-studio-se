@@ -35,6 +35,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -72,6 +73,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             metadataTableEditor.setMetadataTable(outputMetaTable);
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
+            CustomTableManager.addCustomManagementToTable(metadataTableEditorView.getTableViewerCreator(), true);
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
             composite.getParent().layout();

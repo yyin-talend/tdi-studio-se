@@ -131,11 +131,36 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
         } else {
             if (elem instanceof Node) {
-                String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                if (repositoryTableMap.containsKey(schemaSelected)) {
-                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                } else {
+                Node node = (Node) elem;
+                boolean isReadOnly = false;
+                if (node.getMetadataList().size() > 0) {
+                    isReadOnly = node.getMetadataList().get(0).isReadOnly();
+                }
+                if (value.equals(EmfComponent.BUILTIN) && isReadOnly) {
+                    boolean hasMetadataInput = false;
+                    if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+                            || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+                        hasMetadataInput = true;
+                    }
                     repositoryMetadata = new MetadataTable();
+                    if (hasMetadataInput) {
+                        for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
+                            if (connec.isActivate()
+                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec
+                                            .getLineStyle().equals(EConnectionType.TABLE))) {
+                                repositoryMetadata = connec.getMetadataTable().clone();
+                            }
+                        }
+
+                    }
+                } else {
+                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                            .getName());
+                    if (repositoryTableMap.containsKey(schemaSelected)) {
+                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                    } else {
+                        repositoryMetadata = new MetadataTable();
+                    }
                 }
                 return new RepositoryChangeMetadataCommand((Node) elem, paramName, value, repositoryMetadata);
             }
@@ -159,7 +184,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             IMetadataTable inputMetadata = null, inputMetaCopy = null;
             Connection inputConec = null;
 
-            boolean inputReadOnly = false, outputReadOnly = false;
+            boolean inputReadOnly = false, outputReadOnly = false, inputReadOnlyNode = false, inputReadOnlyParam = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate()
                         && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
@@ -170,43 +195,44 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     inputConec = connec;
 
                     if (connec.getSource().isReadOnly()) {
-                        inputReadOnly = true;
+                        inputReadOnlyNode = true;
                     } else {
                         for (IElementParameter param : connec.getSource().getElementParameters()) {
                             if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
                                 if (param.isReadOnly()) {
-                                    inputReadOnly = true;
+                                    inputReadOnlyParam = true;
                                 }
                             }
                         }
                     }
-
                 }
             }
 
             String propertyName = (String) inputButton.getData(PROPERTY);
             IElementParameter param = node.getElementParameter(propertyName);
-            if (param.isReadOnly() || node.isReadOnly()) {
-                outputReadOnly = true;
-            }
-            // IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
-            // // /Modify the sentence for bug 657 by qzhang
-            // IMetadataTable originaleOutputTable2 = (IMetadataTable)
-            // dynamicTabbedPropertySection.getRepositoryTableMap().get(
-            // node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
-            // // ///
-            // if (originaleOutputTable2 != null && !originaleOutputTable.equals(originaleOutputTable2)) {
-            // originaleOutputTable = originaleOutputTable2;
-            // }
-            // IMetadataTable outputMetaCopy = originaleOutputTable.clone();
 
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
+            for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
+                IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
+                columnCopied.setCustom(column.isCustom());
+                columnCopied.setReadOnly(column.isReadOnly());
+            }
+            outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
 
             String outputFamily = node.getComponent().getFamily();
 
+            outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
             MetadataDialog metaDialog;
             if (inputMetadata != null) {
+                for (IMetadataColumn column : inputMetadata.getListColumns()) {
+                    IMetadataColumn columnCopied = inputMetaCopy.getColumn(column.getLabel());
+                    columnCopied.setCustom(column.isCustom());
+                    columnCopied.setReadOnly(column.isReadOnly());
+                }
+                inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
+
+                inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
                 metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(),
                         inputFamily, outputMetaCopy, node.getUniqueName(), outputFamily, getCommandStack());
             } else {
@@ -258,6 +284,24 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }
         return null;
+    }
+
+    private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
+        boolean isCustom = false;
+        for (IMetadataColumn column : table.getListColumns()) {
+            if (column.isCustom() && !column.isReadOnly()) {
+                isCustom = true;
+            }
+        }
+        if (!isCustom) {
+            return readOnlyParam || readOnlyElement;
+        }
+        for (IMetadataColumn column : table.getListColumns()) {
+            if (!column.isCustom()) {
+                column.setReadOnly(table.isReadOnly());
+            }
+        }
+        return readOnlyElement;
     }
 
     /*

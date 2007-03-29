@@ -93,6 +93,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
+import org.talend.designer.core.model.metadata.MetadataUtils;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.DocumentRoot;
@@ -130,7 +131,7 @@ public class Process extends Element implements IProcess {
 
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
-    
+
     public static final String NOTES = "notes"; //$NON-NLS-1$
 
     public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
@@ -516,6 +517,9 @@ public class Process extends Element implements IProcess {
 
         for (int j = 0; j < paramList.size(); j++) {
             param = paramList.get(j);
+            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                continue;
+            }
             if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
                 // if this parameter is defined in a component, then we add a dependancy to this job.
                 RequiredType rType = process.getRequired();
@@ -623,7 +627,7 @@ public class Process extends Element implements IProcess {
                             }
                         }
                         elemParam.setPropertyValue(pType.getName(), tableValues);
-                    } else {
+                    } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), pType.getValue());
                     }
                 }
@@ -656,20 +660,9 @@ public class Process extends Element implements IProcess {
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
-
-        Node node;
-        NodeType nType;
-        List<Connection> connList;
-        Connection connec;
-        ConnectionType cType;
-
-        List<? extends IElementParameter> paramList;
-        List<IMetadataTable> listMetaData;
-        EList listParamType, listMetaType;
-        IMetadataTable metaData;
         MetadataEmfFactory factory = new MetadataEmfFactory();
-        
-        //save according to elem order to keep zorder (children insertion) in diagram
+
+        // save according to elem order to keep zorder (children insertion) in diagram
         for (Element element : elem) {
             if (element instanceof Node) {
                 saveNode(fileFact, process, nList, cList, (Node) element, factory);
@@ -705,11 +698,12 @@ public class Process extends Element implements IProcess {
         noteType.setSizeHeight(note.getSize().height);
         noteType.setOpaque(note.isOpaque());
         noteType.setText(note.getText());
-        
+
         process.getNote().add(noteType);
     }
 
-    private void saveNode(TalendFileFactory fileFact, ProcessType process, EList nList, EList cList, Node node, MetadataEmfFactory factory) {
+    private void saveNode(TalendFileFactory fileFact, ProcessType process, EList nList, EList cList, Node node,
+            MetadataEmfFactory factory) {
         NodeType nType;
         List<Connection> connList;
         Connection connec;
@@ -799,13 +793,13 @@ public class Process extends Element implements IProcess {
     private void loadNotes(ProcessType process) {
         for (Iterator iter = process.getNote().iterator(); iter.hasNext();) {
             NoteType noteType = (NoteType) iter.next();
-            
+
             Note note = new Note();
             note.setLocation(new Point(noteType.getPosX(), noteType.getPosY()));
             note.setSize(new Dimension(noteType.getSizeWidth(), noteType.getSizeHeight()));
             note.setOpaque(noteType.isOpaque());
             note.setText(noteType.getText());
-            
+
             addNote(note);
         }
     }
@@ -884,8 +878,6 @@ public class Process extends Element implements IProcess {
         listMetaType = nType.getMetadata();
         IMetadataTable metadataTable;
         listMetaData = new ArrayList<IMetadataTable>();
-        // boolean metadataInitialiazed = checkNodeSchemaFromRepository(nc, metadataTable);
-        // if (!metadataInitialiazed) {
         for (int j = 0; j < listMetaType.size(); j++) {
             mType = (MetadataType) listMetaType.get(j);
             factory.setMetadataType(mType);
@@ -894,8 +886,9 @@ public class Process extends Element implements IProcess {
             if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
                 addUniqueConnectionName(metadataTable.getTableName());
             }
+            MetadataUtils.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
+                    .getElementParameters());
         }
-        // }
         nc.setMetadataList(listMetaData);
     }
 
@@ -1819,7 +1812,7 @@ public class Process extends Element implements IProcess {
 
     public void removeNote(Note note) {
         elem.remove(note);
-        notes.remove(note);        
+        notes.remove(note);
         fireStructureChange(NOTES, elem);
     }
 }

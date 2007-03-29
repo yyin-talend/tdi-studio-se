@@ -160,9 +160,7 @@ public class TableController extends AbstractElementPropertySectionController {
         formData.bottom = new FormAttachment(0, top + ySize2);
         mainComposite.setLayoutData(formData);
 
-        if (!param.isReadOnly()) {
-            hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
-        }
+        hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
 
         this.dynamicTabbedPropertySection.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
 

@@ -196,6 +196,16 @@ public class Node extends Element implements INode {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
 
         meta.setTableName(uniqueName);
+        for (int i = 0; i < getElementParameters().size(); i++) {
+            IElementParameter param = getElementParameters().get(i);
+            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (param.getValue() instanceof IMetadataTable) {
+                    IMetadataTable table = (IMetadataTable) param.getValue();
+                    meta.getListColumns().addAll(table.getListColumns());
+                    meta.setReadOnly(table.isReadOnly());
+                }
+            }
+        }
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
@@ -380,10 +390,26 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!isExternalNode() && component.isSchemaAutoPropagated()
+        if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn() && component.isSchemaAutoPropagated()
                 && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
-            if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
-                metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
+            int nbNotCustomOrigin = 0;
+            for (IMetadataColumn column : metadataList.get(0).getListColumns()) {
+                if (!column.isCustom()) {
+                    nbNotCustomOrigin++;
+                }
+            }
+
+            if ((nbNotCustomOrigin == 0) || (outputs.size() == 0)) {
+                IMetadataTable originTable = metadataList.get(0);
+                List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
+                for (IMetadataColumn column : originTable.getListColumns()) {
+                    if (!column.isCustom()) {
+                        columnToRemove.add(column);
+                    }
+                }
+                originTable.getListColumns().removeAll(columnToRemove);
+                originTable.getListColumns().addAll(connection.getMetadataTable().clone().getListColumns());
+                originTable.sortCustomColumns();
             }
         }
         fireStructureChange(INPUTS, connection);
@@ -424,6 +450,22 @@ public class Node extends Element implements INode {
      */
     public void removeInput(final Connection connection) {
         this.inputs.remove(connection);
+        if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn() && component.isSchemaAutoPropagated()
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
+            if (metadataList.get(0).isReadOnly()) {
+                IMetadataTable originTable = metadataList.get(0);
+                List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
+                for (IMetadataColumn column : originTable.getListColumns()) {
+                    if (column.isCustom()) {
+                        columnToSave.add(column);
+                    }
+                }
+                originTable.getListColumns().clear();
+                originTable.getListColumns().addAll(columnToSave);
+                originTable.sortCustomColumns();
+            }
+        }
+
         fireStructureChange(INPUTS, connection);
     }
 
@@ -521,22 +563,12 @@ public class Node extends Element implements INode {
         if (externalNode != null) {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
-            // externalNode.setComponentName(getComponentName());
-            // externalNode.setExternalData(getExternalData());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : metadataList) {
                 copyOfMetadataList.add(metaTable.clone());
             }
             externalNode.setMetadataList(copyOfMetadataList);
-            // List<IConnection> copyOfconnections = new ArrayList<IConnection>();
-            // for (IConnection connec : inputs) {
-            // copyOfconnections.add(connec);
-            // }
             externalNode.setIncomingConnections(inputs);
-            // copyOfconnections = new ArrayList<IConnection>();
-            // for (IConnection connec : outputs) {
-            // copyOfconnections.add(connec);
-            // }
             externalNode.setOutgoingConnections(outputs);
             externalNode.setPluginFullName(getPluginFullName());
             externalNode.setElementParameters(getElementParameters());
@@ -847,7 +879,7 @@ public class Node extends Element implements INode {
         return nb;
     }
 
-    private int getCurrentActiveLinksNbOutput(EConnectionType type) {
+    public int getCurrentActiveLinksNbOutput(EConnectionType type) {
         int nb = 0;
         for (Connection connection : outputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
@@ -873,7 +905,7 @@ public class Node extends Element implements INode {
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
-                String errorMessage = "This component should have at least a Row Main link."; //$NON-NLS-1$
+                String errorMessage = "This component should have at least a Row Main link.";
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -893,7 +925,7 @@ public class Node extends Element implements INode {
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0)
                     || (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)) {
-                String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output."; //$NON-NLS-1$
+                String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -905,7 +937,7 @@ public class Node extends Element implements INode {
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
-                String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input."; //$NON-NLS-1$
+                String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -931,28 +963,28 @@ public class Node extends Element implements INode {
 
                 if (nbMaxOut != -1) {
                     if (curLinkOut > nbMaxOut) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type outputs."; //$NON-NLS-1$ //$NON-NLS-2$
+                        String errorMessage = "This component has too much \"" + typeName + "\" type outputs.";
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMaxIn != -1) {
                     if (curLinkIn > nbMaxIn) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type inputs."; //$NON-NLS-1$ //$NON-NLS-2$
+                        String errorMessage = "This component has too much \"" + typeName + "\" type inputs.";
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinOut != 0) {
                     if (curLinkOut < nbMinOut) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type outputs."; //$NON-NLS-1$ //$NON-NLS-2$
+                        String errorMessage = "This component has not enough \"" + typeName + "\" type outputs.";
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinIn != 0) {
                     if (curLinkIn < nbMinIn) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type inputs."; //$NON-NLS-1$ //$NON-NLS-2$
+                        String errorMessage = "This component has not enough \"" + typeName + "\" type inputs.";
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
@@ -975,7 +1007,7 @@ public class Node extends Element implements INode {
                         || ((getConnectorFromType(EConnectionType.TABLE).getMaxLinkInput() == 0) && (getConnectorFromType(
                                 EConnectionType.TABLE).getMaxLinkOutput() != 0))) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
-                        String errorMessage = "No schema has been defined yet."; //$NON-NLS-1$
+                        String errorMessage = "No schema has been defined yet.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
                     }
@@ -984,7 +1016,7 @@ public class Node extends Element implements INode {
                 if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
-                        String errorMessage = "If this component has output, there must be an input link to propagate the data."; //$NON-NLS-1$
+                        String errorMessage = "If this component has output, there must be an input link to propagate the data.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1002,8 +1034,8 @@ public class Node extends Element implements INode {
                             if (meta.getLabel() != null) {
                                 tableLabel = meta.getLabel();
                             }
-                            String errorMessage = "The output schema/link named \"" + tableLabel //$NON-NLS-1$
-                                    + "\" has no column defined, please check it."; //$NON-NLS-1$
+                            String errorMessage = "The output schema/link named \"" + tableLabel
+                                    + "\" has no column defined, please check it.";
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
@@ -1025,59 +1057,9 @@ public class Node extends Element implements INode {
             }
 
             if (inputMeta != null) {
-                boolean equal = true;
-
-                if (inputMeta.getListColumns().size() != outputMeta.getListColumns().size()) {
-                    equal = false;
-                }
-                if (equal) {
-                    for (int i = 0; i < inputMeta.getListColumns().size(); i++) {
-                        IMetadataColumn inputCol = inputMeta.getListColumns().get(i);
-                        IMetadataColumn outputCol = outputMeta.getListColumns().get(i);
-                        if (!inputCol.sameMetacolumnAs(outputCol)) {
-                            if (inputCol.getLabel() == null) {
-                                if (outputCol.getLabel() != null) {
-                                    equal = false;
-                                }
-                            } else if (!inputCol.getLabel().equals(outputCol.getLabel())) {
-                                equal = false;
-                            }
-                            if (inputCol.getLength() == null) {
-                                if (outputCol.getLength() != null) {
-                                    equal = false;
-                                }
-                            } else if (!inputCol.getLength().equals(outputCol.getLength())) {
-                                equal = false;
-                            }
-
-                            if (inputCol.getPrecision() == null) {
-                                if (outputCol.getPrecision() != null) {
-                                    equal = false;
-                                }
-                            } else if (!inputCol.getPrecision().equals(outputCol.getPrecision())) {
-                                equal = false;
-                            }
-                            if (inputCol.getDefault() == null) {
-                                if (outputCol.getDefault() != null) {
-                                    equal = false;
-                                }
-                            } else if (!inputCol.getDefault().equals(outputCol.getDefault())) {
-                                equal = false;
-                            }
-                            if (inputCol.getTalendType() == null) {
-                                if (outputCol.getTalendType() != null) {
-                                    equal = false;
-                                }
-                            } else if (!inputCol.getTalendType().equals(outputCol.getTalendType())) {
-                                equal = false;
-                            }
-                        }
-                    }
-                }
-
-                if (!equal) {
-                    String errorMessage = "The schema in the input link \"" + inputConnecion.getName() //$NON-NLS-1$
-                            + "\" is different from the schema defined in the component."; //$NON-NLS-1$
+                if (!inputMeta.sameMetadataAs(outputMeta)) {
+                    String errorMessage = "The schema in the input link \"" + inputConnecion.getName()
+                            + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }
             }
