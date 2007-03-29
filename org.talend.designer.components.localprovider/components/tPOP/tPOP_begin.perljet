@@ -81,9 +81,12 @@ my @files = ();
     my $pop = Net::POP3->new(
         <%=host%>,
     )
-        or die 'Cannot connect to POP server';
+        or die <%=cid%>, ' cannot connect to POP server ', <%=host%>;
 
-    if ($pop->login(<%=username%>, <%=password%>) > 0) {
+    my $auth = $pop->login(<%=username%>, <%=password%>) ;
+        die "Authentication error in ", <%=cid%> unless defined $auth ;
+
+    if ( $auth > 0) {
         my $msgnums = $pop->list;
 <%
         if (allEmails.equals("false")) {
