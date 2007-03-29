@@ -85,11 +85,11 @@ if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=
 				}
 				if(colnameAsTagname.equals("true")){
 			%>
-strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+<%=conn.getName()%>.<%=column.getLabel()%>+"</<%=column.getLabel()%>>\n");		
+strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+TalendString.replaceSpecialCharForXML(<%=conn.getName()%>.<%=column.getLabel()%>)+"</<%=column.getLabel()%>>\n");		
 			<%	
 				}else{
 			%>
-strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+<%=conn.getName()%>.<%=column.getLabel()%>+"</"+fieldTag_<%=cid%>+">\n");				
+strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+TalendString.replaceSpecialCharForXML(<%=conn.getName()%>.<%=column.getLabel()%>)+"</"+fieldTag_<%=cid%>+">\n");				
 				<%
 				}
 				if (removeNullField.equals("true")) {
