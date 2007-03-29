@@ -51,7 +51,19 @@ strBuffer_<%=cid%>.append(OUTPUT_FIELD_SEPARATOR_<%=cid %>);
 					}
 %>
 
-System.out.println(strBuffer_<%=cid%>.toString());
+java.io.PrintStream consoleOut_<%=cid%> = null;
+if (globalMap.get("tLogRow_CONSOLE")!=null)
+{
+	consoleOut_<%=cid%> = (java.io.PrintStream) globalMap.get("tLogRow_CONSOLE");
+}
+else
+{
+	consoleOut_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out));
+	globalMap.put("tLogRow_CONSOLE",consoleOut_<%=cid%>);
+}
+
+consoleOut_<%=cid%>.println(strBuffer_<%=cid%>.toString());
+consoleOut_<%=cid%>.flush();
 nb_line_<%=cid %>++;
 <%	
 				}
