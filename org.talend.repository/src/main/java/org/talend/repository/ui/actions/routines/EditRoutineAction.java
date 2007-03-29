@@ -65,7 +65,8 @@ public class EditRoutineAction extends AbstractRoutineAction {
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.ROUTINES;
+                    && node.getObject().getType() == ERepositoryObjectType.ROUTINES
+                    && !((RoutineItem) node.getObject().getProperty().getItem()).isBuiltIn();
         }
         setEnabled(canWork);
     }
