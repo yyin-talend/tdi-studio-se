@@ -2,6 +2,7 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 	class="POPEnd"
@@ -12,10 +13,25 @@
 		
 	// component id
 	String cid = node.getUniqueName();
+	String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+%>
+
+   }  
+
+    if (folder_<%=cid %> != null)    
+<%
+   if (deleteFromServer.equals("true")) {
+%>
+     folder_<%=cid %>.close(true); 
+<%
+  } else
+  {
+%> 
+    folder_<%=cid %>.close(false);
+<%
+  }    
 %>
 	if (store_<%=cid %> != null)
        store_<%=cid %>.close();
 	
-	globalMap.put("<%=cid %>_NB_EMAIL", nb_email_<%=cid %>);
-	globalMap.put("<%=cid %>_CURRENT_FILE", current_file_<%=cid %>);
-	globalMap.put("<%=cid %>_CURRENT_FILEPATH", current_filepath_<%=cid %>);    
+	globalMap.put("<%=cid %>_NB_EMAIL", nb_email_<%=cid %>);	  

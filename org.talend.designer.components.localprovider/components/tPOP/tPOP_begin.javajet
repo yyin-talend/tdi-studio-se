@@ -16,6 +16,13 @@
 	String host = ElementParameterParser.getValue(node, "__HOST__");
     String username = ElementParameterParser.getValue(node, "__USERNAME__");
     String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+    
+    String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
+    String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
+    String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
+
+    String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
+    String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
         
 	// component id
 	String cid = node.getUniqueName();
@@ -31,5 +38,56 @@
     store_<%=cid %>.connect(popServer_<%=cid %>, popUser_<%=cid %>, popPassword_<%=cid %>);
     
     int nb_email_<%=cid %> = 0;
-	java.util.List<String> current_file_<%=cid %> = new java.util.ArrayList<String>();
-	java.util.List<String> current_filepath_<%=cid %> = new java.util.ArrayList<String>();    
+
+    javax.mail.Folder folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
+    if (folder_<%=cid %> == null)
+    throw new Exception("No default folder");
+
+    // its INBOX
+    folder_<%=cid %> = folder_<%=cid %>.getFolder("INBOX");
+    if (folder_<%=cid %> == null)
+        throw new Exception("No POP3 INBOX");
+
+<%
+   if (deleteFromServer.equals("true")) {
+%>
+     folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
+<%
+  } else
+  {
+%> 
+    folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
+<%
+  }    
+%>	
+    javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
+    for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; counter_<%=cid %>++) {
+<%
+   if (allEmails.equals("false")) {
+%>
+    if(counter_<%=cid %> >= <%=maxEmails%>) break; 
+<%
+    }
+%>                
+    javax.mail.Message message_<%=cid %> = msgs_<%=cid %>[counter_<%=cid %>];
+    message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);    
+    String filename_<%=cid %> = <%=filenamePattern %>;
+    java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
+    java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
+    java.util.Enumeration enums_<%=cid %> = message_<%=cid %>.getAllHeaders();
+    while (enums_<%=cid %>.hasMoreElements()) {
+      javax.mail.Header header_<%=cid %> = (javax.mail.Header) enums_<%=cid %>.nextElement();
+      os_<%=cid %>.write(new StringBuffer(header_<%=cid %>.getName()).append(": ").append(header_<%=cid %>.getValue()).append("\r\n").toString().getBytes());
+    }
+    os_<%=cid %>.write("\r\n".getBytes());
+    java.io.InputStream in_<%=cid %> = message_<%=cid %>.getInputStream();
+    byte[] buffer_<%=cid %> = new byte[1024];
+    int length_<%=cid %> = 0;
+    while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
+      os_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);                    
+    }
+    os_<%=cid %>.close();
+    
+    nb_email_<%=cid %>++;
+    globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
+	globalMap.put("<%=cid %>_CURRENT_FILEPATH", file_<%=cid %>.getAbsolutePath());  
