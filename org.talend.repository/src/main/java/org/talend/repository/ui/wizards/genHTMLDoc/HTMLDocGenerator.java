@@ -57,6 +57,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.constants.MapComponentsConstants;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 import org.talend.repository.utils.FileCopyUtils;
@@ -347,12 +348,15 @@ public class HTMLDocGenerator {
                     relativePath.length() - 1));
             componentElement.addAttribute("label", uniqueName);
 
-            boolean istMap = node.getComponent().getName().equals("tMap");
+            String componentName = node.getComponent().getName();
+            boolean isMapComponent = componentName.equals(MapComponentsConstants.TMAP)
+                    || componentName.equals(MapComponentsConstants.TELTMYSQLMAP)
+                    || componentName.equals(MapComponentsConstants.TELTORACLEMAP);
             boolean istRunJob = node.getComponent().getName().equals("tRunJob");
             String previewImagePath, storedPreviewImagePath = "";
 
             // If component is tMap, gets its preview picture.
-            if (istMap) {
+            if (isMapComponent) {
                 previewImagePath = getPreviewImagePath(node.getElementParameters());
                 if (!previewImagePath.equals("")) {
                     IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY,
@@ -400,7 +404,7 @@ public class HTMLDocGenerator {
 
             List elementParameterList = node.getElementParameters();
 
-            generateComponentElementParamInfo(istMap, istRunJob, parametersElement, elementParameterList);
+            generateComponentElementParamInfo(isMapComponent, istRunJob, parametersElement, elementParameterList);
 
             List metaDataList = node.getMetadataList();
             if (metaDataList != null && metaDataList.size() != 0) {
