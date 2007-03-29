@@ -21,24 +21,16 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.data;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.common.CommonPlugin;
-import org.eclipse.emf.common.util.URI;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.data.container.Content;
-import org.talend.commons.utils.data.container.ContentList;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * class global comment. Detailled comment <br/>
@@ -55,6 +47,12 @@ public class FunctionManager {
     public static final String PURE_PERL_PARAM = Messages.getString("FunctionManager.PurePerl.ParaName"); //$NON-NLS-1$
 
     private List<TalendType> talendTypes = null;
+
+    public static final String PERL_FUN_PREFIX = "sub{";
+
+    public static final String PERL_FUN_SUFFIX = ")}";
+
+    public static final String FUN_PARAM_SEPARATED = ",";
 
     /**
      * qzhang Comment method "getFunctionByName".
@@ -94,36 +92,7 @@ public class FunctionManager {
 
     @SuppressWarnings("unchecked")
     public FunctionManager() {
-        List<File> files = new ArrayList<File>();
-        // List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
-        IProxyRepositoryFactory factory = RowGeneratorPlugin.getDefault().getProxyRepositoryFactory();
-        // TODO find a better way to find routine files
-
-        try {
-
-            RootContainer<String, IRepositoryObject> routineContainer = factory.getRoutine();
-            ContentList<String, IRepositoryObject> routineAbsoluteMembers = routineContainer.getAbsoluteMembers();
-
-            for (Content<String, IRepositoryObject> object : routineAbsoluteMembers.values()) {
-                IRepositoryObject routine = (IRepositoryObject) object.getContent();
-                URI uri = CommonPlugin.asLocalURI(routine.getProperty().getItem().eResource().getURI());
-                String filePath = uri.devicePath().replaceAll("%20", " "); // to fix URI bug
-                filePath = filePath.replace(".properties", ".item");
-
-                files.add(new File(filePath));
-
-                // String completePath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES)
-                // + IPath.SEPARATOR + factory.getRoutine().getPath().toString();
-                // Resource resource = test.getItemResource(routine.getProperty().getItem());
-                // Platform.r
-                // IFolder folder = ResourceUtils.getFolder(fsProject, completePath, false);
-                // System.out.println(folder);
-
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-
+        // this code move to FunctionParser .
         //        
         // for (int i = 0; i < list.size(); i++) {
         // URL url = list.get(i);
@@ -135,12 +104,16 @@ public class FunctionManager {
         // ExceptionHandler.process(e);
         // }
         // }
-
-        FunctionParser parser = new FunctionParser(files.toArray(new File[files.size()]));
+        AbstractFunctionParser parser = null;
+        if (UIManager.isJavaProject()) {
+            parser = new JavaFunctionParser();
+        } else {
+            parser = new FunctionParser();
+        }
         parser.parse();
         talendTypes = parser.getList();
     }
-    
+
     public Function getCurrentFunction(String funName, MetadataColumnExt bean) {
         Function currentFun = new Function();
         List<Function> functions = getFunctionByName(bean.getTalendType());
@@ -161,7 +134,7 @@ public class FunctionManager {
         }
         return currentFun;
     }
-    
+
     public Function getDefaultFunction(MetadataColumnExt bean, String talendType) {
         Function currentFun = new Function();
         List<Function> functions = getFunctionByName(talendType);
@@ -181,5 +154,123 @@ public class FunctionManager {
 
         return currentFun;
     }
-    
+
+    public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode) {
+        String value = externalNode.getColumnValue(bean);
+        List<Function> functions = getFunctionByName(bean.getTalendType());
+        Function currentFun = getAvailableFunFromValue(value, functions);
+        if (currentFun == null) {
+            currentFun = new Function();
+            String[] arrayTalendFunctions2 = new String[functions.size()];
+            if (functions.isEmpty()) {
+                currentFun.setDescription(""); //$NON-NLS-1$
+                currentFun.setPreview(""); //$NON-NLS-1$
+                currentFun.setParameters(new ArrayList<Parameter>());
+                bean.setArrayFunctions(arrayTalendFunctions2);
+            } else {
+                for (int i = 0; i < functions.size(); i++) {
+                    arrayTalendFunctions2[i] = functions.get(i).getName();
+                }
+                currentFun = (Function) functions.get(0).clone();
+                bean.setArrayFunctions(arrayTalendFunctions2);
+            }
+        }
+
+        return currentFun;
+
+    }
+
+    /**
+     * qzhang Comment method "isAvailableSubValue".
+     * 
+     * @param value
+     * @return
+     */
+    private Function getAvailableFunFromValue(String value, List<Function> funs) {
+        Function currentFun = null;
+        boolean isExsit = false;
+        for (Function function : funs) {
+            if (value.indexOf(function.getName()) != -1) {
+                isExsit = true;
+            }
+        }
+        if (value != null) {
+            boolean isPure = true;
+            int paramLength = value.length() - 2;
+            if (UIManager.isJavaProject()) {
+                isPure = value.indexOf(".") != -1 && value.indexOf("(") > value.indexOf(".") && value.endsWith(")");
+                paramLength = value.length() - 1;
+            } else {
+                isPure = value.startsWith(PERL_FUN_PREFIX) && value.endsWith(PERL_FUN_SUFFIX);
+            }
+            if (isPure && isExsit) {
+                for (Function function : funs) {
+                    int indexOf = value.indexOf(function.getName());
+                    if (indexOf != -1) {
+                        String para = value.substring(indexOf + function.getName().length() + 1, paramLength);
+                        String[] ps = para.split(FUN_PARAM_SEPARATED); //$NON-NLS-1$
+                        if (ps.length == function.getParameters().size()) {
+                            currentFun = (Function) function.clone(ps);
+                        }
+                    }
+                }
+            } else {
+                currentFun = createPureFunctions(value, funs, currentFun);
+            }
+
+        }
+        return currentFun;
+    }
+
+    /**
+     * qzhang Comment method "createPureFunctions".
+     * 
+     * @param value
+     * @param funs
+     * @param currentFun
+     * @return
+     */
+    private Function createPureFunctions(String value, List<Function> funs, Function currentFun) {
+        for (Function function : funs) {
+            if (function.getName().equals(PURE_PERL_NAME)) {
+                currentFun = (Function) function.clone();
+                ((StringParameter) currentFun.getParameters().get(0)).setValue(value);
+            }
+        }
+        return currentFun;
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static String getOneColData(MetadataColumnExt bean) {
+        if (bean != null && bean.getFunction() != null) {
+            String newValue = PERL_FUN_PREFIX; //$NON-NLS-1$
+            if (bean.getFunction().getName().equals(PURE_PERL_NAME)) {
+                newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
+            } else {
+                if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
+                    return ""; //$NON-NLS-1$
+                }
+                if (UIManager.isJavaProject()) {
+                    String fullName = JavaFunctionParser.getTypeMethods().get(
+                            bean.getTalendType() + "." + bean.getFunction().getName());
+                    newValue = fullName + "(";
+                    for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                    }
+                    newValue = newValue.substring(0, newValue.length() - 1);
+                    newValue += ")"; //$NON-NLS-1$
+
+                } else {
+                    newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
+                    for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                    }
+                    newValue = newValue.substring(0, newValue.length() - 1);
+                    newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
+                }
+            }
+            return newValue;
+        }
+        return null;
+    }
 }

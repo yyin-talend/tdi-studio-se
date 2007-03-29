@@ -715,4 +715,9 @@ public class JavaProcessor extends Processor {
         }
         return config;
     }
+
+    
+    public static IJavaProject getJavaProject() {
+        return javaProject;
+    }
 }

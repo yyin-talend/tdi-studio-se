@@ -235,7 +235,7 @@ public class RowGeneratorUI {
                 }
                 ext.setArrayFunctions(arrayTalendFunctions2);
                 if (!funs.isEmpty()) {
-                    ext.setFunction(getFunction(ext, ext.getTalendType()));
+                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode));
                 }
                 exts.add(ext);
             }
@@ -243,68 +243,6 @@ public class RowGeneratorUI {
         outputMetaTable2.setListColumns(exts);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private Function getFunction(MetadataColumnExt bean, String talendType) {
-        String value = externalNode.getColumnValue(bean);
-        List<Function> functions = functionManager.getFunctionByName(talendType);
-        Function currentFun = getAvailableFunFromValue(value, functions);
-        if (currentFun == null) {
-            currentFun = new Function();
-            String[] arrayTalendFunctions2 = new String[functions.size()];
-            if (functions.isEmpty()) {
-                currentFun.setDescription(""); //$NON-NLS-1$
-                currentFun.setPreview(""); //$NON-NLS-1$
-                currentFun.setParameters(new ArrayList<Parameter>());
-                bean.setArrayFunctions(arrayTalendFunctions2);
-            } else {
-                for (int i = 0; i < functions.size(); i++) {
-                    arrayTalendFunctions2[i] = functions.get(i).getName();
-                }
-                currentFun = (Function) functions.get(0).clone();
-                bean.setArrayFunctions(arrayTalendFunctions2);
-            }
-        }
-
-        return currentFun;
-    }
-
-    /**
-     * qzhang Comment method "isAvailableSubValue".
-     * 
-     * @param value
-     * @return
-     */
-    private Function getAvailableFunFromValue(String value, List<Function> funs) {
-        Function currentFun = null;
-        boolean isExsit = false;
-        for (Function function : funs) {
-            if (value.indexOf(function.getName()) != -1) {
-                isExsit = true;
-            }
-        }
-        if (value != null) {
-            if (value.startsWith("sub{") && value.endsWith("}") && isExsit) {
-                for (Function function : funs) {
-                    int indexOf = value.indexOf(function.getName());
-                    if (indexOf != -1) {
-                        String para = value.substring(indexOf + function.getName().length() + 1, value.length() - 2);
-                        String[] ps = para.split(","); //$NON-NLS-1$
-                        if (ps.length == function.getParameters().size()) {
-                            currentFun = (Function) function.clone(ps);
-                        }
-                    }
-                }
-            } else {
-                for (Function function : funs) {
-                    if (function.getName().equals(FunctionManager.PURE_PERL_NAME)) {
-                        currentFun = (Function) function.clone();
-                        ((StringParameter) currentFun.getParameters().get(0)).setValue(value);
-                    }
-                }
-            }
-        }
-        return currentFun;
-    }
 
     /**
      * qzhang Comment method "addKeyListener".

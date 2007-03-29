@@ -35,6 +35,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.JavaFunctionParser;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
@@ -194,32 +195,10 @@ public class UIManager {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
-        String newValue2 = getOneColData(bean);
+        String newValue2 = FunctionManager.getOneColData(bean);
         if (rgManager.getRowGeneratorComponent() != null && newValue2 != null) {
             rgManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue2);
         }
-    }
-
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static String getOneColData(MetadataColumnExt bean) {
-        if (bean != null && bean.getFunction() != null) {
-            String newValue = "sub{"; //$NON-NLS-1$
-            if (bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
-                newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
-            } else {
-                newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
-                for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
-                    newValue += pa.getValue() + ","; //$NON-NLS-1$
-                }
-                newValue = newValue.substring(0, newValue.length() - 1);
-                newValue += ")}"; //$NON-NLS-1$
-                if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
-                    newValue = ""; //$NON-NLS-1$
-                }
-            }
-            return newValue;
-        }
-        return null;
     }
 
     public static boolean isJavaProject() {

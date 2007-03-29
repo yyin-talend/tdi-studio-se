@@ -34,7 +34,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.emf.common.CommonPlugin;
+import org.eclipse.emf.common.util.URI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.data.container.Content;
+import org.talend.commons.utils.data.container.ContentList;
+import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * class global comment. Detailled comment <br/>
@@ -42,49 +50,46 @@ import org.talend.commons.exception.ExceptionHandler;
  * $Id: FunctionParser.java,v 1.3 2007/01/31 05:20:51 pub Exp $
  * 
  */
-public class FunctionParser {
-
-    List<TalendType> list = new ArrayList<TalendType>();
-
-    /**
-     * 
-     */
-    private static final String FUNCTION_PARAMETERS_REGEX = "\\{param\\}(\\s)*(.*)"; //$NON-NLS-1$
-
-    /**
-     * 
-     */
-    private static final String FUNCTION_NAME_REGEX = "sub(\\s)*(.*)"; //$NON-NLS-1$
-
-    /**
-     * 
-     */
-    private static final String FUNCTION_TYPE_REGEX = "\\{talendTypes\\}(\\s)*(.*)"; //$NON-NLS-1$
-
-    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
-
-    private static final String FUNCTION_DESCRIPTION_REGEX = "##(\\s)*((\\r)*\\n)#(\\s)*(.*)"; //$NON-NLS-1$
-
-    public static final String FUNCTION_REGEX = "##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)"; //$NON-NLS-1$
+public class FunctionParser extends AbstractFunctionParser {
 
     /**
      * @uml.property name="file"
      */
     private File[] files;
 
-    public FunctionParser(File[] file) {
-        this.files = file;
-    }
+    public FunctionParser() {
+        List<File> filesList = new ArrayList<File>();
+        // List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
+        IProxyRepositoryFactory factory = RowGeneratorPlugin.getDefault().getProxyRepositoryFactory();
+        // TODO find a better way to find routine files
 
-    /**
-     * Getter for list.
-     * 
-     * @return the list
-     */
-    public List<TalendType> getList() {
-        return this.list;
-    }
+        try {
 
+            RootContainer<String, IRepositoryObject> routineContainer = factory.getRoutine();
+            ContentList<String, IRepositoryObject> routineAbsoluteMembers = routineContainer.getAbsoluteMembers();
+
+            for (Content<String, IRepositoryObject> object : routineAbsoluteMembers.values()) {
+                IRepositoryObject routine = (IRepositoryObject) object.getContent();
+                URI uri = CommonPlugin.asLocalURI(routine.getProperty().getItem().eResource().getURI());
+                String filePath = uri.devicePath().replaceAll("%20", " "); // to fix URI bug
+                filePath = filePath.replace(".properties", ".item");
+
+                filesList.add(new File(filePath));
+
+                // String completePath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES)
+                // + IPath.SEPARATOR + factory.getRoutine().getPath().toString();
+                // Resource resource = test.getItemResource(routine.getProperty().getItem());
+                // Platform.r
+                // IFolder folder = ResourceUtils.getFolder(fsProject, completePath, false);
+                // System.out.println(folder);
+
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
+        this.files = filesList.toArray(new File[filesList.size()]);
+    }
     public void parse() {
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
@@ -130,39 +135,7 @@ public class FunctionParser {
 
     }
 
-    /**
-     * qzhang Comment method "convertToParameter".
-     * 
-     * @param parameter
-     * @return
-     */
-    private Parameter[] convertToParameter(String[] p) {
-        ParameterFactory pf = new ParameterFactory();
-        Parameter[] parameters = new Parameter[p.length];
-        for (int i = 0; i < p.length; i++) {
-            parameters[i] = pf.getParameter(p[i]);
-        }
-        return parameters;
-    }
-
-    /**
-     * Gets the TalendType that already created, if the wanted one is one existent ,create one.
-     * 
-     * @param name
-     * @return
-     */
-    private TalendType getTalendType(String name) {
-        for (TalendType type : list) {
-            if (type.getName().equals(name)) {
-                return type;
-            }
-        }
-        TalendType type = new TalendType();
-        type.setName(name);
-        list.add(type);
-
-        return type;
-    }
+    
 
     /**
      * qzhang Comment method "parseFunctionName".
@@ -185,74 +158,13 @@ public class FunctionParser {
     }
 
     /**
-     * qzhang Comment method "parseFunctionParameters".
-     * 
-     * @param string
-     * @return
-     */
-    private String[] parseFunctionParameters(String string) {
-        List<String> list1 = new ArrayList<String>();
-        try {
-            Pattern regex = Pattern.compile(FUNCTION_PARAMETERS_REGEX, Pattern.CANON_EQ);
-            Matcher matcher = regex.matcher(string);
-
-            while (matcher.find()) {
-                String s = matcher.group(2);
-                list1.add(s);
-            }
-        } catch (PatternSyntaxException ex) {
-            ExceptionHandler.process(ex);
-        }
-        return list1.toArray(new String[list1.size()]);
-    }
-
-    /**
-     * qzhang Comment method "parseFunction".
-     * 
-     * @param string
-     * @return
-     */
-    private String parseFunctionType(String string) {
-        try {
-            Pattern regex = Pattern.compile(FUNCTION_TYPE_REGEX, Pattern.CANON_EQ);
-            Matcher matcher = regex.matcher(string);
-            if (matcher.find()) {
-                String s = matcher.group(2);
-                return s;
-            }
-        } catch (PatternSyntaxException ex) {
-            ExceptionHandler.process(ex);
-        }
-        return EMPTY_STRING;
-    }
-
-    /**
-     * qzhang Comment method "parse description of the function".
-     * 
-     * @param string
-     */
-    private String parseDescription(String string) {
-        try {
-            Pattern regex = Pattern.compile(FUNCTION_DESCRIPTION_REGEX, Pattern.CANON_EQ);
-            Matcher matcher = regex.matcher(string);
-            if (matcher.find()) {
-                String s = matcher.group(5);
-                return s;
-            }
-        } catch (PatternSyntaxException ex) {
-            ExceptionHandler.process(ex);
-        }
-        return EMPTY_STRING;
-    }
-
-    /**
      * Use regex to parse the fileString to several groups, from ## to sub FunctionName.
      * 
      * @param strFile
      * @return
      */
     private String[] parseGroupNeeded(String strFile) {
-        Pattern regex = Pattern.compile("##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)", Pattern.CANON_EQ); //$NON-NLS-1$
+        Pattern regex = Pattern.compile(FUNCTION_REGEX, Pattern.CANON_EQ); //$NON-NLS-1$
         Matcher matcher = regex.matcher(strFile);
 
         List<String> list1 = new ArrayList<String>();
@@ -306,18 +218,18 @@ public class FunctionParser {
 
     }
 
-    public static void main(String[] args) {
-        File f = new File("c:/String.pm"); //$NON-NLS-1$
-        File f1 = new File("c:/Date.pm"); //$NON-NLS-1$
-        File f2 = new File("c:/Numeric.pm"); //$NON-NLS-1$
-        File f3 = new File("c:/Misc.pm"); //$NON-NLS-1$
-        FunctionParser p = new FunctionParser(new File[] { f, f1, f2, f3 });
-        p.parse();
-        List<TalendType> list = p.getList();
-
-        for (int i = 0; i < list.size(); i++) {
-            Object o = list.get(i);
-            System.out.println(o);
-        }
-    }
+    // public static void main(String[] args) {
+    // File f = new File("c:/String.pm"); //$NON-NLS-1$
+    // File f1 = new File("c:/Date.pm"); //$NON-NLS-1$
+    // File f2 = new File("c:/Numeric.pm"); //$NON-NLS-1$
+    // File f3 = new File("c:/Misc.pm"); //$NON-NLS-1$
+    // FunctionParser p = new FunctionParser(new File[] { f, f1, f2, f3 });
+    // p.parse();
+    // List<TalendType> list = p.getList();
+    //
+    // for (int i = 0; i < list.size(); i++) {
+    // Object o = list.get(i);
+    // System.out.println(o);
+    // }
+    // }
 }
