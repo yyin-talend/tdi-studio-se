@@ -2,14 +2,73 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:template match="/">
 		<html>		
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
+		<head>
+		<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	 -->
+			<style>
+					SPAN.special {
+						font:12pt black;
+					}
+					TABLE.properties {
+						width:95%;
+					}
+					TD.propname {
+						width:30%;
+						font:bold;
+					}
+					TR.profont{
+					font:bold;
+					}
+					
+					TD.propval {
+						width:70%;
+					}
+					TD.dependtype {
+						width:20%;
+					}
+					TD.dependloc {
+						width:60%;
+					}
+					TABLE.cols {
+						width:90%;
+					}
+					TD.constraint {
+						width:20%;
+						font:bold;
+					}
+					H3.hand {
+						cursor:hand;
+					}	
+					img.bordercolor
+					{
+					border-color:#AFCA00;
+					}
+	</style>  
+
+	
 			<img src="{/project/@logo}"/>
-			<xsl:value-of select="/project/@title"/>
+			</head>
+			<body>
+			<table border="0" cellspacing="0" width="100%">
+          <tr valign="top">
+	          <td align="left">
+	            <H2><xsl:value-of select="/project/@title"/></H2>
+	            <H4>Report generated on <I><xsl:value-of select="/project/@generatedDate"/></I></H4>
+	          </td>
+          </tr>
+      </table>
+      
+      <DIV><B><A href="#ProjectDescription">Project Description</A></B></DIV>
+      <DIV><B><A href="#JobDescription">Job Description</A></B></DIV>
+      <DIV><B><A href="#JobPreviewPicture">Job Preview Picture</A></B></DIV>
+      <DIV><B><A href="#ComponentList">Component List</A></B></DIV> 
+      <DIV><B><A href="#ComponentsDescription">Components Description</A></B></DIV>
 			<br/>
 			<br />
-			 Project Description:
+			<!-- Project Description-->
+      <!--HR-->
+      <H2><A id="ProjectDescription" name="#ProjectDescription">Project Description</A></H2>
 			 <br />
-			<TABLE border="1" width='100%'>			
+			<TABLE class="cols" border="2" cellspacing="0" cellpadding="4" frame="box">		
          <TR>
             <TD COLSPAN='2'>Name:&#160;&#160;<xsl:value-of select="/project/@name"/></TD>
          </TR>
@@ -23,9 +82,9 @@
 		  <br/> 
 		  <br/>
 			<xsl:variable name="job" select="/project/job"/>
-			Job Description:
+			<H2><A id="JobDescription" name="#JobDescription">Job Description</A></H2>
 			<br />
-			<TABLE border="1" width='100%'>			
+			<TABLE class="cols" border="2" cellspacing="0" cellpadding="4" frame="box">		
          <TR>
             <TD COLSPAN='2'>Name:&#160;&#160;<xsl:value-of select="$job/@name"/></TD>
          </TR>
@@ -46,26 +105,26 @@
          </TR>  
       </TABLE>
       <br/>
+      <!-- Project Description-->
+      <!--HR-->
       <xsl:variable name="jobPreviewPicture" select="$job/preview/@picture"/>
 			<xsl:if test="string-length($jobPreviewPicture)!=0">
-			Job Preview Picture:<br/>
-				<img src="{$jobPreviewPicture}"/>
-                       </xsl:if>
+			     <H2><A id="JobPreviewPicture" name="#JobPreviewPicture">Job Preview Picture</A></H2><br/>
+				   <div align="center"><img src="{$jobPreviewPicture}" usemap="#jobmap" alt="No image available" class="bordercolor"></img></div>
+       </xsl:if>
       <br/>
       <br/>                
-      Component List:
-      <TABLE border="1" width="100%">
+      <!-- Component List-->
+      <!--HR-->
+      <H2><A id="ComponentList" name="#ComponentList">Component List</A></H2>
+      <TABLE class="cols" border="2" cellspacing="0" cellpadding="4" frame="box">
                    		 <TR>
                    		 <TH>Component Name</TH>
                    		 <TH>Component Type</TH>
                    		 </TR>
                    		   <xsl:for-each select="$job/componentList/componentItem">                  
                            <TR>
-                           		<xsl:if test="position() mod 2 != 0">
-                                <xsl:attribute name="bgcolor">#e0edff</xsl:attribute>
-                          		</xsl:if> 
-
-                              <TD><A href="#{@link}">
+                           <TD><A href="#{@link}">
 				<xsl:value-of select="@name"/></A></TD>
                               <TD><xsl:value-of select="@type"/></TD>                           
                            </TR>
@@ -73,20 +132,30 @@
       </TABLE>                 
                        
       <br/>
-      Components Description:
-      <br/>
+      <!-- Components Description-->
+      <!--HR-->
+      <H2><A id="ComponentsDescription" name="#ComponentsDescription">Components Description</A></H2>
       					
 			<xsl:for-each select="$job/component">
-					<br/>
+			<TABLE BORDER="0" CELLSPACING="0" WIDTH="90%">
+			<br/>
+			<br/>
+			<TR BGCOLOR="#C0C0C0"><B>Component:&#160;&#160;<xsl:value-of select="componentType"/></B></TR>
+			</TABLE>
+			<TABLE BORDER="0" CELLSPACING="0" WIDTH="40%">
+			<TR>
+					<td>
 					<img src="{@icon}"/>&#160;&#160;&#160;&#160;&#160;
 	      		Unique Name:&#160;&#160;	      		
-	      			<A name="{@uniqueName}">
-				</A>
+	      			<A name="{@uniqueName}"></A>
 	      		<xsl:value-of select="@uniqueName"/>&#160;&#160;&#160;&#160;&#160;
-	      		Label:&#160;&#160;<xsl:value-of select="@label"/>
-	      		<br/>
-      
+	      		</td>
 	      		
+	      		<td valign="bottom">Label:&#160;&#160;<xsl:value-of select="@label"/>
+	      		</td>
+	     </TR>
+	      		<TR>
+	      		<td>	
 						Inputs:&#160;&#160;
          		<xsl:for-each select="input">         				
          				<xsl:choose>
@@ -103,9 +172,10 @@
         						</xsl:otherwise>
 								</xsl:choose>                   
          		</xsl:for-each>
+         		</td>
 						
 						
-	      &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+	      <td>
 	      Outputs:&#160;&#160;
          		<xsl:for-each select="output">         				
          				<xsl:choose>
@@ -122,56 +192,45 @@
         						</xsl:otherwise>
 								</xsl:choose>                   
          		</xsl:for-each>
-	      <br/>
-	      <br/>
-	      
-	      Component:&#160;&#160;<xsl:value-of select="componentType"/>	
-	      <br/>
+         		</td>
+         		</TR>
+         		</TABLE>
+
 		<xsl:variable name="previewPicture" select="@preview"/>
 			<xsl:if test="string-length($previewPicture)!=0">
-				<img src="{$previewPicture}"/>
+			  <br/>
+				<div><img src="{$previewPicture}" usemap="#jobmap" alt="No image available" class="bordercolor"></img></div>
                        </xsl:if> 
 	      <br/>
-	      <br/>
-	      
-	      Component Parameters:<br/>
-	      			
-	      			<!--  <xsl:variable name="rowNumber" select="parameters/parameter[last()]/@row"/>
-	      				row number:<xsl:value-of select="parameters/parameter[last()]/@row"/>-->
-	      				
-	      				
-	      				<TABLE width="100%" BORDER="0"  CELLPADDING="0" CELLSPACING="0">
-	      			     <xsl:for-each select="parameters/parameter">         			     			
-													<TR>
- 														<TD>
-	 														<TABLE width="100%" BORDERCOLOR="#000000" BORDER="1" CELLPADDING="0" CELLSPACING="0">
-	 															<TR>
-	 															<xsl:for-each select="column">			 														
-											  						<TD><xsl:value-of select="@name"/>: &#160;&#160;<xsl:value-of select="text()"/></TD>															
-																</xsl:for-each>
-																</TR>
-									 						</TABLE>
- 														</TD> 														
-													</TR>
+  
+	      <b>Component Parameters:</b><br/>
+	      				<TABLE class="cols" border="2" cellspacing="0" cellpadding="4" frame="box">
+	      				<TR>
+	      				<TH>Name</TH>
+	      				<TH>Value</TH>
+	      				</TR>
+	      			     <xsl:for-each select="parameters/column">
+	      			                 <TR>      			     			
+															<TD><xsl:value-of select="@name"/></TD>
+															<TD><xsl:value-of select="text()"/></TD>																		 														 	
+															</TR>
 										 </xsl:for-each>
-									</TABLE>
+									 </TABLE> 
 	      
 	      <br/>
-	      <br/>
-	      Schema:<br/>
-                		<TABLE border="1" width="100%">
-                   		 <TR>
-                   		 		<TH>Column</TH><TH>Key</TH>
-                   		 		<TH>Type</TH><TH>Length</TH>
-                   		 		<TH>Precision</TH><TH>Nullable</TH>
+	      <b>Schema:</b><br/>
+                		<TABLE class="cols" border="2" cellspacing="0" cellpadding="4" frame="box">
+                   		 <TR class="profont">
+                   		 		<TH>Column</TH>
+                   		 		<TH>Key</TH>
+                   		 		<TH>Type</TH>
+                   		 		<TH>Length</TH>
+                   		 		<TH>Precision</TH>
+                   		 		<TH>Nullable</TH>
                    		 		<TH>Comment</TH>
                    		 </TR>
                    		 <xsl:for-each select="schema/column">                  
                            <TR>
-                           		<xsl:if test="position() mod 2 != 0">
-                                <xsl:attribute name="bgcolor">#e0edff</xsl:attribute>
-                          		</xsl:if> 
-
                               <TD><xsl:value-of select="@name"/></TD>
                               <TD><xsl:value-of select="@key"/></TD> 
                               <TD><xsl:value-of select="@type"/></TD> 
@@ -182,7 +241,8 @@
                            </TR>
                    		 </xsl:for-each>
                 		</TABLE>                
-     </xsl:for-each>	 
+     </xsl:for-each>
+     </body>	 
 		</html>
 	</xsl:template>
 </xsl:stylesheet>

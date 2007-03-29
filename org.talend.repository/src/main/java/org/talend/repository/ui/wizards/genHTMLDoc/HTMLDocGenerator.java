@@ -372,6 +372,7 @@ public class HTMLDocGenerator {
             if (sourceList != null && sourceList.size() > 0) {
                 for (String string : sourceList) {
                     Element inputElement = componentElement.addElement("input");
+                    inputElement.addAttribute("link", string);
                     inputElement.setText(checkString(string));
                 }
             } else {// Sets the value of input to 'none'.
@@ -447,7 +448,6 @@ public class HTMLDocGenerator {
                 int numRow = 1;
                 boolean isNewParam = true;
 
-                Element parameterElement = null;
                 for (int j = 0; j < elementParameterList.size(); j++) {
                     IElementParameter type = (IElementParameter) elementParameterList.get(j);
                     if (type.isShow(elementParameterList)
@@ -459,42 +459,18 @@ public class HTMLDocGenerator {
                             && (!type.getName().equals("PROPERTY") && (!(istRunJob && type.getName().equals("PROCESS"))))) {
 
                         // Gets the display name of a selected combo item.
+                        String value = "";
                         if (type.getName().equals("TYPE")) {
 
                             int index = type.getIndexOfItemFromList(type.getDisplayName());
-                            String displayName = type.getListItemsDisplayName()[index];
-                            parameterElement = parametersElement.addElement("parameter");
-                            Element columnElement = parameterElement.addElement("column");
-                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
-                            columnElement.setText(displayName);
-                            continue;
+                            value = checkString(type.getListItemsDisplayName()[index]);
+                        } else {
+                            value = checkString(type.getValue().toString());
                         }
-
-                        // Always put Column 'COMMENT' in a new line.
-                        if (type.getNumRow() == numRow && (!type.getName().equals("COMMENT"))) {
-                            if (isNewParam) {
-                                parameterElement = parametersElement.addElement("parameter");
-                            }
-                            Element columnElement = parameterElement.addElement("column");
-
-                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
-
-                            if (type.getValue() != null) {
-                                columnElement.setText(checkString(type.getValue().toString()));
-                            } else {
-                                columnElement.setText("");
-                            }
-                            isNewParam = false;
-                        }
-
-                        else {
-                            parameterElement = parametersElement.addElement("parameter");
-                            Element columnElement = parameterElement.addElement("column");
-                            columnElement.addAttribute("name", checkString(type.getDisplayName()));
-                            columnElement.setText(type.getValue().toString());
-                            numRow = type.getNumRow();
-                            isNewParam = false;
-                        }
+                        // parameterElement = parametersElement.addElement("parameter");
+                        Element columnElement = parametersElement.addElement("column");
+                        columnElement.addAttribute("name", checkString(type.getDisplayName()));
+                        columnElement.setText(value);
                     }
                 }
             }
@@ -595,6 +571,7 @@ public class HTMLDocGenerator {
         projectElement.addAttribute("title", TITLE);
         projectElement.addAttribute("language", getProject().getLanguage().getName());
         projectElement.addAttribute("description", getProject().getDescription());
+        projectElement.addAttribute("generatedDate", DateFormat.getDateTimeInstance().format(new Date()));
         return projectElement;
     }
 
