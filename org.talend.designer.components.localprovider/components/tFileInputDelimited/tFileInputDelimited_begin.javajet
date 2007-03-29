@@ -14,123 +14,141 @@
 	" 
 	class="FileInputDelimitedBegin" 
 %>
-
-	
-	
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-	
-	String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
-    String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-    String myHeader = ElementParameterParser.getValue(node, "__HEADER__");
-    String myLimit = ElementParameterParser.getValue(node, "__LIMIT__");
-    String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-    String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-%>
-		int nb_line_<%=cid%> = 0;
-		
-        final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)
-        	? "\\*"
-        	: ElementParameterParser.getValueWithUIFieldKey(node, "__FIELDSEPARATOR__", "FIELDSEPARATOR") %>;
-        int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
-        boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
-        
-        java.io.BufferedReader in<%=cid %> = null;
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
-        String str<%=cid %>;
-        int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,outputLine<%=cid %>=0;
-        int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
-        
-        <% 
-         	if (myHeader.equals("")) myHeader = "0"; 
-        	int header =Integer.parseInt(myHeader);
-        	if (header > 0){
-        		%>beginLine<%=cid %>=<%=header%>+1;
-      		<%}
-      		%>
-        
-        int nb_random<%=cid %> = -1;
-		<%if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {%>
-    		nb_random<%=cid %> = <%=ElementParameterParser.getValue(node, "__NB_RANDOM__")%>;
-    	<%}%>
-    	Object[] rans<%=cid %>=null;
-    	
-        if(footer_<%=cid %> > 0 || nb_random<%=cid %>>-1){
-			while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
-				<%if(!row_separator.equals("\"\\n\"")){%>
-        			java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), IN_DELIM_<%=cid %>);
-        	 		while(strRowToken<%=cid %>.hasMoreTokens()){
-        	 		str<%=cid %>=strRowToken<%=cid %>.nextToken();
-        		<%}%>
-				totalLine<%=cid %>++;
-				<%if(!row_separator.equals("\"\\n\"")){%>
-    			}
-    			<%}%>
-			}
-		  if(footer_<%=cid %> > 0){
-			int lastLineTemp<%=cid %> = totalLine<%=cid %> - footer_<%=cid %>   < 0? 0 : totalLine<%=cid %> - footer_<%=cid %> ;
-			if(lastLine<%=cid %> > 0){
-				lastLine<%=cid %> = lastLine<%=cid %> < lastLineTemp<%=cid %> ? lastLine<%=cid %> : lastLineTemp<%=cid %>; 
-			}else {
-				lastLine<%=cid %> = lastLineTemp<%=cid %>;
-			}
-		  }
-		  if(nb_random<%=cid %>>-1){
-    		java.util.Set<Integer> ranSet<%=cid %> =new java.util.TreeSet<Integer>();
-       		java.util.Random ran<%=cid %>=new java.util.Random();
-       		while(ranSet<%=cid %>.size()<nb_random<%=cid %>){
-            	 ranSet<%=cid %>.add(ran<%=cid %>.nextInt(totalLine<%=cid %>));
-       		}
-       		rans<%=cid %>=ranSet<%=cid %>.toArray();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+   	 	int header = Integer.parseInt(ElementParameterParser.getValue(node, "__HEADER__"));
+    	String limitString = ElementParameterParser.getValue(node, "__LIMIT__");
+    	int limit = limitString.equals("") ? -1 : Integer.parseInt(limitString);
+    	int footer = Integer.parseInt(ElementParameterParser.getValue(node, "__FOOTER__"));
+    	if(footer < 0){
+    		footer = 0;
     	}
-			in<%=cid %> = null;
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
+    	int randoms = -1;
+    	if(ElementParameterParser.getValue(node, "__RANDOM__").equals("true")){
+    		randoms = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_RANDOM__"));
+    	}
+    	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+    	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+    	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
+%>
+com.delimitedparser.DelimitedDataReader delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
+
+delReader_<%=cid %>.skipHeaders(<%=header %>);
+
+<%
+		if(randoms >= 0){
+			if(randoms > limit && limit >= 0){
+				randoms = limit;
+			}
+%>
+long available_count_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
+
+delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
+
+delReader_<%=cid %>.skipHeaders(<%=header %>);
+
+long random_size_<%=cid %> = available_count_<%=cid %> >= <%=randoms %> ? <%=randoms %> : available_count_<%=cid %>;
+
+java.util.Set<Long> ranSet_<%=cid %> =new java.util.TreeSet<Long>();
+
+java.util.Random ran_<%=cid %>=new java.util.Random();
+
+while(ranSet_<%=cid %>.size() < random_size_<%=cid %>){
+
+	ranSet_<%=cid %>.add((long)ran_<%=cid %>.nextInt((int)available_count_<%=cid %>));
+	
+}
+
+java.util.Iterator<Long> ran_iterator_<%=cid %> = ranSet_<%=cid %>.iterator();
+
+boolean ran_flag_<%=cid %> = true;
+
+Long current_ran_<%=cid %> = (long) -1;
+
+<%
+		}else if(footer > 0 && limit < 0){
+%>
+long limit_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
+
+delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
+
+delReader_<%=cid %>.skipHeaders(<%=header %>);
+
+<%
+		}else if(footer == 0 && limit >= 0){
+%>
+long limit_<%=cid %> = <%=limit %>;
+
+<%
+		}else if(footer > 0 && limit >= 0){
+%>
+long temp1_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
+
+delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
+
+delReader_<%=cid %>.skipHeaders(<%=header %>);
+
+long limit_<%=cid %> = temp1_<%=cid %> < <%=limit %> ?temp1_<%=cid %> : <%=limit %>;
+
+<%
 		}
-        java.util.StringTokenizer strToken<%=cid %>;
-        int currentRan<%=cid %>=0;
-        while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
-        	<%if(!row_separator.equals("\"\\n\"")){%>
-        	java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), <%=row_separator %>);
-        	 while(strRowToken<%=cid %>.hasMoreTokens()){
-        	 	str<%=cid %>=strRowToken<%=cid %>.nextToken();
-        	<%}%>
-        	
-        	
-       		currentLine<%=cid %>++;
-       		nb_line_<%=cid %>++;
-       		if(nb_random<%=cid %>>-1){
-       			if(currentRan<%=cid %> >= rans<%=cid %>.length){
-       				break;
-       			}else if( currentLine<%=cid %> == (Integer) rans<%=cid %>[currentRan<%=cid %>]){
-       				currentRan<%=cid %>++;
-       			}else{
-       				continue;
-       			}
-       		}
-        	if(currentLine<%=cid %> < beginLine<%=cid %>) {
-        		continue;
-        	}
-        	if(lastLine<%=cid %> > -1 && currentLine<%=cid %> > lastLine<%=cid %>) {
-        		break;
-        	}
-        	if(removeEmptyRow<%=cid %> && str<%=cid %>.equals("")){
-        		continue;
-        	}
-        	outputLine<%=cid %>++;
-        	if(limit<%=cid %>!=-1&& outputLine<%=cid %> > limit<%=cid %>){
-        		break;
-        	}
-        	strToken<%=cid %> = new java.util.StringTokenizer(str<%=cid %>.trim(), IN_DELIM_<%=cid %>, true);
+%>
+
+while (<%if((footer > 0 || limit >= 0) && randoms < 0){%>delReader_<%=cid %>.getProcessedRecordCount() < limit_<%=cid %><%}else{%>true<%}%>) {
+
+<%
+	if(randoms >= 0){
+%>
+		if(ran_flag_<%=cid %>){
+		
+			if(ran_iterator_<%=cid %>.hasNext()){
+			
+				current_ran_<%=cid %> = ran_iterator_<%=cid %>.next();
+				
+				ran_flag_<%=cid %> = false;
+				
+			}else{
+			
+				break;
+				
+			}
+			
+		}
+		if(delReader_<%=cid %>.getProcessedRecordCount() -1 != current_ran_<%=cid %>){
+		
+			if(!delReader_<%=cid %>.readRecord()){
+			
+				break;
+			}
+			
+			continue;
+			
+		}else{
+		
+			ran_flag_<%=cid %> = true;
+			
+		}
+		
+<%
+	}else{
+%>
+
+	if(!delReader_<%=cid %>.readRecord()){
+	
+		break;
+	}
+<%
+	}
+%>
 
 <%
 	List< ? extends IConnection> conns = node.getOutgoingConnections();
@@ -141,29 +159,9 @@
 			firstConnName = conn.getName();
 			
 			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%>
-			
-			boolean lineIsEmpty = str<%=cid %>.length() == 0;
-			
-			String[] value<%=cid %> = new String[<%=metadata.getListColumns().size()%>];
-			String frontChar<%=cid %>,behindChar<%=cid %>;
-			for(int i=0;i<<%=metadata.getListColumns().size()%>;i++){
-				value<%=cid %>[i] = "";
-				if(lineIsEmpty){
-					continue;
-				}
-				if(strToken<%=cid %>.hasMoreTokens()){
-					frontChar<%=cid %>=strToken<%=cid %>.nextToken();
-					if(!frontChar<%=cid %>.equals(<%=delim%>)){
-				   		value<%=cid %>[i]= frontChar<%=cid %>;
-				   		if(strToken<%=cid %>.hasMoreTokens()) {
-				   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
-				   		}
-					}
-				} else {
-					continue;
-				}
-			}
-			<%	
+String temp_<%=cid %> = "";
+
+<%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -172,61 +170,63 @@
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 
-					%>					
-						if(value<%=cid %>[<%=valueN%>].length() > 0) {
-							<%
-								/** begin **/
-							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-								/** end **/
-								%><%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>];<%
-								/** begin **/
-							} else if(javaType == JavaTypesManager.DATE) { 
-								/** end **/
-								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= patternValue %>);<%
-								/** begin **/
-							} else {
-								/** end **/
-								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);<%
-								/** begin **/
-							}
-								/** end **/
-						%>					
-						} else {
-						<%
-							/** begin **/
-							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
-							if(defaultValue == null) {
-							/** end **/
-								%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");<%
-							/** begin **/
-							} else {
-							/** end **/
-								%><%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue%>;<%
-							/** begin **/
-							}
-							/** end **/
-						
-						%>}
-	<%					
-	/** begin **/
-					}
-				}
-			}
-		}
-		if (conns.size()>1) {
-			for (int i=1;i<conns.size();i++) {
-				IConnection conn = conns.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
-			     for (IMetadataColumn column: metadata.getListColumns()) {%>
-      				<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
-				 <%
-				 }
-				}
-			}
-		}
-	/** end **/
+					%>
+temp_<%=cid %> = delReader_<%=cid %>.get(<%=valueN%>);
+					
+if(temp_<%=cid %>.length() > 0) {
+
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
- <%
+	<%=conn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>;
+
+<%
+					} else if(javaType == JavaTypesManager.DATE) { 
+%>
+<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+
+<%
+					} else {
+%>
+<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+
+<%
+					}
+%>					
+} else {
+						
+<%
+					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+					if(defaultValue == null) {
+%>
+	throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+
+<%
+					} else {
+%>
+<%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue%>;
+
+<%
+					}
+%>
+}
+<%
+				}
+			}
 		}
 	}
+	if (conns.size()>1) {
+		for (int i=1;i<conns.size();i++) {
+			IConnection conn = conns.get(i);
+			if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			     for (IMetadataColumn column: metadata.getListColumns()) {%>
+      				<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+      				
+<%
+				 }
+			}
+		}
+	}
+	}
+}
 %>

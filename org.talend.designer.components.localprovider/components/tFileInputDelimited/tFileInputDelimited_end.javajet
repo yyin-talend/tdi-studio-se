@@ -10,26 +10,40 @@
 	class="FileInputDelimitedEnd" 
 %>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		String limitString = ElementParameterParser.getValue(node, "__LIMIT__");
+		int limit = limitString.equals("") ? -1 : Integer.parseInt(limitString);
+    	int footer = Integer.parseInt(ElementParameterParser.getValue(node, "__FOOTER__"));
+    	int randoms = -1;
+    	if(ElementParameterParser.getValue(node, "__RANDOM__").equals("true")){
+    		randoms = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_RANDOM__"));
+    	}
 %>
-
-    		}
-    		<%if(!row_separator.equals("\"\\n\"")){%>
-    		}
-    		<%}%>
-
+}
+delReader_<%=cid %>.close();
 <%
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+		if(randoms >= 0){
 %>
-            in<%=cid %>.close();
-            globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE", random_size_<%=cid %>);
+System.out.println("TotalLineReturn: "+ random_size_<%=cid %>);
+<%
+		}else if(footer > 0 || limit >= 0){
+%>
+globalMap.put("<%=cid %>_NB_LINE", limit_<%=cid %>);
+System.out.println("TotalLineReturn: "+ limit_<%=cid %>);
+<%
+		}else{
+%>
+globalMap.put("<%=cid %>_NB_LINE", delReader_<%=cid %>.getProcessedRecordCount());
+System.out.println("TotalLineReturn: "+ delReader_<%=cid %>.getProcessedRecordCount());
 <%
 		}
 	}
+}
 %>      
