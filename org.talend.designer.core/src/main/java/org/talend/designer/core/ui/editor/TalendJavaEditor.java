@@ -56,7 +56,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
     private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
 
-    private static boolean isLatestCodeInFile;
+//    private  boolean isLatestCodeInFile;
 
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
@@ -131,7 +131,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             selectAndReveal(0, 0);
             javaSourceViewer.doOperation(ISourceViewer.FORMAT);
             doSave(null);
-            TalendJavaEditor.isLatestCodeInFile = false;
         }
         setFocus();
     }
@@ -201,12 +200,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     @Override
     public void doSave(IProgressMonitor progressMonitor) {
-        if (!isLatestCodeInFile) {
-            TalendJavaEditor.isLatestCodeInFile = true;
-            for (MultiPageTalendEditor element : this.editPartListener) {
-                element.codeSync();
-            }
-        }
+//        if (!isLatestCodeInFile) {
+//            isLatestCodeInFile = true;
+//            for (MultiPageTalendEditor element : this.editPartListener) {
+//                element.codeSync();
+//            }
+//        }
         super.doSave(progressMonitor);
     }
 }
