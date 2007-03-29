@@ -76,19 +76,21 @@ $branch_<%=connName%>_is_active = true;
 
 
 $nb_line_input_<%=cid %>++;
+$nb_line_output_<%=cid %>++;
+
 if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1) {
 <%
         for (IConnection outConn: node.getOutgoingConnections()) {
             String connName = outConn.getName();
 %>
     $branch_<%=connName%>_is_active = false;
+    $nb_line_output_<%=cid %>--;
 <%
         }
 %>
 
     
 }
-$nb_line_output_<%=cid %>++;
     
 <%
     }
