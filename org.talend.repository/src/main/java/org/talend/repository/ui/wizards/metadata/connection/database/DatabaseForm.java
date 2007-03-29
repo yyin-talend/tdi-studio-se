@@ -207,21 +207,16 @@ public class DatabaseForm extends AbstractForm {
         urlDataStringConnection = new DataStringConnection();
 
         //PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            Collection<String> databaseJava = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
-            databaseJava.remove("IBM DB2");
-            databaseJava.remove("Microsoft SQL Server");
-            String [] dbJava = (String [])databaseJava.toArray(new String[databaseJava.size()]);
-            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                    .getString("DatabaseForm.dbTypeTip"), dbJava, 2, true); //$NON-NLS-1$
-        } else {
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
-            databasePerl.remove("SQL Server");
+            databasePerl.remove("Microsoft SQL Server");
             String [] dbPerl = (String [])databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
+        } else {
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
         }
-
         
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
