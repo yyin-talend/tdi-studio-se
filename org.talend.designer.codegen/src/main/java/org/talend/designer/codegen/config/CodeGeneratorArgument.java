@@ -37,6 +37,8 @@ public class CodeGeneratorArgument {
 
     private boolean trace;
     
+    private boolean writeFieldsComment = false;
+    
     String interpreterPath;
 
     String libPath;
@@ -176,4 +178,12 @@ public class CodeGeneratorArgument {
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
+    
+    public boolean isWriteFieldsComment() {
+        return this.writeFieldsComment;
+    }
+    
+    public void setWriteFieldsComment(boolean writeFieldsComment) {
+        this.writeFieldsComment = writeFieldsComment;
+    }   
 }
