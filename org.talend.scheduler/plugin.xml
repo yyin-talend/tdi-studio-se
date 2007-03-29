@@ -7,7 +7,7 @@
       <view
             category="org.talend.core.root"
             class="org.talend.scheduler.ui.SchedulerView"
-            icon="icons/sample.gif"
+            icon="icons/history_working_set_obj.gif"
             id="org.talend.scheduler.views.Scheduler"
             name="%schedulerName">
       </view>

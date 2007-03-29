@@ -6,7 +6,7 @@
       <view
             category="org.talend.core.root"
             class="org.talend.repository.ui.views.RepositoryView"
-            icon="icons/repository.png"
+            icon="icons/nav_home_003.gif"
             id="org.talend.repository.views.repository"
             name="%RepositoryView.title"/>
    </extension>
