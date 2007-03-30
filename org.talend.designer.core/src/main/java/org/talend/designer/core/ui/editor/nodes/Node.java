@@ -451,7 +451,7 @@ public class Node extends Element implements INode {
     public void removeInput(final Connection connection) {
         this.inputs.remove(connection);
         if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn() && component.isSchemaAutoPropagated()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
             if (metadataList.get(0).isReadOnly()) {
                 IMetadataTable originTable = metadataList.get(0);
                 List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();

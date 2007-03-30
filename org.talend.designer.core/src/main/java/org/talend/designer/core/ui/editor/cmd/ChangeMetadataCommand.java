@@ -118,18 +118,19 @@ public class ChangeMetadataCommand extends Command {
         }
 
         oldOutputMetadata = currentOutputMetadata.clone();
-        this.newOutputMetadata = newOutputMetadata;
-
+        this.newOutputMetadata = newOutputMetadata.clone();
+        
+        this.newOutputMetadata.setReadOnly(newOutputMetadata.isReadOnly());
         List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
         for (IMetadataColumn column : newOutputMetadata.getListColumns()) {
             if (column.isCustom()) {
-                columnToRemove.add(column);
+                columnToRemove.add(this.newOutputMetadata.getColumn(column.getLabel()));
             }
         }
-        newOutputMetadata.getListColumns().removeAll(columnToRemove);
-        newOutputMetadata.getListColumns().addAll(columnToSave);
-        newOutputMetadata.sortCustomColumns();
-        newOutputMetadata.setReadOnly(currentOutputMetadata.isReadOnly());
+        this.newOutputMetadata.getListColumns().removeAll(columnToRemove);
+        this.newOutputMetadata.getListColumns().addAll(columnToSave);
+        this.newOutputMetadata.sortCustomColumns();
+        this.newOutputMetadata.setReadOnly(currentOutputMetadata.isReadOnly());
         initializeContainer();
         setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }
