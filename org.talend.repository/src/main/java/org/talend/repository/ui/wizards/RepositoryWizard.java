@@ -159,18 +159,20 @@ public abstract class RepositoryWizard extends Wizard {
      * 
      */
     public void initLockStrategy() {
-        // The lock strategy is useless when the repositoryObject isn't yet created
-        if (repositoryObject != null) {
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            try {
-                factory.lock(repositoryObject);
-            } catch (PersistenceException e1) {
-                String detailError = e1.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
-                        detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
-            } catch (BusinessException e) {
-                // Nothing to do
+        if (isRepositoryObjectEditable()) {
+            // The lock strategy is useless when the repositoryObject isn't yet created
+            if (repositoryObject != null) {
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                try {
+                    factory.lock(repositoryObject);
+                } catch (PersistenceException e1) {
+                    String detailError = e1.toString();
+                    new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                            detailError);
+                    log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
+                } catch (BusinessException e) {
+                    // Nothing to do
+                }
             }
         }
     }

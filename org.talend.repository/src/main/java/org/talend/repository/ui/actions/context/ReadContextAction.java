@@ -26,10 +26,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -41,19 +41,19 @@ import org.talend.repository.ui.wizards.context.ContextWizard;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class EditContextAction extends AContextualAction {
+public class ReadContextAction extends AContextualAction {
 
-    private static final String EDIT_LABEL = Messages.getString("EditContextAction.editContext"); //$NON-NLS-1$
+    private static final String LABEL = Messages.getString("EditContextAction.readContext"); //$NON-NLS-1$
 
     /**
      * DOC nrousseau EditContextAction constructor comment.
      */
-    public EditContextAction() {
+    public ReadContextAction() {
         super();
 
-        this.setText(EDIT_LABEL);
-        this.setToolTipText(EDIT_LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_ICON));
+        this.setText(LABEL);
+        this.setToolTipText(LABEL);
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.READ_ICON));
     }
 
     /*
@@ -86,7 +86,7 @@ public class EditContextAction extends AContextualAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), false);
+        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), false, getSelection(), true);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 

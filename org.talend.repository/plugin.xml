@@ -172,6 +172,13 @@
              level="10"
              name="Edit Context"/>
        <Action
+             class="org.talend.repository.ui.actions.context.ReadContextAction"
+             id="org.talend.repository.readcontext"
+             isEditAction="false"
+             isReadAction="true"
+             level="12"
+             name="Read context"/>
+       <Action
              class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
              id="org.talend.repository.actions.generateDocAsHTML"
              level="98"

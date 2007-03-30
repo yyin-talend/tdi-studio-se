@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.actions.context;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -36,12 +34,9 @@ import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.context.ContextWizard;
-import org.talend.repository.ui.wizards.documentation.DocumentationCreateWizard;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -96,7 +91,7 @@ public class CreateContextAction extends AContextualAction {
 
     @Override
     public void run() {
-        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, getSelection());
+        ContextWizard contextWizard = new ContextWizard(PlatformUI.getWorkbench(), true, getSelection(), false);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 

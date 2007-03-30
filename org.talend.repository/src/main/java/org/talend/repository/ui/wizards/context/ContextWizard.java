@@ -78,8 +78,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * @param strings
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection) {
-        super(workbench, creation);
+    public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection, boolean forceReadOnly) {
+        super(workbench, creation, forceReadOnly);
         pathToSave = getPath(selection);
 
         setWindowTitle(""); //$NON-NLS-1$
