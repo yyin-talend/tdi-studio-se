@@ -111,8 +111,6 @@ public class JavaFunctionParser extends AbstractFunctionParser {
         if (string.indexOf("{talendTypes}") > 0) {
             string2 = string.substring(0, string.indexOf("{talendTypes}"));
         }
-        string2.substring(1);
-        string2.endsWith(string2);
         return string2;
     }
 

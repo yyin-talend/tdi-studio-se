@@ -194,10 +194,15 @@ public class JavaProcessor extends Processor {
             this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
+            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
+            service.createJavaRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
+        } catch (SystemException e) {
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
 
+        
     }
 
     /*
