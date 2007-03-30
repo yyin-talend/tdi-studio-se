@@ -1,0 +1,69 @@
+<%@ jet
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+"
+class="AddCRCRowMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        List<Map<String, String>> implication =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__IMPLICATION__"
+            );
+
+        String crcType = ElementParameterParser.getValue(
+            node,
+            "__CRC_TYPE__"
+        );
+
+
+        List keyCols = new ArrayList();
+
+        for (int i=0; i<implication.size(); i++) {
+            Map<String, String> col = implication.get(i);
+            if (col.get("USE_IN_CRC").equals("true")) {
+                keyCols.add(i);
+            }
+        }
+
+        String keyString = StringUtils.join(keyCols.toArray(), ", ");
+%>
+
+    $<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = <%=crcType%>(
+        join(
+            $;,
+            @<%=cid%>[<%=keyString%>]
+        )
+    );
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+%>
+    
+<%
+    }
+}
+%>
