@@ -41,7 +41,6 @@ use talend::runstat;
 <%
     }
 %>
-
 <%
     if (trace) {
 %>
@@ -50,6 +49,9 @@ use talend::trace;
     }
 %>
 
+<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
+use <%=routine%>;
+<%}%>
 
 my $_licence = <<'END_OF_LICENCE';
 
@@ -80,16 +82,16 @@ StartTrace($opt{trace_port}, '127.0.0.1') if defined $opt{trace_port};
 our %_context;
 our %_globals;
 
-$_globals{pid} = sprintf('%s_%03u', int(time() * 1000), int rand 999);
+$_globals{pid} = getRandomString(6, ['a'..'z', 'A'..'Z', 0..9]);
 
-$_globals{father_pid} = (defined $opt{father_pid}
+$_globals{father_pid} = defined $opt{father_pid}
     ? $opt{father_pid}
-    : $_globals{pid})
+    : $_globals{pid}
 ;
 
-$_globals{root_pid} = (defined $opt{root_pid}
+$_globals{root_pid} = defined $opt{root_pid}
     ? $opt{root_pid}
-    : $_globals{pid})
+    : $_globals{pid}
 ;
 
 $_globals{job_name} = '<%=codeGenArgument.getJobName() %>';
@@ -118,11 +120,6 @@ if (defined $opt{context}) {
     use lib $FindBin::Bin;
     require $context_filename;
 }
-
-<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
-use <%=routine%>;
-<%}%>
-
 
 <% // Constants for RUN IF OK links %>
 use constant true   => 1;
