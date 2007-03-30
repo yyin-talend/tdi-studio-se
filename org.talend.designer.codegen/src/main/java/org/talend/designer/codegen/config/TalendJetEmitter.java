@@ -97,7 +97,12 @@ public class TalendJetEmitter extends JETEmitter {
     public TalendJetEmitter(String arg0, ClassLoader arg1, String templateName, String templateLanguage,
             String codePart, TalendEclipseHelper teh) {
         super(arg0, arg1);
-        this.templateName = templateName;
+        if (templateName.endsWith(codePart + "" + templateLanguage)) {
+            this.templateName = templateName.substring(templateName.lastIndexOf(".") + 1, templateName
+                    .lastIndexOf(codePart));
+        } else {
+            this.templateName = templateName;
+        }
         this.templateLanguage = templateLanguage;
         this.codePart = codePart;
         this.talendEclipseHelper = teh;

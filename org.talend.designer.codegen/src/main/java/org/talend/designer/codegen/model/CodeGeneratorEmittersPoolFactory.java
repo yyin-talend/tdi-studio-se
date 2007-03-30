@@ -206,7 +206,8 @@ public final class CodeGeneratorEmittersPoolFactory {
             }
 
             if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
-                jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
+                jetBean.addClassPath("EXTERNAL_COMPONENT_"
+                        + component.getPluginFullName().toUpperCase().replaceAll("\\.", "_"), component
                         .getPluginFullName());
                 jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginFullName()).getClass()
                         .getClassLoader());
@@ -243,23 +244,32 @@ public final class CodeGeneratorEmittersPoolFactory {
             globalClasspath.putAll(jetBean.getClassPath());
         }
 
+        for (String s : globalClasspath.keySet()) {
+            System.out.println(s);
+        }
+
         emitterPool = new HashMap<JetBean, JETEmitter>();
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
-        try {
-            alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
-                    .loadEmittersPool(), components);
-            for (JetBean jetBean : alreadyCompiledEmitters) {
-                JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
-                emitter.setMethod(jetBean.getMethod());
-                emitterPool.put(jetBean, emitter);
-                monitorWrap.worked(1);
-            }
-        } catch (BusinessException e) {
-            // error already loggued
-            emitterPool = new HashMap<JetBean, JETEmitter>();
-        }
+
         try {
             TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath);
+            
+            try {
+                alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
+                        .loadEmittersPool(), components);
+                for (JetBean jetBean : alreadyCompiledEmitters) {
+                    TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
+                            .getClassLoader(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
+                            dummyEmitter.getTalendEclipseHelper());
+                    emitter.setMethod(jetBean.getMethod());
+                    emitterPool.put(jetBean, emitter);
+                    monitorWrap.worked(1);
+                }
+            } catch (BusinessException e) {
+                // error already loggued
+                emitterPool = new HashMap<JetBean, JETEmitter>();
+            }
+
             for (JetBean jetBean : components) {
                 if (!emitterPool.containsKey(jetBean)) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
