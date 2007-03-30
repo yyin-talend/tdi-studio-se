@@ -51,6 +51,7 @@ import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
@@ -333,5 +334,16 @@ public class OutputDataMapTableView extends DataMapTableView {
     public boolean hasDropDownToolBarItem() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getTitle()
+     */
+    @Override
+    protected String getTitle() {
+        return abstractDataMapTable.getTitle();
+    }
+
 
 }

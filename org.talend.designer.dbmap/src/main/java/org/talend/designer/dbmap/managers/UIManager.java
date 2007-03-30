@@ -1258,7 +1258,7 @@ public class UIManager {
                 Messages.getString("UIManager.typeTableName"), outputName, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
-                        if (!process.checkValidConnectionName(newText)) {
+                        if (!process.checkValidConnectionName(newText, false)) {
                             return Messages.getString("UIManager.tableNameIsNotValid"); //$NON-NLS-1$
                         }
                         return null;
@@ -1586,12 +1586,14 @@ public class UIManager {
         }
         mapperManager.removeTablePair(dataMapTableViewToRemove);
         MetadataTableEditorView outputMetaEditorView = getOutputMetaEditorView();
-        if (outputMetaEditorView.getMetadataTableEditor().getMetadataTable() == ((OutputTable) dataMapTableViewToRemove
-                .getDataMapTable()).getMetadataTable()) {
+        OutputTable outputTable = (OutputTable) dataMapTableViewToRemove.getDataMapTable();
+        
+        if (outputMetaEditorView.getMetadataTableEditor().getMetadataTable() == outputTable.getMetadataTable()) {
             getOutputMetaEditorView().setMetadataTableEditor(null);
         }
         dataMapTableViewToRemove.dispose();
         dataMapTableViewToRemove = null;
+
         getTablesZoneViewOutputs().layout();
         refreshBackground(true, false);
         setCurrentSelectedOutputTableView(null);

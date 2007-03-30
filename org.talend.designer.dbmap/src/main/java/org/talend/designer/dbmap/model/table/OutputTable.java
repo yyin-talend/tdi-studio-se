@@ -27,6 +27,7 @@ import java.util.List;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -50,10 +51,22 @@ public class OutputTable extends AbstractInOutTable {
 
     private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
 
-    public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
-        super(mapperManager, metadataTable, name);
+    private String uniqueName;
+
+    private String tableName;
+
+    public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String uniqueName, String tableName) {
+        super(mapperManager, metadataTable, "NOT_USED_OUPUT_TABLE_NAME");
+        if(uniqueName == null) {
+            final IProcess process = mapperManager.getComponent().getProcess();
+            this.uniqueName = process.generateUniqueConnectionName("table"); //$NON-NLS-1$
+            process.addUniqueConnectionName(this.uniqueName);
+        } else {
+            this.uniqueName = uniqueName;
+        }
+        this.tableName = tableName;
         this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(
-                name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
+                uniqueName + " : model for Filters", filterTableEntries); //$NON-NLS-1$
     }
 
     public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
@@ -129,4 +142,39 @@ public class OutputTable extends AbstractInOutTable {
         return this.tableFiltersEntriesModel;
     }
 
+    /**
+     * Getter for uniqueName.
+     * @return the uniqueName
+     */
+    public String getUniqueName() {
+        return this.uniqueName;
+    }
+
+    /**
+     * Getter for tableName.
+     * @return the tableName
+     */
+    public String getTableName() {
+        return this.tableName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getName()
+     */
+    @Override
+    public String getName() {
+        return getUniqueName();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getTitle()
+     */
+    @Override
+    public String getTitle() {
+        return getTableName() + " (" + getUniqueName() + ")";
+    }
+
+    
+    
+    
 }

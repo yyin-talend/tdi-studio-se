@@ -481,10 +481,13 @@ public class MapperManager {
         }
 
         IProcess process = mapperComponent.getProcess();
-        process.addUniqueConnectionName(tableName);
+        String uniqueName = process.generateUniqueConnectionName("table");
+        process.addUniqueConnectionName(uniqueName);
 
         MetadataTable metadataTable = new MetadataTable();
-        metadataTable.setTableName(tableName);
+        metadataTable.setTableName(uniqueName);
+//        metadataTable.setId(uniqueName);
+        metadataTable.setLabel(tableName);
 
         List<DataMapTableView> outputsTablesView = getUiManager().getOutputsTablesView();
         int sizeOutputsView = outputsTablesView.size();
@@ -493,7 +496,7 @@ public class MapperManager {
             lastChild = outputsTablesView.get(sizeOutputsView - 1);
         }
 
-        AbstractDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        AbstractDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, uniqueName, tableName);
 
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable,
@@ -516,7 +519,7 @@ public class MapperManager {
                     Messages.getString("MapperManager.removeInputTableTitleMessage", new Object[] { tableName }))) { //$NON-NLS-1$
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeInputTableView(currentSelectedDataMapTableView);
-                uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
+                uiManager.updateToolbarButtonsStates(Zone.INPUTS);
                 process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
                 uiManager.refreshSqlExpression();
             }
@@ -527,14 +530,15 @@ public class MapperManager {
         OutputDataMapTableView currentSelectedDataMapTableView = uiManager.getCurrentSelectedOutputTableView();
 
         if (currentSelectedDataMapTableView != null) {
-            String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
+            OutputTable outputTable = (OutputTable) currentSelectedDataMapTableView.getDataMapTable();
+            String tableTitle = currentSelectedDataMapTableView.getDataMapTable().getTitle();
             if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
                     .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
-                    Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + "' ?")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("MapperManager.removeOutputTableTitleMessage", new Object[] { tableTitle }))) { //$NON-NLS-1$
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
                 uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
-                process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
+                process.removeUniqueConnectionName(outputTable.getUniqueName());
                 uiManager.refreshSqlExpression();
             }
         }

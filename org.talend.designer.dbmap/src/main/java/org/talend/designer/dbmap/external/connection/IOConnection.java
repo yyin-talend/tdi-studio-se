@@ -40,6 +40,8 @@ public class IOConnection {
 
     private EConnectionType connectionType;
 
+    private String uniqueName;
+
     /**
      * DOC amaumont MapperConnection constructor comment.
      * 
@@ -48,7 +50,8 @@ public class IOConnection {
      */
     public IOConnection(IConnection connection) {
         super();
-        this.name = connection.getUniqueName();
+        this.name = connection.getName();
+        this.uniqueName = connection.getUniqueName();
         this.table = connection.getMetadataTable();
         this.connectionType = connection.getLineStyle();
 
@@ -62,13 +65,22 @@ public class IOConnection {
      */
     public IOConnection(IODataComponent ioDataComponent) {
         super();
-        this.name = ioDataComponent.getUniqueName();
+        this.name = ioDataComponent.getName();
+        this.uniqueName = ioDataComponent.getUniqueName();
         this.table = ioDataComponent.getTable();
         this.connectionType = ioDataComponent.getConnectionType();
     }
 
     public String getName() {
         return name;
+    }
+    
+    /**
+     * Getter for uniqueName.
+     * @return the uniqueName
+     */
+    public String getUniqueName() {
+        return this.uniqueName;
     }
 
     public EConnectionType getConnectionType() {
