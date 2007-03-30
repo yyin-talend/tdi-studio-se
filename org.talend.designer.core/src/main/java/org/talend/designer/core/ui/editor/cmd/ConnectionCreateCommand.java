@@ -145,8 +145,10 @@ public class ConnectionCreateCommand extends Command {
     public void execute() {
         if (newMetadata != null) {
             source.getMetadataList().add(newMetadata);
+            this.connection = new Connection(source, target, lineStyle, metaName, connectionName);
+        } else {
+            this.connection = new Connection(source, target, lineStyle, metaName, connectionName, metaName);
         }
-        this.connection = new Connection(source, target, lineStyle, metaName, connectionName);
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = source.getConnectorFromType(lineStyle);
         nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
