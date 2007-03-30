@@ -123,6 +123,16 @@
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>100</DEFAULT>
+    </PARAMETER>
+
   </PARAMETERS>
 
   <CODEGENERATION>

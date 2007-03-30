@@ -29,6 +29,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__DATA_ACTION__"
         );
 
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+
         String positionsString = new String();
         String keyPositionsString = new String();
 
@@ -160,6 +165,10 @@ if ($new_nb_line_<%=cid%> > $nb_line_<%=cid%>) {
 %>
 $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 
+if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
+    $nb_line_current_commit_<%=cid%> = 0;
+    $dbh_<%=cid %>->commit;
+}
 <%
     }
 }

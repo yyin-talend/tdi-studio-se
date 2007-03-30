@@ -45,6 +45,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
 
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+
         List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
@@ -69,6 +74,7 @@ my %desc_<%=cid %> = (
     dbuser        => <%=dbuser %>,
     dbpass        => <%=dbpass %>,
     encoding      => <%=encoding %>,
+    commit_every  => <%=commitEvery %>,
     schema        => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -107,6 +113,7 @@ my $dbh_<%=cid %> = DBI->connect(
     <%=dbuser %>,
     <%=dbpass %>,
     {
+        AutoCommit => 0,
 <%
         if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
@@ -380,6 +387,7 @@ my $nb_line_updated_<%=cid%>  = 0;
 my $nb_line_inserted_<%=cid%> = 0;
 my $nb_line_deleted_<%=cid%>  = 0;
 
+my $nb_line_current_commit_<%=cid%> = 0;
 <%
     }
 }
