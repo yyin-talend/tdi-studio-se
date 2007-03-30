@@ -50,14 +50,14 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * $Id: FunctionParser.java,v 1.3 2007/01/31 05:20:51 pub Exp $
  * 
  */
-public class FunctionParser extends AbstractFunctionParser {
+public class PerlFunctionParser extends AbstractFunctionParser {
 
     /**
      * @uml.property name="file"
      */
     private File[] files;
 
-    public FunctionParser() {
+    public PerlFunctionParser() {
         List<File> filesList = new ArrayList<File>();
         // List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
         IProxyRepositoryFactory factory = RowGeneratorPlugin.getDefault().getProxyRepositoryFactory();

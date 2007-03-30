@@ -57,28 +57,30 @@ public class ParameterFactory {
     public Parameter getParameter(String string) {
         String type = getType(string);
         Parameter p = createParameter(type);
-
-        string = string.replaceFirst(type, FunctionParser.EMPTY_STRING).trim();
-        String value = null;
-        // get Value
-        if (string.startsWith("(")) { //$NON-NLS-1$
-            int end = string.indexOf(")"); //$NON-NLS-1$
-            value = string.substring(1, end);
-            string = string.substring(end + 1).trim();
-            setDefaultValue(p, value);
-        }
-
-        String[] s = string.split(":"); //$NON-NLS-1$
-        if (s != null && s.length != 0) {
-            if (s[0] != null) {
-                p.setName(s[0]);
+        if (p != null) {
+            string = string.replaceFirst(type, PerlFunctionParser.EMPTY_STRING).trim();
+            String value = null;
+            // get Value
+            if (string.startsWith("(")) { //$NON-NLS-1$
+                int end = string.indexOf(")"); //$NON-NLS-1$
+                value = string.substring(1, end);
+                string = string.substring(end + 1).trim();
+                setDefaultValue(p, value);
             }
-
-            if (s.length == 2 && s[1] != null) {
-                p.setComment(s[1]);
+            
+            String[] s = string.split(":"); //$NON-NLS-1$
+            if (s != null && s.length != 0) {
+                if (s[0] != null) {
+                    p.setName(s[0]);
+                }
+                
+                if (s.length == 2 && s[1] != null) {
+                    p.setComment(s[1]);
+                }
             }
+            return p;
         }
-        return p;
+        return null;
     }
 
     /**
@@ -118,7 +120,7 @@ public class ParameterFactory {
         } catch (PatternSyntaxException ex) {
             ExceptionHandler.process(ex);
         }
-        return FunctionParser.EMPTY_STRING;
+        return PerlFunctionParser.EMPTY_STRING;
 
     }
 

@@ -30,7 +30,7 @@ public class StringParameter extends Parameter {
      * Sets the properties from the input String.
      */
     public void parseProperties(String str) {
-        str = str.replaceFirst(ParameterFactory.PARAMETER_TYPE_STRING, FunctionParser.EMPTY_STRING);
+        str = str.replaceFirst(ParameterFactory.PARAMETER_TYPE_STRING, PerlFunctionParser.EMPTY_STRING);
     }
 
     /*

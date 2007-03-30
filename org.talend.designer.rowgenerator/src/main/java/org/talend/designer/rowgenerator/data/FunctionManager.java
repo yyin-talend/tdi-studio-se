@@ -108,7 +108,7 @@ public class FunctionManager {
         if (UIManager.isJavaProject()) {
             parser = new JavaFunctionParser();
         } else {
-            parser = new FunctionParser();
+            parser = new PerlFunctionParser();
         }
         parser.parse();
         talendTypes = parser.getList();

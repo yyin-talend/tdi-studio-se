@@ -135,17 +135,19 @@ public class JavaFunctionParser extends AbstractFunctionParser {
         String des = parseDescription(string);
         String functionType = parseFunctionType(string);
         String[] parameter = parseFunctionParameters(string);
-        Parameter[] paras = convertToParameter(parameter);
-        Function function = new Function();
-        function.setName(funcName);
-        function.setDescription(des);
-        function.setParameters(Arrays.asList(paras));
-        TalendType talendType = getTalendType(functionType);
-        talendType.addFunctions(function);
-        typeMethods.put(functionType + "." + funcName, className + "." + funcName);
+        if (!functionType.equals(EMPTY_STRING) && parameter.length > 0) {
+            Parameter[] paras = convertToParameter(parameter);
+            Function function = new Function();
+            function.setName(funcName);
+            function.setDescription(des);
+            function.setParameters(Arrays.asList(paras));
+            TalendType talendType = getTalendType(functionType);
+            talendType.addFunctions(function);
+            typeMethods.put(functionType + "." + funcName, className + "." + funcName);
+        }
     }
 
-    public static Map<String, String>  getTypeMethods() {
+    public static Map<String, String> getTypeMethods() {
         return typeMethods;
     }
 }
