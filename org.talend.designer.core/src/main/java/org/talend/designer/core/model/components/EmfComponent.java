@@ -834,6 +834,9 @@ public class EmfComponent implements IComponent {
                 newParam.setName(item.getNAME());
                 newParam.setDisplayName(""); //$NON-NLS-1$
                 newParam.setField(currentField);
+                if (item.isSetREADONLY()) {
+                    newParam.setReadOnly(item.isREADONLY());
+                }
                 switch (currentField) {
                 case CLOSED_LIST:
                 case COLUMN_LIST:

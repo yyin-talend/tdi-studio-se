@@ -151,7 +151,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     ((CCombo) cellEditor.getControl())
-                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly()));
+                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam
+                                    .isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorValue) {
@@ -200,8 +201,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setModifiable(param.isBasedOnSchema() || param.isRepositoryValueUsed()
-                            || param.isReadOnly());                    
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!tmpParam.isReadOnly()));
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
@@ -209,7 +210,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
                     if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed())
-                            || (param.isReadOnly())) {
+                            || (param.isReadOnly()) || tmpParam.isReadOnly()) {
                         // read only cell
                     } else {
                         // writable cell
