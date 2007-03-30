@@ -71,7 +71,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     private boolean createLeadupStructure = true;
 
-    private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$"; //$NON-NLS-1$
+    private String regEx = "*"; //$NON-NLS-1$
 
     private List<ExportFileResource> resourcesListToExport;
 

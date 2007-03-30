@@ -72,8 +72,8 @@ public class ExportFileResource {
     public void addResources(String relativePath, List<URL> resources) {
         Set<URL> storeList = map.get(relativePath);
         if (storeList == null) {
-            Set<URL> set = new HashSet<URL>(resources);
-            map.put(relativePath, set);
+            storeList = new HashSet<URL>(resources);
+            map.put(relativePath, storeList);
         } else {
             storeList.addAll(resources);
         }
@@ -148,5 +148,4 @@ public class ExportFileResource {
         }
         return result;
     }
-
 }

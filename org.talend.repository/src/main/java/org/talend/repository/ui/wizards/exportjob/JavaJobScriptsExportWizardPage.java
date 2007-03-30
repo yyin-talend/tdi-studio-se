@@ -48,10 +48,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -67,7 +63,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
-public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
+public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
     // widgets
     private Button shellLauncherButton;
@@ -96,31 +92,31 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     // private Button genCodeButton;
 
     // dialog store id constants
-    public final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
+    public final static String STORE_SHELL_LAUNCHER_ID = "JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
-    public final static String STORE_SYSTEM_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
+    public final static String STORE_SYSTEM_ROUTINE_ID = "JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_USER_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_USER_ROUTINE_ID = "JavaJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
 
-    public final static String STORE_MODEL_ID = "JobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
+    public final static String STORE_MODEL_ID = "JavaJobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
 
-    public final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
+    public final static String STORE_JOB_ID = "JavaJobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
-    public final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
+    public final static String STORE_CONTEXT_ID = "JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
 
     // public final static String STORE_GENERATECODE_ID = "JobScriptsExportWizardPage.STORE_GENERATECODE_ID";
     // //$NON-NLS-1$
 
-    public static final String STORE_SOURCE_ID = "JobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
+    public static final String STORE_SOURCE_ID = "JavaJobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
 
-    private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+    private static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     /**
      * Create an instance of this class.
      * 
      * @param name java.lang.String
      */
-    protected JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
+    protected JavaJobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
         manager = createJobScriptsManager();
 
@@ -165,7 +161,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     }
 
     private JobScriptsManager createJobScriptsManager() {
-        return new JobPerlScriptsManager();
+        return new JobJavaScriptsManager();
     }
 
     /**
@@ -173,7 +169,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * 
      * @param selection the selection
      */
-    public JobScriptsExportWizardPage(IStructuredSelection selection) {
+    public JavaJobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
         setDescription(Messages.getString("JobScriptsExportWizardPage.ExportJob")); //$NON-NLS-1$
         setTitle(DataTransferMessages.ArchiveExport_exportTitle);
@@ -430,12 +426,13 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
+
         ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
                 getDestinationValue());
-        exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
-        boolean ok = executeExportOperation(exporterOperation);
-
-        // path can like name/name
+        boolean ok = executeExportOperation(exporterOperation); // path
+        // can
+        // like
+        // name/name
         if (manager.existTempFile()) {
             manager.deleteTempFiles();
         }
@@ -618,7 +615,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
                 contextCombo.select(0);
             }
         }
-
     }
 
     /*

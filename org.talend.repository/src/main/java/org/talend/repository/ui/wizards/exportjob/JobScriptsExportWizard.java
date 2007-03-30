@@ -35,7 +35,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalJarPage;
+import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalPerlModulePage;
 
 /**
  * Job scripts export wizard. <br/>
@@ -47,7 +53,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
 
     private IStructuredSelection selection;
 
-    private JobScriptsExportWizardPage mainPage;
+    private WizardFileSystemResourceExportPage1 mainPage;
 
     /**
      * Creates a wizard for exporting workspace resources to a zip file.
@@ -64,6 +70,16 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JobScriptsExportWizardPage.STORE_MODEL_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
+            
+            section.put(JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_MODEL_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_JOB_ID, true);
+            section.put(JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
+            
+            
+            
 //            section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
         }
         setDialogSettings(section);
@@ -74,7 +90,16 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      */
     public void addPages() {
         super.addPages();
-        mainPage = new JobScriptsExportWizardPage(selection);
+        
+        switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage()) {
+        case JAVA:
+            mainPage = new JavaJobScriptsExportWizardPage(selection);
+            break;
+        case PERL:
+            mainPage = new JobScriptsExportWizardPage(selection);
+            break;
+        }
         addPage(mainPage);
     }
 
