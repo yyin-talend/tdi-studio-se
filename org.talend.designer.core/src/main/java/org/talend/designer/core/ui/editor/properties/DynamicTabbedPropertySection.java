@@ -22,11 +22,15 @@
 package org.talend.designer.core.ui.editor.properties;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
@@ -95,6 +99,7 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.sqlbuilder.util.SortedList;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -207,11 +212,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     processNameList.add(name);
                     processMap.put(name, process);
-                    processValueList.add("'" + process.getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         } catch (PersistenceException e) {
             e.printStackTrace();
+        }
+
+        Collections.sort(processNameList);
+        for (String name : (List<String>) processNameList) {
+            IRepositoryObject process = processMap.get(name);
+            processValueList.add("'" + process.getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String[] processTableNameList = (String[]) processNameList.toArray(new String[0]);
         String[] processTableValueList = (String[]) processValueList.toArray(new String[0]);
@@ -1011,7 +1021,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 table, metaTable);
                     }
                 }
-                if(tableViewerCreator != null) {
+                if (tableViewerCreator != null) {
                     tableViewerCreator.getTableViewer().refresh();
                 }
             }

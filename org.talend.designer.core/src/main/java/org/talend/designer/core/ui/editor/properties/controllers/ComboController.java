@@ -295,6 +295,9 @@ public class ComboController extends AbstractElementPropertySectionController {
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
         combo.addSelectionListener(listenerSelection);
+        if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            combo.setVisibleItemCount(10);
+        }
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
