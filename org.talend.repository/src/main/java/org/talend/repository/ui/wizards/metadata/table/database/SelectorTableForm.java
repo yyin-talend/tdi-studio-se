@@ -194,13 +194,17 @@ public class SelectorTableForm extends AbstractForm {
         tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
         tableName.setWidth(300);
 
+        TableColumn tableType = new TableColumn(table, SWT.NONE);
+        tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
+        tableType.setWidth(140);
+        
         TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
         nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
-        nbColumns.setWidth(200);
+        nbColumns.setWidth(125);
 
         TableColumn creationStatus = new TableColumn(table, SWT.RIGHT);
         creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus")); //$NON-NLS-1$
-        creationStatus.setWidth(200);
+        creationStatus.setWidth(140);
 
         scrolledCompositeFileViewer.setContent(table);
         scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -259,7 +263,7 @@ public class SelectorTableForm extends AbstractForm {
                         TableItem tableItem = tableItems[i];
                         table.setEnabled(true);
                         if (!tableItem.getChecked()) {
-                            tableItem.setText(2, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                            tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
                             refreshTable(tableItem, size);
                         } else {
                             updateStatus(IStatus.OK, null);
@@ -286,8 +290,8 @@ public class SelectorTableForm extends AbstractForm {
                         table.setEnabled(true);
                         if (tableItem.getChecked()) {
                             deleteTable(tableItem);
-                            tableItem.setText(1, ""); //$NON-NLS-1$
                             tableItem.setText(2, ""); //$NON-NLS-1$
+                            tableItem.setText(3, ""); //$NON-NLS-1$
                         }
                         tableItem.setChecked(false);
                     }
@@ -313,8 +317,8 @@ public class SelectorTableForm extends AbstractForm {
                         } else {
                             tableItems.remove(tableItem);
                             deleteTable(tableItem);
-                            tableItem.setText(1, ""); //$NON-NLS-1$
                             tableItem.setText(2, ""); //$NON-NLS-1$
+                            tableItem.setText(3, ""); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -357,7 +361,8 @@ public class SelectorTableForm extends AbstractForm {
                     while (iterate.hasNext()) {
                         String nameTable = iterate.next();
                         TableItem item = new TableItem(table, SWT.NONE);
-                        item.setText(nameTable);
+                        item.setText(0, nameTable);
+                        item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
                     }
                 }
                 if (displayMessageBox) {
@@ -379,7 +384,7 @@ public class SelectorTableForm extends AbstractForm {
      */
     protected void createTable(TableItem tableItem) {
 
-        String tableString = tableItem.getText();
+        String tableString = tableItem.getText(0);
 
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
         boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
@@ -391,10 +396,10 @@ public class SelectorTableForm extends AbstractForm {
         } else {
             List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
             metadataColumns = ExtractMetaDataFromDataBase
-                    .returnMetadataColumnsFormTable(iMetadataConnection, tableItem.getText());
+                    .returnMetadataColumnsFormTable(iMetadataConnection, tableItem.getText(0));
 
-            tableItem.setText(1, "" + metadataColumns.size()); //$NON-NLS-1$
-            tableItem.setText(2, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
+            tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
+            tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory
                     .getInstance();
@@ -403,7 +408,7 @@ public class SelectorTableForm extends AbstractForm {
             
             initExistingNames();
             metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
-            metadataTable.setSourceName(tableItem.getText());
+            metadataTable.setSourceName(tableItem.getText(0));
             metadataTable.setId(factory.getNextId());
             metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
                         
@@ -435,7 +440,7 @@ public class SelectorTableForm extends AbstractForm {
             Iterator<MetadataTable> iterate = getConnection().getTables().iterator();
             while (iterate.hasNext()) {
                 MetadataTable metadata = iterate.next();
-                if (metadata.getLabel().equals(tableItem.getText())) {
+                if (metadata.getLabel().equals(tableItem.getText(0))) {
                     tables.add(metadata);
                 }
             }
