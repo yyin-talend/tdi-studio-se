@@ -49,8 +49,6 @@ public abstract class AbstractDataMapTable {
 
     private boolean readOnly;
 
-    
-    
     /**
      * DOC amaumont DataMapTable constructor comment.
      * 
@@ -65,7 +63,8 @@ public abstract class AbstractDataMapTable {
         if (name == null) {
             throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null"); //$NON-NLS-1$
         }
-        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
+        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(
+                name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
 
     }
 
@@ -129,9 +128,9 @@ public abstract class AbstractDataMapTable {
         this.tableColumnsEntriesModel.swapElements(indicesOrigin, listIndexTarget);
     }
 
-    
     /**
      * Getter for mapperManager.
+     * 
      * @return the mapperManager
      */
     public MapperManager getMapperManager() {
@@ -140,6 +139,7 @@ public abstract class AbstractDataMapTable {
 
     /**
      * DOC amaumont Comment method "isReadOnly".
+     * 
      * @return
      */
     public boolean isReadOnly() {
@@ -148,12 +148,11 @@ public abstract class AbstractDataMapTable {
 
     /**
      * Sets the readOnly.
+     * 
      * @param readOnly the readOnly to set
      */
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
-    
-    
 }

@@ -103,7 +103,7 @@ public class TabFolderEditors extends CTabFolder {
     private void createSqlViewerTab() {
         CTabItem item;
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText(Messages.getString("TabFolderEditors.SqlSelectQuery")); //$NON-NLS-1$
+        item.setText(Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
         styledSqlText = createStyledText(item);
         styledSqlText.setWordWrap(true);
         styledSqlText.setEditable(false);

@@ -1368,6 +1368,7 @@ public class UIManager {
             } else {
                 moveSelectedTableDown(currentSelectedInputTableView, inputsTablesView, 0);
             }
+            updateDropDownJoinTypeForInputs();
             moveInputScrollBarZoneAtSelectedTable();
         } else if (zone == Zone.OUTPUTS) {
             List<DataMapTableView> outputsTablesView = getOutputsTablesView();
@@ -1381,6 +1382,22 @@ public class UIManager {
         updateToolbarButtonsStates(zone);
         refreshBackground(true, false);
         refreshSqlExpression();
+    }
+
+    /**
+     * DOC amaumont Comment method "updateDropDownJoinTypeForInputs".
+     */
+    public void updateDropDownJoinTypeForInputs() {
+        List<DataMapTableView> inputsTablesView;
+        inputsTablesView = getInputsTablesView();
+        if (inputsTablesView.size() >= 1) {
+            InputDataMapTableView inputView0 = (InputDataMapTableView) inputsTablesView.get(0);
+            inputView0.setEnableJoinTypeDropDown(false);
+        }
+        if (inputsTablesView.size() >= 2) {
+            InputDataMapTableView inputView1 = (InputDataMapTableView) inputsTablesView.get(1);
+            inputView1.setEnableJoinTypeDropDown(true);
+        }
     }
 
     public boolean isTableViewMoveable(Zone zone, boolean moveUp) {
@@ -1587,7 +1604,7 @@ public class UIManager {
         mapperManager.removeTablePair(dataMapTableViewToRemove);
         MetadataTableEditorView outputMetaEditorView = getOutputMetaEditorView();
         OutputTable outputTable = (OutputTable) dataMapTableViewToRemove.getDataMapTable();
-        
+
         if (outputMetaEditorView.getMetadataTableEditor().getMetadataTable() == outputTable.getMetadataTable()) {
             getOutputMetaEditorView().setMetadataTableEditor(null);
         }

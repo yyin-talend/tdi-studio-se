@@ -71,7 +71,8 @@ public class ProblemsAnalyser {
 
             List<ExternalMapperTable> extInputTables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
             List<ExternalMapperTable> extVarTables = new ArrayList<ExternalMapperTable>(externalData.getVarsTables());
-            List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData.getOutputTables());
+            List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData
+                    .getOutputTables());
             // loop on all tables
 
             ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
@@ -84,8 +85,8 @@ public class ProblemsAnalyser {
             checkExpressionSyntaxProblems(extVarTables, codeChecker);
             checkExpressionSyntaxProblems(extOutputTables, codeChecker);
 
-            List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
-                    .getIncomingConnections());
+            List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager
+                    .getComponent().getIncomingConnections());
             ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
             MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
             ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
@@ -122,7 +123,8 @@ public class ProblemsAnalyser {
             }
 
             if (!atLeastOneExpressionFilled) {
-                addProblem(new Problem(null, "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
+                addProblem(new Problem(null,
+                        "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
                         ProblemStatus.WARNING));
             }
 
@@ -182,7 +184,8 @@ public class ProblemsAnalyser {
                     List<Problem> problems = null;
                     if (keyIsUsed) {
                         String key = mapperManager.buildProblemKey(
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, table.getName(), entry.getName());
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, table.getName(), entry
+                                        .getName());
                         problems = codeChecker.getProblemsFromKey(key);
                     } else {
                         problems = checkCodeProblems(entry.getExpression());

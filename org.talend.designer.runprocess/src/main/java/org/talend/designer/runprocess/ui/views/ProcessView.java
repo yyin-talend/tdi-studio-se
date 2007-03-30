@@ -51,7 +51,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.ui.ProcessComposite2;
+import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 
 /**
@@ -69,7 +69,7 @@ public class ProcessView extends ViewPart {
     
     private Label processNameLab;
 
-    private ProcessComposite2 processComposite;
+    private ProcessComposite processComposite;
 
     private PropertyChangeListener contextManagerListener;
 

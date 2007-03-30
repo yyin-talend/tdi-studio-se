@@ -95,7 +95,6 @@ import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.process.Problem;
-import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -1036,105 +1035,6 @@ public abstract class DataMapTableView extends Composite {
 
             });
         }
-        // /////////////////////////////////////////////////////////////////
-
-        // final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        // rejectFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableOutputReject"));
-        // //$NON-NLS-1$
-        // boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
-        // // Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        // Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.REJECT_FILTER_ICON :
-        // ImageInfo.REJECT_FILTER_ICON);
-        // if (WindowSystem.isGTK()) {
-        // rejectFilterCheck.setImage(image);
-        // rejectFilterCheck.setHotImage(image);
-        // } else {
-        // rejectFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON));
-        // rejectFilterCheck.setHotImage(image);
-        // }
-        // rejectFilterCheck.setSelection(isReject);
-        //
-        // // /////////////////////////////////////////////////////////////////
-        // if (rejectFilterCheck != null) {
-        //
-        // rejectFilterCheck.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (rejectFilterCheck.getSelection()) {
-        // ((OutputTable) abstractDataMapTable).setReject(true);
-        // image = ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON);
-        // } else {
-        // ((OutputTable) abstractDataMapTable).setReject(false);
-        // image = ImageProviderMapper.getImage(ImageInfo.REJECT_FILTER_ICON);
-        // }
-        // if (WindowSystem.isGTK()) {
-        // rejectFilterCheck.setImage(image);
-        // rejectFilterCheck.setHotImage(image);
-        // } else {
-        // rejectFilterCheck.setHotImage(image);
-        // }
-        // }
-        //
-        // });
-        //
-        // }
-        //
-        // // // /////////////////////////////////////////////////////////////////
-        // final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        // rejectInnerJoinFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableLookupInnerJoin"));
-        // //$NON-NLS-1$
-        // boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
-        // // image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.CHECKED_ICON :
-        // ImageInfo.UNCHECKED_ICON);
-        // image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.REJECT_LOOKUP_ICON :
-        // ImageInfo.REJECT_LOOKUP_ICON);
-        // if (WindowSystem.isGTK()) {
-        // rejectInnerJoinFilterCheck.setImage(image);
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // } else {
-        // rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON));
-        // // rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // }
-        // rejectInnerJoinFilterCheck.setSelection(isRejectInnerJoin);
-        // // rejectInnerJoinFilterCheck.setText("Reject2");
-        // // /////////////////////////////////////////////////////////////////
-        // if (rejectInnerJoinFilterCheck != null) {
-        //
-        // rejectInnerJoinFilterCheck.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (rejectInnerJoinFilterCheck.getSelection()) {
-        // ((OutputTable) abstractDataMapTable).setRejectInnerJoin(true);
-        // image = ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON);
-        // // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-        // } else {
-        // ((OutputTable) abstractDataMapTable).setRejectInnerJoin(false);
-        // image = ImageProviderMapper.getImage(ImageInfo.REJECT_LOOKUP_ICON);
-        // // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-        // }
-        // if (WindowSystem.isGTK()) {
-        // rejectInnerJoinFilterCheck.setImage(image);
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // } else {
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // }
-        // }
-        //
-        // });
-        //
-        // }
-        //
-        // // /////////////////////////////////////////////////////////////////
-
     }
 
     protected void createToolItems() {
@@ -1404,10 +1304,9 @@ public abstract class DataMapTableView extends Composite {
         if (this.expressionProposalProvider == null) {
             IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
             if (!MapperMain.isStandAloneMode()) {
-                contentProposalProviders = new IContentProposalProvider[] { 
-//                        new ProcessProposalProvider(mapperManager.getComponent().getProcess())
-                        new KeyWordProposalProvider("tsql", "KEYWORD1")
-                };
+                contentProposalProviders = new IContentProposalProvider[] {
+                // new ProcessProposalProvider(mapperManager.getComponent().getProcess())
+                new KeyWordProposalProvider("tsql", "KEYWORD1") };
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
         }

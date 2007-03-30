@@ -168,7 +168,7 @@ public class ExternalDataConverter {
             for (IOConnection connection : inputConnections) {
                 nameToInputConnection.put(connection.getName(), connection);
             }
-            
+
             for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
                 IOConnection connection = nameToInputConnection.get(persistentTable.getName());
                 if (connection != null) {

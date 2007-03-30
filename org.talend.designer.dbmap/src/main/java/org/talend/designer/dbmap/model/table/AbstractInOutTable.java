@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.dbmap.model.table;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,20 +67,35 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
             }
         }
 
+        List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
         for (IMetadataColumn column : columns) {
             AbstractInOutTableEntry columnEntry = getNewTableEntry(column);
             ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn()
                     .getLabel());
+            boolean addEntry = false;
+            // Entry match with current column
             if (externalMapperTableEntry != null) {
                 columnEntry.setExpression(externalMapperTableEntry.getExpression());
                 if (columnEntry instanceof InputColumnTableEntry) {
                     ((InputColumnTableEntry) columnEntry).setOperator(externalMapperTableEntry.getOperator());
                     ((InputColumnTableEntry) columnEntry).setJoin(externalMapperTableEntry.isJoin());
                 }
+                addEntry = true;
                 // mapperManager.getProblemsManager().checkProblemsForTableEntry(columnEntry, false);
+            } else {
+                // Entry doesn't match with current column
+                if (externalMapperTable == null || externalMapperTable.getMetadataTableEntries().size() == 0) {
+                    addEntry = true;
+                } else {
+                    columnsToRemove.add(column);
+                }
             }
-            dataMapTableEntries.add(columnEntry);
+            if (addEntry) {
+                dataMapTableEntries.add(columnEntry);
+            }
         }
+        columns.removeAll(columnsToRemove);
+
     }
 
     protected abstract AbstractInOutTableEntry getNewTableEntry(IMetadataColumn metadataColumn);

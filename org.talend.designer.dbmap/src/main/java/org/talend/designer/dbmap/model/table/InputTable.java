@@ -48,8 +48,6 @@ public class InputTable extends AbstractInOutTable {
 
     private String tableName;
 
-    // private boolean joinWithPrevious;
-
     /**
      * DOC amaumont InputTable constructor comment.
      * 
@@ -60,7 +58,7 @@ public class InputTable extends AbstractInOutTable {
      * @param mainConnection
      */
     public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
-        super(mapperManager, connection.getTable(), name);
+        super(mapperManager, connection.getTable().clone(), name);
         this.connection = connection;
     }
 
@@ -91,7 +89,6 @@ public class InputTable extends AbstractInOutTable {
             alias = externalMapperTable.getAlias();
             tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection
                     .getName();
-            // joinWithPrevious = externalMapperTable.isJoinWithPrevious();
         }
     }
 
@@ -181,21 +178,5 @@ public class InputTable extends AbstractInOutTable {
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
-
-    // /**
-    // * Getter for joinWithPrevious.
-    // * @return the joinWithPrevious
-    // */
-    // public boolean isJoinWithPrevious() {
-    // return this.joinWithPrevious;
-    // }
-
-    // /**
-    // * Sets the joinWithPrevious.
-    // * @param joinWithPrevious the joinWithPrevious to set
-    // */
-    // public void setJoinWithPrevious(boolean joinWithPrevious) {
-    // this.joinWithPrevious = joinWithPrevious;
-    // }
 
 }

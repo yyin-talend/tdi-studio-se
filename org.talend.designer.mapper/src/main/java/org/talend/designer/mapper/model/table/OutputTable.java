@@ -56,7 +56,8 @@ public class OutputTable extends AbstractInOutTable {
 
     public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
         super(mapperManager, metadataTable, name);
-        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
+        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(
+                name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
     }
 
     public void initFromExternalData(ExternalMapperTable externalMapperTable) {
@@ -64,11 +65,13 @@ public class OutputTable extends AbstractInOutTable {
         if (externalMapperTable != null) {
             this.reject = externalMapperTable.isReject();
             this.rejectInnerJoin = externalMapperTable.isRejectInnerJoin();
-            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
+            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable
+                    .getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
-                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry.getExpression());
-//                    mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
+                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
+                            .getExpression());
+                    // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
                     addFilterEntry(filterTableEntry);
                 }
             }
@@ -131,7 +134,9 @@ public class OutputTable extends AbstractInOutTable {
         return this.tableFiltersEntriesModel;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.table.AbstractInOutTable#hasReadOnlyMetadataColumns()
      */
     @Override
@@ -139,13 +144,13 @@ public class OutputTable extends AbstractInOutTable {
         boolean hasReadOnlyMetadataColumns = false;
 
         IOConnection connection = getConnection();
-        
+
         if (connection != null) {
             INode target = connection.getTarget();
             if (target != null) {
-                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate()
-                        || target.isReadOnly() || !target.isActivate();
-                
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate() || target.isReadOnly()
+                        || !target.isActivate();
+
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : target.getElementParameters()) {
                         if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
@@ -161,5 +166,4 @@ public class OutputTable extends AbstractInOutTable {
         return hasReadOnlyMetadataColumns;
     }
 
-    
 }

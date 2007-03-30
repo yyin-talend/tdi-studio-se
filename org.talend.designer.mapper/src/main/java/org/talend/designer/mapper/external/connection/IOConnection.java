@@ -41,8 +41,7 @@ public class IOConnection {
     private IConnection connection;
 
     private IMetadataTable table;
-    
-    
+
     /**
      * DOC amaumont MapperConnection constructor comment.
      * 
@@ -135,6 +134,4 @@ public class IOConnection {
         return this.connection.isReadOnly();
     }
 
-    
-    
 }

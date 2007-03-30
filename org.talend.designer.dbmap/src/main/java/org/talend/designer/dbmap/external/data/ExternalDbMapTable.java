@@ -47,17 +47,7 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
     private boolean minimized;
 
     /**
-     * Used only for outputs.
-     */
-    private boolean reject;
-
-    /**
-     * Used only for outputs.
-     */
-    private boolean rejectInnerJoin;
-
-    /**
-     * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
+     * Used only for inputs.
      */
     private String joinType;
 
@@ -74,7 +64,6 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
     /**
      * Used only for inputs.
      */
-    // private boolean joinWithPrevious;
     public String getName() {
         return this.name;
     }
@@ -105,44 +94,6 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
 
     public void setCustomConditionsEntries(List<ExternalDbMapEntry> constraintTableEntries) {
         this.customConditionsEntries = constraintTableEntries;
-    }
-
-    /**
-     * 
-     * used only for outputs.
-     * 
-     * @return
-     */
-    public boolean isReject() {
-        return this.reject;
-    }
-
-    /**
-     * 
-     * used only for outputs.
-     * 
-     * @param reject
-     */
-    public void setReject(boolean reject) {
-        this.reject = reject;
-    }
-
-    /**
-     * Getter for rejectInnerJoin.
-     * 
-     * @return the rejectInnerJoin
-     */
-    public boolean isRejectInnerJoin() {
-        return this.rejectInnerJoin;
-    }
-
-    /**
-     * Sets the rejectInnerJoin.
-     * 
-     * @param rejectInnerJoin the rejectInnerJoin to set
-     */
-    public void setRejectInnerJoin(boolean rejectInnerJoin) {
-        this.rejectInnerJoin = rejectInnerJoin;
     }
 
     /**
@@ -225,22 +176,5 @@ public class ExternalDbMapTable implements Serializable, Cloneable {
         }
         return cloned;
     }
-
-    // /**
-    // * Getter for joinWithPrevious.
-    // * @return the joinWithPrevious
-    // */
-    // public boolean isJoinWithPrevious() {
-    // return this.joinWithPrevious;
-    // }
-    //
-    //    
-    // /**
-    // * Sets the joinWithPrevious.
-    // * @param joinWithPrevious the joinWithPrevious to set
-    // */
-    // public void setJoinWithPrevious(boolean joinWithPrevious) {
-    // this.joinWithPrevious = joinWithPrevious;
-    // }
 
 }

@@ -92,7 +92,7 @@ public class ToolbarInputZone extends ToolbarZone {
         addAlias.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
-                getMapperManager().addAliasForInputTable();
+                getMapperManager().addInputAliasTable();
             }
 
         });

@@ -60,9 +60,9 @@ public class VarsTable extends AbstractDataMapTable {
             List<ExternalMapperTableEntry> metadataTableEntries = externalMapperTable.getMetadataTableEntries();
             if (metadataTableEntries != null) {
                 for (ExternalMapperTableEntry externalMapperTableEntry : metadataTableEntries) {
-                    IColumnEntry varTableEntry = new VarTableEntry(this, externalMapperTableEntry.getName(), externalMapperTableEntry
-                            .getExpression(), externalMapperTableEntry.getType());
-//                    mapperManager.getProblemsManager().checkProblemsForTableEntry(varTableEntry, false);
+                    IColumnEntry varTableEntry = new VarTableEntry(this, externalMapperTableEntry.getName(),
+                            externalMapperTableEntry.getExpression(), externalMapperTableEntry.getType());
+                    // mapperManager.getProblemsManager().checkProblemsForTableEntry(varTableEntry, false);
                     addColumnEntry(varTableEntry);
                 }
             }

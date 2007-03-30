@@ -20,6 +20,7 @@
 //
 // ============================================================================
 package org.talend.designer.mapper.language.java;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,8 @@ public class TMapperStartJavajet {
             uniqueNameNode = node.getUniqueName();
         } else {
             MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
+                    false);
             data = (ExternalMapperData) testGenerator.getExternalData();
             uniqueNameNode = "testUniqueNameNode";
         }
@@ -69,10 +71,10 @@ public class TMapperStartJavajet {
 
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
 
-        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
+        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(
+                currentLanguage);
 
         StringBuilder sb = new StringBuilder();
-
 
         sb.append(cr + gm.indent(indent) + "// ###############################");
         sb.append(cr + gm.indent(indent) + "// # Lookup's keys");
@@ -86,12 +88,14 @@ public class TMapperStartJavajet {
             }
             String tableName = inputTable.getName();
             String className = tableName + "Struct";
-            sb.append(cr + gm.indent(indent) + "Map tHash_" + tableName + " = (Map) globalMap.get( \"tHash_" + tableName + "\" );");
-            sb.append(cr + gm.indent(indent) + className + " " + inputTable.getName() + "HashKey = new " + className + "();");
+            sb.append(cr + gm.indent(indent) + "Map tHash_" + tableName + " = (Map) globalMap.get( \"tHash_"
+                    + tableName + "\" );");
+            sb.append(cr + gm.indent(indent) + className + " " + inputTable.getName() + "HashKey = new " + className
+                    + "();");
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
 
-        /////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////
         gm.setVarsTables(varsTables);
         // Classes of var tables
         List<ExternalMapperTable> varTablesList = new ArrayList<ExternalMapperTable>(varsTables);
@@ -118,15 +122,11 @@ public class TMapperStartJavajet {
             sb.append(cr + "}");
             sb.append(cr + className + " " + instanceVarName + " = new " + className + "();");
         }
-        /////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////
 
-
-        
-        
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println(sb);
     }
-
 
 }

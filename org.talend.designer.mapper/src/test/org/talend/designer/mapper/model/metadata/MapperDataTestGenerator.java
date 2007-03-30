@@ -422,7 +422,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-                
+
         ) {
             mapperTable.setInnerJoin(false);
         } else {
@@ -469,8 +469,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
-                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-        ) {
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION) {
             mapperTable.setInnerJoin(false);
         } else {
             mapperTable.setInnerJoin(false);
@@ -649,8 +648,7 @@ public class MapperDataTestGenerator {
         mapperTable.setConstraintTableEntries(tableEntries);
 
         if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
-                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
-                ) {
+                || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION) {
             // nothing
         } else {
             tables.add(mapperTable);
@@ -807,12 +805,11 @@ public class MapperDataTestGenerator {
 
         mapperTable.setConstraintTableEntries(tableEntries);
 
-        if(
-                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+        if (currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-                
+
         ) {
-            
+
         } else {
             tables.add(mapperTable);
         }
@@ -1135,11 +1132,10 @@ public class MapperDataTestGenerator {
         metadataTable.setListColumns(metadatColumns);
 
         if (
-                
-                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+
+        currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-                
-        
+
         ) {
 
         } else {
@@ -1176,11 +1172,9 @@ public class MapperDataTestGenerator {
 
         metadataTable.setListColumns(metadatColumns);
 
-        if (
-                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+        if (currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-                
-        
+
         ) {
 
         } else {
@@ -1218,10 +1212,10 @@ public class MapperDataTestGenerator {
         metadataTable.setListColumns(metadatColumns);
 
         if (
-                
-                currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
+
+        currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
-                
+
         ) {
 
         } else {

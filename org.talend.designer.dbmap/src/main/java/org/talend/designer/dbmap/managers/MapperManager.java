@@ -486,7 +486,7 @@ public class MapperManager {
 
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName(uniqueName);
-//        metadataTable.setId(uniqueName);
+        // metadataTable.setId(uniqueName);
         metadataTable.setLabel(tableName);
 
         List<DataMapTableView> outputsTablesView = getUiManager().getOutputsTablesView();
@@ -844,7 +844,7 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "addAlias".
      */
-    public void addAliasForInputTable() {
+    public void addInputAliasTable() {
 
         ArrayList<String> tables = new ArrayList<String>();
         List<IConnection> incomingConnections = (List<IConnection>) getComponent().getIncomingConnections();
@@ -873,7 +873,7 @@ public class MapperManager {
             lastChild = inputsTablesView.get(sizeOutputsView - 1);
         }
 
-        InputTable inputTable = new InputTable(this, connectionFound.getMetadataTable(), aliasDialog.getAlias());
+        InputTable inputTable = new InputTable(this, connectionFound.getMetadataTable().clone(), aliasDialog.getAlias());
         inputTable.setAlias(aliasDialog.getAlias());
         inputTable.setTableName(aliasDialog.getTableName());
         inputTable.initFromExternalData(null);
@@ -887,6 +887,7 @@ public class MapperManager {
         uiManager.refreshBackground(true, false);
         tablesZoneViewInputs.layout();
         uiManager.selectDataMapTableView(dataMapTableView, true, false);
+        uiManager.updateDropDownJoinTypeForInputs();
 
     }
 

@@ -118,7 +118,7 @@ public class ExternalDataConverter {
 
     private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections,
             List<IMetadataTable> outputMetadataTables, ExternalDbMapData externalData) {
-         Map<String, ExternalDbMapTable> nameToOutpuPersistentTable = new HashMap<String, ExternalDbMapTable>();
+        Map<String, ExternalDbMapTable> nameToOutpuPersistentTable = new HashMap<String, ExternalDbMapTable>();
         if (externalData != null) {
             for (ExternalDbMapTable persistentTable : externalData.getOutputTables()) {
                 nameToOutpuPersistentTable.put(persistentTable.getName(), persistentTable);
@@ -140,9 +140,9 @@ public class ExternalDataConverter {
             IOConnection connection = nameToOutputConn.get(table.getTableName());
             OutputTable outputTable = null;
             if (connection != null) {
-                ExternalDbMapTable persistentTable = nameToOutpuPersistentTable.get(connection.getName());
-                outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection.getUniqueName(),
-                        connection.getName());
+                ExternalDbMapTable persistentTable = nameToOutpuPersistentTable.get(connection.getUniqueName());
+                outputTable = new OutputTable(this.mapperManager, table.clone(), connection.getUniqueName(), connection
+                        .getName());
                 outputTable.initFromExternalData(persistentTable);
             } else {
                 ExternalDbMapTable persistentTable = nameToOutpuPersistentTable.get(table.getTableName());
@@ -153,35 +153,35 @@ public class ExternalDataConverter {
             outputDataMapTables.add(outputTable);
         }
 
-//        ArrayList<OutputTable> outputDataMapTables = new ArrayList<OutputTable>();
-//
-//        Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
-//        for (IOConnection connection : outputConnections) {
-//            nameToConnection.put(connection.getName(), connection);
-//        }
-//        ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(outputConnections);
-//        if (externalData != null) {
-//
-//            for (ExternalDbMapTable persistentTable : externalData.getOutputTables()) {
-//                String uniqueName = persistentTable.getName();
-//                persistentTable.ge
-//                IOConnection connection = nameToConnection.get(uniqueName);
-//                if (connection != null) {
-//                    remainingConnections.remove(connection);
-//                }
-//
-//                OutputTable outputTable = new OutputTable(this.mapperManager, persistentTable.get(), persistentTable
-//                        .getName(), persistentTable.getTableName());
-//                outputTable.initFromExternalData(persistentTable);
-//                outputDataMapTables.add(outputTable);
-//            }
-//        }
-//        for (IOConnection connection : remainingConnections) {
-//            OutputTable outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection
-//                    .getUniqueName(), connection.getName());
-//            outputTable.initFromExternalData(null);
-//            outputDataMapTables.add(outputTable);
-//        }
+        // ArrayList<OutputTable> outputDataMapTables = new ArrayList<OutputTable>();
+        //
+        // Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
+        // for (IOConnection connection : outputConnections) {
+        // nameToConnection.put(connection.getName(), connection);
+        // }
+        // ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(outputConnections);
+        // if (externalData != null) {
+        //
+        // for (ExternalDbMapTable persistentTable : externalData.getOutputTables()) {
+        // String uniqueName = persistentTable.getName();
+        // persistentTable.ge
+        // IOConnection connection = nameToConnection.get(uniqueName);
+        // if (connection != null) {
+        // remainingConnections.remove(connection);
+        // }
+        //
+        // OutputTable outputTable = new OutputTable(this.mapperManager, persistentTable.get(), persistentTable
+        // .getName(), persistentTable.getTableName());
+        // outputTable.initFromExternalData(persistentTable);
+        // outputDataMapTables.add(outputTable);
+        // }
+        // }
+        // for (IOConnection connection : remainingConnections) {
+        // OutputTable outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection
+        // .getUniqueName(), connection.getName());
+        // outputTable.initFromExternalData(null);
+        // outputDataMapTables.add(outputTable);
+        // }
 
         return outputDataMapTables;
     }
@@ -310,7 +310,6 @@ public class ExternalDataConverter {
         externalMapperTable.setJoinType(table.getJoinType().toString());
         externalMapperTable.setAlias(table.getAlias());
         externalMapperTable.setTableName(table.getTableName());
-        // externalMapperTable.setJoinWithPrevious(table.isJoinWithPrevious());
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }
@@ -336,8 +335,6 @@ public class ExternalDataConverter {
         externalMapperTable.setMinimized(table.isMinimized());
         externalMapperTable.setName(table.getUniqueName());
         externalMapperTable.setTableName(table.getTableName());
-        externalMapperTable.setReject(table.isReject());
-        externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         ArrayList<ExternalDbMapEntry> constraintTableEntries = new ArrayList<ExternalDbMapEntry>();
         for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
             ExternalDbMapEntry externalMapperTableEntry = new ExternalDbMapEntry();

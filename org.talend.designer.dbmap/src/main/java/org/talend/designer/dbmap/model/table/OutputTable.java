@@ -45,10 +45,6 @@ public class OutputTable extends AbstractInOutTable {
 
     protected List<FilterTableEntry> filterTableEntries = new ArrayList<FilterTableEntry>(0);
 
-    private boolean reject;
-
-    private boolean rejectInnerJoin;
-
     private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
 
     private String uniqueName;
@@ -56,8 +52,8 @@ public class OutputTable extends AbstractInOutTable {
     private String tableName;
 
     public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String uniqueName, String tableName) {
-        super(mapperManager, metadataTable, "NOT_USED_OUPUT_TABLE_NAME");
-        if(uniqueName == null) {
+        super(mapperManager, metadataTable, uniqueName);
+        if (uniqueName == null) {
             final IProcess process = mapperManager.getComponent().getProcess();
             this.uniqueName = process.generateUniqueConnectionName("table"); //$NON-NLS-1$
             process.addUniqueConnectionName(this.uniqueName);
@@ -72,8 +68,6 @@ public class OutputTable extends AbstractInOutTable {
     public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
-            this.reject = externalMapperTable.isReject();
-            this.rejectInnerJoin = externalMapperTable.isRejectInnerJoin();
             List<ExternalDbMapEntry> externalConstraintTableEntries = externalMapperTable.getCustomConditionsEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalDbMapEntry entry : externalConstraintTableEntries) {
@@ -89,14 +83,6 @@ public class OutputTable extends AbstractInOutTable {
     @Override
     protected AbstractInOutTableEntry getNewTableEntry(IMetadataColumn metadataColumn) {
         return new OutputColumnTableEntry(this, metadataColumn);
-    }
-
-    public boolean isReject() {
-        return this.reject;
-    }
-
-    public void setReject(boolean reject) {
-        this.reject = reject;
     }
 
     public void addFilterEntry(FilterTableEntry constraintTableEntry) {
@@ -116,24 +102,6 @@ public class OutputTable extends AbstractInOutTable {
     }
 
     /**
-     * Getter for rejectInnerJoin.
-     * 
-     * @return the rejectInnerJoin
-     */
-    public boolean isRejectInnerJoin() {
-        return this.rejectInnerJoin;
-    }
-
-    /**
-     * Sets the rejectInnerJoin.
-     * 
-     * @param rejectInnerJoin the rejectInnerJoin to set
-     */
-    public void setRejectInnerJoin(boolean rejectInnerJoin) {
-        this.rejectInnerJoin = rejectInnerJoin;
-    }
-
-    /**
      * Getter for tableFiltersEntriesModel.
      * 
      * @return the tableFiltersEntriesModel
@@ -144,6 +112,7 @@ public class OutputTable extends AbstractInOutTable {
 
     /**
      * Getter for uniqueName.
+     * 
      * @return the uniqueName
      */
     public String getUniqueName() {
@@ -152,13 +121,16 @@ public class OutputTable extends AbstractInOutTable {
 
     /**
      * Getter for tableName.
+     * 
      * @return the tableName
      */
     public String getTableName() {
         return this.tableName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getName()
      */
     @Override
@@ -166,7 +138,9 @@ public class OutputTable extends AbstractInOutTable {
         return getUniqueName();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getTitle()
      */
     @Override
@@ -174,7 +148,4 @@ public class OutputTable extends AbstractInOutTable {
         return getTableName() + " (" + getUniqueName() + ")";
     }
 
-    
-    
-    
 }

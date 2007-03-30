@@ -30,24 +30,22 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
- *
+ * 
  */
 public class KeyWordProposalProvider implements IContentProposalProvider {
 
     private String languageMode;
+
     private String[] keyWorkKeysToLoad;
 
-    
-    
     /**
      * 
      * DOC amaumont KeyWordProposalProvider constructor comment.
+     * 
      * @param languageMode
      * @param keyWorkKeysToLoad (ex: "KEYWORD1" or "KEYWORD2" or ...)
      */
@@ -60,17 +58,18 @@ public class KeyWordProposalProvider implements IContentProposalProvider {
     public String[] getKeyWords() {
         Mode mode = Modes.getMode(languageMode + ".xml"); //$NON-NLS-1$
         Object[] keywords = new Object[0];
-        
+
         for (int i = 0; i < keyWorkKeysToLoad.length; i++) {
             String keywordTagName = keyWorkKeysToLoad[i];
             String[] keywordsSelected = mode.getDefaultRuleSet().getKeywords().get(keywordTagName); //$NON-NLS-1$
-            keywords = ArrayUtils.addAll((Object[])keywords, (Object[])keywordsSelected);
+            keywords = ArrayUtils.addAll((Object[]) keywords, (Object[]) keywordsSelected);
         }
         return Arrays.asList(keywords).toArray(new String[0]);
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
      */
     public IContentProposal[] getProposals(String contents, int position) {
@@ -79,7 +78,7 @@ public class KeyWordProposalProvider implements IContentProposalProvider {
         for (int i = 0; i < keyWords.length; i++) {
             String keyWord = keyWords[i];
             proposals.add(new KeyWordContentProposal(keyWord));
-            
+
         }
         return proposals.toArray(new IContentProposal[0]);
     }

@@ -23,13 +23,11 @@ package org.talend.designer.dbmap.ui.proposal.expression;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
- *
+ * 
  */
 public class KeyWordContentProposal implements IContentProposal {
 
@@ -37,34 +35,43 @@ public class KeyWordContentProposal implements IContentProposal {
 
     /**
      * DOC amaumont KeyWordContentProposal constructor comment.
+     * 
      * @param keyWord
      */
     public KeyWordContentProposal(String keyWord) {
         this.keyWord = keyWord;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     public String getContent() {
         return keyWord;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getCursorPosition()
      */
     public int getCursorPosition() {
         return 0;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getDescription()
      */
     public String getDescription() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getLabel()
      */
     public String getLabel() {

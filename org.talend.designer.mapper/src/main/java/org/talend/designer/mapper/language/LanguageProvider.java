@@ -42,7 +42,8 @@ public class LanguageProvider {
     public static ILanguage getCurrentLanguage() {
         ECodeLanguage codeLanguage = null;
         if (!MapperMain.isStandAloneMode()) {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
             codeLanguage = repositoryContext.getProject().getLanguage();
         } else {
             codeLanguage = ECodeLanguage.PERL;

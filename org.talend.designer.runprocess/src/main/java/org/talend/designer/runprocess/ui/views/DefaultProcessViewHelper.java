@@ -50,7 +50,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.ui.ProcessComposite2;
+import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 
 
@@ -70,8 +70,8 @@ public class DefaultProcessViewHelper implements IProcessViewHelper {
      * @param container
      * @return
      */
-    public ProcessComposite2 getProcessComposite(final Composite container) {
-        return new ProcessComposite2(container, SWT.NONE);
+    public ProcessComposite getProcessComposite(final Composite container) {
+        return new ProcessComposite(container, SWT.NONE);
     }
 
 

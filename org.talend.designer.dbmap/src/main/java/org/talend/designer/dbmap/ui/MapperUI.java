@@ -531,6 +531,10 @@ public class MapperUI {
             InputDataMapTableView dataMapTableView = uiManager.createNewInputTableView(previousControl, inputTable,
                     inputTablesZoneView);
 
+            if (previousControl == null) {
+                uiManager.updateDropDownJoinTypeForInputs();
+            }
+
             previousControl = dataMapTableView;
 
         }

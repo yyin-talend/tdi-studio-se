@@ -20,6 +20,7 @@
 //
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class TMapperStartPerljet {
     public static void main(String[] args) {
         AbstractExternalNode argument = null;
 
-        
         AbstractExternalNode node = (AbstractExternalNode) argument;
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,8 @@ public class TMapperStartPerljet {
             data = (ExternalMapperData) node.getExternalData();
         } else {
             MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
+                    false);
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
@@ -69,7 +70,8 @@ public class TMapperStartPerljet {
 
         ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
 
-        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
+        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(
+                currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 
@@ -91,7 +93,8 @@ public class TMapperStartPerljet {
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => " + i + ";");
+                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => "
+                        + i + ";");
             }
         }
 

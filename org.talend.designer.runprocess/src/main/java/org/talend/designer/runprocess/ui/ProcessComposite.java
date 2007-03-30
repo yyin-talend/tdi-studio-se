@@ -83,7 +83,7 @@ import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
  * $Id$
  * 
  */
-public class ProcessComposite2 extends Composite {
+public class ProcessComposite extends Composite {
 
     private static final int BUTTON_SIZE = 120;
 
@@ -139,7 +139,7 @@ public class ProcessComposite2 extends Composite {
      * @param parent Parent composite.
      * @param style Style bits.
      */
-    public ProcessComposite2(Composite parent, int style) {
+    public ProcessComposite(Composite parent, int style) {
         super(parent, style);
         initGraphicComponents(parent);
     }

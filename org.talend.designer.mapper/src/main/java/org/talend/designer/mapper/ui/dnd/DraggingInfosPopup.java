@@ -159,7 +159,8 @@ public final class DraggingInfosPopup {
             if (isVisible != isVisible) {
                 setVisible(isVisible);
             } else {
-                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
+                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height,
+                        false);
             }
         }
 
@@ -349,12 +350,14 @@ public final class DraggingInfosPopup {
                     mode = Messages
                             .getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
                 } else {
-                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpression"); //$NON-NLS-1$
+                    mode = Messages
+                            .getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpression"); //$NON-NLS-1$
                 }
 
             } else {
                 if (mapOneToOneAuthorized && !WindowSystem.isGTK()) {
-                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
+                    mode = Messages
+                            .getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
                 } else {
                     mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpression"); //$NON-NLS-1$
                 }

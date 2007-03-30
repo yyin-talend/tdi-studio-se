@@ -47,7 +47,8 @@ public class InputTable extends AbstractInOutTable {
 
     /**
      * DOC amaumont InputTable constructor comment.
-     * @param mapperManager 
+     * 
+     * @param mapperManager
      * 
      * @param metadataTable
      * @param externalMapperTable can be null
@@ -57,9 +58,9 @@ public class InputTable extends AbstractInOutTable {
         super(mapperManager, connection, name);
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.mapper.external.data.ExternalMapperTable)
      */
     @Override
@@ -69,8 +70,6 @@ public class InputTable extends AbstractInOutTable {
             this.innerJoin = externalMapperTable.isInnerJoin();
         }
     }
-
-
 
     /*
      * (non-Javadoc)
@@ -109,9 +108,9 @@ public class InputTable extends AbstractInOutTable {
         this.innerJoin = innerJoin;
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.model.table.AbstractInOutTable#hasReadOnlyMetadataColumns()
      */
     @Override
@@ -120,13 +119,13 @@ public class InputTable extends AbstractInOutTable {
         boolean hasReadOnlyMetadataColumns = false;
 
         IOConnection connection = getConnection();
-        
+
         if (connection != null) {
             INode source = connection.getSource();
             if (source != null) {
-                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate()
-                        || source.isReadOnly() || !source.isActivate();
-                
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate() || source.isReadOnly()
+                        || !source.isActivate();
+
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : source.getElementParameters()) {
                         if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
@@ -142,7 +141,4 @@ public class InputTable extends AbstractInOutTable {
         return hasReadOnlyMetadataColumns;
     }
 
-
-    
-    
 }

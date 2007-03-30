@@ -192,7 +192,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         if (!mapperManager.componentIsReadOnly()) {
             new DragNDrop(mapperManager, tableForConstraints, false, true);
         }
-        
+
         tableViewerCreatorForFilters.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
 
             public void cellValueModified(TableCellValueModifiedEvent e) {

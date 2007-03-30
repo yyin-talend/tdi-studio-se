@@ -27,9 +27,6 @@ import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -102,6 +99,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
     }
 
     public abstract boolean hasReadOnlyMetadataColumns();
+
     /**
      * Getter for connection.
      * 

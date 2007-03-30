@@ -143,21 +143,33 @@ public class TableManager {
     }
 
     List<DataMapTableView> getInputsTablesView() {
-        return getTablesView(listInputsTables);
+        return getTablesView(listInputsTables, null);
     }
 
     List<DataMapTableView> getOutputsTablesView() {
-        return getTablesView(listOutputsTables);
+        return getTablesView(listOutputsTables, null);
     }
 
     List<DataMapTableView> getVarsTablesView() {
-        return getTablesView(listVarsTables);
+        return getTablesView(listVarsTables, null);
     }
 
-    private List<DataMapTableView> getTablesView(List<? extends AbstractDataMapTable> listAbstractDataMapTables) {
+    private <T> List<T> castList(List<? super T> lstToCast) {
+        ArrayList<T> list = new ArrayList<T>();
+        for (Object object : lstToCast) {
+            list.add((T) object);
+        }
+        return list;
+    }
+
+    private List<DataMapTableView> getTablesView(List<? extends AbstractDataMapTable> listAbstractDataMapTables,
+            IMetadataTable metadataTable) {
         ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>();
         for (AbstractDataMapTable data : listAbstractDataMapTables) {
-            list.add(abstractDataMapTableToView.get(data));
+            if (metadataTable == null || metadataTable != null && data instanceof AbstractInOutTable
+                    && metadataTable == ((AbstractInOutTable) data).getMetadataTable()) {
+                list.add(abstractDataMapTableToView.get(data));
+            }
         }
         return list;
     }

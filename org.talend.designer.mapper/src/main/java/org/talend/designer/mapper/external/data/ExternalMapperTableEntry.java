@@ -117,7 +117,9 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable {
         this.nullable = nullable;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#clone()
      */
     @Override
@@ -125,6 +127,4 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable {
         return super.clone();
     }
 
-    
-    
 }

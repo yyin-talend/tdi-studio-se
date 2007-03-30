@@ -74,9 +74,10 @@ public class IOConnection {
     public String getName() {
         return name;
     }
-    
+
     /**
      * Getter for uniqueName.
+     * 
      * @return the uniqueName
      */
     public String getUniqueName() {

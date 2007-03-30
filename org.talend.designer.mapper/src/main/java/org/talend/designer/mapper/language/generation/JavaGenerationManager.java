@@ -52,8 +52,8 @@ public class JavaGenerationManager extends GenerationManager {
      * @param indent
      * @return
      */
-    public String buildLookupDataInstance(String uniqueNameComponent, String name, String[] keysNames, String[] keysValues, int indent,
-            boolean writeCommentedFieldKeys) {
+    public String buildLookupDataInstance(String uniqueNameComponent, String name, String[] keysNames,
+            String[] keysValues, int indent, boolean writeCommentedFieldKeys) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < keysNames.length; i++) {
 
@@ -72,8 +72,9 @@ public class JavaGenerationManager extends GenerationManager {
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;"); //$NON-NLS-1$ //$NON-NLS-2$
         String className = name + "Struct"; //$NON-NLS-1$
-        sb.append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                + "HashKey );"); //$NON-NLS-1$
+        sb
+                .append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                        + "HashKey );"); //$NON-NLS-1$
         sb.append("\n"); //$NON-NLS-1$
         return sb.toString();
     }
@@ -87,7 +88,8 @@ public class JavaGenerationManager extends GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries, DataMapExpressionParser expressionParser) {
+    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries,
+            DataMapExpressionParser expressionParser) {
         int lstSize = constraintTableEntries.size();
         StringBuilder stringBuilder = new StringBuilder();
         String and = null;

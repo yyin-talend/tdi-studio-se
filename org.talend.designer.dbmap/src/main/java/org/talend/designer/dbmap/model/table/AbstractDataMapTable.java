@@ -138,5 +138,5 @@ public abstract class AbstractDataMapTable {
     public String getTitle() {
         return this.getName();
     }
-    
+
 }

@@ -23,7 +23,7 @@ package org.talend.designer.runprocess.ui.views;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.designer.runprocess.ui.ProcessComposite2;
+import org.talend.designer.runprocess.ui.ProcessComposite;
 
 
 /**
@@ -40,6 +40,6 @@ public interface IProcessViewHelper {
      * @param container
      * @return
      */
-    public ProcessComposite2 getProcessComposite(final Composite container);
+    public ProcessComposite getProcessComposite(final Composite container);
 
 }

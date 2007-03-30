@@ -74,8 +74,6 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private InputTableCellModifier cellModifier;
 
-    // private ToolItem joinWithPreviousJoinCheck;
-
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
     }
@@ -258,54 +256,6 @@ public class InputDataMapTableView extends DataMapTableView {
     @Override
     protected boolean addToolItems() {
 
-        // // JOIN WITH PREVIOUS JOIN
-        // joinWithPreviousJoinCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        // joinWithPreviousJoinCheck.setToolTipText(Messages.getString("InputDataMapTableView.widgetTooltip.joinWithPrevious"));
-        // //$NON-NLS-1$
-        // boolean isInnerJoin = getInputTable().isJoinWithPrevious();
-        // // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
-        // // ImageInfo.UNCHECKED_ICON);
-        // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        // if (WindowSystem.isGTK()) {
-        // joinWithPreviousJoinCheck.setImage(image);
-        // joinWithPreviousJoinCheck.setHotImage(image);
-        // } else {
-        // joinWithPreviousJoinCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-        // joinWithPreviousJoinCheck.setHotImage(image);
-        // }
-        // joinWithPreviousJoinCheck.setSelection(isInnerJoin);
-        // joinWithPreviousJoinCheck.setText(Messages.getString("InputDataMapTableView.widgetTooltip.joinWithPrevious"));
-        // //$NON-NLS-1$
-        // if (getInputTable().getJoinType() == AbstractDbLanguage.JOIN.NO_JOIN) {
-        // joinWithPreviousJoinCheck.setEnabled(false);
-        // } else {
-        // joinWithPreviousJoinCheck.setEnabled(true);
-        // }
-        // joinWithPreviousJoinCheck.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (joinWithPreviousJoinCheck.getSelection()) {
-        // getInputTable().setJoinWithPrevious(true);
-        // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-        // } else {
-        // getInputTable().setJoinWithPrevious(false);
-        // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-        // }
-        // if (WindowSystem.isGTK()) {
-        // joinWithPreviousJoinCheck.setImage(image);
-        // joinWithPreviousJoinCheck.setHotImage(image);
-        // } else {
-        // joinWithPreviousJoinCheck.setHotImage(image);
-        // }
-        // mapperManager.getUiManager().refreshSqlExpression();
-        // }
-        //
-        // });
-
         // DROP DOWN
         dropDownItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
         refreshLabelForJoinDropDown();
@@ -380,11 +330,6 @@ public class InputDataMapTableView extends DataMapTableView {
                                 menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
                                 IJoinType joinType = (IJoinType) menuItem.getData();
                                 getInputTable().setJoinType(joinType);
-                                // if (joinType == AbstractDbLanguage.JOIN.NO_JOIN) {
-                                // joinWithPreviousJoinCheck.setEnabled(false);
-                                // } else {
-                                // joinWithPreviousJoinCheck.setEnabled(true);
-                                // }
                                 setMenuVisible(false);
                                 refreshLabelForJoinDropDown();
                                 mapperManager.getUiManager().refreshSqlExpression();
@@ -547,6 +492,10 @@ public class InputDataMapTableView extends DataMapTableView {
             }
         }
         return super.getForegroundCellColor(tableViewerCreator, element, columnIndex);
+    }
+
+    public void setEnableJoinTypeDropDown(boolean enabled) {
+        dropDownItem.setEnabled(enabled);
     }
 
 }

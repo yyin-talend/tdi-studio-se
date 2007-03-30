@@ -125,7 +125,9 @@ public class ExternalDbMapEntry implements Serializable, Cloneable {
         this.join = join;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#clone()
      */
     @Override
@@ -133,5 +135,4 @@ public class ExternalDbMapEntry implements Serializable, Cloneable {
         return super.clone();
     }
 
-    
 }

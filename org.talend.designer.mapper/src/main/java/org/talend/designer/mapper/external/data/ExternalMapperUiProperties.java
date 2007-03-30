@@ -101,18 +101,19 @@ public class ExternalMapperUiProperties implements Serializable, Cloneable {
         this.weightsMainSashForm = weightsMainSashForm;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#clone()
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
         ExternalMapperUiProperties cloned = (ExternalMapperUiProperties) super.clone();
-        cloned.boundsMapper = new Rectangle(this.boundsMapper.x, this.boundsMapper.y, this.boundsMapper.width, this.boundsMapper.height);
+        cloned.boundsMapper = new Rectangle(this.boundsMapper.x, this.boundsMapper.y, this.boundsMapper.width,
+                this.boundsMapper.height);
         cloned.weightsMainSashForm = weightsMainSashForm.clone();
         cloned.weightsDatasFlowViewSashForm = weightsDatasFlowViewSashForm.clone();
         return cloned;
     }
 
-    
-    
 }

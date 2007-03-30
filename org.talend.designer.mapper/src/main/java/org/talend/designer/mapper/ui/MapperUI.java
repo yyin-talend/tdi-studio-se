@@ -522,7 +522,8 @@ public class MapperUI {
         }
         for (InputTable inputTable : tables) {
 
-            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable, mapperManager);
+            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER,
+                    inputTable, mapperManager);
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
             formData.right = new FormAttachment(100, 0);
@@ -596,7 +597,8 @@ public class MapperUI {
         previousControl = null;
         for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable, mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
+                    abstractDataMapTable, mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
@@ -659,8 +661,8 @@ public class MapperUI {
 
         for (AbstractDataMapTable abstractDataMapTable : tables) {
 
-            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, abstractDataMapTable,
-                    outputTablesZoneView);
+            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
+                    abstractDataMapTable, outputTablesZoneView);
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
