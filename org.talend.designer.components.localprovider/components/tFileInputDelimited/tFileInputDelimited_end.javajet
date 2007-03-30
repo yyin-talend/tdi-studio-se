@@ -31,17 +31,14 @@ delReader_<%=cid %>.close();
 		if(randoms >= 0){
 %>
 globalMap.put("<%=cid %>_NB_LINE", random_size_<%=cid %>);
-System.out.println("TotalLineReturn: "+ random_size_<%=cid %>);
 <%
 		}else if(footer > 0 || limit >= 0){
 %>
 globalMap.put("<%=cid %>_NB_LINE", limit_<%=cid %>);
-System.out.println("TotalLineReturn: "+ limit_<%=cid %>);
 <%
 		}else{
 %>
 globalMap.put("<%=cid %>_NB_LINE", delReader_<%=cid %>.getProcessedRecordCount());
-System.out.println("TotalLineReturn: "+ delReader_<%=cid %>.getProcessedRecordCount());
 <%
 		}
 	}
