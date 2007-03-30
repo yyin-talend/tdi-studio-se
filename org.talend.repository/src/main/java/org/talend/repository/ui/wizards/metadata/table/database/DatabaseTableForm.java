@@ -125,13 +125,15 @@ public class DatabaseTableForm extends AbstractForm {
 
     private Label tableSettingsInfoLabel;
 
+    private Label typeText;
+    
     /**
      * Main Fields.
      */
     private LabelledText nameText;
 
     private LabelledText commentText;
-
+    
     private LabelledCombo tableCombo;
 
     private Button streamDetachCheckbox;
@@ -264,6 +266,7 @@ public class DatabaseTableForm extends AbstractForm {
         // init the fields
         nameText.setText(metadataTable.getLabel());
         commentText.setText(metadataTable.getComment());
+        typeText.setText(Messages.getString("DatabaseTableForm.type")+" : "+metadataTable.getTableType());
         tableCombo.setText(metadataTable.getSourceName());
         nameText.forceFocus();
     }
@@ -271,7 +274,7 @@ public class DatabaseTableForm extends AbstractForm {
     protected void addFields() {
         int leftCompositeWidth = 125;
         int rightCompositeWidth = WIDTH_GRIDDATA_PIXEL - leftCompositeWidth;
-        int headerCompositeHeight = 60;
+        int headerCompositeHeight = 80;
         int tableSettingsCompositeHeight = 15;
         int tableCompositeHeight = 200;
 
@@ -288,10 +291,17 @@ public class DatabaseTableForm extends AbstractForm {
 
         addTreeNavigator(leftComposite, leftCompositeWidth, height);
 
+        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+        gridData.widthHint = rightCompositeWidth;
+        gridData.horizontalSpan = 3;
+
         // Header Fields
         Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2); //$NON-NLS-1$
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2); //$NON-NLS-1$
+
+        typeText = new Label(composite1, SWT.NONE);
+        typeText.setLayoutData(gridData);
 
         // Combo Table
         tableCombo = new LabelledCombo(composite1, Messages.getString("DatabaseTableForm.table"), Messages //$NON-NLS-1$
@@ -307,11 +317,8 @@ public class DatabaseTableForm extends AbstractForm {
                 .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
         tableSettingsInfoLabel = new Label(composite1, SWT.NONE);
-        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-        gridData.widthHint = rightCompositeWidth;
-        gridData.horizontalSpan = 3;
         tableSettingsInfoLabel.setLayoutData(gridData);
-
+        
         // Checkbox streamDetach
         streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach")); //$NON-NLS-1$
@@ -391,12 +398,12 @@ public class DatabaseTableForm extends AbstractForm {
 
             public void widgetSelected(final SelectionEvent e) {
                 if (!retreiveSchemaButton.getEnabled()) {
-                    retreiveSchemaButton.setEnabled(true);
+//                    retreiveSchemaButton.setEnabled(true);
                     pressRetreiveSchemaButton();
                     metadataTable.setSourceName(tableCombo.getText());
 
                 } else {
-                    retreiveSchemaButton.setEnabled(false);
+//                    retreiveSchemaButton.setEnabled(false);
                 }
             }
         });
@@ -452,12 +459,14 @@ public class DatabaseTableForm extends AbstractForm {
      */
     private void adaptFormToCheckConnection() {
         tableCombo.setEnabled(false);
-        retreiveSchemaButton.setEnabled(false);
+        retreiveSchemaButton.setEnabled(true);
         checkConnectionButton.setVisible(true);
 
         if (isReadOnly()) {
             tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
             tableCombo.setReadOnly(true);
+            retreiveSchemaButton.setEnabled(false);
+            checkConnectionButton.setVisible(false);
         } else if (!managerConnection.getIsValide()) {
             // Connection failure
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
@@ -470,7 +479,6 @@ public class DatabaseTableForm extends AbstractForm {
             tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
             tableCombo.setEnabled(true);
             tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert")); //$NON-NLS-1$
-            retreiveSchemaButton.setEnabled(false);
             checkConnectionButton.setVisible(false);
         }
     }
