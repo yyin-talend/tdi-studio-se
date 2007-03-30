@@ -53,19 +53,16 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -80,7 +77,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) yzhang $
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (鏄熸湡浜�, 29 涔濇湀 2006) yzhang $
  * 
  */
 
@@ -377,8 +374,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (existingControlProperties == null) {
                     ControlProperties properties = new ControlProperties();
                     controlToProp.put(control, properties);
-                    // store original properties to restore them when error will
-                    // be corrected
+                    // store original properties to restore them when error will be corrected
                     properties.originalBgColor = control.getBackground();
                     properties.originalFgColor = control.getForeground();
                     properties.originalToolTip = control.getToolTipText();
@@ -418,7 +414,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * 
      * Container of original properties of Control. <br/>
      * 
-     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (星期三, 06 十二月 2006) bqian $
+     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (鏄熸湡涓�, 06 鍗佷簩鏈� 2006) bqian $
      * 
      */
     class ControlProperties {
@@ -447,7 +443,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * 
      * @author amaumont
      * 
-     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (星期三, 06 十二月 2006) bqian $
+     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (鏄熸湡涓�, 06 鍗佷簩鏈� 2006) bqian $
      * 
      */
     class UndoRedoHelper {
@@ -460,8 +456,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * @param control
          */
         public void unregister(Control control) {
-            // ControlUtils.removeModifyListener(control,
-            // modifyListenerForUndoRedo);
+            // ControlUtils.removeModifyListener(control, modifyListenerForUndoRedo);
             typedTextCommandExecutor.unregister(control);
         }
 
@@ -508,8 +503,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * @param control
          */
         private void register(Control control) {
-            // ControlUtils.addModifyListener(control,
-            // modifyListenerForUndoRedo);
+            // ControlUtils.addModifyListener(control, modifyListenerForUndoRedo);
             typedTextCommandExecutor.register(control);
         }
     }
@@ -638,56 +632,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (this.section == EComponentCategory.PROPERTY) {
             editionControlHelper.checkErrors(control);
         }
-    }
-
-    /**
-     * Generates Query base on the value of <code>REPOSITOYR_SCHEMA_TYPE</code>.
-     * 
-     * @param repositoryMetadata
-     * @return
-     */
-    protected String generateNewQuery(IMetadataTable repositoryMetadata) {
-        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
-        int index = metaDataColumnList.size();
-        IMetadataConnection connection = repositoryMetadata.getParent();
-
-        // TODO gets nullpoint exception here.
-        // String dbType = connection.getDbType();
-        String dbType = "";
-        StringBuffer query = new StringBuffer();
-
-        if (index == 0) {
-            return TalendTextUtils.addQuotes("");
-        }
-
-        String space = " ";
-        query.append("SELECT").append(space);
-
-        for (int i = 0; i < metaDataColumnList.size(); i++) {
-            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-            String columnName = getColumnName(metaDataColumn.getLabel(), dbType);
-            if (i != index - 1) {
-                query.append(columnName).append(",").append(space);
-            } else {
-                query.append(columnName).append(space);
-            }
-        }
-        query.append("FROM").append(space).append(repositoryMetadata.getTableName());
-        return TalendTextUtils.addQuotes(query.toString());
-    }
-
-    /**
-     * Checks if database type is Postgres, add quoutes around column name.
-     * 
-     * @param columnName
-     * @param dbType
-     * @return
-     */
-    private String getColumnName(String columnName, String dbType) {
-        if (dbType.equals("Postgres")) {
-            return "\"" + columnName + "\"";
-        }
-        return columnName;
     }
 
     public abstract void refresh(IElementParameter param, boolean check);

@@ -53,12 +53,11 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -66,7 +65,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: ComboController.java 1 2006-12-12 下午01:58:48 +0000 (下午01:58:48) yzhang $
+ * $Id: ComboController.java 1 2006-12-12 涓嬪崍01:58:48 +0000 (涓嬪崍01:58:48) yzhang $
  * 
  */
 public class ComboController extends AbstractElementPropertySectionController {
@@ -136,8 +135,17 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
                             }
                         }
+                        if (name.equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
+                            if (elem instanceof Node) {
+                                if (repositoryTableMap.containsKey(value)) {
+                                    repositoryMetadata = repositoryTableMap.get(value);
+                                } else {
+                                    repositoryMetadata = new MetadataTable();
+                                }
+                                return new RepositoryChangeMetadataCommand((Node) elem, name, value, repositoryMetadata);
 
-                        if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
+                            }
+                        } else if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                             this.dynamicTabbedPropertySection.updateRepositoryList();
                             if (elem instanceof Node) {
                                 Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
@@ -153,26 +161,7 @@ public class ComboController extends AbstractElementPropertySectionController {
 
                         } else {
                             ChangeValuesFromRepository changeValuesFromRepository;
-
-                            // Repository Property Type combo was selected.
                             if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-
-                                // Updates the Query text.
-                                this.dynamicTabbedPropertySection.updateRepositoryList();
-                                String schemaSelected = (String) elem
-                                        .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                                if (repositoryTableMap.containsKey(schemaSelected)) {
-                                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                                } else {
-                                    repositoryMetadata = new MetadataTable();
-                                }
-
-                                String newQuery = generateNewQuery(repositoryMetadata);
-
-                                Command queryChangeCommand = new PropertyChangeCommand(elem, "QUERY", newQuery);
-                                queryChangeCommand.execute();
-                                // Ends.
-
                                 if (repositoryConnectionItemMap.containsKey(value)) {
                                     repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
                                 } else {
@@ -185,7 +174,6 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     changeValuesFromRepository.setMaps(tablesmap, queriesmap);
                                     return changeValuesFromRepository;
                                 }
-                                // Property Type combo was selected.
                             } else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
                                 String connectionSelected;
                                 connectionSelected = (String) elem
@@ -199,32 +187,26 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
 
                                 if (repositoryConnection != null) {
-                                    // Updates the Query text.
-                                    this.dynamicTabbedPropertySection.updateRepositoryList();
-                                    String schemaSelected = (String) elem
-                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                                    if (repositoryTableMap.containsKey(schemaSelected)) {
-                                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                                    } else {
-                                        repositoryMetadata = new MetadataTable();
-                                    }
-                                    String newQuery = "";
-                                    if (!EmfComponent.BUILTIN.equals(value)) {
-                                        newQuery = generateNewQuery(repositoryMetadata);
-                                    } else {
-                                        newQuery = TalendTextUtils.addQuotes("");
-                                    }
-
-                                    Command queryChangeCommand = new PropertyChangeCommand(elem, "QUERY", newQuery);
-                                    queryChangeCommand.execute();
-                                    // Ends.
-
                                     changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                                             repositoryConnection, name, value);
                                     changeValuesFromRepository.setMaps(tablesmap, queriesmap);
                                     return changeValuesFromRepository;
                                 } else {
                                     return new PropertyChangeCommand(elem, name, value);
+                                }
+                            } else if (name.equals(EParameterName.SCHEMA_TYPE.getName())) {
+                                if (elem instanceof Node) {
+                                    String schemaSelected;
+                                    schemaSelected = (String) elem
+                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                                    if (repositoryTableMap.containsKey(schemaSelected)) {
+                                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                                    } else {
+                                        repositoryMetadata = new MetadataTable();
+                                    }
+                                    Command cmd = new RepositoryChangeMetadataCommand((Node) elem, name, value,
+                                            repositoryMetadata);
+                                    getCommandStack().execute(cmd);
                                 }
                             } else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
                                 if (elem instanceof Node) {
