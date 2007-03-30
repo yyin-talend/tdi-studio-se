@@ -64,30 +64,32 @@ public class JavaFunctionParser extends AbstractFunctionParser {
         typeMethods.clear();
         try {
             IJavaProject javaProject = JavaProcessor.getJavaProject();
-            IProject project = javaProject.getProject();
-            IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-            IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
-            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
-            IJavaElement[] elements = routinesPkg.getChildren();
-            for (IJavaElement element : elements) {
-                if (element instanceof ICompilationUnit) {
-                    ICompilationUnit compilationUnit = (ICompilationUnit) element;
-                    IType[] types = compilationUnit.getAllTypes();
-                    if (types.length > 0) {
-                        SourceType sourceType = (SourceType) types[0];
-                        IMethod[] methods = sourceType.getMethods();
-                        for (IMethod method : methods) {
-                            Reader reader = JavadocContentAccess.getContentReader(method, true);
-                            if (reader != null) {
-                                char[] charBuffer = new char[1024];
-                                StringBuffer str = new StringBuffer();
-                                int index = 0;
-                                while ((index = reader.read(charBuffer)) != -1) {
-                                    str.append(charBuffer, 0, index);
-                                    index = 0;
+            if (javaProject != null) {
+                IProject project = javaProject.getProject();
+                IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+                IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
+                IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+                IJavaElement[] elements = routinesPkg.getChildren();
+                for (IJavaElement element : elements) {
+                    if (element instanceof ICompilationUnit) {
+                        ICompilationUnit compilationUnit = (ICompilationUnit) element;
+                        IType[] types = compilationUnit.getAllTypes();
+                        if (types.length > 0) {
+                            SourceType sourceType = (SourceType) types[0];
+                            IMethod[] methods = sourceType.getMethods();
+                            for (IMethod method : methods) {
+                                Reader reader = JavadocContentAccess.getContentReader(method, true);
+                                if (reader != null) {
+                                    char[] charBuffer = new char[1024];
+                                    StringBuffer str = new StringBuffer();
+                                    int index = 0;
+                                    while ((index = reader.read(charBuffer)) != -1) {
+                                        str.append(charBuffer, 0, index);
+                                        index = 0;
+                                    }
+                                    reader.close();
+                                    parseJavaCommentToFunctions(str.toString(), sourceType.getElementName(), method.getElementName());
                                 }
-                                reader.close();
-                                parseJavaCommentToFunctions(str.toString(), sourceType.getElementName(), method.getElementName());
                             }
                         }
                     }
@@ -109,6 +111,8 @@ public class JavaFunctionParser extends AbstractFunctionParser {
         if (string.indexOf("{talendTypes}") > 0) {
             string2 = string.substring(0, string.indexOf("{talendTypes}"));
         }
+        string2.substring(1);
+        string2.endsWith(string2);
         return string2;
     }
 
