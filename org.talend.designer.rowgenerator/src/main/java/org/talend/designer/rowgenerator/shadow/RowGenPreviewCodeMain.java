@@ -165,17 +165,18 @@ public class RowGenPreviewCodeMain {
                                 byte[] data = new byte[len];
                                 is.read(data);
                                 convert(new String(data));
-                            }
-                            InputStream es = process.getErrorStream();
-                            len = es.available();
-                            if (len > 0) {
-                                byte[] data = new byte[len];
-                                is.read(data);
-                                String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
-                                new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(),
-                                        RowGeneratorPlugin.PLUGIN_ID, mainMsg, Messages
-                                                .getString("RowGenPreivewCodeMain.Run.ErrorInfo")
-                                                + "\n" + new String(data));
+                            } else {
+                                InputStream es = process.getErrorStream();
+                                len = es.available();
+                                if (len > 0) {
+                                    byte[] data = new byte[len];
+                                    es.read(data);
+                                    String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
+                                    new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(),
+                                            RowGeneratorPlugin.PLUGIN_ID, mainMsg, Messages
+                                            .getString("RowGenPreivewCodeMain.Run.ErrorInfo")
+                                            + "\n" + new String(data));
+                                }
                             }
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
