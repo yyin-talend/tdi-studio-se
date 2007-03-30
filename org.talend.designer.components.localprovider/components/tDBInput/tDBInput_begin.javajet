@@ -36,8 +36,8 @@
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n","");
-    		dbquery = dbquery.replaceAll("\r","");
+	       dbquery = dbquery.replaceAll("\n"," ");
+    		dbquery = dbquery.replaceAll("\r"," ");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {

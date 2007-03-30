@@ -22,8 +22,8 @@ class="MSSqlRowBegin"
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__"); 
-	       dbquery = dbquery.replaceAll("\n","");
-    	   dbquery = dbquery.replaceAll("\r","");  
+	       dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");  
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
 java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
