@@ -244,10 +244,6 @@ public final class CodeGeneratorEmittersPoolFactory {
             globalClasspath.putAll(jetBean.getClassPath());
         }
 
-        for (String s : globalClasspath.keySet()) {
-            System.out.println(s);
-        }
-
         emitterPool = new HashMap<JetBean, JETEmitter>();
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
 
