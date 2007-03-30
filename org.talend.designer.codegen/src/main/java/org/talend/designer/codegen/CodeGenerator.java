@@ -311,7 +311,7 @@ public class CodeGenerator implements ICodeGenerator {
                     codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
-                if ((node.getComponent().getAvailableCodeParts().contains(part)) && (!isIterate)) {
+                if (!isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
                 break;
@@ -320,7 +320,7 @@ public class CodeGenerator implements ICodeGenerator {
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
                 break;
             case END:
-                if ((node.getComponent().getAvailableCodeParts().contains(part)) && (!isIterate)) {
+                if (!isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.END));
                 }
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
