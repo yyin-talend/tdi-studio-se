@@ -64,6 +64,7 @@ public class MetadataColumnExt extends MetadataColumn {
         this.setKey(metadataColumn.isKey());
 
         this.setNullable(metadataColumn.isNullable());
+        this.setPattern(metadataColumn.getPattern());
     }
 
     private Function function;
