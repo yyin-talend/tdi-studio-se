@@ -29,6 +29,7 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -137,7 +138,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             break;
         default: // TEXT
             if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) { //$NON-NLS-1$
-                line.put(items[0], new String("'newLine'")); //$NON-NLS-1$
+                line.put(items[0], new String(TalendTextUtils.addQuotes("newLine"))); //$NON-NLS-1$
             } else {
                 line.put(items[0], tmpParam.getValue());
             }
@@ -149,34 +150,13 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             case CLOSED_LIST:
             case COLUMN_LIST:
             case PREV_COLUMN_LIST:
-                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                        .getDefaultClosedListValue())));
                 break;
             default: // TEXT or CHECK (means String or Boolean)
                 line.put(items[i], tmpParam.getValue());
             }
         }
-
-        // Map<String, Object> line = new HashMap<String, Object>();
-        // String[] items = (String[]) elemParameter.getListItemsDisplayCodeName();
-        // Object[] itemsValue = (Object[]) elemParameter.getListItemsValue();
-        //
-        // if (itemsValue[0] instanceof IElementParameter) {
-        // IElementParameter tmpParam = (IElementParameter) itemsValue[0];
-        // line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String)
-        // tmpParam.getDefaultClosedListValue())));
-        // } else {
-        // line.put(items[0], new String("'newLine'"));
-        // }
-        // for (int i = 1; i < items.length; i++) {
-        // if (itemsValue[i] instanceof IElementParameter) {
-        // IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-        // line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String)
-        // tmpParam.getDefaultClosedListValue())));
-        // } else {
-        // line.put(items[i], new String(""));
-        // }
-        // }
-        // return new ElemParamValueWrapper(line);
         return (B) line;
     }
 
