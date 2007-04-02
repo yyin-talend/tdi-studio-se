@@ -167,12 +167,11 @@ public class TextUtil {
         return buffer.toString();
     }
 
-    public static String addQuots(String query) {
-        if (ConnectionParameters.isJavaProject()) {
-            return "\"" + query + "\"";
-        } else {
-            return "\'" + query + "\'";
+    public static String addSqlQuots(String dbType, String sql) {
+        if (dbType.equals("PostgreSQL")) {
+            sql = "\"" + sql + "\"";
         }
+        return sql;
     }
 
     public static String removeQuots(String query) {

@@ -193,6 +193,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
                 .getName())));
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
+        connParameters.setDbType(type);
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
@@ -212,8 +214,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             String dbName = getValueFromRepositoryName("SID"); //$NON-NLS-1$
             connParameters.setDbName(dbName);
 
-            String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
-            connParameters.setDbType(type);
+            
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
@@ -253,18 +254,14 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 return null;
             }
             connParameters.setRepositoryName(repositoryName);
-
-            
-            
             Shell parentShell = new Shell(composite.getShell().getDisplay());
-
             SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
             connParameters.setQuery(query);
             dial.setConnParameters(connParameters);
             if (Window.OK == dial.open()) {
                 if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                     String sql = connParameters.getQuery();
-                    sql = addStrInQuery(sql);
+                    sql = TalendTextUtils.addQuotes(sql);
                     return new PropertyChangeCommand(elem, propertyName, sql);
                 }
             }
@@ -285,22 +282,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
         if (out.endsWith("'")) { //$NON-NLS-1$
             out = out.substring(0, out.length() - 1);
-        }
-        return out;
-    }
-
-    /**
-     * DOC ftang Comment method "addStrInQuery".
-     * 
-     * @param input
-     * @return
-     */
-    private String addStrInQuery(String input) {
-        String out = input;
-        if (ConnectionParameters.isJavaProject()) {
-            out = "\"" + out + "\"";
-        } else {
-            out = "'" + out + "'";
         }
         return out;
     }

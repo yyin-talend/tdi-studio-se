@@ -288,7 +288,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             structureComposite = new DBStructureComposite(sashFormStructureAndEditor, SWT.BORDER, this);
         } else {
             BuildInDBStructure buildInDBStructure = new BuildInDBStructure(sashFormStructureAndEditor, SWT.NONE | SWT.VERTICAL,
-                    this, connParameters.getMetadataTable());
+                    this, connParameters);
             structureComposite = buildInDBStructure.getDbstructureCom();
         }
         structureComposite.setProgressMonitor(this.getProgressMonitor());

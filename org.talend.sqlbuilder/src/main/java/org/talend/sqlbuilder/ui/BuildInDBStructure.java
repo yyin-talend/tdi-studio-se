@@ -28,7 +28,6 @@ import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -55,7 +54,9 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataConnection;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -81,13 +82,15 @@ public class BuildInDBStructure extends SashForm {
 
     private static final String DEFAULT_SCHEMA = "MySchema";
 
+    private ConnectionParameters connectionParameters;
     /**
      * qzhang BuildInDBStructure constructor comment.
      */
-    public BuildInDBStructure(Composite parent, int style, SQLBuilderDialog dialog, IMetadataTable metadataTable) {
+    public BuildInDBStructure(Composite parent, int style, SQLBuilderDialog dialog, ConnectionParameters connectionParameters) {
         super(parent, style);
         this.dialog = dialog;
-        this.metadataTable = metadataTable;
+        this.metadataTable = connectionParameters.getMetadataTable();
+        this.connectionParameters = connectionParameters;
         addCompnoents();
         setWeights(new int[] { 1, 2 });
     }
@@ -219,10 +222,10 @@ public class BuildInDBStructure extends SashForm {
         private String getSchemaSql() {
             String sql = "select ";
             for (IMetadataColumn column : selectedNodes) {
-                sql += column.getLabel() + " ,";
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel())  + ", ";
             }
-            sql = sql.substring(0, sql.length() - 1);
-            sql += "\nfrom " + DEFAULT_SCHEMA;
+            sql = sql.substring(0, sql.length() - 2);
+            sql += "\nfrom " + TextUtil.addSqlQuots(connectionParameters.getDbType(), DEFAULT_SCHEMA);
             return sql;
         }
 
