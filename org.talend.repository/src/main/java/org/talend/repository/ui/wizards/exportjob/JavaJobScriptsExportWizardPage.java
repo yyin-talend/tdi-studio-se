@@ -38,6 +38,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -418,8 +419,16 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
         }
         String topFolder = getRootFolderName();
 
-        List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
+        final List<ExportFileResource>[] resourcesToExport = new List[1];
+
+        BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
+
+            public void run() {
+                resourcesToExport[0] = getExportResources();
+            }
+        });
+
+        setTopFolder(resourcesToExport[0], topFolder);            
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
@@ -427,7 +436,7 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
 
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport[0],
                 getDestinationValue());
         boolean ok = executeExportOperation(exporterOperation); // path
         // can
