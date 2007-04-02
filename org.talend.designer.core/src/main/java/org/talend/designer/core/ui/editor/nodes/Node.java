@@ -1057,7 +1057,8 @@ public class Node extends Element implements INode {
             }
 
             if (inputMeta != null) {
-                if (!inputMeta.sameMetadataAs(outputMeta)) {
+                if (!inputMeta.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE)) {
                     String errorMessage = "The schema in the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
