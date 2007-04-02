@@ -1060,9 +1060,17 @@ public class Node extends Element implements INode {
                 if (!inputMeta.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
                         | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                         | IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
-                    String errorMessage = "The schema in the input link \"" + inputConnecion.getName()
+                    String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                } else {
+                    if (!inputMeta.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL
+                            ^ IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
+                        String warningMessage = "The pattern in the schema from the input link \""
+                                + inputConnecion.getName()
+                                + "\" is different from the schema defined in the component.";
+                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                    }
                 }
             }
         }
