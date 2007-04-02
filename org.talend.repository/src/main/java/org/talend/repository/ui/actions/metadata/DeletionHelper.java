@@ -22,14 +22,10 @@
 package org.talend.repository.ui.actions.metadata;
 
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -47,14 +43,8 @@ public class DeletionHelper {
      * @throws PersistenceException
      */
     public static boolean isDeleted(RepositoryNode node) throws PersistenceException {
-        RepositoryNode parent = node.getParent();
-        ERepositoryObjectType nodeType = (ERepositoryObjectType) parent.getProperties(EProperties.CONTENT_TYPE);
-        Connection connection = (Connection) ((ConnectionItem) parent.getObject().getProperty().getItem()).getConnection();
-        if (connection == null) {
-            return true;
-        }
-        MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
-        return TableHelper.isDeleted(table);
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        return (repFactory.getStatus(node.getObject()) == ERepositoryStatus.DELETED);
     }
 
     /**

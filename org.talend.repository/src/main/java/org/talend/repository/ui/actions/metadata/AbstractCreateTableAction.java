@@ -400,7 +400,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             DatabaseConnectionItem item = null;
             switch (nodeType) {
             case METADATA_CON_TABLE:
-                item = (DatabaseConnectionItem) node.getParent().getObject().getProperty().getItem();
+                item = (DatabaseConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DatabaseConnection) item.getConnection();
                 metadataTable = TableHelper.findByLabel(connection, metadataTableLabel);
                 creation = false;

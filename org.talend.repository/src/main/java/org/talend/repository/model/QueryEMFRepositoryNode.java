@@ -65,4 +65,13 @@ public class QueryEMFRepositoryNode extends RepositoryNode {
     public ERepositoryObjectType getObjectType() {
        return ERepositoryObjectType.METADATA_CON_QUERY;
     }
+
+    
+    /**
+     * Getter for query.
+     * @return the query
+     */
+    public Query getQuery() {
+        return this.query;
+    }
 }

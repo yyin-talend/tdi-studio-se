@@ -161,7 +161,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return ImageProvider.getImage(node.getIcon());
             }
 
-            // TODO SML remove this table rustine
             switch (node.getObject().getType()) {
             case METADATA_CON_QUERY:
             case METADATA_CON_SYNONYM:

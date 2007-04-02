@@ -24,6 +24,7 @@ package org.talend.repository.ui.actions.metadata;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
@@ -83,7 +84,8 @@ public class ReadTableAction extends AbstractCreateTableAction {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-            nodeType = (ERepositoryObjectType) node.getParent().getProperties(EProperties.CONTENT_TYPE);
+            ConnectionItem connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            nodeType = ERepositoryObjectType.getItemType(connectionItem);
         }
 
         if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {

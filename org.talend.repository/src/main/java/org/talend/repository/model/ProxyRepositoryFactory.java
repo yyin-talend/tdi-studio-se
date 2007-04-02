@@ -60,6 +60,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
+import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -929,7 +930,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         Item item;
         if (obj instanceof MetadataTableRepositoryObject) {
             item = ((MetadataTableRepositoryObject) obj).getProperty().getItem();
-        } else {
+        } else  if (obj instanceof QueryRepositoryObject) {
+            item = ((QueryRepositoryObject) obj).getProperty().getItem();
+        } else{
             item = obj.getProperty().getItem();
         }
         return item;
