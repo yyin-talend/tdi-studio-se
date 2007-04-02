@@ -35,6 +35,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -64,12 +65,16 @@ public abstract class Processor implements IProcessor {
 
     private String codeLocation;
 
+    protected IProcess process;
+
     /**
      * Construct a new Processor.
      * 
+     * @param process
+     * 
      * @param process Process to be run.
      */
-    public Processor() {
+    public Processor(IProcess process) {
         super();
         if (ProcessorUtilities.isExportConfig()) {
             setInterpreter(ProcessorUtilities.getInterpreter());
@@ -88,15 +93,14 @@ public abstract class Processor implements IProcessor {
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-    // public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws
-    // ProcessorException { //Old
     public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
         if (context == null) {
             throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
 
         setProcessorStates(STATES_RUNTIME);
-        generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
+        ProcessorUtilities.generateCode(process, context.getName(), statisticsPort != NO_STATISTICS,
+                tracePort != NO_TRACES, true);
         if (watchParam == null) {
             // only works with context name and remove context interpereter option
             return exec(Level.INFO, statisticsPort, tracePort);
@@ -120,7 +124,7 @@ public abstract class Processor implements IProcessor {
         ILaunchConfiguration config = null;
         try {
             setProcessorStates(STATES_EDIT);
-            generateCode(context, false, false, true);
+            ProcessorUtilities.generateCode(process, context.getName(), false, false, true);
             config = (ILaunchConfiguration) saveLaunchConfiguration();
         } catch (CoreException ce) {
             throw new ProcessorException(ce);
@@ -245,9 +249,10 @@ public abstract class Processor implements IProcessor {
     public static void setExternalUse(boolean externalUse) {
         Processor.externalUse = externalUse;
     }
-    
+
     /**
      * Getter for externalUse.
+     * 
      * @return the externalUse
      */
     public static boolean isExternalUse() {
