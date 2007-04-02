@@ -25,6 +25,8 @@ class="DB2OutputBegin"
 	
 	String cid = node.getUniqueName();
 	
+	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
+    
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
@@ -43,8 +45,6 @@ class="DB2OutputBegin"
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
-	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 %>
 java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
@@ -53,6 +53,7 @@ String url_<%=cid %> = "jdbc:db2://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>
 
 <%
 List<IMetadataColumn> columnList = null;
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if(metadatas !=null && metadatas.size()>0){
 	IMetadataTable metadata = metadatas.get(0);
@@ -300,17 +301,19 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
+
 pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
 
 pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
+		
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
 pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
+
 pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
-		
+				
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
@@ -328,33 +331,4 @@ int nb_line_deleted_<%=cid%> = 0;
 	<%
 	
 }
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 %>
-
-int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-int commitCounter_<%=cid%> = 0;
-
-conn_<%=cid%>.setAutoCommit(false);
-<%
-}
-%>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

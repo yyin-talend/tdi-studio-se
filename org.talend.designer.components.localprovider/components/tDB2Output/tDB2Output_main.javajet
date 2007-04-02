@@ -29,8 +29,6 @@ class="DB2OutputMain"
 	
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
-	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
 	
@@ -311,6 +309,7 @@ if(!executeUpdate_<%=cid%>){
  	   	  	}else{
 				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 			}
+			
 			if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			%>
 		
@@ -338,7 +337,7 @@ if(!executeUpdate_<%=cid%>){
 		nb_line_inserted_<%=cid%>++;
 	
 	}catch(Exception e){
-	
+		
 		executeUpdate_<%=cid%> = true;
 		
 		throw e;
@@ -513,6 +512,7 @@ if(!executeInsert_<%=cid%>){
  	   	  	}else{
 				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 			}
+			
 			if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			%>
 		
@@ -574,25 +574,9 @@ pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,<%=incomingConnName%>.<%=
 			}
 		}
 	%>
-	
 pstmt_<%=cid %>.executeUpdate();
-
 nb_line_deleted_<%=cid%>++;
 	<%
 	}
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-commitCounter_<%=cid%>++;
-
-if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
-
-	conn_<%=cid%>.commit();
-	
-	commitCounter_<%=cid%>=0;
-	
-}
-<%
-	}
 }
 %>
-
