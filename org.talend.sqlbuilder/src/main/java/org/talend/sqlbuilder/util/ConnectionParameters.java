@@ -21,13 +21,16 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
@@ -46,6 +49,10 @@ public class ConnectionParameters {
     private static boolean isNodeReadOnly;
     
     private IMetadataTable metadataTable;
+    
+    private String schemaName;
+    
+    private boolean isSchemaRepository;
     
     private String query;
 
@@ -469,6 +476,26 @@ public class ConnectionParameters {
     
     public void setNodeReadOnly(boolean isNodeReadOnly) {
         ConnectionParameters.isNodeReadOnly = isNodeReadOnly;
+    }
+
+    
+    public boolean isSchemaRepository() {
+        return this.isSchemaRepository;
+    }
+
+    
+    public void setSchemaRepository(boolean isSchemaRepository) {
+        this.isSchemaRepository = isSchemaRepository;
+    }
+
+    
+    public String getSchemaName() {
+        return this.schemaName;
+    }
+
+    
+    public void setSchemaName(String schemaName) {
+        this.schemaName = schemaName;
     }
 
 }

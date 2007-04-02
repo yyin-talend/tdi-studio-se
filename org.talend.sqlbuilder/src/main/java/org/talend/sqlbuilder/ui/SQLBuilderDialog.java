@@ -284,7 +284,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @param sashFormStructureAndEditor
      */
     private void createDatabaseStructure(SashForm sashFormStructureAndEditor) {
-        if (connParameters.isRepository()) {
+        if (connParameters.getMetadataTable() == null || (connParameters.isRepository() && connParameters.isSchemaRepository())) {
             structureComposite = new DBStructureComposite(sashFormStructureAndEditor, SWT.BORDER, this);
         } else {
             BuildInDBStructure buildInDBStructure = new BuildInDBStructure(sashFormStructureAndEditor, SWT.NONE | SWT.VERTICAL,

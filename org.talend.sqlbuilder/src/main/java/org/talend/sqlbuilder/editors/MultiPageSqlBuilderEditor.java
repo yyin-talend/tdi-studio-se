@@ -155,11 +155,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                 String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(sqlEdit.getSQLToBeExecuted(), false);
                 String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(erDiagramComposite.getSqlText(), false);
                 if (sqlText == null) {
-                    if (orginSql == null) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return orginSql != null;
                 } else {
                     if (orginSql == null) {
                         return true;
@@ -216,16 +212,6 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.MultiPageEditorPart#getContainer()
-     */
-    @Override
-    public Composite getContainer() {
-        return super.getContainer();
-    }
-
     public void setRepositoryNode(RepositoryNode node) {
         sqlEdit.setRepositoryNode(node);
         sqlEdit.refresh(true);
@@ -264,5 +250,15 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             }
             sqlEdit.setModified(false);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.MultiPageEditorPart#getContainer()
+     */
+    @Override
+    public Composite getContainer() {
+        return super.getContainer();
     }
 }

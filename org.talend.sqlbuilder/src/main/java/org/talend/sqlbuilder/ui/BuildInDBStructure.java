@@ -25,23 +25,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataConnection;
+import org.talend.core.model.metadata.MetadataTable;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -65,6 +78,8 @@ public class BuildInDBStructure extends SashForm {
     private IMetadataTable metadataTable;
 
     private IMetadataConnection parentMetadata;
+
+    private static final String DEFAULT_SCHEMA = "MySchema";
 
     /**
      * qzhang BuildInDBStructure constructor comment.
@@ -119,6 +134,98 @@ public class BuildInDBStructure extends SashForm {
         tables.add(metadataTable);
         parentMetadata.setListTables(tables);
         treeViewer.setInput(parentMetadata);
+        generateSelectAction = new GenerateSqlAction(treeViewer);
+        addContextMenu();
+    }
+
+    /**
+     * qzhang Comment method "addContextMenu".
+     */
+    private void addContextMenu() {
+        MenuManager menuMgr = new MenuManager("Menu"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+
+            public void menuAboutToShow(IMenuManager manager) {
+                manager.add(generateSelectAction);
+            }
+
+        });
+        Menu contextMenu = menuMgr.createContextMenu(treeViewer.getTree());
+        treeViewer.getTree().setMenu(contextMenu);
+    }
+
+    private GenerateSqlAction generateSelectAction;
+
+    /**
+     * qzhang BuildInDBStructure class global comment. Detailled comment <br/>
+     * 
+     */
+    public class GenerateSqlAction extends SelectionProviderAction {
+
+        private List<IMetadataColumn> selectedNodes = new ArrayList<IMetadataColumn>();
+
+        /**
+         * qzhang GenerateSqlAction constructor comment.
+         * 
+         * @param provider
+         * @param text
+         */
+        protected GenerateSqlAction(ISelectionProvider provider) {
+            super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement"));
+            setImageDescriptor(ImageUtil.getDescriptor("Images.SqlEditorIcon"));
+            init();
+        }
+
+        @Override
+        public void selectionChanged(IStructuredSelection selection) {
+            init();
+        }
+
+        @SuppressWarnings("unchecked")//$NON-NLS-1$
+        public void init() {
+            selectedNodes.clear();
+            Object[] structuredSelection = ((IStructuredSelection) treeViewer.getSelection()).toArray();
+            for (Object object : structuredSelection) {
+                if (object instanceof MetadataTable) {
+                    selectedNodes.clear();
+                    selectedNodes.addAll(((MetadataTable) object).getListColumns());
+                    break;
+                }
+                if (object instanceof MetadataColumn) {
+                    selectedNodes.add((IMetadataColumn) object);
+                }
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.action.Action#run()
+         */
+        @Override
+        public void run() {
+            CTabItem item = dialog.getEditorComposite().getTabFolder().getItem(0);
+            CTabItem item2 = ((CTabFolder) item.getControl()).getItem(0);
+            SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) item2.getControl();
+            editorComposite.setEditorContent(getSchemaSql());
+        }
+
+        /**
+         * qzhang Comment method "getSchemaSql".
+         * 
+         * @return
+         */
+        private String getSchemaSql() {
+            String sql = "select ";
+            for (IMetadataColumn column : selectedNodes) {
+                sql += column.getLabel() + " ,";
+            }
+            sql = sql.substring(0, sql.length() - 1);
+            sql += "\nfrom " + DEFAULT_SCHEMA;
+            return sql;
+        }
+
     }
 
     public DBStructureComposite getDbstructureCom() {
@@ -155,7 +262,7 @@ public class BuildInDBStructure extends SashForm {
             if (element instanceof IMetadataTable) {
                 IMetadataTable metadataTable3 = (IMetadataTable) element;
                 if (metadataTable3.getLabel() == null || "".equals(metadataTable3.getLabel())) {
-                    return "MySchema";
+                    return DEFAULT_SCHEMA;
                 } else {
                     return metadataTable3.getLabel();
                 }
