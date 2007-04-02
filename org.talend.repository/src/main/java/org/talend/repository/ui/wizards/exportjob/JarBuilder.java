@@ -24,6 +24,8 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +119,8 @@ public class JarBuilder {
         return list;
     }
 
-    private Manifest getManifest() {
+    private Manifest getManifest() throws IOException {
+
         Manifest manifest = new Manifest();
         Map<String, Attributes> m = manifest.getEntries();
         Attributes a = new Attributes();
@@ -156,7 +159,7 @@ public class JarBuilder {
                 String filename = list.get(i).getAbsolutePath();
                 filename = filename.substring(root.getAbsolutePath().length() + 1);
                 fin = new FileInputStream(list.get(i));
-                JarEntry entry = new JarEntry(filename);
+                JarEntry entry = new JarEntry(filename.replace('\\', '/'));
                 jarOut.putNextEntry(entry);
                 byte[] buf = new byte[4096];
                 int read;
