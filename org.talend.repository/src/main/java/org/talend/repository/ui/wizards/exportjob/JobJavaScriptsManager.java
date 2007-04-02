@@ -185,7 +185,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return list;
         }
         String projectName = getCurrentProjectName();
-        String jobName = escapeFileNameSpace(process);
+        String jobName = escapeFileNameSpace(process).toLowerCase();
 
         try {
             String classRoot = getClassRootLocation();
@@ -196,11 +196,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             if (needJob) {
                 String jobPath = projectName + File.separatorChar + jobName;
-                String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
+               
                 List<String> include = new ArrayList<String>();
                 include.add(jobPath);
                 jarbuilder.setIncludeDir(include);
                 if (!needContext) {
+                    String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
                     List<String> excludes = new ArrayList<String>(1);
                     excludes.add(contextPaht);
                     jarbuilder.setExcludeDir(excludes);
