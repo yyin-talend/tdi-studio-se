@@ -91,7 +91,7 @@ public class PerlProcessor extends Processor {
     /** Path to generated context code. */
     private IPath contextPath;
 
-    /** Context used * */
+    /** Context used. */
     private IContext context;
 
     /** Tells if filename is based on id or label of the process. */
