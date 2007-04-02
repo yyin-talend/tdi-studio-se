@@ -1,0 +1,142 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+	class="ExternalSortOutputEnd"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+			String cid = node.getUniqueName();
+			List<Map<String, String>> criteria =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__CRITERIA__"
+            );
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+
+        String tempDir = ElementParameterParser.getValue(
+            node,
+            "__TEMP_DIR__"
+        );
+
+        String maxMemory = ElementParameterParser.getValue(
+            node,
+            "__MAX_MEMORY__"
+        );
+        
+        String SortCMDPath = ElementParameterParser.getValue(
+            node,
+            "__SORT_CMDPATH__"
+        );
+%>
+/////////////////////////////////
+	out_<%=cid %>.close();
+
+
+java.lang.StringBuffer sb_<%=cid %> = new java.lang.StringBuffer();
+<% if (!SortCMDPath.equals("")) { %> sb_<%=cid %>.append(<%=SortCMDPath %>);   <% } else { %> sb_<%=cid %>.append("sort"); <% } %>
+
+sb_<%=cid %>.append(" -S " + <%=maxMemory%>);
+<% if (!tempDir.equals("")) { %> sb_<%=cid %>.append(" -T \"" + <%=tempDir %> + "\"");   <% } %>
+sb_<%=cid %>.append(" -t " + <%=fieldSeparator %>);
+<%
+        for(int i=0; i<criteria.size(); i++) {
+            Map<String, String> line = criteria.get(i);
+            
+            String colname = line.get("COLNAME");
+            int colnum = 0;
+
+            int j = 1;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (colname.equals(column.getLabel())) {
+                    colnum = j;
+                }
+                j++;
+            }	
+%>
+sb_<%=cid %>.append(" -k ");
+sb_<%=cid %>.append(<%=colnum %>);
+sb_<%=cid %>.append(",");
+sb_<%=cid %>.append(<%=colnum %>);
+<% if (line.get("ORDER").toLowerCase().equals("desc")) { %>  sb_<%=cid %>.append("r"); <% } %>
+<% if (line.get("SORT").toLowerCase().startsWith("num")) { %> sb_<%=cid %>.append("n"); <% } %>
+<%
+ }
+%>
+sb_<%=cid %>.append(" -o \"" + <%=filename%> + "\"");
+sb_<%=cid %>.append(" \"" + tempFile_<%=cid %>.getAbsolutePath() + "\"");
+
+
+Runtime runtime_<%=cid %> = Runtime.getRuntime();
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(sb_<%=cid %>.toString());
+
+		Thread normal_<%=cid %> = new Thread() {
+			public void run() {
+				try {
+					java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
+					String line = "";
+					try {
+						while ((line = reader.readLine()) != null) {
+							System.out.println(line);
+						}
+					} finally {
+						reader.close();
+					}
+				} catch (java.io.IOException ioe) {
+					ioe.printStackTrace();
+				}
+			}
+		};
+		normal_<%=cid %>.start();
+
+		Thread error_<%=cid %> = new Thread() {
+			public void run() {
+				try {
+					java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
+					String line = "";
+					try {
+						while ((line = reader.readLine()) != null) {
+							System.err.println(line);
+						}
+					} finally {
+						reader.close();
+					}
+				} catch (java.io.IOException ioe) {
+					ioe.printStackTrace();
+				}
+			}
+		};
+		error_<%=cid %>.start();
+
+		ps_<%=cid %>.waitFor();
+		normal_<%=cid %>.interrupt();
+		error_<%=cid %>.interrupt();
+		
+		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);		
+/////////////////////////////////
+<%
+		}
+	}
+%>

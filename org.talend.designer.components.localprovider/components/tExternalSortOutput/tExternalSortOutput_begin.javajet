@@ -1,0 +1,27 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="ExternalSortOutputBegin" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+	String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
+	String tempDir = ElementParameterParser.getValue(node,"__TEMP_DIR__");
+%>
+		int nb_line_<%=cid%> = 0;
+		
+		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+		
+		final String OUT_DELIM_ROWSEP_<%=cid %> = "\r\n";		
+	
+		final java.io.File tempFile_<%=cid %> = java.io.File.createTempFile("<%=cid %>", null);
+		tempFile_<%=cid %>.deleteOnExit();
+		
+		final java.io.BufferedWriter out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(tempFile_<%=cid %>)));
