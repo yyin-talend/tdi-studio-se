@@ -691,16 +691,21 @@ public class JavaProcessor extends Processor {
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(
-                    projectFolderPath).toOSString();
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath)
+                    .toOSString();
         }
 
         // init class name
         IPath classPath = getCodePath().removeFirstSegments(1);
         String className = classPath.toString().replace('/', '.');
 
+        String exportJar = "";
+        if (isExternalUse()) {
+            exportJar = JavaUtils.JAVA_CLASSPATH_SEPARATOR + process.getName().toLowerCase() + ".jar";
+        }
+
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
-                libPath.toString() + new Path(projectPath).toPortableString(), className };
+                libPath.toString() + new Path(projectPath).toPortableString() + exportJar, className };
     }
 
     /*
