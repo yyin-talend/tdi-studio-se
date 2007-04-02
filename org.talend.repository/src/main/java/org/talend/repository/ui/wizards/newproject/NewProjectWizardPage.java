@@ -34,7 +34,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -65,14 +65,15 @@ public class NewProjectWizardPage extends WizardPage {
     /** Description field. */
     private Text descriptionText;
 
-    /** Language combo. */
-    private Combo languageCombo;
-
     private IStatus nameStatus;
 
     private IStatus descriptionStatus;
 
     private IStatus languageStatus;
+
+    private Button languagePerlRadio;
+
+    private Button languageJavaRadio;
 
     /**
      * Constructs a new NewProjectWizardPage.
@@ -129,11 +130,24 @@ public class NewProjectWizardPage extends WizardPage {
         // Language
         Label languageLab = new Label(container, SWT.NONE);
         languageLab.setText(Messages.getString("NewProjectWizardPage.language")); //$NON-NLS-1$
+        languageLab.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
-        languageCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
-        languageCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        languageCombo.setItems(new String[] { ECodeLanguage.PERL.getName(), ECodeLanguage.JAVA.getName() });
-        languageCombo.select(0);
+        Composite radioContainer = new Composite(container, SWT.NONE);
+        radioContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL + GridData.VERTICAL_ALIGN_BEGINNING));
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.marginHeight = 0;
+        radioContainer.setLayout(gridLayout);
+
+        languagePerlRadio = new Button(radioContainer, SWT.RADIO);
+        languagePerlRadio.setText(ECodeLanguage.PERL.getName());
+
+        languageJavaRadio = new Button(radioContainer, SWT.RADIO);
+        languageJavaRadio.setText(ECodeLanguage.JAVA.getName());
+
+        // languageCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
+        // languageCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // languageCombo.setItems(new String[] { ECodeLanguage.PERL.getName(), ECodeLanguage.JAVA.getName() });
+        // languageCombo.select(0);
 
         setControl(container);
         addListeners();
@@ -174,7 +188,15 @@ public class NewProjectWizardPage extends WizardPage {
             }
         });
 
-        languageCombo.addSelectionListener(new SelectionAdapter() {
+        languagePerlRadio.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                checkFieldsValue();
+            }
+        });
+
+        languageJavaRadio.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -208,7 +230,7 @@ public class NewProjectWizardPage extends WizardPage {
                     descriptionStatus = createOkStatus();
 
                     // Combo language
-                    if (languageCombo.getSelectionIndex() == -1) {
+                    if (!languageJavaRadio.getSelection() && !languagePerlRadio.getSelection()) {
                         languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                                 .getString("NewProjectWizardPage.languageEmpty"), //$NON-NLS-1$
                                 null);
@@ -276,7 +298,13 @@ public class NewProjectWizardPage extends WizardPage {
     }
 
     public String getLanguage() {
-        return languageCombo.getSelectionIndex() != -1 ? languageCombo.getItem(languageCombo.getSelectionIndex()) : null;
+        if (languageJavaRadio.getSelection()) {
+            return ECodeLanguage.JAVA.getName();
+        }
+        if (languagePerlRadio.getSelection()) {
+            return ECodeLanguage.PERL.getName();
+        }
+        return null;
     }
 
     private static IStatus createOkStatus() {
