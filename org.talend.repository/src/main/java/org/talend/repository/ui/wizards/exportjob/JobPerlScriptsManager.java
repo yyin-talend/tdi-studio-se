@@ -202,8 +202,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return modules;
     }
 
-    
-
     IResource[] resouces = null;
 
     /**
@@ -341,15 +339,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         }
     }
 
-    private ProcessItem findProcess(String name) {
-        return ProcessorUtilities.getProcessItem(name);
-    }
-
-    private void addToList(List<String> list, String o) {
-        if (!list.contains(o)) {
-            list.add(o);
-        }
-    }
+   
 
     /**
      * Gets context scripts.

@@ -27,11 +27,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.exception.ExceptionHandler;
@@ -43,6 +45,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 
@@ -88,14 +91,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
-            // boolean needChildren = exportChoice.get(ExportChoice.needJob) &&
-            // exportChoice.get(ExportChoice.needContext);
-            // addChildrenResources(processItem, needChildren, process[i], exportChoice);
+            // add children jobs
+            boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
+            List<URL> childrenList = addChildrenResources(processItem, needChildren, process[i], exportChoice);
+            resources.addAll(childrenList);
             process[i].addResources(resources);
 
             // Gets job designer resouce
-            List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
-            process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
+            // List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
+            // process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
         }
 
         // Exports the system libs
@@ -115,6 +119,64 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(talendLibraries);
 
         return list;
+    }
+
+    private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
+        List<String> list = new ArrayList<String>();
+        if (needChildren) {
+            String projectName = getCurrentProjectName();
+            try {
+                List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
+                        resource, exportChoice);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
+        List<URL> allJobScripts = new ArrayList<URL>();
+        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
+            String jobName = iter.next();
+            allJobScripts.addAll(getJobScripts(jobName, exportChoice.get(ExportChoice.needJob), exportChoice
+                    .get(ExportChoice.needContext)));
+        }
+
+        return allJobScripts;
+    }
+
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
+            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+        if (processedJob.contains(process)) {
+            // prevent circle
+            return;
+        }
+        processedJob.add(process);
+        // addComponentModules(process, resource);
+        List<URL> srcList = getSource(process, exportChoice.get(ExportChoice.needSource));
+        resource.addResources(JOB_SOURCE_FOLDER_NAME, srcList);
+        if (process.getProcess().getRequired() == null) {
+            return;
+        }
+        EList jobList = process.getProcess().getRequired().getJob();
+        for (int j = 0; j < jobList.size(); j++) {
+            JobType jType = (JobType) jobList.get(j);
+            String processLabel = jType.getName();
+            if (processLabel.equals(rootName)) {
+                continue;
+            }
+
+            String jobName = escapeSpace(processLabel);
+
+            addToList(list, jobName);
+
+            ProcessItem childProcess = findProcess(processLabel);
+            if (childProcess == null) {
+                return;
+            }
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
+        }
     }
 
     /**
@@ -170,13 +232,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     private List<URL> getJobScripts(ProcessItem process, boolean needJob, boolean needContext) {
+        return this.getJobScripts(escapeFileNameSpace(process), needJob, needContext);
+    }
+
+    /**
+     * Gets Job Scripts.
+     * 
+     * @param process
+     * @param needJob
+     * @param needContext
+     * @return
+     */
+    private List<URL> getJobScripts(String jobName, boolean needJob, boolean needContext) {
 
         List<URL> list = new ArrayList<URL>(1);
         if (!(needJob || needContext)) {
             return list;
         }
         String projectName = getCurrentProjectName();
-        String jobName = escapeFileNameSpace(process).toLowerCase();
+        jobName = jobName.toLowerCase();
 
         try {
             String classRoot = getClassRootLocation();
@@ -186,8 +260,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             if (needJob) {
-                String jobPath = projectName + File.separatorChar + jobName.toLowerCase();
-               
+                String jobPath = projectName + File.separatorChar + jobName;
+
                 List<String> include = new ArrayList<String>();
                 include.add(jobPath);
                 jarbuilder.setIncludeDir(include);

@@ -345,4 +345,14 @@ public abstract class JobScriptsManager {
         }
         return list;
     }
+
+    protected void addToList(List<String> list, String o) {
+        if (!list.contains(o)) {
+            list.add(o);
+        }
+    }
+
+    protected ProcessItem findProcess(String name) {
+        return ProcessorUtilities.getProcessItem(name);
+    }
 }
