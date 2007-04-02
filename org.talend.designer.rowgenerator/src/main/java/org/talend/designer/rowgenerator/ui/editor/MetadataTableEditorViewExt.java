@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -69,7 +70,6 @@ import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
  * 
  */
 public class MetadataTableEditorViewExt extends MetadataTableEditorView {
-
 
     public static final String ID_COLUMN_PARAMETER = "ID_COLUMN_PARAMETER"; //$NON-NLS-1$
 
@@ -245,6 +245,23 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
         column.setCellEditor(functComboBox, comboValueAdapter);
+        // if (functComboBox.getControl() instanceof CCombo) {
+        // final CCombo combo = (CCombo) functComboBox.getControl();
+        // combo.addSelectionListener(new SelectionAdapter() {
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+        // */
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // if (getTable() != null) {
+        // generatorUI.updateFunParameter(getTable());
+        //                    }
+        //                }
+        //            });
+        //        }
         column.setId(ID_COLUMN_FUNCTION);
         column.setTitle(Messages.getString("RowGenTableEditor2.Fuctions.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(getFunctionAccessor(functComboBox));
@@ -258,6 +275,9 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
+                    if (getTable() != null) {
+                        generatorUI.updateFunParameter(getTable());
+                    }
                     functComboBox.setItems(bean.getArrayFunctions());
                     return bean.getFunction().getName();
                 }
@@ -668,7 +688,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                 checkboxTableEditorContent.createTableEditor(getTable());
                 funColumn.setTableEditorContent(checkboxTableEditorContent);
             }
-            funColumn.setModifiable(isReadOnly());
+            funColumn.setModifiable(!isReadOnly());
             funColumn.setMinimumWidth(35);
             funColumn.getTableColumn().setWidth(65);
             funColumn.getTableColumn().setText(currTitle);

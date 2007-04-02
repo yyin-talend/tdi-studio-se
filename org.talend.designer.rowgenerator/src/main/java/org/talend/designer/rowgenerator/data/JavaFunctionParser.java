@@ -137,7 +137,7 @@ public class JavaFunctionParser extends AbstractFunctionParser {
         String des = parseDescription(string);
         String functionType = parseFunctionType(string);
         String[] parameter = parseFunctionParameters(string);
-        if (!functionType.equals(EMPTY_STRING) && parameter.length > 0) {
+        if (!functionType.equals(EMPTY_STRING)) {
             Parameter[] paras = convertToParameter(parameter);
             Function function = new Function();
             function.setName(funcName);

@@ -230,7 +230,10 @@ public class ShadowProcessPreview {
             if (i == 0) {
                 cols[i] = ""; //$NON-NLS-1$
             } else {
-                columnData.get(columns.get(i - 1).getLabel()).clear();
+                List<String> list = columnData.get(columns.get(i - 1).getLabel());
+                if (list != null) {
+                    list.clear();
+                }
                 cols[i] = columns.get(i - 1).getLabel();
             }
         }
@@ -242,7 +245,10 @@ public class ShadowProcessPreview {
                 for (int i = 0; i < its.length; i++) {
                     its[i] = strs.get(i);
                     if (i < its.length - 1) {
-                        columnData.get(columnNames.get(i)).add(strs.get(i + 1));
+                        List<String> list = columnData.get(columnNames.get(i));
+                        if (list != null) {
+                            list.add(strs.get(i + 1));
+                        }
                     }
                 }
                 newItems.add(its);

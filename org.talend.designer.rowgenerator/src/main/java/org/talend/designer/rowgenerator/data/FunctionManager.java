@@ -250,19 +250,22 @@ public class FunctionManager {
                 if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
                     return ""; //$NON-NLS-1$
                 }
+                final List<Parameter> parameters = (List<Parameter>) bean.getFunction().getParameters();
                 if (UIManager.isJavaProject()) {
                     String fullName = JavaFunctionParser.getTypeMethods().get(
                             bean.getTalendType() + "." + bean.getFunction().getName());
                     newValue = fullName + "(";
-                    for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+                    for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
                     }
-                    newValue = newValue.substring(0, newValue.length() - 1);
+                    if (!parameters.isEmpty()) {
+                        newValue = newValue.substring(0, newValue.length() - 1);
+                    }
                     newValue += ")"; //$NON-NLS-1$
 
                 } else {
                     newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
-                    for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+                    for (Parameter pa : parameters) {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
                     }
                     newValue = newValue.substring(0, newValue.length() - 1);

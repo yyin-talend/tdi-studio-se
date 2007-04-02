@@ -221,7 +221,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
             }
 
         });
-        this.getTableViewerCreator().setInputList(params);
+        getTableViewerCreator().setInputList(params);
     }
 
     public void dispose() {

@@ -149,47 +149,30 @@ public class RowGeneratorUI {
             @SuppressWarnings("unchecked")//$NON-NLS-1$
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Table table = (Table) e.getSource();
-                if (table.getSelection().length < 1) {
-                    return;
-                }
-                TableItem item = table.getSelection()[0];
-                if (item.getData() != null) {
-                    Function fun = ((MetadataColumnExt) item.getData()).getFunction();
-                    if (fun != null) {
-                        // tabFolderEditors.createTableView(fun);
-                        tabFolderEditors.getParameterEditor().update((MetadataColumnExt) item.getData());
-                    }
-                }
-            }
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                super.widgetDefaultSelected(e);
+                updateFunParameter((Table) e.getSource());
             }
 
         });
-        // dataTableView.updateHeader(RowGenTableEditor2.NAME_ID_COLUMN,
-        // Messages.getString("RowGenTableEditor2.Key.TitleText"),
-        // false);
-        // dataTableView.getTable().addControlListener(new ControlListener() {
-        //
-        // public void controlMoved(ControlEvent e) {
-        // dataTableView.attachLabelPosition();
-        // }
-        //
-        // public void controlResized(ControlEvent e) {
-        // dataTableView.attachLabelPosition();
-        // }
-        //
-        // });
     }
 
+    /**
+     * qzhang Comment method "updateFunParameter".
+     * @param table
+     */
+    public void updateFunParameter(Table table) {
+        if (table.getSelection().length < 1) {
+            return;
+        }
+        TableItem item = table.getSelection()[0];
+        if (item.getData() != null) {
+            Function fun = ((MetadataColumnExt) item.getData()).getFunction();
+            if (fun != null) {
+                // tabFolderEditors.createTableView(fun);
+                tabFolderEditors.getParameterEditor().update((MetadataColumnExt) item.getData());
+            }
+        }
+    }
+    
     private void initBackgroundComponents() {
 
     }
