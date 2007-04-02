@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="User Guide">
+<toc label="Talend User documentation">
     <topic label="Online ressources">
    	    <topic label="Installation Guide" href="http://talendforge.org/wiki/doku.php?id=doc:installation_guide"/>
-    	<topic label="Documentation" href="http://www.talend.com/downloads-talend.htm#documentation" />
-    	<topic label="Tutorial" href="http://www.talend.com/tos/tutorials/menu.php" />
-    	<topic label="Forum" href="http://talendforge.org/forum/" />
-    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
+    	<topic label="User Guide" href="http://www.talend.com/downloads-talend.htm#documentation" />
+    	<topic label="Tutorial (flash)" href="http://www.talend.com/tos/tutorials/menu.php" />
     </topic>
 
     <topic label="Perl" href="guide/perl/perlfunc.html">

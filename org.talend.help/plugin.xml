@@ -4,13 +4,16 @@
 
    <extension
          point="org.eclipse.help.toc">
+    <toc
+            file="developer_guide.xml"
+            primary="true"/>
          
 	<toc
             file="user_guide.xml"
             primary="true"/>
     <toc
-            file="developer_guide.xml"
-            primary="true"/>   
+          file="community_tools.xml"
+          primary="true"/>   
     <toc
             file="perlfunc.xml"/>         
          

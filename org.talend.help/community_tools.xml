@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Talend communities Online tools">
+    	<topic label="Forum" href="http://talendforge.org/forum/" />
+    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
+     	<topic label="Wiki" href="http://talendforge.org/wiki/doku.php" />
+    	<topic label="Main Blog" href="http://www.talendforge.org/blog/" />
+    	<topic label="Technical Blog" href="http://talendforge.org/teamblog/" />
+    	<topic label="Register now" href="http://www.talend.com/communities-talend/communities-talend.htm" /> 
+</toc>
