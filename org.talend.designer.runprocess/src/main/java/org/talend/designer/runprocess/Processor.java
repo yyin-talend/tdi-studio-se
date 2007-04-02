@@ -245,6 +245,14 @@ public abstract class Processor implements IProcessor {
     public static void setExternalUse(boolean externalUse) {
         Processor.externalUse = externalUse;
     }
+    
+    /**
+     * Getter for externalUse.
+     * @return the externalUse
+     */
+    public static boolean isExternalUse() {
+        return externalUse;
+    }
 
     protected static String setStringPath(String path) {
         if (externalUse) {

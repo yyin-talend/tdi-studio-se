@@ -23,7 +23,6 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.PipedReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,17 +30,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
-import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -50,10 +43,8 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -85,7 +76,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher) {
 
-        ProcessorUtilities.setExportConfig("java", "", LIBRARY_FOLDER_NAME);
+        ProcessorUtilities.setExportConfig("java", ".", "../" + LIBRARY_FOLDER_NAME);
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
@@ -195,7 +186,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             if (needJob) {
-                String jobPath = projectName + File.separatorChar + jobName;
+                String jobPath = projectName + File.separatorChar + jobName.toLowerCase();
                
                 List<String> include = new ArrayList<String>();
                 include.add(jobPath);
@@ -207,7 +198,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     jarbuilder.setExcludeDir(excludes);
                 }
             } else {
-                String jobPath = projectName + File.separatorChar + jobName;
+                String jobPath = projectName + File.separatorChar + jobName.toLowerCase();
                 String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
                 List<String> include = new ArrayList<String>();
                 include.add(contextPaht);

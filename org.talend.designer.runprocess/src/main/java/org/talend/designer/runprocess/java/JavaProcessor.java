@@ -81,6 +81,7 @@ import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -202,7 +203,6 @@ public class JavaProcessor extends Processor {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
 
-        
     }
 
     /*
@@ -496,6 +496,7 @@ public class JavaProcessor extends Processor {
 
     /**
      * DOC mhirt Comment method "initJavaProject".
+     * 
      * @param prj
      * @throws CoreException
      */
@@ -513,7 +514,7 @@ public class JavaProcessor extends Processor {
             prj.create(null);
             prj.open(IResource.BACKGROUND_REFRESH, null);
             prj.setDescription(desc, null);
-            
+
             IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
             if (!runtimeFolder.exists()) {
                 runtimeFolder.create(false, true, null);
@@ -587,12 +588,40 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     public String getInterpreter() throws ProcessorException {
+        // if the interpreter has been set to a specific one (not standard), then this value won't be null
+        String interpreter = super.getInterpreter();
+        if (interpreter != null) {
+            return interpreter;
+        }
+        return getDefaultInterpreter();
+
+    }
+
+    public static String getDefaultInterpreter() throws ProcessorException {
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
         String javaInterpreter = prefStore.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
         if (javaInterpreter == null || javaInterpreter.length() == 0) {
             throw new ProcessorException(Messages.getString("Processor.configureJava")); //$NON-NLS-1$
         }
         return javaInterpreter;
+    }
+
+    public String getLibraryPath() throws ProcessorException {
+        // if the library path has been set to a specific one (not standard), then this value won't be null
+        String libraryPath = super.getLibraryPath();
+        if (libraryPath != null) {
+            return libraryPath;
+        }
+        return CorePlugin.getDefault().getLibrariesService().getLibrariesPath();
+    }
+
+    public String getCodeLocation() throws ProcessorException {
+        // if the routine path has been set to a specific one (not standard), then this value won't be null
+        String codeLocation = super.getCodeLocation();
+        if (codeLocation != null) {
+            return codeLocation;
+        }
+        return this.getCodeProject().getLocation().toOSString();
     }
 
     /**
@@ -648,16 +677,27 @@ public class JavaProcessor extends Processor {
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile()) {
-                    libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
-                            + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                    if (isExternalUse()) {
+                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
+                                + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                    } else {
+                        libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
+                                + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                    }
                 }
             }
         }
 
         // init project_path
-        IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
-        IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-        String projectPath = getCodeProject().getLocation().append(projectFolderPath).toOSString();
+        String projectPath;
+        if (isExternalUse()) {
+            projectPath = getCodeLocation();
+        } else {
+            IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
+            IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(
+                    projectFolderPath).toOSString();
+        }
 
         // init class name
         IPath classPath = getCodePath().removeFirstSegments(1);
@@ -721,7 +761,6 @@ public class JavaProcessor extends Processor {
         return config;
     }
 
-    
     public static IJavaProject getJavaProject() {
         return javaProject;
     }
