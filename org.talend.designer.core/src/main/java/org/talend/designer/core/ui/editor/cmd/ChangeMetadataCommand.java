@@ -98,8 +98,8 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
-            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
+            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
@@ -440,7 +440,7 @@ public class ChangeMetadataCommand extends Command {
         String enter = "\n";
         String space = " ";
         query.append("SELECT").append(space);
-        String tableNameForColumnSuffix = repositoryMetadata.getTableName() + ".";
+        String tableNameForColumnSuffix = getColumnName(repositoryMetadata.getTableName(), dbType) + ".";
 
         for (int i = 0; i < metaDataColumnList.size(); i++) {
             IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
@@ -451,8 +451,7 @@ public class ChangeMetadataCommand extends Command {
                 query.append(tableNameForColumnSuffix).append(columnName).append(space);
             }
         }
-        query.append(enter).append("FROM").append(space)
-                .append(getTableName(repositoryMetadata.getTableName(), schema));
+        query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata.getTableName(), schema, dbType));
 
         return query.toString();
     }
@@ -464,15 +463,13 @@ public class ChangeMetadataCommand extends Command {
      * @param schema
      * @return
      */
-    private String getTableName(String tableName, String schema) {
+    private String getTableName(String tableName, String schema, String dbType) {
         String currentTableName = tableName;
         if (schema != null && schema.length() > 0) {
-            if (isJavaProject()) {
-                currentTableName = "\\" + "\"" + tableName + "\\" + "\"" + "." + tableName;
-            } else {
-                currentTableName = "\"" + schema + "\"" + "." + tableName;
+            if (dbType.equalsIgnoreCase("PostgreSQL")) {
+                currentTableName = "\"" + schema + "\"" + "." + "\"" + tableName + "\"";
+                return currentTableName;
             }
-            return currentTableName;
         }
         return tableName;
     }
@@ -488,8 +485,6 @@ public class ChangeMetadataCommand extends Command {
         String columnNameAfterChanged;
         if (!dbType.equalsIgnoreCase("PostgreSQL")) {
             columnNameAfterChanged = columnName;
-        } else if (isJavaProject()) {
-            columnNameAfterChanged = "\\" + "\"" + columnName + "\\" + "\"";
         } else {
             columnNameAfterChanged = "\"" + columnName + "\"";
         }
