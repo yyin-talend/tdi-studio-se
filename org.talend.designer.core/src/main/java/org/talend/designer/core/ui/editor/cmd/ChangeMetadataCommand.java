@@ -34,6 +34,10 @@ import org.eclipse.ui.internal.views.properties.tabbed.view.Tab;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
@@ -41,8 +45,11 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -55,6 +62,10 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * Command that will change a metadata in a node.
  * 
  * $Id$
+ * 
+ */
+/**
+ * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
 public class ChangeMetadataCommand extends Command {
@@ -78,6 +89,14 @@ public class ChangeMetadataCommand extends Command {
     private boolean internal = false;
 
     private boolean repositoryMode = false;
+
+    private static final String DEFAULT_TABLE_NAME = "MyShema";
+
+    private String oldQuery = "";
+
+    // Default constructor.
+    public ChangeMetadataCommand() {
+    }
 
     public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
             IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
@@ -119,7 +138,7 @@ public class ChangeMetadataCommand extends Command {
 
         oldOutputMetadata = currentOutputMetadata.clone();
         this.newOutputMetadata = newOutputMetadata.clone();
-        
+
         this.newOutputMetadata.setReadOnly(newOutputMetadata.isReadOnly());
         List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
         for (IMetadataColumn column : newOutputMetadata.getListColumns()) {
@@ -158,8 +177,7 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-            if (connec.isActivate()
-                    && (connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN))) {
+            if (connec.isActivate() && (connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
@@ -178,7 +196,10 @@ public class ChangeMetadataCommand extends Command {
             if (returnIfNull != null) {
                 return returnIfNull;
             }
-            propagate = MessageDialog.openQuestion(new Shell(), Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+            propagate = MessageDialog
+                    .openQuestion(
+                            new Shell(),
+                            Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return propagate;
     }
@@ -186,7 +207,7 @@ public class ChangeMetadataCommand extends Command {
     private boolean getPropagate() {
         return getPropagate(null);
     }
-    
+
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
@@ -204,7 +225,7 @@ public class ChangeMetadataCommand extends Command {
                     currentSection.updateColumnList(MetadataTool.getColumnNameChanged(oldTable, newTable));
                     currentSection.refresh();
                 }
-            } 
+            }
         }
     }
 
@@ -315,6 +336,19 @@ public class ChangeMetadataCommand extends Command {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
+
+            String newQuery = TalendTextUtils.addQuotes(generateNewQuery(newOutputMetadata));
+
+            for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
+                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                    oldQuery = node.getPropertyValue(param.getName()).toString();
+                    node.setPropertyValue(param.getName(), newQuery);
+                    param.setRepositoryValueUsed(true);
+                    param.getValue();
+
+                }
+            }
+            refreshPropertyView();
         }
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
@@ -347,5 +381,141 @@ public class ChangeMetadataCommand extends Command {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
+
+        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                node.setPropertyValue(param.getName(), oldQuery);
+            }
+        }
+    }
+
+    public String generateNewQuery(IMetadataTable repositoryMetadata) {
+        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
+        int index = metaDataColumnList.size();
+        if (index == 0) {
+            return "";
+        }
+
+        StringBuffer query = new StringBuffer();
+        String enter = "\n";
+        String space = " ";
+        query.append("SELECT").append(space);
+
+        for (int i = 0; i < metaDataColumnList.size(); i++) {
+            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
+            String columnName = metaDataColumn.getLabel();
+            if (i != index - 1) {
+                query.append(columnName).append(",").append(space);
+            } else {
+                query.append(columnName).append(space);
+            }
+        }
+        String tableName = repositoryMetadata.getTableName();
+        if (tableName == null || tableName.length() < 0) {
+            tableName = DEFAULT_TABLE_NAME;
+
+        }
+        query.append(enter).append("FROM").append(space).append(tableName);
+
+        return query.toString();
+
+    }
+
+    /**
+     * Generates new Query.
+     * 
+     * @param repositoryMetadata
+     * @param dbType
+     * @param schema
+     * @return
+     */
+    public String generateNewQuery(IMetadataTable repositoryMetadata, String dbType, String schema) {
+        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
+        int index = metaDataColumnList.size();
+        if (index == 0) {
+            return "";
+        }
+
+        StringBuffer query = new StringBuffer();
+        String enter = "\n";
+        String space = " ";
+        query.append("SELECT").append(space);
+        String tableNameForColumnSuffix = repositoryMetadata.getTableName() + ".";
+
+        for (int i = 0; i < metaDataColumnList.size(); i++) {
+            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
+            String columnName = getColumnName(metaDataColumn.getLabel(), dbType);
+            if (i != index - 1) {
+                query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
+            } else {
+                query.append(tableNameForColumnSuffix).append(columnName).append(space);
+            }
+        }
+        query.append(enter).append("FROM").append(space)
+                .append(getTableName(repositoryMetadata.getTableName(), schema));
+
+        return query.toString();
+    }
+
+    /**
+     * Gets the table name.
+     * 
+     * @param tableName
+     * @param schema
+     * @return
+     */
+    private String getTableName(String tableName, String schema) {
+        String currentTableName = tableName;
+        if (schema != null && schema.length() > 0) {
+            if (isJavaProject()) {
+                currentTableName = "\\" + "\"" + tableName + "\\" + "\"" + "." + tableName;
+            } else {
+                currentTableName = "\"" + schema + "\"" + "." + tableName;
+            }
+            return currentTableName;
+        }
+        return tableName;
+    }
+
+    /**
+     * Checks if database type is Postgres, add quoutes around column name.
+     * 
+     * @param columnName
+     * @param dbType
+     * @return
+     */
+    private String getColumnName(String columnName, String dbType) {
+        String columnNameAfterChanged;
+        if (!dbType.equalsIgnoreCase("PostgreSQL")) {
+            columnNameAfterChanged = columnName;
+        } else if (isJavaProject()) {
+            columnNameAfterChanged = "\\" + "\"" + columnName + "\\" + "\"";
+        } else {
+            columnNameAfterChanged = "\"" + columnName + "\"";
+        }
+        return columnNameAfterChanged;
+    }
+
+    /**
+     * Checks project type(perl or java).
+     * 
+     * @return
+     */
+    private static boolean isJavaProject() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        return (codeLanguage == ECodeLanguage.JAVA);
+    }
+
+    /**
+     * Refresh property view.
+     */
+    public void refreshPropertyView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        PropertySheet sheet = (PropertySheet) view;
+        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        tabbedPropertySheetPage.refresh();
     }
 }

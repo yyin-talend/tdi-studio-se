@@ -25,19 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -49,7 +45,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  * $Id$
  * 
  */
-public class ChangeValuesFromRepository extends Command {
+public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private Map<String, Object> oldValues;
 
@@ -67,6 +63,14 @@ public class ChangeValuesFromRepository extends Command {
 
     private Map<String, List<String>> queriesmap;
 
+    private Map<String, IMetadataTable> repositoryTableMap;
+
+    private Object oldQuery;
+
+    private Map<String, String> dbNameAndTypeMap;
+
+    private Map<String, String> dbNameAndSchemaMap;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -74,15 +78,9 @@ public class ChangeValuesFromRepository extends Command {
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
 
-        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
-    }
+        oldQuery = TalendTextUtils.addQuotes("");
 
-    private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
 
     @Override
@@ -135,7 +133,9 @@ public class ChangeValuesFromRepository extends Command {
         }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
             elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
+
             setOtherProperties();
+
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
@@ -158,9 +158,44 @@ public class ChangeValuesFromRepository extends Command {
             if (tablesmap == null || tablesmap.get(value).isEmpty()) {
                 elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
+        }
 
+        refreshPropertyView();
+
+        // used  for generating new Query.
+        String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        IMetadataTable repositoryMetadata = null;
+        if (repositoryTableMap != null && repositoryTableMap.containsKey(schemaSelected)) {
+            repositoryMetadata = repositoryTableMap.get(schemaSelected);
+        } else {
+            repositoryMetadata = new MetadataTable();
+        }
+
+        String dbId = repositoryMetadata.getId();
+        String dbType = "";
+        if (dbId != null && this.dbNameAndTypeMap.containsKey(dbId)) {
+            dbType = this.dbNameAndTypeMap.get(dbId);
+        }
+
+        String schema = this.dbNameAndSchemaMap.get(dbId);
+
+        String newQuery = "";
+        boolean isBuildIn = EmfComponent.BUILTIN.equals(value);
+        if (isBuildIn) {
+            newQuery = TalendTextUtils.addQuotes("");
+        } else {
+            newQuery = TalendTextUtils.addQuotes(generateNewQuery(repositoryMetadata, dbType, schema));
+        }
+
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                oldQuery = elem.getPropertyValue(param.getName());
+                elem.setPropertyValue(param.getName(), newQuery);
+            }
         }
         refreshPropertyView();
+        // Ends
+
     }
 
     /**
@@ -233,11 +268,32 @@ public class ChangeValuesFromRepository extends Command {
         } else {
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), oldMetadata);
         }
+
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                elem.setPropertyValue(param.getName(), oldQuery);
+            }
+        }
         refreshPropertyView();
     }
 
-    public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap) {
+    /**
+     * Sets a sets of maps.
+     * 
+     * @param tablesmap
+     * @param queriesmap
+     * @param repositoryTableMap
+     * @param dbNameAndDbTypeMap
+     * @param dbNameAndSchemaMap
+     */
+    public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap,
+            Map<String, IMetadataTable> repositoryTableMap, Map<String, String> dbNameAndDbTypeMap,
+            Map<String, String> dbNameAndSchemaMap) {
         this.tablesmap = tablesmap;
         this.queriesmap = queriesmap;
+        this.repositoryTableMap = repositoryTableMap;
+        this.dbNameAndTypeMap = dbNameAndDbTypeMap;
+        this.dbNameAndSchemaMap = dbNameAndSchemaMap;
+
     }
 }

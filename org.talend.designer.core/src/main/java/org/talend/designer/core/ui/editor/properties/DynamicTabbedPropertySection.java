@@ -22,15 +22,12 @@
 package org.talend.designer.core.ui.editor.properties;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
@@ -99,7 +96,6 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.sqlbuilder.util.SortedList;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -144,6 +140,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private String repositoryPropType = "";
 
     private String cuurentNodeUName = "";
+
+    private Map<String, String> tableIdAndDbTypeMap;
+
+    private Map<String, String> tableIdAndDbSchemaMap;
 
     /**
      * ftang Comment method "showSchemaRepositoryList".
@@ -194,6 +194,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
+
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
@@ -329,6 +330,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+        tableIdAndDbTypeMap = new HashMap<String, String>();
+        tableIdAndDbSchemaMap = new HashMap<String, String>();
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};
@@ -358,13 +361,24 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem); //$NON-NLS-1$
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
+
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+
                         if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                             if (!factory.isDeleted(table)) {
                                 String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
                                         + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
                                 String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-                                repositoryTableMap.put(value, ConvertionHelper.convert(table));
+                                IMetadataTable newTable = ConvertionHelper.convert(table);
+                                repositoryTableMap.put(value, newTable);
+                                if (connection instanceof DatabaseConnection) {
+                                    String dbType = ((DatabaseConnection) connection).getDatabaseType();
+                                    String schema = ((DatabaseConnection) connection).getSchema();
+                                    tableIdAndDbTypeMap.put(newTable.getId(), dbType);
+                                    if (schema != null && !schema.equals("")) {
+                                        tableIdAndDbSchemaMap.put(newTable.getId(), schema);
+                                    }
+                                }
                                 tableNamesList.add(name);
                                 tableValuesList.add(value);
                             }
@@ -1263,4 +1277,21 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return this.queriesMap;
     }
 
+    /**
+     * Getter for tableIdAndDbTypeMap.
+     * 
+     * @return the tableIdAndDbTypeMap
+     */
+    public Map<String, String> getTableIdAndDbTypeMap() {
+        return this.tableIdAndDbTypeMap;
+    }
+
+    /**
+     * Getter for tableIdAndDbSchemaMap.
+     * 
+     * @return the tableIdAndDbSchemaMap
+     */
+    public Map<String, String> getTableIdAndDbSchemaMap() {
+        return this.tableIdAndDbSchemaMap;
+    }
 }

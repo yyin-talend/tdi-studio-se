@@ -99,7 +99,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
     private Command createComboCommand(CCombo combo) {
         IMetadataTable repositoryMetadata;
         Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-
+        
         String paramName;
         Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         if (combo.equals(repositoryControl)) {
@@ -121,17 +121,28 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
         if (combo.equals(repositoryControl)) {
             if (elem instanceof Node) {
+                this.dynamicTabbedPropertySection.updateRepositoryList();
                 if (repositoryTableMap.containsKey(value)) {
                     repositoryMetadata = repositoryTableMap.get(value);
                 } else {
                     repositoryMetadata = new MetadataTable();
                 }
-                return new RepositoryChangeMetadataCommand((Node) elem, paramName, value, repositoryMetadata);
+
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
+                        (Node) elem, paramName, value, repositoryMetadata);
+
+                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+                                .getRepositoryTableMap());
+
+                return changeMetadataCommand;
 
             }
-        } else {
+        }
+        // Schema Type combo was selected.
+        else {
             if (elem instanceof Node) {
-                Node node = (Node) elem;
+             Node node = (Node) elem;
                 boolean isReadOnly = false;
                 if (node.getMetadataList().size() > 0) {
                     isReadOnly = node.getMetadataList().get(0).isReadOnly();
@@ -153,16 +164,24 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         }
 
                     }
+                 }else{
+                this.dynamicTabbedPropertySection.updateRepositoryList();
+                String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                if (repositoryTableMap.containsKey(schemaSelected)) {
+                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
                 } else {
-                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                            .getName());
-                    if (repositoryTableMap.containsKey(schemaSelected)) {
-                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                    } else {
-                        repositoryMetadata = new MetadataTable();
-                    }
+                    repositoryMetadata = new MetadataTable();
                 }
-                return new RepositoryChangeMetadataCommand((Node) elem, paramName, value, repositoryMetadata);
+                }
+
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
+                        (Node) elem, paramName, value, repositoryMetadata);
+
+                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+                                .getRepositoryTableMap());
+
+                return changeMetadataCommand;
             }
         }
 
@@ -210,7 +229,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
             String propertyName = (String) inputButton.getData(PROPERTY);
             IElementParameter param = node.getElementParameter(propertyName);
-
+           
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -262,8 +281,10 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (inputConec != null) {
                         inputNode = inputConec.getSource();
                     }
-                    return new ChangeMetadataCommand(node, inputNode, inputMetadata, inputMetaCopy,
-                            originaleOutputTable, outputMetaCopy);
+                    ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, inputNode,
+                            inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
+
+                    return changeMetadataCommand;
 
                 }
             }
