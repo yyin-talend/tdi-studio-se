@@ -21,16 +21,13 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
@@ -46,14 +43,16 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    private boolean isNeedTakePrompt = true;
+    
     private static boolean isNodeReadOnly;
-    
+
     private IMetadataTable metadataTable;
-    
+
     private String schemaName;
-    
+
     private boolean isSchemaRepository;
-    
+
     private String query;
 
     private String port;
@@ -237,6 +236,10 @@ public class ConnectionParameters {
      * @param dbType the dbType to set
      */
     public void setDbType(String dbType) {
+        if (dbType == null) {
+            this.dbType = "";
+            return;
+        }
         this.dbType = trimInvertedComma(hashTable.get(dbType));
     }
 
@@ -401,8 +404,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
-                getDbName(), getFilename(), getDatasource());
+        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
+                getFilename(), getDatasource());
         return url;
 
     }
@@ -458,44 +461,46 @@ public class ConnectionParameters {
         return (codeLanguage == ECodeLanguage.JAVA);
     }
 
-    
     public IMetadataTable getMetadataTable() {
         return this.metadataTable;
     }
 
-    
     public void setMetadataTable(IMetadataTable metadataTable) {
         this.metadataTable = metadataTable;
     }
 
-    
     public boolean isNodeReadOnly() {
         return ConnectionParameters.isNodeReadOnly;
     }
 
-    
     public void setNodeReadOnly(boolean isNodeReadOnly) {
         ConnectionParameters.isNodeReadOnly = isNodeReadOnly;
     }
 
-    
     public boolean isSchemaRepository() {
         return this.isSchemaRepository;
     }
 
-    
     public void setSchemaRepository(boolean isSchemaRepository) {
         this.isSchemaRepository = isSchemaRepository;
     }
 
-    
     public String getSchemaName() {
         return this.schemaName;
     }
 
-    
     public void setSchemaName(String schemaName) {
         this.schemaName = schemaName;
+    }
+
+    
+    public boolean isNeedTakePrompt() {
+        return this.isNeedTakePrompt;
+    }
+
+    
+    public void setNeedTakePrompt(boolean isNeedTakePrompt) {
+        this.isNeedTakePrompt = isNeedTakePrompt;
     }
 
 }

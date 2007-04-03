@@ -237,9 +237,13 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             }
         } else if (newPageIndex == 0) {
             if (isModified()) {
-                Boolean iskeep = MessageDialog.openQuestion(new Shell(), Messages
-                        .getString("MultiPageSqlBuilderEditor.AddComment.Title"), //$NON-NLS-1$
-                        Messages.getString("MultiPageSqlBuilderEditor.AddComment.Info")); //$NON-NLS-1$
+                Boolean iskeep = null;
+                if (connParam.isNeedTakePrompt()) {
+                    iskeep = MessageDialog.openQuestion(new Shell(), Messages
+                            .getString("MultiPageSqlBuilderEditor.AddComment.Title"), //$NON-NLS-1$
+                            Messages.getString("MultiPageSqlBuilderEditor.AddComment.Info")); //$NON-NLS-1$
+                }
+                connParam.setNeedTakePrompt(true);
                 if (iskeep != null && iskeep) {
                     // String newSql = EMFRepositoryNodeManager.getInstance()
                     // .addComment(builderEditorComposite.getSQLToBeExecuted())

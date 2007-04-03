@@ -83,6 +83,7 @@ public class BuildInDBStructure extends SashForm {
     private static final String DEFAULT_SCHEMA = "MySchema";
 
     private ConnectionParameters connectionParameters;
+
     /**
      * qzhang BuildInDBStructure constructor comment.
      */
@@ -134,6 +135,10 @@ public class BuildInDBStructure extends SashForm {
         treeViewer.setLabelProvider(schemaTreePrivder);
         parentMetadata = new MetadataConnection();
         List<IMetadataTable> tables = new ArrayList<IMetadataTable>();
+        if (metadataTable == null) {
+            metadataTable = new MetadataTable();
+            metadataTable.setListColumns(new ArrayList<IMetadataColumn>());
+        }
         tables.add(metadataTable);
         parentMetadata.setListTables(tables);
         treeViewer.setInput(parentMetadata);
@@ -192,6 +197,10 @@ public class BuildInDBStructure extends SashForm {
             for (Object object : structuredSelection) {
                 if (object instanceof MetadataTable) {
                     selectedNodes.clear();
+                    if (((MetadataTable) object).getListColumns().isEmpty()) {
+                        setEnabled(false);
+                        return;
+                    }
                     selectedNodes.addAll(((MetadataTable) object).getListColumns());
                     break;
                 }
@@ -222,7 +231,7 @@ public class BuildInDBStructure extends SashForm {
         private String getSchemaSql() {
             String sql = "select ";
             for (IMetadataColumn column : selectedNodes) {
-                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel())  + ", ";
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel()) + ", ";
             }
             sql = sql.substring(0, sql.length() - 2);
             sql += "\nfrom " + TextUtil.addSqlQuots(connectionParameters.getDbType(), DEFAULT_SCHEMA);
@@ -263,12 +272,12 @@ public class BuildInDBStructure extends SashForm {
          */
         public String getColumnText(Object element, int columnIndex) {
             if (element instanceof IMetadataTable) {
-                IMetadataTable metadataTable3 = (IMetadataTable) element;
-                if (metadataTable3.getLabel() == null || "".equals(metadataTable3.getLabel())) {
-                    return DEFAULT_SCHEMA;
-                } else {
-                    return metadataTable3.getLabel();
-                }
+                // IMetadataTable metadataTable3 = (IMetadataTable) element;
+                // if (metadataTable3.getLabel() == null || "".equals(metadataTable3.getLabel())) {
+                return DEFAULT_SCHEMA;
+                // } else {
+                // return metadataTable3.getLabel();
+                // }
             } else if (element instanceof IMetadataColumn) {
                 return ((IMetadataColumn) element).getLabel();
             }
