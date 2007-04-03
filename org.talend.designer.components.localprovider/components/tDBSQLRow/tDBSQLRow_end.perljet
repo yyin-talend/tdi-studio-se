@@ -20,8 +20,9 @@
 		if (metadata!=null) {
                         String cid = metadata.getTableName();
 %>
-
 $sth_<%=cid %>->finish();
+
+$dbh_<%=cid %>->commit();
 $dbh_<%=cid %>->disconnect();
 
 <%

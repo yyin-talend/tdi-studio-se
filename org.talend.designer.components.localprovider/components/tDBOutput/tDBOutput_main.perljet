@@ -24,6 +24,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+
         String dataAction = ElementParameterParser.getValue(
             node,
             "__DATA_ACTION__"
@@ -158,6 +163,10 @@ UpdateStat('<%=cid %>', 1);
 %>
 $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 
+if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
+    $nb_line_current_commit_<%=cid%> = 0;
+    $dbh_<%=cid %>->commit;
+}
 <%
     }
 }

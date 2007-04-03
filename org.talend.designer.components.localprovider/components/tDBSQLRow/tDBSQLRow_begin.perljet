@@ -21,6 +21,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
+
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
 %>
 
 use DBI;
@@ -64,11 +69,15 @@ my $dbh_<%=cid %> = DBI->connect(
     'DBI:ODBC:'.$desc_<%=cid %>{dbname},
     $desc_<%=cid %>{dbuser},
     $desc_<%=cid %>{dbpass},
+    {
+        AutoCommit => 0,
+    }
 )
     or die "can't connect to database";
 
 my $sth_<%=cid %>;
 
+my $nb_line_current_commit_<%=cid%> = 0;
 <%
     }
 }

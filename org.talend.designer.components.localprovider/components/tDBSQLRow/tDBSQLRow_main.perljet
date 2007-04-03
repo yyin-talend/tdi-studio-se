@@ -20,6 +20,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
+
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
 %>
 
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
@@ -33,6 +38,10 @@ if ($_context{StoreSQLQuery}) {
 <%=ElementParameterParser.getValue(node, "__QUERY__") %>;
 }
 
+if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
+    $nb_line_current_commit_<%=cid%> = 0;
+    $dbh_<%=cid %>->commit;
+}
 <%
         if (stats) {
 %>
