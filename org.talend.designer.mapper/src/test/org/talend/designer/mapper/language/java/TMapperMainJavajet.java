@@ -75,14 +75,14 @@ public class TMapperMainJavajet {
         List<IConnection> inputConnections;
         List<IConnection> outputConnections;
         ExternalMapperData data;
-        boolean writeFieldsComment = false;
+        boolean checkingSyntax = false;
         if (node != null) {
             // normal use
             inputConnections = (List<IConnection>) node.getIncomingConnections();
             outputConnections = (List<IConnection>) node.getOutgoingConnections();
             data = (ExternalMapperData) node.getExternalData();
             uniqueNameComponent = node.getUniqueName();
-            writeFieldsComment = codeGenArgument.isWriteFieldsComment();
+            checkingSyntax = codeGenArgument.isCheckingSyntax();
         } else {
             // Stand alone / tests
             MapperMain.setStandAloneMode(true);
@@ -172,10 +172,10 @@ public class TMapperMainJavajet {
                     }
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
-                    if (aKeysValues.length > 0) {
+                    if (aKeysValues.length > 0 || checkingSyntax) {
                         sb.append(cr
                                 + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
-                                        indent, writeFieldsComment));
+                                        indent, checkingSyntax));
                         validLookupTables.add(externalTable);
                         sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
                                 + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName
@@ -238,7 +238,7 @@ public class TMapperMainJavajet {
                         JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
                         varsColumnName);
 
-                if (writeFieldsComment) {
+                if (checkingSyntax) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                 }
 
@@ -247,7 +247,7 @@ public class TMapperMainJavajet {
                         + ";";
                 sb.append(cr).append(expression);
 
-                if (writeFieldsComment) {
+                if (checkingSyntax) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                 }
 
@@ -405,7 +405,7 @@ public class TMapperMainJavajet {
             }
 
             // No connection matching and no checking errors
-            if (!connectionExists && !writeFieldsComment) {
+            if (!connectionExists && !checkingSyntax) {
                 continue;
             }
             if (rejectValueHasJustChanged) {
@@ -415,7 +415,7 @@ public class TMapperMainJavajet {
             // write filters conditions and code to execute
             if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
                     && oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter
-                    || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+                    || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin || checkingSyntax) {
 
                 boolean closeFilterOrRejectBracket = false;
                 if (currentIsReject || currentIsRejectInnerJoin) {
@@ -428,7 +428,7 @@ public class TMapperMainJavajet {
 
                     String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
-                    if (writeFieldsComment) {
+                    if (checkingSyntax) {
                         sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                     }
 
@@ -460,7 +460,7 @@ public class TMapperMainJavajet {
 
                     sb.append(cr).append(ifConditions);
 
-                    if (writeFieldsComment) {
+                    if (checkingSyntax) {
                         sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                     }
 
@@ -473,7 +473,7 @@ public class TMapperMainJavajet {
                 }
 
                 if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
-                        && atLeastOneInputTableWithInnerJoin) {
+                        && atLeastOneInputTableWithInnerJoin || checkingSyntax) {
                     for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                         String outputColumnName = outputTableEntry.getName();
                         String outputExpression = outputTableEntry.getExpression();
@@ -485,7 +485,7 @@ public class TMapperMainJavajet {
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                                 JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
                                 outputColumnName);
-                        if (writeFieldsComment) {
+                        if (checkingSyntax) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                         }
 
@@ -502,7 +502,7 @@ public class TMapperMainJavajet {
 
                         sb.append(cr).append(expression);
 
-                        if (writeFieldsComment) {
+                        if (checkingSyntax) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                         }
 
