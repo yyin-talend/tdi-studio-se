@@ -81,25 +81,27 @@ public class Table extends Element {
      * @param selectedColumns
      */
     private void formColumns(List<MetadataColumn> selectedColumns) {
-        EList metadataColumns = metadataTable.getColumns();
-        Column col = new Column();
-        col.setElementName("*"); //$NON-NLS-1$
-        col.setSelected(true);
-        col.setTable(this);
-        addColumn(col);
-        Iterator iterator = metadataColumns.iterator();
-        while (iterator.hasNext()) {
-            MetadataColumn metadataColumn = (MetadataColumn) iterator.next();
-            Column column = new Column();
-            column.setMetadataColumn(metadataColumn);
-            if (selectedColumns == null) {
-                column.setSelected(true);
-            } else if (selectedColumns.contains(metadataColumn)) {
-                column.setSelected(true);
+        if (metadataTable != null) {
+            EList metadataColumns = metadataTable.getColumns();
+            Column col = new Column();
+            col.setElementName("*"); //$NON-NLS-1$
+            col.setSelected(true);
+            col.setTable(this);
+            addColumn(col);
+            Iterator iterator = metadataColumns.iterator();
+            while (iterator.hasNext()) {
+                MetadataColumn metadataColumn = (MetadataColumn) iterator.next();
+                Column column = new Column();
+                column.setMetadataColumn(metadataColumn);
+                if (selectedColumns == null) {
+                    column.setSelected(true);
+                } else if (selectedColumns.contains(metadataColumn)) {
+                    column.setSelected(true);
+                }
+                
+                column.setTable(this);
+                addColumn(column);
             }
-
-            column.setTable(this);
-            addColumn(column);
         }
 
     }

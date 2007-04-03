@@ -185,7 +185,7 @@ public final class EMFRepositoryNodeManager {
         }
         for (MetadataTable table : tables) {
             try {
-                if (dbMetaData != null) {
+                if (dbMetaData != null && table.getSourceName() != null) {
                     ResultSet resultSet = dbMetaData.getExportedKeys("", ExtractMetaDataUtils.schema, table.getSourceName()); //$NON-NLS-1$
                     ResultSetMetaData metadata = resultSet.getMetaData();
                     int[] relevantIndeces = new int[metadata.getColumnCount()];

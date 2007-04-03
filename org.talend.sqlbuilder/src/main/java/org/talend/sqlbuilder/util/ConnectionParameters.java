@@ -236,11 +236,11 @@ public class ConnectionParameters {
      * @param dbType the dbType to set
      */
     public void setDbType(String dbType) {
-        if (dbType == null) {
+        if (dbType != null) {
+            this.dbType = trimInvertedComma(hashTable.get(dbType));
+        } else {
             this.dbType = "";
-            return;
         }
-        this.dbType = trimInvertedComma(hashTable.get(dbType));
     }
 
     public boolean isRepository() {
