@@ -46,19 +46,22 @@ public class RenametDBInputToPostgresqlMigrationTask extends AbstractMigrationTa
             IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
             RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tPostgresqlInput"); //$NON-NLS-1$
-            IComponentFilter filter1 = new PropertyComponentFilter("tDBInput", "TYPE", "postgresql;Pg");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
-                    removePropertyComponentConversion));
+            IComponentFilter filter1 = 
+                new PropertyComponentFilter("tDBInput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(
+                    renameComponentConversion, removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tPostgresqlOutput"); //$NON-NLS-1$
-            IComponentFilter filter2 = new PropertyComponentFilter("tDBOutput", "TYPE", "postgresql;Pg;POSTGRESQL");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
-                    removePropertyComponentConversion));
+            IComponentFilter filter2 = 
+                new PropertyComponentFilter("tDBOutput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(
+                    renameComponentConversion, removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tPostgresqlRow"); //$NON-NLS-1$
-            IComponentFilter filter3 = new PropertyComponentFilter("tDBSQLRow", "TYPE", "postgresql;Pg");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
-                    removePropertyComponentConversion));
+            IComponentFilter filter3 = 
+                new PropertyComponentFilter("tDBSQLRow", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(
+                    renameComponentConversion, removePropertyComponentConversion));
 
             return true;
         } catch (Exception e) {
