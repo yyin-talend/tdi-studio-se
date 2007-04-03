@@ -99,9 +99,9 @@ $_globals{project_name} = '<%=codeGenArgument.getCurrentProjectName() %>';
 $_globals{start} = [gettimeofday];
 
 <%
-    if (process.getNodesOfType("tStatCatcher").size() > 0) {
+    for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
-tStatCatcher_1_subprocess(
+<%=statCatcher.getUniqueName()%>_subprocess(
     message => 'begin',
 );
 
@@ -143,9 +143,9 @@ sub global_die_catcher {
         $_globals{$dying_component}{ERROR_MESSAGE} = $exception;
 
 <%
-    if (process.getNodesOfType("tLogCatcher").size() > 0) {
+    for (INode logCatcher : process.getNodesOfType("tLogCatcher")) {
 %>
-        tLogCatcher_1_subprocess(
+        <%=logCatcher.getUniqueName()%>_subprocess(
             type => 'Perl die',
             origin => $dying_component,
             priority => 100,
@@ -153,15 +153,15 @@ sub global_die_catcher {
         );
 <%
     }
-    if (process.getNodesOfType("tStatCatcher").size() > 0) {
+    for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
         if (exists $_globals{$dying_component}{start}) {
-            tStatCatcher_1_subprocess(
+            <%=statCatcher.getUniqueName()%>_subprocess(
                 message => 'failure',
                 origin  => $dying_component,
             );
             
-            tStatCatcher_1_subprocess(
+            <%=statCatcher.getUniqueName()%>_subprocess(
                 message => sprintf(
                     '%.1f seconds',
                     tv_interval(
@@ -172,6 +172,7 @@ sub global_die_catcher {
                 origin  => $dying_component,
             );
         }
+
 <%
     }
 %>
@@ -180,9 +181,9 @@ sub global_die_catcher {
     }
 
 <%
-    if (process.getNodesOfType("tStatCatcher").size() > 0) {
+    for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
-    tStatCatcher_1_subprocess(
+    <%=statCatcher.getUniqueName()%>_subprocess(
         message => $_globals{job_failure} ? 'failure' : 'end',
     );
 
@@ -196,7 +197,7 @@ sub global_die_catcher {
         )
     );
     
-    tStatCatcher_1_subprocess(
+    <%=statCatcher.getUniqueName()%>_subprocess(
         message => sprintf(
             '%s seconds',
             $_globals{duration}

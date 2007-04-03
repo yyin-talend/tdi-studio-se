@@ -32,19 +32,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 
         String code = ElementParameterParser.getValue(node, "__CODE__");
-%>
 
-if (defined &main::tLogCatcher_1_subprocess) {
-    tLogCatcher_1_subprocess(
-        message => <%=message%>,
-        code => <%=code%>,
-        type => 'tWarn',
-        origin => '<%=cid%>',
-        priority => <%=priority%>,
-    );
-}
-    
+        for (INode logCatcher : node.getProcess().getNodesOfType("tLogCatcher")) {
+%>
+<%=logCatcher.getUniqueName()%>_subprocess(
+    message => <%=message%>,
+    code => <%=code%>,
+    type => 'tWarn',
+    origin => '<%=cid%>',
+    priority => <%=priority%>,
+);
 <%
-		}
-	}
+        }
+    }
+}
 %>

@@ -1,22 +1,22 @@
-
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.temp.ECodePart		
-		org.talend.core.model.process.IConnection 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.process.EConnectionType 
-                org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="ComponentPartHeader" 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.temp.ECodePart		
+    org.talend.core.model.process.IConnection 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.EConnectionType 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="ComponentPartHeader" 
 %>
+
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	ECodePart codePart = codeGenArgument.getCodePart();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+ECodePart codePart = codeGenArgument.getCodePart();
 %>
 # +-------------------------------------------------------------------------+
 # | [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -26,7 +26,7 @@ $current_component="<%=node.getUniqueName() %>";
 
 
 <%
-	if (codePart.equals(ECodePart.BEGIN)) {
+if (codePart.equals(ECodePart.BEGIN)) {
 %>
 
 =head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %> <%=node.getUniqueName() %>
@@ -36,15 +36,15 @@ $current_component="<%=node.getUniqueName() %>";
 $_globals{<%=node.getUniqueName() %>}{OK} = false;
 
 <%
-  String statCatcher = ElementParameterParser.getValue(
-    node,
-    "__TSTATCATCHER_STATS__"
-  );
+    String statCatcherEnabled = ElementParameterParser.getValue(
+        node,
+        "__TSTATCATCHER_STATS__"
+    );
 
-  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
-      && (statCatcher.equals("true"))) {
+    if (statCatcherEnabled.equals("true")) {
+        for (INode statCatcher : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
-tStatCatcher_1_subprocess(
+<%=statCatcher.getUniqueName()%>_subprocess(
     message => 'begin',
     origin  => '<%=node.getUniqueName() %>',
 );
@@ -53,28 +53,28 @@ $_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
 
 $current_component="<%=node.getUniqueName() %>";
 <%
-  }
-%>
+        }
+    }
+}
 
-<%
-	}
+if (codePart.equals(ECodePart.MAIN)) {
+    if (node.getComponent().isDataAutoPropagated()) {
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if ((metadatas!=null)&&(metadatas.size()>0)) {
+            IMetadataTable metadata = metadatas.get(0);
+	    if (metadata!=null) {
+	        List< ? extends IConnection> conns =
+                    node.getIncomingConnections();
 
-    if (codePart.equals(ECodePart.MAIN)) {
-	    if (node.getComponent().isDataAutoPropagated()) {
-			List<IMetadataTable> metadatas = node.getMetadataList();
-			if ((metadatas!=null)&&(metadatas.size()>0)) {
-				IMetadataTable metadata = metadatas.get(0);
-				if (metadata!=null) {
-					List< ? extends IConnection> conns = node.getIncomingConnections();
-					for (IConnection conn : conns) {
-						if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+	        for (IConnection conn : conns) {
+                    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 %>
-	my @<%=metadata.getTableName() %> = @<%=conn.getName() %>;
+my @<%=metadata.getTableName() %> = @<%=conn.getName() %>;
 <%
-						}
-					}
-        		}
-			}
-		}
+                    }
+                }
+            }
 	}
+    }
+}
 %>

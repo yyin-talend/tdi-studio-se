@@ -1,17 +1,17 @@
 <%@ jet 
-  package="org.talend.designer.codegen.translators" 
-  imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.temp.ECodePart		
-                org.talend.core.model.process.ElementParameterParser
-		org.talend.core.model.process.IConnection 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.process.EConnectionType 
-		org.talend.core.model.process.IExternalNode
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-  class="ComponentPartFooter"     
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.temp.ECodePart		
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.EConnectionType 
+    org.talend.core.model.process.IExternalNode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="ComponentPartFooter"     
 %>
 <%
 
@@ -23,15 +23,17 @@ boolean trace = codeGenArgument.isTrace();
 
 <%
 if (!(node instanceof IExternalNode)) {
-  if (codePart.equals(ECodePart.BEGIN)) {
-    List<IMetadataTable> metadatas = node.getMetadataList();
-    if ((metadatas!=null)&&(metadatas.size()>0)) {
-      IMetadataTable metadata = metadatas.get(0);
-      if (metadata!=null) {
-        List< ? extends IConnection> conns = node.getOutgoingConnections();
-        for (IConnection conn : conns) {
-          if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            if (trace) {
+    if (codePart.equals(ECodePart.BEGIN)) {
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if ((metadatas!=null)&&(metadatas.size()>0)) {
+            IMetadataTable metadata = metadatas.get(0);
+            if (metadata!=null) {
+                List< ? extends IConnection> conns =
+                    node.getOutgoingConnections();
+          
+                for (IConnection conn : conns) {
+                    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                        if (trace) {
 %>
 
 my @colnames_<%=conn.getName() %> = undef;
@@ -40,41 +42,46 @@ if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
 }
 
 <%
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
-  if (codePart.equals(ECodePart.MAIN)) {
-    List<IMetadataTable> metadatas = node.getMetadataList();
-    if ((metadatas!=null)&&(metadatas.size()>0)) {
-      IMetadataTable metadata = metadatas.get(0);
-      if (metadata!=null) {
-        List< ? extends IConnection> conns = node.getOutgoingConnections();
-        for (IConnection conn : conns) {
-          if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+
+    if (codePart.equals(ECodePart.MAIN)) {
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if ((metadatas!=null)&&(metadatas.size()>0)) {
+            IMetadataTable metadata = metadatas.get(0);
+            if (metadata!=null) {
+                List< ? extends IConnection> conns =
+                    node.getOutgoingConnections();
+
+                for (IConnection conn : conns) {
+                    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 %>
 
 my @<%=conn.getName() %> = @<%=metadata.getTableName() %>;
 
 <%
-          }
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 
 if (codePart.equals(ECodePart.MAIN)) {
-  List<IMetadataTable> metadatas = node.getMetadataList();
-  if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-      List< ? extends IConnection> conns = node.getOutgoingConnections();
-      for (IConnection conn : conns) {
-        if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-          if (trace) {
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {
+            List< ? extends IConnection> conns =
+                node.getOutgoingConnections();
+
+            for (IConnection conn : conns) {
+                if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    if (trace) {
 %>
 
 # here we dump the line content for trace purpose
@@ -86,11 +93,11 @@ SendTrace(
 );
 
 <%
-          }
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 if (codePart.equals(ECodePart.END)) {
 %>
@@ -98,20 +105,20 @@ if (codePart.equals(ECodePart.END)) {
 $_globals{<%=node.getUniqueName() %>}{OK} = true;
 
 <%
-  String statCatcher = ElementParameterParser.getValue(
-    node,
-    "__TSTATCATCHER_STATS__"
-  );
+    String statCatcherEnabled = ElementParameterParser.getValue(
+      node,
+      "__TSTATCATCHER_STATS__"
+    );
 
-  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
-      && (statCatcher.equals("true"))) {
+    if (statCatcherEnabled.equals("true")) {
+        for (INode statCatcher : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
-tStatCatcher_1_subprocess(
+<%=statCatcher.getUniqueName()%>_subprocess(
     message => 'end',
     origin  => '<%=node.getUniqueName() %>',
 );
 
-tStatCatcher_1_subprocess(
+<%=statCatcher.getUniqueName()%>_subprocess(
     message => sprintf(
         '%.1f seconds',
         tv_interval(
@@ -122,19 +129,20 @@ tStatCatcher_1_subprocess(
     origin  => '<%=node.getUniqueName() %>',
 );
 <%
-  }
+        }
+    }
 %>
 
 <%
-  for (IConnection outgoingConn : node.getOutgoingConnections()) {
-    if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
+    for (IConnection outgoingConn : node.getOutgoingConnections()) {
+        if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
 %>
 
 <%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
 
 <%
-    }
-    if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+        }
+        if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
 
 if (<%=outgoingConn.getCondition() %>) {
@@ -142,8 +150,8 @@ if (<%=outgoingConn.getCondition() %>) {
 }
 
 <%
+        }
     }
-  }
 }
 %>
 # +-------------------------------------------------------------------------+
