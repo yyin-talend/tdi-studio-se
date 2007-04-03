@@ -62,8 +62,12 @@ while (index>=0) {
 pstmt_<%=cid %>.setString(<%=parameterIndex%>,String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));					
 							<%
 							}else if(typeToGenerate.equals("Date")){
-							%>						
-pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Date(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));					
+							%>
+if(<%=conn.getName()%>.<%=column.getLabel()%>!=null){													
+	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Date(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));
+}else{
+	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,null);
+}				
 							<%
 							}else{
 							%>						
