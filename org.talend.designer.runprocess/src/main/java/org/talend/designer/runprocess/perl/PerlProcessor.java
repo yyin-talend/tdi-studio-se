@@ -82,6 +82,9 @@ public class PerlProcessor extends Processor {
 
     private static final String CTX_ARG = "--context="; //$NON-NLS-1$
 
+    /** Process to be turned in PERL code. */
+    private IProcess process;
+
     /** Perl project. */
     private IProject perlProject;
 
@@ -91,7 +94,7 @@ public class PerlProcessor extends Processor {
     /** Path to generated context code. */
     private IPath contextPath;
 
-    /** Context used. */
+    /** Context used * */
     private IContext context;
 
     /** Tells if filename is based on id or label of the process. */
@@ -104,7 +107,7 @@ public class PerlProcessor extends Processor {
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
     public PerlProcessor(IProcess process, boolean filenameFromLabel) {
-        super(process);
+        super();
 
         this.process = process;
         this.filenameFromLabel = filenameFromLabel;
