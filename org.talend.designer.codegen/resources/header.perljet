@@ -155,22 +155,23 @@ sub global_die_catcher {
     }
     if (process.getNodesOfType("tStatCatcher").size() > 0) {
 %>
-        tStatCatcher_1_subprocess(
-            message => 'failure',
-            origin  => $dying_component,
-        );
-        
-        tStatCatcher_1_subprocess(
-            message => sprintf(
-                '%.1f seconds',
-                tv_interval(
-                    $_globals{$dying_component}{start},
-                    [gettimeofday]
-                )
-            ),
-            origin  => $dying_component,
-        );
-
+        if (exists $_globals{$dying_component}{start}) {
+            tStatCatcher_1_subprocess(
+                message => 'failure',
+                origin  => $dying_component,
+            );
+            
+            tStatCatcher_1_subprocess(
+                message => sprintf(
+                    '%.1f seconds',
+                    tv_interval(
+                        $_globals{$dying_component}{start},
+                        [gettimeofday]
+                    )
+                ),
+                origin  => $dying_component,
+            );
+        }
 <%
     }
 %>

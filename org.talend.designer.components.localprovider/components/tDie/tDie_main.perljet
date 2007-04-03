@@ -31,6 +31,8 @@ if (defined &main::tLogCatcher_1_subprocess) {
     );
 }
 
+$current_component = '<%=metadata.getTableName()%>';
+
 die(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
     
 <%
