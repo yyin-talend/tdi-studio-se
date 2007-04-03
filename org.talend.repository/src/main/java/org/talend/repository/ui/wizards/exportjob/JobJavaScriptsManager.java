@@ -74,9 +74,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     private static final String USERROUTINE_JAR = "userRoutines.jar";
 
-    private static final String STANDARD_JARS = "../" + LIBRARY_FOLDER_NAME + "/" + SYSTEMROUTINE_JAR
-            + JavaUtils.JAVA_CLASSPATH_SEPARATOR + "../" + LIBRARY_FOLDER_NAME + "/" + USERROUTINE_JAR;
-
     /*
      * (non-Javadoc)
      * 
@@ -90,9 +87,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
 
-            // String specificJars = STANDARD_JARS + ";" + processItem.getProperty().getLabel().toLowerCase() + ".jar";
+            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath
+                    + "/" + USERROUTINE_JAR;
+            ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
-            ProcessorUtilities.setExportConfig("java", STANDARD_JARS, "../" + LIBRARY_FOLDER_NAME);
             generateJobFiles(processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
@@ -128,6 +127,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(talendLibraries);
 
         return list;
+    }
+
+    private String calculateLibraryPathFromDirectory(String directory) {
+        int nb = directory.split("/").length - 1;
+        String path = "../";
+        for (int i = 0; i < nb; i++) {
+            path = path.concat("../");
+        }
+        return path + LIBRARY_FOLDER_NAME;
     }
 
     private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
