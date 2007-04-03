@@ -1,24 +1,24 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		java.util.List
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-	" 
-	class="DBInputEnd" 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    java.util.List
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="DBInputEnd" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                    String cid = metadata.getTableName();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
 %>
 
 }
@@ -27,15 +27,13 @@ $sth_<%=cid %>->finish();
 $dbh_<%=cid %>->disconnect();
 
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid%>;
+
 <%
-    if (stats) {
+        if (stats) {
 %>
 UpdateStat('<%=cid %>', 0, 2);
 <%
+        }
     }
-%>
-
-<%
-		}
-	}
+}
 %>

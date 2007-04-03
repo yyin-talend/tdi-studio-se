@@ -38,65 +38,6 @@
     />
 
     <PARAMETER
-      NAME="TYPE"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="2"
-      REPOSITORY_VALUE="TYPE"
-    >
-      <ITEMS DEFAULT="mysql;mysql;MYSQL">
-<!-- in the value, we give "Perl dbtype; Perl driver; Talend dbtype". -->
-<!-- See org.talend.core/mappingMetadataTypes.xml for Talend dbtypes  -->
-        <ITEM
-          NAME="MYSQL"
-          VALUE="mysql;mysql;MYSQL"
-          REPOSITORY_ITEM="MYSQL"
-        />
-        <ITEM
-          NAME="PGSQL"
-          VALUE="postgresql;Pg;POSTGRESQL"
-          REPOSITORY_ITEM="POSTGRESQL"
-        />
-        <ITEM
-          NAME="ORACLE"
-          VALUE="oracle;oracle;Oracle with SID"
-          REPOSITORY_ITEM="ORACLE"
-        />
-        <ITEM
-          NAME="ODBC"
-          VALUE="undef;odbc;MICROSOFT SQL SERVER (ODBC DRIVER)"
-          REPOSITORY_ITEM="ODBC"
-        />
-        <ITEM
-          NAME="MSSQL_ODBC"
-          VALUE="mssql;odbc;MICROSOFT SQL SERVER (ODBC DRIVER)"
-          REPOSITORY_ITEM="ODBC_JDBC"
-        />
-      </ITEMS>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="HOST"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC' or TYPE=='ODBC')"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC' or TYPE=='ODBC')"
-    >
-      <DEFAULT>''</DEFAULT>
-      <DEFAULT IF="TYPE=='MYSQL'">'3306'</DEFAULT>
-      <DEFAULT IF="TYPE=='PGSQL'">'5432'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -136,7 +77,7 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ACTION"
+      NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
     >
@@ -146,18 +87,8 @@
           VALUE="NONE"
         />
         <ITEM
-          NAME="DROP_CREATE_TABLE"
-          VALUE="DROP_CREATE_TABLE"
-          NOT_SHOW_IF="TYPE=='ODBC'"
-        />
-        <ITEM
-          NAME="CREATE_TABLE"
-          VALUE="CREATE_TABLE"
-          NOT_SHOW_IF="TYPE=='ODBC'"
-        />
-        <ITEM
-          NAME="CLEAR_TABLE"
-          VALUE="CLEAR_TABLE"
+          NAME="CLEAR"
+          VALUE="CLEAR"
         />
       </ITEMS>
     </PARAMETER>
@@ -196,7 +127,6 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
-      NOT_SHOW_IF="(ACTION=='DROP_CREATE_TABLE' or ACTION=='CREATE_TABLE')"
       NUM_ROW="9"
       NB_LINES="3"
     >
@@ -224,10 +154,7 @@
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
-      <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="false" />
-      <IMPORT NAME="DBD-Pg" MODULE="DBD::Pg" REQUIRED="false" />
-      <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="false" />
-      <IMPORT NAME="DBD-ODBC" MODULE="DBD::ODBC" REQUIRED="false" />
+      <IMPORT NAME="DBD-ODBC" MODULE="DBD::ODBC" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    

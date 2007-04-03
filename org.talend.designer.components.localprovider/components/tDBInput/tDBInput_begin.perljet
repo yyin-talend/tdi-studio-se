@@ -1,51 +1,40 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	" 
-	class="DBInputBegin" 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="DBInputBegin" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                        String cid = metadata.getTableName();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
 
-                        String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
-                        String[] dbtypes = dbtypeDefinition.split(";");
-                        
-                        String perlDbtype   = dbtypes[0];
-                        String perlDriver   = dbtypes[1];
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
 %>
 
 use DBI;
-use talend::dbOp;
 
 my %desc_<%=cid %> = (
-    dbtype        => <%=perlDbtype %>,
-    driver        => <%=perlDriver %>,
-    dbhost        => <%=ElementParameterParser.getValue(node, "__HOST__") %>,
-    dbport        => <%=ElementParameterParser.getValue(node, "__PORT__") %>,
-    dbname        => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
-    dbuser        => <%=ElementParameterParser.getValue(node, "__USER__") %>,
-    dbpass        => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
-    encoding      => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
-    query         => <%=ElementParameterParser.getValue(node, "__QUERY__") %>,
-    schema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
+    dbname => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
+    dbuser => <%=ElementParameterParser.getValue(node, "__USER__") %>,
+    dbpass => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
+    encoding => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
+    query => <%=ElementParameterParser.getValue(node, "__QUERY__") %>,
+    schema => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
     	{
             name    => '<%=column.getLabel() %>',
             key     => <%=column.isKey() %>,
@@ -54,10 +43,10 @@ my %desc_<%=cid %> = (
             null    => <%=column.isNullable() %>,
             default => '<%=column.getDefault() %>',
             comment => '<%=column.getComment() %>',
-		},
-	<%
-		}
-    %>
+        },
+<%
+        }
+%>
     ]
 );
 
@@ -65,20 +54,15 @@ my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 my $nb_line_<%=cid%> = 0;
 
 <%
-    if (stats) {
+        if (stats) {
 %>
     UpdateStat('<%=cid %>', 0);
 <%
-    }
+        }
 %>
 
 my $dbh_<%=cid %> = DBI->connect(
-    getConnectionString(
-        driver => $desc_<%=cid %>{driver},
-        dbname => $desc_<%=cid %>{dbname},
-        dbhost => $desc_<%=cid %>{dbhost},
-        dbport => $desc_<%=cid %>{dbport},
-    ),
+    'DBI:ODBC:'.$desc_<%=cid %>{dbname},
     $desc_<%=cid %>{dbuser},
     $desc_<%=cid %>{dbpass},
 )
@@ -86,26 +70,6 @@ my $dbh_<%=cid %> = DBI->connect(
 
 my $sth_<%=cid %>;
 my $query;
-
-if ($desc_<%=cid %>{dbtype} eq 'mysql'
-    and lc $desc_<%=cid %>{encoding} eq 'utf-8') {
-    $query = '
-set names "UTF8"
-';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-    $sth_<%=cid %>->execute();
-    $sth_<%=cid %>->finish();
-}
-
-if ($desc_<%=cid %>{dbtype} eq 'postgresql') {
-    my $encoding = $desc_<%=cid %>{encoding};
-
-    $query = '
-set names \''.$encoding.'\'
-';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-    $sth_<%=cid %>->execute();
-}
 
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     $desc_<%=cid %>{query}

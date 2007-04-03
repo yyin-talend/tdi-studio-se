@@ -1,152 +1,98 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-                org.talend.core.model.metadata.MetadataTalendType
-		java.util.List
-		java.util.Map
-		java.util.ArrayList
-                org.talend.commons.utils.StringUtils
-	" 
-	class="DBOutputBegin" 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+" 
+class="DBOutputBegin" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                        String cid = metadata.getTableName();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
 
-                        String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
-                        String[] dbtypes = dbtypeDefinition.split(";");
-                        
-                        String perlDbtype   = dbtypes[0];
-                        String perlDriver   = dbtypes[1];
-                        String talendDbtype = dbtypes[2];
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
 
-                        String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
 
-                        List<Map<String, String>> addCols =
+        List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
                 "__ADD_COLS__"
             );
-                        String action = ElementParameterParser.getValue(
-                            node,
-                            "__ACTION__"
-                        );
-                        if (action.equals("DROP_CREATE_TABLE")
-                            || action.equals("CREATE_TABLE")) {
-                            addCols.clear();
-                        }
+
+        String tableAction = ElementParameterParser.getValue(
+            node,
+            "__TABLE_ACTION__"
+        );
 %>
 
 use DBI;
 use talend::dbOp;
 
 my %desc_<%=cid %> = (
-    dbtype        => '<%=perlDbtype%>',
-    driver        => '<%=perlDriver%>',
-    dbhost        => <%=ElementParameterParser.getValue(node, "__HOST__") %>,
-    dbport        => <%=ElementParameterParser.getValue(node, "__PORT__") %>,
-    dbname        => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
-    dbtable       => <%=ElementParameterParser.getValue(node, "__TABLE__") %>,
-    dbuser        => <%=ElementParameterParser.getValue(node, "__USER__") %>,
-    dbpass        => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
-    encoding      => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
-    schema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-                        String columnDbtype = MetadataTalendType.loadDBMSType(
-                                column.getTalendType(),
-                                talendDbtype,
-                                false
-                        );
-    %>
+    dbname   => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
+    dbtable  => <%=ElementParameterParser.getValue(node, "__TABLE__") %>,
+    dbuser   => <%=ElementParameterParser.getValue(node, "__USER__") %>,
+    dbpass   => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
+    encoding => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
+    schema => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
     	{
-<%
-if (perlDbtype.equals("postgresql")) {
-%>
-            name    => '"<%=column.getLabel() %>"',
-<%
-}
-else {
-%>
             name    => '<%=column.getLabel() %>',
-<%
-}
-%>
             key     => <%=column.isKey() %>,
             type    => '<%=column.getTalendType() %>',
-            dbtype  => '<%=columnDbtype %>', # <%= talendDbtype %>
             len     => <%=column.getLength() %>,
             precision => <%=column.getPrecision() %>,
             null    => <%=column.isNullable() %>,
             default => '<%=column.getDefault() %>',
             comment => '<%=column.getComment() %>',
-		},
-	<%
-		}
-    %>
+        },
+<%
+        }
+%>
     ]
 );
 
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
-my $action = '<%=ElementParameterParser.getValue(node, "__ACTION__") %>';
-
-my ($create_table, $drop_create_table, $clear_table) = (0, 0, 0);
-
-if ($action eq 'CREATE_TABLE') {
-    $create_table = 1;
-}
-elsif ($action eq 'DROP_CREATE_TABLE') {
-    $drop_create_table = 1;
-}
-elsif ($action eq 'CLEAR_TABLE') {
-    $clear_table = 1;
-}
-
-my $create = 0;
-my $drop = $drop_create_table;
-
-if ($create_table or $drop_create_table) {
-    $create = 1;
-}
-
 <%
-    if (stats) {
+        if (stats) {
 %>
-    UpdateStat('<%=cid %>', 0);
+UpdateStat('<%=cid %>', 0);
 <%
-    }
+        }
 %>
 
 my $dbh_<%=cid %> = DBI->connect(
-    getConnectionString(
-        driver => $desc_<%=cid %>{driver},
-        dbname => $desc_<%=cid %>{dbname},
-        dbhost => $desc_<%=cid %>{dbhost},
-        dbport => $desc_<%=cid %>{dbport},
-    ),
+    'DBI:ODBC:'.$desc_<%=cid %>{dbname},
     $desc_<%=cid %>{dbuser},
     $desc_<%=cid %>{dbpass},
     {
 <%
-    if (dataAction.equals("INSERT_OR_UPDATE")) {
+        if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
         PrintError => 0,
 <%
-    }
+        }
 %>
     }
 )
@@ -155,99 +101,21 @@ my $dbh_<%=cid %> = DBI->connect(
 my $sth_<%=cid %>;
 my $query;
 
-if ($desc_<%=cid %>{dbtype} eq 'mysql'
-    and lc $desc_<%=cid %>{encoding} eq 'utf-8') {
-    $query = '
-set names "UTF8"
-';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-    $sth_<%=cid %>->execute();
-}
-
-if ($desc_<%=cid %>{dbtype} eq 'postgresql') {
-    my $encoding = $desc_<%=cid %>{encoding};
-
-    $query = '
-set names \''.$encoding.'\'
-';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-    $sth_<%=cid %>->execute();
-}
-
-if ($create) {
-    my $schema = '%';
-    my $catalog = undef;
-
-    if ($desc_<%=cid %>{driver} eq 'oracle') {
-        $schema = uc $desc_<%=cid %>{dbuser};
-    }
-
-    my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
-    my @tables = ();
-
-    while (my($qual, $owner, $table, $type) = $tabsth->fetchrow_array()) {
-        push @tables, lc($table);
-    }
-
-#     print "===\n";
-#     print "existing tables:\n";
-#     print join("\n", map {"  - ".$_} @tables), "\n";
-#     print "===\n";
-
-    # if table already exists
-    my $test_table = lc $desc_<%=cid %>{dbtable};
-    my $table_exists = grep /^$test_table$/, @tables;
-
-    if ($drop and $table_exists) {
-        # we have to drop the table
-        $query = '
-DROP TABLE '.$desc_<%=cid %>{dbtable}.'
-';
-        $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-
-        $sth_<%=cid %>->execute()
-            or die "can't drop table";
-
-        # the table does not exist anymore
-        $table_exists = 0;
-    }
-
-    if (not $table_exists) {
-        # now we create the table
-        $query = getTableCreationQuery(
-            tablename  => $desc_<%=cid %>{dbtable},
-            schema     => $desc_<%=cid %>{schema},
-            dbtype     => <%=perlDbtype %>,
-        );
-        
-        $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
-            $query
-        );
-
-        $sth_<%=cid %>->execute()
-            or die "can't create table";
-    }
-    else {
-        warn(
-            sprintf(
-                'table "%s" already exists'."\n",
-                $desc_<%=cid %>{dbtable}
-            )
-        );
-    }
-}
-
-if ($clear_table) {
-    $query = '
+<%
+        if (tableAction.equals("CLEAR")) {
+%>
+$query = '
 DELETE
   FROM '.$desc_<%=cid %>{dbtable}.'
 ';
 
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
-    $sth_<%=cid %>->execute()
-        or die "can't clear table";
-}
+$sth_<%=cid %>->execute()
+    or die "can't clear table";
+<%
+        }
+%>
 
 my @colnames = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
 my $query = '';
@@ -417,7 +285,6 @@ my $nb_line_inserted_<%=cid%> = 0;
 my $nb_line_deleted_<%=cid%>  = 0;
 
 <%
-		}
-	}
+    }
+}
 %>
-
