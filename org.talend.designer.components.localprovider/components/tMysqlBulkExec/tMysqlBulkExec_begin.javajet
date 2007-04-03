@@ -39,9 +39,9 @@ String pas_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PASS__") %>;
 String table_<%=cid %> = <%=ElementParameterParser.getValue(node, "__TABLE__") %>;
 
 Class.forName("com.mysql.jdbc.Driver").newInstance();
-java.sql.Connection con=java.sql.DriverManager.getConnection("jdbc:MySQL://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
-java.sql.Statement stmt=con.createStatement();
-stmt.execute("SET character_set_database=<%=charset %>");
-stmt.execute("LOAD DATA LOCAL INFILE '"+file_<%=cid %>+"' INTO TABLE "+table_<%=cid %>+" FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
-stmt.close();
-con.close();
+java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection("jdbc:MySQL://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
+java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
+stmt_<%=cid %>.execute("SET character_set_database=<%=charset %>");
+stmt_<%=cid %>.execute("LOAD DATA LOCAL INFILE '"+file_<%=cid %>+"' INTO TABLE "+table_<%=cid %>+" FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
+stmt_<%=cid %>.close();
+con_<%=cid %>.close();
