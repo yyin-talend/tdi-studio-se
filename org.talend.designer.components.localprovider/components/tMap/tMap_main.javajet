@@ -47,12 +47,14 @@
         List<IConnection> inputConnections;
         List<IConnection> outputConnections;
         ExternalMapperData data;
+        boolean writeFieldsComment = false;
         if (node != null) {
             // normal use
             inputConnections = (List<IConnection>) node.getIncomingConnections();
             outputConnections = (List<IConnection>) node.getOutgoingConnections();
             data = (ExternalMapperData) node.getExternalData();
             uniqueNameComponent = node.getUniqueName();
+            writeFieldsComment = codeGenArgument.isWriteFieldsComment();
         } else {
             // Stand alone / tests
             MapperMain.setStandAloneMode(true);
@@ -62,8 +64,6 @@
             data = (ExternalMapperData) testGenerator.getExternalData();
             uniqueNameComponent = "testUniqueNameNode";
         }
-
-        boolean writeCommentedFieldKeys = true;
 
         String cr = "\n";
         String rejected = "rejected";
@@ -145,13 +145,16 @@
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(cr + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
-                                indent, writeCommentedFieldKeys));
+                        sb.append(cr
+                                + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
+                                        indent, writeFieldsComment));
                         validLookupTables.add(externalTable);
-								sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
-                        	+ "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName + "FromHash;");
+                        sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
+                                + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName
+                                + "FromHash;");
                     } else {
-			               sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName + "Default;");
+                        sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName
+                                + "Default;");
                     }
 
                 } // if(externalTable != null) {
@@ -207,7 +210,7 @@
                         JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
                         varsColumnName);
 
-                if (writeCommentedFieldKeys) {
+                if (writeFieldsComment) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                 }
 
@@ -216,7 +219,7 @@
                         + ";";
                 sb.append(cr).append(expression);
 
-                if (writeCommentedFieldKeys) {
+                if (writeFieldsComment) {
                     sb.append(cr).append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                 }
 
@@ -281,12 +284,6 @@
             if (outputTable.isRejectInnerJoin()) {
                 atLeastOneRejectInnerJoin = true;
             }
-            if (nameToOutputConnection.get(outputTableName) == null) {
-                continue;
-            }
-
-            sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
-
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
@@ -298,6 +295,11 @@
                     atLeastOneReject = true;
                 }
             }
+
+            if (nameToOutputConnection.get(outputTableName) != null) {
+                sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
+            }
+
         }
         // ///////////////////////////////////////////////////////////////////
 
@@ -317,14 +319,14 @@
             sb.append(cr + gm.indent(indent) + "if(");
             String and = null;
             for (ExternalMapperTable validLookupTable : validLookupTables) {
-					if(validLookupTable.isInnerJoin()) {
-                	if (and == null) {
-                    and = "";
-                	} else {
-                    and = " &&";
-                	}
-                	sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
-               }
+                if (validLookupTable.isInnerJoin()) {
+                    if (and == null) {
+                        and = "";
+                    } else {
+                        and = " &&";
+                    }
+                    sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
+                }
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
@@ -372,7 +374,13 @@
                     }
                     closeTestInnerJoinConditionsBracket = false;
                 }
+            }
 
+            // No connection matching and no checking errors
+            if (!connectionExists && !writeFieldsComment) {
+                continue;
+            }
+            if (rejectValueHasJustChanged) {
                 sb.append(cr + gm.indent(indent) + "// ###### START REJECTS ##### ");
             }
 
@@ -383,17 +391,16 @@
 
                 boolean closeFilterOrRejectBracket = false;
                 if (currentIsReject || currentIsRejectInnerJoin) {
-                    sb.append(cr + gm.indent(indent) + "// # Output reject table: '" + outputTableName + "'");
+                    sb.append(cr + cr + gm.indent(indent) + "// # Output reject table: '" + outputTableName + "'");
                 } else {
-                    sb.append(cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
+                    sb.append(cr + cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
                 }
                 if (hasFilters || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
-                    sb.append(cr);
 
                     String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
-                    if (writeCommentedFieldKeys) {
+                    if (writeFieldsComment) {
                         sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                     }
 
@@ -425,7 +432,7 @@
 
                     sb.append(cr).append(ifConditions);
 
-                    if (writeCommentedFieldKeys) {
+                    if (writeFieldsComment) {
                         sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                     }
 
@@ -450,7 +457,7 @@
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                                 JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
                                 outputColumnName);
-                        if (writeCommentedFieldKeys) {
+                        if (writeFieldsComment) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                         }
 
@@ -467,7 +474,7 @@
 
                         sb.append(cr).append(expression);
 
-                        if (writeCommentedFieldKeys) {
+                        if (writeFieldsComment) {
                             sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                         }
 
