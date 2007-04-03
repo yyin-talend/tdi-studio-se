@@ -164,8 +164,9 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
                 return;
             }
 
-            String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
-            MessageDialog.openInformation(new Shell(), Messages.getString("GUIModificationQueryAction.Information.Msg"), info); //$NON-NLS-1$
+            // String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
+            // MessageDialog.openInformation(new Shell(),
+            // Messages.getString("GUIModificationQueryAction.Information.Msg"), info); //$NON-NLS-1$
 
             ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
                     .getString("GUIModificationQueryAction.Dialog.TitleText"), currentNode); //$NON-NLS-1$

@@ -241,7 +241,11 @@ public class ErDiagramComposite extends SashForm {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
                         if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
-                            tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            if (!"".equals(getSchema())) {
+                                tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else {
+                                tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
                         } else {
                             tables.add(table.getElementName());
                         }

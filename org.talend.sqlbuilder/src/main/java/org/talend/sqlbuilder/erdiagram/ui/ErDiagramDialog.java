@@ -117,7 +117,7 @@ public class ErDiagramDialog extends Dialog {
         erComposite.setNodes(getNodes());
         erComposite.setRootNode(rootNode);
         erComposite.setSqlText(sql);
-        erComposite.setWeights(new int[] { 12, 1 });
+        erComposite.setWeights(new int[] { 12, 3 });
         Label separator = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
         separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 

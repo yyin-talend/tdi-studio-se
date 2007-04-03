@@ -81,8 +81,6 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
 
     private RepositoryNode repositoryNode;
 
-    private Query queryObject;
-
     private ErDiagramComposite erDiagramComposite;
 
     
@@ -147,7 +145,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         erDiagramComposite.setDialog(dialog);
         erDiagramComposite.setRootNode(repositoryNode);
         erDiagramComposite.setNodes(nodes);
-        erDiagramComposite.setWeights(new int[] { 12, 1 });
+        erDiagramComposite.setWeights(new int[] { 12, 3 });
     }
 
     /**
@@ -463,10 +461,6 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         } catch (Exception e) {
             SqlBuilderPlugin.log(string, e);
         }
-    }
-
-    public void setQueryObject(Query queryObject) {
-        this.queryObject = queryObject;
     }
 
     public void setEditorContent(ConnectionParameters connectionParameters) {

@@ -105,7 +105,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
             sqlDesigner.setEditorContent(connParam);
 
-            sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
+            // sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
             sqlDesigner.setMaxResult(sqlEdit.getMaxResult());
             sqlDesigner.setIfLimit(sqlEdit.getIfLimit());
             sqlDesigner.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));

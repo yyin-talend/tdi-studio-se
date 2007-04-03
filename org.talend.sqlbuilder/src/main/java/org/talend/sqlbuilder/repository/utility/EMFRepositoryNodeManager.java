@@ -240,8 +240,9 @@ public final class EMFRepositoryNodeManager {
             }
         }
         if (queryStrings.size() < 1) {
-            MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title"), Messages
-                    .getString("EMFRepositoryNodeManager.Notice.info"));
+            // MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title"),
+            // Messages
+            // .getString("EMFRepositoryNodeManager.Notice.info"));
             return null;
         }
         Boolean isForce = null;
@@ -280,8 +281,9 @@ public final class EMFRepositoryNodeManager {
     public void updateErDiagram(boolean isModified, ErDiagramComposite editor, String toSql, RepositoryNode rootNode)
             throws Exception {
         if (toSql != null && !"".equals(toSql) && isModified) {
-            String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
-            MessageDialog.openInformation(new Shell(), Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info);
+            // String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
+            // MessageDialog.openInformation(new Shell(),
+            // Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info);
 
             List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
             if (nodeSel == null || nodeSel.isEmpty()) {
