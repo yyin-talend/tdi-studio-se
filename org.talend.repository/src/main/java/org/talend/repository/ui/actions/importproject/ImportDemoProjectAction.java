@@ -95,7 +95,7 @@ public final class ImportDemoProjectAction extends Action {
                     String techName;
                     if (perl) {
                         archivePath = "resources/TALENDDEMOSPERL.zip"; //$NON-NLS-1$
-                        techName = "TALENDDEMOS"; //$NON-NLS-1$
+                        techName = "TALENDDEMOSPERL"; //$NON-NLS-1$
                         lastImportedName = "TalendDemos"; //$NON-NLS-1$
                     } else {
                         archivePath = "resources/TALENDDEMOSJAVA.zip"; //$NON-NLS-1$
