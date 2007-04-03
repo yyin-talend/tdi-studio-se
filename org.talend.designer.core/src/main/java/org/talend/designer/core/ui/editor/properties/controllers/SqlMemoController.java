@@ -171,7 +171,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String query = (String) elem.getPropertyValue(propertyName);
         String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
                 : TalendTextUtils.SINGLE_QUOTE;
-        boolean isCanOpen = !query.contains(INVIVALDSTR) && query.startsWith(qoute) && query.endsWith(qoute);
+        boolean isCanOpen = !query.contains(INVIVALDSTR) && query.startsWith(qoute) && query.endsWith(qoute)
+                && query.length() > 1;
+        isCanOpen = isCanOpen || "".equals(query);
         if (!isCanOpen) {
             String pid = SqlBuilderPlugin.PLUGIN_ID;
             String mainMsg = Messages.getString("SqlMemoController.QueryError.mainMsg");
@@ -214,7 +216,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             String dbName = getValueFromRepositoryName("SID"); //$NON-NLS-1$
             connParameters.setDbName(dbName);
 
-            
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
