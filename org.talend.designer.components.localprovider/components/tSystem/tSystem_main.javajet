@@ -14,7 +14,7 @@
 	String cid = node.getUniqueName();
 	
 	String command = ElementParameterParser.getValue(node, "__COMMAND__");
-	String[] parsedCommand = command.split(" ");	
+		
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 	
 	// To launch an internal command to cmd.exe (XP), you have to call :
@@ -22,8 +22,7 @@
 %>
 
 Runtime runtime = Runtime.getRuntime();
-final Process ps<%=cid %> = runtime.exec(new String[] { <% for (String commande : parsedCommand) { %>"<%=commande %>" ,<% } %> } );
-
+final Process ps<%=cid %> = runtime.exec(<%=command %>);
 Thread normal = new Thread() {
 	public void run() {
 		try {
@@ -82,6 +81,6 @@ Thread error = new Thread() {
 };
 error.start();
 
-int result = ps<%=cid %>.waitFor();
+ps<%=cid %>.waitFor();
 normal.interrupt();
 error.interrupt();
