@@ -33,12 +33,8 @@
     <PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true" NUM_ROW="1" REPOSITORY_VALUE="DATABASE" />
 
     <PARAMETER NAME="TYPE" FIELD="CLOSED_LIST" NUM_ROW="2" REPOSITORY_VALUE="TYPE">
-      <ITEMS DEFAULT="mysql;org.gjt.mm.mysql.Driver">
-        <ITEM NAME="MYSQL"      VALUE="mysql;org.gjt.mm.mysql.Driver" REPOSITORY_ITEM="MYSQL"/>
-        <ITEM NAME="PGSQL"      VALUE="postgresql;org.postgresql.Driver" REPOSITORY_ITEM="POSTGRESQL"/>
-        <ITEM NAME="ORACLE"     VALUE="oracle;oracle.jdbc.driver.OracleDriver" REPOSITORY_ITEM="ORACLE"/>
+      <ITEMS DEFAULT="undef;sun.jdbc.odbc.JdbcOdbcDriver">
         <ITEM NAME="ODBC"       VALUE="undef;sun.jdbc.odbc.JdbcOdbcDriver" REPOSITORY_ITEM="ODBC"/>
-        <ITEM NAME="MSSQL_ODBC" VALUE="mssql;sun.jdbc.odbc.JdbcOdbcDriver" REPOSITORY_ITEM="ODBC_JDBC"/>
       </ITEMS>
     </PARAMETER>
 
@@ -96,13 +92,7 @@
     </PARAMETER>
   </PARAMETERS>
 
-  <CODEGENERATION>
-     <IMPORTS>
-       <IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-5.0.4-bin.jar" REQUIRED="false" />
-       <IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="false" />
-       <IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="false" />
-     </IMPORTS>
-  </CODEGENERATION>
+  <CODEGENERATION></CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="QUERY" TYPE="STRING" AVAILABILITY="FLOW"/>
