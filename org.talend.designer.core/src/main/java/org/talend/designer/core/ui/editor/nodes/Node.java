@@ -147,6 +147,10 @@ public class Node extends Element implements INode {
 
     private boolean readOnly = false;
 
+    private static final String COMPARE_STR1 = "tDBInput";
+
+    private static final String COMPARE_STR2 = "MySchema";
+
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -835,6 +839,26 @@ public class Node extends Element implements INode {
                 case CHECK:
                     break;
                 case SCHEMA_TYPE:
+                    break;
+                case MEMO_SQL:
+                    String currentQuery = param.getValue().toString().toUpperCase();
+                    currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
+                            currentQuery.indexOf("FROM"));
+                    String[] columnArray = currentQuery.split(",");
+                    int changedColumnSize = columnArray.length;
+
+                    IMetadataTable metaTable = this.getMetadataList().get(0);
+                    if (metaTable == null || metaTable.getListColumns() == null) {
+                        break;
+                    }
+                    int originColumnSize = metaTable.getListColumns().size();
+
+                    if (changedColumnSize != originColumnSize) {
+                        String errorMessage = "Parameter (" + param.getDisplayName()
+                                + "): schema is different from the query.";
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
+
+                    }
                     break;
                 case CLOSED_LIST:
                     if (param.getListItemsValue().length != 0) {
