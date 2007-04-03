@@ -22,9 +22,9 @@ String pas_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PASS__") %>;
 String table_<%=cid %> = <%=ElementParameterParser.getValue(node, "__TABLE__") %>;
 
 Class.forName("org.postgresql.Driver").newInstance();
-java.sql.Connection con=java.sql.DriverManager.getConnection("jdbc:postgresql://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
-java.sql.Statement stmt=con.createStatement();
+java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection("jdbc:postgresql://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
+java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
 //stmt.execute("SET client_encoding to 'UNICODE'");
-stmt.execute("copy "+table_<%=cid %>+" from '"+file_<%=cid %>+"' with delimiter '"+field_separator_<%=cid %>+"'");
-stmt.close();
-con.close();
+stmt_<%=cid %>.execute("copy "+table_<%=cid %>+" from '"+file_<%=cid %>+"' with delimiter '"+field_separator_<%=cid %>+"'");
+stmt_<%=cid %>.close();
+con_<%=cid %>.close();
