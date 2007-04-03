@@ -136,7 +136,7 @@
                         ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
                         if (externalInputTableEntry != null) {
                             String expressionKey = externalInputTableEntry.getExpression();
-                            if (column.isKey() && expressionKey != null && !"".equals(expressionKey.trim())) {
+                            if (expressionKey != null && !"".equals(expressionKey.trim()) && (column.isKey() || checkingSyntax)) {
                                 keysNames.add(columnName);
                                 keysValues.add(expressionKey);
                             }

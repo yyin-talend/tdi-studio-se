@@ -139,7 +139,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
             final String code = retrieveCode(process, selectedNodeName, nodeConfigurer);
 
-            // System.out.println(code);
+//             System.out.println(code);
 
             // create requestor for accumulating discovered problems
             MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems);

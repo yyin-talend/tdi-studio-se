@@ -26,7 +26,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
+import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.IODataComponent;
@@ -66,6 +68,8 @@ public class ProblemsManager {
     private ECodeLanguage codeLanguage;
 
     private IAloneProcessNodeConfigurer nodeConfigurer;
+
+    private CheckProblemForEntryLimiter checkProblemForEntryLimiter;
 
     /**
      * DOC amaumont ProblemsManager constructor comment.
@@ -249,6 +253,20 @@ public class ProblemsManager {
         return errorsHasChanged;
     }
 
+    public void checkProblemsForTableEntryWithDelayLimiter(ITableEntry tableEntry) {
+
+        if (this.checkProblemForEntryLimiter == null) {
+            this.checkProblemForEntryLimiter = new CheckProblemForEntryLimiter(2000, true);
+        }
+        this.checkProblemForEntryLimiter.setCurrentTableEntry(tableEntry);
+        if (tableEntry != this.checkProblemForEntryLimiter.getPreviousTableEntry()) {
+            this.checkProblemForEntryLimiter.execute(false);
+        } else {
+            this.checkProblemForEntryLimiter.startIfExecutable(true);
+        }
+
+    }
+
     public void checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
 
         if (forceRefreshData) {
@@ -289,6 +307,76 @@ public class ProblemsManager {
             }
 
             tableEntry.setProblems(problems);
+
+            TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
+            if (tableViewerCreator != null) {
+                tableViewerCreator.getTableViewer().refresh(tableEntry, true);
+            }
+        }
+
+    }
+
+    /**
+     * 
+     * DOC amaumont ProblemsManager class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
+     * 
+     */
+    class CheckProblemForEntryLimiter extends ExecutionLimiter {
+
+        private ITableEntry previousTableEntry;
+
+        private ITableEntry currentTableEntry;
+
+        /**
+         * DOC amaumont CheckProblemForEntryLimiter constructor comment.
+         */
+        public CheckProblemForEntryLimiter() {
+            super();
+        }
+
+        /**
+         * DOC amaumont CheckProblemForEntryLimiter constructor comment.
+         * 
+         * @param timeBeforeNewExecute
+         * @param finalExecute
+         */
+        public CheckProblemForEntryLimiter(int timeBeforeNewExecute, boolean finalExecute) {
+            super(timeBeforeNewExecute, finalExecute);
+        }
+
+        /**
+         * DOC amaumont CheckProblemForEntryLimiter constructor comment.
+         * 
+         * @param timeBeforeNewExecute
+         */
+        public CheckProblemForEntryLimiter(int timeBeforeNewExecute) {
+            super(timeBeforeNewExecute);
+        }
+
+        @Override
+        protected void execute(boolean isFinalExecution) {
+            mapperManager.getUiManager().getDisplay().syncExec(new Runnable() {
+
+                public void run() {
+                    checkProblemsForTableEntry(getCurrentTableEntry(), true);
+                    previousTableEntry = getCurrentTableEntry();
+                }
+
+            });
+        }
+
+        public ITableEntry getCurrentTableEntry() {
+            return this.currentTableEntry;
+        }
+
+        public void setCurrentTableEntry(ITableEntry currentTableEntry) {
+            this.currentTableEntry = currentTableEntry;
+        }
+
+        public ITableEntry getPreviousTableEntry() {
+            return this.previousTableEntry;
         }
 
     }

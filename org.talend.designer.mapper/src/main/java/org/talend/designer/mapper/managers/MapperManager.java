@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -48,9 +49,11 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
+import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -166,6 +169,19 @@ public class MapperManager {
 
     public DataMapTableView retrieveDataMapTableView(ITableEntry dataMapTableEntry) {
         return tableManager.getView(dataMapTableEntry.getParent());
+    }
+
+    public TableViewerCreator retrieveTableViewerCreator(ITableEntry dataMapTableEntry) {
+        DataMapTableView view = retrieveDataMapTableView(dataMapTableEntry);
+        TableViewerCreator tableViewerCreator = null;
+        if (view != null) {
+            if (dataMapTableEntry instanceof AbstractInOutTableEntry || dataMapTableEntry instanceof VarTableEntry) {
+                tableViewerCreator = view.getTableViewerCreatorForColumns();
+            } else if (dataMapTableEntry instanceof FilterTableEntry) {
+                tableViewerCreator = view.getTableViewerCreatorForFilters();
+            }
+        }
+        return tableViewerCreator;
     }
 
     /**
@@ -579,9 +595,11 @@ public class MapperManager {
      * @param currentEntry
      * @param text
      */
-    public void changeEntryExpression(ITableEntry currentEntry, String text) {
+    public void changeEntryExpression(final ITableEntry currentEntry, String text) {
         currentEntry.setExpression(text);
-        getProblemsManager().checkProblemsForTableEntry(currentEntry, true);
+
+        getProblemsManager().checkProblemsForTableEntryWithDelayLimiter(currentEntry);
+
         DataMapTableView dataMapTableView = retrieveDataMapTableView(currentEntry);
         TableViewer tableViewer = null;
         if (currentEntry instanceof IColumnEntry) {
