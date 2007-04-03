@@ -210,8 +210,11 @@ pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=c
         	<%			
 			}else if(typeToGenerate.equals("Date")){
 			%>
-		
-pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+if(<%=incomingConnName%>.<%=column.getName()%>!=null){		
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+}else{
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,null);
+}
         	<%			
 			}else{
 			%>
@@ -247,7 +250,11 @@ pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
-pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+}else{
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
+}
         		<%			
 				}else{
 				%>
@@ -277,7 +284,11 @@ pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
-pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+}else{
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
+}
         		<%			
 				}else{
 				%>
@@ -317,8 +328,11 @@ if(!executeUpdate_<%=cid%>){
     	    <%
 			}else if(typeToGenerate.equals("Date")){
 			%>
-		
+if(<%=incomingConnName%>.<%=columnInsert.getName()%>!=null){		
 	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,new java.sql.Date(<%=incomingConnName%>.<%=columnInsert.getName()%>.getTime()));
+}else{
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,null);
+}
         	<%		
 			}else{
 			%>
@@ -367,7 +381,11 @@ if(!executeUpdate_<%=cid%>){
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
-	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	}else{
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
+	}
         		<%			
 				}else{
 				%>
@@ -397,7 +415,11 @@ if(!executeUpdate_<%=cid%>){
         		<%				
 				}else if(typeToGenerate.equals("Date")){
 				%>
-	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	}else{
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
+	}
         		<%			
 				}else{
 				%>
@@ -441,7 +463,11 @@ if(!executeInsert_<%=cid%>){
         		<%					
 				}else if(typeToGenerate.equals("Date")){
 				%>
-	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=columnUpdate.getName()%>!=null){
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+	}else{
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,null);
+	}
         		<%			
 				}else{
 				%>
@@ -471,7 +497,11 @@ if(!executeInsert_<%=cid%>){
         		<%				
 				}else if(typeToGenerate.equals("Date")){
 				%>
-	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=columnUpdate.getName()%>!=null){
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+	}else{
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,null);
+	}
         		<%			
 				}else{
 				%>
@@ -519,8 +549,11 @@ if(!executeInsert_<%=cid%>){
         	<%			
 			}else if(typeToGenerate.equals("Date")){
 			%>
-		
-	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
+		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	}else{
+		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,null);
+	}
         	<%			
 			}else{
 			%>
@@ -562,7 +595,11 @@ pstmt_<%=cid %>.setString(<%=keyCounter%>,String.valueOf(<%=incomingConnName%>.<
         		<%		
 				}else if(typeToGenerate.equals("Date")){
 				%>
-pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+}else{
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,null);
+}
         		<%			
 				}else{
 				%>
