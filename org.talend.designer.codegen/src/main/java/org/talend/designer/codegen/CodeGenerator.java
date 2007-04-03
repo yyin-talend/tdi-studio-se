@@ -81,7 +81,7 @@ public class CodeGenerator implements ICodeGenerator {
 
     private String jobName;
     
-    private boolean writeComments = false;
+    private boolean checkingSyntax = false;
 
     private String contextName;
 
@@ -111,6 +111,7 @@ public class CodeGenerator implements ICodeGenerator {
             this.trace = trace;
             this.jobName = process.getLabel();
             this.contextName = process.getContextManager().getDefaultContext().getName();
+            this.checkingSyntax = false;
 
             if ((options != null) && (options.length == 4)) {
                 this.interpreterPath = options[0];
@@ -270,7 +271,7 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setCurrentProjectName(currentProjectName);
         codeGenArgument.setContextName(contextName);
         codeGenArgument.setJobName(jobName);
-        codeGenArgument.setWriteFieldsComment(writeComments);
+        codeGenArgument.setCheckingSyntax(checkingSyntax);
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
@@ -408,7 +409,7 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setCurrentProjectName(currentProjectName);
         argument.setContextName(contextName);
         argument.setJobName(jobName);
-        argument.setWriteFieldsComment(writeComments);
+        argument.setCheckingSyntax(checkingSyntax);
 
         JetBean jetBean = initializeJetBean(argument);
 
@@ -488,7 +489,7 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
                 
-                this.writeComments = true;
+                this.checkingSyntax = true;
                 
                 try {
                     if (nodeConfigurer != null) {

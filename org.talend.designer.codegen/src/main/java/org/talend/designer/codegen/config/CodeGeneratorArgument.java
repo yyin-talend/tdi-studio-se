@@ -37,7 +37,7 @@ public class CodeGeneratorArgument {
 
     private boolean trace;
     
-    private boolean writeFieldsComment = false;
+    private boolean checkingSyntax = false;
     
     String interpreterPath;
 
@@ -179,11 +179,11 @@ public class CodeGeneratorArgument {
         this.jobName = jobName;
     }
     
-    public boolean isWriteFieldsComment() {
-        return this.writeFieldsComment;
+    public boolean isCheckingSyntax() {
+        return checkingSyntax;
     }
     
-    public void setWriteFieldsComment(boolean writeFieldsComment) {
-        this.writeFieldsComment = writeFieldsComment;
-    }   
+    public void setCheckingSyntax(boolean checkingSyntax) {
+        this.checkingSyntax = checkingSyntax;
+    }
 }
