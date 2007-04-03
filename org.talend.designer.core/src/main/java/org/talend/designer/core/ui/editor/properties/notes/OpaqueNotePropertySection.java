@@ -21,12 +21,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.notes;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -45,23 +47,24 @@ public class OpaqueNotePropertySection extends AbstractNotePropertySection {
         super.createControls(parent, aTabbedPropertySheetPage);
 
         Composite composite = getWidgetFactory().createFlatFormComposite(parent);
+        if (composite.getLayout() instanceof FormLayout) {
+            FormLayout formLayout = (FormLayout) composite.getLayout();
+            formLayout.spacing = 0;
+        }
         FormData data;
-
-        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("OpaqueNoteSection.Label")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-        labelLabel.setLayoutData(data);
 
         check = getWidgetFactory().createButton(composite, "", SWT.CHECK); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(labelLabel, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(labelLabel, 0, SWT.TOP);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         check.setLayoutData(data);
 
-        
+        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("OpaqueNoteSection.Label")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(check);
+        data.top = new FormAttachment(check, 0, SWT.TOP);
+        labelLabel.setLayoutData(data);
+
         check.addSelectionListener(new SelectionAdapter() {
 
             @Override
