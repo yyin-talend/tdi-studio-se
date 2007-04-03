@@ -49,6 +49,16 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Generic ODBC</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
