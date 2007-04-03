@@ -31,6 +31,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -221,7 +222,7 @@ public class NodesPasteCommand extends Command {
                     try {
                         externalNode.setExternalData(copiedNode.getExternalData().clone());
                     } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
+                        ExceptionHandler.process(e);
                     }
                     pastedNode.setExternalData(externalNode.getExternalData());
                 }

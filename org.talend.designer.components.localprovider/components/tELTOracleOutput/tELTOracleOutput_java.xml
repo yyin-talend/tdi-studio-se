@@ -18,11 +18,9 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
 
     <CONNECTOR CTYPE="TABLE" MAX_INPUT="1"/>
-
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
@@ -33,6 +31,7 @@
   </CONNECTORS>
 
   <PARAMETERS>
+<!-- 
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -62,6 +61,8 @@
       </ITEMS>
     </PARAMETER>
 
+ -->
+
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
@@ -69,12 +70,12 @@
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
-<!-- 
         <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
+<!-- 
         <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
         <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
-        <ITEM NAME="DELETE"           VALUE="DELETE"/>
  -->        
+        <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
 
@@ -83,11 +84,10 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"
     >
-      <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
@@ -95,7 +95,7 @@
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
-      <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="true" />
+      <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    

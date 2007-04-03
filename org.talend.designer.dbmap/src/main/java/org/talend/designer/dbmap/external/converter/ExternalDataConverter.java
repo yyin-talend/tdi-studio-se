@@ -146,42 +146,16 @@ public class ExternalDataConverter {
                 outputTable.initFromExternalData(persistentTable);
             } else {
                 ExternalDbMapTable persistentTable = nameToOutpuPersistentTable.get(table.getTableName());
-                outputTable = new OutputTable(this.mapperManager, table, persistentTable.getName(), persistentTable
-                        .getTableName());
-                outputTable.initFromExternalData(persistentTable);
+                if (persistentTable != null) {
+                    outputTable = new OutputTable(this.mapperManager, table, persistentTable.getName(), persistentTable
+                            .getTableName());
+                    outputTable.initFromExternalData(persistentTable);
+                }
             }
-            outputDataMapTables.add(outputTable);
+            if(outputTable != null) {
+                outputDataMapTables.add(outputTable);
+            }
         }
-
-        // ArrayList<OutputTable> outputDataMapTables = new ArrayList<OutputTable>();
-        //
-        // Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
-        // for (IOConnection connection : outputConnections) {
-        // nameToConnection.put(connection.getName(), connection);
-        // }
-        // ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(outputConnections);
-        // if (externalData != null) {
-        //
-        // for (ExternalDbMapTable persistentTable : externalData.getOutputTables()) {
-        // String uniqueName = persistentTable.getName();
-        // persistentTable.ge
-        // IOConnection connection = nameToConnection.get(uniqueName);
-        // if (connection != null) {
-        // remainingConnections.remove(connection);
-        // }
-        //
-        // OutputTable outputTable = new OutputTable(this.mapperManager, persistentTable.get(), persistentTable
-        // .getName(), persistentTable.getTableName());
-        // outputTable.initFromExternalData(persistentTable);
-        // outputDataMapTables.add(outputTable);
-        // }
-        // }
-        // for (IOConnection connection : remainingConnections) {
-        // OutputTable outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection
-        // .getUniqueName(), connection.getName());
-        // outputTable.initFromExternalData(null);
-        // outputDataMapTables.add(outputTable);
-        // }
 
         return outputDataMapTables;
     }
@@ -208,22 +182,25 @@ public class ExternalDataConverter {
             }
 
         } else {
+            ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(inputConnections);
             for (ExternalDbMapTable persistentTable : externalData.getInputTables()) {
                 String name = persistentTable.getTableName() != null ? persistentTable.getTableName() : persistentTable
                         .getName();
                 IOConnection connection = nameToConnection.get(name);
                 if (connection != null) {
+                    remainingConnections.remove(connection);
                     InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                     inputTable.initFromExternalData(persistentTable);
                     inputDataMapTables.add(inputTable);
                 }
             }
+            for (IOConnection connection : remainingConnections) {
+                InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
+                inputTable.initFromExternalData(null);
+                inputDataMapTables.add(inputTable);
+            }
 
         }
-
-        // for (IOConnection connection : remainingConnections) {
-        // inputDataMapTables.add(new InputTable(this.mapperManager, connection, connection.getName()));
-        // }
 
         // sort for put table with main connection at top position of the list
         Collections.sort(inputDataMapTables, new Comparator<InputTable>() {

@@ -103,12 +103,13 @@
 
     <PARAMETER
       NAME="ENCODING"
-      FIELD="TEXT"
+      FIELD="ENCODING_TYPE"
       NUM_ROW="5"
       REQUIRED="true"
     >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+
  
 
       <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="6">

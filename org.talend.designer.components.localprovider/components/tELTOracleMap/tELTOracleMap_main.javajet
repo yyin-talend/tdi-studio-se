@@ -1,0 +1,65 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+	
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	
+    java.util.List
+	org.talend.core.model.process.AbstractExternalNode
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IExternalNode
+	org.talend.designer.dbmap.MapperMain
+	org.talend.designer.dbmap.external.data.ExternalDbMapData
+	org.talend.designer.dbmap.external.data.ExternalDbMapTable
+	org.talend.designer.dbmap.language.IDbLanguage
+	org.talend.designer.dbmap.oracle.OracleMapperComponent
+	org.talend.designer.dbmap.oracle.language.OracleGenerationManager
+
+		java.util.Set
+		java.util.HashSet
+	" 
+	class="ELTOracleMapMain" %>
+<%
+
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	OracleMapperComponent node = (OracleMapperComponent) codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics(); 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+        OracleGenerationManager gm = new OracleGenerationManager();
+        String uniqueNameComponent = null;
+        IDbLanguage currentLanguage = gm.getLanguage();
+        List<IConnection> connections;
+        ExternalDbMapData data;
+        connections = (List<IConnection>) node.getIncomingConnections();
+        data = (ExternalDbMapData) node.getExternalData();
+        uniqueNameComponent = node.getUniqueName();
+
+        List<ExternalDbMapTable> outputTables = data.getOutputTables();
+
+
+		  Set tablesProcessed = new HashSet<String>();
+        int lstOutputTablesSize = outputTables.size();
+        for (int i = 0; i < lstOutputTablesSize; i++) {
+            ExternalDbMapTable outputTable = outputTables.get(i);
+            String sqlQuery = gm.buildSqlSelect((OracleMapperComponent) node, outputTable.getName());
+            
+				%>
+
+				globalMap.put(
+					"<%=uniqueNameComponent %>"+"QUERY" + "<%= outputTable.getTableName() %>",
+					"<%= sqlQuery.replaceAll("\n", " ") %>"
+				);
+				<%
+				if(!tablesProcessed.contains(outputTable.getTableName())) {
+				%>
+					Object <%= outputTable.getTableName() %> = new Object();
+				<%
+				}
+				tablesProcessed.add(outputTable.getTableName());
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+%>

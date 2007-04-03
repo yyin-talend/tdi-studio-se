@@ -33,6 +33,9 @@
   </CONNECTORS>
 
   <PARAMETERS>
+  
+  <!-- 
+  
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -61,6 +64,8 @@
         />
       </ITEMS>
     </PARAMETER>
+ -->
+
 
     <PARAMETER
       NAME="DATA_ACTION"
@@ -83,11 +88,11 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

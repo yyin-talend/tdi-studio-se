@@ -335,8 +335,8 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
         if (externalData != null) {
             List<ExternalDbMapTable> outputTables = externalData.getOutputTables();
             for (ExternalDbMapTable table : outputTables) {
-                if (table.getName().equals(oldName)) {
-                    table.setName(newName);
+                if (table.getTableName().equals(oldName)) {
+                    table.setTableName(newName);
                     break;
                 }
             }
