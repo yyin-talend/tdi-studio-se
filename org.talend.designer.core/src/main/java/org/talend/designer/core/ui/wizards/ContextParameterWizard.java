@@ -78,7 +78,7 @@ public class ContextParameterWizard extends Wizard {
     @Override
     public boolean performFinish() {
         for (IContext context : contextManager.getListContext()) {
-            context.getContextParameterList().add(parameter);
+            context.getContextParameterList().add(parameter.clone());
         }
         contextManager.fireContextsChangedEvent();
         return true;
