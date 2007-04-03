@@ -70,7 +70,7 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
 
     private String loopQuery;
 
-    private String loopLimit;
+    private Integer loopLimit;
 
     private List<Map<String, String>> mapping;
 
@@ -331,7 +331,7 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
      * 
      * @return the loopQuery
      */
-    public String getLoopLimit() {
+    public Integer getLoopLimit() {
         return this.loopLimit;
     }
 
@@ -340,7 +340,7 @@ public abstract class AbstractProcessDescription implements IProcessDescription 
      * 
      * @param loopLimit the loopLimit to set
      */
-    public void setLoopLimit(String loopLimit) {
+    public void setLoopLimit(Integer loopLimit) {
         this.loopLimit = loopLimit;
     }
 

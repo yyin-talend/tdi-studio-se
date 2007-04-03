@@ -124,7 +124,7 @@ public class ShadowProcessHelper {
                 && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()) //$NON-NLS-1$
                 && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
             processDescription
-                    .setLoopLimit(TalendTextUtils.addQuotes(""+((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle())); //$NON-NLS-1$ //$NON-NLS-2$
+                    .setLoopLimit(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
