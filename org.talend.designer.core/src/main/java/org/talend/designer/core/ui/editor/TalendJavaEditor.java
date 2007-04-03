@@ -56,7 +56,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
     private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
 
-//    private  boolean isLatestCodeInFile;
+    // private boolean isLatestCodeInFile;
 
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
@@ -116,12 +116,17 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     public void validateSyntax() {
         // check if the validation is on the active editor
-        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (!(part instanceof MultiPageTalendEditor)) {
-            return;
-        }
-        MultiPageTalendEditor multi = (MultiPageTalendEditor) part;
-        if (!multi.getCodeEditor().equals(this)) {
+        try {
+            IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+
+            if (!(part instanceof MultiPageTalendEditor)) {
+                return;
+            }
+            MultiPageTalendEditor multi = (MultiPageTalendEditor) part;
+            if (!multi.getCodeEditor().equals(this)) {
+                return;
+            }
+        } catch (NullPointerException e) {
             return;
         }
 
@@ -200,12 +205,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     @Override
     public void doSave(IProgressMonitor progressMonitor) {
-//        if (!isLatestCodeInFile) {
-//            isLatestCodeInFile = true;
-//            for (MultiPageTalendEditor element : this.editPartListener) {
-//                element.codeSync();
-//            }
-//        }
+        // if (!isLatestCodeInFile) {
+        // isLatestCodeInFile = true;
+        // for (MultiPageTalendEditor element : this.editPartListener) {
+        // element.codeSync();
+        // }
+        // }
         super.doSave(progressMonitor);
     }
 }
