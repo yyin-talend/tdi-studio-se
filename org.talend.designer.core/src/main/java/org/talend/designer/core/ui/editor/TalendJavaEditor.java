@@ -56,6 +56,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
     private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
 
+    private boolean closing = false;
+
     // private boolean isLatestCodeInFile;
 
     /**
@@ -213,4 +215,47 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         // }
         super.doSave(progressMonitor);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#rememberSelection()
+     */
+    @Override
+    protected void rememberSelection() {
+        if (!isClosing()) {
+            super.rememberSelection();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#restoreSelection()
+     */
+    @Override
+    protected void restoreSelection() {
+        if (!isClosing()) {
+            super.restoreSelection();
+        }
+    }
+
+    /**
+     * Getter for closing.
+     * 
+     * @return the closing
+     */
+    public boolean isClosing() {
+        return closing;
+    }
+
+    /**
+     * Sets the closing.
+     * 
+     * @param closing the closing to set
+     */
+    public void setClosing(boolean closing) {
+        this.closing = closing;
+    }
+
 }

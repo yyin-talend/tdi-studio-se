@@ -150,7 +150,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
         IProcess process = designerEditor.getProcess();
-        IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
+        IProcessor processor = ProcessorUtilities
+                .getProcessor(process, process.getContextManager().getDefaultContext());
 
         if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
             processor.setProcessorStates(IProcessor.STATES_EDIT);
@@ -213,6 +214,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        if (this.codeEditor instanceof TalendJavaEditor) {
+            ((TalendJavaEditor) codeEditor).setClosing(true);
+        }
         codeSync();
         if (this.codeEditor instanceof TalendJavaEditor) {
             ((TalendJavaEditor) codeEditor).removeEditorPart(this);
@@ -369,7 +373,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
-                // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"),
+                // ErrorDialog.openError(getSite().getShell(),
+                // Messages.getString("MultiPageTalendEditor.Designer.Error"),
                 // //$NON-NLS-1$
                 // pe.getMessage(), null);
             }
@@ -401,11 +406,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void setName() {
         String label = getEditorInput().getName();
-//        if (getActivePage() == 1) {
-            setPartName(Messages.getString("MultiPageTalendEditor.Job", label)); //$NON-NLS-1$
-//        } else {
-//            setPartName(Messages.getString("other Label??", label)); //$NON-NLS-1$
-//        }
+        // if (getActivePage() == 1) {
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label)); //$NON-NLS-1$
+        // } else {
+        // setPartName(Messages.getString("other Label??", label)); //$NON-NLS-1$
+        // }
     }
 
     /**
