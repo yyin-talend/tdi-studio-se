@@ -403,23 +403,27 @@
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametDBInputToOracleMigrationTask"
+            description="%migrationtask.renametDbInputToOracle.description"
             id="org.talend.repository.migration.renametDbInputToOracle"
-            name="Rename tDBxxTotOraclexx"/>
+            name="%migrationtask.renametDbInputToOracle.title"/>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametDBInputToMySQLMigrationTask"
+            description="%migrationtask.renametDbInputToMySQL.description"
             id="org.talend.repository.migration.renametDbInputToMySQL"
-            name="Rename tDBxxTotMySQLxx"/>
+            name="%migrationtask.renametDbInputToMySQL.title"/>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametDBInputToPostgresqlMigrationTask"
+            description="%migrationtask.renametDbInputToPostgresql.description"
             id="org.talend.repository.migration.renametDbInputToPostgresql"
-            name="Rename tDBxxTotPostgresqlxx"/>
+            name="%migrationtask.renametDbInputToPostgresql.title"/>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenametDBInputToMssqlMigrationTask"
+            description="%migrationtask.renametDbInputToMssql.description"
             id="org.talend.repository.migration.renametDbInputToMssql"
-            name="Rename tDBxxTotMssqlxx"/>
+            name="%migrationtask.renametDbInputToMssql.title"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
