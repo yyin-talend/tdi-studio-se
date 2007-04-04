@@ -96,11 +96,11 @@ public final class ImportDemoProjectAction extends Action {
                     if (perl) {
                         archivePath = "resources/TALENDDEMOSPERL.zip"; //$NON-NLS-1$
                         techName = "TALENDDEMOSPERL"; //$NON-NLS-1$
-                        lastImportedName = "TalendDemos"; //$NON-NLS-1$
+                        lastImportedName = "TALENDDEMOSPERL"; //$NON-NLS-1$
                     } else {
                         archivePath = "resources/TALENDDEMOSJAVA.zip"; //$NON-NLS-1$
                         techName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
-                        lastImportedName = "talendDemosJava"; //$NON-NLS-1$
+                        lastImportedName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
                     }
 
                     Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
