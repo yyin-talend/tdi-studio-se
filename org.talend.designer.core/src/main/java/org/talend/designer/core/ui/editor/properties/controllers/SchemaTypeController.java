@@ -615,23 +615,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 combo.setItems(paramItems);
             }
             combo.setText(strValue);
-
-            IMetadataTable table = (IMetadataTable) dynamicTabbedPropertySection.getRepositoryTableMap().get(value);
-            if (table != null) {
-                table = table.clone();
-                Node node;
-                if (elem instanceof Node) {
-                    node = (Node) elem;
-                } else { // else instanceof Connection
-                    node = ((Connection) elem).getSource();
-                }
-                table.setTableName(node.getMetadataList().get(0).getTableName());
-                if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                    cmd.setRepositoryMode(true);
-                    cmd.execute();
-                }
-            }
         }
     }
 

@@ -44,7 +44,7 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
-import org.talend.core.model.process.EConnectionCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -161,7 +161,7 @@ public class ChangeMetadataCommand extends Command {
     private void initializeContainer() {
         dataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-            if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                 IODataComponent input = null;
                 if (newInputMetadata == null) {
                     input = new IODataComponent(connec);
@@ -177,7 +177,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-            if (connec.isActivate() && (connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN))) {
+            if (connec.isActivate() && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                            EConnectionType.FLOW_REF))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
