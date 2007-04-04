@@ -205,16 +205,16 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
         }
 
-        Button refreshBtn;
-        refreshBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        refreshBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-        refreshBtn.setImage(CorePlugin.getImageDescriptor(REFRESH_BUTTON).createImage());
-
-        refreshBtn.addSelectionListener(listenerSelection);
-        refreshBtn.setData(NAME, COLUMN);
-        refreshBtn.setData(PROPERTY, param.getName());
-        refreshBtn.setEnabled(!param.isReadOnly());
+//        Button refreshBtn;
+//        refreshBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+//        refreshBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+//
+////        refreshBtn.setImage(CorePlugin.getImageDescriptor(REFRESH_BUTTON).createImage());
+//
+//        refreshBtn.addSelectionListener(listenerSelection);
+//        refreshBtn.setData(NAME, COLUMN);
+//        refreshBtn.setData(PROPERTY, param.getName());
+//        refreshBtn.setEnabled(!param.isReadOnly());
 
         IControlCreator cbCtrl = new IControlCreator() {
 
@@ -278,19 +278,19 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         cLayout.setLayoutData(data);
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        data = new FormData();
-        data.left = new FormAttachment(cLayout, 0, SWT.RIGHT);
-        data.top = new FormAttachment(0, top);
-        data.height = initialSize.y;
-
-        refreshBtn.setLayoutData(data);
+//        data = new FormData();
+//        data.left = new FormAttachment(cLayout, 0, SWT.RIGHT);
+//        data.top = new FormAttachment(0, top);
+//        data.height = initialSize.y;
+//
+//        refreshBtn.setLayoutData(data);
 
         // **********************
         hashCurControls.put(param.getName(), combo);
         this.dynamicTabbedPropertySection.updateColumnList(null);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        return refreshBtn;
+        return combo;
     }
 
     /*
