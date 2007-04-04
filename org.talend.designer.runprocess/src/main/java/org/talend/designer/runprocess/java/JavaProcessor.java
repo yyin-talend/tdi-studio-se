@@ -98,9 +98,6 @@ import org.talend.designer.runprocess.perl.PerlUtils;
  */
 public class JavaProcessor extends Processor {
 
-    /** Process to be turned in JAVA code. */
-    private IProcess process;
-
     /** The project contains the java project. */
     private IProject project;
 
@@ -146,8 +143,7 @@ public class JavaProcessor extends Processor {
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
     public JavaProcessor(IProcess process, boolean filenameFromLabel) {
-        super();
-
+        super(process);
         this.process = process;
         this.filenameFromLabel = filenameFromLabel;
         setProcessorStates(STATES_RUNTIME);
