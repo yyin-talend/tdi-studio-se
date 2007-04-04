@@ -664,14 +664,23 @@ public class Node extends Element implements INode {
     public boolean isSubProcessStart() {
         Connection connec;
         if (isActivate()) {
-            for (int j = 0; j < getIncomingConnections().size(); j++) {
-                connec = (Connection) getIncomingConnections().get(j);
-                if (connec.isActivate()
-                        && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                                EConnectionType.ITERATE)))) {
-                    return false;
+            if (isStart()) {
+                return true;
+            } else if (getIncomingConnections().size() == 0) {
+                return false;
+            } else {
+                for (int j = 0; j < getIncomingConnections().size(); j++) {
+                    connec = (Connection) getIncomingConnections().get(j);
+                    if (connec.isActivate()
+                            && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                                    || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle()
+                                    .equals(EConnectionType.TABLE)))) {
+                        return false;
+                    }
                 }
             }
+        } else {
+            return false;
         }
         return true;
     }

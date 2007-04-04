@@ -46,7 +46,7 @@
 $_globals{<%=uniqueNameComponent %>}{QUERY}{<%= outputTable.getName() %>} = 
 "<%= sqlQuery %>"
 ;
-$branch_<%= outputTable.getName() %>_is_active = true;
+$branch_<%= outputTable.getTableName() %>_is_active = true;
 
 
 <%
