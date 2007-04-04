@@ -667,6 +667,15 @@ public class Node extends Element implements INode {
             if (isStart()) {
                 return true;
             } else if (getIncomingConnections().size() == 0) {
+                if (getOutgoingConnections().size() > 0) {
+                    for (int j = 0; j < getOutgoingConnections().size(); j++) {
+                        connec = (Connection) getOutgoingConnections().get(j);
+                        if (connec.isActivate()
+                                && (connec.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                            return true;
+                        }
+                    }
+                }
                 return false;
             } else {
                 for (int j = 0; j < getIncomingConnections().size(); j++) {
