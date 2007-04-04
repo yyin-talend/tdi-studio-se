@@ -1,0 +1,216 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="OracleBulkExecBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+   IMetadataTable metadata = metadatas.get(0);
+   if (metadata!=null) {
+       String filename = ElementParameterParser.getValue(node, "__DATA__");
+       String dbuser   = ElementParameterParser.getValue(node, "__USER__");
+       String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
+       String table    = ElementParameterParser.getValue(node, "__TABLE__");
+       String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
+       String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+       String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
+       
+       String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+       encoding= encoding.toUpperCase();
+       if(encoding.equals("\"UTF-8\"")){
+            encoding = "'UTF8'";
+       }else if(encoding.equals("\"ISO-8859-15\"")){
+       		encoding = "'WE8ISO8859P15'";
+       }else if(encoding.equals("\"GBK\"")){
+       		encoding = "'ZHS16GBK'";
+       }else if(encoding.equals("\"GB2312\"")){
+       		encoding = "'ZHS16CGB231280'";//ZHS16MACCGB231280 ?
+       }else if(encoding.equals("\"BIG5\"")){
+       		encoding = "'ZHT16BIG5'";
+       } else {
+       //will be enhanced later, now default with utf-16
+       		encoding = "'AL16UTF16'";
+       }
+       String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+%>
+
+java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
+
+String dbUser_<%=cid %> = <%=dbuser%>;
+
+String dbPwd_<%=cid %> = <%=dbpass%>;
+
+String enclosure_<%=cid %> = <%if(fields_enclosed_by.equals("\"\"\"")){%>"\""<%}else{%><%=fields_enclosed_by %><%}%>;
+
+StringBuilder service_name_<%=cid %> = new StringBuilder();
+
+service_name_<%=cid %>.append("(description=(address=(protocol=tcp)(host=");
+
+service_name_<%=cid %>.append(<%=ElementParameterParser.getValue(node, "__HOST__") %>);
+
+service_name_<%=cid %>.append(")(port=");
+
+service_name_<%=cid %>.append(<%=ElementParameterParser.getValue(node, "__PORT__") %>);
+
+service_name_<%=cid %>.append("))(connect_data=(service_name=");
+
+service_name_<%=cid %>.append(<%=ElementParameterParser.getValue(node, "__DBNAME__") %>);
+
+service_name_<%=cid %>.append(")))");
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection("jdbc:oracle:thin:@"+service_name_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+
+java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select * from "+<%=table %>+" where 1=2");
+
+java.sql.ResultSetMetaData rsm_<%=cid %> = rs_<%=cid %>.getMetaData();
+
+int colCount_<%=cid %> = rsm_<%=cid %>.getColumnCount();
+
+StringBuilder sb_<%=cid %> = new StringBuilder();
+
+sb_<%=cid %>.append("(");
+
+for (int i = 1; i <= colCount_<%=cid %>; i++) {
+
+	sb_<%=cid %>.append(rsm_<%=cid %>.getColumnName(i));
+
+	if(i < colCount_<%=cid %>){
+	
+		sb_<%=cid %>.append(", ");
+	
+	}	
+}
+
+sb_<%=cid %>.append(")");
+
+String cltf_<%=cid %> = <%=filename %>+".clt";
+
+String badf_<%=cid %> = <%=filename %>+".bad";
+
+String dscf_<%=cid %> = <%=filename %>+".dsc";
+
+String logf_<%=cid %> = <%=filename %>+".log";
+
+java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(cltf_<%=cid %>);
+        
+fw_<%=cid %>.write("LOAD DATA\r\nCHARACTERSET <%=encoding %>\r\n" +
+                "<%=data_action %> INTO TABLE "+<%=table %>+
+                "\r\nFIELDS TERMINATED BY \""+<%=fields_terminated_by %>+
+                "\"\r\nOPTIONALLY ENCLOSED BY '"+enclosure_<%=cid %>+"'\r\n"+
+                sb_<%=cid %>);
+                
+fw_<%=cid %>.close();
+
+java.io.File badFile_<%=cid %> = new java.io.File(badf_<%=cid %>);
+
+if(badFile_<%=cid %>.exists()){
+
+	badFile_<%=cid %>.delete();
+
+}
+
+String command_<%=cid %> = "sqlldr '"+ <%=dbuser %>+"/"+<%=dbpass %>+"@"+service_name_<%=cid %>+"' DATA='"+<%=filename %>+"', CONTROL='"+cltf_<%=cid %>+"', BAD='"+badf_<%=cid %>+"', DISCARD='"+dscf_<%=cid %>+"', LOG='"+logf_<%=cid %>+"'";
+
+final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>); 
+
+Thread normal_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getInputStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.out.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+
+normal_<%=cid %>.start();
+
+Thread error_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(process_<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.err.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+
+error_<%=cid %>.start();
+
+process_<%=cid %>.waitFor();
+
+normal_<%=cid %>.interrupt();
+
+error_<%=cid %>.interrupt();
+
+int nb_line_data_<%=cid %> = (int)(com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=fields_terminated_by %>, "\n", false).getAvailableRowCount(0));
+
+int nb_line_bad_<%=cid %> = 0;
+
+if(new java.io.File(badf_<%=cid %>).exists()){
+	
+	nb_line_bad_<%=cid %> = (int)(com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(badf_<%=cid %>, <%=fields_terminated_by %>, "\n", false).getAvailableRowCount(0));
+	
+}
+
+globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_data_<%=cid %>);
+
+globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_bad_<%=cid %>);
+
+globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_data_<%=cid %> - nb_line_bad_<%=cid %>);
+
+<%
+    }
+}
+%>
+
+
