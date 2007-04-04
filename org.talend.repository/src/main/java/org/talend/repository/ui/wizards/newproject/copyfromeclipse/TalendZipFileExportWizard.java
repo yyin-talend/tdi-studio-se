@@ -70,4 +70,8 @@ public class TalendZipFileExportWizard extends ZipFileExportWizard {
         mainPage = new TalendWizardArchiveFileResourceExportPage1(selection);
         addPage(mainPage);
     }
+    
+    public boolean performFinish() {
+        return mainPage.finish();
+    }
 }
