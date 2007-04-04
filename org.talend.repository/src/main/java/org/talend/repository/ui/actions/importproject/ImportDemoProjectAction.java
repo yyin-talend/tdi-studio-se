@@ -76,9 +76,9 @@ public final class ImportDemoProjectAction extends Action {
     }
 
     public void run() {
-        final Boolean perl = !openJavaOrPerl(shell);
+        final Boolean java = openJavaOrPerl(shell);
 
-        if (perl == null) {
+        if (java == null) {
             return;
         }
 
@@ -93,14 +93,14 @@ public final class ImportDemoProjectAction extends Action {
                 try {
                     String archivePath;
                     String techName;
-                    if (perl) {
-                        archivePath = "resources/TALENDDEMOSPERL.zip"; //$NON-NLS-1$
-                        techName = "TALENDDEMOSPERL"; //$NON-NLS-1$
-                        lastImportedName = "TALENDDEMOSPERL"; //$NON-NLS-1$
-                    } else {
+                    if (java) {
                         archivePath = "resources/TALENDDEMOSJAVA.zip"; //$NON-NLS-1$
                         techName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
                         lastImportedName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
+                    } else {
+                        archivePath = "resources/TALENDDEMOSPERL.zip"; //$NON-NLS-1$
+                        techName = "TALENDDEMOSPERL"; //$NON-NLS-1$
+                        lastImportedName = "TALENDDEMOSPERL"; //$NON-NLS-1$
                     }
 
                     Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
