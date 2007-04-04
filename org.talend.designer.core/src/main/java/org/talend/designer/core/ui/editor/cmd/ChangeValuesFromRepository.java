@@ -25,14 +25,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -248,6 +253,33 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             }
                         }
                     }
+                } else {
+                    IODataComponent input = null;
+                    List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
+                    incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) ((Node) elem)
+                            .getIncomingConnections();
+                    for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
+                        if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+                            input = new IODataComponent(connec);
+                        }
+                    }
+                    if (input != null) {
+                        INode source = input.getSource();
+                        IMetadataTable sourceMetadataTable = source.getMetadataList().get(0);
+                        if (getTake()) {
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null, sourceMetadataTable);
+                            cmd.execute(true);
+                            if (source instanceof Node) {
+                                Node sourceNode = (Node) source;
+                                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceNode
+                                        .getPropertyValue(EParameterName.SCHEMA_TYPE.getName()));
+                                if (sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+                                    elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
+                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
+                                }
+                            }
+                        }
+                    }
                 }
                 if (queriesmap != null
                         && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
@@ -256,6 +288,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
+    }
+
+    /**
+     * qzhang Comment method "getTake".
+     * 
+     * @return
+     */
+    private boolean getTake() {
+        Boolean take = MessageDialog.openQuestion(new Shell(), Messages
+                .getString("ChangeValuesFromRepository.messageDialog.take"), Messages
+                .getString("ChangeValuesFromRepository.messageDialog.takeMessage"));
+        return take;
     }
 
     @Override
