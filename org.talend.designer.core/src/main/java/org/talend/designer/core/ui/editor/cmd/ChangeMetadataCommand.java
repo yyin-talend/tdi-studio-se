@@ -34,10 +34,6 @@ import org.eclipse.ui.internal.views.properties.tabbed.view.Tab;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
@@ -98,8 +94,8 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
-            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
+            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
@@ -441,7 +437,8 @@ public class ChangeMetadataCommand extends Command {
         String enter = "\n";
         String space = " ";
         query.append("SELECT").append(space);
-        String tableNameForColumnSuffix = getColumnName(repositoryMetadata.getTableName(), dbType) + ".";
+
+        String tableNameForColumnSuffix = getColumnName(getTableName(repositoryMetadata, schema, dbType), dbType) + ".";
 
         for (int i = 0; i < metaDataColumnList.size(); i++) {
             IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
@@ -452,7 +449,7 @@ public class ChangeMetadataCommand extends Command {
                 query.append(tableNameForColumnSuffix).append(columnName).append(space);
             }
         }
-        query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata.getTableName(), schema, dbType));
+        query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata, schema, dbType));
 
         return query.toString();
     }
@@ -464,44 +461,36 @@ public class ChangeMetadataCommand extends Command {
      * @param schema
      * @return
      */
-    private String getTableName(String tableName, String schema, String dbType) {
-        String currentTableName = tableName;
+    private String getTableName(IMetadataTable repositoryMetadata, String schema, String dbType) {
+        String currentTableName = repositoryMetadata.getTableName();
+        if (currentTableName == null) {
+            currentTableName = repositoryMetadata.getProperty().getLabel();
+            return currentTableName;
+        }
         if (schema != null && schema.length() > 0) {
             if (dbType.equalsIgnoreCase("PostgreSQL")) {
-                currentTableName = "\"" + schema + "\"" + "." + "\"" + tableName + "\"";
+                currentTableName = "\"" + schema + "\"" + "." + "\"" + currentTableName + "\"";
                 return currentTableName;
             }
         }
-        return tableName;
+        return currentTableName;
     }
 
     /**
      * Checks if database type is Postgres, add quoutes around column name.
      * 
-     * @param columnName
+     * @param name
      * @param dbType
      * @return
      */
-    private String getColumnName(String columnName, String dbType) {
-        String columnNameAfterChanged;
+    private String getColumnName(String name, String dbType) {
+        String nameAfterChanged;
         if (!dbType.equalsIgnoreCase("PostgreSQL")) {
-            columnNameAfterChanged = columnName;
+            nameAfterChanged = name;
         } else {
-            columnNameAfterChanged = "\"" + columnName + "\"";
+            nameAfterChanged = "\"" + name + "\"";
         }
-        return columnNameAfterChanged;
-    }
-
-    /**
-     * Checks project type(perl or java).
-     * 
-     * @return
-     */
-    private static boolean isJavaProject() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
-        return (codeLanguage == ECodeLanguage.JAVA);
+        return nameAfterChanged;
     }
 
     /**
