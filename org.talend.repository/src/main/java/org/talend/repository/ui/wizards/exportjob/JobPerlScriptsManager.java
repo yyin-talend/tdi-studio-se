@@ -83,30 +83,27 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
                     escapeSpace(launcher)));
 
-            if (i == 0) { // i = 0 to export only once
-                // Gets system routines.
-                List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
-                if (systemRoutineList.size() > 0) {
+            // Gets system routines.
+            List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+            if (systemRoutineList.size() > 0) {
+                process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+                        + File.separatorChar + SYSTEM_ROUTINES_FOLDER_NAME, systemRoutineList);
+            }
+            // Gets user routines.
+            try {
+                List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+                if (userRoutineList.size() > 0) {
                     process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar
-                            + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + SYSTEM_ROUTINES_FOLDER_NAME,
-                            systemRoutineList);
+                            + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar + this.getCurrentProjectName(),
+                            userRoutineList);
                 }
-                // Gets user routines.
-                try {
-                    List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
-                    if (userRoutineList.size() > 0) {
-                        process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar
-                                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + File.separatorChar
-                                + this.getCurrentProjectName(), userRoutineList);
-                    }
-                } catch (MalformedURLException e) {
-                    ExceptionHandler.process(e);
-                }
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            }
 
-                List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
-                if (talendLibraries.size() > 0) {
-                    process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar + "talend", talendLibraries);
-                }
+            List<URL> talendLibraries = getTalendLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
+            if (talendLibraries.size() > 0) {
+                process[i].addResources(LIBRARY_FOLDER_NAME + File.separatorChar + "talend", talendLibraries);
             }
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
@@ -338,8 +335,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
         }
     }
-
-   
 
     /**
      * Gets context scripts.
