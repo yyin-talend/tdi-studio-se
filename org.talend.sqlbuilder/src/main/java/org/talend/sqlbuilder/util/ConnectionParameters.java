@@ -43,6 +43,8 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    private boolean showDesignerPage = false;
+    
     private boolean isNeedTakePrompt = true;
     
     private static boolean isNodeReadOnly;
@@ -501,6 +503,16 @@ public class ConnectionParameters {
     
     public void setNeedTakePrompt(boolean isNeedTakePrompt) {
         this.isNeedTakePrompt = isNeedTakePrompt;
+    }
+
+    
+    public boolean isShowDesignerPage() {
+        return this.showDesignerPage;
+    }
+
+    
+    public void setShowDesignerPage(boolean showDesignerPage) {
+        this.showDesignerPage = showDesignerPage;
     }
 
 }

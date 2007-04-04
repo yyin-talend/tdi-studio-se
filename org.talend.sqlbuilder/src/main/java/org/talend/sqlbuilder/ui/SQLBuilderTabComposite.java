@@ -194,7 +194,7 @@ public class SQLBuilderTabComposite extends Composite {
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
         builderEditor.setSqlText(queryStr);
-        if (!nodesSel.isEmpty() && "".equals(queryStr)) {
+        if (connParam.isShowDesignerPage()) {
             builderEditor.showDesignerPage();
         }
         // set new tab as the active one.

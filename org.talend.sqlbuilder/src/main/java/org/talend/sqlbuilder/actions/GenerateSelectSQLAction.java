@@ -137,6 +137,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             ConnectionParameters connParam = new ConnectionParameters();
             connParam.setQuery("");
             connParam.setNeedTakePrompt(false);
+            connParam.setShowDesignerPage(true);
             dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
                     isDefaultEditor, selectedNodes);
         } catch (Throwable e) {

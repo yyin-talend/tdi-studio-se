@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class BuildInDBStructure extends SashForm {
 
     private IMetadataConnection parentMetadata;
 
-    private static final String DEFAULT_SCHEMA = "MySchema";
+    private String schema = "MySchema";
 
     private ConnectionParameters connectionParameters;
 
@@ -92,6 +93,9 @@ public class BuildInDBStructure extends SashForm {
         this.dialog = dialog;
         this.metadataTable = connectionParameters.getMetadataTable();
         this.connectionParameters = connectionParameters;
+        schema = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals("")) ? connectionParameters
+                .getSchemaName()
+                : schema;
         addCompnoents();
         setWeights(new int[] { 1, 2 });
     }
@@ -217,10 +221,14 @@ public class BuildInDBStructure extends SashForm {
          */
         @Override
         public void run() {
+
             CTabItem item = dialog.getEditorComposite().getTabFolder().getItem(0);
             CTabItem item2 = ((CTabFolder) item.getControl()).getItem(0);
             SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) item2.getControl();
-            editorComposite.setEditorContent(getSchemaSql());
+            editorComposite.getRepositoryNode();
+            connectionParameters.setQuery(getSchemaSql());
+            dialog.openEditor(editorComposite.getRepositoryNode(), Arrays.asList((new String[] { editorComposite
+                    .getRepositoryName() })), connectionParameters, false);
         }
 
         /**
@@ -231,10 +239,10 @@ public class BuildInDBStructure extends SashForm {
         private String getSchemaSql() {
             String sql = "select ";
             for (IMetadataColumn column : selectedNodes) {
-                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel()) + ", ";
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel(), schema) + ", ";
             }
             sql = sql.substring(0, sql.length() - 2);
-            sql += "\nfrom " + TextUtil.addSqlQuots(connectionParameters.getDbType(), DEFAULT_SCHEMA);
+            sql += "\nfrom " + TextUtil.addSqlQuots(connectionParameters.getDbType(), schema, connectionParameters.getSchema());
             return sql;
         }
 
@@ -274,7 +282,7 @@ public class BuildInDBStructure extends SashForm {
             if (element instanceof IMetadataTable) {
                 // IMetadataTable metadataTable3 = (IMetadataTable) element;
                 // if (metadataTable3.getLabel() == null || "".equals(metadataTable3.getLabel())) {
-                return DEFAULT_SCHEMA;
+                return schema;
                 // } else {
                 // return metadataTable3.getLabel();
                 // }

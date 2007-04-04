@@ -167,9 +167,18 @@ public class TextUtil {
         return buffer.toString();
     }
 
-    public static String addSqlQuots(String dbType, String sql) {
+    public static String addSqlQuots(String dbType, String sql, String schema) {
         if (dbType.equals("PostgreSQL")) {
-            sql = "\"" + sql + "\"";
+            if (schema != null && !"".equals(schema)) {
+                sql = "\"" + schema + "\".\"" + sql + "\"";
+            } else {
+                sql = "\"" + sql + "\"";
+            }
+            
+        } else {
+            if (schema != null && !"".equals(schema)) {
+                sql = schema + "." + sql;
+            } 
         }
         return sql;
     }

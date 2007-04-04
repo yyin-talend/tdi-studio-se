@@ -197,6 +197,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
+        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            connParameters.setSchemaName(dynamicTabbedPropertySection.getRepositoryTableMap().get(
+                    elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName());
+        }
+        String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
+        connParameters.setSchema(schema);
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
@@ -217,8 +223,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setDbName(dbName);
 
             connParameters.setQuery(query);
-            String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
-            connParameters.setSchema(schema);
+            
 
             OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
                     getCommandStack());
