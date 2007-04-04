@@ -842,22 +842,24 @@ public class Node extends Element implements INode {
                     break;
                 case MEMO_SQL:
                     String currentQuery = param.getValue().toString().toUpperCase();
-                    currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
-                            currentQuery.indexOf("FROM"));
-                    String[] columnArray = currentQuery.split(",");
-                    int changedColumnSize = columnArray.length;
+                    if (currentQuery.contains("SELECT") && currentQuery.contains("FROM")) {
+                        currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
+                                currentQuery.indexOf("FROM"));
+                        String[] columnArray = currentQuery.split(",");
+                        int changedColumnSize = columnArray.length;
 
-                    IMetadataTable metaTable = this.getMetadataList().get(0);
-                    if (metaTable == null || metaTable.getListColumns() == null) {
-                        break;
-                    }
-                    int originColumnSize = metaTable.getListColumns().size();
+                        IMetadataTable metaTable = this.getMetadataList().get(0);
+                        if (metaTable == null || metaTable.getListColumns() == null) {
+                            break;
+                        }
+                        int originColumnSize = metaTable.getListColumns().size();
 
-                    if (changedColumnSize != originColumnSize) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + "): schema is different from the query.";
-                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                        if (changedColumnSize != originColumnSize) {
+                            String errorMessage = "Parameter (" + param.getDisplayName()
+                                    + "): schema is different from the query.";
+                            Problems.add(ProblemStatus.WARNING, this, errorMessage);
 
+                        }
                     }
                     break;
                 case CLOSED_LIST:
