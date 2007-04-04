@@ -273,6 +273,8 @@ UPDATE '.<%=dbtable%>.'
 <%}%>
 ';
 
+print "\n\n".$query."\n";
+
 my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
 <%
@@ -313,6 +315,8 @@ INSERT
   INTO '.<%=dbtable%>.'
   ('.$select_query. ')
 ';
+
+print "\n\n".$query."\n";
 
 my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 

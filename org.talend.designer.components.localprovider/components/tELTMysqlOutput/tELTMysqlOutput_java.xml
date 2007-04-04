@@ -34,7 +34,6 @@
 
   <PARAMETERS>
   
-  <!-- 
   
     <PARAMETER
       NAME="TABLE_ACTION"
@@ -46,6 +45,7 @@
           NAME="NONE"
           VALUE="NONE"
         />
+  <!-- 
         <ITEM
           NAME="DROP_CREATE"
           VALUE="DROP_CREATE"
@@ -62,9 +62,9 @@
           NAME="CLEAR"
           VALUE="CLEAR"
         />
+ -->
       </ITEMS>
     </PARAMETER>
- -->
 
 
     <PARAMETER
@@ -91,9 +91,11 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
+<!-- 
     <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+-->
 
   </PARAMETERS>
 

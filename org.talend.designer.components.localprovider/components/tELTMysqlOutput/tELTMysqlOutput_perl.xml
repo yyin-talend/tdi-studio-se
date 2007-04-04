@@ -86,9 +86,11 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+<!-- 
     <PARAMETER NAME="WHERE_CLAUSE" FIELD="MEMO" NUM_ROW="8">
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
+-->
 
   </PARAMETERS>
 

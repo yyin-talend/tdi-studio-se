@@ -31,7 +31,6 @@
   </CONNECTORS>
 
   <PARAMETERS>
-<!-- 
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
@@ -42,6 +41,7 @@
           NAME="NONE"
           VALUE="NONE"
         />
+<!-- 
         <ITEM
           NAME="DROP_CREATE"
           VALUE="DROP_CREATE"
@@ -58,10 +58,10 @@
           NAME="CLEAR"
           VALUE="CLEAR"
         />
+ -->
       </ITEMS>
     </PARAMETER>
 
- -->
 
     <PARAMETER
       NAME="DATA_ACTION"
