@@ -58,6 +58,10 @@ int nb_line_<%=cid%> = 0;
 
 StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 
+StringBuffer buffer_<%=cid%> = new StringBuffer();
+final int bufferRowQtys_<%=cid%> = 5000;            
+int rowCounter_<%=cid%> = 0;
+
 <%
 if (!split.equals("true")) {
 %>
@@ -74,6 +78,8 @@ java.io.BufferedWriter out_<%=cid%> = null;
 		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i]+">");		            
     }
     strBuffer_<%=cid%>.append("\n");
+    
+
     
 <%
     }
