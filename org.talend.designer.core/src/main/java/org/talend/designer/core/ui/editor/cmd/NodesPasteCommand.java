@@ -295,17 +295,13 @@ public class NodesPasteCommand extends Command {
                         metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
                     } else {
                         metaTableName = connection.getMetaName();
-
-                        // IMetadataTable metaTable = connection.getMetadataTable();
-                        // IMetadataTable newMetaTable = metaTable.clone();
-                        // newMetaTable.setTableName(metaTableName);
-                        // pastedSourceNode.getMetadataList().add(newMetaTable);
-
                     }
                     String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
                             + connection.getMetaName());
                     if (meta != null) {
-                        newConnectionName = meta;
+                        if (!connection.getLineStyle().equals(EConnectionType.TABLE)) {
+                            newConnectionName = meta;
+                        }
                         metaTableName = meta;
                     }
                     Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
