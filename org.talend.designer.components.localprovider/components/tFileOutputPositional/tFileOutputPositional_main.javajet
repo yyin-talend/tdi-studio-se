@@ -40,6 +40,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
 		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+%>
+				StringBuilder sb_<%=cid %> = new StringBuilder();
+<%
 			List<IMetadataColumn> columns = metadata.getListColumns();
 			int sizeColumns = columns.size();
 			for (int i = 0; i < sizeColumns; i++) {
@@ -47,7 +50,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				Map<String,String> format=formats.get(i);
 				
 				%>
-				
 				
 				
 				//get  and format output String begin
@@ -63,61 +65,60 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	if (tempLengthM<%=cid %> > <%=format.get("SIZE")%>) {
                     <%
                     if (format.get("KEEP").equals("\'A\'")) {%>
-                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>);
+                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
                     <%
-                    } else if (format.get("KEEP").equals("\'L\'")) {%>
-                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>);
+                    } else if (format.get("KEEP").equals("\'R\'")) {%>
+                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
                     <%
                     } else if (format.get("KEEP").equals("\'M\'")) {%>
                         int begin<%=cid %>=(tempLengthM<%=cid %>-<%=format.get("SIZE")%>)/2;
-                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
+                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>));
                     <%
                     } else {%>
-                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(0, <%=format.get("SIZE")%>);
+                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(0, <%=format.get("SIZE")%>));
                     <%
                     }%>
                 }else if(tempLengthM<%=cid %><<%=format.get("SIZE")%>){
-                    StringBuilder result<%=cid %> = new StringBuilder();
+                   
                     <%
                     if (format.get("ALIGN").equals("\'L\'")) {
                     %>
-                        result<%=cid %>.append(tempStringM<%=cid %>);
-                        for(int i=0; i< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i++){
-                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+                        sb_<%=cid %>.append(tempStringM<%=cid %>);
+                        for(int i_<%=cid %>=0; i_<%=cid %>< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i_<%=cid %>++){
+                            sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        tempStringM<%=cid %> = result<%=cid %>.toString();
+                        
                     <%
                     } else if (format.get("ALIGN").equals("\'R\'")) {%>
-                        for(int i=0; i< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i++){
-                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+                        for(int i_<%=cid %>=0; i_<%=cid %>< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i_<%=cid %>++){
+                            sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        result<%=cid %>.append(tempStringM<%=cid %>);
-                        tempStringM<%=cid %> = result<%=cid %>.toString();
+                        sb_<%=cid %>.append(tempStringM<%=cid %>);
+                        
                     <%
                     } else {%>
                         int temp<%=cid %>= (<%=format.get("SIZE")%>-tempLengthM<%=cid %>)/2;
-                        for(int i=0;i<temp<%=cid %>;i++){
-                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+                        for(int i_<%=cid %>=0;i_<%=cid %><temp<%=cid %>;i_<%=cid %>++){
+                            sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        result<%=cid %>.append(tempStringM<%=cid %>);
-                        for(int i=0;i<temp<%=cid %>;i++){
-                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+                        sb_<%=cid %>.append(tempStringM<%=cid %>);
+                        for(int i=temp<%=cid %>+tempLengthM<%=cid %>;i<<%=format.get("SIZE")%>;i++){
+                            sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        if((temp<%=cid %>+temp<%=cid %>)!=(<%=format.get("SIZE")%>-tempLengthM<%=cid %>)){
-                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
-                        }
-                        tempStringM<%=cid %> = result<%=cid %>.toString();
+
+                        
                     <%
                     } %>       
                 }
                 //get  and format output String end
 				
 				
-				out<%=cid %>.write(tempStringM<%=cid %>);
+				
 				<%
 			}
 			%>
-			out<%=cid %>.write("\n");
+			sb_<%=cid %>.append("\n");
+			out<%=cid %>.write(sb_<%=cid %>.toString());
 			nb_line_<%=cid %>++;
 <%
 		}
