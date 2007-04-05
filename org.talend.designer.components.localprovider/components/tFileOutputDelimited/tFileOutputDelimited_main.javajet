@@ -26,9 +26,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+%>
+				StringBuilder sb_<%=cid %> = new StringBuilder();
+						
+<%  
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
     			for (int i = 0; i < sizeColumns; i++) {
+  			
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
@@ -38,20 +43,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
     				} 
     				%>
-    						out<%=cid %>.write(
+    						sb_<%=cid %>.append(
     				<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
 								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
-					} else if(javaType == JavaTypesManager.STRING) {
-%>
-								<%=conn.getName() %>.<%=column.getLabel() %>
-<%				
 					} else {
 %>
-								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				
 					}
 %>
@@ -64,12 +65,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				} 
 					if(i != sizeColumns - 1) {
 %>					
-							out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+							sb_<%=cid %>.append(OUT_DELIM_<%=cid %>);
 <%
     				}
     			}
     			%>
-    			out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    			sb_<%=cid %>.append(OUT_DELIM_ROWSEP_<%=cid %>);
+    			out<%=cid %>.write(sb_<%=cid %>.toString());
     			nb_line_<%=cid %>++;
     <%
     		}
