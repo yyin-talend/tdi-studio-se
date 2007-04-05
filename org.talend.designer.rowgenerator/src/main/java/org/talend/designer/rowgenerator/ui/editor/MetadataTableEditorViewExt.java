@@ -26,7 +26,6 @@ import java.util.Iterator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -538,10 +537,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
              */
             @Override
             public void widgetSelected(SelectionEvent e) {
-                TabFolderEditors tabFolderEditors = generatorUI.getTabFolderEditors();
-                // tabFolderEditors.getItemsByRunJob("1");
-
-                preview2(tabFolderEditors);
+                refreshPreviewColumn();
             }
         });
         return previewLabel;
@@ -714,6 +710,14 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             }
         }
         return func;
+    }
+
+    /**
+     *  qzhang Comment method "refreshPreviewColumn".
+     */
+    public void refreshPreviewColumn() {
+        TabFolderEditors tabFolderEditors = generatorUI.getTabFolderEditors();
+        preview2(tabFolderEditors);
     }
 
 }

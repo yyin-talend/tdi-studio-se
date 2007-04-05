@@ -49,8 +49,6 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
-import org.talend.designer.rowgenerator.data.Parameter;
-import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
@@ -157,6 +155,7 @@ public class RowGeneratorUI {
 
     /**
      * qzhang Comment method "updateFunParameter".
+     * 
      * @param table
      */
     public void updateFunParameter(Table table) {
@@ -172,7 +171,7 @@ public class RowGeneratorUI {
             }
         }
     }
-    
+
     private void initBackgroundComponents() {
 
     }
@@ -225,7 +224,6 @@ public class RowGeneratorUI {
         }
         outputMetaTable2.setListColumns(exts);
     }
-
 
     /**
      * qzhang Comment method "addKeyListener".

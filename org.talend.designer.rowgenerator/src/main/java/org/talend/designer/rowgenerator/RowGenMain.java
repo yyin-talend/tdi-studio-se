@@ -28,11 +28,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IComponent;
@@ -47,6 +48,7 @@ import org.talend.designer.rowgenerator.external.data.IOConnection;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
+import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -123,6 +125,7 @@ public class RowGenMain {
      * @return
      */
     public Shell createUI(Display display) {
+
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
@@ -158,18 +161,55 @@ public class RowGenMain {
             }
 
         });
+
+        addAllControlForKeyListener(shell);
         // shell.moveAbove(null);
         generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
         return shell;
     }
 
     /**
-     * qzhang Comment method "getMapperManager".
+     * qzhang Comment method "addAllControlForKeyListener".
+     * 
+     * @param parent
+     * @param keyAdapter
+     * @return
+     */
+    private void addAllControlForKeyListener(Control parent) {
+        if (parent instanceof Composite) {
+            KeyAdapter keyAdapter = new KeyAdapter() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+                 */
+                public void keyReleased(KeyEvent e) {
+                    if (e.keyCode == SWT.F5) {
+                        MetadataTableEditorViewExt viewExt = generatorUI.getDataTableView();
+                        viewExt.refreshPreviewColumn();
+                    }
+                }
+            };
+            Composite composite = (Composite) parent;
+            composite.addKeyListener(keyAdapter);
+            Control[] children = composite.getChildren();
+            for (Control control : children) {
+                if (control != null && !control.isDisposed()) {
+                    addAllControlForKeyListener(control);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * qzhang Comment method "getRowGenManager".
      * 
      * @return
      */
-    public RowGeneratorManager getMapperManager() {
-        return null;
+    public RowGeneratorManager getRowGenManager() {
+        return generatorManager;
     }
 
     /**
