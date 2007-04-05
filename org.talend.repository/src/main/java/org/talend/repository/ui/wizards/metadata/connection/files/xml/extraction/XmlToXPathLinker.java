@@ -37,6 +37,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -108,6 +111,10 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private ArrayList<Node> allLoopNodes = new ArrayList<Node>();
 
+    private Color selectedLoopLinkColor;
+
+    private Color selectedRelativeLinkColor;
+
     /**
      * DOC amaumont XmlToMetadataTableLinker constructor comment.
      * 
@@ -148,30 +155,42 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     private void init() {
 
-        // commonParent.addDisposeListener(new DisposeListener() {
-        // public void widgetDisposed(DisposeEvent e) {
-        //        
-        // commonParent.removeDisposeListener(this);
-        // }
-        // });
-
+        Display display = getBgDrawableComposite().getDisplay();
+        
+        
+        initColors(display);
+        
         StyleLink unselectedStyleLink = new StyleLink();
         unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
-        unselectedStyleLink.setForegroundColor(getBgDrawableComposite().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+        unselectedStyleLink.setForegroundColor(display.getSystemColor(SWT.COLOR_GRAY));
         unselectedStyleLink.setLineWidth(2);
         unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
         setUnselectedStyleLink(unselectedStyleLink);
 
-        StyleLink selectedStyleLink = new StyleLink();
-        selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
-        selectedStyleLink.setForegroundColor(getBgDrawableComposite().getDisplay().getSystemColor(SWT.COLOR_BLUE));
-        selectedStyleLink.setLineWidth(2);
-        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
-        setSelectedStyleLink(selectedStyleLink);
+        getSelectedRelativeStyleLink();
 
         initListeners();
         createLinks();
 
+    }
+
+    /**
+     * DOC amaumont Comment method "initColors".
+     * @param display
+     */
+    private void initColors(Display display) {
+        selectedLoopLinkColor = new Color(display, 255, 131, 0);
+        selectedRelativeLinkColor = new Color(display, 110, 168, 255);
+        getTree().addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+                selectedLoopLinkColor.dispose();
+                selectedRelativeLinkColor.dispose();
+                getTree().removeDisposeListener(this);
+            }
+            
+        });
+        
     }
 
     /**
@@ -895,7 +914,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         if (this.selectedLoopStyleLink == null) {
             StyleLink styleLink = new StyleLink();
             styleLink.setDrawableLink(new BezierHorizontalLink(styleLink));
-            styleLink.setForegroundColor(getTree().getDisplay().getSystemColor(SWT.COLOR_GREEN));
+            styleLink.setForegroundColor(selectedLoopLinkColor);
             styleLink.setLineWidth(2);
             styleLink.setExtremity2(new ExtremityEastArrow(styleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
             this.selectedLoopStyleLink = styleLink;
@@ -903,6 +922,20 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         return this.selectedLoopStyleLink;
     }
 
+    /**
+     * DOC amaumont Comment method "getSelectedRelativeStyleLink".
+     * @param selectedLoopLinkColor
+     */
+    private void getSelectedRelativeStyleLink() {
+        
+        StyleLink selectedStyleLink = new StyleLink();
+        selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
+        selectedStyleLink.setForegroundColor(selectedRelativeLinkColor);
+        selectedStyleLink.setLineWidth(2);
+        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
+        setSelectedStyleLink(selectedStyleLink);
+    }
+    
     public String getCurrentLoopXPath() {
         return loopTableEditorView.getExtendedTableModel().getBeansList().get(0).getAbsoluteXPathQuery();
     }
