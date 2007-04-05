@@ -421,12 +421,6 @@ public class Connection extends Element implements IConnection {
 
     public void setActivate(boolean activate) {
         this.activate = activate;
-        /*
-         * if (target.getProcess() != null) { if (target.getProcess().isActivate()) { if (target.isActivate() !=
-         * activate) { target.setActivate(activate); } } if (source.isActivate() != activate) { if
-         * (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
-         * source.setActivate(activate); } } }
-         */
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
     }
 

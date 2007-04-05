@@ -131,12 +131,11 @@ public class ConnectionCreateAction extends SelectionAction {
                     IMetadataTable table = ((IMetadataTable) node.getMetadataList().get(i));
                     String name = table.getTableName();
                     if (connecType.equals(EConnectionType.TABLE)) {
-                        name = table.getLabel() + " (" + i + ")";
+                        name = table.getLabel() + " (" + name + ")";
                     }
                     boolean nameUsed = false;
                     for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                        if (connec.getMetadataTable().getTableName().equals(table.getTableName())
-                                && (connec.getOutputId() == i)) {
+                        if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
                             nameUsed = true;
                         }
                     }
@@ -247,29 +246,31 @@ public class ConnectionCreateAction extends SelectionAction {
                         meta = new MetadataTable();
                         meta.setTableName(connectionName);
                         newMetadata = meta;
-                        // node.getMetadataList().add(meta);
                     }
                 }
             } else {
                 String tableName;
-                int tableId = -1;
+//                int tableId = -1;
                 if (node.getConnectorFromType(connecType).isCustomName()) {
                     int end = getText().length() - 1;
                     int start = getText().lastIndexOf("(") + 1;
-                    String stringId = getText().substring(start, end);
-                    tableId = Integer.parseInt(stringId);
-                    tableName = getText().substring(0, start - 2);
-                    meta = (IMetadataTable) node.getMetadataList().get(tableId);
+                    tableName = getText().substring(start, end);
+//                    table = Integer.parseInt(stringId);
+//                    tableName = getText().substring(0, start - 2);
+                    meta = node.getMetadataTable(tableName);
+//                    meta = (IMetadataTable) node.getMetadataList().get(tableId);
                     connectionName = meta.getLabel();
                 } else {
                     tableName = getText();
-                    tableId = -1;
-                    for (int i = 0; i < node.getMetadataList().size(); i++) {
-                        IMetadataTable table = (IMetadataTable) node.getMetadataList().get(i);
-                        if (table.getTableName().equals(tableName)) {
-                            meta = (IMetadataTable) node.getMetadataList().get(i);
-                        }
-                    }
+//                    tableId = -1;
+                    
+                    meta = node.getMetadataTable(tableName);
+//                    for (int i = 0; i < node.getMetadataList().size(); i++) {
+//                        IMetadataTable table = (IMetadataTable) node.getMetadataList().get(i);
+//                        if (table.getTableName().equals(tableName)) {
+//                            meta = (IMetadataTable) node.getMetadataList().get(i);
+//                        }
+//                    }
                     connectionName = meta.getTableName();
                 }
             }
