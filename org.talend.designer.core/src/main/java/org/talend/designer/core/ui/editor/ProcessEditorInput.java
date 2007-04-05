@@ -209,47 +209,6 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         }
     }
 
-    private static final int PRIME = 31;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = PRIME * result + ((this.loadedProcess == null) ? 0 : this.loadedProcess.hashCode());
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ProcessEditorInput other = (ProcessEditorInput) obj;
-        if (this.loadedProcess == null) {
-            if (other.loadedProcess != null) {
-                return false;
-            }
-        } else if (!this.loadedProcess.equals(other.loadedProcess)) {
-            return false;
-        }
-        return true;
-    }
-
     /*
      * (non-Javadoc)
      * 
