@@ -50,9 +50,6 @@ public class TreePopulator {
 
     private String filePath;
 
-    public static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
-
     /**
      * DOC amaumont TreePopulator constructor comment.
      * 
@@ -71,9 +68,8 @@ public class TreePopulator {
             availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) { //$NON-NLS-1$
-            int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
             try {
-                treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, numberOfElement);
+                treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, 0);
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             } catch (OdaException e) {
@@ -154,6 +150,11 @@ public class TreePopulator {
      */
     public String getFilePath() {
         return this.filePath;
+    }
+    
+    public static int getMaximumRowsToPreview() {
+        return CorePlugin.getDefault().getPreferenceStore().getInt(
+                ITalendCorePrefConstants.PREVIEW_LIMIT);
     }
 
 }

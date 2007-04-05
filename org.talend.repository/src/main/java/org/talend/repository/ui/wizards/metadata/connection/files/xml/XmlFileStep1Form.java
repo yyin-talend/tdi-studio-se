@@ -223,8 +223,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " //$NON-NLS-1$ //$NON-NLS-2$
-                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (!isInWizard()) {
             // Composite BottomButton
