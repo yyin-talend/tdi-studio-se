@@ -147,14 +147,14 @@
     <IMPORTS>
       <IMPORT
         NAME="Delimited_File_Reader"
-        MODULE="gke_delimited.jar"
+        MODULE="file_delimited.jar"
         REQUIRED="true"
       />
     </IMPORTS>
   </CODEGENERATION>
 
    <RETURNS>
-      <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
    </RETURNS>
 
 </COMPONENT>
