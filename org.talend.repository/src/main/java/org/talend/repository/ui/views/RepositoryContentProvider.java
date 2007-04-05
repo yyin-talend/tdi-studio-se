@@ -411,15 +411,21 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             while (metadataTables.hasNext()) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) metadataTables
                         .next();
-                String typeTable = metadataTable.getTableType();
-                if (typeTable.equals("TABLE")) {
+                
+                String typeTable = null;
+                if (metadataTable.getTableType() != null ) {
+                    typeTable = metadataTable.getTableType();
+                    if (typeTable.equals("TABLE")) {
+                        createTable(recBinNode, tablesNode, repObj, metadataTable);
+
+                    } else if (typeTable.equals("VIEW")) {
+                        createTable(recBinNode, viewsNode, repObj, metadataTable);
+
+                    } else if (typeTable.equals("SYNONYM")) {
+                        createTable(recBinNode, synonymsNode, repObj, metadataTable);
+                    }
+                } else {
                     createTable(recBinNode, tablesNode, repObj, metadataTable);
-
-                } else if (typeTable.equals("VIEW")) {
-                    createTable(recBinNode, viewsNode, repObj, metadataTable);
-
-                } else if (typeTable.equals("SYNONYM")) {
-                    createTable(recBinNode, synonymsNode, repObj, metadataTable);
                 }
             }
             // if (!node.getChildren().contains(tablesNode)) {
