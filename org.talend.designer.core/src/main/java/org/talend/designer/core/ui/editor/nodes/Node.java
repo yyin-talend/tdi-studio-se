@@ -664,31 +664,16 @@ public class Node extends Element implements INode {
     public boolean isSubProcessStart() {
         Connection connec;
         if (isActivate()) {
-            if (isStart()) {
-                return true;
-            } else if (getIncomingConnections().size() == 0) {
-                if (getOutgoingConnections().size() > 0) {
-                    for (int j = 0; j < getOutgoingConnections().size(); j++) {
-                        connec = (Connection) getOutgoingConnections().get(j);
-                        if (connec.isActivate() && (connec.getLineStyle().equals(EConnectionType.FLOW_REF))) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            } else {
-                for (int j = 0; j < getIncomingConnections().size(); j++) {
-                    connec = (Connection) getIncomingConnections().get(j);
-                    if (connec.isActivate()
-                            && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                    || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle()
-                                    .equals(EConnectionType.TABLE)))) {
+            for (int j = 0; j < getIncomingConnections().size(); j++) {
+                connec = (Connection) getIncomingConnections().get(j);
+                if (connec.isActivate()) {
+                    if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                            EConnectionType.ITERATE)|| connec.getLineStyle().equals(
+                                    EConnectionType.TABLE))) {
                         return false;
                     }
                 }
             }
-        } else {
-            return false;
         }
         return true;
     }
@@ -1243,5 +1228,9 @@ public class Node extends Element implements INode {
         if (externalNode != null) {
             externalNode.metadataOutputChanged(dataComponent, connectionToApply);
         }
+    }
+
+    public boolean isELTComponent() {
+        return getComponent().getFamily().startsWith("ELT");
     }
 }

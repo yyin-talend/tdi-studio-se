@@ -91,7 +91,9 @@ public class DataProcess {
             }
         }
         buildCheckMap.put(graphicalNode, dataNode);
-        dataNodeList.add(dataNode);
+        if (!(graphicalNode.isELTComponent() && graphicalNode.isSubProcessStart())) {
+            dataNodeList.add(dataNode);
+        }
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());

@@ -1557,7 +1557,7 @@ public class Process extends Element implements IProcess {
     public void checkStartNodes() {
         for (Node node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
-                if (node.getComponent().getFamily().startsWith("ELT")) {
+                if (node.isELTComponent()) {
                     if (node.isActivate()) {
                         node.setStart(true);
                     }
