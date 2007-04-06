@@ -198,7 +198,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         private CheckErrorsHelper checkErrorsHelper;
 
-        private UndoRedoHelper undoRedoHelper;
+        protected UndoRedoHelper undoRedoHelper;
 
         private ContentProposalAdapterExtended extendedProposal;
 
@@ -264,6 +264,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             this.undoRedoHelper.unregister(control);
         }
 
+        
     }
 
     private static Map<Control, ControlProperties> controlToProp = new HashMap<Control, ControlProperties>();
@@ -458,7 +459,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      */
     class UndoRedoHelper {
 
-        private TypedTextCommandExecutor typedTextCommandExecutor;
+        protected TypedTextCommandExecutor typedTextCommandExecutor;
 
         /**
          * DOC amaumont Comment method "unregister".
@@ -477,9 +478,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 public void addNewCommand(Control control) {
                     String name = getParameterName(control);
                     String text = ControlUtils.getText(control);
-
                     Command cmd = getTextCommandForHelper(name, text);
-
                     getCommandStack().execute(cmd);
                 }
 

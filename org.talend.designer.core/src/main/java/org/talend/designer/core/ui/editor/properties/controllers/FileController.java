@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -226,11 +227,13 @@ public class FileController extends AbstractElementPropertySectionController {
 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
-        Text labelText = (Text) hashCurControls.get(param.getName());
+        final String name2 = param.getName();
+        Text labelText = (Text) hashCurControls.get(name2);
         Object value = param.getValue();
         if (labelText == null) {
             return;
         }
+
         boolean valueChanged = false;
         if (value == null) {
             labelText.setText(""); //$NON-NLS-1$
@@ -242,6 +245,49 @@ public class FileController extends AbstractElementPropertySectionController {
         }
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
+        }
+        if (valueChanged && !param.isRepositoryValueUsed()) {
+            String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
+            String currentText = (String) value;
+            labelText.setFocus();
+            ControlUtils.setCursorPosition(labelText, getcursorPosition(previousText, currentText));
+        }
+
+    }
+
+    /**
+     * qzhang Comment method "getcursorPosition".
+     * 
+     * @param previousText
+     * @param currentText
+     * @return
+     */
+    private int getcursorPosition(String previousText, String currentText) {
+        if (previousText.length() == currentText.length() + 1) {
+            return getLeftCharPosition(currentText, previousText, false);
+        } else if (previousText.length() == currentText.length() - 1) {
+            return getLeftCharPosition(previousText, currentText, true);
+        }
+        return 0;
+    }
+
+    /**
+     * qzhang Comment method "getLeftCharPosition".
+     * @param previousText
+     * @param currentText
+     * @return
+     */
+    private int getLeftCharPosition(String previousText, String currentText, boolean add) {
+        int i = 0;
+        for (; i < currentText.length() - 1; i++) {
+            if (currentText.charAt(i) != previousText.charAt(i)) {
+                break;
+            }
+        }
+        if (add) {
+            return i + 1;
+        } else {
+            return i;
         }
     }
 }
