@@ -119,33 +119,40 @@ public class CreateTableAction extends AbstractCreateTableAction {
      */
     @Override
     protected void init(RepositoryNode node) {
-        setEnabled(false);
-        if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
-            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-                setText(EDIT_LABEL);
-                collectSiblingNames(node);
-                setEnabled(true);
-                return;
-            }
+        boolean canWork = true;
+        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            canWork = false;
+        }
+        if (canWork) {
 
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
-                return;
-            }
-
-            if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
-                setText(CREATE_LABEL);
-                collectChildNames(node);
-                setEnabled(true);
-                return;
+            if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                    setText(EDIT_LABEL);
+                    collectSiblingNames(node);
+                    setEnabled(true);
+                    return;
+                }
+    
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                    return;
+                }
+    
+                if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
+                    setText(CREATE_LABEL);
+                    collectChildNames(node);
+                    setEnabled(true);
+                    return;
+                }
             }
         }
+        setEnabled(canWork);
     }
 
 }

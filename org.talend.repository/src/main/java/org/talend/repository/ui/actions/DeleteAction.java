@@ -152,7 +152,8 @@ public class DeleteAction extends AContextualAction {
                     boolean isDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
 
                     if (isDeleted) {
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
+                                .getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
                             break;
@@ -167,6 +168,7 @@ public class DeleteAction extends AContextualAction {
                     } else {
                         switch (repObj.getType()) {
                         case METADATA_CON_TABLE:
+                        case METADATA_CON_QUERY:
                             visible = false;
                             break;
                         default:
