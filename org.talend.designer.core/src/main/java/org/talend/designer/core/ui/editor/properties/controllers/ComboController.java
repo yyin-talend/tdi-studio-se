@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -43,8 +44,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -56,8 +59,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -82,6 +87,8 @@ public class ComboController extends AbstractElementPropertySectionController {
 
     private Map<String, List<String>> queriesmap;
 
+    private static final String GUESS_QUERY_NAME = "Guess Query";
+
     /**
      * DOC dev ColumnListController constructor comment.
      * 
@@ -96,7 +103,7 @@ public class ComboController extends AbstractElementPropertySectionController {
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    public Command createCommand() {
+    public Command createComboCommand() {
         repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
         Collection<IMetadataTable> ss = repositoryTableMap.values();
         repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
@@ -164,9 +171,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 if (repositoryConnection != null) {
                                     changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                                             repositoryConnection, name, value);
-                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap,
-                                            dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                                            dynamicTabbedPropertySection.getTableIdAndDbSchemaMap());
+                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
                                     return changeValuesFromRepository;
                                 }
                             }
@@ -187,9 +192,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                                             repositoryConnection, name, value);
 
-                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap,
-                                            dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                                            dynamicTabbedPropertySection.getTableIdAndDbSchemaMap());
+                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
                                     return changeValuesFromRepository;
                                 } else {
                                     return new PropertyChangeCommand(elem, name, value);
@@ -226,7 +229,6 @@ public class ComboController extends AbstractElementPropertySectionController {
                         }
                     }
                 }
-
             }
         }
         return null;
@@ -240,6 +242,7 @@ public class ComboController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
+
         IControlCreator cbCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
@@ -297,6 +300,16 @@ public class ComboController extends AbstractElementPropertySectionController {
         } else {
             data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
         }
+
+        IElementParameter queryStoreTypeParameter = elem.getElementParameter(EParameterName.QUERYSTORE_TYPE.getName());
+        if (queryStoreTypeParameter != null) {
+            String queryStoreType = (String) queryStoreTypeParameter.getValue();
+            if (param.getName().equals(EParameterName.QUERYSTORE_TYPE.getName()) && queryStoreType != null
+                    && queryStoreType.equals(EmfComponent.BUILTIN)) {
+                Control lastUsedControl = combo;
+                addGuessQueryButton(subComposite, param, lastUsedControl, numInRow, top);
+            }
+        }
         data.top = new FormAttachment(0, top);
         labelLabel.setLayoutData(data);
         if (numInRow != 1) {
@@ -333,6 +346,41 @@ public class ComboController extends AbstractElementPropertySectionController {
         return cLayout;
     }
 
+    /**
+     * This method is used for creating a Button named "Guess Query".
+     * 
+     * @param subComposite
+     * @param lastControl
+     * @param numInRow
+     * @param top
+     */
+    private void addGuessQueryButton(Composite subComposite, IElementParameter param, Control lastControl,
+            int numInRow, int top) {
+        final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return new Button(parent, style);
+            }
+        });
+        Button guessQueryButton = null;
+        Control buttonControl = dField1.getLayoutControl();
+        guessQueryButton = (Button) dField1.getControl();
+        guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        buttonControl.setBackground(subComposite.getBackground());
+        guessQueryButton.setEnabled(true);
+        guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
+        guessQueryButton.setData(PROPERTY, param.getName());
+        guessQueryButton.setText(GUESS_QUERY_NAME);
+
+        FormData data1 = new FormData();
+        data1.left = new FormAttachment(lastControl, 210);
+        data1.top = new FormAttachment(0, top);
+
+        buttonControl.setLayoutData(data1);
+        guessQueryButton.addSelectionListener(listenerSelection);
+
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -347,7 +395,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         public void widgetSelected(SelectionEvent event) {
             e = event;
             dynamicTabbedPropertySection.updateRepositoryList();
-            Command cmd = createCommand();
+            Command cmd = createCommand(e);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
                 if (updateColumnListFlag) {
@@ -356,6 +404,99 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
         }
     };
+
+    /**
+     * This method is used for getting command base on component type.
+     * 
+     * @param e
+     * @return
+     */
+    private Command createCommand(SelectionEvent e) {
+        Command cmd = null;
+        if (e.getSource() instanceof CCombo) {
+            cmd = createComboCommand();
+        } else if (e.getSource() instanceof Button) {
+            cmd = createButtonCommand();
+        }
+        return cmd;
+    }
+
+    /**
+     * This method is used for "Guess Query" button.
+     * 
+     * @return
+     */
+    private Command createButtonCommand() {
+        IMetadataTable repositoryMetadata = null;
+        IMetadataTable newRepositoryMetadata = null;
+        String realTableName = null;
+        String realTableId = null;
+
+        // Only for get the real table name.
+        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
+            String paramName;
+            Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+
+            paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+
+            if (repositoryControl != null) {
+
+                String selectedComboItem = ((CCombo) repositoryControl).getText();
+                if (selectedComboItem != null && selectedComboItem.length() > 0) {
+                    String value = new String(""); //$NON-NLS-1$
+                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
+                        IElementParameter param = elem.getElementParameters().get(i);
+                        if (param.getName().equals(paramName)) {
+                            for (int j = 0; j < param.getListItemsValue().length; j++) {
+                                if (selectedComboItem.equals(param.getListItemsDisplayName()[j])) {
+                                    value = (String) param.getListItemsValue()[j];
+                                }
+                            }
+                        }
+                    }
+                    if (elem instanceof Node) {
+                        this.dynamicTabbedPropertySection.updateRepositoryList();
+                        if (repositoryTableMap.containsKey(value)) {
+                            repositoryMetadata = repositoryTableMap.get(value);
+                            realTableName = repositoryMetadata.getTableName();
+                            realTableId = repositoryMetadata.getId();
+                        } else {
+                            repositoryMetadata = new MetadataTable();
+                        }
+                    }
+                }
+            }
+        }// Ends
+
+        QueryGuessCommand cmd = null;
+        Node node = null;
+        if (elem instanceof Node) {
+            node = (Node) elem;
+        } else { // else instanceof Connection
+            node = ((org.talend.designer.core.ui.editor.connections.Connection) elem).getSource();
+        }
+
+        newRepositoryMetadata = node.getMetadataList().get(0);
+
+        if (newRepositoryMetadata == null) {
+            String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
+                repositoryMetadata = repositoryTableMap.get(schemaSelected);
+            } else if (newRepositoryMetadata == null) {
+                MessageDialog.openWarning(new Shell(), "Alert", "Nothing to guess.");
+                return cmd;
+            }
+        }
+        cmd = new QueryGuessCommand(node, newRepositoryMetadata);
+
+        cmd.setMaps(dynamicTabbedPropertySection.getTableIdAndDbTypeMap(), dynamicTabbedPropertySection
+                .getTableIdAndDbSchemaMap(), repositoryTableMap);
+
+        cmd.setParameters(realTableId, realTableName);
+
+        return cmd;
+    }
 
     /**
      * DOC ftang Comment method "getQueryTextElementParameter".
@@ -398,5 +539,11 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
             combo.setText(strValue);
         }
+    }
+
+    @Override
+    public Command createCommand() {
+        // do nothing
+        return null;
     }
 }

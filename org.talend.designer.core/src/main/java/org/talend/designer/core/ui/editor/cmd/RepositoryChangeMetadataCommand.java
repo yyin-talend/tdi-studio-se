@@ -56,20 +56,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private Node node;
 
-    private Object oldQuery;
-
-    private IMetadataTable newOutputMetadata;
-
-    private Map<String, String> dbNameAndDbTypeMap;
-
-    private Map<String, String> dbNameAndSchemaMap;
-
-    private Map<String, IMetadataTable> repositoryTableMap;
-
     public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue,
             IMetadataTable newOutputMetadata) {
         super(node, null, newOutputMetadata);
-        this.newOutputMetadata = newOutputMetadata;
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
         newPropValue = propValue;
@@ -81,59 +70,12 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
         refreshPropertyView();
-
-        // used for generating new Query.
-        String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        IMetadataTable repositoryMetadata = null;
-        if (repositoryTableMap != null && repositoryTableMap.containsKey(schemaSelected)) {
-            repositoryMetadata = repositoryTableMap.get(schemaSelected);
-        } else {
-            repositoryMetadata = new MetadataTable();
-        }
-
-        String dbId = repositoryMetadata.getId();
-        String dbType = "";
-        if (dbId != null && this.dbNameAndDbTypeMap.containsKey(dbId)) {
-            dbType = this.dbNameAndDbTypeMap.get(dbId);
-        }
-
-        String schema = this.dbNameAndSchemaMap.get(dbId);
-
-        String newQuery = "";
-        boolean isBuildIn = EmfComponent.BUILTIN.equals(newPropValue);
-        if (isBuildIn) {
-            newQuery = TalendTextUtils.addQuotes("");
-        } else {
-            newQuery = TalendTextUtils.addQuotes(generateNewQuery(repositoryMetadata, dbType, schema));
-        }
-        boolean isChangeQueryType = false;
-        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                oldQuery = node.getPropertyValue(param.getName());
-                node.setPropertyValue(param.getName(), newQuery);
-                param.setRepositoryValueUsed(true);
-                isChangeQueryType = true;
-            }
-        }
-        if (isChangeQueryType) {
-            node.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
-        }
-        refreshPropertyView();
-        // Ends
         super.execute();
     }
 
     @Override
     public void undo() {
         node.setPropertyValue(propName, oldPropValue);
-
-        // Added by ftang
-        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                node.setPropertyValue(param.getName(), oldQuery);
-            }
-        }// Ends
-
         refreshPropertyView();
         super.undo();
     }
@@ -162,20 +104,5 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                 }
             }
         }
-    }
-
-    /**
-     * Sets a set of maps what used for generating new Query.
-     * 
-     * @param dbNameAndDbTypeMap
-     * @param dbNameAndSchemaMap
-     * @param getRepositoryTableMap
-     */
-    public void setMaps(Map<String, String> dbNameAndDbTypeMap, Map<String, String> dbNameAndSchemaMap,
-            Map<String, IMetadataTable> repositoryTableMap) {
-        this.dbNameAndDbTypeMap = dbNameAndDbTypeMap;
-        this.dbNameAndSchemaMap = dbNameAndSchemaMap;
-        this.repositoryTableMap = repositoryTableMap;
-
     }
 }

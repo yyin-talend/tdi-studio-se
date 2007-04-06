@@ -86,10 +86,6 @@ public class ChangeMetadataCommand extends Command {
 
     private boolean repositoryMode = false;
 
-    private static final String DEFAULT_TABLE_NAME = "MyShema";
-
-    private String oldQuery = "";
-
     // Default constructor.
     public ChangeMetadataCommand() {
     }
@@ -173,7 +169,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-            if (connec.isActivate() && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+            if (connec.isActivate()
+                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
                             EConnectionType.FLOW_REF))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
@@ -333,19 +330,6 @@ public class ChangeMetadataCommand extends Command {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
-
-            String newQuery = TalendTextUtils.addQuotes(generateNewQuery(newOutputMetadata));
-
-            for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                    oldQuery = node.getPropertyValue(param.getName()).toString();
-                    node.setPropertyValue(param.getName(), newQuery);
-                    param.setRepositoryValueUsed(true);
-                    param.getValue();
-
-                }
-            }
-            refreshPropertyView();
         }
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
@@ -378,119 +362,6 @@ public class ChangeMetadataCommand extends Command {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
-
-        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                node.setPropertyValue(param.getName(), oldQuery);
-            }
-        }
-    }
-
-    public String generateNewQuery(IMetadataTable repositoryMetadata) {
-        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
-        int index = metaDataColumnList.size();
-        if (index == 0) {
-            return "";
-        }
-
-        StringBuffer query = new StringBuffer();
-        String enter = "\n";
-        String space = " ";
-        query.append("SELECT").append(space);
-
-        for (int i = 0; i < metaDataColumnList.size(); i++) {
-            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-            String columnName = metaDataColumn.getLabel();
-            if (i != index - 1) {
-                query.append(columnName).append(",").append(space);
-            } else {
-                query.append(columnName).append(space);
-            }
-        }
-        String tableName = repositoryMetadata.getTableName();
-        if (tableName == null || tableName.length() < 0) {
-            tableName = DEFAULT_TABLE_NAME;
-
-        }
-        query.append(enter).append("FROM").append(space).append(tableName);
-
-        return query.toString();
-
-    }
-
-    /**
-     * Generates new Query.
-     * 
-     * @param repositoryMetadata
-     * @param dbType
-     * @param schema
-     * @return
-     */
-    public String generateNewQuery(IMetadataTable repositoryMetadata, String dbType, String schema) {
-        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
-        int index = metaDataColumnList.size();
-        if (index == 0) {
-            return "";
-        }
-
-        StringBuffer query = new StringBuffer();
-        String enter = "\n";
-        String space = " ";
-        query.append("SELECT").append(space);
-
-        String tableNameForColumnSuffix = getColumnName(getTableName(repositoryMetadata, schema, dbType), dbType) + ".";
-
-        for (int i = 0; i < metaDataColumnList.size(); i++) {
-            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-            String columnName = getColumnName(metaDataColumn.getLabel(), dbType);
-            if (i != index - 1) {
-                query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
-            } else {
-                query.append(tableNameForColumnSuffix).append(columnName).append(space);
-            }
-        }
-        query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata, schema, dbType));
-
-        return query.toString();
-    }
-
-    /**
-     * Gets the table name.
-     * 
-     * @param tableName
-     * @param schema
-     * @return
-     */
-    private String getTableName(IMetadataTable repositoryMetadata, String schema, String dbType) {
-        String currentTableName = repositoryMetadata.getTableName();
-        if (currentTableName == null) {
-            currentTableName = repositoryMetadata.getProperty().getLabel();
-            return currentTableName;
-        }
-        if (schema != null && schema.length() > 0) {
-            if (dbType.equalsIgnoreCase("PostgreSQL")) {
-                currentTableName = "\"" + schema + "\"" + "." + "\"" + currentTableName + "\"";
-                return currentTableName;
-            }
-        }
-        return currentTableName;
-    }
-
-    /**
-     * Checks if database type is Postgres, add quoutes around column name.
-     * 
-     * @param name
-     * @param dbType
-     * @return
-     */
-    private String getColumnName(String name, String dbType) {
-        String nameAfterChanged;
-        if (!dbType.equalsIgnoreCase("PostgreSQL")) {
-            nameAfterChanged = name;
-        } else {
-            nameAfterChanged = "\"" + name + "\"";
-        }
-        return nameAfterChanged;
     }
 
     /**

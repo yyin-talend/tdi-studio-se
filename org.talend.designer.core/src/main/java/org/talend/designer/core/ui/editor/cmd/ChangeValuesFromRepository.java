@@ -29,7 +29,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionCategory;
@@ -38,7 +37,6 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -70,20 +68,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private Map<String, IMetadataTable> repositoryTableMap;
 
-    private Object oldQuery;
-
-    private Map<String, String> dbNameAndTypeMap;
-
-    private Map<String, String> dbNameAndSchemaMap;
-
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
         this.value = value;
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
-
-        oldQuery = TalendTextUtils.addQuotes("");
 
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
@@ -179,41 +169,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         refreshPropertyView();
-
-        // used for generating new Query.
-        String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        IMetadataTable repositoryMetadata = null;
-        if (repositoryTableMap != null && repositoryTableMap.containsKey(schemaSelected)) {
-            repositoryMetadata = repositoryTableMap.get(schemaSelected);
-        } else {
-            repositoryMetadata = new MetadataTable();
-        }
-
-        String dbId = repositoryMetadata.getId();
-        String dbType = "";
-        if (dbId != null && this.dbNameAndTypeMap.containsKey(dbId)) {
-            dbType = this.dbNameAndTypeMap.get(dbId);
-        }
-
-        String schema = this.dbNameAndSchemaMap.get(dbId);
-
-        String newQuery = "";
-        boolean isBuildIn = EmfComponent.BUILTIN.equals(value);
-        if (isBuildIn) {
-            newQuery = TalendTextUtils.addQuotes("");
-        } else {
-            newQuery = TalendTextUtils.addQuotes(generateNewQuery(repositoryMetadata, dbType, schema));
-        }
-
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                oldQuery = elem.getPropertyValue(param.getName());
-                elem.setPropertyValue(param.getName(), newQuery);
-            }
-        }
-        refreshPropertyView();
-        // Ends
-
     }
 
     /**
@@ -267,13 +222,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         INode source = input.getSource();
                         IMetadataTable sourceMetadataTable = source.getMetadataList().get(0);
                         if (getTake()) {
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null, sourceMetadataTable);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
+                                    sourceMetadataTable);
                             cmd.execute(true);
                             if (source instanceof Node) {
                                 Node sourceNode = (Node) source;
                                 elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceNode
                                         .getPropertyValue(EParameterName.SCHEMA_TYPE.getName()));
-                                if (sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+                                if (sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(
+                                        EmfComponent.REPOSITORY)) {
                                     elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
                                             .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
                                 }
@@ -339,11 +296,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), oldMetadata);
         }
 
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                elem.setPropertyValue(param.getName(), oldQuery);
-            }
-        }
         refreshPropertyView();
     }
 
@@ -353,17 +305,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * @param tablesmap
      * @param queriesmap
      * @param repositoryTableMap
-     * @param dbNameAndDbTypeMap
-     * @param dbNameAndSchemaMap
      */
     public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap,
-            Map<String, IMetadataTable> repositoryTableMap, Map<String, String> dbNameAndDbTypeMap,
-            Map<String, String> dbNameAndSchemaMap) {
+            Map<String, IMetadataTable> repositoryTableMap) {
         this.tablesmap = tablesmap;
         this.queriesmap = queriesmap;
         this.repositoryTableMap = repositoryTableMap;
-        this.dbNameAndTypeMap = dbNameAndDbTypeMap;
-        this.dbNameAndSchemaMap = dbNameAndSchemaMap;
-
     }
 }

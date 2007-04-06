@@ -102,6 +102,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         
         String paramName;
         Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        
         if (combo.equals(repositoryControl)) {
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
         } else {
@@ -131,9 +132,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, paramName, value, repositoryMetadata);
 
-                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-                                .getRepositoryTableMap());
+//                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+//                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+//                                .getRepositoryTableMap());
 
                 return changeMetadataCommand;
 
@@ -177,9 +178,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, paramName, value, repositoryMetadata);
 
-                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-                                .getRepositoryTableMap());
+//                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+//                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+//                                .getRepositoryTableMap());
 
                 return changeMetadataCommand;
             }
