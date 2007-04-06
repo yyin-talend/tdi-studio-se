@@ -29,6 +29,9 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -79,8 +82,13 @@ public class ReadQueriesAction extends AContextualAction {
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
+            
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                    canWork = false;
+                }
                 if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
                     canWork = false;

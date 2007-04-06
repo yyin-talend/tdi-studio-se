@@ -30,6 +30,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -84,10 +85,15 @@ public class EditQueriesAction extends AContextualAction {
             canWork = false;
         }
         if (canWork) {
+            
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                    canWork = false;
+                }
                 if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
                     canWork = false;
