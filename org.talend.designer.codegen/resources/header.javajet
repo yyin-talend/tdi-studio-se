@@ -125,7 +125,7 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
-			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 100, e.getMessage(), 1);
+			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 6, e.getMessage(), 1);
 <%
 					// 2) launch logCatcher subProcess
 %>
