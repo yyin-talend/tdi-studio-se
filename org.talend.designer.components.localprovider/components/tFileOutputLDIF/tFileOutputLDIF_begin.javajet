@@ -14,11 +14,37 @@ class="FileOutputLDIFBegin"
         // component id        
         String cid = node.getUniqueName();
         String wrap = ElementParameterParser.getValue(node, "__WRAP__");
-        String filename = ElementParameterParser.getValue(node, "__FILENAME__");       
+        String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");       
 %>
+		
+		    class Util_<%=cid %>
+            {
+                public void breakString( StringBuilder pw, String value, int max) {
+                    int leftToGo = value.length();
+                    int written = 0;
+                    int maxChars = max;
+                    while( leftToGo > 0 ) {
+                        int toWrite = Math.min( maxChars, leftToGo );
+                        String s = value.substring( written, written+toWrite);
+                        if ( written != 0 ) {
+                        	pw.append( " " + s );
+                        } else {
+                        	pw.append( s );
+                            maxChars -= 1;
+                        }
+                        written += toWrite;
+                        leftToGo -= toWrite;
+                        pw.append( '\n' );
+                    }
+                }
+            } 
+            
+		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+		
 		int nb_line_<%=cid %> = 0;
 		final String dn_<%=cid %> = "dn: ";
 		final String changetype_<%=cid %> = "changetype: ";
 		final int wrap_<%=cid %> = <%=wrap %>;
 
-       	java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(new java.io.FileOutputStream(<%=filename %>));
+       	java.io.PrintWriter pw_<%=cid %> = new java.io.PrintWriter(new java.io.File(<%=filename %>),<%= encoding%>);

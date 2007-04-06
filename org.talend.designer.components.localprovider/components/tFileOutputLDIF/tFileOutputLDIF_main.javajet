@@ -32,7 +32,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
     		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_REF)) {    		
-%>    		
+%> 
+		StringBuilder sb_<%=cid %> = new StringBuilder();		   		
 <%		
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
@@ -76,17 +77,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <% 
 	if(i==0) {
 %>		
-		netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-        netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
+		util_<%=cid %>.breakString(sb_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+        util_<%=cid %>.breakString(sb_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
 <%
  } 
 %>						
 <% if ("delete".equals(changetype)) { break; } %>
 <% if ("modify".equals(changetype)) {   %>
-    	netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=changes %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
-    	netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=changes %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
+    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%	if(i != sizeColumns - 1) {  %>
-		pw_<%=cid %>.write("-\n");	
+		sb_<%=cid %>.append("-\n");	
 <%
 }
 %>
@@ -94,7 +95,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }// here end the if modify
 %>
 <% if ("add".equals(changetype)) {   %>
-		netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
 }
 %>	
@@ -103,7 +104,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <% 
 }//here end the last for, the List "columns"
 %>						
-		pw_<%=cid %>.write('\n');
+		sb_<%=cid %>.append('\n');		
+		
+		pw_<%=cid %>.write(sb_<%=cid %>.toString());
     	nb_line_<%=cid %>++;
 <%
 	}
