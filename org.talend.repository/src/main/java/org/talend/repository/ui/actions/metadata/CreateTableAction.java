@@ -119,23 +119,22 @@ public class CreateTableAction extends AbstractCreateTableAction {
      */
     @Override
     protected void init(RepositoryNode node) {
-        boolean canWork = true;
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            canWork = false;
-        }
-        if (canWork) {
-
+            setEnabled(false);
+        } else {
             if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType())) {
+
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                    setEnabled(false);
+                    return;
+                }
+
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                 if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                     setText(EDIT_LABEL);
                     collectSiblingNames(node);
                     setEnabled(true);
-                    return;
-                }
-
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                     return;
                 }
 
@@ -150,9 +149,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     setEnabled(true);
                     return;
                 }
-                if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
-                    canWork = false;
-                }
+//                if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
+//                    setEnabled(false);
+//                }
             }
         }
     }
