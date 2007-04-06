@@ -22,6 +22,7 @@
 package org.talend.repository.ui.actions;
 
 import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -33,6 +34,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 
@@ -56,7 +58,8 @@ public final class ExportJobScriptAction extends AContextualAction {
         boolean canWork = true;
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
+            if (node.getType() != ENodeType.REPOSITORY_ELEMENT
+                    || node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
                 canWork = false;
                 break;
             }
