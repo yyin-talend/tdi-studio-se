@@ -155,7 +155,5 @@ public class CreateTableAction extends AbstractCreateTableAction {
                 }
             }
         }
-        setEnabled(canWork);
     }
-
 }
