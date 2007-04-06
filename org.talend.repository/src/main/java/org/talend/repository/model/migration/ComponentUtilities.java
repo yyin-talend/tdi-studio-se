@@ -87,6 +87,11 @@ public class ComponentUtilities {
         }
     }
 
+    public static void setNodeValue(NodeType node, String name, String value) {
+        ElementParameterType property = getNodeProperty(node, name);
+        property.setValue(value);
+    }
+
     public static void removeNodeProperty(NodeType node, String property) {
         // TODO SML Use getNodeProperty
         EList elementParameter = node.getElementParameter();

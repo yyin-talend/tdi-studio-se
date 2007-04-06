@@ -424,6 +424,18 @@
             description="%migrationtask.renametDbInputToMssql.description"
             id="org.talend.repository.migration.renametDbInputToMssql"
             name="%migrationtask.renametDbInputToMssql.title"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.MigratetRowGeneratorMigrationTask"
+            description="%migrationtask.updatetRowGenerator.description"
+            id="org.talend.repository.migration.updatetRowGenerator"
+            name="%migrationtask.updatetRowGenerator.title"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgradetWarntDiePriorityMigrationTask"
+            description="%migrationtask.upgradetWarntDiePriority.description"
+            id="org.talend.repository.migration.upgradetWarntDiePriority"
+            name="%migrationtask.upgradetWarntDiePriority.title"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

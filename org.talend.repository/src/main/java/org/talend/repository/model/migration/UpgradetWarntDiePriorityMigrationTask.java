@@ -24,13 +24,11 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
-import org.talend.repository.model.migration.conversions.AddPropertyUniqueKeyFortUniqRowConversion;
 import org.talend.repository.model.migration.conversions.IComponentConversion;
-import org.talend.repository.model.migration.conversions.RemovePropertyComponentConversion;
+import org.talend.repository.model.migration.conversions.UpdatePropertyComponentConversion;
 import org.talend.repository.model.migration.filters.IComponentFilter;
 import org.talend.repository.model.migration.filters.NameComponentFilter;
 
@@ -40,19 +38,19 @@ import org.talend.repository.model.migration.filters.NameComponentFilter;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class UpgradetWarntDiePriorityMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
     public boolean execute(Project project) {
-        if (project.getLanguage() != ECodeLanguage.PERL) {
-            return true;
-        }
         try {
-            IComponentFilter filter1 = new NameComponentFilter("tUniqRow"); //$NON-NLS-1$
+            // 1. tWarn:
+            IComponentFilter filter1 = new NameComponentFilter("tWarn"); //$NON-NLS-1$
+            IComponentConversion setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "4"); //$NON-NLS-1$
+            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
-            IComponentConversion removeProperty = new RemovePropertyComponentConversion("CASE_SENSITIVE"); //$NON-NLS-1$
-            IComponentConversion addProperty = new AddPropertyUniqueKeyFortUniqRowConversion("UNIQUE_KEY", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(removeProperty, addProperty));
+            // 1. tDie:
+            IComponentFilter filter2 = new NameComponentFilter("tDie"); //$NON-NLS-1$
+            setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "5"); //$NON-NLS-1$
+            ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
             return true;
         } catch (Exception e) {
