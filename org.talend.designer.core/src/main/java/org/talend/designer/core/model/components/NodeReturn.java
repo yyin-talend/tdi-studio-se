@@ -21,7 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.designer.core.i18n.Messages;
 
@@ -37,13 +38,14 @@ public class NodeReturn implements INodeReturn {
 
     private String displayName;
 
-    private String type;
+    private String type = "String";
 
     private String availability;
 
     private String varName;
 
     /*
+     * 
      * (non-Javadoc)
      * 
      * @see org.talend.designer.core.model.components.INodeReturn#getAvailability()
@@ -67,7 +69,22 @@ public class NodeReturn implements INodeReturn {
      * @see org.talend.designer.core.model.components.INodeReturn#getCode()
      */
     public String getVarName() {
-        return this.varName;
+        switch (LanguageManager.getCurrentLanguage()) {
+        case PERL:
+            return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        case JAVA:
+            if ((type.compareTo("String") == 0) || (type.compareTo("Integer") == 0)) {
+                type = "id_" + type;
+            }
+            try {
+                type = JavaTypesManager.getTypeToGenerate(type, true);
+            } catch (Exception e) {
+                type = "String";
+            }
+            return "((" + type + ")globalMap.get(\"__UNIQUE_NAME___" + name + "\"))";
+        default:
+            return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
     }
 
     /*
@@ -75,10 +92,8 @@ public class NodeReturn implements INodeReturn {
      * 
      * @see org.talend.designer.core.model.components.INodeReturn#setCode(java.lang.String)
      */
-    public void setVarName(final String variableName, ECodeLanguage language) {
-        if (language.equals(ECodeLanguage.PERL)) {
-            this.varName = "$_globals{__UNIQUE_NAME__}{" + variableName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
+    public void setVarName(final String variableName) {
+        varName = variableName;
     }
 
     /*

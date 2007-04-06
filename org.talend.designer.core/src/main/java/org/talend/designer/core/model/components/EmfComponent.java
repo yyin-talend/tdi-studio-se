@@ -207,16 +207,16 @@ public class EmfComponent implements IComponent {
         // ****************** add standard returns ******************
         nodeRet = new NodeReturn();
         nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-        nodeRet.setVarName("ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
+        nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
+        nodeRet.setVarName("ERROR_MESSAGE"); //$NON-NLS-1$
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
-        nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
         listReturn.add(nodeRet);
 
         if (codeLanguage.equals(ECodeLanguage.PERL)) {
             nodeRet = new NodeReturn();
             nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-            nodeRet.setVarName("PERL_ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
+            nodeRet.setVarName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Message"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
             nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
@@ -224,7 +224,7 @@ public class EmfComponent implements IComponent {
 
             nodeRet = new NodeReturn();
             nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
-            nodeRet.setVarName("PERL_ERROR_CODE", codeLanguage); //$NON-NLS-1$
+            nodeRet.setVarName("PERL_ERROR_CODE"); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Code"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_CODE"); //$NON-NLS-1$
             nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
@@ -237,7 +237,7 @@ public class EmfComponent implements IComponent {
             retType = (RETURNType) returnList.get(i);
             nodeRet = new NodeReturn();
             nodeRet.setAvailability(retType.getAVAILABILITY());
-            nodeRet.setVarName(retType.getNAME(), codeLanguage);
+            nodeRet.setVarName(retType.getNAME());
             nodeRet.setDisplayName(getTranslatedValue(retType.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             nodeRet.setName(retType.getNAME());
             nodeRet.setType(retType.getTYPE());

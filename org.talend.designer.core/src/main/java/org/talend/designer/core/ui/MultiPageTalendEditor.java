@@ -49,10 +49,10 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -62,18 +62,17 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
+import org.talend.designer.core.ui.editor.TalendTabbedPropertySheetPage;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -456,6 +455,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 nodeName = node.getUniqueName();
             } else {
                 nodeName = null;
+
             }
             if (node.getComponent().getMultipleComponentManager() != null) {
                 nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName(); //$NON-NLS-1$
@@ -489,6 +489,20 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             }
         }
         return node;
+    }
+
+    public EditPart getOldSelection() {
+        IPropertySheetPage propertyPage = (IPropertySheetPage) designerEditor.getAdapter(IPropertySheetPage.class);
+        if (propertyPage instanceof TalendTabbedPropertySheetPage) {
+            StructuredSelection selections = ((TalendTabbedPropertySheetPage) propertyPage).getOldSelection();
+            if (selections != null) {
+                Object selection = selections.getFirstElement();
+                if (selection instanceof EditPart) {
+                    return (EditPart) selection;
+                }
+            }
+        }
+        return null;
     }
 
     /**

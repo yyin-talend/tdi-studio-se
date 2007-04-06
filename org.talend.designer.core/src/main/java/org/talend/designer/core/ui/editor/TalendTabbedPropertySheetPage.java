@@ -86,4 +86,8 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
             }
         }
     }
+    
+    public StructuredSelection getOldSelection() {
+        return oldSelection;
+    }
 }

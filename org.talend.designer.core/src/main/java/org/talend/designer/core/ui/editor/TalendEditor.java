@@ -56,6 +56,7 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.SelectionManager;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.LayerManager;
@@ -240,8 +241,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     }
                 }
             });
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(ActionFactory.DELETE.getId()));
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(
+                    ActionFactory.DELETE.getId()));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
+                    GEFActionConstants.DIRECT_EDIT));
         }
         return sharedKeyHandler;
     }
@@ -298,7 +301,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         PartFactory partFactory = new PartFactory();
         // set the factory to use for creating EditParts for elements in the model
         getGraphicalViewer().setEditPartFactory(partFactory);
-        getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
+        getGraphicalViewer().setKeyHandler(
+                new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
 
         /** * Management of the context menu ** */
 
@@ -311,14 +315,17 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          * (manager != null) { manager.setZoom(getProcess().getZoom()); }
          */
         // Scroll-wheel Zoom
-        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
+                MouseWheelZoomHandler.SINGLETON);
 
         /** * Snap To Grid ** */
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(GRID_SIZE, GRID_SIZE));
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
+                new Boolean(true/* getProcess().isGridEnabled() */));
         // We keep grid visibility and enablement in sync
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
+                new Boolean(true/* getProcess().isGridEnabled() */));
         IAction showGrid = new ToggleGridAction(getGraphicalViewer());
         getActionRegistry().registerAction(showGrid);
 
@@ -327,7 +334,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 new Boolean(false/* getProcess().isSnapToGeometryEnabled() */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
-
     }
 
     /**
@@ -363,10 +369,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         filePath = filePath.append(outlineFileName + ".jpg");
 
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
-        
-        service.getProxyRepositoryFactory().refreshJobPictureFolder();
 
-        
+        service.getProxyRepositoryFactory().refreshJobPictureFolder();
 
     }
 
@@ -402,12 +406,17 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return ID;
     }
 
+    IPropertySheetPage properties;
+
     public Object getAdapter(final Class type) {
 
         // this will select the TabbedPropertyPage instead of the classic property view
         // available in Eclipse 3.2
         if (type == IPropertySheetPage.class) {
-            return new TalendTabbedPropertySheetPage(this);
+            if (properties == null) {
+                properties = new TalendTabbedPropertySheetPage(this);
+            }
+            return properties;
         }
 
         if (type == IContentOutlinePage.class) {
@@ -459,7 +468,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         try {
             if (getEditorInput() instanceof ProcessEditorInput) {
-                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(new SubProgressMonitor(monitor, 80), null);
+                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(
+                        new SubProgressMonitor(monitor, 80), null);
                 if (!saved) {
                     monitor.setCanceled(true);
                     throw new InterruptedException();
@@ -468,7 +478,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             getCommandStack().markSaveLocation();
             setDirty(false);
             monitor.worked(10);
-            
+
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
         } catch (Exception e) {
             e.printStackTrace();
@@ -476,7 +486,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         } finally {
             monitor.done();
         }
-       
+
     }
 
     public void doSaveAs() {
@@ -509,7 +519,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             // setInput(new FileEditorInput((IFile) file));
             getCommandStack().markSaveLocation();
             setDirty(false);
-            
+
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
         } catch (Exception e) {
             e.printStackTrace();
@@ -603,7 +613,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             getViewer().setEditPartFactory(new ProcessTreePartFactory());
             ContextMenuProvider provider = new TalendEditorContextMenuProvider(null, getViewer(), getActionRegistry());
             getViewer().setContextMenu(provider);
-            getSite().registerContextMenu(TalendEditorContextMenuProvider.ID, provider, getSite().getSelectionProvider());
+            getSite().registerContextMenu(TalendEditorContextMenuProvider.ID, provider,
+                    getSite().getSelectionProvider());
             getViewer().setKeyHandler(getCommonKeyHandler());
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
             showOutlineAction = new Action() {
@@ -612,7 +623,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OUTLINE);
                 }
             };
-            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/outline.gif")); //$NON-NLS-1$
+            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
+                    "/icons/outline.gif")); //$NON-NLS-1$
             tbm.add(showOutlineAction);
             showOverviewAction = new Action() {
 
@@ -620,7 +632,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OVERVIEW);
                 }
             };
-            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/overview.gif")); //$NON-NLS-1$
+            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
+                    "/icons/overview.gif")); //$NON-NLS-1$
             tbm.add(showOverviewAction);
             showPage(ID_OUTLINE);
         }
@@ -743,7 +756,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         TalendEditorPaletteFactory.saveFamilyState(getPaletteViewerProvider().getEditDomain().getPaletteViewer());
         super.dispose();
     }
-    
+
     @Override
     protected PaletteViewerProvider createPaletteViewerProvider() {
         return new TalendPaletteViewerProvider(getEditDomain());
