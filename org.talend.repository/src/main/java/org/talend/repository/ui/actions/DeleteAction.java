@@ -158,6 +158,10 @@ public class DeleteAction extends AContextualAction {
                             visible = false;
                             break;
                         }
+                        if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
+                            visible = false;
+                            break;
+                        }
 
                         if (getText() == null || DELETE_FOREVER_TITLE.equals(getText())) {
                             this.setText(DELETE_FOREVER_TITLE);

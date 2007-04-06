@@ -31,7 +31,9 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -95,7 +97,14 @@ public class RestoreAction extends AContextualAction {
         for (Object o : ((IStructuredSelection) selection).toArray()) {
             if (canWork) {
                 if (o instanceof RepositoryNode) {
-                    canWork = restoreObjectAction.validateAction((RepositoryNode) o, null);
+                    RepositoryNode node = (RepositoryNode) o;
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                    if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
+                        canWork = false;
+                    } else{
+                        canWork = restoreObjectAction.validateAction(node, null);    
+                    }
+                    
                 }
             }
         }
