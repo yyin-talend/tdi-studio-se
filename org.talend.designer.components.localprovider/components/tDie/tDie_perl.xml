@@ -38,9 +38,21 @@ COMPATIBILITY="ALL"
       <DEFAULT>'4'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="PRIORITY" FIELD="TEXT" REQUIRED="true" NUM_ROW="3">
-      <DEFAULT>'80'</DEFAULT>
+    <PARAMETER
+      NAME="PRIORITY"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="3"
+    >
+      <ITEMS DEFAULT="ERROR">
+        <ITEM NAME="TRACE"   VALUE="1" />
+        <ITEM NAME="DEBUG"   VALUE="2" />
+        <ITEM NAME="INFO"    VALUE="3" />
+        <ITEM NAME="WARNING" VALUE="4" />
+        <ITEM NAME="ERROR"   VALUE="5" />
+        <ITEM NAME="FATAL"   VALUE="6" />
+      </ITEMS>
     </PARAMETER>
+
    </PARAMETERS>
 
    <CODEGENERATION/>

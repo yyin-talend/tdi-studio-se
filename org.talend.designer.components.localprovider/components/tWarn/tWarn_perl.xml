@@ -49,12 +49,19 @@
 
     <PARAMETER
       NAME="PRIORITY"
-      FIELD="TEXT"
-      REQUIRED="true"
+      FIELD="CLOSED_LIST"
       NUM_ROW="30"
     >
-      <DEFAULT>'50'</DEFAULT>
+      <ITEMS DEFAULT="WARNING">
+        <ITEM NAME="TRACE"   VALUE="1" />
+        <ITEM NAME="DEBUG"   VALUE="2" />
+        <ITEM NAME="INFO"    VALUE="3" />
+        <ITEM NAME="WARNING" VALUE="4" />
+        <ITEM NAME="ERROR"   VALUE="5" />
+        <ITEM NAME="FATAL"   VALUE="6" />
+      </ITEMS>
     </PARAMETER>
+
    </PARAMETERS>
 
    <CODEGENERATION/>

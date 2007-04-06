@@ -148,7 +148,7 @@ sub global_die_catcher {
         <%=logCatcher.getUniqueName()%>_subprocess(
             type => 'Perl die',
             origin => $dying_component,
-            priority => 100,
+            priority => 6,
             message => $_globals{$dying_component}{ERROR_MESSAGE},
         );
 <%
