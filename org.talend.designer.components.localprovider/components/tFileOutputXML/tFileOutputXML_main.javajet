@@ -47,9 +47,6 @@ IConnection conn = conns.get(0);
    java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n,");
 
    int counter_<%=cid%> = 0;
-                    		
- 	
- 	
 					
 	while (counter_<%=cid%> < rowCounter_<%=cid%>) {
 		strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
@@ -174,6 +171,34 @@ if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=
 
     buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());
 } 
+
+	if(strBuffer_<%=cid %>.length()>=strBufferSize_<%=cid%>){
+<%
+	if(split.equals("true")){
+%>	
+	java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
+	java.io.BufferedWriter out_<%=cid%> = null;
+	
+	try{
+	
+	 	out_<%=cid%> = new java.io.BufferedWriter(
+	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
+	                                
+	}catch(java.io.UnsupportedEncodingException err){
+	
+		err.printStackTrace();
+	}    
+<%
+	}
+%>
+		out_<%=cid %>.write(strBuffer_<%=cid %>.toString());
+		
+		out_<%=cid %>.flush();
+		
+		strBuffer_<%=cid %>.delete(0,strBuffer_<%=cid %>.length());
+		
+	}
+	
 <%  
 	for(IMetadataColumn column:metadata.getListColumns()) {
 %>

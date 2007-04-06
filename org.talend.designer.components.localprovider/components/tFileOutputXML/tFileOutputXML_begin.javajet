@@ -57,6 +57,7 @@ int currentRowQtyWithinFile_<%=cid%> = 0;
 int nb_line_<%=cid%> = 0;
 
 StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+final int strBufferSize_<%=cid%> = 700000;
 
 StringBuffer buffer_<%=cid%> = new StringBuffer();
 final int bufferRowQtys_<%=cid%> = 5000;            
