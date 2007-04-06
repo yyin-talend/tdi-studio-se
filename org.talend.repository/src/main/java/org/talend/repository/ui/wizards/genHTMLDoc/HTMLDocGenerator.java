@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -334,16 +335,14 @@ public class HTMLDocGenerator {
 
             Element componentElement = jobElement.addElement("component");
             String relativePath = getComponentIconPath(node);
-            String componentIconFileName = relativePath.substring(relativePath.lastIndexOf("/") + 1, relativePath
-                    .length() - 1);
+            String componentIconFileName = relativePath.substring(relativePath.lastIndexOf("/") + 1);
 
             String uniqueName = node.getUniqueName();
             componentElement.addAttribute("icon", PICTUREFOLDERPATH + componentIconFileName);
             componentElement.addAttribute("uniqueName", uniqueName);
 
             // Stores the path of component icon.
-            picFilePathMap.put(componentIconFileName, relativePath.substring(relativePath.indexOf("/") + 1,
-                    relativePath.length() - 1));
+            picFilePathMap.put(componentIconFileName, relativePath);
             componentElement.addAttribute("label", uniqueName);
 
             String componentName = node.getComponent().getName();
@@ -675,7 +674,14 @@ public class HTMLDocGenerator {
      * @return a string reprenenting component icon's path
      */
     private static String getComponentIconPath(INode node) {
-        return node.getComponent().getIcon32().toString();
+        String string = node.getComponent().getIcon32().toString();
+        String path = string.substring("URLImageDescriptor(".length(), string.length() - 1); //$NON-NLS-1$
+        try {
+            return new URL(path).getPath();
+        } catch (MalformedURLException e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
     }
 
     /**
