@@ -52,8 +52,8 @@ class <%=cid %>Randomizer {
 			} else if (lineValue.get("ARRAY").indexOf(",") >0) {
 		%>
 		<%=JavaTypesManager.getTypeToGenerate(listColumns.get(i).getTalendType(), listColumns.get(i).isNullable()) %>[] <%=listColumns.get(i).getLabel() %>Table = new <%=JavaTypesManager.getTypeToGenerate(listColumns.get(i).getTalendType(), listColumns.get(i).isNullable()) %>[] { <%=lineValue.get("ARRAY") %> };
-		double random<%=cid %> = java.lang.Math.random();
-		return <%=listColumns.get(i).getLabel() %>Table[(int)random<%=cid %>*<%=listColumns.get(i).getLabel() %>Table.length];
+		java.util.Random random<%=cid %> = new java.util.Random();
+		return <%=listColumns.get(i).getLabel() %>Table[random<%=cid %>.nextInt(<%=listColumns.get(i).getLabel() %>Table.length)];
 		<% } else { %> 
 		return <%=lineValue.get("ARRAY") %>;
 		<% } %>
