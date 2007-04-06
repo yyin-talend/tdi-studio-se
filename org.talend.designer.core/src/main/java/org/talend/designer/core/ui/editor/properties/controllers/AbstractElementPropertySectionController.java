@@ -103,7 +103,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
-    protected static final String PROPERTY = "PROPERTY"; //$NON-NLS-1$
+    protected static final String PROPERTY = TypedTextCommandExecutor.PROPERTY; //$NON-NLS-1$
 
     protected static final int MAX_PERCENT = 100;
 
@@ -130,8 +130,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
-            final int numInRow, final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -166,9 +166,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         elem.addPropertyChangeListener(this);
     }
 
-    
     /**
      * Getter for dynamicTabbedPropertySection.
+     * 
      * @return the dynamicTabbedPropertySection
      */
     public DynamicTabbedPropertySection getDynamicTabbedPropertySection() {
@@ -242,8 +242,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor
-                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -264,7 +263,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
             this.undoRedoHelper.unregister(control);
         }
 
-        
     }
 
     private static Map<Control, ControlProperties> controlToProp = new HashMap<Control, ControlProperties>();
@@ -376,8 +374,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, Messages
-                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null,
+                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -649,4 +647,60 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     public abstract void refresh(IElementParameter param, boolean check);
+
+    /**
+     * qzhang Comment method "fixedCursorPosition".
+     * 
+     * @param param
+     * @param labelText
+     * @param value
+     * @param valueChanged
+     */
+    protected void fixedCursorPosition(IElementParameter param, Text labelText, Object value, boolean valueChanged) {
+        Object control = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getActiveControl();
+        if (param.getName().equals(control) && valueChanged && !param.isRepositoryValueUsed()) {
+            String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
+            String currentText = (String) value;
+            labelText.setFocus();
+            ControlUtils.setCursorPosition(labelText, getcursorPosition(previousText, currentText));
+        }
+    }
+
+    /**
+     * qzhang Comment method "getcursorPosition".
+     * 
+     * @param previousText
+     * @param currentText
+     * @return
+     */
+    private int getcursorPosition(String previousText, String currentText) {
+        if (previousText.length() == currentText.length() + 1) {
+            return getLeftCharPosition(currentText, previousText, false);
+        } else if (previousText.length() == currentText.length() - 1) {
+            return getLeftCharPosition(previousText, currentText, true);
+        }
+        return 0;
+    }
+
+    /**
+     * qzhang Comment method "getLeftCharPosition".
+     * 
+     * @param previousText
+     * @param currentText
+     * @return
+     */
+    private int getLeftCharPosition(String previousText, String currentText, boolean add) {
+        int i = 0;
+        for (; i < currentText.length() - 1; i++) {
+            if (currentText.charAt(i) != previousText.charAt(i)) {
+                break;
+            }
+        }
+        if (add) {
+            return i + 1;
+        } else {
+            return i;
+        }
+    }
+
 }

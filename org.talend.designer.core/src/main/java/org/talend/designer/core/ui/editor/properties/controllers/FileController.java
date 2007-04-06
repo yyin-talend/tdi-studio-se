@@ -146,6 +146,7 @@ public class FileController extends AbstractElementPropertySectionController {
 
         Control cLayout = dField.getLayoutControl();
         filePathText = (Text) dField.getControl();
+        filePathText.setData(PROPERTY, param.getName());
         cLayout.setBackground(subComposite.getBackground());
         filePathText.setEditable(!param.isReadOnly());
 
@@ -246,48 +247,7 @@ public class FileController extends AbstractElementPropertySectionController {
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
-        if (valueChanged && !param.isRepositoryValueUsed()) {
-            String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
-            String currentText = (String) value;
-            labelText.setFocus();
-            ControlUtils.setCursorPosition(labelText, getcursorPosition(previousText, currentText));
-        }
-
+        fixedCursorPosition(param, labelText, value, valueChanged);
     }
 
-    /**
-     * qzhang Comment method "getcursorPosition".
-     * 
-     * @param previousText
-     * @param currentText
-     * @return
-     */
-    private int getcursorPosition(String previousText, String currentText) {
-        if (previousText.length() == currentText.length() + 1) {
-            return getLeftCharPosition(currentText, previousText, false);
-        } else if (previousText.length() == currentText.length() - 1) {
-            return getLeftCharPosition(previousText, currentText, true);
-        }
-        return 0;
-    }
-
-    /**
-     * qzhang Comment method "getLeftCharPosition".
-     * @param previousText
-     * @param currentText
-     * @return
-     */
-    private int getLeftCharPosition(String previousText, String currentText, boolean add) {
-        int i = 0;
-        for (; i < currentText.length() - 1; i++) {
-            if (currentText.charAt(i) != previousText.charAt(i)) {
-                break;
-            }
-        }
-        if (add) {
-            return i + 1;
-        } else {
-            return i;
-        }
-    }
 }

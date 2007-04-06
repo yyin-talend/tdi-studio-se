@@ -50,7 +50,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * 
  */
 public class TextController extends AbstractElementPropertySectionController {
-    
+
     /**
      * DOC yzhang TextController constructor comment.
      * 
@@ -80,7 +80,7 @@ public class TextController extends AbstractElementPropertySectionController {
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
-        
+
         Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
@@ -182,5 +182,6 @@ public class TextController extends AbstractElementPropertySectionController {
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
+        fixedCursorPosition(param, labelText, value, valueChanged);
     }
 }
