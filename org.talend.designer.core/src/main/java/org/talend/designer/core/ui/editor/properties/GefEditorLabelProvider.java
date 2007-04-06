@@ -176,10 +176,10 @@ public class GefEditorLabelProvider extends LabelProvider {
             if (lastNode != node) {
                 lastNode = node;
             }
-            String name = node.getComponent().getTranslatedName();
-            if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
-                name += " (" + node.getComponent().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-            }
+            String name = node.getUniqueName();
+//            if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
+//                name += " (" + node.getComponent().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+//            }
             return name;
         }
     }
