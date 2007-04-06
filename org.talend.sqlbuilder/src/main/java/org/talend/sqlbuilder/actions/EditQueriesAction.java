@@ -33,6 +33,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -106,5 +107,10 @@ public class EditQueriesAction extends AContextualAction {
             }
         }
         setEnabled(canWork);
+    }
+
+    @Override
+    public Class getClassForDoubleClick() {
+        return QueryEMFRepositoryNode.class;
     }
 }
