@@ -104,6 +104,7 @@ public class MemoController extends AbstractElementPropertySectionController {
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+        addDragAndDropTarget(text);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();

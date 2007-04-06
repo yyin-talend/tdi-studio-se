@@ -375,6 +375,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         if (elem instanceof Node) {
             queryText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+        
+        addDragAndDropTarget(queryText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();

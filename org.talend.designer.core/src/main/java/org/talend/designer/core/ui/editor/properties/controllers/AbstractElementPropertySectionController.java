@@ -53,7 +53,6 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
@@ -131,8 +130,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
+            final int numInRow, final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -229,11 +228,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 this.extendedProposal = ProcessProposalUtils.installOn(control, process);
                 this.checkErrorsHelper.register(control, extendedProposal);
                 extendedProposal.addContentProposalListener(new IContentProposalListener() {
+
                     public void proposalAccepted(IContentProposal proposal) {
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor
+                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -365,8 +366,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null,
-                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null, Messages
+                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -536,11 +537,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     /**
-     * DOC yzhang Comment method "addDragAndDropTarget".
+     * Accept Text and StyledText control.
      * 
      * @param labelText
      */
-    public void addDragAndDropTarget(final Text labelText) {
+    public void addDragAndDropTarget(final Control textControl) {
         DropTargetListener dropTargetListener = new DropTargetListener() {
 
             String propertyName = null;
@@ -556,7 +557,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             public void dragOver(final DropTargetEvent event) {
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
-                    propertyName = getParameterName(labelText);
+                    propertyName = getParameterName(textControl);
                     for (int i = 0; i < elem.getElementParameters().size(); i++) {
                         IElementParameter param = elem.getElementParameters().get(i);
                         if (param.getName().equals(propertyName)) {
@@ -570,7 +571,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             public void drop(final DropTargetEvent event) {
                 if (propertyName != null) {
-                    String text = labelText.getText() + (String) event.data;
+                    String text;
+                    if (textControl instanceof StyledText) {
+                        text = ((StyledText) textControl).getText() + (String) event.data;
+                    } else {
+                        text = ((Text) textControl).getText() + (String) event.data;
+                    }
                     Command cmd = new PropertyChangeCommand(elem, propertyName, (Object) text);
                     getCommandStack().execute(cmd);
                 }
@@ -580,7 +586,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         };
 
-        DropTarget target = new DropTarget(labelText, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
+        DropTarget target = new DropTarget(textControl, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
         Transfer[] transfers = new Transfer[] { TextTransfer.getInstance() };
         target.setTransfer(transfers);
         target.addDropListener(dropTargetListener);
