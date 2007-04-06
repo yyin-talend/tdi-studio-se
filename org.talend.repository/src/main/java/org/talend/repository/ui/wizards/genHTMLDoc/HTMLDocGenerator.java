@@ -115,10 +115,8 @@ public class HTMLDocGenerator {
             final URL xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(XSL_FILE_PATH), null));
             final URL logoFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(LOGO_FILE_PATH), null));
 
-            String tempStr1 = xslFileUrl.toString();
-            String tempStr2 = logoFileUrl.toString();
-            String xslFilePath = tempStr1.substring(tempStr1.indexOf("/") + 1);
-            String logoFilePath = tempStr2.substring(tempStr2.indexOf("/") + 1);
+            String xslFilePath = xslFileUrl.getPath();
+            String logoFilePath = logoFileUrl.getPath();
 
             FileCopyUtils.copy(logoFilePath, picFolderPath + File.separatorChar + TALEND_LOGO_FILE_NAME);
 
