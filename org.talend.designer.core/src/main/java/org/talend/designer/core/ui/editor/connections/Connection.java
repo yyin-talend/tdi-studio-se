@@ -21,10 +21,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
-import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -205,13 +207,32 @@ public class Connection extends Element implements IConnection {
             return;
         }
         String labelText = name;
+        int id = getOutputId();
+
+        boolean updateName = false;
         if (getLineStyle().equals(EConnectionType.TABLE)) {
-            int id = getOutputId();
             if (id >= 0) {
-                labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                labelText += " (" + metaName + ", order:" + id + ")";
             } else {
                 labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
+            updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (id >= 0) {
+                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ", order:" + id + ")";
+            } else {
+                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")";
+            }
+            updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
+            if (id >= 0) {
+                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ", order:" + id + ")";
+            } else {
+                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")";
+            }
+            updateName = true;
+        }
+        if (updateName) {
             if (label == null) {
                 label = new ConnectionLabel(labelText, this);
             } else {
@@ -281,7 +302,8 @@ public class Connection extends Element implements IConnection {
                 metaName = uniqueName;
                 // }
             }
-            if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
+            if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN)
+                    || lineStyle.equals(EConnectionType.FLOW_REF)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }
@@ -299,7 +321,8 @@ public class Connection extends Element implements IConnection {
     public void disconnect() {
         if (isConnected) {
             if (!source.getConnectorFromType(lineStyle).isBuiltIn()) {
-                if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
+                if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN)
+                        || lineStyle.equals(EConnectionType.FLOW_REF)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
@@ -441,8 +464,24 @@ public class Connection extends Element implements IConnection {
         this.readOnly = readOnly;
     }
 
+    private void orderConnectionsByMetadata() {
+        List<IMetadataTable> tableList = source.getMetadataList();
+        List<IConnection> connectionList = (List<IConnection>) source.getOutgoingConnections();
+        List<IConnection> tmpList = new ArrayList<IConnection>(connectionList);
+        connectionList.clear();
+        for (IMetadataTable table : tableList) {
+            String tableName = table.getTableName();
+            for (IConnection connection : tmpList) {
+                if (connection.getMetadataTable().getTableName().equals(tableName)) {
+                    connectionList.add(connection);
+                }
+            }
+        }
+    }
+
     private void updateAllId() {
-        if (source != null) {
+        if (source != null && source.getConnectorFromType(lineStyle).isBuiltIn()) {
+            orderConnectionsByMetadata();
             for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
                 Connection connection = (Connection) source.getOutgoingConnections().get(i);
                 connection.updateName();
