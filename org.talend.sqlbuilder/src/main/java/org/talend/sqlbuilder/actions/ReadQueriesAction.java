@@ -25,14 +25,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -47,11 +43,12 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class EditQueriesAction extends AContextualAction {
+public class ReadQueriesAction extends AContextualAction {
 
-    public EditQueriesAction() {
+    public ReadQueriesAction() {
         super();
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_QUERY_ICON));
+        setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.READ_ICON));
     }
 
     public void run() {
@@ -71,7 +68,7 @@ public class EditQueriesAction extends AContextualAction {
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         connParameters.setQuery(""); //$NON-NLS-1$
-        connParameters.setNodeReadOnly(false);
+        connParameters.setNodeReadOnly(true);
         dial.setConnParameters(connParameters);
         dial.open();
         refresh(node);
@@ -79,9 +76,6 @@ public class EditQueriesAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            canWork = false;
-        }
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
@@ -90,15 +84,6 @@ public class EditQueriesAction extends AContextualAction {
                 if (node.getObjectType() != ERepositoryObjectType.METADATA_CONNECTIONS
                         && node.getObjectType() != ERepositoryObjectType.METADATA_CON_QUERY) {
                     canWork = false;
-                } else {
-                    IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
-                            IRepositoryService.class);
-                    IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                    if (repFactory.isPotentiallyEditable(node.getObject())) {
-                        this.setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
-                    } else {
-                        this.setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
-                    }
                 }
                 break;
             default:

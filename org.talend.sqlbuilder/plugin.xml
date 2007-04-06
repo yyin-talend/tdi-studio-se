@@ -51,7 +51,16 @@
       <Action
             class="org.talend.sqlbuilder.actions.EditQueriesAction"
             id="org.talend.sqlbuilder.EditQueries"
+            isEditAction="true"
+            isReadAction="false"
             level="12"
             name="%editQueries"/>
+      <Action
+            class="org.talend.sqlbuilder.actions.ReadQueriesAction"
+            id="org.talend.sqlbuilder.ReadQueries"
+            isEditAction="false"
+            isReadAction="true"
+            level="14"
+            name="Read Queries"/>
    </extension>
 </plugin>
