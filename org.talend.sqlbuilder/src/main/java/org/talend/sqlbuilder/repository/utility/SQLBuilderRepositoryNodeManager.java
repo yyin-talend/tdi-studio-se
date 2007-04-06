@@ -939,6 +939,7 @@ public class SQLBuilderRepositoryNodeManager {
                 qc.setConnection(connection);
                 qc.getQuery().add(query);
                 connection.getQueries().add(qc);
+                assignQueryId(query, qc); //assign id to new query
             } else {
                 QueriesConnection connection2 = list.get(0);
                 List<Query> queries = connection2.getQuery();
@@ -950,15 +951,24 @@ public class SQLBuilderRepositoryNodeManager {
                         query2.setValue(query.getValue());
                         isModify = true;
                     }
+                    assignQueryId(query2, connection2); //assign id to old query without id
                 }
                 if (!isModify) {
                     connection2.getQuery().add(query);
+                    assignQueryId(query, connection2); //assign id to new query
                 }
             }
         }
+        
         saveMetaData(item);
     }
 
+    private void assignQueryId(Query query, QueriesConnection connection) {
+        if (query.getId() == null) {
+            query.setId(ProxyRepositoryFactory.getInstance().getNextId());
+        }
+    }
+    
     /**
      * method "deleteQueries" use delete Queries.
      * 
