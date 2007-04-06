@@ -166,6 +166,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
         elem.addPropertyChangeListener(this);
     }
 
+    
+    /**
+     * Getter for dynamicTabbedPropertySection.
+     * @return the dynamicTabbedPropertySection
+     */
+    public DynamicTabbedPropertySection getDynamicTabbedPropertySection() {
+        return this.dynamicTabbedPropertySection;
+    }
+
     /**
      * DOC yzhang Comment method "getWidgetFactory".
      * 

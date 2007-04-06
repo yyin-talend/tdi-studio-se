@@ -905,16 +905,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnNameList);
-                CCombo combo = (CCombo) hashCurControls.get(param.getName());
-                combo.setItems(curColumnNameList);
-                if (!curColumnList.contains(param.getValue())) {
-                    if (curColumnNameList.length > 0) {
-                        elem.setPropertyValue(param.getName(), curColumnNameList[0]);
-                        combo.setText(curColumnNameList[0]);
-                    }
-                } else {
-                    combo.setText((String) param.getValue());
-                }
+                
+                
+//                CCombo combo = (CCombo) hashCurControls.get(param.getName());
+//                combo.setItems(curColumnNameList);
+//                if (!curColumnList.contains(param.getValue())) {
+//                    if (curColumnNameList.length > 0) {
+//                        elem.setPropertyValue(param.getName(), curColumnNameList[0]);
+//                        combo.setText(curColumnNameList[0]);
+//                    }
+//                } else {
+//                    combo.setText((String) param.getValue());
+//                }
             }
             if (param.getField() == EParameterFieldType.TABLE) {
                 TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
