@@ -152,7 +152,7 @@ public abstract class ShadowNode implements INode {
         metadata.setTableName(this.getUniqueName());
         if (LanguageManager.getCurrentLanguage().compareTo(ECodeLanguage.JAVA) == 0) {
             List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 256; i++) {
                 MetadataColumn col = new MetadataColumn();
                 col.setLabel("row" + i);
                 col.setTalendType("id_String");
