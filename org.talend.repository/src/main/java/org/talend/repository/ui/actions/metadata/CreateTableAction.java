@@ -133,12 +133,12 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     setEnabled(true);
                     return;
                 }
-    
+
                 IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                     return;
                 }
-    
+
                 if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
@@ -149,6 +149,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
                     collectChildNames(node);
                     setEnabled(true);
                     return;
+                }
+                if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
+                    canWork = false;
                 }
             }
         }

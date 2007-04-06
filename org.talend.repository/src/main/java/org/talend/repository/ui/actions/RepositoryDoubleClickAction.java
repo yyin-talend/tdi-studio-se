@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -103,6 +103,10 @@ public class RepositoryDoubleClickAction extends Action {
             ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
             if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
+                    return current;
+                }
+            } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
+                if (current.getClassForDoubleClick().equals(QueryEMFRepositoryNode.class)) {
                     return current;
                 }
             } else if (obj.getObject() != null
