@@ -39,35 +39,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 # keep all "my" variables local to the block, thus we can use several
 # tFileFetch components in the same process
 {
-    my $ff = File::Fetch->new(uri => <%=uri %>);
-    my $where = $ff->fetch(
+    my $uri = <%=uri%>;
+    my $directory = <%=directory%>;
 <%
-        if (!directory.equals("")) {
+        if (filename.equals("")) {
 %>
-        to => <%=directory %>,
-<%
-        }
-%>
-    )
-        or die $ff->error;
-
-<%
-        if (!filename.equals("")) {
-%>
-    my $dirname = dirname $where;
-    my $new_name = File::Spec->catfile($dirname, <%=filename %>);
-    rename $where, $new_name;
-    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $new_name;
+    my $filename = basename($uri);
 <%
         }
         else {
 %>
-    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $where;
+    my $filename = <%=filename%>;
 <%
         }
 %>
-    
+    my $filepath = File::Spec->catfile($directory, $filename);
 
+    my $rc = getstore($uri, $filepath);
+
+    if (is_error($rc)) {
+      die '[<%=cid%>] Error fetching file "', <%=uri%>, '", code ', $rc;
+    }
+
+    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $filepath;
 } # block end
 
 <%

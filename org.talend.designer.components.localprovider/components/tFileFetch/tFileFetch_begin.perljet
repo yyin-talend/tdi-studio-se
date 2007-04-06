@@ -21,9 +21,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
 %>
 
-use File::Fetch;
 use File::Basename;
 use File::Spec;
+use LWP::Simple;
 
 <%
     }

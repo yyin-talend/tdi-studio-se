@@ -32,7 +32,7 @@ COMPATIBILITY="ALL"
        NAME="URI"
        FIELD="TEXT"
        REQUIRED="true"
-       NUM_ROW="1"
+       NUM_ROW="10"
     >
       <DEFAULT>'http://talendforge.org/file_fetch.txt'</DEFAULT>
     </PARAMETER>
@@ -40,17 +40,17 @@ COMPATIBILITY="ALL"
     <PARAMETER
       NAME="DIRECTORY"
       FIELD="DIRECTORY"
-      NUM_ROW="2"
-      REQUIRED="false"
+      NUM_ROW="20"
+      REQUIRED="true"
     >
-      <DEFAULT></DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="FILENAME"
       FIELD="TEXT"
       REQUIRED="false"
-      NUM_ROW="3"
+      NUM_ROW="30"
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
@@ -58,7 +58,7 @@ COMPATIBILITY="ALL"
 
   <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="File-Fetch" MODULE="File::Fetch" REQUIRED="true" />
+       <IMPORT NAME="LWP-Simple" MODULE="LWP::Simple" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 
