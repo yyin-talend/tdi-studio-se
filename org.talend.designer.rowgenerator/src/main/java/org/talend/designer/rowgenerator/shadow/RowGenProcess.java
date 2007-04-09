@@ -40,6 +40,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.runprocess.IProcessor;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -574,5 +575,15 @@ public class RowGenProcess extends Element implements IProcess {
     public void reconnection() {
         component.getOutgoingConnections().remove(cnx);
         component.setOutgoingConnections(ooutput);
+    }
+
+    public IProcessor getProcessor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setProcessor(IProcessor processor) {
+        // TODO Auto-generated method stub
+        
     }
 }

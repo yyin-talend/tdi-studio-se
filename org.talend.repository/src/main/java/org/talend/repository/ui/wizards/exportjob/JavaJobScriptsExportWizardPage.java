@@ -133,7 +133,8 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -428,7 +429,7 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
             }
         });
 
-        setTopFolder(resourcesToExport[0], topFolder);            
+        setTopFolder(resourcesToExport[0], topFolder);
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
@@ -436,8 +437,8 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
 
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport[0],
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport[0], getDestinationValue());
         boolean ok = executeExportOperation(exporterOperation); // path
         // can
         // like
@@ -446,6 +447,12 @@ public class JavaJobScriptsExportWizardPage extends WizardFileSystemResourceExpo
             manager.deleteTempFiles();
         }
         ProcessorUtilities.resetExportConfig();
+        for (int i = 0; i < process.length; i++) {
+            ProcessItem processItem = process[i].getProcess();
+            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
+                    .getDefaultContext());
+            System.out.println("regenerate:" + processItem.getProperty().getLabel());
+        }
         return ok;
     }
 

@@ -62,7 +62,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.Processor;
@@ -82,18 +81,6 @@ public class PerlProcessor extends Processor {
 
     private static final String CTX_ARG = "--context="; //$NON-NLS-1$
 
-    /** Perl project. */
-    private IProject perlProject;
-
-    /** Path to generated perl code. */
-    private IPath codePath;
-
-    /** Path to generated context code. */
-    private IPath contextPath;
-
-    /** Context used. */
-    private IContext context;
-
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
 
@@ -111,8 +98,11 @@ public class PerlProcessor extends Processor {
     }
 
     public void initPaths(IContext context) throws ProcessorException {
+        if (context.equals(this.context)) {
+            return;
+        }
         try {
-            perlProject = PerlUtils.getProject();
+            project = PerlUtils.getProject();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("PerlProcessor.notFoundedPerlProject")); //$NON-NLS-1$
         }
@@ -133,15 +123,14 @@ public class PerlProcessor extends Processor {
         try {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
-            Project project = repositoryContext.getProject();
+            Project repositoryProject = repositoryContext.getProject();
 
-            ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
                 String perlLib = getLibraryPath();
-                String currentPerlProject = project.getTechnicalLabel();
+                String currentPerlProject = repositoryProject.getTechnicalLabel();
                 String codeLocation = getCodeLocation();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
@@ -152,16 +141,14 @@ public class PerlProcessor extends Processor {
             }
 
             String processCode = ""; //$NON-NLS-1$
-            String processContext = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                processContext = codeGen.generateContextCode(context);
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
 
             // Generating files
-            IFile codeFile = perlProject.getFile(codePath);
+            IFile codeFile = project.getFile(codePath);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
             if (!codeFile.exists()) {
                 codeFile.create(codeStream, true, null);
@@ -181,13 +168,7 @@ public class PerlProcessor extends Processor {
                 setBreakpoints(codeFile, lineNumbers);
             }
 
-            IFile contextFile = perlProject.getFile(contextPath);
-            InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
-            if (!contextFile.exists()) {
-                contextFile.create(contextStream, true, null);
-            } else {
-                contextFile.setContents(contextStream, true, false, null);
-            }
+            updateContextCode();
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {
@@ -234,7 +215,7 @@ public class PerlProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     public IProject getCodeProject() {
-        return this.perlProject;
+        return this.project;
     }
 
     /**
@@ -299,7 +280,7 @@ public class PerlProcessor extends Processor {
      * @param nodeName
      */
     public int getLineNumber(String nodeName) {
-        IFile codeFile = perlProject.getFile(codePath);
+        IFile codeFile = project.getFile(codePath);
         int[] lineNumbers = new int[] { 0 };
         try {
             lineNumbers = PerlProcessor.getLineNumbers(codeFile, new String[] { nodeName });
@@ -433,12 +414,7 @@ public class PerlProcessor extends Processor {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IProcessor#addSyntaxCheckableEditor(org.talend.designer.core.ISyntaxCheckableEditor)
-     */
-    public void addSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
+    public void setSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
         // do nothing for perl right now.
 
     }

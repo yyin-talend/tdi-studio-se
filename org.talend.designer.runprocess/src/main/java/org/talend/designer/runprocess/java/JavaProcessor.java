@@ -73,15 +73,14 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -98,22 +97,13 @@ import org.talend.designer.runprocess.perl.PerlUtils;
  */
 public class JavaProcessor extends Processor {
 
-    /** The project contains the java project. */
-    private IProject project;
-
     /** The java project within the project. */
     private static IJavaProject javaProject;
 
-    /** The path of the java source file sroted the generated java code. */
-    private IPath srcCodePath;
-
-    /** The path of the java source file sroted the generated context java code. */
-    private IPath srcContextPath;
-
-    /** The complied code path. */
+    /** The compiled code path. */
     private IPath compiledCodePath;
 
-    /** The complied context file path. */
+    /** The compiled context file path. */
     private IPath compiledContextPath;
 
     /** Tells if filename is based on id or label of the process. */
@@ -123,7 +113,7 @@ public class JavaProcessor extends Processor {
 
     private IJavaProcessorStates states;
 
-    private static List<ISyntaxCheckableEditor> checkableEditors = new ArrayList<ISyntaxCheckableEditor>();
+    private ISyntaxCheckableEditor checkableEditor;
 
     /**
      * Set current status.
@@ -155,6 +145,9 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model.process.IContext)
      */
     public void initPaths(IContext context) throws ProcessorException {
+        if (context.equals(this.context)) {
+            return;
+        }
 
         try {
             this.project = getProcessorProject();
@@ -176,18 +169,18 @@ public class JavaProcessor extends Processor {
             IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
             IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts"); //$NON-NLS-1$
 
-            this.srcCodePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
-            this.srcCodePath = this.srcCodePath.removeFirstSegments(1);
-            this.compiledCodePath = this.srcCodePath.removeLastSegments(1).append(fileName);
+            this.codePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
+            this.codePath = this.codePath.removeFirstSegments(1);
+            this.compiledCodePath = this.codePath.removeLastSegments(1).append(fileName);
             this.compiledCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledCodePath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
             this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
 
-            this.srcContextPath = contextPackage.getPath().append(
+            this.contextPath = contextPackage.getPath().append(
                     escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION); //$NON-NLS-1$
-            this.srcContextPath = this.srcContextPath.removeFirstSegments(1);
-            this.compiledContextPath = this.srcContextPath.removeLastSegments(1).append(fileName);
+            this.contextPath = this.contextPath.removeFirstSegments(1);
+            this.compiledContextPath = this.contextPath.removeLastSegments(1).append(fileName);
             this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
@@ -198,7 +191,7 @@ public class JavaProcessor extends Processor {
         } catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
-
+        this.context = context;
     }
 
     /*
@@ -216,7 +209,6 @@ public class JavaProcessor extends Processor {
                     Context.REPOSITORY_CONTEXT_KEY);
             Project project = repositoryContext.getProject();
 
-            ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createJavaRoutineSynchronizer().syncAllRoutines();
             if (javaProperties) {
@@ -232,16 +224,14 @@ public class JavaProcessor extends Processor {
             }
 
             String processCode = ""; //$NON-NLS-1$
-            String processContext = "false"; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                processContext = codeGen.generateContextCode(context);
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
 
             // Generating files
-            IFile codeFile = this.project.getFile(this.srcCodePath);
+            IFile codeFile = this.project.getFile(this.codePath);
 
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
 
@@ -251,31 +241,21 @@ public class JavaProcessor extends Processor {
                 codeFile.setContents(codeStream, true, false, null);
             }
 
-            // IFile contextFile = javaProject.getFile(contextPath);
-            IFile contextFile = this.project.getProject().getFile(this.srcContextPath);
-            InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
-            if (!contextFile.exists()) {
-                contextFile.create(contextStream, true, null);
-            } else {
-                contextFile.setContents(contextStream, true, false, null);
-            }
-            // /add the if ,by qzhang. for RowGenerator2's Preview function.
-            if (!process.getName().equals("Preview_RowGenerator2") || !process.getId().equals("Preview_RowGenerator2")) {
-                syntaxCheck();
-            }
+            updateContextCode();
+
+            syntaxCheck();
 
             javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
-                String typeName = getTypeName();
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
                 for (INode node : breakpointNodes) {
                     nodeNames[pos++] = "[" + node.getUniqueName() + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
-                setBreakpoints(codeFile, typeName, lineNumbers);
+                setBreakpoints(codeFile, getTypeName(), lineNumbers);
             }
 
         } catch (CoreException e1) {
@@ -285,22 +265,14 @@ public class JavaProcessor extends Processor {
         }
     }
 
-    public void addSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
-        if (!JavaProcessor.checkableEditors.contains(checkableEditor)) {
-            JavaProcessor.checkableEditors.add(checkableEditor);
-        }
+    public void setSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
+        this.checkableEditor = checkableEditor;
     }
 
     private void syntaxCheck() {
-        for (Iterator iter = JavaProcessor.checkableEditors.iterator(); iter.hasNext();) {
-            ISyntaxCheckableEditor checkableEditor = (ISyntaxCheckableEditor) iter.next();
-            if (checkableEditor.isDisposed()) {
-                JavaProcessor.checkableEditors.remove(checkableEditor);
-                continue;
-            }
+        if (checkableEditor != null) {
             checkableEditor.validateSyntax();
         }
-
     }
 
     /*
@@ -404,7 +376,7 @@ public class JavaProcessor extends Processor {
      * @param nodeName
      */
     public int getLineNumber(String nodeName) {
-        IFile codeFile = this.project.getProject().getFile(this.srcCodePath);
+        IFile codeFile = this.project.getProject().getFile(this.codePath);
         int[] lineNumbers = new int[] { 0 };
         try {
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
@@ -639,12 +611,12 @@ public class JavaProcessor extends Processor {
     }
 
     /**
-     * Getter for srcCodePath.
+     * Getter for codePath.
      * 
-     * @return the srcCodePath
+     * @return the codePath
      */
     public IPath getSrcCodePath() {
-        return this.srcCodePath;
+        return this.codePath;
     }
 
     /**
@@ -653,7 +625,7 @@ public class JavaProcessor extends Processor {
      * @return the srcContextPath
      */
     public IPath getSrcContextPath() {
-        return this.srcContextPath;
+        return this.contextPath;
     }
 
     public String[] getCommandLine() throws ProcessorException {
@@ -673,7 +645,7 @@ public class JavaProcessor extends Processor {
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile()) {
-                    if (isExternalUse()) {
+                    if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
                                 + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
                     } else {
@@ -686,7 +658,7 @@ public class JavaProcessor extends Processor {
 
         // init project_path
         String projectPath;
-        if (isExternalUse()) {
+        if (ProcessorUtilities.isExportConfig()) {
             projectPath = getCodeLocation();
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
@@ -700,7 +672,7 @@ public class JavaProcessor extends Processor {
         String className = classPath.toString().replace('/', '.');
 
         String exportJar = "";
-        if (isExternalUse()) {
+        if (ProcessorUtilities.isExportConfig()) {
             exportJar = JavaUtils.JAVA_CLASSPATH_SEPARATOR + process.getName().toLowerCase() + ".jar";
         }
 

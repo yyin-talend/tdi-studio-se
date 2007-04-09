@@ -42,6 +42,7 @@ import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.designer.runprocess.IProcessor;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -514,5 +515,15 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
 
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
         return false;
+    }
+
+    public IProcessor getProcessor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setProcessor(IProcessor processor) {
+        // TODO Auto-generated method stub
+        
     }
 }

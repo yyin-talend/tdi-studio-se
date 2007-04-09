@@ -61,8 +61,6 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.Project;
@@ -115,6 +113,7 @@ import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -162,8 +161,6 @@ public class Process extends Element implements IProcess {
 
     private IContextManager contextManager;
 
-    private ECodeLanguage processLanguage;
-
     public static final int BREAKPOINT_STATUS = 1;
 
     public static final int ERROR_STATUS = 2;
@@ -174,11 +171,9 @@ public class Process extends Element implements IProcess {
 
     private boolean initDone = false;
 
+    private IProcessor processor;
+
     public Process() {
-        // PTODO NRO save the language in the process and load/test it.
-
-        processLanguage = LanguageManager.getCurrentLanguage();
-
         contextManager = new JobContextManager();
         createProcessParameters();
     }
@@ -1779,5 +1774,23 @@ public class Process extends Element implements IProcess {
         elem.remove(note);
         notes.remove(note);
         fireStructureChange(NOTES, elem);
+    }
+
+    /**
+     * Getter for processor.
+     * 
+     * @return the processor
+     */
+    public IProcessor getProcessor() {
+        return processor;
+    }
+
+    /**
+     * Sets the processor.
+     * 
+     * @param processor the processor to set
+     */
+    public void setProcessor(IProcessor processor) {
+        this.processor = processor;
     }
 }

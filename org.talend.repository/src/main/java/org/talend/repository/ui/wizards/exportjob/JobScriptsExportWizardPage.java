@@ -48,10 +48,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -136,7 +132,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -430,8 +427,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport, getDestinationValue());
         exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
         boolean ok = executeExportOperation(exporterOperation);
 
@@ -440,6 +437,12 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             manager.deleteTempFiles();
         }
         ProcessorUtilities.resetExportConfig();
+        for (int i = 0; i < process.length; i++) {
+            ProcessItem processItem = process[i].getProcess();
+            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
+                    .getDefaultContext());
+            System.out.println("regenerate:"+processItem.getProperty().getLabel());
+        }
         return ok;
     }
 
