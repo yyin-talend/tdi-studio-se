@@ -49,6 +49,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.ui.utils.JavaResourcesHelper;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -68,7 +69,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     private static final String SYSTEM_ROUTINES_PATH = "routines/system";
 
-    private static final String JOB_CONTEXT_FOLDER = "contexts";
+    public static final String JOB_CONTEXT_FOLDER = "contexts";
 
     private static final String SYSTEMROUTINE_JAR = "systemRoutines.jar";
 
@@ -81,21 +82,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+            String contextName, String launcher) {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath
-                    + "/" + USERROUTINE_JAR;
+            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath + "/"
+                    + USERROUTINE_JAR;
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
-                    escapeSpace(contextName), escapeSpace(launcher)));
+            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
+                    escapeSpace(launcher)));
 
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
@@ -145,8 +146,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, resource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
+                        resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -163,9 +164,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return allJobScripts;
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
-            String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
+            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
@@ -193,8 +193,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (childProcess == null) {
                 return;
             }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource,
-                    exportChoice);
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
         }
     }
 
@@ -269,7 +268,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return list;
         }
         String projectName = getCurrentProjectName();
-        jobName = jobName.toLowerCase();
+        jobName = JavaResourcesHelper.getJobFolderName(jobName);
 
         try {
             String classRoot = getClassRootLocation();
@@ -291,7 +290,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     jarbuilder.setExcludeDir(excludes);
                 }
             } else {
-                String jobPath = projectName + File.separatorChar + jobName.toLowerCase();
+                String jobPath = projectName + File.separatorChar + jobName;
                 String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
                 List<String> include = new ArrayList<String>();
                 include.add(contextPaht);
@@ -337,15 +336,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     private String getCurrentProjectName() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-
-        String name = project.getLabel();
-        name = name.replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-        name = name.toLowerCase();
-
-        return name;
+        return JavaResourcesHelper.getCurrentProjectName();
     }
 
     /**

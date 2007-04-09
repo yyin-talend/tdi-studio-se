@@ -29,9 +29,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 
 /**
@@ -50,7 +53,10 @@ public class ContextModifyCommand extends Command {
 
     IContextManager contextManager;
 
-    public ContextModifyCommand(IContextManager contextManager, IContext oldContext, IContext newContext) {
+    private IProcess process;
+
+    public ContextModifyCommand(IProcess process,IContextManager contextManager, IContext oldContext, IContext newContext) {
+        this.process=process;
         this.contextManager = contextManager;
         this.oldContext = oldContext;
         this.currentContext = newContext;
@@ -76,6 +82,12 @@ public class ContextModifyCommand extends Command {
         }
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();
+        // Removes the attached context files
+        try {
+            CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().removeContextFiles(process, oldContext);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     private void propagateType(IContextManager contextManager, IContextParameter param) {

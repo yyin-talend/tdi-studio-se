@@ -28,13 +28,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -44,6 +47,8 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.FolderItem;
@@ -59,8 +64,11 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.utils.JavaResourcesHelper;
+import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
+import org.talend.repository.ui.wizards.exportjob.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -930,9 +938,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         Item item;
         if (obj instanceof MetadataTableRepositoryObject) {
             item = ((MetadataTableRepositoryObject) obj).getProperty().getItem();
-        } else  if (obj instanceof QueryRepositoryObject) {
+        } else if (obj instanceof QueryRepositoryObject) {
             item = ((QueryRepositoryObject) obj).getProperty().getItem();
-        } else{
+        } else {
             item = obj.getProperty().getItem();
         }
         return item;
@@ -942,4 +950,34 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getReferencedProjects();
     }
 
+    public void removeContextFiles(IProcess process, IContext context) throws Exception {
+        IResource resource = getContextResource(process, context);
+        if (resource != null) {
+            resource.delete(true, null);
+        }
+    }
+
+    /**
+     * Gets the context file resource according to the project type.
+     * 
+     * @param process
+     * @param context
+     * @return
+     */
+    private IResource getContextResource(IProcess process, IContext context) throws Exception {
+        switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage()) {
+        case JAVA:
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName()).append(
+                    JavaResourcesHelper.getJobFolderName(process.getName())).append(JobJavaScriptsManager.JOB_CONTEXT_FOLDER)
+                    .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+            return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
+        case PERL:
+            String contextFullName = PerlResourcesHelper.getCurrentProjectName()
+                    + ".job_" + PerlResourcesHelper.escapeSpace(process.getName()) + "_" //$NON-NLS-1$ //$NON-NLS-2$
+                    + PerlResourcesHelper.escapeSpace(context.getName()) + PerlResourcesHelper.CONTEXT_FILE_SUFFIX;
+            return PerlResourcesHelper.getSpecificResourceInPerlProject(new Path(contextFullName));
+        }
+        return null;
+    }
 }

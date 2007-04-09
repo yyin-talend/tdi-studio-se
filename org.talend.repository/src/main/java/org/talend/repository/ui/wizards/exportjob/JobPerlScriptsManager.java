@@ -48,6 +48,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.ui.utils.PerlResourcesHelper;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -220,23 +221,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     /**
-     * Gets current project name.
-     * 
-     * @return
-     */
-    private String getCurrentProjectName() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-
-        String name = project.getLabel();
-        name = name.replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-        name = name.toUpperCase();
-
-        return name;
-    }
-
-    /**
      * Gets required perl libraries.
      * 
      * @param needModel
@@ -268,7 +252,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 String name = escapeFileNameSpace(process);
-                name = projectName + ".job_" + name + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$
+                name = projectName + ".job_" + name + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(name);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -278,6 +262,15 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         IResource[] resources = this.getAllPerlFiles();
         return getResourcesURL(resources, list);
+    }
+
+    /**
+     * DOC acer Comment method "getCurrentProjectName".
+     * 
+     * @return
+     */
+    private String getCurrentProjectName() {
+        return PerlResourcesHelper.getCurrentProjectName();
     }
 
     private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
@@ -321,9 +314,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
 
             String processName = escapeSpace(processLabel);
-            String jobScriptName = projectName + ".job_" + processName + ".pl"; //$NON-NLS-1$
+            String jobScriptName = projectName + ".job_" + processName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$
             String contextName = escapeSpace(jType.getContext());
-            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ 
+            String contextFullName = projectName
+                    + ".job_" + processName + "_" + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ 
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -354,7 +348,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 String contextName = iter.next();
                 contextName = escapeSpace(contextName);
                 String contextFullName = projectName + ".job_" + processName + "_" //$NON-NLS-1$ //$NON-NLS-2$
-                        + contextName + ".pl"; //$NON-NLS-3$
+                        + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-3$
                 list.add(contextFullName);
             }
         }

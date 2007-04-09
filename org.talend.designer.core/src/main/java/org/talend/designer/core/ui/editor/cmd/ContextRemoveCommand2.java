@@ -32,9 +32,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.context.JobContextComposite;
 import org.talend.designer.core.i18n.Messages;
 
@@ -64,10 +67,12 @@ public class ContextRemoveCommand2 extends Command {
 
     IContextManager contextManager;
 
-    public ContextRemoveCommand2(JobContextComposite composite, String contextName, CCombo combo) {
+    IProcess process = null;
+
+    public ContextRemoveCommand2(IProcess process, JobContextComposite composite, String contextName, CCombo combo) {
         this.composite = composite;
         this.contextName = contextName;
-
+        this.process = process;
         boolean found = false;
         this.combo = combo;
         this.tableViewerCreatorMap = composite.getTableViewerCreatorMap();
@@ -115,6 +120,13 @@ public class ContextRemoveCommand2 extends Command {
         combo.setItems(stringList);
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();
+
+        // Removes the attached context files
+        try {
+            CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().removeContextFiles(process, context);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     @Override

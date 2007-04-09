@@ -249,7 +249,7 @@ public class ContextProcessSection2 extends AbstractPropertySection {
 
         @Override
         protected void onContextRemove(JobContextComposite composite, String contextName, CCombo combo) {
-            getCommandStack().execute(new ContextRemoveCommand2(composite, contextName, combo));
+            getCommandStack().execute(new ContextRemoveCommand2(process,composite, contextName, combo));
         }
 
         @Override
@@ -260,7 +260,7 @@ public class ContextProcessSection2 extends AbstractPropertySection {
 
         @Override
         protected void onContextModify(IContextManager contextManager, IContext oldContext, IContext newContext) {
-            getCommandStack().execute(new ContextModifyCommand(contextManager, oldContext, newContext));
+            getCommandStack().execute(new ContextModifyCommand(process,contextManager, oldContext, newContext));
         }
 
         @Override

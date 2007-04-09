@@ -47,6 +47,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ResourceModelUtils;
+import org.talend.repository.ui.utils.PerlResourcesHelper;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -250,8 +251,8 @@ public abstract class JobScriptsManager {
      * @param name
      * @return
      */
-    protected String escapeSpace(String name) {
-        return name != null ? name.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public String escapeSpace(String name) {
+        return PerlResourcesHelper.escapeSpace(name);
     }
 
     /**
