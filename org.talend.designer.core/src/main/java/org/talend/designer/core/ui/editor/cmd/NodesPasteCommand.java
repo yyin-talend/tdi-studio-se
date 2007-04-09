@@ -32,6 +32,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -206,6 +207,13 @@ public class NodesPasteCommand extends Command {
                 IMetadataTable newMetaTable = metaTable.clone();
                 newMetaTable.setTableName(pastedNode.getUniqueName());
                 pastedNode.getMetadataList().clear(); // remove the old "empty" metadata
+                for (IMetadataColumn column : metaTable.getListColumns()) {
+                    if (column.isCustom()) {
+                        IMetadataColumn newColumn = newMetaTable.getColumn(column.getLabel());
+                        newColumn.setReadOnly(column.isReadOnly());
+                        newColumn.setCustom(column.isCustom());
+                    }
+                }
                 pastedNode.getMetadataList().add(newMetaTable);
             } else {
                 List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
@@ -214,6 +222,15 @@ public class NodesPasteCommand extends Command {
                     newTable.setTableName(createNewConnectionName(metaTable.getTableName()));
                     oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable
                             .getTableName());
+
+                    for (IMetadataColumn column : metaTable.getListColumns()) {
+                        if (column.isCustom()) {
+                            IMetadataColumn newColumn = newTable.getColumn(column.getLabel());
+                            newColumn.setReadOnly(column.isReadOnly());
+                            newColumn.setCustom(column.isCustom());
+                        }
+                    }
+                    newTable.sortCustomColumns();
                     copyOfMetadataList.add(newTable);
                 }
                 pastedNode.setMetadataList(copyOfMetadataList);
