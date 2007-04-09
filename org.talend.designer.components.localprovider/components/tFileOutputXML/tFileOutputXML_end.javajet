@@ -37,7 +37,7 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 %>	
 String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
 
-java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n,");
+java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
 
 int counter_<%=cid%> = 0;
 
