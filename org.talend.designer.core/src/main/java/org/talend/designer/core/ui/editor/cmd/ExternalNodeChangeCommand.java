@@ -36,6 +36,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
@@ -75,7 +76,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private Boolean propagate;
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
         this.node = node;
 
@@ -155,7 +156,10 @@ public class ExternalNodeChangeCommand extends Command {
 
     private boolean getPropagate() {
         if (propagate == null) {
-            propagate = MessageDialog.openQuestion(new Shell(), Messages.getString("ExternalNodeChangeCommand.propagate"), Messages.getString("ExternalNodeChangeCommand.propagateMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+            propagate = MessageDialog
+                    .openQuestion(
+                            new Shell(),
+                            Messages.getString("ExternalNodeChangeCommand.propagate"), Messages.getString("ExternalNodeChangeCommand.propagateMessage")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return propagate;
     }
@@ -163,19 +167,25 @@ public class ExternalNodeChangeCommand extends Command {
     @Override
     public void execute() {
         for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
-            String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (schemaType != null) {
-                IMetadataTable repositoryMetadata = inAndOut.getTable(connection);
-                repositoryMetadata.setTableName(connection.getSource().getUniqueName());
-                if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                    if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.BUILTIN);
-                    }
+            if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                    || connection.getLineStyle().equals(EConnectionType.FLOW_REF)
+                    || connection.getLineStyle().equals(EConnectionType.TABLE)) {
+                IMetadataTable metadata = inAndOut.getTable(connection);
+                metadata.setTableName(connection.getSource().getUniqueName());
+                boolean sameMetadata = metadata.sameMetadataAs(connection.getMetadataTable());
 
-                    connection.getMetadataTable().setListColumns(repositoryMetadata.getListColumns());
-                    connection.getMetadataTable().setTableName(repositoryMetadata.getTableName());
+                String schemaType = (String) connection.getSource().getPropertyValue(
+                        EParameterName.SCHEMA_TYPE.getName());
+                if (schemaType != null) { // if there is a SCHEMA_TYPE, then switch it to BUILT_IN if REPOSITORY is set.
+                    if (!sameMetadata) {
+                        if (schemaType.equals(EmfComponent.REPOSITORY)) {
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                    EmfComponent.BUILTIN);
+                        }
+                    }
                 }
+                connection.getMetadataTable().setListColumns(metadata.getListColumns());
+                connection.getMetadataTable().setTableName(metadata.getTableName());
             }
         }
         metadataChanges.clear();
