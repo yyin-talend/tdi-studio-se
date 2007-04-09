@@ -131,6 +131,10 @@ public class ConnectionReconnectCommand extends Command {
             if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
                 return false;
             }
+            // return false if the connection's Label exists already.
+            if (conn.getName().equals(connection.getName())) {
+                return false;
+            }
         }
         for (Iterator iter = newSource.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -149,8 +153,7 @@ public class ConnectionReconnectCommand extends Command {
 
         if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)
                 || connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
-            if (!(Boolean) newSource.getPropertyValue(EParameterName.STARTABLE.getName())
-                    || (!newSource.isSubProcessStart())) {
+            if (!(Boolean) newSource.getPropertyValue(EParameterName.STARTABLE.getName()) || (!newSource.isSubProcessStart())) {
                 return false;
             }
         }
@@ -174,6 +177,10 @@ public class ConnectionReconnectCommand extends Command {
         for (Iterator iter = newTarget.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
             if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+                return false;
+            }
+            // return false if the connection's Label exists already.
+            if (conn.getName().equals(connection.getName())) {
                 return false;
             }
         }

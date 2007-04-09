@@ -73,8 +73,7 @@ public class Connection extends Element implements IConnection {
 
     private String traceData;
 
-    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName,
-            String uniqueName) {
+    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName, String uniqueName) {
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, metaName, linkName);
     }
@@ -156,50 +155,71 @@ public class Connection extends Element implements IConnection {
      */
     public void setName(String name) {
         String labelText;
-
-        this.name = name;
-        if (!lineStyle.equals(EConnectionType.TABLE)) {
-            uniqueName = name;
-        }
-
-        labelText = name;
-        if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
-            labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        boolean canModify = true;
+        List connections;
         if (source != null) {
-            if (getLineStyle().equals(EConnectionType.TABLE)) {
-                if (getOutputId() >= 0) {
-                    labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + getOutputId() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                } else {
-                    labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            connections = source.getOutgoingConnections();
+            for (int i = 0; i < connections.size(); i++) {
+                if (((Connection) connections.get(i)).getName().equals(name)) {
+                    canModify = false;
                 }
             }
         }
-        if (label == null) {
-            label = new ConnectionLabel(labelText, this);
-        } else {
-            if (!label.getLabelText().equals(labelText)) {
-                label.setLabelText(labelText);
+        if (target != null) {
+            connections = target.getIncomingConnections();
+            for (int i = 0; i < connections.size(); i++) {
+                if (((Connection) connections.get(i)).getName().equals(name)) {
+                    canModify = false;
+                }
             }
         }
+       
+        if (canModify) {
 
-        if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
-            if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+            this.name = name;
+            if (!lineStyle.equals(EConnectionType.TABLE)) {
+                uniqueName = name;
+            }
+
+            labelText = name;
+            if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (source != null) {
+                if (getLineStyle().equals(EConnectionType.TABLE)) {
+                    if (getOutputId() >= 0) {
+                        labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + getOutputId() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    } else {
+                        labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
+            }
+            if (label == null) {
+                label = new ConnectionLabel(labelText, this);
+            } else {
+                if (!label.getLabelText().equals(labelText)) {
+                    label.setLabelText(labelText);
+                }
+            }
+
+            if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
+                if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+                    IMetadataTable table = getMetadataTable();
+                    table.setTableName(name);
+                    // metaName = name;
+                }
+            }
+
+            if (source != null && (lineStyle == EConnectionType.TABLE)) {
                 IMetadataTable table = getMetadataTable();
-                table.setTableName(name);
-                // metaName = name;
+                table.setLabel(name);
             }
-        }
 
-        if (source != null && (lineStyle == EConnectionType.TABLE)) {
-            IMetadataTable table = getMetadataTable();
-            table.setLabel(name);
+            firePropertyChange(NAME, null, name);
         }
-
-        firePropertyChange(NAME, null, name);
     }
 
     public void updateName() {
