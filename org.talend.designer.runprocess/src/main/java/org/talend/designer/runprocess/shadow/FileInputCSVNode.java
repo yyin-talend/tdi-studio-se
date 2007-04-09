@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import org.eclipse.draw2d.geometry.Point;
+
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
  * 
@@ -48,5 +50,10 @@ public class FileInputCSVNode extends FileInputNode {
                 addParameter(param);
             }
         }
+    }
+
+    public Point getLocation() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

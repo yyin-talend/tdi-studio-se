@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -378,6 +379,14 @@ public abstract class ShadowNode implements INode {
 
     public INode getSubProcessStartNode(boolean withConditions) {
         // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getLocation()
+     */
+    public Point getLocation()
+    {
         return null;
     }
 }

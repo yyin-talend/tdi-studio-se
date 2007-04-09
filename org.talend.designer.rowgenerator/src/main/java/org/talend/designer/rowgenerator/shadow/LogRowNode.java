@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -317,6 +318,14 @@ public class LogRowNode implements INode {
 
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getLocation()
+     */
+    public Point getLocation()
+    {
+        return null;
     }
 
 }

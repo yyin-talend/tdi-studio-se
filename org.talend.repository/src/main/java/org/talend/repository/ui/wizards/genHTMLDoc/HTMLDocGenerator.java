@@ -43,7 +43,9 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.swt.graphics.ImageData;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -307,32 +309,44 @@ public class HTMLDocGenerator {
 
         List<INode> componentList = new ArrayList<INode>();
         Map<String, String> componentNameTypeMap = new HashMap<String, String>();
+        Element componentNameListElement = null;
+        int x = 0, y = 0, width = 0, height = 0;
         for (INode node : graphicalNodeList) {
 
             // If component is not activate, do not need to get it's information
             if (!node.isActivate()) {
                 continue;
             }
+
             componentList.add(node);
-        }
-        if (componentList.size() != 0) {
-            Element componentNameListElement = jobElement.addElement("componentList");
+
+            if (node.getLocation() != null) {
+                Point point = node.getLocation();
+                x = point.x;
+                y = point.y;
+            }
+
+            ImageData imageData = node.getComponent().getIcon32().getImageData();
+            if (imageData != null) {
+                width = imageData.width;
+                height = imageData.height;
+            }
+
+            if (componentNameListElement == null) {
+                componentNameListElement = jobElement.addElement("componentList");
+            }
             Element componentItemElement = null;
-            for (INode componentNode : componentList) {
-                componentItemElement = componentNameListElement.addElement("componentItem");
-                componentItemElement.addAttribute("name", componentNode.getUniqueName());
-                componentItemElement.addAttribute("link", componentNode.getUniqueName());
-                componentItemElement.addAttribute("type", componentNode.getComponent().getName());
-            }
+            componentItemElement = componentNameListElement.addElement("componentItem");
+            componentItemElement.addAttribute("name", node.getUniqueName());
+            componentItemElement.addAttribute("link", node.getUniqueName());
+            componentItemElement.addAttribute("type", node.getComponent().getName());
+            componentItemElement.addAttribute("leftTopX", x + "");
+            componentItemElement.addAttribute("leftTopY", y + "");
+            componentItemElement.addAttribute("rightBottomX", x+width + "");
+            componentItemElement.addAttribute("rightBottomY", y+height + "");
         }
 
-        for (INode node : graphicalNodeList) {
-
-            // If component is not activate, do not need to get it's information
-            if (!node.isActivate()) {
-                continue;
-            }
-
+        for (INode node : componentList) {
             Element componentElement = jobElement.addElement("component");
             String relativePath = getComponentIconPath(node);
             String componentIconFileName = relativePath.substring(relativePath.lastIndexOf("/") + 1);
