@@ -101,6 +101,7 @@ public class Connection extends Element implements IConnection {
 
         setName(linkName);
         reconnect(source, target);
+        updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
             IElementParameter param = new ElementParameter(this);
             param.setField(EParameterFieldType.MEMO_PERL);
@@ -157,14 +158,14 @@ public class Connection extends Element implements IConnection {
         String labelText;
         boolean canModify = true;
         List connections;
-        if (source != null) {
-            connections = source.getOutgoingConnections();
-            for (int i = 0; i < connections.size(); i++) {
-                if (((Connection) connections.get(i)).getName().equals(name)) {
-                    canModify = false;
-                }
-            }
-        }
+        // if (source != null) {
+        // connections = source.getOutgoingConnections();
+        // for (int i = 0; i < connections.size(); i++) {
+        // if (((Connection) connections.get(i)).getName().equals(name)) {
+        // canModify = false;
+        // }
+        // }
+        // }
         if (target != null) {
             connections = target.getIncomingConnections();
             for (int i = 0; i < connections.size(); i++) {
@@ -173,7 +174,7 @@ public class Connection extends Element implements IConnection {
                 }
             }
         }
-       
+
         if (canModify) {
 
             this.name = name;
@@ -190,8 +191,9 @@ public class Connection extends Element implements IConnection {
             }
             if (source != null) {
                 if (getLineStyle().equals(EConnectionType.TABLE)) {
-                    if (getOutputId() >= 0) {
-                        labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + getOutputId() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    int id = getOutputId();
+                    if (id >= 0) {
+                        labelText += " (" + metaName + ", order:" + id + ")";
                     } else {
                         labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                     }

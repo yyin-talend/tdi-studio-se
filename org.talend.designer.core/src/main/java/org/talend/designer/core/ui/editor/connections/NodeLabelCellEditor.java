@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Color;
@@ -70,6 +73,22 @@ public class NodeLabelCellEditor extends TextCellEditor {
                         || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
                     if (!connection.getSource().getProcess().checkValidConnectionName(text.getText(), true)) {
                         text.setBackground(ERROR_COLOR);
+                        return;
+                    }
+                }
+                if (connection.getLineStyle().equals(EConnectionType.TABLE)) {
+                    if (text.getText().equals("")) {
+                        text.setBackground(ERROR_COLOR);
+                        return;
+                    }
+                    List<? extends IConnection> cons = connection.getTarget().getIncomingConnections();
+                    for (Iterator iter = cons.iterator(); iter.hasNext();) {
+                        Connection conn = (Connection) iter.next();
+
+                        if (conn.getName().equals(text.getText())) {
+                            text.setBackground(ERROR_COLOR);
+                            return;
+                        }
                     }
                 }
             }

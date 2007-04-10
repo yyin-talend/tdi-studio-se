@@ -21,13 +21,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -49,17 +51,33 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
         String labelText = (String) edit.getCellEditor().getValue();
         ConnLabelEditPart labelPart = (ConnLabelEditPart) getHost();
         Connection connec = (Connection) getHost().getParent().getModel();
-        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+        boolean ok = true;
+        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
             if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
-                String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
-                MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages
-                        .getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
-                return null;
+                ok = false;
+            }
+        } else if (connec.getLineStyle().equals(EConnectionType.TABLE)) {
+            if (labelText.equals("")) {
+                ok = false;
+            } else {
+                List<? extends IConnection> cons = connec.getTarget().getIncomingConnections();
+                for (Iterator iter = cons.iterator(); iter.hasNext();) {
+                    Connection conn = (Connection) iter.next();
+                    if (conn.getName().equals(labelText)) {
+                        ok = false;
+                        break;
+                    }
+                }
             }
         }
-        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(),
-                labelText);
+        if (!ok) {
+            String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
+            MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages
+                    .getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
+            return null;
+        }
+
+        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(), labelText);
         return command;
     }
 

@@ -144,12 +144,12 @@ public class ConnectionCreateCommand extends Command {
             }
         }
 
-        List connections = this.source.getOutgoingConnections();
-        for (int i = 0; i < connections.size(); i++) {
-            if (((Connection) connections.get(i)).getName().equals(connectionName)) {
-                return false;
-            }
-        }
+//        List connections = this.source.getOutgoingConnections();
+//        for (int i = 0; i < connections.size(); i++) {
+//            if (((Connection) connections.get(i)).getName().equals(connectionName)) {
+//                return false;
+//            }
+//        }
         return true;
     }
 

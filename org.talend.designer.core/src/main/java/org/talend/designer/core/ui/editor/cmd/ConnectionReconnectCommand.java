@@ -136,9 +136,9 @@ public class ConnectionReconnectCommand extends Command {
                 return false;
             }
             // return false if the connection's Label exists already.
-            if (conn.getName().equals(connection.getName())) {
-                return false;
-            }
+//            if (conn.getName().equals(connection.getName())) {
+//                return false;
+//            }
         }
         for (Iterator iter = newSource.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
