@@ -29,9 +29,10 @@ if(connections != null && connections.size() > 0 && connections.get(0) != null) 
     IConnection connection = connections.get(0);
     previousNode = connection.getSource();
     String previousComponentName = previousNode.getUniqueName();
+	 String uniqueNameConnection = connection.getUniqueName();
 	dbtable = "'" + connection.getName() + "'";
 	%>
-	$select_query = $_globals{<%=previousComponentName%>}{QUERY}{<%=dbtable%>};
+	$select_query = $_globals{<%=previousComponentName%>}{QUERY}{<%=uniqueNameConnection%>};
 	<%
 }
 

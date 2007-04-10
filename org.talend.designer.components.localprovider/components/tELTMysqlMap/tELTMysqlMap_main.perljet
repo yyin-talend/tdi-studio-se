@@ -14,6 +14,11 @@
 	org.talend.designer.dbmap.language.IDbLanguage
 	org.talend.designer.dbmap.mysql.MysqlMapperComponent
 	org.talend.designer.dbmap.mysql.language.MysqlGenerationManager
+	org.talend.designer.dbmap.AbstractDbMapComponent
+
+	java.util.HashMap
+	java.util.Map
+
 	" 
 	class="ELTMysqlMapMain" %>
 <%
@@ -28,22 +33,35 @@
         MysqlGenerationManager gm = new MysqlGenerationManager();
         String uniqueNameComponent = null;
         IDbLanguage currentLanguage = gm.getLanguage();
-        List<IConnection> connections;
-        ExternalDbMapData data;
-        connections = (List<IConnection>) node.getIncomingConnections();
-        data = (ExternalDbMapData) node.getExternalData();
+
+        List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+        List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+        ExternalDbMapData data = (ExternalDbMapData) node.getExternalData();
         uniqueNameComponent = node.getUniqueName();
 
         List<ExternalDbMapTable> outputTables = data.getOutputTables();
 
+        Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : outputConnections) {
+            nameToOutputConnection.put(connection.getUniqueName(), connection);
+        }
+
         int lstOutputTablesSize = outputTables.size();
         for (int i = 0; i < lstOutputTablesSize; i++) {
             ExternalDbMapTable outputTable = outputTables.get(i);
-            String sqlQuery = gm.buildSqlSelect((MysqlMapperComponent) node, outputTable.getName());
+            String outputTableName = outputTable.getName();
+
+				IConnection connection = nameToOutputConnection.get(outputTableName);
+
+            if (connection == null) {
+            	continue;
+            }
+
+            String sqlQuery = gm.buildSqlSelect((AbstractDbMapComponent) node, outputTable.getName());
             
 %>
 
-$_globals{<%=uniqueNameComponent %>}{QUERY}{<%= outputTable.getTableName() %>} = 
+$_globals{<%=uniqueNameComponent %>}{QUERY}{<%= connection.getUniqueName() %>} = 
 "<%= sqlQuery %>"
 ;
 $branch_<%= outputTable.getTableName() %>_is_active = true;

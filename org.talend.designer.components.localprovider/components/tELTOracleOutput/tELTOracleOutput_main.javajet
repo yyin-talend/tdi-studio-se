@@ -28,6 +28,7 @@ class="ELTOracleOutputMain"
 	String cid = node.getUniqueName();
 
 	String dbtable = null;
+	String uniqueNameConnection = null;
 	INode previousNode = null;
 	%>
 	String select_query = null;
@@ -38,8 +39,9 @@ class="ELTOracleOutputMain"
 	    previousNode = connection.getSource();
 	    String previousComponentName = previousNode.getUniqueName();
 		dbtable = connection.getName();
+		uniqueNameConnection = connection.getUniqueName();
 		%>
-		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=dbtable%>");
+		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
 		<%
 	}
 	
@@ -303,8 +305,8 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	%>
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(whereClause.trim().length() > 0 && !whereClause.equals("\"\"")) {%>
-+"  WHERE " + <%=whereClause%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -318,7 +320,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -329,7 +331,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
 <%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -342,7 +344,12 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+String deleteQuery = "DELETE  FROM ("+select_query+") <%=dbtable%>"
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
+<%}%>
+;
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 
 	<%		
 	}
@@ -574,7 +581,9 @@ if(!executeInsert_<%=cid%>){
 	
 	}else if (dataAction.equals("DELETE")){
 		%>
+	System.out.println("Deleting with : \n" + deleteQuery +"\n");
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+	System.out.println("--> " + nb_line_deleted_<%=cid%> + " rows deleted. \n");
 		<%
 	}
 }

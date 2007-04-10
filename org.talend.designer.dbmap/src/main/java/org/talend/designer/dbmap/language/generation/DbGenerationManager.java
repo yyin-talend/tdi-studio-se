@@ -26,16 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.Perl5Substitution;
-import org.apache.oro.text.regex.Util;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.dbmap.AbstractDbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
@@ -167,4 +162,39 @@ public abstract class DbGenerationManager {
 
     public abstract String buildSqlSelect(AbstractDbMapComponent component, String tableName);
 
+    
+    /**
+     * DOC amaumont Comment method "removeUnmatchingEntriesWithColumnsOfMetadataTable".
+     * @param outputTable
+     * @param metadataTable
+     */
+    protected ExternalDbMapTable removeUnmatchingEntriesWithColumnsOfMetadataTable(ExternalDbMapTable externalDbMapTable, IMetadataTable metadataTable) {
+        ExternalDbMapTable clonedTable = null;
+        try {
+            clonedTable = (ExternalDbMapTable) externalDbMapTable.clone();
+        } catch (CloneNotSupportedException e) {
+            ExceptionHandler.process(e);
+        }
+        
+        List<ExternalDbMapEntry> metadataTableEntries = clonedTable.getMetadataTableEntries();
+        HashMap<String, IMetadataColumn> hNameToColumn = new HashMap<String, IMetadataColumn>();
+        
+        List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+        for (IMetadataColumn column : listColumns) {
+            hNameToColumn.put(column.getLabel(), column);
+        }
+        List<ExternalDbMapEntry> dbMapEntriesToRemove = new ArrayList<ExternalDbMapEntry>();
+        for (ExternalDbMapEntry externalTableEntry : metadataTableEntries) {
+            String entryName = externalTableEntry.getName();
+            IMetadataColumn column = hNameToColumn.get(entryName);
+            if (column == null) {
+                dbMapEntriesToRemove.add(externalTableEntry);
+            }
+        }
+        metadataTableEntries.removeAll(dbMapEntriesToRemove);
+        return clonedTable;
+        
+    }
+    
+    
 }
