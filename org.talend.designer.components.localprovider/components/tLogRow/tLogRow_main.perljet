@@ -1,42 +1,84 @@
 <%@ jet
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="LogRowMain"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="LogRowMain"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+
+        String printUniqueName = ElementParameterParser.getValue(
+            node,
+            "__PRINT_UNIQUE_NAME__"
+        );
+
+        String printColumnNames = ElementParameterParser.getValue(
+            node,
+            "__PRINT_COLNAMES__"
+        );
+
+        String useFixedLength = ElementParameterParser.getValue(
+            node,
+            "__USE_FIXED_LENGTH__"
+        );
 %>
 
-if (@<%=metadata.getTableName() %>) {
-    print STDOUT (
-	    join(OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>, @<%=metadata.getTableName() %>),
-	    "\n"
-    )
-        or die "can't print to STDOUT\n";
+$colnum1 = 0;
+$colnum2 = 0;
+
+print STDOUT (
+<%
+        if (printUniqueName.equals("true")) {
+%>
+    '[<%=cid%>] ',
+<%
+        }
+%>
+    join(
+        <%=fieldSeparator %>,
+<%
+        if (printColumnNames.equals("true")) {
+%>
+        map {$colnames_<%=cid%>[$colnum1++].': '.$_}
+<%
+        }
+        if (useFixedLength.equals("true")) {
+%>
+            map {sprintf('%*s', $collengths_<%=cid%>[$colnum2++], $_)}
+<%
+        }
+%>
+                @<%=cid %>
+    ),
+    "\n"
+)
+    or die "[<%=cid%>] can't print to STDOUT\n";
 
 <%
-    if (stats) {
+        if (stats) {
 %>
-    UpdateStat('<%=metadata.getTableName() %>', 1);
+UpdateStat('<%=metadata.getTableName() %>', 1);
 <%
+        }
     }
-%>
 }
-    
-<%
-		}
-	}
 %>
