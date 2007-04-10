@@ -153,7 +153,7 @@ my $new_nb_line_<%=cid%> =
     + $nb_line_inserted_<%=cid %>
     + $nb_line_deleted_<%=cid %>
 ;
-  
+
 <%
         if (stats) {
 %>

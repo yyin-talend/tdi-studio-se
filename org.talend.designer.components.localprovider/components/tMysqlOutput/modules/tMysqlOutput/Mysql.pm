@@ -41,7 +41,7 @@ sub getTableCreationQuery {
     #   `quantity` int(11) default NULL,
     #   primary key(shop_code, ean)
     # );
-    $query = 'CREATE TABLE `'.$param{tablename}.'` ('."\n";
+    $query = 'CREATE TABLE '.$param{tablename}.' ('."\n";
 
     foreach my $column_href (@{ $param{schema} }) {
         $column_href->{dbtype} = $talendtype_to_dbtype{$column_href->{type}};
@@ -57,7 +57,7 @@ sub getTableCreationQuery {
             $query.= ', ';
         }
 
-        $query.= '`'.$column_href->{name}.'`';
+        $query.= $column_href->{name};
         $query.= ' '.$column_href->{dbtype};
 
         if (defined $column_href->{len} and $column_href->{len} > 0) {

@@ -80,7 +80,7 @@ my %desc_<%=cid %> = (
         for (IMetadataColumn column: metadata.getListColumns()) {
 %>
         {
-            name    => '<%=column.getLabel() %>',
+            name    => '`<%=column.getLabel() %>`',
             key     => <%=column.isKey() %>,
             type    => '<%=column.getTalendType() %>',
             len     => <%=column.getLength() %>,
@@ -248,7 +248,7 @@ if ((dataAction.equals("UPDATE"))
             }
         }
 
-        String currentQueryPart = column.getLabel() + " = ?";
+        String currentQueryPart = "`" + column.getLabel() + "` = ?";
 
         for(int i = 0; i < addCols.size(); i++) {
             Map<String, String> addCol = addCols.get(i);
@@ -339,7 +339,7 @@ if ((dataAction.equals("INSERT"))
         }
 
         String currentParameter = "?";
-        String currentKey = column.getLabel();
+        String currentKey = "`" + column.getLabel() + "`";
         for(int i = 0; i < addCols.size(); i++) {
             Map<String, String> addCol = addCols.get(i);
             if (addCol.get("REFCOL").equals(column.getLabel())) {
