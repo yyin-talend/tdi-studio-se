@@ -283,7 +283,7 @@
 	      			                 <TR>      			     			
 															<TD class="FONTSTYLE" align="middle">
 															  <xsl:variable name="propname" select="@name"/>
-                                <xsl:value-of select="translate($propname, $lcase, $ucase)"/>
+                                <xsl:value-of select="$propname"/>
 															</TD>
 															<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="text()"/></TD>																		 														 	
 															</TR>
