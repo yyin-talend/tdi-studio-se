@@ -1590,7 +1590,7 @@ public class Process extends Element implements IProcess {
      * @param node
      * @return
      */
-    private boolean isThereRefLink(final INode node) {
+    public boolean isThereRefLink(final INode node) {
         boolean refLink = false;
 
         for (int i = 0; i < node.getOutgoingConnections().size() && !refLink; i++) {

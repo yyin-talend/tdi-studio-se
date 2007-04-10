@@ -155,7 +155,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 setText(menuName);
                 menuList.add(menuName);
             }
-
+            
             return true;
         }
         return false;

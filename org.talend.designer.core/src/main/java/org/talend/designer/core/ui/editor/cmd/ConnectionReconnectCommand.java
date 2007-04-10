@@ -121,10 +121,14 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkSourceReconnection() {
-        // connection endpoints must be different Shapes
         if (newSource.equals(oldTarget)) {
             return false;
         }
+        
+        if (newSource.sameProcessAs(oldTarget)) {
+            return false;
+        }
+        
         // return false, if the connection exists already
         for (Iterator iter = newSource.getOutgoingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -144,7 +148,7 @@ public class ConnectionReconnectCommand extends Command {
         }
 
         INodeConnector nodeConnectorSource;
-        nodeConnectorSource = newSource.getConnectorFromType(oldConnectionType);
+        nodeConnectorSource = newSource.getConnectorFromType(newConnectionType);
         if (nodeConnectorSource.getMaxLinkOutput() != -1) {
             if (nodeConnectorSource.getCurLinkNbOutput() >= nodeConnectorSource.getMaxLinkOutput()) {
                 return false;
@@ -153,7 +157,8 @@ public class ConnectionReconnectCommand extends Command {
 
         if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)
                 || connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
-            if (!(Boolean) newSource.getPropertyValue(EParameterName.STARTABLE.getName()) || (!newSource.isSubProcessStart())) {
+            if (!(Boolean) newSource.getPropertyValue(EParameterName.STARTABLE.getName())
+                    || (!newSource.isSubProcessStart())) {
                 return false;
             }
         }
@@ -173,6 +178,11 @@ public class ConnectionReconnectCommand extends Command {
         if (!newTarget.isActivate()) {
             return false;
         }
+        
+        if (oldSource.sameProcessAs(newTarget)) {
+            return false;
+        }
+        
         // return false, if the connection exists already
         for (Iterator iter = newTarget.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -223,13 +233,6 @@ public class ConnectionReconnectCommand extends Command {
         } else {
             if (oldConnectionType.equals(EConnectionType.FLOW_REF)) {
                 newConnectionType = EConnectionType.FLOW_MAIN;
-            }
-        }
-        if (newConnectionType.equals(EConnectionType.FLOW_REF)) {
-            Node sourceStart = oldSource.getSubProcessStartNode(false);
-            Node targetStart = newTarget.getSubProcessStartNode(false);
-            if (sourceStart.equals(targetStart)) {
-                return false;
             }
         }
 

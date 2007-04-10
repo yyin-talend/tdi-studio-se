@@ -86,6 +86,11 @@ public class ConnectionCreateCommand extends Command {
             if (source.equals(target)) {
                 return false;
             }
+            
+            if (source.sameProcessAs(target)) {
+                return false;
+            }
+
 
             // Check existing connections to avoid to have more than one link
             // no matter the type of the connection and the direction
@@ -130,13 +135,7 @@ public class ConnectionCreateCommand extends Command {
                     }
                 }
             }
-            if (lineStyle.equals(EConnectionType.FLOW_REF)) {
-                Node sourceStart = source.getSubProcessStartNode(false);
-                Node targetStart = target.getSubProcessStartNode(false);
-                if (sourceStart.equals(targetStart)) {
-                    return false;
-                }
-            }
+
             connections = this.target.getIncomingConnections();
             for (int i = 0; i < connections.size(); i++) {
                 if (((Connection) connections.get(i)).getName().equals(connectionName)) {

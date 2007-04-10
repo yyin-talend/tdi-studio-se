@@ -667,9 +667,9 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size(); j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
-                    if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                            EConnectionType.ITERATE)|| connec.getLineStyle().equals(
-                                    EConnectionType.TABLE))) {
+                    if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle().equals(
+                            EConnectionType.TABLE))) {
                         return false;
                     }
                 }
@@ -778,6 +778,50 @@ public class Node extends Element implements INode {
             }
         }
         return null;
+    }
+
+    private Node getMainBranch() {
+        Node targetWithRef = null;
+        for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
+            IConnection connection = getOutgoingConnections().get(i);
+            Node nodeTmp = (Node) connection.getTarget();
+            if (connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+//                System.out.println("  ** Ref Link Found in:" + nodeTmp + " from:" + this);
+                targetWithRef = nodeTmp;
+            } else {
+                if (this.process.isThereRefLink(nodeTmp)) {
+//                    System.out.println("  ** Ref Link Found in:" + nodeTmp + " from:" + this);
+                    targetWithRef = nodeTmp;
+                }
+            }
+        }
+        if (targetWithRef == null) {
+//            System.out.println("  ** No Ref Links found from:" + this);
+            return this;
+        } else {
+//            System.out.println("  ** Check Ref Links in:" + targetWithRef + " from:" + this);
+            return targetWithRef.getMainBranch();
+        }
+    }
+
+    public Node getProcessStartNode() {
+//        System.out.println(" --- Checking :" + this + " ---");
+        return getMainBranch().getSubProcessStartNode(true);
+    }
+
+    public boolean sameProcessAs(Node node) {
+//        System.out.println("from:" + this + " -- to:" + node);
+        
+        Node currentNode = getSubProcessStartNode(true);
+        if (!currentNode.isStart()) {
+            currentNode = currentNode.getProcessStartNode();
+        }
+        Node otherNode = node.getSubProcessStartNode(true);
+        if (!otherNode.isStart()) {
+            otherNode = otherNode.getProcessStartNode();
+        }
+//        System.out.println("source start:" + currentNode + " -- target start:" + otherNode);
+        return currentNode.equals(otherNode);
     }
 
     public boolean isReadOnly() {
