@@ -91,7 +91,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
+        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS, Zone.OUTPUTS }, false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -240,7 +240,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-        column.setTitle("Additionnal clauses (Where/group/order...) :");
+        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.AdditionalClauses")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
@@ -256,7 +256,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
+        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS, Zone.OUTPUTS }, true);
         column.setWeight(99);
         column.setMoveable(false);
         column.setResizable(false);

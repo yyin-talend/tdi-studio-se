@@ -655,7 +655,7 @@ public class MapperManager {
             // }
         } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
                 || entryTarget instanceof FilterTableEntry) {
-            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
+            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry || entrySource instanceof OutputColumnTableEntry) {
                 return true;
             }
         }

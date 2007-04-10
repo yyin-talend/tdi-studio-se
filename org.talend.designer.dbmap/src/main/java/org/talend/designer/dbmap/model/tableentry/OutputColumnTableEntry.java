@@ -23,6 +23,7 @@ package org.talend.designer.dbmap.model.tableentry;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.dbmap.model.table.OutputTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -41,4 +42,12 @@ public class OutputColumnTableEntry extends AbstractInOutTableEntry {
         super(abstractDataMapTable, metadataColumn);
     }
 
+    @Override
+    public String getParentName() {
+       return ((OutputTable)getParent()).getTableName();
+    }
+
+    
+    
+    
 }

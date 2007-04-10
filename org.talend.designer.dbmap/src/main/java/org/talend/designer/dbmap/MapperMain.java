@@ -41,6 +41,7 @@ import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.converter.ExternalDataConverter;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
+import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.MapperModel;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -87,8 +88,7 @@ public class MapperMain {
         }
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        shell
-                .setText(org.talend.designer.dbmap.i18n.Messages.getString("MapperMain.title") + connector.getUniqueName()); //$NON-NLS-1$
+        shell.setText(Messages.getString("MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
         ExternalDbMapUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {

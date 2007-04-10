@@ -97,6 +97,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             // proposals.add(new TableContentProposal(table, this.currentLanguage));
             List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
             for (IColumnEntry entrySource : dataMapTableEntries) {
+                
                 sourceEntryLocation.tableName = entrySource.getParentName();
                 sourceEntryLocation.columnName = entrySource.getName();
                 if (mapperManager.checkSourceLocationIsValid(entrySource, currentModifiedEntry)) {

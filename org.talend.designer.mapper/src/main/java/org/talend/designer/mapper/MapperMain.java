@@ -110,7 +110,7 @@ public class MapperMain {
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
         shell.setImage(createImage);
-        shell.setText(Messages.getString("MapperMain.title") + connector.getUniqueName()); //$NON-NLS-1$
+        shell.setText(Messages.getString("MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {

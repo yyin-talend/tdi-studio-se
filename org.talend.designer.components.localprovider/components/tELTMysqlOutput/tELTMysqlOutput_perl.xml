@@ -83,7 +83,7 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
 <!-- 

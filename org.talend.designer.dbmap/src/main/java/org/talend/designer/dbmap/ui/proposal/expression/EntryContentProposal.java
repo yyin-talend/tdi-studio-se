@@ -29,6 +29,7 @@ import org.talend.designer.dbmap.language.AbstractDbLanguage;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 
 /**
@@ -107,6 +108,10 @@ public class EntryContentProposal implements IContentProposal {
                         .append(Messages.getString("EntryContentProposal.type")).append(format(metadataColumn.getTalendType())); //$NON-NLS-1$
             }
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
+            sb
+                    .append(separator)
+                    .append(Messages.getString("EntryContentProposal.dbType")).append(format(metadataColumn.getType())); //$NON-NLS-1$
+            sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
             sb.append(separator).append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
             if (metadataColumn.getLength() != null && metadataColumn.getLength() > 0) {
                 sb.append(format(metadataColumn.getLength()));
@@ -154,7 +159,12 @@ public class EntryContentProposal implements IContentProposal {
      * @see org.eclipse.jface.fieldassist.IContentProposal#getLabel()
      */
     public String getLabel() {
-        return language.getLocation(entry.getParentName(), entry.getName());
+        String label = language.getLocation(entry.getParentName(), entry.getName());
+        if(entry instanceof OutputColumnTableEntry) {
+            label += "            " + Messages.getString("EntryContentProposal.onlyAvailable");
+        }
+        return label;
+
     }
 
 }

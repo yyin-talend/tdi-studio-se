@@ -82,7 +82,7 @@ public class InputDataMapTableView extends DataMapTableView {
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = null;
 
-        String useInJoinTitle = "Use in join";
+        String useInJoinTitle = Messages.getString("InputDataMapTableView.columnTitle.ExplicitJoin");
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(useInJoinTitle);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, Boolean>() {
@@ -123,7 +123,7 @@ public class InputDataMapTableView extends DataMapTableView {
         column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
 
         final TableViewerCreatorColumn columnOperator = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        columnOperator.setTitle("Operator");
+        columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
         columnOperator.setId(InputDataMapTableView.ID_OPERATOR_COLUMN);
         columnOperator.setToolTipHeader("Operator");
         columnOperator.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {

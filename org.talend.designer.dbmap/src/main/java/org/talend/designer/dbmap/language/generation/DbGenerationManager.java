@@ -21,12 +21,21 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.generation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
+import org.apache.oro.text.regex.Util;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.designer.dbmap.AbstractDbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;

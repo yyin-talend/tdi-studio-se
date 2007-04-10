@@ -78,7 +78,7 @@ public class AliasDialog {
 
             public String isValid(String newText) {
                 if (newText.length() == 0) {// tableManager.getInputTableFromAlias(newText) != null) {
-                    return Messages.getString("UIManager.aliasIsInvalid"); //$NON-NLS-1$
+                    return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
                 }
                 String aliasTest = aliasInternalDialog.getTableName();
                 if (aliasTest == null || aliasTest.length() == 0) {

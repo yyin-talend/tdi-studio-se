@@ -11,6 +11,8 @@ imports="
     java.util.List
     java.util.ArrayList
     org.talend.commons.utils.StringUtils
+	 org.talend.commons.utils.generation.CodeGenerationUtils
+    
 "
 class="ELTMysqlOutputMain"
 %>
@@ -19,7 +21,6 @@ class="ELTMysqlOutputMain"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();
-
 
 String dbtable = null;
 INode previousNode = null;
@@ -268,7 +269,7 @@ if ((dataAction.equals("UPDATE"))
 $query = '
 UPDATE '.<%=dbtable%>.'
   SET (<%=colsString%>) = ('.$select_query.')
-<%if(whereClause.trim().length() > 0 && !whereClause.equals("''")) {%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
   WHERE '.<%=whereClause%>.'
 <%}%>
 ';
@@ -285,7 +286,7 @@ my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
 $query = '
 DELETE FROM ('.$select_query.') '.<%=dbtable%>.'
-<%if(whereClause.trim().length() > 0 || !whereClause.equals("''")) {%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
   WHERE '.<%=whereClause%>.'
 <%}%>
 ';

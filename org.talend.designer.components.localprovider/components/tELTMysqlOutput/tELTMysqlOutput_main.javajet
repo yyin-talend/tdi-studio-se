@@ -10,6 +10,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
 		org.talend.core.model.process.IConnection
+		org.talend.commons.utils.generation.CodeGenerationUtils
 		
 		java.util.List
 		java.util.ArrayList
@@ -302,8 +303,8 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	%>
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(whereClause.trim().length() > 0 && !whereClause.equals("\"\"")) {%>
-+"  WHERE " + <%=whereClause%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -316,8 +317,8 @@ String insertQuery = "INSERT INTO <%=dbtable%> ("+select_query+")";
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(whereClause.trim().length() > 0 && !whereClause.equals("\"\"")) {%>
-+"  WHERE " + <%=whereClause%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -327,8 +328,8 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 	%>
 
 String updateQuery = "UPDATE <%=dbtable%> SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(whereClause.trim().length() > 0 && !whereClause.equals("\"\"")) {%>
-+"  WHERE " + <%=whereClause%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
 <%}%>
 ;
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
@@ -341,7 +342,11 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
++"  WHERE " + CodeGenerationUtils.replaceAllCrBySpace(<%=whereClause%>)
+<%}%>
+);
 
 	<%		
 	}
