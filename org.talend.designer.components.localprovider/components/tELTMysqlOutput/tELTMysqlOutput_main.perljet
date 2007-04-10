@@ -498,7 +498,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 %>
 
-$dbh_<%=cid %>->commit();
 $dbh_<%=cid %>->disconnect();
 
 <%
