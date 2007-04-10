@@ -21,9 +21,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 %>
 
-}
 
-$sth_<%=cid %>->finish();
+
 $dbh_<%=cid %>->disconnect();
 
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid%>;

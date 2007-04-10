@@ -80,25 +80,7 @@ my $dbh_<%=cid %> = DBI->connect(
 )
     or die "can't connect to database";
 
-my $sth_<%=cid %>;
-my $query;
 
-
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
-    <%=query%>
-);
-
-$sth_<%=cid %>->execute()
-    or die "can't execute input query";
-
-if ($_context{StoreSQLQuery}) {
-    $_globals{<%=cid %>}{QUERY} = $desc_<%=cid %>{query};
-}
-
-# fetch the N first columns (defined by component schema) from the SQL
-# result
-while (my @<%=cid %> = ($sth_<%=cid %>->fetchrow_array())[0 .. <%=nbFields - 1%>]) {
-    $nb_line_<%=cid%>++;
 <%
     }
 }
