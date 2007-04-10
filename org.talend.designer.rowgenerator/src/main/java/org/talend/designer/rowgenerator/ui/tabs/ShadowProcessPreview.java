@@ -205,9 +205,9 @@ public class ShadowProcessPreview {
 
     }
 
-    private static List<String> columnNames = new ArrayList<String>();
+    private List<String> columnNames = new ArrayList<String>();
 
-    private static Map<String, List<String>> columnData = new HashMap<String, List<String>>();
+    private Map<String, List<String>> columnData = new HashMap<String, List<String>>();
 
     /**
      * qzhang Comment method "refreshTablePreview".
@@ -306,12 +306,14 @@ public class ShadowProcessPreview {
     }
 
     public void renameColumn(IMetadataColumn bean, String value) {
-        columnNames.set(columnNames.indexOf(bean.getLabel()), value);
-        columnData.clear();
-        for (String name : columnNames) {
-            columnData.put(name, new ArrayList<String>());
+        int indexOf = columnNames.indexOf(bean.getLabel());
+        if (indexOf > -1) {
+            columnNames.set(indexOf, value);
+            columnData.clear();
+            for (String name : columnNames) {
+                columnData.put(name, new ArrayList<String>());
+            }
         }
-        return;
     }
 
 }

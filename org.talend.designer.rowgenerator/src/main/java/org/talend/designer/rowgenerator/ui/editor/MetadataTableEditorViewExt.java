@@ -257,10 +257,10 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         // public void widgetSelected(SelectionEvent e) {
         // if (getTable() != null) {
         // generatorUI.updateFunParameter(getTable());
-        //                    }
-        //                }
-        //            });
-        //        }
+        // }
+        // }
+        // });
+        // }
         column.setId(ID_COLUMN_FUNCTION);
         column.setTitle(Messages.getString("RowGenTableEditor2.Fuctions.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(getFunctionAccessor(functComboBox));
@@ -311,6 +311,21 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     ext.setFunction(functionManager.getDefaultFunction(ext, value));
                     ext.setChanged(true);
                 }
+            }
+
+        };
+    }
+
+    protected IBeanPropertyAccessors<IMetadataColumn, String> getLabelAccessor() {
+        return new IBeanPropertyAccessors<IMetadataColumn, String>() {
+
+            public String get(IMetadataColumn bean) {
+                return bean.getLabel();
+            }
+
+            public void set(IMetadataColumn bean, String value) {
+                generatorUI.getTabFolderEditors().getProcessPreview().renameColumn(bean, value);
+                bean.setLabel(value);
             }
 
         };
@@ -713,7 +728,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     }
 
     /**
-     *  qzhang Comment method "refreshPreviewColumn".
+     * qzhang Comment method "refreshPreviewColumn".
      */
     public void refreshPreviewColumn() {
         TabFolderEditors tabFolderEditors = generatorUI.getTabFolderEditors();
