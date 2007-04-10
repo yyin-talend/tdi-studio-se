@@ -74,12 +74,6 @@ java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 
-<%if(dataAction.equals("INSERT_OR_UPDATE")){%>
-boolean executeUpdate_<%=cid%> = false;
-<%}else{%>
-boolean executeInsert_<%=cid%> = false;
-<%}%>
-
 <%}else{%>
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
@@ -321,14 +315,11 @@ pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableNa
 	
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
 
-	<%		
+<%		
 	}
-	%>
+}
+%>
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
 int nb_line_deleted_<%=cid%> = 0;
-	<%
-	
-}
-%>

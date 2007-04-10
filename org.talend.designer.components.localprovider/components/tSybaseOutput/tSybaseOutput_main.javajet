@@ -305,8 +305,6 @@ nb_line_update_<%=cid%> ++;
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 %>
 
-
-if(!executeUpdate_<%=cid%>){
 <%
 		int counterInsert = 1;
 			for(Column columnInsert:colStruct){
@@ -350,15 +348,6 @@ if(!executeUpdate_<%=cid%>){
 		nb_line_inserted_<%=cid%>++;
 	
 	}catch(Exception e){
-	
-		executeUpdate_<%=cid%> = true;
-		
-		throw e;
-	
-	}
-	
-}else{
-
 <%
 		int counterCol = 1;
 		for(Column column:colStruct){
@@ -432,14 +421,12 @@ if(!executeUpdate_<%=cid%>){
 	%>
 	pstmtUpdate_<%=cid %>.executeUpdate();
 	
-	nb_line_update_<%=cid%> ++;
-	<%
-%>	
-}
+	nb_line_update_<%=cid%> ++;	
+	}
+
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 %>
-if(!executeInsert_<%=cid%>){
 
 <%
 		int counterColUpdate = 1;
@@ -518,15 +505,6 @@ if(!executeInsert_<%=cid%>){
 		nb_line_update_<%=cid%> ++;
 		
 	}catch(Exception e){
-		
-		executeInsert_<%=cid%> =true;
-		
-		throw e;
-	}
-	<%
-	
-%>
-}else{
 <%
 		int counter = 1;
 		
@@ -567,10 +545,8 @@ if(!executeInsert_<%=cid%>){
 	pstmtInsert_<%=cid %>.executeUpdate();
 	
 	nb_line_inserted_<%=cid%>++;
-	<%
-	
-%>
-}
+	}
+
 <%
 	
 	}else if (dataAction.equals("DELETE")){

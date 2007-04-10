@@ -108,12 +108,6 @@ java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 
-<%if(dataAction.equals("INSERT_OR_UPDATE")){%>
-boolean executeUpdate_<%=cid%> = false;
-<%}else{%>
-boolean executeInsert_<%=cid%> = false;
-<%}%>
-
 <%}else{%>
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
@@ -524,59 +518,27 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	<%
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 %>
-	
 	try{
-
 		System.out.println("Inserting with : \n" + insertQuery + "\n");
 		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
-	
 	}catch(Exception e){
-		
-		executeUpdate_<%=cid%> = true;
-		
-		throw e;
-	
+		System.out.println("Updating with : \n" + updateQuery +"\n");
+		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
+		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");	
 	}
-	
-
-} else {
-
-	System.out.println("Updating with : \n" + updateQuery +"\n");
-	nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
-	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
-	
-}
 <%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 %>
-if(!executeInsert_<%=cid%>){
-
 	try{
-	
 		System.out.println("Updating with : \n" + updateQuery +"\n");
 		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
-		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
-	
-		
+		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");		
 	}catch(Exception e){
-		
-		executeInsert_<%=cid%> =true;
-		
-		throw e;
+		System.out.println("Inserting with : \n" + insertQuery + "\n");
+		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
+		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 	}
-	<%
-	
-%>
-}else{
-
-
-	System.out.println("Inserting with : \n" + insertQuery + "\n");
-	nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
-	System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
-	
-
-}
 <%
 	
 	}else if (dataAction.equals("DELETE")){

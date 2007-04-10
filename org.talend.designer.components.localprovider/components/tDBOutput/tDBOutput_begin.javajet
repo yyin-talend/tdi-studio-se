@@ -102,12 +102,6 @@ java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 
-<%if(dataAction.equals("INSERT_OR_UPDATE")){%>
-boolean executeUpdate_<%=cid%> = false;
-<%}else{%>
-boolean executeInsert_<%=cid%> = false;
-<%}%>
-
 <%}else{%>
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
