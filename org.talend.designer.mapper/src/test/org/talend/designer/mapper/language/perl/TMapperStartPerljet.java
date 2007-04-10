@@ -22,9 +22,13 @@
 package org.talend.designer.mapper.language.perl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
@@ -51,12 +55,15 @@ public class TMapperStartPerljet {
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         ExternalMapperData data;
+        List<IConnection> inputConnections = null;
         if (node != null) {
             data = (ExternalMapperData) node.getExternalData();
+            inputConnections = (List<IConnection>) node.getIncomingConnections();
         } else {
             MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
                     false);
+            inputConnections = testGenerator.getInputConnectionsList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
@@ -78,12 +85,56 @@ public class TMapperStartPerljet {
         gm.setInputTables(inputTables);
         gm.setVarsTables(varsTables);
 
-        List<ExternalMapperTable> allTablesList = new ArrayList<ExternalMapperTable>(inputTables);
-        allTablesList.addAll(varsTables);
-        allTablesList.addAll(outputTables);
-
         // constants
-        for (ExternalMapperTable table : allTablesList) {
+
+        String useConstantPerlCode = "use constant ";
+        
+        List<ExternalMapperTable> inputsTablesList = new ArrayList<ExternalMapperTable>(inputTables);
+
+        HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : inputConnections) {
+            hNameToConnection.put(connection.getName(), connection);
+        }
+        HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
+        for (ExternalMapperTable externalTable : inputsTablesList) {
+
+            String tableName = externalTable.getName();
+            sb.append(cr);
+
+            IConnection connection = hNameToConnection.get(tableName);
+
+            if (connection != null) {
+
+                hExternalInputTableEntries.clear();
+                List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
+                if (metadataTableEntries == null) {
+                    continue;
+                }
+                for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
+                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
+                }
+
+                IMetadataTable metadataTable = connection.getMetadataTable();
+
+                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+
+                int lstSize = listColumns.size();
+                for (int i = 0; i < lstSize; i++) {
+                    IMetadataColumn column = (IMetadataColumn) listColumns.get(i);
+                    String columnName = column.getLabel();
+                    ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                    if (externalInputTableEntry != null) {
+                        sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + columnName + " => " + i
+                                + ";");
+                    }
+                }
+            }
+
+        }
+
+        List<ExternalMapperTable> varsAndOutputsTablesList = new ArrayList<ExternalMapperTable>(varsTables);
+        varsAndOutputsTablesList.addAll(outputTables);
+        for (ExternalMapperTable table : varsAndOutputsTablesList) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
             if (tableEntries == null) {
                 continue;
@@ -93,7 +144,7 @@ public class TMapperStartPerljet {
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => "
+                sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + tableEntry.getName() + " => "
                         + i + ";");
             }
         }

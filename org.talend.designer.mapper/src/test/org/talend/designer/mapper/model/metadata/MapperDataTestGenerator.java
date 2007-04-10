@@ -92,9 +92,10 @@ public class MapperDataTestGenerator {
         THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION,
         THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION,
         ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION,
+        ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE,
     };
 
-    TEST currentTest = TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION;
+    TEST currentTest = TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE;
 
     public MapperDataTestGenerator(ILanguage language, boolean random) {
         super();
@@ -443,6 +444,12 @@ public class MapperDataTestGenerator {
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("test_order");
+        mapperTableEntry.setExpression("test");
+        mapperTableEntry.setType(INTEGER_TYPE);
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("name");
         mapperTableEntry.setExpression("");
         mapperTableEntry.setType(STRING_TYPE);
@@ -498,11 +505,13 @@ public class MapperDataTestGenerator {
         mapperTableEntry.setType(INTEGER_TYPE);
         tableEntries.add(mapperTableEntry);
 
+        
         mapperTable.setMetadataTableEntries(tableEntries);
 
         if (
                 currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
                 || currentTest == TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION
+                || currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE
         ) {
             // nothing
         } else {
@@ -550,6 +559,7 @@ public class MapperDataTestGenerator {
         if (
                 currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
                 || currentTest == TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION
+                || currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE
         ) {
             // nothing
         } else {
@@ -726,6 +736,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION
+                || currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE
 
         ) {
 
@@ -811,6 +822,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE
                 || currentTest == TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION
+                || currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE
 
         ) {
             // nothing
@@ -885,6 +897,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_NO_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.THREE_TABLES_INPUT_WITH_ONE_INNER_JOIN_AND_ONE_OUTPUT_TABLE_AND_NO_CONNECTION
                 || currentTest == TEST.ONE_INPUT_AND_ONE_OUTPUT_TABLE_WITH_FILTER_AND_ONE_OUTPUT_TABLE_WITHOUT_CONNECTION
+                || currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE
 
         ) {
             // nothing
@@ -1020,23 +1033,48 @@ public class MapperDataTestGenerator {
 
         ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
 
-        MetadataColumn metadataColumn = new MetadataColumnTest();
-        metadataColumn.setLabel("id_book");
-        metadataColumn.setKey(true);
-        metadataColumn.setType(INTEGER_TYPE);
-        metadatColumns.add(metadataColumn);
-
-        metadataColumn = new MetadataColumnTest();
-        metadataColumn.setLabel("name");
-        metadataColumn.setKey(false);
-        metadataColumn.setType(STRING_TYPE);
-        metadatColumns.add(metadataColumn);
-
-        metadataColumn = new MetadataColumnTest();
-        metadataColumn.setLabel("nb_pages");
-        metadataColumn.setKey(false);
-        metadataColumn.setType(INTEGER_TYPE);
-        metadatColumns.add(metadataColumn);
+        MetadataColumn metadataColumn = null;
+        
+        if(currentTest == TEST.ONE_INPUT_WITH_DIFFERENT_ORDER_BETWEEN_EXTERNAL_DATA_AND_METADTA_AND_ONE_OUTPUT_TABLE) {
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("nb_pages");
+            metadataColumn.setKey(false);
+            metadataColumn.setType(INTEGER_TYPE);
+            metadatColumns.add(metadataColumn);
+            
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("name");
+            metadataColumn.setKey(false);
+            metadataColumn.setType(STRING_TYPE);
+            metadatColumns.add(metadataColumn);
+            
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("test_order");
+            metadataColumn.setKey(true);
+            metadataColumn.setType(INTEGER_TYPE);
+            metadatColumns.add(metadataColumn);
+            
+        } else {
+            
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("id_book");
+            metadataColumn.setKey(true);
+            metadataColumn.setType(INTEGER_TYPE);
+            metadatColumns.add(metadataColumn);
+            
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("name");
+            metadataColumn.setKey(false);
+            metadataColumn.setType(STRING_TYPE);
+            metadatColumns.add(metadataColumn);
+            
+            metadataColumn = new MetadataColumnTest();
+            metadataColumn.setLabel("nb_pages");
+            metadataColumn.setKey(false);
+            metadataColumn.setType(INTEGER_TYPE);
+            metadatColumns.add(metadataColumn);
+        }
+        
 
         metadataTable.setListColumns(metadatColumns);
 
