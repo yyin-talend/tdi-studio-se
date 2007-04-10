@@ -14,6 +14,7 @@
 	org.talend.designer.dbmap.language.IDbLanguage
 	org.talend.designer.dbmap.oracle.OracleMapperComponent
 	org.talend.designer.dbmap.oracle.language.OracleGenerationManager
+	org.talend.designer.dbmap.AbstractDbMapComponent
 
 	java.util.HashMap
 	java.util.Map
