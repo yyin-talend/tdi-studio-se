@@ -18,14 +18,14 @@
 	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
 	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
 	String message<%=cid %> = <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>;
-
+	int result<%=cid %> = 0;
 <%
 	switch(button) {
 		case 0:
 		// 0) OK
 %>
 		javax.swing.JOptionPane.showMessageDialog(null, message<%=cid %>, title<%=cid %>, messageIcon<%=cid %>);
-		int result<%=cid %> = 0;
+		result<%=cid %> = 1;
 <%
 			break;
 		case 1:
