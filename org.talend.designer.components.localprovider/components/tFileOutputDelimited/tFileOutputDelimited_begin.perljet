@@ -82,20 +82,23 @@ my $nb_line_<%=cid %> = 0;
 
 my $output_FH_<%=cid %> = new FileHandle;
 
-my $mode;
+my $mode = '>';
 if ($desc_<%=cid %>{append}) {
     $mode = '>>';
-}
-else {
-    $mode = '>';
 }
 
 open($output_FH_<%=cid %>, $mode, $desc_<%=cid %>{filename})
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
 
+my $printHeader = <%=includeHeader %> ;
+if( '>>' eq $mode ){
+    $printHeader = 0 if -s $desc_<%=cid %>{filename} ;
+}
+
 <%
         if (includeHeader.equals("true")) {
 %>
+if($printHeader){
 print {$output_FH_<%=cid %>} (
     join(
         OUTPUT_FIELD_SEPARATOR_<%=cid %>,
@@ -104,7 +107,7 @@ print {$output_FH_<%=cid %>} (
     OUTPUT_ROW_SEPARATOR_<%=cid %>
 )
     or die "can't write to file " . $desc_<%=cid %>{filename} . "\n";
-
+}
 $nb_line_<%=cid %>++;
 
 <%
