@@ -25,12 +25,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__COMMIT_EVERY__"
         );
+
+        String dieOnError = ElementParameterParser.getValue(
+            node,
+            "__DIE_ON_ERROR__"
+        );
 %>
 
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     <%=ElementParameterParser.getValue(node, "__QUERY__") %>
 );
+<%
+        if (dieOnError.equals("true")) {
+%>
+$sth_<%=cid %>->execute()
+    or die '[<%=cid%>] cannot execute query '.$DBI::errstr;
+<%
+        }
+        else {
+%>
 $sth_<%=cid %>->execute();
+<%
+        }
+%>
 $sth_<%=cid %>->finish();
 
 if ($_context{StoreSQLQuery}) {
