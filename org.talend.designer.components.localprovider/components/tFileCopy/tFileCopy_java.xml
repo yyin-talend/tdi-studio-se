@@ -37,7 +37,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
-      <DEFAULT>"C:/Input/in.csv"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -47,7 +47,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="DESTINATION_PATH"
     > 
-    <DEFAULT>"C:/"</DEFAULT>  
+    <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/"</DEFAULT>  
     </PARAMETER>
    <PARAMETER
       NAME="REMOVE_FILE"
