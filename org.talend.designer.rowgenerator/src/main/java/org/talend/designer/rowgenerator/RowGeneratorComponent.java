@@ -148,7 +148,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.designer.core.model.components.IExternalComponent#setPersistentData(java.lang.Object)
      */
     public void setExternalData(IExternalData externalData) {
-        // this.externalData = (ExternalRowGeneratorData) externalData;
+
     }
 
     /*
@@ -237,7 +237,6 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
-
     }
 
     /*
@@ -247,10 +246,10 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     public void loadDataOut(OutputStream out, Writer writer) throws IOException {
         initRowGeneratorMain();
-        rowGeneratorMain.createModelFromExternalData(getIncomingConnections(), 
-                getOutgoingConnections(), externalData, getMetadataList(), false);
+        rowGeneratorMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+                getMetadataList(), false);
         ExternalRowGeneratorData data = rowGeneratorMain.buildExternalData();
-        
+
         if (rowGeneratorMain != null && data != null) {
 
             try {
@@ -298,16 +297,6 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             }
         }
     }
-
-//    /*
-//     * (non-Javadoc)
-//     * 
-//     * @see org.talend.core.model.process.AbstractNode#isMultipleMethods()
-//     */
-//    @Override
-//    public Boolean isMultipleMethods() {
-//        return new Boolean(true);
-//    }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getNumber() {
@@ -435,5 +424,32 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
         return inAndOut;
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractExternalNode#metadataOutputChanged(org.talend.core.model.components.IODataComponent,
+     * java.lang.String)
+     */
+    @Override
+    public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
+        List<Map<String, Object>> oldMap = getMapList();
+        List<Map<String, Object>> newMap = new ArrayList<Map<String, Object>>();
+        IMetadataTable metadataTable = dataComponent.getTable();
+        if (!oldMap.isEmpty() && metadataTable.getListColumns().size() == oldMap.size()) {
+            for (IMetadataColumn column : metadataTable.getListColumns()) {
+                for (Map<String, Object> map : oldMap) {
+                    if (column.getLabel().equals(map.get(COLUMN_NAME))) {
+                        Map<String, Object> map2 = new HashMap<String, Object>();
+                        map2.put(COLUMN_NAME, column.getLabel());
+                        map2.put(ARRAY, map.get(ARRAY));
+                        newMap.add(map2);
+                        break;
+                    }
+                }
+            }
+            setTableElementParameter(newMap);
+        }
     }
 }

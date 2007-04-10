@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
-import java.util.List;
-
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -49,18 +47,9 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
 
     public IMetadataColumn createNewMetadataColumn() {
         final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super.createNewMetadataColumn());
-        metadataColumnExt.setFunction((new FunctionManager()).getDefaultFunction(metadataColumnExt, metadataColumnExt.getTalendType()));
+        metadataColumnExt.setFunction((new FunctionManager()).getDefaultFunction(metadataColumnExt, metadataColumnExt
+                .getTalendType()));
         return metadataColumnExt;
-    }
-
-    /**
-     * qzhang Comment method "refreshPreview".
-     * 
-     * @param metadataColumnList
-     */
-    public void refreshPreview(List<IMetadataColumn> metadataColumnList) {
-        ui.getTabFolderEditors().getProcessPreview().refreshTablePreview(metadataColumnList, null, false);
-
     }
 
     public void setRowGenUI(RowGeneratorUI ui) {

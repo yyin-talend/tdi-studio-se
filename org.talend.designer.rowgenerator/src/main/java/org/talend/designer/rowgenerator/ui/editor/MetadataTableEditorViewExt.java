@@ -316,21 +316,6 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         };
     }
 
-    protected IBeanPropertyAccessors<IMetadataColumn, String> getLabelAccessor() {
-        return new IBeanPropertyAccessors<IMetadataColumn, String>() {
-
-            public String get(IMetadataColumn bean) {
-                return bean.getLabel();
-            }
-
-            public void set(IMetadataColumn bean, String value) {
-                generatorUI.getTabFolderEditors().getProcessPreview().renameColumn(bean, value);
-                bean.setLabel(value);
-            }
-
-        };
-    }
-
     public MetadataTableEditorExt getMetadataTableEditor() {
         return (MetadataTableEditorExt) getExtendedTableModel();
     }

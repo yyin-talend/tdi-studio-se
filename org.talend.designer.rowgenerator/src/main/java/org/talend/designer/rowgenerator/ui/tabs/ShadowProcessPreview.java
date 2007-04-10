@@ -22,9 +22,7 @@
 package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -84,8 +82,6 @@ public class ShadowProcessPreview {
         table.setLinesVisible(true);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         table.setLayoutData(gridData);
-        // TableViewer viewer = new TableViewer(table);
-        // viewer.refresh();
     }
 
     /**
@@ -136,8 +132,7 @@ public class ShadowProcessPreview {
 
     private void refreshTablePreview(final String[] columns, List<String[]> items) {
         refreshPreviewHeader(columns);
-        // refreshPreviewItem(items);
-        refreshPreviewItem(columns, items);
+        refreshPreviewItem(items);
         // resize all the columns but not the table
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumn(i).pack();
@@ -151,37 +146,6 @@ public class ShadowProcessPreview {
         }
 
     }
-
-    private void refreshPreviewItem(String[] columns, List<String[]> olditems) {
-        if (isChanged) {
-            List<String[]> newitems = new ArrayList<String[]>();
-            List<List<String>> newListItem = new ArrayList<List<String>>();
-            for (String[] strings : olditems) {
-                List<String> line = new ArrayList<String>();
-                line.add(strings[0]);
-                newListItem.add(line);
-            }
-
-            int countCol = columns.length;
-            for (int i = 1; i < countCol; i++) {
-                List<String> c = columnData.get(columns[i]);
-                for (int j = 0; j < c.size(); j++) {
-                    newListItem.get(j).add(c.get(j));
-                }
-            }
-            for (List<String> strs : newListItem) {
-                String[] its = new String[strs.size()];
-                for (int i = 0; i < its.length; i++) {
-                    its[i] = strs.get(i);
-                }
-                newitems.add(its);
-            }
-            olditems = newitems;
-        }
-        refreshPreviewItem(olditems);
-    }
-
-    private boolean isChanged = false;
 
     /**
      * qzhang Comment method "refreshPreviewItem".
@@ -205,10 +169,6 @@ public class ShadowProcessPreview {
 
     }
 
-    private List<String> columnNames = new ArrayList<String>();
-
-    private Map<String, List<String>> columnData = new HashMap<String, List<String>>();
-
     /**
      * qzhang Comment method "refreshTablePreview".
      * 
@@ -221,7 +181,6 @@ public class ShadowProcessPreview {
             clearTablePreview();
         }
         if (items == null) {
-            initColumnNames(columns);
             return;
         }
         String[] cols = new String[columns.size() + 1];
@@ -230,10 +189,6 @@ public class ShadowProcessPreview {
             if (i == 0) {
                 cols[i] = ""; //$NON-NLS-1$
             } else {
-                List<String> list = columnData.get(columns.get(i - 1).getLabel());
-                if (list != null) {
-                    list.clear();
-                }
                 cols[i] = columns.get(i - 1).getLabel();
             }
         }
@@ -241,15 +196,8 @@ public class ShadowProcessPreview {
         if (items != null && isRefreshItems) {
             for (List<String> strs : items) {
                 String[] its = new String[strs.size()];
-
                 for (int i = 0; i < its.length; i++) {
                     its[i] = strs.get(i);
-                    if (i < its.length - 1) {
-                        List<String> list = columnData.get(columnNames.get(i));
-                        if (list != null) {
-                            list.add(strs.get(i + 1));
-                        }
-                    }
                 }
                 newItems.add(its);
             }
@@ -258,62 +206,8 @@ public class ShadowProcessPreview {
         refreshTablePreview(cols, newItems);
     }
 
-    /**
-     * qzhang Comment method "initColumnNames".
-     * 
-     * @param columns
-     */
-    private void initColumnNames(List<IMetadataColumn> columns) {
-        String removeCol = "";
-        boolean isEnd = false;
-        for (IMetadataColumn col : columns) {
-            if (!columnNames.contains(col.getLabel())) {
-                columnNames.add(col.getLabel());
-                isEnd = true;
-            }
-        }
-        for (int i = 0; i < columnNames.size() && !isEnd; i++) {
-            boolean is = false;
-            for (IMetadataColumn column : columns) {
-                if (column.getLabel().equals(columnNames.get(i))) {
-                    is = true;
-                    break;
-                }
-            }
-            if (!is) {
-                removeCol = columnNames.get(i);
-            }
-        }
-        if (!"".equals(removeCol)) {
-            columnNames.remove(removeCol);
-        }
-        columnData.clear();
-        for (String name : columnNames) {
-            columnData.put(name, new ArrayList<String>());
-        }
-    }
-
-    public boolean isChanged() {
-        return this.isChanged;
-    }
-
-    public void setChanged(boolean isChanged) {
-        this.isChanged = isChanged;
-    }
 
     public Table getTable() {
         return this.table;
     }
-
-    public void renameColumn(IMetadataColumn bean, String value) {
-        int indexOf = columnNames.indexOf(bean.getLabel());
-        if (indexOf > -1) {
-            columnNames.set(indexOf, value);
-            columnData.clear();
-            for (String name : columnNames) {
-                columnData.put(name, new ArrayList<String>());
-            }
-        }
-    }
-
 }

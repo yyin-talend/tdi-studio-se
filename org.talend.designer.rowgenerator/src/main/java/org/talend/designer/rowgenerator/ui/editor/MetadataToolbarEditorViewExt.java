@@ -60,7 +60,6 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.rowgenerator.i18n.Messages;
-import org.talend.designer.rowgenerator.ui.tabs.ShadowProcessPreview;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -207,13 +206,6 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
                         .getExtendedControlModel();
                 return tableEditorModel.createNewMetadataColumn();
             }
-
-            @Override
-            protected void afterCommandExecution(Command executedCommand) {
-                super.afterCommandExecution(executedCommand);
-                refreshPreview();
-            }
-
         };
     }
 
@@ -223,14 +215,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createRemovePushButton()
      */
     protected RemovePushButton createRemovePushButton() {
-        RemovePushButtonForExtendedTable removeButton2 = new RemovePushButtonForExtendedTable(toolbar, extendedTableViewer) {
-
-            @Override
-            protected void afterCommandExecution(Command executedCommand) {
-                super.afterCommandExecution(executedCommand);
-                refreshPreview();
-            }
-        };
+        RemovePushButtonForExtendedTable removeButton2 = new RemovePushButtonForExtendedTable(toolbar, extendedTableViewer);
         return removeButton2;
     }
 
@@ -257,7 +242,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
             @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
                 MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
-                .getExtendedControlModel();
+                        .getExtendedControlModel();
                 return new MetadataExportXmlCommandExt(tableEditorModel, file);
             }
 
@@ -276,19 +261,11 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
             @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
                 MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
-                .getExtendedControlModel();
+                        .getExtendedControlModel();
                 return new MetadataImportXmlCommandExt(tableEditorModel, file);
             }
 
         };
-    }
-
-    /**
-     * qzhang Comment method "refreshPreview".
-     */
-    protected void refreshPreview() {
-        MetadataTableEditorExt editorExt = (MetadataTableEditorExt) this.getExtendedTableViewer().getExtendedControlModel();
-        editorExt.refreshPreview(editorExt.getMetadataColumnList());
     }
 
     /*
@@ -298,19 +275,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     @Override
     protected MoveDownPushButton createMoveDownPushButton() {
-        return new MoveDownPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton#afterCommandExecution(org.eclipse.gef.commands.Command)
-             */
-            @Override
-            protected void afterCommandExecution(Command executedCommand) {
-                moveColumn();
-            }
-
-        };
+        return new MoveDownPushButtonForExtendedTable(toolbar, extendedTableViewer);
     }
 
     /*
@@ -320,29 +285,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     @Override
     protected MoveUpPushButton createMoveUpPushButton() {
-        return new MoveUpPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton#afterCommandExecution(org.eclipse.gef.commands.Command)
-             */
-            @Override
-            protected void afterCommandExecution(Command executedCommand) {
-                moveColumn();
-            }
-        };
-    }
-
-    /**
-     * qzhang Comment method "moveColumn".
-     */
-    private void moveColumn() {
-        ShadowProcessPreview processPreview = genTableEditor2.getMetadataTableEditor().getRowGenUI().getTabFolderEditors()
-                .getProcessPreview();
-        // processPreview.refreshTablePreview(genTableEditor2.getMetadataTableEditor().getMetadataColumnList(), null,
-        // false);
-        processPreview.setChanged(true);
+        return new MoveUpPushButtonForExtendedTable(toolbar, extendedTableViewer);
     }
 
     public Menu getColumnsListmenu() {

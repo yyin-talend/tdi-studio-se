@@ -98,24 +98,16 @@ public class RowGenPreviewCodeMain {
      * qzhang Comment method "initPerlArray".
      */
     private void initPerlArray() {
-        List<Map<String, Object>> map = this.component.getMapList();
+        List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         MetadataTable table = (MetadataTable) this.component.getMetadataList().get(0);
-        if (map == null || map.isEmpty()) {
-            map = new ArrayList<Map<String, Object>>();
-            for (IMetadataColumn col : table.getListColumns()) {
-                MetadataColumnExt ext = (MetadataColumnExt) col;
-                Map<String, Object> value = new HashMap<String, Object>();
-                value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
-                value.put(RowGeneratorComponent.ARRAY, FunctionManager.getOneColData(ext));
-                map.add(value);
-            }
-            this.component.setTableElementParameter(map);
-        } else {
-            for (IMetadataColumn col : table.getListColumns()) {
-                MetadataColumnExt ext = (MetadataColumnExt) col;
-                this.component.setColumnValue(ext.getLabel(), FunctionManager.getOneColData(ext));
-            }
+        for (IMetadataColumn col : table.getListColumns()) {
+            MetadataColumnExt ext = (MetadataColumnExt) col;
+            Map<String, Object> value = new HashMap<String, Object>();
+            value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
+            value.put(RowGeneratorComponent.ARRAY, FunctionManager.getOneColData(ext));
+            map.add(value);
         }
+        this.component.setTableElementParameter(map);
     }
 
     /**

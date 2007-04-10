@@ -22,6 +22,7 @@
 package org.talend.designer.rowgenerator.managers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,15 +30,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
+import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.FunctionManager;
-import org.talend.designer.rowgenerator.data.JavaFunctionParser;
-import org.talend.designer.rowgenerator.data.Parameter;
-import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -142,10 +142,16 @@ public class UIManager {
      * qzhang Comment method "saveAllData".
      */
     private void saveAllData() {
-        TableItem[] items = generatorUI.getDataTableView().getTable().getItems();
-        for (int i = 0; i < items.length; i++) {
-            saveOneColData((MetadataColumnExt) items[i].getData());
+        List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
+        MetadataTable table = (MetadataTable) rgManager.getRowGeneratorComponent().getMetadataList().get(0);
+        for (IMetadataColumn col : table.getListColumns()) {
+            MetadataColumnExt ext = (MetadataColumnExt) col;
+            Map<String, Object> value = new HashMap<String, Object>();
+            value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
+            value.put(RowGeneratorComponent.ARRAY, FunctionManager.getOneColData(ext));
+            map.add(value);
         }
+        rgManager.getRowGeneratorComponent().setTableElementParameter(map);
         rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
 
     }
