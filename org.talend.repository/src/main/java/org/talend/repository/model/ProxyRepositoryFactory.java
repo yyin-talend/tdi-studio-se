@@ -681,7 +681,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#copy(org.talend.core.model.properties.Item,
      * org.eclipse.core.runtime.IPath)
      */
-    public Item copy(Item item, IPath path) throws PersistenceException {
+    public Item copy(Item item, IPath path) throws PersistenceException, BusinessException {
         return this.repositoryFactoryFromProvider.copy(item, path);
     }
 

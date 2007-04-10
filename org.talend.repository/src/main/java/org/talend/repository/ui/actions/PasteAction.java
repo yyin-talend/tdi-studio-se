@@ -28,6 +28,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.i18n.Messages;
@@ -73,8 +76,10 @@ public class PasteAction extends AContextualAction {
                         MessageDialog.openWarning(new Shell(), Messages.getString("PasteObjectAction.error.title"), Messages //$NON-NLS-1$
                                 .getString("PasteObjectAction.error.labelAlreadyExists")); //$NON-NLS-1$
                     }
+                } catch (BusinessException e) {
+                    MessageBoxExceptionHandler.process(e);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
 

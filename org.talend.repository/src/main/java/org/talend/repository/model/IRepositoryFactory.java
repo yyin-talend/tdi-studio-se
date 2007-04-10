@@ -192,7 +192,7 @@ public interface IRepositoryFactory {
 
     public void save(Property property) throws PersistenceException;
 
-    public Item copy(Item item, IPath path) throws PersistenceException;
+    public Item copy(Item item, IPath path) throws PersistenceException, BusinessException;
 
     /**
      * DOC mhelleboid Comment method "cancel".
@@ -228,7 +228,7 @@ public interface IRepositoryFactory {
      * gather all the metadata connections (file / db / etc ...).
      */
     List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException;
-    
+
     /**
      * get all context items.
      * 

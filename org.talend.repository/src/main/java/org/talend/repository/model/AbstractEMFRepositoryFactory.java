@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -186,7 +187,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
-    protected Item copyFromResource(Resource createResource) throws PersistenceException {
+    protected Item copyFromResource(Resource createResource) throws PersistenceException, BusinessException {
         Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
@@ -202,8 +203,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @param copiedProperty
      * @return
      * @throws PersistenceException
+     * @throws BusinessException
      */
-    private void setPropNewName(Property copiedProperty) throws PersistenceException {
+    private void setPropNewName(Property copiedProperty) throws PersistenceException, BusinessException {
         String originalLabel = copiedProperty.getLabel();
         String add1 = "Copy_of_"; //$NON-NLS-1$
         String initialTry = add1 + originalLabel;
@@ -211,9 +213,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         if (isNameAvailable(copiedProperty.getItem(), null)) {
             return;
         } else {
-            int i = 2;
+            char j = 'a';
             while (!isNameAvailable(copiedProperty.getItem(), null)) {
-                String nextTry = initialTry + "_(" + (i++) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                if (j > 'z') {
+                    throw new BusinessException("Cannot generate pasted item label.");
+                }
+                String nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
                 copiedProperty.setLabel(nextTry);
             }
         }

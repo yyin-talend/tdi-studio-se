@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
@@ -60,6 +62,15 @@ public class MoveObjectAction {
             return false;
         }
 
+        IRepositoryObject objectToCopy = sourceNode.getObject();
+
+        // Cannot move system routines:
+        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
+            Property property = objectToCopy.getProperty();
+            RoutineItem item = (RoutineItem) property.getItem();
+            return !item.isBuiltIn();
+        }
+
         if (targetNode == null) {
             switch (sourceNode.getType()) {
             case REPOSITORY_ELEMENT:
@@ -76,7 +87,6 @@ public class MoveObjectAction {
         IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
         IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject objectToCopy = sourceNode.getObject();
 
             if (!ResourceUtils.isCorrectDestination(sourcePath, targetPath, false)) {
                 return false;

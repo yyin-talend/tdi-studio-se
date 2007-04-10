@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ERepositoryStatus;
@@ -71,6 +73,13 @@ public class CopyObjectAction {
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return false;
+        }
+
+        // Cannot copy system routines:
+        if (objectToCopy.getType() == ERepositoryObjectType.ROUTINES) {
+            Property property = objectToCopy.getProperty();
+            RoutineItem item = (RoutineItem) property.getItem();
+            return !item.isBuiltIn();
         }
 
         // Special rule : temp ?
