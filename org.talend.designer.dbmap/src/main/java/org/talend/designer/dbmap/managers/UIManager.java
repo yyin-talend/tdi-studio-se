@@ -227,7 +227,7 @@ public class UIManager {
                 }
 
                 currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
-                        abstractDataMapTable.getName());
+                        abstractDataMapTable.getTitle());
 
                 currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
 

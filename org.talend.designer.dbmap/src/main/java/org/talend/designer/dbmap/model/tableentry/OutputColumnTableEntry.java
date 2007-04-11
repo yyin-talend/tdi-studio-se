@@ -44,7 +44,7 @@ public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
     @Override
     public String getParentName() {
-       return ((OutputTable)getParent()).getTableName();
+       return ((OutputTable)getParent()).getUniqueName();
     }
 
     
