@@ -50,7 +50,7 @@ my %desc_<%=cid %> = (
         for (IMetadataColumn column: metadata.getListColumns()) {
 %>
     	{
-            name    => '<%=column.getLabel() %>',
+            name    => '`<%=column.getLabel() %>`',
             key     => <%=column.isKey() %>,
             type    => '<%=column.getType() %>',
             len     => <%=column.getLength() %>,
