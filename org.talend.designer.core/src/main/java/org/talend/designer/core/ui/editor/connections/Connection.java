@@ -73,7 +73,8 @@ public class Connection extends Element implements IConnection {
 
     private String traceData;
 
-    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName, String uniqueName) {
+    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName,
+            String uniqueName) {
         this.uniqueName = uniqueName;
         init(source, target, lineStyle, metaName, linkName);
     }
@@ -324,8 +325,8 @@ public class Connection extends Element implements IConnection {
                 metaName = uniqueName;
                 // }
             }
-            if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN)
-                    || lineStyle.equals(EConnectionType.FLOW_REF)) {
+            if ((lineStyle.equals(EConnectionType.TABLE) && source.getConnectorFromType(lineStyle).isBuiltIn())
+                    || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }

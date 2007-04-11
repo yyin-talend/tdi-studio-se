@@ -51,7 +51,7 @@ public class DeleteNodeContainerCommand extends Command {
         setLabel(Messages.getString("DeleteNodeCommand.Label")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void execute() {
         process.setActivate(false);
 
@@ -61,7 +61,8 @@ public class DeleteNodeContainerCommand extends Command {
             this.process.removeNodeContainer(nodeContainer);
             List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
             List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
-            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+                    | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
             for (Connection connection : inputList) {
                 Node prevNode = (Node) connection.getSource();
                 if (!nodeList.contains(prevNode)) {
@@ -95,7 +96,7 @@ public class DeleteNodeContainerCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void undo() {
         process.setActivate(false);
         for (Node node : nodeList) {
@@ -105,7 +106,8 @@ public class DeleteNodeContainerCommand extends Command {
 
             List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
             List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
-            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+                    | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
             for (Connection connection : inputList) {
                 Node prevNode = (Node) connection.getSource();
                 if (!nodeList.contains(prevNode)) {
@@ -141,6 +143,7 @@ public class DeleteNodeContainerCommand extends Command {
                 }
             }
         }
+        
 
         process.setActivate(true);
         process.checkStartNodes();
