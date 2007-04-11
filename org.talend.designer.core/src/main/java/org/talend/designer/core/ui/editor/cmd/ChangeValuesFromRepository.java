@@ -194,15 +194,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
                         IElementParameter repositorySchemaTypeParameter = elem
                                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                        String repositoryValue = (String) repositorySchemaTypeParameter.getValue();
-                        IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryValue);
-                        if (table != null) {
-                            table = table.clone();
-                            table.setTableName(node.getMetadataList().get(0).getTableName());
-                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                                cmd.setRepositoryMode(true);
-                                cmd.execute();
+                        if (repositorySchemaTypeParameter != null) {
+                            String repositoryValue = (String) repositorySchemaTypeParameter.getValue();
+                            IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryValue);
+                            if (table != null) {
+                                table = table.clone();
+                                table.setTableName(node.getMetadataList().get(0).getTableName());
+                                if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
+                                    cmd.setRepositoryMode(true);
+                                    cmd.execute();
+                                }
                             }
                         }
                     }
@@ -211,7 +213,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (sourceNode != null) {
                         IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
                         Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                        boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null;
+                        boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
+                                && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
                         if (isTake && getTake()) {
                             ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null, sourceMetadataTable);
                             cmd.execute(true);
