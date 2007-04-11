@@ -55,6 +55,7 @@ int splitEvery_<%=cid%> = <%=splitEvery %>;
 int splitedFileNo_<%=cid%> =0;
 int currentRowQtyWithinFile_<%=cid%> = 0;
 int nb_line_<%=cid%> = 0;
+String tkTag = "";
 
 StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 final int strBufferSize_<%=cid%> = 700000;

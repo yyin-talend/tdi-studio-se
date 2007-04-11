@@ -55,18 +55,31 @@ IConnection conn = conns.get(0);
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if (removeNullField.equals(true)) {
 %>
-if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=column.getLabel()%>.compareTo("")!=0)) {
+if (tok_<%=cid%>.hasMoreTokens()) {
 <%
 				}
+%>
+tkTag = tok_<%=cid%>.nextToken();
+<%
 				if(colnameAsTagname.equals(true)){
 			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tok_<%=cid%>.nextToken()+"</<%=column.getLabel()%>>\n");		
+		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
 			<%	
 				}else{
+					if (removeNullField.equals("true")) {
+%>
+		if (tkTag.compareTo("null")!=0) {
+<%
+			}
 			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tok_<%=cid%>.nextToken()+"</"+fieldTag_<%=cid%>+">\n");				
+		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
 				<%
 				}
+				if (removeNullField.equals("true")) {
+%>
+		}
+<%
+			}
 				if (removeNullField.equals(true)) {
 				%>
 }
@@ -143,17 +156,30 @@ if (rowCounter_<%=cid%> >= bufferRowQtys_<%=cid%>) {
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if (removeNullField.equals("true")) {
 %>
-if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=column.getLabel()%>.compareTo("")!=0)) {
+if (tok_<%=cid%>.hasMoreTokens()) {
 <%
 				}
+%>
+		tkTag = tok_<%=cid%>.nextToken();
+<%
 				if(colnameAsTagname.equals("true")){
 			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tok_<%=cid%>.nextToken()+"</<%=column.getLabel()%>>\n");		
+		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
 			<%	
 				}else{
+					if (removeNullField.equals("true")) {
+%>
+		if (tkTag.compareTo("null")!=0) {
+<%
+			}
 			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tok_<%=cid%>.nextToken()+"</"+fieldTag_<%=cid%>+">\n");				
+		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
 				<%
+				if (removeNullField.equals("true")) {
+%>
+		}
+<%
+			}
 				}
 				if (removeNullField.equals("true")) {
 				%>
@@ -201,19 +227,9 @@ if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=
 	
 <%  
 	for(IMetadataColumn column:metadata.getListColumns()) {
-		if (removeNullField.equals("true")) {
 %>
-	if (<%=conn.getName()%>.<%=column.getLabel()%>!=null) {
+		buffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%> + "\n");
 <%
-		}
-%>
-	buffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%> + "\n");
-<%
-		if (removeNullField.equals("true")) {
-%>
-	}
-<%
-		}
 	}
 %>
 

@@ -36,46 +36,53 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 	IConnection conn = conns.get(0);
 %>	
 String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
-
 java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
 
 int counter_<%=cid%> = 0;
-
-   while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-	
+while (counter_<%=cid%> < rowCounter_<%=cid%>) {
 	strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");					
-      	<%		
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals("true")) {
+<%		
+	for(IMetadataColumn column:metadata.getListColumns()) {
+		if (removeNullField.equals("true")) {
 %>
-  if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=column.getLabel()%>.compareTo("")!=0)) {
+		if (tok_<%=cid%>.hasMoreTokens()) {
 <%
-				}
-				if(colnameAsTagname.equals("true")){
-			%>
-	strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tok_<%=cid%>.nextToken()+"</<%=column.getLabel()%>>\n");		
-			<%	
-				}else{
-			%>
-	strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tok_<%=cid%>.nextToken()+"</"+fieldTag_<%=cid%>+">\n");				
-				<%
-				}
-				if (removeNullField.equals("true")) {
-				%>
-}
-				<%
-				}				
+		}
+%>
+		tkTag = tok_<%=cid%>.nextToken();
+<%
+		if(colnameAsTagname.equals("true")){
+%>
+		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
+<%	
+		} else {
+			if (removeNullField.equals("true")) {
+%>
+		if (tkTag.compareTo("null")!=0) {
+<%
 			}
-		%>
+%>
+			strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");
+<%
+			if (removeNullField.equals("true")) {
+%>
+		}
+<%
+			}
+		}
+		if (removeNullField.equals("true")) {
+%>
+		}			
+<%
+		}
+	}
+%>
 	strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
 	nb_line_<%=cid%>++;
 	counter_<%=cid%>++;
-	
-  }
-
-   rowCounter_<%=cid%> = 0;
-
-   buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());    
+}
+rowCounter_<%=cid%> = 0;
+buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());    
    
 <%
 	}
