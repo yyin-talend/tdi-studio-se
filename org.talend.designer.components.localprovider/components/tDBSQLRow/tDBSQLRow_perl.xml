@@ -92,9 +92,9 @@
     </PARAMETER>
 
     <PARAMETER NAME="QUERY" FIELD="MEMO_SQL" NUM_ROW="7">
-      <DEFAULT>'UPDATE employee
+      <DEFAULT>"UPDATE employee
   SET salary = salary + 1000
-  WHERE id = 21'</DEFAULT>
+  WHERE id = 21"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
