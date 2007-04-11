@@ -71,6 +71,7 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -126,14 +127,14 @@ public class DatabaseTableForm extends AbstractForm {
     private Label tableSettingsInfoLabel;
 
     private Label typeText;
-    
+
     /**
      * Main Fields.
      */
     private LabelledText nameText;
 
     private LabelledText commentText;
-    
+
     private LabelledCombo tableCombo;
 
     private Button streamDetachCheckbox;
@@ -211,7 +212,7 @@ public class DatabaseTableForm extends AbstractForm {
     private void initTreeNavigatorNodes() {
 
         if (metadataTable == null) {
-            
+
             if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
                 boolean isAllDeleted = true;
                 for (int i = 0; i < getConnection().getTables().size(); i++) {
@@ -232,7 +233,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         String[] allTableLabel = TableHelper.getTableNames(getConnection());
         Arrays.sort(allTableLabel);
-    
+
         for (int i = 0; i < allTableLabel.length; i++) {
             if (allTableLabel[i].equals(metadataTable.getLabel())) {
                 TableItem subItem = new TableItem(tableNavigator, SWT.NONE);
@@ -266,7 +267,11 @@ public class DatabaseTableForm extends AbstractForm {
         // init the fields
         nameText.setText(metadataTable.getLabel());
         commentText.setText(metadataTable.getComment());
-        typeText.setText(Messages.getString("DatabaseTableForm.type")+" : "+metadataTable.getTableType());
+        if (metadataTable.getTableType() != null) {
+            typeText.setText(Messages.getString("DatabaseTableForm.type") + " : " + metadataTable.getTableType());
+        } else {
+            typeText.setText(Messages.getString("DatabaseTableForm.type") + " : " + "TABLE");
+        }
         tableCombo.setText(metadataTable.getSourceName());
         nameText.forceFocus();
     }
@@ -281,7 +286,8 @@ public class DatabaseTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2,
+                leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -296,7 +302,8 @@ public class DatabaseTableForm extends AbstractForm {
         gridData.horizontalSpan = 3;
 
         // Header Fields
-        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
+        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth,
+                headerCompositeHeight);
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2); //$NON-NLS-1$
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2); //$NON-NLS-1$
 
@@ -318,7 +325,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         tableSettingsInfoLabel = new Label(composite1, SWT.NONE);
         tableSettingsInfoLabel.setLayoutData(gridData);
-        
+
         // Checkbox streamDetach
         streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach")); //$NON-NLS-1$
@@ -326,7 +333,8 @@ public class DatabaseTableForm extends AbstractForm {
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
 
         // Group MetaData
-        Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
+        Group groupMetaData = Form.createGroup(rightComposite, 1,
+                Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
                 tableCompositeHeight);
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
@@ -337,7 +345,7 @@ public class DatabaseTableForm extends AbstractForm {
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
         tableEditorView.setShowDbTypeColumn(true, true, false);
         tableEditorView.initGraphicComponents();
-        
+
         metadataEditor.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel")); //$NON-NLS-1$
         addUtilsButtonListeners();
     }
@@ -354,7 +362,8 @@ public class DatabaseTableForm extends AbstractForm {
         Group group = Form.createGroup(parent, 1, Messages.getString("DatabaseTableForm.navigatorTree"), height); //$NON-NLS-1$
 
         // ScrolledComposite
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -384,7 +393,8 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        addTableButton = new UtilsButton(button,
+                Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -397,13 +407,9 @@ public class DatabaseTableForm extends AbstractForm {
         retreiveSchemaButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!retreiveSchemaButton.getEnabled()) {
-//                    retreiveSchemaButton.setEnabled(true);
+                if (retreiveSchemaButton.getEnabled()) {
                     pressRetreiveSchemaButton();
                     metadataTable.setSourceName(tableCombo.getText());
-
-                } else {
-//                    retreiveSchemaButton.setEnabled(false);
                 }
             }
         });
@@ -462,7 +468,8 @@ public class DatabaseTableForm extends AbstractForm {
         retreiveSchemaButton.setEnabled(true);
         checkConnectionButton.setVisible(true);
 
-        if (isReadOnly()) {
+        //if (isReadOnly()) {
+        if (1==1) {
             tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
             tableCombo.setReadOnly(true);
             retreiveSchemaButton.setEnabled(false);
@@ -503,8 +510,9 @@ public class DatabaseTableForm extends AbstractForm {
             if (itemTableName.size() <= 0) {
                 // connection is done but any table exist
                 if (displayMessageBox) {
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                            .getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
+                    MessageDialog.openInformation(getShell(),
+                            Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                    .getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
                 }
             } else {
 
@@ -526,12 +534,14 @@ public class DatabaseTableForm extends AbstractForm {
                     if (!isReadOnly()) {
                         msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                     }
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg); //$NON-NLS-1$
+                    MessageDialog.openInformation(getShell(),
+                            Messages.getString("DatabaseTableForm.checkConnection"), msg); //$NON-NLS-1$
                 }
             }
         } else if (displayMessageBox) {
             // connection failure
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages
+                    .getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
                     managerConnection.getMessageException());
         }
 
@@ -628,7 +638,8 @@ public class DatabaseTableForm extends AbstractForm {
                         + table.getLabel() + "\""); //$NON-NLS-1$
                 return false;
             } else if (existNames.contains(table.getLabel())) {
-                updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                updateStatus(IStatus.ERROR,
+                        Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
             }
 
@@ -673,14 +684,16 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             boolean doit = true;
             if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
-                doit = MessageDialog.openConfirm(getShell(), Messages.getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
+                doit = MessageDialog.openConfirm(getShell(), Messages
+                        .getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
                 tableString = tableCombo.getItem(tableCombo.getSelectionIndex());
 
                 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                        tableString);
 
                 tableEditorView.getMetadataEditor().removeAll();
 
@@ -691,7 +704,8 @@ public class DatabaseTableForm extends AbstractForm {
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
-                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
+                    metadataColumn
+                            .setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
                 }
                 tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
