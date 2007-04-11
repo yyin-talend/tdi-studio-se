@@ -38,9 +38,10 @@ my %desc_<%=cid %> = (
 %>
         {
             name    => '<%=column.getLabel() %>',
-            printLength => <%=lengths.get(i++).get("LENGTH") %>,
+            printLength => <%=lengths.get(i).get("LENGTH") %>,
         },
 <%
+            i++;
         }
 %>
     ],
