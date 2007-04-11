@@ -36,6 +36,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -97,8 +98,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                && param.getRepositoryValue().equals("TYPE")) {
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -115,8 +115,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         if (param.getField().equals(EParameterFieldType.TABLE)
                                 && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
-                                    .getName());
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                             RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
@@ -191,8 +190,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             } else {
                 if (!metadataInput) {
                     if (tablesmap != null
-                            && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                                    .isEmpty()) {
+                            && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
                         IElementParameter repositorySchemaTypeParameter = elem
                                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
@@ -209,42 +207,54 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         }
                     }
                 } else {
-                    IODataComponent input = null;
-                    List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
-                    incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) ((Node) elem)
-                            .getIncomingConnections();
-                    for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
-                        if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
-                            input = new IODataComponent(connec);
-                        }
-                    }
-                    if (input != null) {
-                        INode source = input.getSource();
-                        IMetadataTable sourceMetadataTable = source.getMetadataList().get(0);
-                        if (getTake()) {
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
-                                    sourceMetadataTable);
+                    Node sourceNode = getRealSourceNode((Node) elem);
+                    if (sourceNode != null) {
+                        IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
+                        boolean isExternal = sourceNode.getPluginFullName() != null
+                                && !"".equals(sourceNode.getPluginFullName()) && sourceNode.getExternalNode() != null;
+                        if (!isExternal && getTake()) {
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null, sourceMetadataTable);
                             cmd.execute(true);
-                            if (source instanceof Node) {
-                                Node sourceNode = (Node) source;
-                                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceNode
-                                        .getPropertyValue(EParameterName.SCHEMA_TYPE.getName()));
-                                if (sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(
-                                        EmfComponent.REPOSITORY)) {
-                                    elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
-                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
-                                }
+                            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceNode
+                                    .getPropertyValue(EParameterName.SCHEMA_TYPE.getName()));
+                            if (sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+                                elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
+                                        .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
                             }
                         }
                     }
                 }
-                if (queriesmap != null
-                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                                .isEmpty()) {
-                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
-                }
+            }
+            if (queriesmap != null
+                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Node getRealSourceNode(INode target) {
+        Node sourceNode = null;
+        IODataComponent input = null;
+        List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
+        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target.getIncomingConnections();
+        for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
+            if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+                input = new IODataComponent(connec);
+            }
+        }
+        if (input != null) {
+            INode source = input.getSource();
+            if (source instanceof Node) {
+                sourceNode = (Node) source;
+                // final IExternalNode externalNode = sourceNode.getExternalNode();
+                // if (sourceNode.getPluginFullName() != null && !"".equals(sourceNode.getPluginFullName())
+                // && sourceNode.getExternalNode() != null) {
+                // return getRealSourceNode(externalNode);
+                // }
+            }
+        }
+        return sourceNode;
     }
 
     /**
