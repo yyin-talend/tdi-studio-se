@@ -53,7 +53,7 @@ IConnection conn = conns.get(0);
 					
       	<%		
 			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals(true)) {
+				if (removeNullField.equals("true")) {
 %>
 if (tok_<%=cid%>.hasMoreTokens()) {
 <%
@@ -80,7 +80,7 @@ tkTag = tok_<%=cid%>.nextToken();
 		}
 <%
 			}
-				if (removeNullField.equals(true)) {
+				if (removeNullField.equals("true")) {
 				%>
 }
 				<%
