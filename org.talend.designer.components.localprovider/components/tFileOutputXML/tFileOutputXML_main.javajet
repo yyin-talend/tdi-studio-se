@@ -61,7 +61,7 @@ if (tok_<%=cid%>.hasMoreTokens()) {
 %>
 tkTag = tok_<%=cid%>.nextToken();
 <%
-				if(colnameAsTagname.equals(true)){
+				if(colnameAsTagname.equals("true")){
 			%>
 		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
 			<%	
