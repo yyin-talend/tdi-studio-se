@@ -107,7 +107,7 @@
       NUM_ROW="15"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
-      <DEFAULT>"\n"</DEFAULT>
+      <DEFAULT>'\n'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
