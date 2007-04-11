@@ -28,6 +28,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__LENGTHS__"
             );
+
+        String useFixedLength = ElementParameterParser.getValue(
+            node,
+            "__USE_FIXED_LENGTH__"
+        );
 %>
 
 my %desc_<%=cid %> = (
@@ -38,10 +43,15 @@ my %desc_<%=cid %> = (
 %>
         {
             name    => '<%=column.getLabel() %>',
-            printLength => <%=lengths.get(i).get("LENGTH") %>,
+<%
+        if (useFixedLength.equals("true")) {
+%>
+            printLength => <%=lengths.get(i++).get("LENGTH") %>,
+<%
+        }
+%>
         },
 <%
-            i++;
         }
 %>
     ],
