@@ -118,7 +118,8 @@
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status);
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(
-			new PrintfFormat("%.1f seconds").sprintf( ( (float)end-(float)start )/(float)1000 ));
+			new PrintfFormat("%.1f seconds").sprintf( (float)(end-start)/(float)1000 )
+		);
 		try {
 			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
 		} catch (Exception e) {
