@@ -132,18 +132,23 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
                         IRepositoryObject repositoryObjectVersion = allVersion.get(i);
-                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion
-                                .getProperty().getItem());
-
-                        RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion,
-                                parentRepositoryNode, ENodeType.REPOSITORY_ELEMENT);
-                        repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+                        RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode, repositoryObjectVersion);
                         objects[i] = repositoryNode;
                     }
                     return objects;
                 } catch (PersistenceException e) {
                     return null;
                 }
+            }
+
+            private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode, IRepositoryObject repositoryObjectVersion) {
+                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion
+                        .getProperty().getItem());
+
+                RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion,
+                        parentRepositoryNode, ENodeType.REPOSITORY_ELEMENT);
+                repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+                return repositoryNode;
             }
 
             public void dispose() {
