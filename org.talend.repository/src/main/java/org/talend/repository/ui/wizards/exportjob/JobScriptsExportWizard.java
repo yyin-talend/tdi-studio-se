@@ -40,6 +40,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalJarPage;
 import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalPerlModulePage;
 
@@ -113,7 +114,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             this.selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(DataTransferMessages.DataTransfer_export);
+        setWindowTitle(Messages.getString("JobScriptsExportWizard.exportJob"));
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }

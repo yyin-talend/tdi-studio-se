@@ -33,17 +33,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
+import org.talend.repository.i18n.Messages;
 
 /**
- * This is a wizard for generating job information  as HTML file.
- *
+ * This is a wizard for generating job information as HTML file.
+ * 
  * $Id: GenerateDocAsHTMLWizard.java 2007-3-7,下午02:26:29 ftang $
- *
+ * 
  */
-public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard{
+public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
+
     private IStructuredSelection selection;
 
     private GenerateDocAsHTMLWizardPage mainPage;
@@ -80,7 +80,7 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard{
             this.selection = new StructuredSelection(selectedResources);
         }
 
-        setWindowTitle(DataTransferMessages.DataTransfer_export);
+        setWindowTitle(Messages.getString("GenerateDocAsHTMLWizard.GenerateDocumentation"));
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }

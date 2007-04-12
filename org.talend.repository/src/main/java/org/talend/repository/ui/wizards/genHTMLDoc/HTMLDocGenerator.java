@@ -114,6 +114,10 @@ public class HTMLDocGenerator {
 
     private IDesignerCoreService designerCoreService;
 
+    private static final String REPOSITORY_BUILT_IN = "BUILT_IN"; //$NON-NLS-1$
+
+    private static final String DISPLAY_BUILT_IN = "Built-In"; //$NON-NLS-1$
+
     public HTMLDocGenerator() {
         designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
         mapList = designerCoreService.getMaps();
@@ -507,13 +511,15 @@ public class HTMLDocGenerator {
                         continue;
                     }
 
+                    // String value = checkString(elemparameter.getValue().toString());
                     String value = checkString(elemparameter.getValue().toString());
+
                     if (elemparameter.getName().equals(EParameterFieldType.PROPERTY_TYPE.getName())
                             && elemparameter.getValue().equals(REPOSITORY)) {
                         value = elemparameter.getValue().toString().toLowerCase()
                                 + ": "
                                 + getRepositoryValueForPropertyType(copyElementParameterList,
-                                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName()); 
+                                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                     } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
                             && elemparameter.getValue().equals(REPOSITORY)) {
                         value = elemparameter.getValue().toString().toLowerCase()
@@ -536,6 +542,10 @@ public class HTMLDocGenerator {
 
                     Element columnElement = parametersElement.addElement("column");
                     columnElement.addAttribute("name", checkString(elemparameter.getDisplayName()));
+
+                    if (value.equalsIgnoreCase(REPOSITORY_BUILT_IN)) {
+                        value = DISPLAY_BUILT_IN;
+                    }
                     columnElement.setText(value);
                 }
             }
