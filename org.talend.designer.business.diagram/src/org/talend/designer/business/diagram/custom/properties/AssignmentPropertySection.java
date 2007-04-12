@@ -209,7 +209,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
 
             private void selectChild(String id, RepositoryNode rootRepositoryNode) {
                 for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
-                    if (repositoryNode.getId().equals(id)) {
+                    if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
                         getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
                     } else {
                         selectChild(id, repositoryNode);
