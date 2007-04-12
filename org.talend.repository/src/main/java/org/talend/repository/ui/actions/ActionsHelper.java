@@ -43,21 +43,24 @@ public class ActionsHelper {
 
     private static final Comparator COMP = new ActionsLevelComparator();
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static List<ITreeContextualAction> getRepositoryContextualsActions() {
         List<ITreeContextualAction> toReturn = new ArrayList<ITreeContextualAction>();
-        IExtensionPointLimiter actionExtensionPoint = new ExtensionPointLimiterImpl("org.talend.core.repositoryContextualsActions", //$NON-NLS-1$
+        IExtensionPointLimiter actionExtensionPoint = new ExtensionPointLimiterImpl(
+                "org.talend.core.repositoryContextualsActions", //$NON-NLS-1$
                 "Action"); //$NON-NLS-1$
         List<IConfigurationElement> extension = ExtensionImplementationProvider.getInstanceV2(actionExtensionPoint);
 
         for (IConfigurationElement current : extension) {
             try {
-                ITreeContextualAction currentAction = (ITreeContextualAction) current.createExecutableExtension("class"); //$NON-NLS-1$
+                ITreeContextualAction currentAction = (ITreeContextualAction) current
+                        .createExecutableExtension("class"); //$NON-NLS-1$
                 try {
                     int level = Integer.parseInt(current.getAttribute("level")); //$NON-NLS-1$
                     currentAction.setLevel(level);
-                    currentAction.setReadAction("true".equals(current.getAttribute("isReadAction"))); ////$NON-NLS-1$
-                    currentAction.setEditAction("true".equals(current.getAttribute("isEditAction"))); ////$NON-NLS-1$
+                    currentAction.setReadAction("true".equals(current.getAttribute("isReadAction"))); //$NON-NLS-1$
+                    currentAction.setEditAction("true".equals(current.getAttribute("isEditAction"))); //$NON-NLS-1$
+                    currentAction.setPropertiesAction("true".equals(current.getAttribute("isPropertiesAction"))); //$NON-NLS-1$
                 } catch (NumberFormatException e) {
                     currentAction.setLevel(1000);
                 }

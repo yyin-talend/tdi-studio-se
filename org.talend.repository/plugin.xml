@@ -110,11 +110,13 @@
       <Action
             class="org.talend.repository.ui.actions.documentation.ExtractDocumentationAction"
             id="org.talend.repository.actions.extractdocumentation"
+            isReadAction="true"
             level="12"
             name="Extract documentation"/>
       <Action
             class="org.talend.repository.ui.actions.documentation.UpdateDocumentationAction"
             id="org.talend.repository.actions.updatedocumentation"
+            isEditAction="true"
             level="10"
             name="Update documentation"/>
       <Action
@@ -158,6 +160,7 @@
        <Action
              class="org.talend.repository.ui.actions.EditPropertiesAction"
              id="org.talend.repository.actions.editProperties"
+             isPropertiesAction="true"
              level="12"
              name="Edit properties"/>
        <Action

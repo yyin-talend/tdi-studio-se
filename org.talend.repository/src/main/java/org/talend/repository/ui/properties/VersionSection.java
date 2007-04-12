@@ -85,7 +85,8 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        final String[] columnProperties = new String[] { Messages.getString("VersionSection.Version"), Messages.getString("VersionSection.CreationDate"), Messages.getString("VersionSection.ModificationDate") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String[] columnProperties = new String[] {
+                Messages.getString("VersionSection.Version"), Messages.getString("VersionSection.CreationDate"), Messages.getString("VersionSection.ModificationDate") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
@@ -131,10 +132,11 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
                         IRepositoryObject repositoryObjectVersion = allVersion.get(i);
-                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion.getProperty().getItem());
+                        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion
+                                .getProperty().getItem());
 
-                        RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
-                                ENodeType.REPOSITORY_ELEMENT);
+                        RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion,
+                                parentRepositoryNode, ENodeType.REPOSITORY_ELEMENT);
                         repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
                         objects[i] = repositoryNode;
                     }
@@ -204,19 +206,19 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
 
                     List<ITreeContextualAction> contextualsActions = ActionsHelper.getRepositoryContextualsActions();
                     for (ITreeContextualAction action : contextualsActions) {
-                        if (action.isReadAction() || action.isEditAction()) {
+                        if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
                             action.init(null, structuredSelection);
                             if (action.isVisible()) {
                                 mgr.add(action);
                             }
-                        }                        
+                        }
                     }
                 }
             }
         });
         Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(menu);
-        
+
         aTabbedPropertySheetPage.getSite().setSelectionProvider(this);
     }
 
@@ -249,7 +251,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
 
     public void setSelection(ISelection selection) {
     }
-    
+
     @Override
     public ISelection getSelection() {
         return tableViewer.getSelection();
@@ -263,11 +265,11 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         }
         IStructuredSelection structuredSelection = (IStructuredSelection) repositoryViewSelection;
         RepositoryNode selectedRepositoryNode = (RepositoryNode) structuredSelection.getFirstElement();
-        
+
         if (selectedRepositoryNode == null) {
             return null;
         }
         return selectedRepositoryNode.getParent();
     }
-    
+
 }
