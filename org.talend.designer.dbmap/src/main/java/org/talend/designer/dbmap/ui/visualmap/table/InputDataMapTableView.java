@@ -51,6 +51,7 @@ import org.talend.designer.dbmap.language.IDbOperator;
 import org.talend.designer.dbmap.language.IDbOperatorManager;
 import org.talend.designer.dbmap.language.IJoinType;
 import org.talend.designer.dbmap.managers.MapperManager;
+import org.talend.designer.dbmap.managers.ProblemsManager;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
@@ -68,8 +69,6 @@ public class InputDataMapTableView extends DataMapTableView {
 
     public static final Color READONLY_CELL_BG_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
 
-    public static final String ID_OPERATOR_COLUMN = "ID_OPERATOR_COLUMN";
-
     private ToolItem dropDownItem;
 
     private InputTableCellModifier cellModifier;
@@ -85,6 +84,7 @@ public class InputDataMapTableView extends DataMapTableView {
         String useInJoinTitle = Messages.getString("InputDataMapTableView.columnTitle.ExplicitJoin");
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(useInJoinTitle);
+        column.setId(ID_EXPLICIT_JOIN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, Boolean>() {
 
             public Boolean get(InputColumnTableEntry bean) {
@@ -124,7 +124,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
         final TableViewerCreatorColumn columnOperator = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
-        columnOperator.setId(InputDataMapTableView.ID_OPERATOR_COLUMN);
+        columnOperator.setId(DataMapTableView.ID_OPERATOR);
         columnOperator.setToolTipHeader("Operator");
         columnOperator.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
 
@@ -403,12 +403,7 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected String getTitle() {
-        String alias = ((InputTable) abstractDataMapTable).getAlias();
-        String tableName = ((InputTable) abstractDataMapTable).getTableName();
-        if (alias != null) {
-            return alias + " (alias of table '" + tableName + "')";
-        }
-        return super.getTitle();
+        return ((InputTable) abstractDataMapTable).getTitle();
     }
 
     protected void configureCellModifier(TableViewerCreator<InputColumnTableEntry> tableViewerCreator) {
@@ -441,8 +436,7 @@ public class InputDataMapTableView extends DataMapTableView {
          */
         @Override
         public boolean canModify(Object element, String property) {
-            TableViewerCreatorColumn columnOperator = getTableViewerCreator().getColumn(
-                    InputDataMapTableView.ID_OPERATOR_COLUMN);
+            TableViewerCreatorColumn columnOperator = getTableViewerCreator().getColumn(DataMapTableView.ID_OPERATOR);
             String operator = (String) columnOperator.getBeanPropertyAccessors().get(element);
             IDbOperatorManager operatorsManager = mapperManager.getCurrentLanguage().getOperatorsManager();
             IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(operator);
@@ -462,36 +456,31 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
-        ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
-        if (column.getId().equals(ID_OPERATOR_COLUMN)) {
-            Color backgroundColor = getExpressionColorProvider().getBackgroundColor(
-                    entry.getProblems() == null ? true : false);
-            if (backgroundColor != null) {
-                return backgroundColor;
-            }
-        }
-        return super.getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+        return getCellColor(tableViewerCreator, element, columnIndex, true);
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * DOC amaumont Comment method "getCellColor".
      * 
-     * @see org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView#getForegroundCellColor(org.talend.commons.ui.swt.tableviewer.TableViewerCreator,
-     * java.lang.Object, int)
+     * @param tableViewerCreator
+     * @param element
+     * @param columnIndex
+     * @param isBackground TODO
+     * @return
      */
-    @Override
-    protected Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex,
+            boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
-        if (column.getId().equals(ID_OPERATOR_COLUMN)) {
-            Color foregroundColor = getExpressionColorProvider().getForegroundColor(
-                    entry.getProblems() == null ? true : false);
-            if (foregroundColor != null) {
-                return foregroundColor;
-            }
+        if (column.getId().equals(ID_OPERATOR)) {
+            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(),
+                    ProblemsManager.KEY_OPERATOR_EMPTY);
         }
-        return super.getForegroundCellColor(tableViewerCreator, element, columnIndex);
+        if (column.getId().equals(ID_NAME_COLUMN)) {
+            return getExpressionColorProvider().getColor(isBackground, entry.getProblems(),
+                    ProblemsManager.KEY_NO_MATCHING);
+        }
+        return super.getCellColor(tableViewerCreator, element, columnIndex, isBackground);
     }
 
     public void setEnableJoinTypeDropDown(boolean enabled) {

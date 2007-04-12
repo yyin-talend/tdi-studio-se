@@ -103,7 +103,7 @@ public class MapperManager {
         super();
         this.mapperComponent = mapperComponent;
         tableEntriesManager = new TableEntriesManager(this);
-        tableManager = new TableManager();
+        tableManager = new TableManager(this);
         linkManager = new LinkManager();
         uiManager = new UIManager(this, tableManager);
         problemsManager = new ProblemsManager(this);
@@ -360,7 +360,7 @@ public class MapperManager {
     }
 
     /**
-     * DOC amaumont Comment method "renameProcessColumnName".
+     * Update the column in the tableEntriesManager.
      * 
      * @param currentModifiedTableEntry
      * @param newColumnName
@@ -370,12 +370,17 @@ public class MapperManager {
         tableEntriesManager.renameEntryName(dataMapTableEntry, previousColumnName, newColumnName);
     }
 
+    /**
+     * 
+     * Remove the entry from the tableEntriesManager.
+     * @param dataMapTableEntry
+     */
     public void removeTableEntry(ITableEntry dataMapTableEntry) {
         tableEntriesManager.remove(dataMapTableEntry);
     }
 
     /**
-     * DOC amaumont Comment method "removeLinksFrom".
+     * Remove links from the given entry in the linkManager.
      * 
      * @param dataMapTableEntry
      */
@@ -620,6 +625,7 @@ public class MapperManager {
         tableViewer.refresh(currentEntry);
 
         uiManager.parseNewExpression(text, currentEntry, false);
+        uiManager.refreshSqlExpression();
     }
 
     public AbstractDbMapComponent getComponent() {
@@ -655,7 +661,8 @@ public class MapperManager {
             // }
         } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
                 || entryTarget instanceof FilterTableEntry) {
-            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry || entrySource instanceof OutputColumnTableEntry) {
+            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry
+                    || entrySource instanceof OutputColumnTableEntry) {
                 return true;
             }
         }
@@ -830,6 +837,7 @@ public class MapperManager {
     public void mapAutomaticallly() {
         AutoMapper autoMapper = new AutoMapper(this);
         autoMapper.map();
+        uiManager.refreshSqlExpression();
     }
 
     /**
@@ -846,21 +854,16 @@ public class MapperManager {
      */
     public void addInputAliasTable() {
 
-        ArrayList<String> tables = new ArrayList<String>();
-        List<IConnection> incomingConnections = (List<IConnection>) getComponent().getIncomingConnections();
-        for (IConnection connection : incomingConnections) {
-            tables.add(connection.getName());
-        }
-
-        AliasDialog aliasDialog = new AliasDialog(this, tables.toArray(new String[0]));
+        AliasDialog aliasDialog = new AliasDialog(this, tableManager.getPhysicalTableNames(),
+                tableManager.getAliases(), tableManager.getVisibleTables());
         if (!aliasDialog.open()) {
             return;
         }
 
-        incomingConnections = (List<IConnection>) getComponent().getIncomingConnections();
+        List<IConnection> incomingConnections = (List<IConnection>) getComponent().getIncomingConnections();
         IConnection connectionFound = null;
         for (IConnection connection : incomingConnections) {
-            if (connection.getName().equals(aliasDialog.getTableName())) {
+            if (connection.getName().equalsIgnoreCase(aliasDialog.getTableName())) {
                 connectionFound = connection;
                 break;
             }
@@ -872,9 +875,19 @@ public class MapperManager {
         if (sizeOutputsView - 1 >= 0) {
             lastChild = inputsTablesView.get(sizeOutputsView - 1);
         }
+        
+        String alias = aliasDialog.getAlias();
+        String aliasOrTableName = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName()) ? aliasDialog.getTableName() : alias;
 
-        InputTable inputTable = new InputTable(this, connectionFound.getMetadataTable().clone(), aliasDialog.getAlias());
-        inputTable.setAlias(aliasDialog.getAlias());
+        boolean isInvisibleTable = aliasDialog.isSameAsPhysicalTable(aliasOrTableName) && !aliasDialog.isTableOrAliasExists(aliasOrTableName);
+        
+        
+        InputTable inputTable = new InputTable(this, connectionFound.getMetadataTable().clone(), aliasOrTableName);
+        if(isInvisibleTable) {
+            inputTable.setAlias(null);
+        } else {
+            inputTable.setAlias(aliasOrTableName);
+        }
         inputTable.setTableName(aliasDialog.getTableName());
         inputTable.initFromExternalData(null);
 
@@ -888,7 +901,19 @@ public class MapperManager {
         tablesZoneViewInputs.layout();
         uiManager.selectDataMapTableView(dataMapTableView, true, false);
         uiManager.updateDropDownJoinTypeForInputs();
+        uiManager.parseAllExpressionsForAllTables();
+        uiManager.refreshSqlExpression();
+        
+    }
 
+    /**
+     * DOC amaumont Comment method "isUnmatchingEntry".
+     * 
+     * @param inputEntry
+     * @return
+     */
+    public boolean isUnmatchingEntry(InputColumnTableEntry inputEntry) {
+        return tableEntriesManager.isUnmatchingEntryWithDbColumn(inputEntry);
     }
 
 }

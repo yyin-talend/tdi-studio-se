@@ -35,6 +35,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
+import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
@@ -143,7 +144,14 @@ public class DropContextAnalyzer {
 
             isInputToInput = true;
             mapOneToOneAuthorized = false;
-            return true;
+            List<InputTable> inputTables = mapperManager.getInputTables();
+            int indexSourceInputTable = inputTables.indexOf(dataMapTableViewSource.getDataMapTable());
+            int indexTargetInputTable = inputTables.indexOf(dataMapTableViewTarget.getDataMapTable());
+            if (indexSourceInputTable == indexTargetInputTable) {
+                return false;
+            } else {
+                return true;
+            }
 
         }
 
@@ -158,9 +166,6 @@ public class DropContextAnalyzer {
             int indexSourceOutputTable = outputTables.indexOf(dataMapTableViewSource.getDataMapTable());
             int indexTargetOutputTable = outputTables.indexOf(dataMapTableViewTarget.getDataMapTable());
             if (indexSourceOutputTable == indexTargetOutputTable) {
-                /*
-                 * INPUT => INPUT && index of table source >= index of table target
-                 */
                 return false;
             } else {
                 return true;

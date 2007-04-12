@@ -92,31 +92,11 @@ public class ExternalDataConverter {
 
         ArrayList<OutputTable> outputDataMapTables = prepareOutputTables(outputs, outputMetadataTables, externalData);
 
-        List<VarsTable> varsTablesList = prepareVarsTables(externalData);
-
-        return new MapperModel(inputDataMapTables, outputDataMapTables, varsTablesList);
+        return new MapperModel(inputDataMapTables, outputDataMapTables);
 
     }
 
-    private List<VarsTable> prepareVarsTables(ExternalDbMapData externalData) {
-        List<VarsTable> varsTablesList = new ArrayList<VarsTable>();
-        if (externalData != null) {
-            List<ExternalDbMapTable> varsExternalTables = externalData.getVarsTables();
-            for (ExternalDbMapTable persistentTable : varsExternalTables) {
-                VarsTable varsTable = new VarsTable(this.mapperManager, persistentTable.getName());
-                varsTable.initFromExternalData(persistentTable);
-                varsTablesList.add(varsTable);
-            }
-        }
-        if (varsTablesList.size() == 0) {
-            VarsTable varsTable = new VarsTable(this.mapperManager, VarsTable.PREFIX_VARS_TABLE_NAME);
-            varsTable.setMinimized(true);
-            varsTablesList.add(varsTable);
-        }
-        return varsTablesList;
-    }
-
-    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections,
+    public ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections,
             List<IMetadataTable> outputMetadataTables, ExternalDbMapData externalData) {
         Map<String, ExternalDbMapTable> nameToOutpuPersistentTable = new HashMap<String, ExternalDbMapTable>();
         if (externalData != null) {
@@ -174,7 +154,7 @@ public class ExternalDataConverter {
         }
 
         ArrayList<InputTable> inputDataMapTables = new ArrayList<InputTable>();
-        if (externalData == null || externalData.getInputTables().size() == 0) {
+        if (externalData == null) {
             for (IOConnection connection : inputConnections) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                 inputTable.initFromExternalData(null);
@@ -194,11 +174,13 @@ public class ExternalDataConverter {
                     inputDataMapTables.add(inputTable);
                 }
             }
-            for (IOConnection connection : remainingConnections) {
-                InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
-                inputTable.initFromExternalData(null);
-                inputDataMapTables.add(inputTable);
-            }
+//            if(externalData.getInputTables().size() > 0) {
+//                for (IOConnection connection : remainingConnections) {
+//                    InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
+//                    inputTable.initFromExternalData(null);
+//                    inputDataMapTables.add(inputTable);
+//                }
+//            }
 
         }
 
@@ -233,7 +215,6 @@ public class ExternalDataConverter {
         varsTables = new ArrayList<ExternalDbMapTable>();
         externalData.setVarsTables(varsTables);
         loadInExternalData(mapperModel.getInputDataMapTables());
-        loadInExternalData(mapperModel.getVarsDataMapTables());
         loadInExternalData(mapperModel.getOutputDataMapTables());
         externalData.setUiProperties(uiProperties);
         return externalData;

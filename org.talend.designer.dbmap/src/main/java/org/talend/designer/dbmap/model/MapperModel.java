@@ -39,14 +39,10 @@ public class MapperModel {
 
     private List<OutputTable> outputDataMapTables;
 
-    private List<VarsTable> varsDataMapTables;
-
-    public MapperModel(List<InputTable> inputDataMapTables, List<OutputTable> outputDataMapTables,
-            List<VarsTable> varsDataMapTables) {
+    public MapperModel(List<InputTable> inputDataMapTables, List<OutputTable> outputDataMapTables) {
         super();
         this.inputDataMapTables = inputDataMapTables;
         this.outputDataMapTables = outputDataMapTables;
-        this.varsDataMapTables = varsDataMapTables;
     }
 
     public List<InputTable> getInputDataMapTables() {
@@ -63,14 +59,6 @@ public class MapperModel {
 
     public void setOutputDataMapTables(List<OutputTable> outputDataMapTables) {
         this.outputDataMapTables = outputDataMapTables;
-    }
-
-    public List<VarsTable> getVarsDataMapTables() {
-        return this.varsDataMapTables;
-    }
-
-    public void setVarsDataMapTables(List<VarsTable> varsDataMapTables) {
-        this.varsDataMapTables = varsDataMapTables;
     }
 
 }

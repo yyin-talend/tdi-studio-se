@@ -68,6 +68,7 @@ import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -397,10 +398,11 @@ public class UIManager {
                                 .getDataMapTable().getName(), (String) event.previousValue);
                         final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
                         processColumnNameChanged((String) event.previousValue, (String) event.newValue,
-                                dataMapTableView, dataMapTableEntry);
+                                dataMapTableView, dataMapTableEntry, false);
                     }
                     // dataMapTableViewer.refresh(event.bean, true);
                     tableViewer.refresh(true);
+                    mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                 } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
                     tableViewer.refresh(true);
                     IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
@@ -1089,11 +1091,13 @@ public class UIManager {
      * 
      * @param previousColumnName TODO
      * @param dataMapTableView
+     * @param renamingDependentEntries TODO
      * @param text
      * @param entry
      */
     public void processColumnNameChanged(final String previousColumnName, final String newColumnName,
-            final DataMapTableView dataMapTableView, final ITableEntry currentModifiedITableEntry) {
+            final DataMapTableView dataMapTableView, final ITableEntry currentModifiedITableEntry,
+            boolean renamingDependentEntries) {
 
         mapperManager.changeColumnName(currentModifiedITableEntry, previousColumnName, newColumnName);
         Collection<DataMapTableView> tableViews = mapperManager.getTablesView();
@@ -1118,26 +1122,98 @@ public class UIManager {
         mapperManager.getUiManager().refreshBackground(false, false);
         dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentModifiedITableEntry);
 
-        if (atLeastOneLinkHasBeenRemoved) {
-            new AsynchronousThreading(20, false, dataMapTableView.getDisplay(), new Runnable() {
+        TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
+                previousColumnName);
+        TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
+                newColumnName);
+        mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
+        refreshSqlExpression();
 
-                public void run() {
+        if (!renamingDependentEntries) {
 
-                    TableViewerCreator tableViewerCreatorForColumns = dataMapTableView
-                            .getTableViewerCreatorForColumns();
-                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(),
-                            Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
-                            Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
-                    if (propagate) {
-                        TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry
-                                .getParentName(), previousColumnName);
-                        TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry
-                                .getParentName(), newColumnName);
-                        mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
+            AbstractInOutTable currentTable = (AbstractInOutTable) currentModifiedITableEntry.getParent();
+            if (currentTable instanceof InputTable) {
+
+                InputTable currentInputTable = (InputTable) currentTable;
+                String physicalTableName = currentInputTable.getTableName();
+
+                String alias = currentInputTable.getAlias();
+
+                InputTable physicalInputTable = null;
+                List<InputTable> inputTables = mapperManager.getInputTables();
+
+                if (alias != null) {
+
+                    for (InputTable table : inputTables) {
+                        if (table.equals(physicalTableName)) {
+                            physicalInputTable = table;
+                        }
+                    }
+
+                } else {
+                    physicalInputTable = currentInputTable;
+                }
+
+                if (physicalInputTable == null) {
+
+                    List<? extends IConnection> incomingConnections = mapperManager.getComponent()
+                            .getIncomingConnections();
+                    IConnection connectionFound = null;
+                    for (IConnection connection : incomingConnections) {
+                        if (connection.getName().equals(physicalTableName)) {
+                            connectionFound = connection;
+                        }
+                    }
+                    IMetadataColumn metadataColumn = connectionFound.getMetadataTable().getColumn(previousColumnName);
+                    metadataColumn.setLabel(newColumnName);
+                }
+
+                for (InputTable table : inputTables) {
+                    if (
+                            (
+                            // Physical table parent
+                            alias != null && table.getAlias() == null && table.getName().equals(physicalTableName) 
+                        ||  
+                            // Alias table
+                            alias == null && table.getAlias() != null && table.getTableName().equals(physicalTableName)
+                            )
+                        ) {
+                        
+                        TableEntryLocation location = new TableEntryLocation(table.getName(),
+                                previousColumnName);
+                        DataMapTableView aliasTableView = mapperManager.retrieveDataMapTableView(location);
+                        ITableEntry aliasTableEntry = mapperManager.retrieveTableEntry(location);
+                        if(aliasTableEntry != null) {
+                            processColumnNameChanged(previousColumnName, newColumnName, aliasTableView, aliasTableEntry, true);
+                        }
+                        
                     }
                 }
-            }).start();
+
+            }
+
         }
+
+        // if (atLeastOneLinkHasBeenRemoved) {
+        // new AsynchronousThreading(20, false, dataMapTableView.getDisplay(), new Runnable() {
+        //
+        // public void run() {
+        // TableViewerCreator tableViewerCreatorForColumns = dataMapTableView
+        // .getTableViewerCreatorForColumns();
+        // boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(),
+        // Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
+        // Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
+        // if (propagate) {
+        // TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry
+        // .getParentName(), previousColumnName);
+        // TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry
+        // .getParentName(), newColumnName);
+        // mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
+        // refreshSqlExpression();
+        // }
+        // }
+        // }).start();
+        // }
     }
 
     public OutputDataMapTableView createNewOutputTableView(Control previousControl,

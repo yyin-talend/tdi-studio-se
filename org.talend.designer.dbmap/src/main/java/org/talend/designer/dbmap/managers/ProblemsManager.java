@@ -22,7 +22,6 @@
 package org.talend.designer.dbmap.managers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,9 +37,11 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
+import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.language.IDbOperator;
 import org.talend.designer.dbmap.language.IDbOperatorManager;
+import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
@@ -57,6 +58,14 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 public class ProblemsManager {
 
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
+    public static final String KEY_OUTPUT_EXPRESSION_EMPTY = "OUTPUT_EXPRESSION_EMPTY"; //$NON-NLS-1$
+
+    public static final String KEY_NO_MATCHING = "KEY_NO_MATCHING"; //$NON-NLS-1$
+
+    public static final String KEY_INPUT_EXPRESSION_EMPTY = "KEY_INPUT_EXPRESSION_EMPTY"; //$NON-NLS-1$
+
+    public static final String KEY_OPERATOR_EMPTY = "KEY_OPERATOR_EMPTY";
 
     private MapperManager mapperManager;
 
@@ -201,7 +210,7 @@ public class ProblemsManager {
         }
     }
 
-    private boolean checkProblemsForAllEntries(List<? extends ITableEntry> entriesList) {
+    public boolean checkProblemsForAllEntries(List<? extends ITableEntry> entriesList) {
         boolean errorsHasChanged = false;
         for (ITableEntry entry : entriesList) {
             boolean haveProblemsBefore = entry.getProblems() != null;
@@ -221,7 +230,7 @@ public class ProblemsManager {
         // checkProblems();
         // }
 
-        List<Problem> problems = null;
+        List<Problem> problems = new ArrayList<Problem>(0);
         String expression = tableEntry.getExpression();
         if (tableEntry instanceof InputColumnTableEntry) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) tableEntry;
@@ -234,31 +243,50 @@ public class ProblemsManager {
             Problem problem = null;
 
             String errorMessage = null;
+            String key = null;
             if (!operatorIsSet && expressionIsSet) {
-                errorMessage = "Operator of input entry '" + inputEntry.getName() + "' is not set";
+                errorMessage = Messages.getString("ProblemsManager.operatorNotSet", //$NON-NLS-1$
+                        new Object[] { inputEntry.getName() });
+                key = KEY_OPERATOR_EMPTY;
+                problem = new Problem(null, errorMessage, ProblemStatus.ERROR);
+                problem.setKey(key);
+                problems.add(problem);
             }
             if (operatorIsSet && !expressionIsSet && !dbOperator.isMonoOperand()) {
-                errorMessage = "Expression of input entry '" + inputEntry.getParentName() + "." + inputEntry.getName()
-                        + "' is not set";
-            }
-            if (errorMessage != null) {
+                errorMessage = Messages.getString("ProblemsManager.inputExpressionEmpty", //$NON-NLS-1$
+                        new Object[] { inputEntry.getParentName(), inputEntry.getName() });
+                key = KEY_INPUT_EXPRESSION_EMPTY;
                 problem = new Problem(null, errorMessage, ProblemStatus.ERROR);
-                problems = Arrays.asList(problem);
+                problem.setKey(key);
+                problems.add(problem);
+            }
+            
+            
+            Problem warningProblem = null;
+            if(inputEntry.isUnmatchingEntry()) {
+                InputTable inputTable = (InputTable) inputEntry.getParent();
+                String message = Messages.getString("ProblemsManager.entryDoesntMatch", //$NON-NLS-1$
+                    new Object[] { inputEntry.getParentName(), inputEntry.getName(), inputTable.getTableName() }); 
+                warningProblem = new Problem(null, message, ProblemStatus.WARNING);
+                warningProblem.setKey(KEY_NO_MATCHING);
+                problems.add(warningProblem);
             }
         } else if (tableEntry instanceof OutputColumnTableEntry) {
             String errorMessage = null;
             Problem problem = null;
             if (expression == null || EMPTY_STRING.equals(expression.trim())) {
-                errorMessage = "Expression of output entry '" + tableEntry.getParentName() + "." + tableEntry.getName()
-                        + "' is not set";
+                errorMessage = Messages.getString("ProblemsManager.outputExpressionEmpty", //$NON-NLS-1$
+                        new Object[] { tableEntry.getParentName(), tableEntry.getName() });
             }
             if (errorMessage != null) {
                 problem = new Problem(null, errorMessage, ProblemStatus.ERROR);
-                problems = Arrays.asList(problem);
+                problem.setKey(KEY_OUTPUT_EXPRESSION_EMPTY);
+                problems.add(problem);
             }
 
         }
-        tableEntry.setProblems(problems);
+        tableEntry.setProblems(problems.size() > 0 ? problems : null);
 
     }
+        
 }

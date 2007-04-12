@@ -45,6 +45,7 @@ public class ExternalDbMapData implements IExternalData {
 
     private List<ExternalDbMapTable> outputTables = new ArrayList<ExternalDbMapTable>(0);
 
+    /** not used ... */
     private List<ExternalDbMapTable> varsTables = new ArrayList<ExternalDbMapTable>(0);
 
     public List<ExternalDbMapTable> getInputTables() {
@@ -63,10 +64,12 @@ public class ExternalDbMapData implements IExternalData {
         this.outputTables = outputTables;
     }
 
+    /** not used ... */
     public List<ExternalDbMapTable> getVarsTables() {
         return this.varsTables;
     }
 
+    /** not used ... */
     public void setVarsTables(List<ExternalDbMapTable> varsTables) {
         this.varsTables = varsTables;
     }

@@ -21,9 +21,16 @@
 // ============================================================================
 package org.talend.designer.dbmap.model.table;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.designer.dbmap.external.connection.IOConnection;
+import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.language.IJoinType;
 import org.talend.designer.dbmap.managers.MapperManager;
@@ -58,7 +65,7 @@ public class InputTable extends AbstractInOutTable {
      * @param mainConnection
      */
     public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
-        super(mapperManager, connection.getTable().clone(), name);
+        super(mapperManager, null, name);
         this.connection = connection;
     }
 
@@ -80,7 +87,56 @@ public class InputTable extends AbstractInOutTable {
      */
     @Override
     public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
+
+        boolean isAliasTable = externalMapperTable != null && externalMapperTable.getAlias() != null;
+
+        if (isAliasTable) {
+            // dbmap table is alias
+            setMetadataTable(connection.getTable().clone());
+        } else if (connection != null) {
+            // dbmap table references a physical table
+            setMetadataTable(connection.getTable());
+        }
         super.initFromExternalData(externalMapperTable);
+
+        List<IMetadataColumn> columns = getMetadataTable().getListColumns();
+        Map<String, ExternalDbMapEntry> nameToPerTabEntry = new HashMap<String, ExternalDbMapEntry>();
+        if (externalMapperTable != null && externalMapperTable.getMetadataTableEntries() != null) {
+            for (ExternalDbMapEntry perTableEntry : externalMapperTable.getMetadataTableEntries()) {
+                nameToPerTabEntry.put(perTableEntry.getName(), perTableEntry);
+            }
+        }
+
+        ArrayList<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+        for (IMetadataColumn column : columns) {
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
+            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
+                    .getLabel());
+            // Entry match with current column
+            if (externalMapperTableEntry != null) {
+                fillInputEntry(inputEntry, externalMapperTableEntry);
+                nameToPerTabEntry.remove(externalMapperTableEntry.getName());
+            }
+            if (externalMapperTableEntry != null || !isAliasTable) {
+                dataMapTableEntries.add(inputEntry);
+            } else {
+                columnsToRemove.add(column);
+            }
+        }
+        columns.removeAll(columnsToRemove);
+        
+        // create unmatching entries
+        for (ExternalDbMapEntry perTableEntry : nameToPerTabEntry.values()) {
+            MetadataColumn column = new MetadataColumn();
+            column.setLabel(perTableEntry.getName());
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
+            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
+                    .getLabel());
+            fillInputEntry(inputEntry, externalMapperTableEntry);
+            dataMapTableEntries.add(inputEntry);
+            columns.add(column);
+        }
+
         if (externalMapperTable != null) {
             joinType = mapperManager.getCurrentLanguage().getJoin(externalMapperTable.getJoinType());
             if (joinType == null) {
@@ -90,6 +146,17 @@ public class InputTable extends AbstractInOutTable {
             tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection
                     .getName();
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "fillIputEntry".
+     * @param columnEntry
+     * @param externalMapperTableEntry
+     */
+    private void fillInputEntry(InputColumnTableEntry columnEntry, ExternalDbMapEntry externalMapperTableEntry) {
+        columnEntry.setExpression(externalMapperTableEntry.getExpression());
+        columnEntry.setOperator(externalMapperTableEntry.getOperator());
+        columnEntry.setJoin(externalMapperTableEntry.isJoin());
     }
 
     /*
@@ -179,4 +246,17 @@ public class InputTable extends AbstractInOutTable {
         this.tableName = tableName;
     }
 
+    @Override
+    public String getTitle() {
+        String alias = this.getAlias();
+        String tableName = this.getTableName();
+        if (alias != null) {
+            return alias + "  (alias of table '" + tableName + "')";
+        } else {
+            return tableName + "  (table)";
+        }
+    }
+
+    
+    
 }

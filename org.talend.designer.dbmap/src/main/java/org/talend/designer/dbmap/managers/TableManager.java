@@ -31,6 +31,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.utils.data.list.ListUtils;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -60,8 +61,11 @@ public class TableManager {
 
     private HashMap<String, InputTable> aliasToInputTable = new HashMap<String, InputTable>();
 
-    public TableManager() {
+    private MapperManager mapperManager;
+
+    public TableManager(MapperManager mapperManager) {
         super();
+        this.mapperManager = mapperManager;
     }
 
     /**
@@ -282,6 +286,48 @@ public class TableManager {
 
     InputTable addAlias(String alias, InputTable inputTable) {
         return aliasToInputTable.put(alias, inputTable);
+    }
+
+    /**
+     * DOC amaumont Comment method "getPhysicalTableNames".
+     */
+    public String[] getPhysicalTableNames() {
+        List<IConnection> inputConnections = (List<IConnection>) mapperManager.getComponent().getIncomingConnections();
+        ArrayList<String> names = new ArrayList<String>();
+        for (IConnection connection : inputConnections) {
+            String name = connection.getName();
+            if(name != null) {
+                names.add(name);
+            }
+        }
+        return names.toArray(new String[0]);
+    }
+
+    /**
+     * DOC amaumont Comment method "getAliases".
+     */
+    public String[] getAliases() {
+        List<InputTable> inputTables = getInputTables();
+        ArrayList<String> names = new ArrayList<String>();
+        for (InputTable table : inputTables) {
+            String alias = table.getAlias();
+            if(alias != null) {
+                names.add(alias);
+            }
+        }
+        return names.toArray(new String[0]);
+    }
+
+    /**
+     * DOC amaumont Comment method "getVisibleTables".
+     */
+    public String[] getVisibleTables() {
+        List<InputTable> inputTables = getInputTables();
+        ArrayList<String> names = new ArrayList<String>();
+        for (InputTable table : inputTables) {
+            names.add(table.getName());
+        }
+        return names.toArray(new String[0]);
     }
 
 }

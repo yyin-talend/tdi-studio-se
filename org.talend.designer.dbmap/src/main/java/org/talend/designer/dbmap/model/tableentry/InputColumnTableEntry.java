@@ -35,6 +35,9 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
     private String operator;
 
     private boolean join;
+    
+    /** unmatch entry with metadata entries */
+    private boolean unmatchingEntry;
 
     private String originalExpression;
 
@@ -102,4 +105,9 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
         this.originalExpression = originalExpression;
     }
 
+    
+    public boolean isUnmatchingEntry() {
+        return getParent().getMapperManager().isUnmatchingEntry(this);
+    }
+    
 }

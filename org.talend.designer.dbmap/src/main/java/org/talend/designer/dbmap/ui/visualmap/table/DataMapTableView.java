@@ -98,6 +98,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
+import org.talend.designer.dbmap.managers.ProblemsManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
@@ -201,6 +202,10 @@ public abstract class DataMapTableView extends Composite {
     public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN"; //$NON-NLS-1$
 
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN"; //$NON-NLS-1$
+
+    public static final String ID_OPERATOR = "ID_OPERATOR"; //$NON-NLS-1$
+
+    public static final String ID_EXPLICIT_JOIN = "ID_EXPLICIT_JOIN"; //$NON-NLS-1$
 
     public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
@@ -1545,30 +1550,44 @@ public abstract class DataMapTableView extends Composite {
 
         /**
          * DOC amaumont Comment method "getBackgroundColor".
-         * 
+         * @param isBackground TODO
+         * @param keyProblem 
          * @param expression
          */
-        public Color getBackgroundColor(boolean validCell) {
+        public Color getColor(boolean isBackground, List<Problem> problems, String ... keyProblems) {
 
-            if (validCell) {
-                return null;
-            } else {
-                return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL);
+            if (problems != null) {
+                boolean hasError = false;
+                boolean hasWarning = false;
+                for (Problem problem : problems) {
+                    for (String keyProblem : keyProblems) {
+                        if(keyProblem.equals(problem.getKey())) {
+                            if (problem.getStatus() == Problem.ProblemStatus.ERROR) {
+                                hasError = true;
+                            }
+                            if (problem.getStatus() == Problem.ProblemStatus.WARNING) {
+                                hasWarning = true;
+                            }
+                        }
+                    }
+                }
+                if (hasError) {
+                    if(isBackground) {
+                        return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL);
+                    } else {
+                        return ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL);
+                    }
+                }
+                if (hasWarning) {
+                    if(isBackground) {
+                        return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_WARNING_EXPRESSION_CELL);
+                    } else {
+                        return null;
+                    }
+                }
+
             }
-
-        }
-
-        /**
-         * DOC amaumont Comment method "getBackgroundColor".
-         * 
-         * @param expression
-         */
-        public Color getForegroundColor(boolean validCell) {
-            if (validCell) {
-                return null;
-            } else {
-                return ColorProviderMapper.getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL);
-            }
+            return null;
 
         }
 
@@ -1586,10 +1605,23 @@ public abstract class DataMapTableView extends Composite {
      * @return
      */
     protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+        return getCellColor(tableViewerCreator, element, columnIndex, true);
+    }
+
+    /**
+     * DOC amaumont Comment method "getCellColor".
+     * @param tableViewerCreator
+     * @param element
+     * @param columnIndex
+     * @param isBackground TODO
+     * @return
+     */
+    protected Color getCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex, boolean isBackground) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getBackgroundColor(entry.getProblems() == null ? true : false);
+            return expressionColorProvider.getColor(isBackground, entry.getProblems(), ProblemsManager.KEY_INPUT_EXPRESSION_EMPTY,
+                    ProblemsManager.KEY_OUTPUT_EXPRESSION_EMPTY);
         }
         return null;
     }
@@ -1602,12 +1634,7 @@ public abstract class DataMapTableView extends Composite {
      * @return
      */
     protected Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
-        ITableEntry entry = (ITableEntry) element;
-        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
-        if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getForegroundColor(entry.getProblems() == null ? true : false);
-        }
-        return null;
+        return getCellColor(tableViewerCreator, element, columnIndex, false);
     }
 
     /**

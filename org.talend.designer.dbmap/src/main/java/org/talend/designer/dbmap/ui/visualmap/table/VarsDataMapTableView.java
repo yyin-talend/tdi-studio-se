@@ -159,7 +159,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
                     mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(),
-                            newValue.toString(), VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
+                            newValue.toString(), VarsDataMapTableView.this, (ITableEntry) currentModifiedBean, false);
                 }
             }
 

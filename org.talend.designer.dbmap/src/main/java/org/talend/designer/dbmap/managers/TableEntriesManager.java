@@ -26,15 +26,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
 import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
+import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.ui.visualmap.TableEntryProperties;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
@@ -50,6 +54,8 @@ public class TableEntriesManager {
     private Map<TableEntryLocation, ITableEntry> tableEntries;
 
     private Map<ITableEntry, TableEntryProperties> dataMapTableEntryToProperties;
+
+    private MultiKeyMap dbTableName$ColumnNameToColumn = new MultiKeyMap();
 
     MapperManager mapperManager;
 
@@ -95,7 +101,7 @@ public class TableEntriesManager {
      */
     void addAll(List<? extends ITableEntry> dataMapTableEntriesGroup) {
         for (ITableEntry dataMapTableEntry : dataMapTableEntriesGroup) {
-            add(dataMapTableEntry);
+            addInternal(dataMapTableEntry);
         }
 
         // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD_ALL);
@@ -118,7 +124,7 @@ public class TableEntriesManager {
             throw new IllegalArgumentException(Messages
                     .getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
-        add(dataMapTableEntry);
+        addInternal(dataMapTableEntry);
         AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
         if (dataMapTableEntry instanceof IColumnEntry) {
             if (index == null) {
@@ -148,10 +154,65 @@ public class TableEntriesManager {
      * 
      * @param dataMapTableEntry
      */
-    private void add(ITableEntry dataMapTableEntry) {
+    private void addInternal(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
+        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+        InputTable inputTable = isPhysicalTable(dataMapTable);
+        if (inputTable != null) {
+            IMetadataColumn metadataColumn = ((InputColumnTableEntry) dataMapTableEntry).getMetadataColumn();
+            addMetadataColumnFromDbTable(inputTable.getTableName(), metadataColumn.getLabel(), metadataColumn);
+        }
+
     }
 
+    /**
+     * DOC amaumont Comment method "addMetadataColumnFromDbTable".
+     * 
+     * @param dbTableName
+     * @param metadataColumn
+     */
+    private void addMetadataColumnFromDbTable(String dbTableName, String columnName, IMetadataColumn metadataColumn) {
+
+        dbTableName$ColumnNameToColumn.put(dbTableName, columnName, metadataColumn);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addMetadataColumnFromDbTable".
+     * 
+     * @param dbTableName
+     * @param metadataColumn
+     */
+    private void removeMetadataColumnFromDbTable(String dbTableName, String columnName) {
+
+        dbTableName$ColumnNameToColumn.remove(dbTableName, columnName);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addMetadataColumnFromDbTable".
+     * 
+     * @param dbTableName
+     * @param metadataColumn
+     */
+    private boolean isColumnExists(String dbTableName, String columnName) {
+
+        return dbTableName$ColumnNameToColumn.containsKey(dbTableName, columnName);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addMetadataColumnFromDbTable".
+     * 
+     * @param dbTableName
+     * @param metadataColumn
+     */
+    private IMetadataColumn getColumnFromDbTable(String dbTableName, String columnName) {
+        
+        return (IMetadataColumn) dbTableName$ColumnNameToColumn.get(dbTableName, columnName);
+        
+    }
+    
     public void remove(ITableEntry dataMapTableEntry) {
         if (dataMapTableEntry != null) {
             mapperManager.removeLinksOf(dataMapTableEntry);
@@ -160,6 +221,10 @@ public class TableEntriesManager {
             AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
+                InputTable inputTable = isPhysicalTable(dataMapTable);
+                if (inputTable != null) {
+                    removeMetadataColumnFromDbTable(inputTable.getTableName(), dataMapTableEntry.getName());
+                }
             } else if (dataMapTableEntry instanceof FilterTableEntry) {
                 if (dataMapTable instanceof OutputTable) {
                     ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
@@ -171,6 +236,21 @@ public class TableEntriesManager {
                 throw new IllegalArgumentException(exceptionMessage);
             }
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "isPhysicalTable".
+     * 
+     * @param dataMapTable
+     */
+    private InputTable isPhysicalTable(AbstractDataMapTable dataMapTable) {
+        if (dataMapTable instanceof InputTable) {
+            InputTable inputTable = (InputTable) dataMapTable;
+            if (inputTable.getAlias() == null) {
+                return inputTable;
+            }
+        }
+        return null;
     }
 
     /**
@@ -247,13 +327,38 @@ public class TableEntriesManager {
                     .getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
         }
         tableEntries.remove(tableEntryLocationKey);
+        
         tableEntryLocationKey.columnName = newColumnName;
         tableEntries.put(tableEntryLocationKey, dataMapTableEntry);
+        
+        // update matching column
+        IMetadataColumn metadataColumn = null;
+        InputTable inputTable = isPhysicalTable(dataMapTableEntry.getParent());
+        if (inputTable != null) {
+            metadataColumn = getColumnFromDbTable(inputTable.getName(), dataMapTableEntry.getName());
+            removeMetadataColumnFromDbTable(inputTable.getTableName(), dataMapTableEntry.getName());
+            addMetadataColumnFromDbTable(inputTable.getTableName(), newColumnName, metadataColumn);
+        }
+        
         dataMapTableEntry.setName(newColumnName);
     }
 
     public static TableEntryLocation buildLocation(ITableEntry dataMapTableEntry) {
         return new TableEntryLocation(dataMapTableEntry.getParentName(), dataMapTableEntry.getName());
+    }
+
+    /**
+     * DOC amaumont Comment method "isUnmatchingEntry".
+     * 
+     * @param inputEntry
+     * @return
+     */
+    public boolean isUnmatchingEntryWithDbColumn(InputColumnTableEntry inputEntry) {
+        InputTable parent = (InputTable) inputEntry.getParent();
+        if (parent.getAlias() != null) {
+            return !isColumnExists(parent.getTableName(), inputEntry.getName());
+        }
+        return false;
     }
 
     /**
