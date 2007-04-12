@@ -36,7 +36,7 @@
       NUM_ROW="10"
     >
       <TABLE READONLY="true">
-        <COLUMN NAME="CRC" TYPE="String" LENGTH="255" READONLY="false"/>
+        <COLUMN NAME="CRC" TYPE="String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
 

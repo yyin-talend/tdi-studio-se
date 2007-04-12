@@ -737,7 +737,9 @@ public class EmfComponent implements IComponent {
             } else {
                 talendColumn.setReadOnly(xmlParam.isREADONLY());
             }
-            talendColumn.setCustom(true);
+            if (xmlColumn.isSetCUSTOM()) {
+                talendColumn.setCustom(xmlColumn.isCUSTOM());
+            }
             talendColumn.setCustomId(i);
             talendColumnList.add(talendColumn);
         }
