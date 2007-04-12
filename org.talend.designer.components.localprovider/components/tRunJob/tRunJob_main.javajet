@@ -52,8 +52,8 @@ class="RunJobMain"
     }
 %>
 
-Runtime runtime = Runtime.getRuntime();
-final Process ps<%=cid %> = runtime.exec(new String[] {
+Runtime runtime_<%=cid %> = Runtime.getRuntime();
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
 <%
 for (int i=0; i<commandLine.length; i++) {
 %>
@@ -62,3 +62,47 @@ for (int i=0; i<commandLine.length; i++) {
 }
 %>
 });
+
+Thread normal_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+
+					System.out.println(line);
+
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+normal_<%=cid %>.start();
+
+Thread error_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+					System.err.println(line);
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+error_<%=cid %>.start();
+
+ps_<%=cid %>.waitFor();
+normal_<%=cid %>.interrupt();
+error_<%=cid %>.interrupt();
