@@ -25,10 +25,12 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 
 /**
@@ -80,6 +82,14 @@ public class NodesCopyAction extends SelectionAction {
         List objects = getSelectedObjects();
         if (!objects.isEmpty()) {
             Clipboard.getDefault().setContents(objects);
+        }
+
+        //Refreshes the pasteAction's enable status.
+        IWorkbenchPart part = getWorkbenchPart();
+        if (part instanceof TalendEditor) {
+            TalendEditor talendEditor = (TalendEditor) part;
+            IAction action=  talendEditor.getActionRegistry().getAction(ActionFactory.PASTE.getId() );
+            action.setEnabled(true);
         }
     }
 }

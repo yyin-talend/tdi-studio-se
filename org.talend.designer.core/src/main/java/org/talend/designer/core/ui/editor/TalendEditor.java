@@ -336,6 +336,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         getActionRegistry().registerAction(snapAction);
     }
 
+   
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.ui.parts.GraphicalEditor#getActionRegistry()
+     */
+    public ActionRegistry getActionRegistry() {
+       return super.getActionRegistry();
+    }
+    
     /**
      * Save the outline picture for this editor.
      * 
