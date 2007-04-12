@@ -21,9 +21,15 @@
 // ============================================================================
 package org.talend.designer.core;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 
 /**
  * Detailled comment <br/>.
@@ -33,6 +39,11 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class DesignerCoreService implements IDesignerCoreService {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem)
+     */
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         Process process = null;
         process = new Process(processItem.getProperty());
@@ -41,4 +52,33 @@ public class DesignerCoreService implements IDesignerCoreService {
         return process;
     }
 
+    // used for generating HTML only
+    /**
+     * Constructs a new instance.
+     */
+    private RepositoryValueUtils repositoryValueUtils = null;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getQueriesMap()
+     */
+    public List<Map> getMaps() {
+        if (repositoryValueUtils == null) {
+            repositoryValueUtils = new RepositoryValueUtils();
+        }
+        List<Map> list = new ArrayList<Map>();
+        list.add(repositoryValueUtils.getRepositoryConnectionItemMap());
+        list.add(repositoryValueUtils.getRepositoryDBIdAndNameMap());
+        return list;
+    }
+   
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
+     */
+    public String getRepositoryAliasName(ConnectionItem connectionItem) {
+        return repositoryValueUtils.getRepositoryAliasName(connectionItem);
+    }
+    // ends.
 }

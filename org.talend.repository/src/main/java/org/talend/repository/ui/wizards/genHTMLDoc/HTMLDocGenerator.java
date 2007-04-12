@@ -53,11 +53,15 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.EParameterName;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.MapComponentsConstants;
@@ -74,15 +78,15 @@ import org.talend.repository.utils.RepositoryPathProvider;
  */
 public class HTMLDocGenerator {
 
-    private static Map<String, List> targetConnectionMap = null;
+    private Map<String, List> targetConnectionMap = null;
 
-    private static Map<String, List> sourceConnectionMap = null;
+    private Map<String, List> sourceConnectionMap = null;
 
     private static final String PIC_FOLDER_NAME = "pictures";
 
     private static final String TEMP_FOLDER_NAME = "userHTMLDoc";
 
-    private static Map<String, String> picFilePathMap;
+    private Map<String, String> picFilePathMap;
 
     private static final String EMPTY_ELEMENT_VALUE = "none";
 
@@ -97,15 +101,32 @@ public class HTMLDocGenerator {
     private static final String XSL_FILE_PATH = "resources/Job.xsl";
 
     private static final String LOGO_FILE_PATH = "icons/logo.jpg";
-    
+
     private static final String WEBSITE_LINK = "http://www.talend.com";
+
+    private static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
+
+    private List<Map> mapList;
+
+    private Map<String, ConnectionItem> repositoryConnectionItemMap;
+
+    private static Map<String, String> repositoryDBIdAndNameMap;
+
+    private IDesignerCoreService designerCoreService;
+
+    public HTMLDocGenerator() {
+        designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
+        mapList = designerCoreService.getMaps();
+        repositoryConnectionItemMap = mapList.get(0);
+        repositoryDBIdAndNameMap = mapList.get(1);
+    }
 
     /**
      * This method is used for generating HTML file base on an instance of <code>ExportFileResource</code>
      * 
      * @param resource
      */
-    public static void generateHTMLFile(ExportFileResource resource) {
+    public void generateHTMLFile(ExportFileResource resource) {
         try {
             String jobName = resource.getProcess().getProperty().getLabel();
 
@@ -165,7 +186,7 @@ public class HTMLDocGenerator {
      * @param resource
      * @return
      */
-    private static String checkTempDirIsExists(ExportFileResource resource) {
+    private String checkTempDirIsExists(ExportFileResource resource) {
         String tempDirPath = getTmpFolder() + File.separator + resource.getDirectoryName();
         File file = new File(tempDirPath);
         if (!file.exists()) {
@@ -184,7 +205,7 @@ public class HTMLDocGenerator {
      * @return top folder path of this job.
      * @throws Exception
      */
-    private static List<URL> parseXML2HTML(String tempFolderPath, String jobName, String xslFilePath) throws Exception {
+    private List<URL> parseXML2HTML(String tempFolderPath, String jobName, String xslFilePath) throws Exception {
         List<URL> list = new ArrayList<URL>(1);
 
         HTMLHandler.generate(tempFolderPath, jobName, xslFilePath);
@@ -209,7 +230,7 @@ public class HTMLDocGenerator {
      * @param resource
      * @param tempFolderPath
      */
-    private static void generateXMLFile(ExportFileResource resource, String tempFolderPath) throws Exception {
+    private void generateXMLFile(ExportFileResource resource, String tempFolderPath) throws Exception {
         ProcessItem processItem = resource.getProcess();
         targetConnectionMap = new HashMap<String, List>();
         sourceConnectionMap = new HashMap<String, List>();
@@ -270,7 +291,7 @@ public class HTMLDocGenerator {
      * @param jobElement
      * @param connectionList
      */
-    private static void generateConnectionsInfo(Element jobElement, EList connectionList) {
+    private void generateConnectionsInfo(Element jobElement, EList connectionList) {
         Element connectionsElement = jobElement.addElement("connections");
         for (int j = 0; j < connectionList.size(); j++) {
             ConnectionType type = (ConnectionType) connectionList.get(j);
@@ -290,7 +311,7 @@ public class HTMLDocGenerator {
      * 
      * @param jobElement <code>Element</code>
      */
-    private static void generateExternalNodeInfo(Element jobElement) {
+    private void generateExternalNodeInfo(Element jobElement) {
         // Element externalNodeElement = jobElement.addElement("externalNode");
         // externalNodeElement.addAttribute("name", "externalTestName");
         // externalNodeElement.addAttribute("link", "c:/textlinkfile.xml");
@@ -305,7 +326,7 @@ public class HTMLDocGenerator {
      * @param processItem
      * @return an instance of <code>Element</code>
      */
-    private static void generateComponentsInfo(Element jobElement, ProcessItem processItem) {
+    private void generateComponentsInfo(Element jobElement, ProcessItem processItem) {
         IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
         List<INode> graphicalNodeList = (List<INode>) process.getGraphicalNodes();
 
@@ -344,8 +365,8 @@ public class HTMLDocGenerator {
             componentItemElement.addAttribute("type", node.getComponent().getName());
             componentItemElement.addAttribute("leftTopX", x + "");
             componentItemElement.addAttribute("leftTopY", y + "");
-            componentItemElement.addAttribute("rightBottomX", x+width + "");
-            componentItemElement.addAttribute("rightBottomY", y+height + "");
+            componentItemElement.addAttribute("rightBottomX", x + width + "");
+            componentItemElement.addAttribute("rightBottomY", y + height + "");
         }
 
         for (INode node : componentList) {
@@ -417,7 +438,7 @@ public class HTMLDocGenerator {
 
             List elementParameterList = node.getElementParameters();
 
-            generateComponentElementParamInfo(isMapComponent, istRunJob, parametersElement, elementParameterList);
+            generateComponentElementParamInfo(isMapComponent, istRunJob, parametersElement, elementParameterList, node);
 
             List metaDataList = node.getMetadataList();
 
@@ -461,45 +482,133 @@ public class HTMLDocGenerator {
      * @param istRunJob
      * @param parametersElement
      * @param elementParameterList
+     * @param node
      */
-    private static void generateComponentElementParamInfo(boolean istMap, boolean istRunJob, Element parametersElement,
-            List elementParameterList) {
+    private void generateComponentElementParamInfo(boolean istMap, boolean istRunJob, Element parametersElement,
+            List elementParameterList, INode node) {
+
+        List<IElementParameter> copyElementParameterList = new ArrayList(elementParameterList);
+
         if (elementParameterList != null && elementParameterList.size() != 0) {
             if (istMap) {
                 generateElementInfoOnlyFortMap(parametersElement, elementParameterList);
             } else {
-                int numRow = 1;
-                boolean isNewParam = true;
-
                 for (int j = 0; j < elementParameterList.size(); j++) {
-                    IElementParameter type = (IElementParameter) elementParameterList.get(j);
+                    IElementParameter elemparameter = (IElementParameter) elementParameterList.get(j);
 
-                    if (type.isShow(elementParameterList)
-                            && ((type.getCategory().equals(EComponentCategory.PROPERTY) || (type.getCategory()
-                                    .equals(EComponentCategory.DOC))))
-                            && (!type.getName().equals("SCHEMA"))
-                            && (!type.getName().equals("PROPERTY_TYPE"))
-                            && (!type.getName().equals("QUERYSTORE_TYPE"))
-                            && (!type.getName().equals("PROPERTY") 
-                            && (!(istRunJob && type.getName().equals("PROCESS"))))) {
-
-                        // Gets the display name of a selected combo item.
-                        String value = "";
-                        if (type.getName().equals("TYPE")) {
-
-                            int index = type.getIndexOfItemFromList(type.getDisplayName());
-                            value = checkString(type.getListItemsDisplayName()[index]);
-                        } else {
-                            value = checkString(type.getValue().toString());
-                        }
-                        // parameterElement = parametersElement.addElement("parameter");
-                        Element columnElement = parametersElement.addElement("column");
-                        columnElement.addAttribute("name", checkString(type.getDisplayName()));
-                        columnElement.setText(value);
+                    if ((istRunJob && elemparameter.getName().equals("PROCESS"))
+                            || (!elemparameter.isShow(copyElementParameterList) && (!elemparameter.getName().equals(
+                                    EParameterFieldType.SCHEMA_TYPE.getName())))
+                            || elemparameter.getCategory().equals(EComponentCategory.MAIN)
+                            || elemparameter.getCategory().equals(EComponentCategory.VIEW)
+                            || elemparameter.getName().equals(REPOSITORY) || elemparameter.getName().equals("SCHEMA")
+                            || elemparameter.getName().equals("QUERYSTORE")
+                            || elemparameter.getName().equals("PROPERTY")) {
+                        continue;
                     }
+
+                    String value = checkString(elemparameter.getValue().toString());
+                    if (elemparameter.getName().equals(EParameterFieldType.PROPERTY_TYPE.getName())
+                            && elemparameter.getValue().equals(REPOSITORY)) {
+                        value = elemparameter.getValue().toString().toLowerCase()
+                                + ": "
+                                + getRepositoryValueForPropertyType(copyElementParameterList,
+                                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName()); 
+                    } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
+                            && elemparameter.getValue().equals(REPOSITORY)) {
+                        value = elemparameter.getValue().toString().toLowerCase()
+                                + ": "
+                                + getRepositoryValueForSchemaType(copyElementParameterList,
+                                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                    }
+
+                    else if (elemparameter.getName().equals(EParameterFieldType.QUERYSTORE_TYPE.getName())
+                            && elemparameter.getValue().equals(REPOSITORY)) {
+                        value = elemparameter.getValue().toString().toLowerCase()
+                                + ": "
+                                + getRepositoryValueForQueryStoreType(copyElementParameterList,
+                                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                    }
+                    // } else if (type.getName().equals("TYPE")) {
+                    // int index = type.getIndexOfItemFromList(type.getDisplayName());
+                    // value = checkString(type.getListItemsDisplayName()[index]);
+                    // }
+
+                    Element columnElement = parametersElement.addElement("column");
+                    columnElement.addAttribute("name", checkString(elemparameter.getDisplayName()));
+                    columnElement.setText(value);
                 }
             }
         }
+    }
+
+    /**
+     * Gets the repository value.
+     * 
+     * @param newList
+     * @param repositoryName
+     * @return
+     */
+    private String getRepositoryValueForPropertyType(List<IElementParameter> copyElementParameterList,
+            String repositoryName) {
+        String value = null;
+        for (IElementParameter elemParameter : copyElementParameterList) {
+            if (elemParameter.getName().equals(repositoryName)) {
+                ConnectionItem connectionItem = repositoryConnectionItemMap.get(elemParameter.getValue());
+                String aliasName = designerCoreService.getRepositoryAliasName(connectionItem);
+                value = aliasName + ":" + connectionItem.getProperty().getLabel();
+                break;
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Gets the repository value.
+     * 
+     * @param newList
+     * @param repositoryName
+     * @return
+     */
+    private String getRepositoryValueForSchemaType(List<IElementParameter> copyElementParameterList,
+            String repositoryName) {
+        String value = null;
+        for (IElementParameter elemParameter : copyElementParameterList) {
+            if (elemParameter.getName().equals(repositoryName)) {
+                value = elemParameter.getValue().toString();
+                String newValue = value.substring(0, value.indexOf("-")).trim();
+                if (repositoryDBIdAndNameMap.containsKey(newValue)) {
+                    value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
+                    break;
+                }
+
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * Gets the repository value.
+     * 
+     * @param newList
+     * @param repositoryName
+     * @return
+     */
+    private String getRepositoryValueForQueryStoreType(List<IElementParameter> copyElementParameterList,
+            String repositoryName) {
+        String value = null;
+        for (IElementParameter elemParameter : copyElementParameterList) {
+            if (elemParameter.getName().equals(repositoryName)) {
+                value = elemParameter.getValue().toString();
+                String newValue = value.substring(0, value.indexOf("-")).trim();
+                if (repositoryDBIdAndNameMap.containsKey(newValue)) {
+                    value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
+                    break;
+                }
+            }
+        }
+        return value;
     }
 
     /**
@@ -508,7 +617,7 @@ public class HTMLDocGenerator {
      * @param parametersElement
      * @param elementParameterList
      */
-    private static void generateElementInfoOnlyFortMap(Element parametersElement, List elementParameterList) {
+    private void generateElementInfoOnlyFortMap(Element parametersElement, List elementParameterList) {
         if (elementParameterList != null && elementParameterList.size() != 0) {
             Element parameterElement = null;
             for (int j = 0; j < elementParameterList.size(); j++) {
@@ -521,7 +630,7 @@ public class HTMLDocGenerator {
                         Element columnElement = parameterElement.addElement("column");
                         columnElement.addAttribute("name", checkString(type.getName()));
                         columnElement.setText(type.getValue().toString());
-                        return;
+                        break;
                     }
                 }
             }
@@ -534,7 +643,7 @@ public class HTMLDocGenerator {
      * @param elementParameters
      * @return
      */
-    private static String getPreviewImagePath(List<? extends IElementParameter> elementParameters) {
+    private String getPreviewImagePath(List<? extends IElementParameter> elementParameters) {
 
         for (IElementParameter parameter : elementParameters) {
             IElementParameter type = parameter;
@@ -553,7 +662,7 @@ public class HTMLDocGenerator {
      * @param projectElement <code>Element</code>
      * @return an instance of <code>Element</code>
      */
-    private static Element generateJobInfo(ProcessItem processItem, Element projectElement) {
+    private Element generateJobInfo(ProcessItem processItem, Element projectElement) {
 
         picFilePathMap = new HashMap<String, String>();
         IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
@@ -589,7 +698,7 @@ public class HTMLDocGenerator {
      * @param document <code>Document</code>
      * @return an instance of <code>Element</code>
      */
-    private static Element generateProjectInfo(Document document) {
+    private Element generateProjectInfo(Document document) {
         Element projectElement = document.addElement("project");
         projectElement.addAttribute("name", getProject().getLabel());
         projectElement.addAttribute("logo", PICTUREFOLDERPATH + TALEND_LOGO_FILE_NAME);
@@ -608,7 +717,7 @@ public class HTMLDocGenerator {
      * @param resource <code>ExportFileResource</code>
      * @param resultFiles a <code>List</code> of <code>URL</code>
      */
-    private static void addResources(ExportFileResource resource, List<URL> resultFiles) {
+    private void addResources(ExportFileResource resource, List<URL> resultFiles) {
         resource.addResources(resultFiles);
     }
 
@@ -617,7 +726,7 @@ public class HTMLDocGenerator {
      * 
      * @return an instance of <code>Project</code>
      */
-    private static Project getProject() {
+    private Project getProject() {
         return ((org.talend.core.context.RepositoryContext) CorePlugin.getContext().getProperty(
                 org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject();
     }
@@ -628,14 +737,14 @@ public class HTMLDocGenerator {
      * @param str <code>String</code>
      * @return string
      */
-    private static String checkString(String str) {
+    private String checkString(String str) {
         if (str == null) {
             return "";
         }
         return str;
     }
 
-    private static String checkDate(Date date) {
+    private String checkDate(Date date) {
         if (date == null) {
             return "";
         }
@@ -648,7 +757,7 @@ public class HTMLDocGenerator {
      * 
      * @param processItem ProcessItem
      */
-    private static void getSourceAndTargetConnection(ProcessItem processItem) {
+    private void getSourceAndTargetConnection(ProcessItem processItem) {
         EList connectionList = processItem.getProcess().getConnection();
 
         List<String> targetList = new ArrayList<String>();
@@ -680,7 +789,7 @@ public class HTMLDocGenerator {
      * 
      * @return a string representing temporary folder
      */
-    protected static String getTmpFolder() {
+    protected String getTmpFolder() {
         String tmpFold = System.getProperty("user.dir") + File.separatorChar + TEMP_FOLDER_NAME; //$NON-NLS-1$
         // String tmpFold = System.getProperty("osgi.instance.area") +
         return tmpFold;
@@ -691,7 +800,7 @@ public class HTMLDocGenerator {
      * 
      * @return a string reprenenting component icon's path
      */
-    private static String getComponentIconPath(INode node) {
+    private String getComponentIconPath(INode node) {
         String string = node.getComponent().getIcon32().toString();
         String path = string.substring("URLImageDescriptor(".length(), string.length() - 1); //$NON-NLS-1$
         try {
@@ -707,7 +816,7 @@ public class HTMLDocGenerator {
      * 
      * @return
      */
-    private static String getCurrentTOSVersion() {
+    private String getCurrentTOSVersion() {
         String currentVersion = "UNKNOWN";
         currentVersion = (String) RepositoryPlugin.getDefault().getBundle().getHeaders().get(
                 org.osgi.framework.Constants.BUNDLE_VERSION);

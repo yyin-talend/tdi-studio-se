@@ -35,6 +35,8 @@ import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
  */
 public class JobHTMLScriptsManager {
 
+    private HTMLDocGenerator docGenerator = new HTMLDocGenerator();
+
     /**
      * Gets the set of <code>ExportFileResource</code>
      * 
@@ -43,7 +45,7 @@ public class JobHTMLScriptsManager {
      */
     public List<ExportFileResource> getExportResources(ExportFileResource[] process) {
         for (int i = 0; i < process.length; i++) {
-            HTMLDocGenerator.generateHTMLFile(process[i]);
+            docGenerator.generateHTMLFile(process[i]);
         }
         return Arrays.asList(process);
     }
@@ -52,7 +54,7 @@ public class JobHTMLScriptsManager {
      * Deletes the temporary files.
      */
     public void deleteTempFiles() {
-        String tmpFold = HTMLDocGenerator.getTmpFolder();
+        String tmpFold = new HTMLDocGenerator().getTmpFolder();
         File dir = new File(tmpFold);
         if (dir.exists()) {
             deleteDirectory(dir);
