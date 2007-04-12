@@ -20,8 +20,9 @@
 	
 	// component id
 	String cid = node.getUniqueName();
+	boolean rpFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
 %>	
-	
+	boolean isReplaceFile<%=cid%>=<%=rpFile%>;
 	
 ////////////////////////////////////////////
 <%
@@ -62,14 +63,22 @@
   	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
   
 	String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
+	
     for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
      { 
       if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
       {
-      ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
+        java.io.File localFile<%=cid%>=new java.io.File(localdir<%=cid %>+ "/" +listings<%=cid %>[m<%=cid %>]);
+        if(localFile<%=cid%>.exists()&& !isReplaceFile<%=cid%> )
+        {
+        
+        }
+        else
+        {
+         ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
+      	}
       }
     }
-     
    }
    ftp<%=cid %>.chdir(root<%=cid %>);
  } 

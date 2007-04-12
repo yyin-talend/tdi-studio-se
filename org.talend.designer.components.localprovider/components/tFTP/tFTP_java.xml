@@ -69,7 +69,16 @@ COMPATIBILITY="ALL"
         <ITEM NAME="BINARY"  VALUE="binary" />        
       </ITEMS>
     </PARAMETER>
-
+    
+    <PARAMETER 
+    	NAME="REPLACE_FILE" 
+    	FIELD="CHECK" 
+    	NUM_ROW="5" 
+    	REQUIRED="true"
+    	SHOW_IF="(ACTION == 'GET')">
+        <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
@@ -77,7 +86,6 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
-
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Java-FTP" MODULE="edtftpj-1.5.4.jar" REQUIRED="true" />
