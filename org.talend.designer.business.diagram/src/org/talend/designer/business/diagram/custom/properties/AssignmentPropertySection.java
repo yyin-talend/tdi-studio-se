@@ -29,14 +29,23 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.gmf.runtime.common.core.command.ICommand;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.AbstractModelerPropertySection;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -47,11 +56,18 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.swt.actions.ITreeContextualAction;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.diagram.custom.commands.UnassignTalendItemsFromBusinessAssignmentCommand;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
 import org.talend.designer.business.diagram.custom.util.KeyHelper;
@@ -60,6 +76,12 @@ import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -67,7 +89,7 @@ import org.talend.designer.business.model.business.provider.BusinessItemProvider
  * $Id$
  * 
  */
-public class AssignmentPropertySection extends AbstractModelerPropertySection {
+public class AssignmentPropertySection extends AbstractModelerPropertySection implements ISelectionProvider {
 
     private Composite composite;
 
@@ -75,12 +97,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
 
     private TableViewer tableViewer;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gmf.runtime.diagram.ui.properties.sections.AbstractModelerPropertySection#createControls(org.eclipse.swt.widgets.Composite,
-     * org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
-     */
+    private RepositoryNode repositoryNode;
+
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
@@ -144,8 +162,141 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         tableViewer.setCellEditors(cellEditors);
 
         createKeyListener(table);
+        createSelectionListener();
+        createPopupMenu();
+        createDoubleClickListener();
 
         handleLayout(parent, table, column1, column2, column3);
+
+        aTabbedPropertySheetPage.getSite().setSelectionProvider(this);
+    }
+
+    private void createDoubleClickListener() {
+        tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event) {
+                BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
+                if (businessAssignment != null) {
+                    repositoryNode = createRepositoryNode(businessAssignment);
+                    if (repositoryNode != null) {
+                        List<ITreeContextualAction> contextualsActions = ActionsHelper
+                                .getRepositoryContextualsActions();
+                        for (ITreeContextualAction action : contextualsActions) {
+                            if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
+                                action.init(null, new StructuredSelection(repositoryNode));
+                                if (action.isVisible() && action.isDoubleClickAction()) {
+                                    action.run();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void createSelectionListener() {
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
+                if (businessAssignment != null) {
+                    String id = businessAssignment.getTalendItem().getId();
+                    RepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
+                    selectChild(id, rootRepositoryNode);
+                }
+            }
+
+            private void selectChild(String id, RepositoryNode rootRepositoryNode) {
+                for (RepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
+                    if (repositoryNode.getId().equals(id)) {
+                        getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
+                    } else {
+                        selectChild(id, repositoryNode);
+                    }
+                }
+            }
+        });
+    }
+
+    private BusinessAssignment getBusinessAssignment(ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            if (structuredSelection.size() == 1) {
+                Object firstElement = structuredSelection.getFirstElement();
+                if (firstElement instanceof BusinessAssignment) {
+                    return (BusinessAssignment) firstElement;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void createPopupMenu() {
+        MenuManager menuMgr = new MenuManager("#PopUp"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+
+            public void menuAboutToShow(IMenuManager mgr) {
+                BusinessAssignment businessAssignment = getBusinessAssignment(tableViewer.getSelection());
+                if (businessAssignment != null) {
+                    repositoryNode = createRepositoryNode(businessAssignment);
+                    if (repositoryNode != null) {
+                        List<ITreeContextualAction> contextualsActions = ActionsHelper
+                                .getRepositoryContextualsActions();
+                        for (ITreeContextualAction action : contextualsActions) {
+                            if (action.isReadAction() || action.isEditAction() || action.isPropertiesAction()) {
+                                action.init(null, new StructuredSelection(repositoryNode));
+                                if (action.isVisible()) {
+                                    mgr.add(action);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
+        tableViewer.getControl().setMenu(menu);
+    }
+
+    private RepositoryNode createRepositoryNode(BusinessAssignment businessAssignment) {
+        IRepositoryObject lastVersion;
+        try {
+            lastVersion = ProxyRepositoryFactory.getInstance().getLastVersion(
+                    businessAssignment.getTalendItem().getId());
+
+            if (lastVersion != null) {
+                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(lastVersion.getProperty().getItem());
+                RepositoryNode repositoryNode = new RepositoryNode(lastVersion, getParentRepositoryNode(),
+                        ENodeType.REPOSITORY_ELEMENT);
+                repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+
+                return repositoryNode;
+            }
+        } catch (PersistenceException e) {
+        }
+        return null;
+    }
+
+    private RepositoryNode getParentRepositoryNode() {
+        ISelection repositoryViewSelection = getRepositoryView().getViewer().getSelection();
+        if (!(repositoryViewSelection instanceof IStructuredSelection)) {
+            return null;
+        }
+        IStructuredSelection structuredSelection = (IStructuredSelection) repositoryViewSelection;
+        RepositoryNode selectedRepositoryNode = (RepositoryNode) structuredSelection.getFirstElement();
+
+        if (selectedRepositoryNode == null) {
+            return null;
+        }
+        return selectedRepositoryNode.getParent();
+    }
+
+    private IRepositoryView getRepositoryView() {
+        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IRepositoryView viewPart = (IRepositoryView) activePage.findView(IRepositoryView.VIEW_ID);
+        return viewPart;
     }
 
     private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2,
@@ -175,11 +326,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
                 businessAssignment_Comment);
     }
 
-    /**
-     * DOC mhelleboid Comment method "createKeyListener".
-     * 
-     * @param table
-     */
     private void createKeyListener(Table table) {
         table.addKeyListener(new KeyAdapter() {
 
@@ -203,12 +349,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         });
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gmf.runtime.diagram.ui.properties.sections.AbstractModelerPropertySection#setInput(org.eclipse.ui.IWorkbenchPart,
-     * org.eclipse.jface.viewers.ISelection)
-     */
     @Override
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
@@ -226,9 +366,25 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
             }
         }
 
-        List commands = new ArrayList();
+        List<ICommand> commands = new ArrayList<ICommand>();
         commands.add(command);
 
         executeAsCompositeCommand(Messages.getString("AssignmentPropertySection.DeleteAssignment"), commands); //$NON-NLS-1$
+    }
+
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    }
+
+    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    }
+
+    public void setSelection(ISelection selection) {
+    }
+
+    public ISelection getSelection() {
+        if (repositoryNode == null) {
+            return new StructuredSelection();
+        }
+        return new StructuredSelection(repositoryNode);
     }
 }
