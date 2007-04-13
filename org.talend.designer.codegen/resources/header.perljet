@@ -57,7 +57,11 @@ my $_licence = <<'END_OF_LICENCE';
 
  <%=Messages.getString("generatedcode.copyright.title")%>
 
- <%=Messages.getString("generatedcode.copyright.body", version, BrandingService.getInstance().getFullProductName())%>
+ <%=Messages.getString("generatedcode.copyright.body1", BrandingService.getInstance().getFullProductName()) %>
+ <%=Messages.getString("generatedcode.copyright.body2", version) %>
+ <%=Messages.getString("generatedcode.copyright.body3") %>
+ <%=Messages.getString("generatedcode.copyright.body4") %>
+ <%=Messages.getString("generatedcode.copyright.body5") %>
 
 END_OF_LICENCE
 
