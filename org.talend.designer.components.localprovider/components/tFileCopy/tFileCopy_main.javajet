@@ -12,33 +12,28 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String FileName = ElementParameterParser.getValue(node, "__FILENAME__");	
-	String destrination  = ElementParameterParser.getValue(node, "__DESTINATION__");
+	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");	
+	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
 	boolean reFile=ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
 	boolean rpFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
 %>     
-        String sfileName_<%=cid %> = <%=FileName %>;
-        String directory_<%=cid %> = <%=destrination %>; 
-        java.io.File sfile_<%=cid %> = new java.io.File(sfileName_<%=cid %>);
-        
-        boolean isRemoveOriFile_<%=cid%> = <%=reFile%>;
-        boolean isRepalceFile_<%=cid%>=<%=rpFile%>;
-        
-        if(!directory_<%=cid %>.endsWith("/")){
-           directory_<%=cid %> = directory_<%=cid %> + "/";
+        String directory_<%=cid%>=<%=destination%>;
+        java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
+        if(!directory_<%=cid%>.endsWith("/")){
+           directory_<%=cid%> = directory_<%=cid%> + "/";
         }
-        String dfileName_<%=cid%>=directory_<%=cid%>+sfile_<%=cid%>.getName();
-        java.io.File tFile_<%=cid%>=new java.io.File(dfileName_<%=cid%>);
-        if(tFile_<%=cid%>.exists()&& !isRepalceFile_<%=cid%>)
+        directory_<%=cid%>=directory_<%=cid%>+file_<%=cid %>.getName();
+        java.io.File dirfile_<%=cid%>=new java.io.File(directory_<%=cid%>);
+        if(dirfile_<%=cid%>.exists()&& !<%=rpFile%>)
         {
-        	System.err.println("The file is exist,can not copy!");
+        	throw new Exception();
         }else
         {
-            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(sfile_<%=cid %>));
-            java.io.BufferedOutputStream out_<%=cid %> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(tFile_<%=cid%>));
+            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(file_<%=cid %>));
+            java.io.BufferedOutputStream out_<%=cid %> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(dirfile_<%=cid%>));
             byte[] buf_<%=cid %>=new byte[1024];
             int readLen_<%=cid %>;
-            if(!sfileName_<%=cid %>.equals(dfileName_<%=cid%>))
+            if(!file_<%=cid %>.equals(dirfile_<%=cid%>))
             {
             	
                 while ((readLen_<%=cid %> = in_<%=cid %>.read(buf_<%=cid %>,0,1024)) != -1)
@@ -47,12 +42,12 @@
              if(in_<%=cid %> != null){
                    in_<%=cid %>.close(); 
                 }     
-            if(out_<%=cid %> != null){
+             if(out_<%=cid %> != null){
                     out_<%=cid %>.close();
                 }
-           if(isRemoveOriFile_<%=cid%> &&!sfileName_<%=cid %>.equals(dfileName_<%=cid%>))
+            if( <%=reFile%> &&!file_<%=cid %>.equals(dirfile_<%=cid%>))
                 {
-                	sfile_<%=cid %>.delete();
+                	file_<%=cid %>.delete();
                 }
        	 }
         

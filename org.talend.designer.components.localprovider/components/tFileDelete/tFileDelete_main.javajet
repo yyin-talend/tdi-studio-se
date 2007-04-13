@@ -17,9 +17,10 @@
      java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
     if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile())
      {
+    
      	 file_<%=cid%>.delete();
      }else{
-     	throw new TalendException(this, new Exception());
+     	throw new Exception();
      }
      
  
