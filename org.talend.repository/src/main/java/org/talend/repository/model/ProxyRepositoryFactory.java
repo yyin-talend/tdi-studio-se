@@ -935,15 +935,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     private Item getItem(IRepositoryObject obj) {
-        Item item;
-        if (obj instanceof MetadataTableRepositoryObject) {
-            item = ((MetadataTableRepositoryObject) obj).getProperty().getItem();
-        } else if (obj instanceof QueryRepositoryObject) {
-            item = ((QueryRepositoryObject) obj).getProperty().getItem();
-        } else {
-            item = obj.getProperty().getItem();
-        }
-        return item;
+        return obj.getProperty().getItem();
     }
 
     public List<org.talend.core.model.properties.Project> getReferencedProjects() {
