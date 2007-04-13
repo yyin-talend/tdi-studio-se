@@ -405,14 +405,23 @@ public class Node extends Element implements INode {
 
             if ((nbNotCustomOrigin == 0) || (outputs.size() == 0)) {
                 IMetadataTable originTable = metadataList.get(0);
-                List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
+                List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
                 for (IMetadataColumn column : originTable.getListColumns()) {
                     if (!column.isCustom()) {
-                        columnToRemove.add(column);
+                        columnsToRemove.add(column);
                     }
                 }
-                originTable.getListColumns().removeAll(columnToRemove);
-                originTable.getListColumns().addAll(connection.getMetadataTable().clone().getListColumns());
+                IMetadataTable inputTable = connection.getMetadataTable();
+                inputTable.getListColumns().removeAll(columnsToRemove);
+                List<IMetadataColumn> columnsTAdd = new ArrayList<IMetadataColumn>();
+                for (IMetadataColumn column : inputTable.getListColumns()) {
+                    // if the name of the column don't already exists in the current table, then add it
+                    // this should be only for custom columns
+                    if (originTable.getColumn(column.getLabel()) == null) {
+                        columnsTAdd.add(column.clone());
+                    }
+                }
+                originTable.getListColumns().addAll(columnsTAdd);
                 originTable.sortCustomColumns();
             }
         }
