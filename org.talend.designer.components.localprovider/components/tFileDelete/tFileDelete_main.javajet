@@ -8,21 +8,18 @@
 		java.util.Map"
 	class="FileDeletemain" 
 %>
-<%
+	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String FileName = ElementParameterParser.getValue(node, "__FILENAME__");
+	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 	%>
-     String sFileName_<%=cid%>=<%=FileName%>;
-     java.io.File sFile_<%=cid%>=new java.io.File(sFileName_<%=cid%>);
-    java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(sFile_<%=cid%>));
-     if (in_<%=cid%>!=null)
+     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
+    if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile())
      {
-       in_<%=cid%>.close();
+     	 file_<%=cid%>.delete();
+     }else{
+     	throw new TalendException(this, new Exception());
      }
-     if(sFile_<%=cid%>.isFile()){     
-        sFile_<%=cid%>.delete();
-     }
- 
+     
  
