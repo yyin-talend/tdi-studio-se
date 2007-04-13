@@ -438,9 +438,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             RepositoryNode queriesNode = new StableRepositoryNode(node, Messages
                     .getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON);
             node.getChildren().add(queriesNode);
-            EList queries = ((DatabaseConnection) metadataConnection).getQueries();
-            if (queries.size() > 0) {
-                QueriesConnection queriesConnection = ((QueriesConnection) queries.get(0));
+            QueriesConnection queriesConnection = ((Connection) metadataConnection).getQueries();
+            if (queriesConnection != null) {
                 createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery());
             }
         } else {

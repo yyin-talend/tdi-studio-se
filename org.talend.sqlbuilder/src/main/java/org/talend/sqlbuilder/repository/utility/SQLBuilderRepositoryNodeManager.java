@@ -42,6 +42,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -911,10 +912,9 @@ public class SQLBuilderRepositoryNodeManager {
         List<String> allQueries = new ArrayList<String>();
         DatabaseConnectionItem item = getItem(repositoryNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        List<QueriesConnection> qcs = connection.getQueries();
-        if (!qcs.isEmpty()) {
-            QueriesConnection connection2 = qcs.get(0);
-            List<Query> qs = connection2.getQuery();
+        QueriesConnection queriesConnection = connection.getQueries();
+        if (queriesConnection != null) {
+            List<Query> qs = queriesConnection.getQuery();
             for (Query q1 : qs) {
                 allQueries.add(q1.getLabel());
             }
@@ -932,17 +932,15 @@ public class SQLBuilderRepositoryNodeManager {
     public void saveQuery(RepositoryNode repositoryNode, Query query) {
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
-            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-            List<QueriesConnection> list = connection.getQueries();
-            if (list.isEmpty()) {
+            Connection connection = (Connection) item.getConnection();
+            QueriesConnection queriesConnection = connection.getQueries();
+            if (queriesConnection == null) {
                 QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
                 qc.setConnection(connection);
                 qc.getQuery().add(query);
-                connection.getQueries().add(qc);
                 assignQueryId(query, qc); //assign id to new query
             } else {
-                QueriesConnection connection2 = list.get(0);
-                List<Query> queries = connection2.getQuery();
+                List<Query> queries = queriesConnection.getQuery();
                 boolean isModify = false;
                 for (Query query2 : queries) {
                     if (query2.getLabel().equals(query.getLabel())) {
@@ -951,11 +949,11 @@ public class SQLBuilderRepositoryNodeManager {
                         query2.setValue(query.getValue());
                         isModify = true;
                     }
-                    assignQueryId(query2, connection2); //assign id to old query without id
+                    assignQueryId(query2, queriesConnection); //assign id to old query without id
                 }
                 if (!isModify) {
-                    connection2.getQuery().add(query);
-                    assignQueryId(query, connection2); //assign id to new query
+                    queriesConnection.getQuery().add(query);
+                    assignQueryId(query, queriesConnection); //assign id to new query
                 }
             }
         }
@@ -979,10 +977,9 @@ public class SQLBuilderRepositoryNodeManager {
     public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
         DatabaseConnectionItem item = getItem(repositoryNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        List<QueriesConnection> list = connection.getQueries();
-        if (!list.isEmpty()) {
-            QueriesConnection connection2 = list.get(0);
-            List<Query> qs = connection2.getQuery();
+        QueriesConnection queriesConnection = connection.getQueries();
+        if (queriesConnection != null) {
+            List<Query> qs = queriesConnection.getQuery();
             List<Query> qs2 = new ArrayList<Query>();
             qs2.clear();
             for (Query query : qs) {
@@ -996,8 +993,8 @@ public class SQLBuilderRepositoryNodeManager {
                     qs2.add(query);
                 }
             }
-            connection2.getQuery().clear();
-            connection2.getQuery().addAll(qs2);
+            queriesConnection.getQuery().clear();
+            queriesConnection.getQuery().addAll(qs2);
         }
         saveMetaData(item);
     }

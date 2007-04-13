@@ -388,10 +388,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
                 if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                     DatabaseConnection dbConnection = (DatabaseConnection) connection;
-                    List<QueriesConnection> qcs = dbConnection.getQueries();
-                    if (!qcs.isEmpty()) {
-                        QueriesConnection connection2 = qcs.get(0);
-                        List<Query> qs = connection2.getQuery();
+                    QueriesConnection queriesConnection = dbConnection.getQueries();
+                    if (queriesConnection != null) {
+                        List<Query> qs = queriesConnection.getQuery();
                         for (Query query : qs) {
                             String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
                                     + connectionItem.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$

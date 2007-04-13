@@ -284,10 +284,9 @@ ITableColorProvider {
 
     private void createQueries(RepositoryNode node, final IRepositoryObject repObj,
             DatabaseConnection metadataConnection, boolean isBuildIn) {
-        EList queryConnections = metadataConnection.getQueries();
+        QueriesConnection queriesConnection = metadataConnection.getQueries();
         
-        for (Iterator iter = queryConnections.iterator(); iter.hasNext();) {
-            QueriesConnection queriesConnection = (QueriesConnection) iter.next();
+        if (queriesConnection != null) {
             QueriesConnectionRepositoryObject repositoryObject 
             	= new QueriesConnectionRepositoryObject(repObj, queriesConnection); 
             repositoryObject.setImage(IMAGES_APPEND_TO_EDITOR);

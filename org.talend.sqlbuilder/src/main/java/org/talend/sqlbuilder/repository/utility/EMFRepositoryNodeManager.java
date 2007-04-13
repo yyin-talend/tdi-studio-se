@@ -104,11 +104,13 @@ public final class EMFRepositoryNodeManager {
         }
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(root);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        QueriesConnection queriesConnection = (QueriesConnection) connection.getQueries().get(0);
-        List<Query> queries = queriesConnection.getQuery();
-        for (Query query : queries) {
-            if (query.getLabel().equals(label)) {
-                return query;
+        QueriesConnection queriesConnection = (QueriesConnection) connection.getQueries();
+        if (queriesConnection != null) {
+            List<Query> queries = queriesConnection.getQuery();
+            for (Query query : queries) {
+                if (query.getLabel().equals(label)) {
+                    return query;
+                }
             }
         }
         return null;
