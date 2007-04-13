@@ -86,11 +86,10 @@ public class ConnectionCreateCommand extends Command {
             if (source.equals(target)) {
                 return false;
             }
-            
-            if (source.sameProcessAs(target)) {
+
+            if (source.sameProcessAs(target, false)) {
                 return false;
             }
-
 
             // Check existing connections to avoid to have more than one link
             // no matter the type of the connection and the direction
@@ -138,18 +137,21 @@ public class ConnectionCreateCommand extends Command {
 
             connections = this.target.getIncomingConnections();
             for (int i = 0; i < connections.size(); i++) {
-                if (((Connection) connections.get(i)).getName().equals(connectionName)) {
-                    return false;
+                if (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)
+                        || lineStyle.equals(EConnectionType.TABLE)) {
+                    if (((Connection) connections.get(i)).getName().equals(connectionName)) {
+                        return false;
+                    }
                 }
             }
         }
 
-//        List connections = this.source.getOutgoingConnections();
-//        for (int i = 0; i < connections.size(); i++) {
-//            if (((Connection) connections.get(i)).getName().equals(connectionName)) {
-//                return false;
-//            }
-//        }
+        // List connections = this.source.getOutgoingConnections();
+        // for (int i = 0; i < connections.size(); i++) {
+        // if (((Connection) connections.get(i)).getName().equals(connectionName)) {
+        // return false;
+        // }
+        // }
         return true;
     }
 

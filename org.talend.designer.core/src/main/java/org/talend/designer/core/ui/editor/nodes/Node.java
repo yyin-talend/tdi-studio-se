@@ -49,6 +49,7 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -396,33 +397,18 @@ public class Node extends Element implements INode {
         this.inputs.add(connection);
         if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn() && component.isSchemaAutoPropagated()
                 && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
-            int nbNotCustomOrigin = 0;
-            for (IMetadataColumn column : metadataList.get(0).getListColumns()) {
+            boolean customFound = false;
+            for (int i = 0; i < metadataList.get(0).getListColumns().size(); i++) {
+                IMetadataColumn column = metadataList.get(0).getListColumns().get(i);
                 if (!column.isCustom()) {
-                    nbNotCustomOrigin++;
+                    customFound = true;
                 }
             }
-
-            if ((nbNotCustomOrigin == 0) || (outputs.size() == 0)) {
-                IMetadataTable originTable = metadataList.get(0);
-                List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
-                for (IMetadataColumn column : originTable.getListColumns()) {
-                    if (!column.isCustom()) {
-                        columnsToRemove.add(column);
-                    }
-                }
+            IMetadataTable originTable = metadataList.get(0);
+            if ((customFound && originTable.isReadOnly())  || (outputs.size() == 0)) {
                 IMetadataTable inputTable = connection.getMetadataTable();
-                inputTable.getListColumns().removeAll(columnsToRemove);
-                List<IMetadataColumn> columnsTAdd = new ArrayList<IMetadataColumn>();
-                for (IMetadataColumn column : inputTable.getListColumns()) {
-                    // if the name of the column don't already exists in the current table, then add it
-                    // this should be only for custom columns
-                    if (originTable.getColumn(column.getLabel()) == null) {
-                        columnsTAdd.add(column.clone());
-                    }
-                }
-                originTable.getListColumns().addAll(columnsTAdd);
-                originTable.sortCustomColumns();
+                // For the auto propagate.
+                MetadataTool.copyTable(inputTable, originTable);
             }
         }
         fireStructureChange(INPUTS, connection);
@@ -813,21 +799,21 @@ public class Node extends Element implements INode {
         }
     }
 
-    public Node getProcessStartNode() {
+    public Node getProcessStartNode(boolean withConditions) {
 //        System.out.println(" --- Checking :" + this + " ---");
-        return getMainBranch().getSubProcessStartNode(true);
+        return getMainBranch().getSubProcessStartNode(withConditions);
     }
 
-    public boolean sameProcessAs(Node node) {
+    public boolean sameProcessAs(Node node, boolean withConditions) {
 //        System.out.println("from:" + this + " -- to:" + node);
-        
-        Node currentNode = getSubProcessStartNode(true);
+
+        Node currentNode = getSubProcessStartNode(withConditions);
         if (!currentNode.isStart()) {
-            currentNode = currentNode.getProcessStartNode();
+            currentNode = currentNode.getProcessStartNode(withConditions);
         }
-        Node otherNode = node.getSubProcessStartNode(true);
+        Node otherNode = node.getSubProcessStartNode(withConditions);
         if (!otherNode.isStart()) {
-            otherNode = otherNode.getProcessStartNode();
+            otherNode = otherNode.getProcessStartNode(withConditions);
         }
 //        System.out.println("source start:" + currentNode + " -- target start:" + otherNode);
         return currentNode.equals(otherNode);
@@ -1146,14 +1132,14 @@ public class Node extends Element implements INode {
             }
 
             if (inputMeta != null) {
-                if (!inputMeta.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
                         | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                         | IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
                     String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 } else {
-                    if (!inputMeta.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL
+                    if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL
                             ^ IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
                         String warningMessage = "The pattern in the schema from the input link \""
                                 + inputConnecion.getName()

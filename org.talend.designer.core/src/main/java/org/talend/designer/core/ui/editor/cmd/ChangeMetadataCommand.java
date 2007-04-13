@@ -118,26 +118,11 @@ public class ChangeMetadataCommand extends Command {
             currentOutputMetadata = node.getMetadataList().get(0);
         }
         this.currentOutputMetadata = currentOutputMetadata;
-        List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
-        for (IMetadataColumn column : currentOutputMetadata.getListColumns()) {
-            if (column.isCustom()) {
-                columnToSave.add(column);
-            }
-        }
 
-        oldOutputMetadata = currentOutputMetadata.clone();
-        this.newOutputMetadata = newOutputMetadata.clone();
+        oldOutputMetadata = currentOutputMetadata.clone(true);
+        this.newOutputMetadata = newOutputMetadata.clone(true);
 
-        this.newOutputMetadata.setReadOnly(newOutputMetadata.isReadOnly());
-        List<IMetadataColumn> columnToRemove = new ArrayList<IMetadataColumn>();
-        for (IMetadataColumn column : newOutputMetadata.getListColumns()) {
-            if (column.isCustom()) {
-                columnToRemove.add(this.newOutputMetadata.getColumn(column.getLabel()));
-            }
-        }
-        this.newOutputMetadata.getListColumns().removeAll(columnToRemove);
-        this.newOutputMetadata.getListColumns().addAll(columnToSave);
-        this.newOutputMetadata.sortCustomColumns();
+        // this.newOutputMetadata.setReadOnly(newOutputMetadata.isReadOnly());
         this.newOutputMetadata.setReadOnly(currentOutputMetadata.isReadOnly());
         initializeContainer();
         setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
@@ -253,8 +238,10 @@ public class ChangeMetadataCommand extends Command {
                         if (targetNode instanceof Node) {
                             if (!((Node) targetNode).isExternalNode() && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
-                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null,
-                                            newOutputMetadata);
+                                    IMetadataTable toCopy = newOutputMetadata.clone();
+                                    IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
+                                    MetadataTool.copyTable(toCopy, copy);
+                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, copy);
                                     if (dataContainer.getOuputs().size() > 0) {
                                         List<ColumnNameChanged> columnNameChanged = dataContainer.getOuputs().get(0)
                                                 .getColumnNameChanged();

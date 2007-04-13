@@ -48,6 +48,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -293,15 +294,22 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         } else if (inputButton.getData(NAME).equals(RESET_COLUMNS)) {
             Node node = (Node) elem;
             IMetadataTable meta = (IMetadataTable) node.getMetadataList().get(0);
-            IMetadataTable metaCopy = meta.clone();
-            metaCopy.setListColumns(new ArrayList<IMetadataColumn>());
+            IMetadataTable metaCopy = meta.clone(true);
+            List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+            for (IMetadataColumn column : metaCopy.getListColumns()) {
+                if (!column.isCustom()) {
+                    columnsToRemove.add(column);
+                }
+            }
+            metaCopy.getListColumns().removeAll(columnsToRemove);
 
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                         || connec.getLineStyle().equals(EConnectionType.TABLE)) {
-                    metaCopy = connec.getMetadataTable().clone();
+                    MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
                 }
             }
+            
 
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }

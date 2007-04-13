@@ -124,11 +124,11 @@ public class ConnectionReconnectCommand extends Command {
         if (newSource.equals(oldTarget)) {
             return false;
         }
-        
-        if (newSource.sameProcessAs(oldTarget)) {
+
+        if (newSource.sameProcessAs(oldTarget, false)) {
             return false;
         }
-        
+
         // return false, if the connection exists already
         for (Iterator iter = newSource.getOutgoingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -136,9 +136,9 @@ public class ConnectionReconnectCommand extends Command {
                 return false;
             }
             // return false if the connection's Label exists already.
-//            if (conn.getName().equals(connection.getName())) {
-//                return false;
-//            }
+            // if (conn.getName().equals(connection.getName())) {
+            // return false;
+            // }
         }
         for (Iterator iter = newSource.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -178,11 +178,11 @@ public class ConnectionReconnectCommand extends Command {
         if (!newTarget.isActivate()) {
             return false;
         }
-        
-        if (oldSource.sameProcessAs(newTarget)) {
+
+        if (oldSource.sameProcessAs(newTarget, false)) {
             return false;
         }
-        
+
         // return false, if the connection exists already
         for (Iterator iter = newTarget.getIncomingConnections().iterator(); iter.hasNext();) {
             Connection conn = (Connection) iter.next();
@@ -190,8 +190,12 @@ public class ConnectionReconnectCommand extends Command {
                 return false;
             }
             // return false if the connection's Label exists already.
-            if (conn.getName().equals(connection.getName())) {
-                return false;
+            if (oldConnectionType.equals(EConnectionType.FLOW_MAIN)
+                    || oldConnectionType.equals(EConnectionType.FLOW_REF)
+                    || oldConnectionType.equals(EConnectionType.TABLE)) {
+                if (conn.getName().equals(connection.getName())) {
+                    return false;
+                }
             }
         }
         for (Iterator iter = newTarget.getOutgoingConnections().iterator(); iter.hasNext();) {
