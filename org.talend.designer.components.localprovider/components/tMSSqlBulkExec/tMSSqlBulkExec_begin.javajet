@@ -1,0 +1,160 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="MSSqlBulkExecBegin" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String action = ElementParameterParser.getValue(node, "__ACTION__");
+String outputAction = ElementParameterParser.getValue(node, "__OUTPUT__");
+
+String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+String row_separator = ElementParameterParser.getValue(node, "__ROW_TERMINATED_BY__");
+String first_row = ElementParameterParser.getValue(node, "__FIRST_ROW__");
+String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pas = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
+
+if(action.equals("INSERT")){
+%>
+
+java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=host%>+":"+<%=port%>+"//"+<%=db%>;
+java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
+
+stmt_<%=cid %>.execute("BULK INSERT "+<%=db%>+".."+<%=table%>+" FROM '"+<%=file%>+"' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='"+<%=field_separator%>+"',FIRSTROW ="+<%=first_row%>+",ROWTERMINATOR='"+<%=row_separator%>+"')");
+stmt_<%=cid %>.close();
+con_<%=cid %>.close();
+
+<%
+}else if(action.equals("EXPORT")){
+String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
+String server = ElementParameterParser.getValue(node, "__SERVER__");
+String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
+	   query_statement = query_statement.replaceAll("\n"," ");
+	   query_statement = query_statement.replaceAll("\r"," ");
+	   
+String char_type =  "char type error!";
+if(data_file_type.equals("char")){
+	char_type = "-c";
+}else if(data_file_type.equals("native")){
+	char_type = "-n";
+}else{
+	char_type = "-w";
+}
+
+StringBuffer command =  new StringBuffer();
+command.append(bcp_utility.replaceAll("\"",""));
+command.append(" ");
+command.append(query_statement.replaceAll("\"","\\\\\""));
+command.append(" ");
+command.append("queryout");
+command.append(" ");
+command.append(file.replaceAll("\"","\\\\\""));
+command.append(" ");
+command.append(char_type);
+if(!server.equals("")&&!server.equals("\"\"")&&!(server==null)){
+	command.append(" -S");
+	command.append(server.replaceAll("\"",""));
+}
+if((user.equals("")||user.equals("\"\"")||user==null)&&(pas.equals("")||pas==null||pas.equals("\"\""))){
+	command.append(" -T");
+}else{
+	command.append(" -U");
+	command.append(user.replaceAll("\"",""));
+	command.append(" -P");
+	command.append(pas.replaceAll("\"",""));
+}
+command.append(" -t");
+command.append(field_separator.replaceAll("\"",""));
+command.append(" -r");
+command.append(row_separator.replaceAll("\"",""));
+
+%>
+Runtime runtime_<%=cid%> = Runtime.getRuntime();
+final Process ps<%=cid %> = runtime_<%=cid%>.exec("<%=command.toString()%>");
+Thread normal_<%=cid%> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getInputStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.out.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+normal_<%=cid%>.start();
+
+Thread error_<%=cid%> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.err.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+error_<%=cid%>.start();
+
+ps<%=cid %>.waitFor();
+normal_<%=cid%>.interrupt();
+error_<%=cid%>.interrupt();
+
+<%
+}
+%>
+
+
+
+
+
+
+
