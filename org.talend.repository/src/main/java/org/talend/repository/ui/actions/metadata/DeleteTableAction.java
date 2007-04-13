@@ -31,8 +31,10 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -46,6 +48,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
@@ -79,7 +82,7 @@ public class DeleteTableAction extends AContextualAction {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (node.getType() == ENodeType.REPOSITORY_ELEMENT && ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                if (node.getType() == ENodeType.REPOSITORY_ELEMENT && nodeType.isSubItem()) {
                     try {
                         Connection connection = null;
                         ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
@@ -87,8 +90,9 @@ public class DeleteTableAction extends AContextualAction {
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         connection = (item).getConnection();
-                        MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
-                        if (TableHelper.isDeleted(metadataTable)) {
+                        ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) node.getObject();
+                        AbstractMetadataObject abstractMetadataObject = subRepositoryObject.getAbstractMetadataObject();
+                        if (SubItemHelper.isDeleted(abstractMetadataObject)) {
                             if (confirm == null) {
                                 String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
                                 String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
@@ -96,10 +100,10 @@ public class DeleteTableAction extends AContextualAction {
                                 confirm = (MessageDialog.openQuestion(new Shell(), title, message));
                             }
                             if (confirm) {
-                                connection.getTables().remove(metadataTable);
+                                subRepositoryObject.removeFromParent();
                             }
                         } else {
-                            TableHelper.setDeleted(metadataTable, true);
+                            SubItemHelper.setDeleted(abstractMetadataObject, true);
                         }
                         factory.save(item);
                         refresh();
@@ -145,7 +149,7 @@ public class DeleteTableAction extends AContextualAction {
                     IRepositoryObject repObj = node.getObject();
 
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                    if (!ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                    if (!nodeType.isSubItem()) {
                         canWork = false;
                         break;
                     }

@@ -44,7 +44,9 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IContext;
@@ -66,6 +68,7 @@ import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
+import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
 import org.talend.repository.ui.wizards.exportjob.JobJavaScriptsManager;
@@ -793,9 +796,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getStatus(org.talend.core.model.repository.IRepositoryObject)
      */
     public ERepositoryStatus getStatus(IRepositoryObject obj) {
-        if (obj instanceof MetadataTableRepositoryObject) {
-            MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) obj;
-            if (TableHelper.isDeleted(metadataTableRepositoryObject.getTable())) {
+        if (obj instanceof ISubRepositoryObject) {
+            ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) obj;
+            if (SubItemHelper.isDeleted(subRepositoryObject.getAbstractMetadataObject())) {
                 return ERepositoryStatus.DELETED;
             }
         }
@@ -884,9 +887,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isEditableAndLockIfPossible(IRepositoryObject obj) {
-        if (obj instanceof MetadataTableRepositoryObject) {
-            MetadataTable table = ((MetadataTableRepositoryObject) obj).getTable();
-            if (TableHelper.isDeleted(table)) {
+        if (obj instanceof ISubRepositoryObject) {
+            AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) obj).getAbstractMetadataObject();
+            if (SubItemHelper.isDeleted(abstractMetadataObject)) {
                 return false;
             } else {
                 return isEditableAndLockIfPossible(getItem(obj));
@@ -922,9 +925,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isPotentiallyEditable(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isPotentiallyEditable(IRepositoryObject obj) {
-        if (obj instanceof MetadataTableRepositoryObject) {
-            MetadataTable table = ((MetadataTableRepositoryObject) obj).getTable();
-            if (TableHelper.isDeleted(table)) {
+        if (obj instanceof ISubRepositoryObject) {
+            AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) obj).getAbstractMetadataObject();
+            if (SubItemHelper.isDeleted(abstractMetadataObject)) {
                 return false;
             } else {
                 return isPotentiallyEditable(getItem(obj));

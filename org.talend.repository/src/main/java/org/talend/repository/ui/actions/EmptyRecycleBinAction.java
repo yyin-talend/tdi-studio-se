@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -35,7 +34,7 @@ import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
+import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 
 /**
  * Action used to empty the recycle bin.<br/>
@@ -68,11 +67,10 @@ public class EmptyRecycleBinAction extends AContextualAction {
         for (RepositoryNode child : node.getChildren()) {
             IRepositoryObject objToDelete = child.getObject();
             try {
-                if (objToDelete instanceof MetadataTableRepositoryObject) {
-                    MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) objToDelete;
-                    Connection connection = metadataTableRepositoryObject.getTable().getConnection();
-                    connection.getTables().remove(metadataTableRepositoryObject.getTable());
-                    factory.save(metadataTableRepositoryObject.getProperty().getItem());
+                if (objToDelete instanceof ISubRepositoryObject) {
+                    ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
+                    subRepositoryObject.removeFromParent();
+                    factory.save(subRepositoryObject.getProperty().getItem());
                 } else {
                     factory.deleteObjectPhysical(objToDelete);
                 }

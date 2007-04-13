@@ -27,7 +27,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -39,6 +41,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
+import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
@@ -64,11 +67,11 @@ public class RestoreAction extends AContextualAction {
                 try {
                     RepositoryNode node = (RepositoryNode) obj;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
-                    if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                    if (nodeType.isSubItem()) {
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
-                        MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
-                        TableHelper.setDeleted(metadataTable, false);
+                        AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) node.getObject()).getAbstractMetadataObject();
+                        SubItemHelper.setDeleted(abstractMetadataObject, false);
                         factory.save(item);
                     } else {
                         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
@@ -99,12 +102,7 @@ public class RestoreAction extends AContextualAction {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                    if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
-                        canWork = false;
-                    } else{
-                        canWork = restoreObjectAction.validateAction(node, null);    
-                    }
-                    
+                    canWork = restoreObjectAction.validateAction(node, null);    
                 }
             }
         }

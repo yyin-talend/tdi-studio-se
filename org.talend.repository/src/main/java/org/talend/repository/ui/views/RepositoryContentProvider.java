@@ -33,6 +33,7 @@ import org.talend.commons.utils.data.container.Container;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
@@ -41,6 +42,7 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -350,37 +352,44 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     /**
      * DOC tguiu Comment method "createTables".
-     * 
      * @param node
+     * @param repositoryObjectType TODO
      * @param iMetadataConnection
      * @param metadataConnection
      */
-    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list) {
+    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list, ERepositoryObjectType repositoryObjectType) {
         for (Object currentTable : list) {
             if (currentTable instanceof org.talend.core.model.metadata.builder.connection.MetadataTable) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
-                RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable);
-                if (TableHelper.isDeleted(metadataTable)) {
+                RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable, repositoryObjectType);
+                if (SubItemHelper.isDeleted(metadataTable)) {
                     recBinNode.getChildren().add(tableNode);
                 } else {
                     node.getChildren().add(tableNode);
                 }
             } else if (currentTable instanceof Query) {
-                node.getChildren().add(createQueryNode(node, repObj, (Query) currentTable));
+                Query query = (Query) currentTable;
+                RepositoryNode queryNode = createQueryNode(node, repObj, query);
+                if (SubItemHelper.isDeleted(query)) {
+                    recBinNode.getChildren().add(queryNode);
+                } else {
+                    node.getChildren().add(queryNode);
+                }
+
             }
         }
     }
 
     /**
      * DOC cantoine Comment method "createTable".
-     * 
      * @param node
-     * @param iMetadataConnection
      * @param metadataTable
+     * @param repositoryObjectType TODO
+     * @param iMetadataConnection
      */
     private void createTable(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
-            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable) {
-        RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable);
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable, ERepositoryObjectType repositoryObjectType) {
+        RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable, repositoryObjectType);
         if (TableHelper.isDeleted(metadataTable)) {
             recBinNode.getChildren().add(tableNode);
         } else {
@@ -416,16 +425,16 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 if (metadataTable.getTableType() != null ) {
                     typeTable = metadataTable.getTableType();
                     if (typeTable.equals("TABLE")) {
-                        createTable(recBinNode, tablesNode, repObj, metadataTable);
+                        createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
 
                     } else if (typeTable.equals("VIEW")) {
-                        createTable(recBinNode, viewsNode, repObj, metadataTable);
+                        createTable(recBinNode, viewsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
 
                     } else if (typeTable.equals("SYNONYM")) {
-                        createTable(recBinNode, synonymsNode, repObj, metadataTable);
+                        createTable(recBinNode, synonymsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                     }
                 } else {
-                    createTable(recBinNode, tablesNode, repObj, metadataTable);
+                    createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                 }
             }
             // if (!node.getChildren().contains(tablesNode)) {
@@ -440,10 +449,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             node.getChildren().add(queriesNode);
             QueriesConnection queriesConnection = ((Connection) metadataConnection).getQueries();
             if (queriesConnection != null) {
-                createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery());
+                createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery(), ERepositoryObjectType.METADATA_CON_TABLE);
             }
         } else {
-            createTables(recBinNode, node, repObj, metadataConnection.getTables());
+            createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
         }
     }
 
@@ -451,17 +460,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * DOC tguiu Comment method "createMetatable".
      * 
      * @param node
-     * @param iMetadataFileDelimited
      * @param table
+     * @param repositoryObjectType TODO
+     * @param iMetadataFileDelimited
      * @return
      */
     private RepositoryNode createMetatableNode(RepositoryNode node, IRepositoryObject repObj,
-            final org.talend.core.model.metadata.builder.connection.MetadataTable table) {
+            final org.talend.core.model.metadata.builder.connection.MetadataTable table, ERepositoryObjectType repositoryObjectType) {
         MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
         modelObj.setLabel(table.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
-        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
+        tableNode.setProperties(EProperties.CONTENT_TYPE, repositoryObjectType);
         return tableNode;
     }
 
@@ -484,7 +494,17 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     /**
      */
-    public static class MetadataTableRepositoryObject extends MetadataTable {
+    public interface ISubRepositoryObject {
+        public AbstractMetadataObject getAbstractMetadataObject(); 
+        
+        public void removeFromParent();
+        
+        public Property getProperty();
+    }
+    
+    /**
+     */
+    public static class MetadataTableRepositoryObject extends MetadataTable implements ISubRepositoryObject {
 
         private IRepositoryObject repObj;
 
@@ -523,11 +543,19 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         public org.talend.core.model.metadata.builder.connection.MetadataTable getTable() {
             return this.table;
         }
+
+        public AbstractMetadataObject getAbstractMetadataObject() {
+            return getTable();
+        }
+
+        public void removeFromParent() {
+            table.getConnection().getTables().remove(table);
+        }
     }
 
     /**
      */
-    public static class QueryRepositoryObject extends org.talend.core.model.metadata.Query {
+    public static class QueryRepositoryObject extends org.talend.core.model.metadata.Query implements ISubRepositoryObject {
 
         private IRepositoryObject repObj;
 
@@ -558,5 +586,16 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return query.getId();
         }
 
+        public Query getQuery() {
+            return query;
+        }
+
+        public AbstractMetadataObject getAbstractMetadataObject() {
+            return getQuery();
+        }
+
+        public void removeFromParent() {
+            query.getQueries().getQuery().remove(query);
+        }
     }
 }
