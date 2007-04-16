@@ -58,6 +58,16 @@ COMPATIBILITY="ALL"
         <ITEM NAME="BINARY"  VALUE="binary" />        
       </ITEMS>
     </PARAMETER>
+     <PARAMETER 
+    	NAME="OVERWRITE" 
+    	FIELD="CLOSED_LIST" 
+    	NUM_ROW="5" >
+    	<ITEMS DEFAULT="never">
+     	<ITEM NAME="NEVER" VALUE="never" />
+        <ITEM NAME="ALWAYS"  VALUE="always" />        
+        <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ" />        
+      </ITEMS>
+    </PARAMETER>
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
