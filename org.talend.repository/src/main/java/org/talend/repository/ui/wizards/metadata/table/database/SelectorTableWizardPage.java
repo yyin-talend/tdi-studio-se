@@ -62,7 +62,7 @@ public class SelectorTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new SelectorTableForm(parent, connectionItem);
+        tableForm = new SelectorTableForm(parent, connectionItem,this);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {

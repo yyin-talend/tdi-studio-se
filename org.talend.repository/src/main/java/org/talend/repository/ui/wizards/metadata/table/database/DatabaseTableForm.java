@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,9 +30,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyAdapter;
@@ -45,11 +49,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -71,7 +77,6 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -153,6 +158,8 @@ public class DatabaseTableForm extends AbstractForm {
 
     private UtilsButton addTableButton;
 
+    private IWizardPage parentWizardPage;
+
     /**
      * TableForm Constructor to use by RCP Wizard.
      * 
@@ -160,12 +167,16 @@ public class DatabaseTableForm extends AbstractForm {
      * @param connection
      * @param page
      * @param metadataTable
+     * @param page
+     * @param managerConnection2
      */
-    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable) {
+    public DatabaseTableForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            ManagerConnection managerConnection, IWizardPage page) {
         super(parent, SWT.NONE);
-        managerConnection = new ManagerConnection();
+        this.managerConnection = managerConnection;
         this.metadataTable = metadataTable;
         this.connectionItem = connectionItem;
+        this.parentWizardPage = page;
         setupForm();
     }
 
@@ -286,8 +297,7 @@ public class DatabaseTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2,
-                leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -302,8 +312,7 @@ public class DatabaseTableForm extends AbstractForm {
         gridData.horizontalSpan = 3;
 
         // Header Fields
-        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth,
-                headerCompositeHeight);
+        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2); //$NON-NLS-1$
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2); //$NON-NLS-1$
 
@@ -333,8 +342,7 @@ public class DatabaseTableForm extends AbstractForm {
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
 
         // Group MetaData
-        Group groupMetaData = Form.createGroup(rightComposite, 1,
-                Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
+        Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
                 tableCompositeHeight);
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
@@ -362,8 +370,7 @@ public class DatabaseTableForm extends AbstractForm {
         Group group = Form.createGroup(parent, 1, Messages.getString("DatabaseTableForm.navigatorTree"), height); //$NON-NLS-1$
 
         // ScrolledComposite
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -393,8 +400,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        addTableButton = new UtilsButton(button,
-                Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -468,8 +474,8 @@ public class DatabaseTableForm extends AbstractForm {
         retreiveSchemaButton.setEnabled(true);
         checkConnectionButton.setVisible(true);
 
-        //if (isReadOnly()) {
-        if (1==1) {
+        // if (isReadOnly()) {
+        if (1 == 1) {
             tableSettingsInfoLabel.setText(""); //$NON-NLS-1$
             tableCombo.setReadOnly(true);
             retreiveSchemaButton.setEnabled(false);
@@ -497,52 +503,73 @@ public class DatabaseTableForm extends AbstractForm {
      */
     protected void checkConnection(final boolean displayMessageBox) {
 
-        iMetadataConnection = ConvertionHelper.convert(getConnection());
-        managerConnection.check(iMetadataConnection);
-
         if (tableCombo.getItemCount() > 0) {
             tableCombo.removeAll();
         }
 
-        if (managerConnection.getIsValide()) {
-            itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+        try {
+            parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
-            if (itemTableName.size() <= 0) {
-                // connection is done but any table exist
-                if (displayMessageBox) {
-                    MessageDialog.openInformation(getShell(),
-                            Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                    .getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
-                }
-            } else {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
-                // connection is done and tables exist
-                String[] items = null;
-                if (itemTableName != null && !itemTableName.isEmpty()) {
-                    items = new String[itemTableName.size()];
-                    tableCombo.setVisibleItemCount(itemTableName.size());
-                    // fill the combo
-                    for (int i = 0; i < itemTableName.size(); i++) {
-                        tableCombo.add(itemTableName.get(i));
-                        if (itemTableName.get(i).equals(metadataTable.getSourceName())) {
-                            tableCombo.select(i);
+                    iMetadataConnection = ConvertionHelper.convert(getConnection());
+                    managerConnection.check(iMetadataConnection);
+
+                    if (managerConnection.getIsValide()) {
+                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+
+                        if (itemTableName.size() <= 0) {
+                            // connection is done but any table exist
+                            if (displayMessageBox) {
+                                SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
+                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                        .getString("DatabaseTableForm.tableNoExist"), true);
+                            }
+                        } else {
+                            Display.getDefault().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    // connection is done and tables exist
+                                    String[] items = null;
+                                    if (itemTableName != null && !itemTableName.isEmpty()) {
+                                        items = new String[itemTableName.size()];
+                                        tableCombo.setVisibleItemCount(itemTableName.size());
+                                        // fill the combo
+                                        for (int i = 0; i < itemTableName.size(); i++) {
+                                            tableCombo.add(itemTableName.get(i));
+                                            if (itemTableName.get(i).equals(metadataTable.getSourceName())) {
+                                                tableCombo.select(i);
+                                            }
+                                        }
+                                    }
+                                    if (displayMessageBox) {
+                                        String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
+                                        if (!isReadOnly()) {
+                                            msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
+                                        }
+                                        SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
+                                                .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
+                                    }
+                                }
+                            });
                         }
+                    } else if (displayMessageBox) {
+                        // connection failure
+                        getShell().getDisplay().asyncExec(new Runnable() {
+
+                            public void run() {
+                                new ErrorDialogWidthDetailArea(getShell(), PID, Messages
+                                        .getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
+                                        managerConnection.getMessageException());
+                            }
+                        });
                     }
+                    monitor.done();
                 }
-                if (displayMessageBox) {
-                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                    if (!isReadOnly()) {
-                        msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
-                    }
-                    MessageDialog.openInformation(getShell(),
-                            Messages.getString("DatabaseTableForm.checkConnection"), msg); //$NON-NLS-1$
-                }
-            }
-        } else if (displayMessageBox) {
-            // connection failure
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages
-                    .getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
-                    managerConnection.getMessageException());
+            });
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
 
         updateRetreiveSchemaButton();
@@ -638,8 +665,7 @@ public class DatabaseTableForm extends AbstractForm {
                         + table.getLabel() + "\""); //$NON-NLS-1$
                 return false;
             } else if (existNames.contains(table.getLabel())) {
-                updateStatus(IStatus.ERROR,
-                        Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
             }
 
@@ -684,16 +710,14 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             boolean doit = true;
             if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
-                doit = MessageDialog.openConfirm(getShell(), Messages
-                        .getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
+                doit = MessageDialog.openConfirm(getShell(), Messages.getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
                 tableString = tableCombo.getItem(tableCombo.getSelectionIndex());
 
                 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                        tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
 
                 tableEditorView.getMetadataEditor().removeAll();
 
@@ -704,8 +728,7 @@ public class DatabaseTableForm extends AbstractForm {
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
-                    metadataColumn
-                            .setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
+                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
                 }
                 tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);

@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.utils.ManagerConnection;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -42,14 +43,20 @@ public class DatabaseTableWizardPage extends WizardPage {
 
     private boolean isRepositoryObjectEditable;
 
+    private ManagerConnection managerConnection;
+
     /**
      * DatabaseWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
      * 
+     * @param managerConnection
+     * 
      * @param ISelection
      */
-    public DatabaseTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable, boolean isRepositoryObjectEditable) {
+    public DatabaseTableWizardPage(ManagerConnection managerConnection, ConnectionItem connectionItem,
+            MetadataTable metadataTable, boolean isRepositoryObjectEditable) {
         super("wizardPage"); //$NON-NLS-1$
+        this.managerConnection = managerConnection;
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
@@ -62,7 +69,7 @@ public class DatabaseTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new DatabaseTableForm(parent, connectionItem, metadataTable);
+        tableForm = new DatabaseTableForm(parent, connectionItem, metadataTable, managerConnection,this);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {

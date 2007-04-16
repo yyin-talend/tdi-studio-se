@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,8 +29,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -37,10 +41,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
@@ -106,18 +113,22 @@ public class SelectorTableForm extends AbstractForm {
 
     private int count = 0;
 
+    private IWizardPage parentWizardPage;
+
     /**
      * TableForm Constructor to use by RCP Wizard.
      * 
      * @param parent
+     * @param page
      * @param connection
      * @param page
      * @param metadataTable
      */
-    public SelectorTableForm(Composite parent, ConnectionItem connectionItem) {
+    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, IWizardPage page) {
         super(parent, SWT.NONE);
         managerConnection = new ManagerConnection();
         this.connectionItem = connectionItem;
+        this.parentWizardPage = page;
         setupForm();
     }
 
@@ -197,7 +208,7 @@ public class SelectorTableForm extends AbstractForm {
         TableColumn tableType = new TableColumn(table, SWT.NONE);
         tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
         tableType.setWidth(140);
-        
+
         TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
         nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
         nbColumns.setWidth(125);
@@ -334,46 +345,82 @@ public class SelectorTableForm extends AbstractForm {
      * @param displayMessageBox
      */
     protected void checkConnection(final boolean displayMessageBox) {
+        try {
+            if (table.getItemCount() > 0) {
+                table.removeAll();
+            }
+            parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
-        tableItems = new ArrayList<TableItem>();
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
-        iMetadataConnection = ConvertionHelper.convert(getConnection());
-        managerConnection.check(iMetadataConnection);
+                    tableItems = new ArrayList<TableItem>();
 
-        if (table.getItemCount() > 0) {
-            table.removeAll();
+                    iMetadataConnection = ConvertionHelper.convert(getConnection());
+                    managerConnection.check(iMetadataConnection);
+
+                    if (managerConnection.getIsValide()) {
+                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+                        if (itemTableName.size() <= 0) {
+                            // connection is done but any table exist
+                            if (displayMessageBox) {
+                                openInfoDialogInUIThread(getShell(),
+                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                                .getString("DatabaseTableForm.tableNoExist"),true);//$NON-NLS-1$
+                            }
+                        } else {
+                            Display.getDefault().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    // connection is done and tables exist
+                                    if (itemTableName != null && !itemTableName.isEmpty()) {
+                                        // fill the combo
+                                        Iterator<String> iterate = itemTableName.iterator();
+                                        while (iterate.hasNext()) {
+                                            String nameTable = iterate.next();
+                                            TableItem item = new TableItem(table, SWT.NONE);
+                                            item.setText(0, nameTable);
+                                            item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
+                                        }
+                                    }
+                                    if (displayMessageBox) {
+                                        String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
+                                        openInfoDialogInUIThread(getShell(), Messages
+                                                .getString("DatabaseTableForm.checkConnection"), msg, false);
+                                    }
+                                }
+                            });
+                        }
+                    } else if (displayMessageBox) {
+                        // connection failure
+                        getShell().getDisplay().asyncExec(new Runnable() {
+
+                            public void run() {
+                                new ErrorDialogWidthDetailArea(getShell(), PID, Messages
+                                        .getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
+                                        managerConnection.getMessageException());
+                            }
+                        });
+                    }
+                    monitor.done();
+                }
+            });
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
 
-        if (managerConnection.getIsValide()) {
-            itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
-            if (itemTableName.size() <= 0) {
-                // connection is done but any table exist
+    }
 
-                if (displayMessageBox) {
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                            .getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
+    public static void openInfoDialogInUIThread(final Shell shell, final String title, final String msg, boolean ifUseRunnable) {
+        if (ifUseRunnable) {
+            shell.getDisplay().asyncExec(new Runnable() {
+
+                public void run() {
+                    MessageDialog.openInformation(shell, title, msg);
                 }
-            } else {
-                // connection is done and tables exist
-                if (itemTableName != null && !itemTableName.isEmpty()) {
-                    // fill the combo
-                    Iterator<String> iterate = itemTableName.iterator();
-                    while (iterate.hasNext()) {
-                        String nameTable = iterate.next();
-                        TableItem item = new TableItem(table, SWT.NONE);
-                        item.setText(0, nameTable);
-                        item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
-                    }
-                }
-                if (displayMessageBox) {
-                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg); //$NON-NLS-1$
-                }
-            }
-        } else if (displayMessageBox) {
-            // connection failure
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
-                    managerConnection.getMessageException());
+            });
+        } else {
+            MessageDialog.openInformation(shell, title, msg);
         }
     }
 
@@ -395,24 +442,22 @@ public class SelectorTableForm extends AbstractForm {
                     managerConnection.getMessageException());
         } else {
             List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-            metadataColumns = ExtractMetaDataFromDataBase
-                    .returnMetadataColumnsFormTable(iMetadataConnection, tableItem.getText(0));
+            metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableItem
+                    .getText(0));
 
             tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
             tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
 
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory
-                    .getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-            
+
             initExistingNames();
             metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
             metadataTable.setSourceName(tableItem.getText(0));
             metadataTable.setId(factory.getNextId());
             metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
-                        
-            
+
             List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
             Iterator iterate = metadataColumns.iterator();
 

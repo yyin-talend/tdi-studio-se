@@ -21,11 +21,21 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
@@ -35,6 +45,7 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
@@ -42,10 +53,12 @@ import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard;
@@ -384,9 +397,9 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    protected void createDatabaseTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
+    protected void createDatabaseTableWizard(IStructuredSelection selection, final boolean forceReadOnly) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+        final RepositoryNode node = (RepositoryNode) obj;
 
         // Define the repositoryObject
         DatabaseConnection connection = null;
@@ -422,13 +435,69 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 break;
             }
-            DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(), creation, item,
-                    metadataTable, getExistingNames(), forceReadOnly);
-            databaseTableWizard.setRepositoryObject(node.getObject());
-
-            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), databaseTableWizard);
-            handleWizard(node, wizardDialog);
+            openDatabaseTableWizard(item, metadataTable, forceReadOnly, node, creation);
         }
     }
 
+    private void openDatabaseTableWizard(final DatabaseConnectionItem item, final MetadataTable metadataTable,
+            final boolean forceReadOnly, final RepositoryNode node, final boolean creation) {
+        Job job = new Job(Messages.getString("CreateTableAction.action.createTitle")) {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+             */
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+
+                monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+
+                final ManagerConnection managerConnection = new ManagerConnection();
+                final boolean skipStep = checkConnectStatus(managerConnection, item);
+
+                if(!monitor.isCanceled()){
+                    try {
+                        Display.getDefault().syncExec(new Runnable() {
+
+                            public void run() {
+                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
+                                        creation, item, metadataTable, getExistingNames(), forceReadOnly, managerConnection);
+                                databaseTableWizard.setSkipStep(skipStep);
+                                databaseTableWizard.setRepositoryObject(node.getObject());
+
+                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getShell(), databaseTableWizard);
+                                wizardDialog.setBlockOnOpen(true);
+                                handleWizard(node, wizardDialog);
+                            }
+                        });
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+                monitor.done();
+                return Status.OK_STATUS;
+            };
+        };
+
+        job.setUser(true);
+        job.schedule();
+    }
+
+    public boolean checkConnectStatus(ManagerConnection managerConnection, DatabaseConnectionItem connectionItem) {
+        boolean skipStep = false;
+
+        managerConnection.check(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
+        if (managerConnection.getIsValide()) {
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper
+                    .convert((DatabaseConnection) connectionItem.getConnection()));
+            if (itemTableName == null || itemTableName.isEmpty()) {
+                skipStep = true;
+            }
+        } else {
+            skipStep = true;
+        }
+        return skipStep;
+    }
 }

@@ -61,6 +61,10 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     private MetadataTable metadataTable;
 
+    private boolean skipStep;
+
+    private ManagerConnection managerConnection;
+
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
      * 
@@ -68,14 +72,16 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * @param idNodeDbConnection
      * @param metadataTable
      * @param existingNames
+     * @param managerConnection
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly) {
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.existingNames = existingNames;
+        this.managerConnection = managerConnection;
         setNeedsProgressMonitor(true);
 
         // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -84,30 +90,25 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     }
 
     /**
+     * DOC acer Comment method "setSkipStep".
+     * 
+     * @param skipStep
+     */
+    public void setSkipStep(boolean skipStep) {
+        this.skipStep = skipStep;
+    }
+
+    /**
      * Adding the page to the wizard.
      */
-
     public void addPages() {
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
 
-        boolean skipStep = false;
-
-        ManagerConnection managerConnection = new ManagerConnection();
-        managerConnection.check(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
-        if (managerConnection.getIsValide()) {
-            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper
-                    .convert((DatabaseConnection) connectionItem.getConnection()));
-            if (itemTableName == null || itemTableName.isEmpty()) {
-                skipStep = true;
-            }
-        } else {
-            skipStep = true;
-        }
-
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
-        tableWizardpage = new DatabaseTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
+        tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, metadataTable,
+                isRepositoryObjectEditable());
 
         if (creation && !skipStep) {
             selectorWizardPage
