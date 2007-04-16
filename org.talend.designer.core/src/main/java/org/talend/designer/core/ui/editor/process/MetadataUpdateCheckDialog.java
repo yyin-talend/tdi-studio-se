@@ -33,7 +33,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,6 +49,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * This dialog show the check results when the metadata update.<br/>
@@ -251,7 +251,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         // the column "Node"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages.getString("MetadataUpdateCheckDialog.column.nodeName")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("MetadataUpdateCheckDialog.column.nodeName")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
@@ -269,8 +269,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         // the column "RepositoryType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages
-                .getString("MetadataUpdateCheckDialog.column.repositoryType")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("MetadataUpdateCheckDialog.column.repositoryType")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
@@ -288,7 +287,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         // the column "ResultType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages.getString("MetadataUpdateCheckDialog.column.resultType")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("MetadataUpdateCheckDialog.column.resultType")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
