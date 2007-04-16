@@ -92,18 +92,19 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 getAction(ActionFactory.UNDO.getId())); // action to add
         menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId()));
 
-        action = new NodesCopyAction(part);
-        ((NodesCopyAction) action).update();
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-
-        action = new NodesPasteAction(part);
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId()));
-
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.SELECT_ALL.getId()));
 
         if (part != null) {
+            action = new NodesCopyAction(part);
+            ((NodesCopyAction) action).update();
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+
+            action = new NodesPasteAction(part);
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId()));
+
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.SELECT_ALL.getId()));
+
             action = new NodeSetActivateAction(part);
             ((NodeSetActivateAction) action).update();
             if (action.isEnabled()) {

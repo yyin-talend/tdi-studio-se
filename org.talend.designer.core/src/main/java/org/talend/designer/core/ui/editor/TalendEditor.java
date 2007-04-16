@@ -56,7 +56,6 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.SelectionManager;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.LayerManager;
@@ -619,10 +618,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         protected void configureOutlineViewer() {
             getViewer().setEditDomain(getEditDomain());
             getViewer().setEditPartFactory(new ProcessTreePartFactory());
-            ContextMenuProvider provider = new TalendEditorContextMenuProvider(null, getViewer(), getActionRegistry());
-            getViewer().setContextMenu(provider);
-            getSite().registerContextMenu(TalendEditorContextMenuProvider.ID, provider,
-                    getSite().getSelectionProvider());
+//            ContextMenuProvider provider = new TalendEditorContextMenuProvider(null, getViewer(), getActionRegistry());
+//            getViewer().setContextMenu(provider);
+//            getSite().registerContextMenu(TalendEditorContextMenuProvider.ID, provider,
+//                    getSite().getSelectionProvider());
             getViewer().setKeyHandler(getCommonKeyHandler());
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
             showOutlineAction = new Action() {
