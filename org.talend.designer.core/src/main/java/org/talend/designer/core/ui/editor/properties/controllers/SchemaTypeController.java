@@ -53,6 +53,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -100,10 +101,10 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
     private Command createComboCommand(CCombo combo) {
         IMetadataTable repositoryMetadata;
         Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-        
+
         String paramName;
         Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        
+
         if (combo.equals(repositoryControl)) {
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
         } else {
@@ -133,9 +134,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, paramName, value, repositoryMetadata);
 
-//                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-//                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-//                                .getRepositoryTableMap());
+                // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+                // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+                // .getRepositoryTableMap());
 
                 return changeMetadataCommand;
 
@@ -144,7 +145,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         // Schema Type combo was selected.
         else {
             if (elem instanceof Node) {
-             Node node = (Node) elem;
+                Node node = (Node) elem;
                 boolean isReadOnly = false;
                 if (node.getMetadataList().size() > 0) {
                     isReadOnly = node.getMetadataList().get(0).isReadOnly();
@@ -166,22 +167,23 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         }
 
                     }
-                 }else{
-                this.dynamicTabbedPropertySection.updateRepositoryList();
-                String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                if (repositoryTableMap.containsKey(schemaSelected)) {
-                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
                 } else {
-                    repositoryMetadata = new MetadataTable();
-                }
+                    this.dynamicTabbedPropertySection.updateRepositoryList();
+                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                            .getName());
+                    if (repositoryTableMap.containsKey(schemaSelected)) {
+                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                    } else {
+                        repositoryMetadata = new MetadataTable();
+                    }
                 }
 
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, paramName, value, repositoryMetadata);
 
-//                changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-//                        this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-//                                .getRepositoryTableMap());
+                // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+                // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+                // .getRepositoryTableMap());
 
                 return changeMetadataCommand;
             }
@@ -200,7 +202,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             } else { // else instanceof Connection
                 node = ((Connection) elem).getSource();
             }
-            String inputFamily = null;
 
             IMetadataTable inputMetadata = null, inputMetaCopy = null;
             Connection inputConec = null;
@@ -212,7 +213,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                                 EConnectionType.TABLE))) {
                     inputMetadata = connec.getMetadataTable();
                     inputMetaCopy = inputMetadata.clone();
-                    inputFamily = connec.getSource().getComponent().getFamily();
                     inputConec = connec;
 
                     if (connec.getSource().isReadOnly()) {
@@ -231,7 +231,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
             String propertyName = (String) inputButton.getData(PROPERTY);
             IElementParameter param = node.getElementParameter(propertyName);
-           
+
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -240,8 +240,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 columnCopied.setReadOnly(column.isReadOnly());
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
-
-            String outputFamily = node.getComponent().getFamily();
 
             outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
             MetadataDialog metaDialog;
@@ -254,11 +252,10 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
 
                 inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
-                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(),
-                        inputFamily, outputMetaCopy, node.getUniqueName(), outputFamily, getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(), outputMetaCopy, node,
+                        getCommandStack());
             } else {
-                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(),
-                        outputFamily, getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node, getCommandStack());
             }
             metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
             metaDialog.setInputReadOnly(inputReadOnly);
@@ -309,7 +306,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
                 }
             }
-            
 
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }
