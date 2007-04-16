@@ -1,0 +1,47 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+        java.util.Map
+	"
+	class="FTPDeleteMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>	
+String root<%=cid %> = ftp<%=cid %>.pwd();
+for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+{
+   java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
+   for (String key<%=cid %> : keySet<%=cid %>)
+   {     
+    	String filemask<%=cid %> = key<%=cid %>; 
+    	String dir<%=cid %> = null;
+    	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
+    	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
+		if (i<%=cid %>!=-1)
+		{
+			dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
+    	}
+    	if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
+    	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+		String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
+		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+		{  
+			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
+			{
+				ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
+			}
+		}	     
+   	}  
+   ftp<%=cid %>.chdir(root<%=cid %>);   
+ } 
+

@@ -1,0 +1,42 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		java.util.Map
+	"
+	class="FTPPutBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();	
+	String host = ElementParameterParser.getValue(node, "__HOST__");
+	String port = ElementParameterParser.getValue(node, "__PORT__");
+	String user = ElementParameterParser.getValue(node, "__USERNAME__");
+	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
+	String cid = node.getUniqueName();
+%>	
+	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp<%=cid %>.setRemoteHost(<%=host %>);
+	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp<%=cid %>.connect();
+    ftp<%=cid %>.login(<%=user %>, <%=pass %>);    
+	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
+<%
+    for (int i=0; i<files.size(); i++) {
+       Map<String, String> line = files.get(i);
+%>    
+	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
+	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");	
+	list<%=cid %>.add(map<%=cid %><%=i %>);       
+<%
+  }
+%>	
+	String remotedir<%=cid %> = <%=remotedir%>;
+	ftp<%=cid %>.chdir(remotedir<%=cid %>);
