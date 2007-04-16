@@ -48,7 +48,7 @@ public class MetadataUpdateCheckResult {
         query
     }
 
-    private boolean checked;
+    private boolean checked = true;
 
     private Node node = null;
 

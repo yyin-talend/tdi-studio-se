@@ -489,8 +489,7 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -908,8 +907,7 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                        .getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
@@ -979,8 +977,7 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                .getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1074,8 +1071,8 @@ public class Process extends Element implements IProcess {
         // when modified == true, then resultList.size() > 0
         if (resultList.size() > 0) {
             MetadataUpdateCheckDialog checkDlg = new MetadataUpdateCheckDialog(PlatformUI.getWorkbench().getDisplay()
-                    .getActiveShell(), resultList, "Please select the node to upadate with the medata");
-            checkDlg.setTitle("Check metadata update");
+                    .getActiveShell(), resultList, Messages.getString("Process.IfToUpgradeMetadata")); //$NON-NLS-1$
+            checkDlg.setTitle(Messages.getString("Process.metadataModificationDetected")); //$NON-NLS-1$
 
             checkDlg.setInputElement(resultList);
             int ret = checkDlg.open();
@@ -1085,10 +1082,10 @@ public class Process extends Element implements IProcess {
                 updateNodeswithMetadata(selectResult);
 
                 refreshPropertyView();
-                
+
                 modified = true;
 
-            } else { //IDialogConstants.CANCEL_ID
+            } else { // IDialogConstants.CANCEL_ID
                 modified = false;
             }
         }
@@ -1097,95 +1094,82 @@ public class Process extends Element implements IProcess {
     }
 
     private void updateNodeswithMetadata(final List<Object> list) {
-        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-        shell.getDisplay().asyncExec(new Runnable() {
 
-            public void run() {
-                for (int k = 0; k < list.size(); k++) {
+        for (int k = 0; k < list.size(); k++) {
 
-                    MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) list.get(k);
+            MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) list.get(k);
 
-                    Node node = result.getNode();
+            Node node = result.getNode();
 
-                    
-                    if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.property) {
+            if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.property) {
 
-                        if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
+                if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
 
-                            // upgrade from repository
-                            if (result.isChecked()) {
-                                for (IElementParameter param : node.getElementParameters()) {
-                                    String repositoryValue = param.getRepositoryValue();
-                                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-                                            && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                                        Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                                (org.talend.core.model.metadata.builder.connection.Connection) result
-                                                        .getParameter(), repositoryValue);
-                                        if (objectValue != null) {
-                                            if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                                    && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
-                                                boolean found = false;
-                                                String[] list = param.getListRepositoryItems();
-                                                for (int i = 0; (i < list.length) && (!found); i++) {
-                                                    if (objectValue.equals(list[i])) {
-                                                        found = true;
-                                                        node.setPropertyValue(param.getName(), param
-                                                                .getListItemsValue()[i]);
-                                                    }
-                                                }
-                                            } else {
-                                                node.setPropertyValue(param.getName(), objectValue);
+                    // upgrade from repository
+                    if (result.isChecked()) {
+                        for (IElementParameter param : node.getElementParameters()) {
+                            String repositoryValue = param.getRepositoryValue();
+                            if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
+                                    && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
+                                Object objectValue = (Object) RepositoryToComponentProperty.getValue(
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        repositoryValue);
+                                if (objectValue != null) {
+                                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                            && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                                        boolean found = false;
+                                        String[] items = param.getListRepositoryItems();
+                                        for (int i = 0; (i < items.length) && (!found); i++) {
+                                            if (objectValue.equals(items[i])) {
+                                                found = true;
+                                                node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                             }
-                                            param.setRepositoryValueUsed(true);
                                         }
+                                    } else {
+                                        node.setPropertyValue(param.getName(), objectValue);
                                     }
-                                }
-                            } else { // result.isChecked() == false
-                                // don't upgrade so set to builtin
-                                node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-                                for (IElementParameter param : node.getElementParameters()) {
-                                    String repositoryValue = param.getRepositoryValue();
-                                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                                        param.setRepositoryValueUsed(false);
-                                    }
+                                    param.setRepositoryValueUsed(true);
                                 }
                             }
-                        } else { // MetadataUpdateCheckResult.ResultType.delete
-
-                            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
                         }
-                        
-                        
-
-                    } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.schema) {
-
-                        if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
-
-                            if (result.isChecked()) {
-                                node.getMetadataTable(node.getUniqueName()).setListColumns(
-                                        ((IMetadataTable) result.getParameter()).getListColumns());
-                            } else { // result.isChecked()==false
-                                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    } else { // result.isChecked() == false
+                        // don't upgrade so set to builtin
+                        node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                        for (IElementParameter param : node.getElementParameters()) {
+                            String repositoryValue = param.getRepositoryValue();
+                            if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                                param.setRepositoryValueUsed(false);
                             }
-                        } else { // MetadataUpdateCheckResult.ResultType.delete
-
-                            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-
-                        }                       
-                        
-                        
-                        
-                    } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.query) {
-                        //here need to add the code the do the "query"
+                        }
                     }
+                } else { // MetadataUpdateCheckResult.ResultType.delete
+
+                    node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
                 }
 
-            }
+            } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.schema) {
 
-        });
+                if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
+
+                    if (result.isChecked()) {
+                        node.getMetadataTable(node.getUniqueName()).setListColumns(
+                                ((IMetadataTable) result.getParameter()).getListColumns());
+                    } else { // result.isChecked()==false
+                        node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    }
+                } else { // MetadataUpdateCheckResult.ResultType.delete
+
+                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+
+                }
+
+            } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.query) {
+                // here need to add the code the do the "query"
+            }
+        }
+
     }
 
-    
     private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
         EList listParamType;
         EList connecList;
@@ -1199,8 +1183,8 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
-                    cType.getLabel(), cType.getMetaname());
+            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
+                    .getLabel(), cType.getMetaname());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }

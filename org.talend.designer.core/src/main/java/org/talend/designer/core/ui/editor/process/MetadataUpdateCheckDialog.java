@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
@@ -69,15 +70,6 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
     TableViewerCreator<MetadataUpdateCheckResult> tableViewerCreator;
 
     /**
-     * MetadataUpdateCheckDialog constructor comment.<br/>
-     * 
-     * @param parentShell
-     */
-    protected MetadataUpdateCheckDialog(Shell parentShell) {
-        super(parentShell);
-    }
-
-    /**
      * Creates a list selection dialog.<br/>
      * 
      * @param parentShell the parent shell
@@ -87,13 +79,14 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      */
     public MetadataUpdateCheckDialog(Shell parentShell, List<MetadataUpdateCheckResult> input, String message) {
         super(parentShell);
-        setTitle("Selection Needed");
+        setTitle(""); //$NON-NLS-1$
+        setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
         inputElement = input;
 
         if (message != null) {
             setMessage(message);
         } else {
-            setMessage("Select the follow resource.");
+            setMessage(""); //$NON-NLS-1$
         }
     }
 
@@ -112,42 +105,44 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         buttonComposite.setLayoutData(new GridData(SWT.END, SWT.TOP, true, false));
 
         // "select all" button
-        Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID, "&Select All", false);
+        Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID,
+                WorkbenchMessages.SelectionDialog_selectLabel, false);
 
-        SelectionListener listener = new SelectionAdapter() {
+        selectButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                Table table = tableViewerCreator.getTable();
-                TableItem[] items = table.getItems();
-                for (int i = 0; i < items.length; i++) {
-                    MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) items[i].getData();
-                    if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
-                        result.setChecked(true);
-                    }
-                    tableViewerCreator.refreshTableEditorControls();
-                }
+                selectAll(true);
             }
-        };
-        selectButton.addSelectionListener(listener);
+        });
 
         // "deselect all" button
-        Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID, "&Deselect All", false);
+        Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID,
+                WorkbenchMessages.SelectionDialog_deselectLabel, false);
 
-        listener = new SelectionAdapter() {
+        deselectButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                Table table = tableViewerCreator.getTable();
-                TableItem[] items = table.getItems();
-                for (int i = 0; i < items.length; i++) {
-                    MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) items[i].getData();
-                    if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
-                        result.setChecked(false);
-                    }
-                    tableViewerCreator.refreshTableEditorControls();
-                }
+                selectAll(false);
             }
-        };
-        deselectButton.addSelectionListener(listener);
+
+        });
+    }
+
+    /**
+     * whether select all the items or not.
+     * 
+     * @param b Select all items if input true here, otherwise deselect all.
+     */
+    private void selectAll(boolean b) {
+        Table table = tableViewerCreator.getTable();
+        TableItem[] items = table.getItems();
+        for (int i = 0; i < items.length; i++) {
+            MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) items[i].getData();
+            if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
+                result.setChecked(b);
+            }
+            tableViewerCreator.refreshTableEditorControls();
+        }
     }
 
     /**
@@ -169,7 +164,6 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, IWorkbenchHelpContextIds.LIST_SELECTION_DIALOG);
     }
 
     /*
@@ -190,14 +184,15 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         tableViewerCreator = new TableViewerCreator<MetadataUpdateCheckResult>(composite);
         tableViewerCreator.setHeaderVisible(true);
         tableViewerCreator.setLinesVisible(true);
+        tableViewerCreator.setBorderVisible(true);
         tableViewerCreator.setColumnsMoveableByDefault(true);
         tableViewerCreator.setColumnsResizableByDefault(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
         tableViewerCreator.setCellModifier(new CheckCellModifier(tableViewerCreator));
-        
+
         tableViewerCreator.createTable().setLayoutData(data);
 
-        createColumns(tableViewerCreator);        
+        createColumns(tableViewerCreator);
 
         // initialize page
         if (!getInitialElementSelections().isEmpty()) {
@@ -218,18 +213,16 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         tableViewerCreator.getTableViewer().setCellEditors(null);
 
-
         addSelectionButtons(composite);
 
         Dialog.applyDialogFont(composite);
 
         return composite;
     }
-    
-    
-    
+
     /**
-     * DOC xtan Comment method "createColumns".
+     * create columns".
+     * 
      * @param tableViewerCreator
      */
     protected void createColumns(TableViewerCreator<MetadataUpdateCheckResult> tableViewerCreator) {
@@ -237,7 +230,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         // the column "checkbox"
         TableViewerCreatorColumn column;
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("");
+        column.setTitle(""); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public Boolean get(MetadataUpdateCheckResult bean) {
@@ -253,12 +246,12 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         column.setTableEditorContent(new CheckboxTableEditorContent());
         column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
         column.setModifiable(true);
-        column.setDefaultDisplayedValue("");
+        column.setDefaultDisplayedValue(""); //$NON-NLS-1$
         column.setWidth(SIZING_COLUMN_WIDTH);
 
         // the column "Node"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Node name");
+        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages.getString("MetadataUpdateCheckDialog.column.nodeName")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
@@ -276,7 +269,8 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         // the column "RepositoryType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Repository type");
+        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages
+                .getString("MetadataUpdateCheckDialog.column.repositoryType")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
@@ -294,7 +288,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         // the column "ResultType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Result type");
+        column.setTitle(org.talend.designer.core.i18n.WorkbenchMessages.getString("MetadataUpdateCheckDialog.column.resultType")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
@@ -319,12 +313,12 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
     protected void okPressed() {
 
         List<MetadataUpdateCheckResult> list = new ArrayList<MetadataUpdateCheckResult>();
-        
+
         Table table = tableViewerCreator.getTable();
         if (table.isDisposed()) {
             return;
         }
-        
+
         TableItem[] items = table.getItems();
         for (int i = 0; i < items.length; i++) {
             MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) items[i].getData();
@@ -344,19 +338,17 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
     public void setInputElement(List<MetadataUpdateCheckResult> inputElement) {
         this.inputElement = inputElement;
     }
-    
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.ui.dialogs.SelectionDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-                true);
+        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
     }
 }
-
-
 
 /**
  * This class provide for the TableEditor. <br/>
@@ -387,5 +379,5 @@ class CheckCellModifier extends DefaultCellModifier {
             return true;
         }
         return false;
-    }    
+    }
 }
