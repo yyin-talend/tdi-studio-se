@@ -405,7 +405,7 @@ public class Node extends Element implements INode {
                 }
             }
             IMetadataTable originTable = metadataList.get(0);
-            if ((customFound && originTable.isReadOnly())  || (outputs.size() == 0)) {
+            if ((customFound && originTable.isReadOnly()) || (outputs.size() == 0)) {
                 IMetadataTable inputTable = connection.getMetadataTable();
                 // For the auto propagate.
                 MetadataTool.copyTable(inputTable, originTable);
@@ -656,6 +656,27 @@ public class Node extends Element implements INode {
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
     }
 
+    public boolean hasRunIfLink() {
+        boolean runIf = false;
+        Connection connec;
+        if (isActivate()) {
+            for (int j = 0; j < getIncomingConnections().size() && !runIf; j++) {
+                connec = (Connection) getIncomingConnections().get(j);
+                if (connec.isActivate()) {
+                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
+                            || connec.getLineStyle().equals(EConnectionType.RUN_IF_ERROR) || connec.getLineStyle()
+                            .equals(EConnectionType.RUN_IF_OK))) {
+                        runIf = true;
+                    }
+                    if (!runIf) {
+                        runIf = connec.getSource().hasRunIfLink();
+                    }
+                }
+            }
+        }
+        return runIf;
+    }
+
     public boolean isSubProcessStart() {
         Connection connec;
         if (isActivate()) {
@@ -781,31 +802,31 @@ public class Node extends Element implements INode {
             IConnection connection = getOutgoingConnections().get(i);
             Node nodeTmp = (Node) connection.getTarget();
             if (connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
-//                System.out.println("  ** Ref Link Found in:" + nodeTmp + " from:" + this);
+                // System.out.println(" ** Ref Link Found in:" + nodeTmp + " from:" + this);
                 targetWithRef = nodeTmp;
             } else {
                 if (this.process.isThereRefLink(nodeTmp)) {
-//                    System.out.println("  ** Ref Link Found in:" + nodeTmp + " from:" + this);
+                    // System.out.println(" ** Ref Link Found in:" + nodeTmp + " from:" + this);
                     targetWithRef = nodeTmp;
                 }
             }
         }
         if (targetWithRef == null) {
-//            System.out.println("  ** No Ref Links found from:" + this);
+            // System.out.println(" ** No Ref Links found from:" + this);
             return this;
         } else {
-//            System.out.println("  ** Check Ref Links in:" + targetWithRef + " from:" + this);
+            // System.out.println(" ** Check Ref Links in:" + targetWithRef + " from:" + this);
             return targetWithRef.getMainBranch();
         }
     }
 
     public Node getProcessStartNode(boolean withConditions) {
-//        System.out.println(" --- Checking :" + this + " ---");
+        // System.out.println(" --- Checking :" + this + " ---");
         return getMainBranch().getSubProcessStartNode(withConditions);
     }
 
     public boolean sameProcessAs(Node node, boolean withConditions) {
-//        System.out.println("from:" + this + " -- to:" + node);
+        // System.out.println("from:" + this + " -- to:" + node);
 
         Node currentNode = getSubProcessStartNode(withConditions);
         if (!currentNode.isStart()) {
@@ -815,7 +836,7 @@ public class Node extends Element implements INode {
         if (!otherNode.isStart()) {
             otherNode = otherNode.getProcessStartNode(withConditions);
         }
-//        System.out.println("source start:" + currentNode + " -- target start:" + otherNode);
+        // System.out.println("source start:" + currentNode + " -- target start:" + otherNode);
         return currentNode.equals(otherNode);
     }
 

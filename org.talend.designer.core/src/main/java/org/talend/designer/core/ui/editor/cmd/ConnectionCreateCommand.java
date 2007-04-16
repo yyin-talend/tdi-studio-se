@@ -144,6 +144,16 @@ public class ConnectionCreateCommand extends Command {
                     }
                 }
             }
+            boolean targetHasRefLinks = ((Process) target.getProcess()).isThereRefLink(target) | lineStyle.equals(EConnectionType.FLOW_REF);
+            if (lineStyle.equals(EConnectionType.RUN_IF) || lineStyle.equals(EConnectionType.RUN_IF_ERROR)
+                    || lineStyle.equals(EConnectionType.RUN_IF_OK)) {
+                if (targetHasRefLinks) {
+                    return false;
+                }
+            }
+            if (targetHasRefLinks && source.hasRunIfLink()) {
+                return false;
+            }
         }
 
         // List connections = this.source.getOutgoingConnections();

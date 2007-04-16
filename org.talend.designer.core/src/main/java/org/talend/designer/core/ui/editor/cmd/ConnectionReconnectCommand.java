@@ -163,6 +163,18 @@ public class ConnectionReconnectCommand extends Command {
             }
         }
 
+        boolean targetHasRefLinks = ((Process) oldTarget.getProcess()).isThereRefLink(oldTarget)
+                | newConnectionType.equals(EConnectionType.FLOW_REF);
+        if (newConnectionType.equals(EConnectionType.RUN_IF) || newConnectionType.equals(EConnectionType.RUN_IF_ERROR)
+                || newConnectionType.equals(EConnectionType.RUN_IF_OK)) {
+            if (targetHasRefLinks) {
+                return false;
+            }
+        }
+        if (targetHasRefLinks && newSource.hasRunIfLink()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -238,6 +250,18 @@ public class ConnectionReconnectCommand extends Command {
             if (oldConnectionType.equals(EConnectionType.FLOW_REF)) {
                 newConnectionType = EConnectionType.FLOW_MAIN;
             }
+        }
+
+        boolean targetHasRefLinks = ((Process) newTarget.getProcess()).isThereRefLink(newTarget)
+                | newConnectionType.equals(EConnectionType.FLOW_REF);
+        if (newConnectionType.equals(EConnectionType.RUN_IF) || newConnectionType.equals(EConnectionType.RUN_IF_ERROR)
+                || newConnectionType.equals(EConnectionType.RUN_IF_OK)) {
+            if (targetHasRefLinks) {
+                return false;
+            }
+        }
+        if (targetHasRefLinks && oldSource.hasRunIfLink()) {
+            return false;
         }
 
         return true;
