@@ -32,11 +32,14 @@ import org.eclipse.swt.widgets.Table;
 import org.talend.commons.utils.data.list.ListUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.table.VarsTable;
+import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
+import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -124,11 +127,19 @@ public class TableManager {
     /**
      * DOC amaumont Comment method "removeTable".
      * 
-     * @param data
+     * @param dataTable
      */
-    Object removeTable(AbstractDataMapTable data) {
-        getMatchedList(data).remove(data);
-        DataMapTableView view = abstractDataMapTableToView.remove(data);
+    Object removeTable(AbstractDataMapTable dataTable) {
+        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
+        TableEntriesManager tableEntriesManager = mapperManager.getTableEntriesManager();
+        
+        tableEntriesManager.removeAll(dataMapTableEntries, isPhysicalInputTable(dataTable.getName()));
+        if (dataTable instanceof OutputTable) {
+            List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
+            tableEntriesManager.removeAll(constraintEntries, false);
+        }
+        getMatchedList(dataTable).remove(dataTable);
+        DataMapTableView view = abstractDataMapTableToView.remove(dataTable);
         swtTableToView.remove(view.getTableViewerCreatorForColumns().getTable());
         if (view.getTableViewerCreatorForFilters() != null) {
             swtTableToView.remove(view.getTableViewerCreatorForFilters().getTable());
@@ -291,10 +302,10 @@ public class TableManager {
     /**
      * DOC amaumont Comment method "getPhysicalTableNames".
      */
-    public String[] getPhysicalTableNames() {
-        List<IConnection> inputConnections = (List<IConnection>) mapperManager.getComponent().getIncomingConnections();
+    public String[] getPhysicalInputTableNames() {
+        List<IOConnection> inputConnections = mapperManager.getComponent().getMapperMain().getIoInputConnections();
         ArrayList<String> names = new ArrayList<String>();
-        for (IConnection connection : inputConnections) {
+        for (IOConnection connection : inputConnections) {
             String name = connection.getName();
             if(name != null) {
                 names.add(name);
@@ -303,6 +314,16 @@ public class TableManager {
         return names.toArray(new String[0]);
     }
 
+    public boolean isPhysicalInputTable(String tableName) {
+        String[] physicalInputTableNames = getPhysicalInputTableNames();
+        for (String tableNameLoop : physicalInputTableNames) {
+            if(tableNameLoop.equals(tableName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * DOC amaumont Comment method "getAliases".
      */

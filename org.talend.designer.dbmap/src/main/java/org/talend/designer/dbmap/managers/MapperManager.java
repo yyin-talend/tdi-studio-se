@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IConnection;
@@ -46,6 +47,7 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.AbstractDbMapComponent;
 import org.talend.designer.dbmap.DbMapActivator;
+import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
@@ -125,13 +127,7 @@ public class MapperManager {
      */
     public void removeTablePair(DataMapTableView view) {
         AbstractDataMapTable dataTable = tableManager.getData(view);
-        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
-        tableEntriesManager.removeAll(dataMapTableEntries);
-        if (dataTable instanceof OutputTable) {
-            List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
-            tableEntriesManager.removeAll(constraintEntries);
-        }
-        tableManager.removeTable(view);
+        removeTablePair(tableManager.getData(view));
     }
 
     /**
@@ -141,12 +137,6 @@ public class MapperManager {
      * @param view
      */
     public void removeTablePair(AbstractDataMapTable dataTable) {
-        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
-        tableEntriesManager.removeAll(dataMapTableEntries);
-        if (dataTable instanceof OutputTable) {
-            List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
-            tableEntriesManager.removeAll(constraintEntries);
-        }
         tableManager.removeTable(dataTable);
     }
 
@@ -376,7 +366,7 @@ public class MapperManager {
      * @param dataMapTableEntry
      */
     public void removeTableEntry(ITableEntry dataMapTableEntry) {
-        tableEntriesManager.remove(dataMapTableEntry);
+        tableEntriesManager.remove(dataMapTableEntry, false);
     }
 
     /**
@@ -394,6 +384,10 @@ public class MapperManager {
 
     public UIManager getUiManager() {
         return this.uiManager;
+    }
+
+    protected TableManager getTableManager() {
+        return this.tableManager;
     }
 
     /**
@@ -854,15 +848,15 @@ public class MapperManager {
      */
     public void addInputAliasTable() {
 
-        AliasDialog aliasDialog = new AliasDialog(this, tableManager.getPhysicalTableNames(),
+        AliasDialog aliasDialog = new AliasDialog(this, tableManager.getPhysicalInputTableNames(),
                 tableManager.getAliases(), tableManager.getVisibleTables());
         if (!aliasDialog.open()) {
             return;
         }
 
-        List<IConnection> incomingConnections = (List<IConnection>) getComponent().getIncomingConnections();
-        IConnection connectionFound = null;
-        for (IConnection connection : incomingConnections) {
+        List<IOConnection> incomingConnections = getComponent().getMapperMain().getIoInputConnections();
+        IOConnection connectionFound = null;
+        for (IOConnection connection : incomingConnections) {
             if (connection.getName().equalsIgnoreCase(aliasDialog.getTableName())) {
                 connectionFound = connection;
                 break;
@@ -877,13 +871,16 @@ public class MapperManager {
         }
         
         String alias = aliasDialog.getAlias();
-        String aliasOrTableName = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName()) ? aliasDialog.getTableName() : alias;
+        boolean isPhysicalTable = alias.equals("") || alias.equalsIgnoreCase(aliasDialog.getTableName());
+        String aliasOrTableName = isPhysicalTable ? aliasDialog.getTableName() : alias;
 
-        boolean isInvisibleTable = aliasDialog.isSameAsPhysicalTable(aliasOrTableName) && !aliasDialog.isTableOrAliasExists(aliasOrTableName);
+        IMetadataTable metadataTable = isPhysicalTable ? connectionFound.getTable() : connectionFound.getTable().clone();
+        
+        boolean isInvisiblePhysicalTable = aliasDialog.isSameAsPhysicalTable(aliasOrTableName) && !aliasDialog.isSameAsVisibleTableName(aliasOrTableName);
         
         
-        InputTable inputTable = new InputTable(this, connectionFound.getMetadataTable().clone(), aliasOrTableName);
-        if(isInvisibleTable) {
+        InputTable inputTable = new InputTable(this, metadataTable, aliasOrTableName);
+        if(isInvisiblePhysicalTable) {
             inputTable.setAlias(null);
         } else {
             inputTable.setAlias(aliasOrTableName);
@@ -903,6 +900,7 @@ public class MapperManager {
         uiManager.updateDropDownJoinTypeForInputs();
         uiManager.parseAllExpressionsForAllTables();
         uiManager.refreshSqlExpression();
+        getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
         
     }
 
@@ -916,4 +914,19 @@ public class MapperManager {
         return tableEntriesManager.isUnmatchingEntryWithDbColumn(inputEntry);
     }
 
+    /**
+     * DOC amaumont Comment method "initInternalData".
+     */
+    public void initInternalData() {
+        List<IOConnection> ioInputConnections = getComponent().getMapperMain().getIoInputConnections();
+        tableEntriesManager.loadDbTableNameColumnNameToMetadaColumns(ioInputConnections);
+    }
+
+    
+    protected TableEntriesManager getTableEntriesManager() {
+        return this.tableEntriesManager;
+    }
+
+    
+    
 }

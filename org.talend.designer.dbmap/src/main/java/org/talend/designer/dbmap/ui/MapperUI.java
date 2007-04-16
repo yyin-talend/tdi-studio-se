@@ -232,6 +232,8 @@ public class MapperUI {
 
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
+        mapperManager.initInternalData();
+        
         uiManager.parseAllExpressionsForAllTables();
         mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
 

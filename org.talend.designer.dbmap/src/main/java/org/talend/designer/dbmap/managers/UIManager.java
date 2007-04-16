@@ -73,6 +73,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
@@ -286,6 +287,7 @@ public class UIManager {
                                         .toArray(new Integer[0]));
                                 dataMapTVCreator.getSelectionHelper().setSelection(selection);
                             }
+                            mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                         }
 
                         if (event.type == TYPE.REMOVED) {
@@ -302,6 +304,7 @@ public class UIManager {
                             resizeTablesZoneViewAtComputedSize(dataMapTableView.getZone());
                             moveScrollBarZoneAtSelectedTable(dataMapTableView.getZone());
                             refreshBackground(true, false);
+                            mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                         }
 
                         if (event.type == TYPE.SWAPED) {
@@ -1156,16 +1159,18 @@ public class UIManager {
 
                 if (physicalInputTable == null) {
 
-                    List<? extends IConnection> incomingConnections = mapperManager.getComponent()
-                            .getIncomingConnections();
-                    IConnection connectionFound = null;
-                    for (IConnection connection : incomingConnections) {
+                    List<IOConnection> incomingConnections = mapperManager.getComponent()
+                            .getMapperMain().getIoInputConnections();
+                    IOConnection connectionFound = null;
+                    for (IOConnection connection : incomingConnections) {
                         if (connection.getName().equals(physicalTableName)) {
                             connectionFound = connection;
                         }
                     }
-                    IMetadataColumn metadataColumn = connectionFound.getMetadataTable().getColumn(previousColumnName);
-                    metadataColumn.setLabel(newColumnName);
+                    IMetadataColumn metadataColumn = connectionFound.getTable().getColumn(previousColumnName);
+                    if(metadataColumn != null) {
+                        metadataColumn.setLabel(newColumnName);
+                    }
                 }
 
                 for (InputTable table : inputTables) {

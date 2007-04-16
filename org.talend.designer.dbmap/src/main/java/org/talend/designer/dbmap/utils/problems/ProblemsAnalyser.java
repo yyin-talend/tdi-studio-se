@@ -75,9 +75,9 @@ public class ProblemsAnalyser {
                     .getComponent().getOutgoingConnections());
             ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
             MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
-            ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
+            List<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
             ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
-            ArrayList<IOConnection> outputsIOConnections = mapperMain.createIOConnections(outgoingConnections);
+            List<IOConnection> outputsIOConnections = mapperMain.createIOConnections(outgoingConnections);
             ArrayList<OutputTable> outputTables = converter.prepareOutputTables(outputsIOConnections, this.mapperManager
                     .getComponent().getMetadataList(), externalData);
 

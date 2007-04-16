@@ -22,6 +22,7 @@
 package org.talend.designer.dbmap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -63,6 +64,10 @@ public class MapperMain {
     private MapperModel mapperModel;
 
     private AbstractDbMapComponent connector;
+
+    private List<IOConnection> ioInputConnections;
+
+    private List<IOConnection> ioOutputConnections;
 
     public MapperMain(AbstractDbMapComponent connector) {
         super();
@@ -157,9 +162,9 @@ public class MapperMain {
     public void createModelFromExternalData(List<? extends IConnection> incomingConnections,
             List<? extends IConnection> outgoingConnections, ExternalDbMapData externalData,
             List<IMetadataTable> outputMetadataTables, boolean checkProblems) {
-        ArrayList<IOConnection> inputs = createIOConnections(incomingConnections);
-        ArrayList<IOConnection> outputs = createIOConnections(outgoingConnections);
-        createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, checkProblems);
+        ioInputConnections = createIOConnections(incomingConnections);
+        ioOutputConnections = createIOConnections(outgoingConnections);
+        createModelFromExternalData(ioInputConnections, ioOutputConnections, outputMetadataTables, externalData, checkProblems);
     }
 
     /**
@@ -168,12 +173,12 @@ public class MapperMain {
      * @param connections
      * @return
      */
-    public ArrayList<IOConnection> createIOConnections(List<? extends IConnection> connections) {
+    public List<IOConnection> createIOConnections(List<? extends IConnection> connections) {
         ArrayList<IOConnection> ioConnections = new ArrayList<IOConnection>(connections.size());
         for (IConnection connection : connections) {
             ioConnections.add(new IOConnection(connection));
         }
-        return ioConnections;
+        return Collections.unmodifiableList(ioConnections);
     }
 
     public void createModelFromExternalData(IODataComponentContainer ioDataContainer,
@@ -181,15 +186,15 @@ public class MapperMain {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 
-        ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(inputsData.size());
+        ioInputConnections = new ArrayList<IOConnection>(inputsData.size());
         for (IODataComponent iData : inputsData) {
-            inputs.add(new IOConnection(iData));
+            ioInputConnections.add(new IOConnection(iData));
         }
-        ArrayList<IOConnection> outputs = new ArrayList<IOConnection>(ouputsData.size());
+        ioOutputConnections = new ArrayList<IOConnection>(ouputsData.size());
         for (IODataComponent oData : ouputsData) {
-            outputs.add(new IOConnection(oData));
+            ioOutputConnections.add(new IOConnection(oData));
         }
-        createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, false);
+        createModelFromExternalData(ioInputConnections, ioOutputConnections, outputMetadataTables, externalData, false);
     }
 
     public void createModelFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs,
@@ -249,4 +254,16 @@ public class MapperMain {
         this.mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
     }
 
+    
+    public List<IOConnection> getIoInputConnections() {
+        return this.ioInputConnections;
+    }
+
+    
+    public List<IOConnection> getIoOutputConnections() {
+        return this.ioOutputConnections;
+    }
+
+    
+    
 }

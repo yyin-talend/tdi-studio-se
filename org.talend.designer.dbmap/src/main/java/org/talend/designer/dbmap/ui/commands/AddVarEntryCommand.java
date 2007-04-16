@@ -109,7 +109,7 @@ public class AddVarEntryCommand extends Command {
      */
     @Override
     public void undo() {
-        tableEntriesManager.remove(varTableEntry);
+        tableEntriesManager.remove(varTableEntry, false);
     }
 
 }

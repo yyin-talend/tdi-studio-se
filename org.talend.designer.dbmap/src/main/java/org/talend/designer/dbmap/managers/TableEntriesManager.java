@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -82,10 +84,21 @@ public class TableEntriesManager {
         this.mapperManager = mapperManager;
     }
 
-    void removeAll(List<? extends ITableEntry> dataMapTableEntriesGroup) {
+    public void loadDbTableNameColumnNameToMetadaColumns(List<IOConnection> connections) {
+        for (IOConnection connection : connections) {
+            IMetadataTable metadataTable = connection.getTable();
+            List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+            for (IMetadataColumn column : listColumns) {
+                addMetadataColumnFromDbTable(connection.getName(), column.getLabel(), column);
+            }
+        }
+
+    }
+
+    void removeAll(List<? extends ITableEntry> dataMapTableEntriesGroup, boolean removingPhysicalInputTable) {
 
         for (ITableEntry dataMapTableEntry : new ArrayList<ITableEntry>(dataMapTableEntriesGroup)) {
-            remove(dataMapTableEntry);
+            remove(dataMapTableEntry, removingPhysicalInputTable);
         }
 
         // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.REMOVE_ALL);
@@ -208,12 +221,12 @@ public class TableEntriesManager {
      * @param metadataColumn
      */
     private IMetadataColumn getColumnFromDbTable(String dbTableName, String columnName) {
-        
+
         return (IMetadataColumn) dbTableName$ColumnNameToColumn.get(dbTableName, columnName);
-        
+
     }
-    
-    public void remove(ITableEntry dataMapTableEntry) {
+
+    public void remove(ITableEntry dataMapTableEntry, boolean removingPhysicalInputTable) {
         if (dataMapTableEntry != null) {
             mapperManager.removeLinksOf(dataMapTableEntry);
             tableEntries.remove(TableEntriesManager.buildLocation(dataMapTableEntry));
@@ -222,7 +235,7 @@ public class TableEntriesManager {
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
                 InputTable inputTable = isPhysicalTable(dataMapTable);
-                if (inputTable != null) {
+                if (inputTable != null && !removingPhysicalInputTable) {
                     removeMetadataColumnFromDbTable(inputTable.getTableName(), dataMapTableEntry.getName());
                 }
             } else if (dataMapTableEntry instanceof FilterTableEntry) {
@@ -327,10 +340,10 @@ public class TableEntriesManager {
                     .getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
         }
         tableEntries.remove(tableEntryLocationKey);
-        
+
         tableEntryLocationKey.columnName = newColumnName;
         tableEntries.put(tableEntryLocationKey, dataMapTableEntry);
-        
+
         // update matching column
         IMetadataColumn metadataColumn = null;
         InputTable inputTable = isPhysicalTable(dataMapTableEntry.getParent());
@@ -339,7 +352,7 @@ public class TableEntriesManager {
             removeMetadataColumnFromDbTable(inputTable.getTableName(), dataMapTableEntry.getName());
             addMetadataColumnFromDbTable(inputTable.getTableName(), newColumnName, metadataColumn);
         }
-        
+
         dataMapTableEntry.setName(newColumnName);
     }
 

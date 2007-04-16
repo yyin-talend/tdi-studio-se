@@ -91,15 +91,15 @@ public class AliasDialog {
                 
                 String selectedPhysicalTable = aliasInternalDialog.getTableName();
 
-                if (isTableOrAliasExists(selectedPhysicalTable) && newText.length() == 0) {// tableManager.getInputTableFromAlias(newText) != null) {
+                if (newText.length() == 0 && isSameAsVisibleTableName(selectedPhysicalTable)) {// tableManager.getInputTableFromAlias(newText) != null) {
 //                    return Messages.getString("AliasDialog.aliasIsInvalid"); //$NON-NLS-1$
-                    return Messages.getString("AliasDialog.AliasInvalid"); //$NON-NLS-1$
+                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] {selectedPhysicalTable}); //$NON-NLS-1$
                 }
                 if (selectedPhysicalTable == null || selectedPhysicalTable.length() == 0) {
                     return Messages.getString("AliasDialog.TableMustBeSelected"); //$NON-NLS-1$
                 }
-                if (isSameAsAlias(newText)) {
-                    return Messages.getString("AliasDialog.aliasAlreadyExists"); //$NON-NLS-1$
+                if (isSameAsVisibleTableName(newText)) {
+                    return Messages.getString("AliasDialog.aliasAlreadyExists", new Object[] {newText}); //$NON-NLS-1$
                 }
                 return null;
             }
@@ -502,29 +502,14 @@ public class AliasDialog {
     };
 
     /**
-     * DOC amaumont Comment method "isSameAsAlias".
-     * @param name
-     */
-    private boolean isSameAsAlias(String name) {
-        boolean newTextIsSameAsAlias = false;
-        for (String alias : aliases) {
-            if(alias.equals(name)) {
-                newTextIsSameAsAlias = true;
-                break;
-            }
-        }
-        return newTextIsSameAsAlias;
-    }
-
-    /**
      * DOC amaumont Comment method "isNotAlreadyExist".
      * @param tableName
      * @return
      */
-    public boolean isTableOrAliasExists(String tableName) {
+    public boolean isSameAsVisibleTableName(String tableName) {
         boolean alreadyExists = false;
         for (String table : visibleTables) {
-            if(table.equals(tableName)) {
+            if(table.equalsIgnoreCase(tableName)) {
                 alreadyExists = true;
                 break;
             }

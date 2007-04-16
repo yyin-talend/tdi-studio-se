@@ -68,7 +68,7 @@ public class RemoveVarEntryCommand extends Command {
     public void execute() {
 
         index = varTableEntry.getParent().getColumnEntries().indexOf(varTableEntry);
-        tableEntriesManager.remove(varTableEntry);
+        tableEntriesManager.remove(varTableEntry, false);
 
     }
 
