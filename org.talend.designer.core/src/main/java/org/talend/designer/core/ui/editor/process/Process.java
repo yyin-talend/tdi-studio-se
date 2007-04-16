@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -48,6 +49,7 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -895,7 +897,7 @@ public class Process extends Element implements IProcess {
      * @param metadataTable
      * @return true if the data have been modified
      */
-    private boolean checkNodeSchemaFromRepository(final Node node) {
+    private boolean checkNodeSchemaFromRepository(final Node node, final List<MetadataUpdateCheckResult> resultList) {
         boolean modified = false;
 
         final IMetadataTable metadataTable = node.getMetadataTable(node.getUniqueName());
@@ -909,6 +911,9 @@ public class Process extends Element implements IProcess {
                 String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
                         .getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
+
+                MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
+
                 if (repositoryMetadata != null) {
                     repositoryMetadata = repositoryMetadata.clone();
                     final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
@@ -916,41 +921,22 @@ public class Process extends Element implements IProcess {
 
                     if (!copyOfrepositoryMetadata.sameMetadataAs(metadataTable)) {
 
-                        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        shell.getDisplay().asyncExec(new Runnable() {
-
-                            public void run() {
-                                MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                                String message = Messages.getString("Process.IfToUpgradeMetadata", uniqueName); //$NON-NLS-1$
-                                mBox.setText(Messages.getString("Process.metadataModificationDetected")); //$NON-NLS-1$
-                                mBox.setMessage(message);
-                                int value = mBox.open();
-                                if (value == SWT.YES) {
-                                    metadataTable.setListColumns(copyOfrepositoryMetadata.getListColumns());
-                                } else {
-                                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                                }
-                                refreshPropertyView();
-                            }
-                        });
+                        result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
+                                MetadataUpdateCheckResult.ResultType.change, copyOfrepositoryMetadata);
 
                         modified = true;
                     }
                 } else {
-                    final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                    shell.getDisplay().asyncExec(new Runnable() {
 
-                        public void run() {
-                            MessageBox mBox = new MessageBox(shell);
-                            String message = Messages.getString("Process.schemaChangeToBuilt-in", node.getUniqueName()); //$NON-NLS-1$
-                            mBox.setMessage(message);
-                            mBox.open();
-                            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                            refreshPropertyView();
-                        }
-                    });
+                    result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
+                            MetadataUpdateCheckResult.ResultType.delete, null);
                     // if the repository connection doesn't exists then set to built-in
                     modified = true;
+                }
+
+                // add the check result to resultList, hold the value.
+                if (result.getResultType() != null) {
+                    resultList.add(result);
                 }
             }
         }
@@ -976,7 +962,7 @@ public class Process extends Element implements IProcess {
      * @param node
      * @return true if the data have been modified
      */
-    private boolean checkNodePropertiesFromRepository(final Node node) {
+    private boolean checkNodePropertiesFromRepository(final Node node, final List<MetadataUpdateCheckResult> resultList) {
         boolean modified = false;
 
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -1001,6 +987,8 @@ public class Process extends Element implements IProcess {
                     }
                 }
                 final org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = tmpRepositoryConnection;
+
+                MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
 
                 if (repositoryConnection != null) {
                     boolean sameValues = true;
@@ -1034,56 +1022,9 @@ public class Process extends Element implements IProcess {
                         }
                     }
                     if (!sameValues) {
-                        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        shell.getDisplay().asyncExec(new Runnable() {
 
-                            public void run() {
-                                String message = Messages
-                                        .getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
-                                MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                                mBox.setText(Messages.getString("Process.propertyModificationDetected")); //$NON-NLS-1$
-                                mBox.setMessage(message);
-                                int value = mBox.open();
-                                if (value == SWT.YES) {
-                                    // upgrade from repository
-                                    for (IElementParameter param : node.getElementParameters()) {
-                                        String repositoryValue = param.getRepositoryValue();
-                                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-                                                && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                                            Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                                    repositoryConnection, repositoryValue);
-                                            if (objectValue != null) {
-                                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                                        && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
-                                                    boolean found = false;
-                                                    String[] list = param.getListRepositoryItems();
-                                                    for (int i = 0; (i < list.length) && (!found); i++) {
-                                                        if (objectValue.equals(list[i])) {
-                                                            found = true;
-                                                            node.setPropertyValue(param.getName(), param
-                                                                    .getListItemsValue()[i]);
-                                                        }
-                                                    }
-                                                } else {
-                                                    node.setPropertyValue(param.getName(), objectValue);
-                                                }
-                                                param.setRepositoryValueUsed(true);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    // don't upgrade so set to builtin
-                                    node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-                                    for (IElementParameter param : node.getElementParameters()) {
-                                        String repositoryValue = param.getRepositoryValue();
-                                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                                            param.setRepositoryValueUsed(false);
-                                        }
-                                    }
-                                }
-                                refreshPropertyView();
-                            }
-                        });
+                        result.setResult(MetadataUpdateCheckResult.RepositoryType.property,
+                                MetadataUpdateCheckResult.ResultType.change, repositoryConnection);
 
                         modified = true;
                     } else {
@@ -1096,20 +1037,16 @@ public class Process extends Element implements IProcess {
                         }
                     }
                 } else {
-                    final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                    shell.getDisplay().asyncExec(new Runnable() {
 
-                        public void run() {
-                            MessageBox mBox = new MessageBox(shell);
-                            String message = Messages.getString(
-                                    "Process.propertyChangeToBuild-in", node.getUniqueName()); //$NON-NLS-1$
-                            mBox.setMessage(message);
-                            mBox.open();
-                            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-                            refreshPropertyView();
-                        }
-                    });
+                    result.setResult(MetadataUpdateCheckResult.RepositoryType.property,
+                            MetadataUpdateCheckResult.ResultType.delete, null);
+
                     modified = true;
+                }
+
+                // add the check result to resultList, hold the value.
+                if (result.getResultType() != null) {
+                    resultList.add(result);
                 }
             }
         }
@@ -1123,18 +1060,132 @@ public class Process extends Element implements IProcess {
      * @return true if a difference has been detected
      */
     public boolean checkDifferenceWithRepository() {
+        List<MetadataUpdateCheckResult> resultList = new ArrayList<MetadataUpdateCheckResult>();
         boolean modified = false;
         for (Node node : nodes) {
-            if (checkNodePropertiesFromRepository(node)) {
+            if (checkNodePropertiesFromRepository(node, resultList)) {
                 modified = true;
             }
-            if (checkNodeSchemaFromRepository(node)) {
+            if (checkNodeSchemaFromRepository(node, resultList)) {
                 modified = true;
             }
         }
+
+        // when modified == true, then resultList.size() > 0
+        if (resultList.size() > 0) {
+            MetadataUpdateCheckDialog checkDlg = new MetadataUpdateCheckDialog(PlatformUI.getWorkbench().getDisplay()
+                    .getActiveShell(), resultList, "Please select the node to upadate with the medata");
+            checkDlg.setTitle("Check metadata update");
+
+            checkDlg.setInputElement(resultList);
+            int ret = checkDlg.open();
+            if (ret == IDialogConstants.OK_ID) {
+                List<Object> selectResult = Arrays.asList(checkDlg.getResult());
+
+                updateNodeswithMetadata(selectResult);
+
+                refreshPropertyView();
+                
+                modified = true;
+
+            } else { //IDialogConstants.CANCEL_ID
+                modified = false;
+            }
+        }
+
         return modified;
     }
 
+    private void updateNodeswithMetadata(final List<Object> list) {
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+        shell.getDisplay().asyncExec(new Runnable() {
+
+            public void run() {
+                for (int k = 0; k < list.size(); k++) {
+
+                    MetadataUpdateCheckResult result = (MetadataUpdateCheckResult) list.get(k);
+
+                    Node node = result.getNode();
+
+                    
+                    if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.property) {
+
+                        if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
+
+                            // upgrade from repository
+                            if (result.isChecked()) {
+                                for (IElementParameter param : node.getElementParameters()) {
+                                    String repositoryValue = param.getRepositoryValue();
+                                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
+                                            && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
+                                        Object objectValue = (Object) RepositoryToComponentProperty.getValue(
+                                                (org.talend.core.model.metadata.builder.connection.Connection) result
+                                                        .getParameter(), repositoryValue);
+                                        if (objectValue != null) {
+                                            if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                                    && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                                                boolean found = false;
+                                                String[] list = param.getListRepositoryItems();
+                                                for (int i = 0; (i < list.length) && (!found); i++) {
+                                                    if (objectValue.equals(list[i])) {
+                                                        found = true;
+                                                        node.setPropertyValue(param.getName(), param
+                                                                .getListItemsValue()[i]);
+                                                    }
+                                                }
+                                            } else {
+                                                node.setPropertyValue(param.getName(), objectValue);
+                                            }
+                                            param.setRepositoryValueUsed(true);
+                                        }
+                                    }
+                                }
+                            } else { // result.isChecked() == false
+                                // don't upgrade so set to builtin
+                                node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                                for (IElementParameter param : node.getElementParameters()) {
+                                    String repositoryValue = param.getRepositoryValue();
+                                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                                        param.setRepositoryValueUsed(false);
+                                    }
+                                }
+                            }
+                        } else { // MetadataUpdateCheckResult.ResultType.delete
+
+                            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                        }
+                        
+                        
+
+                    } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.schema) {
+
+                        if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
+
+                            if (result.isChecked()) {
+                                node.getMetadataTable(node.getUniqueName()).setListColumns(
+                                        ((IMetadataTable) result.getParameter()).getListColumns());
+                            } else { // result.isChecked()==false
+                                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                            }
+                        } else { // MetadataUpdateCheckResult.ResultType.delete
+
+                            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+
+                        }                       
+                        
+                        
+                        
+                    } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.query) {
+                        //here need to add the code the do the "query"
+                    }
+                }
+
+            }
+
+        });
+    }
+
+    
     private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
         EList listParamType;
         EList connecList;
