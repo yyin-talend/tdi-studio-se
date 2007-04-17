@@ -27,14 +27,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.properties.controllers.SqlMemoController;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -65,6 +68,8 @@ public class OpenSQLBuilderDialogJob extends Job {
 
     private CommandStack commandStack;
 
+    private SqlMemoController controller;
+
     /**
      * DOC dev OpenDialogJob constructor comment.
      * 
@@ -73,9 +78,10 @@ public class OpenSQLBuilderDialogJob extends Job {
      * @param elem
      * @param propertyName
      * @param commandStack
+     * @param controller
      */
     public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters, Composite composite, Element elem,
-            String propertyName, CommandStack commandStack) {
+            String propertyName, CommandStack commandStack, SqlMemoController controller) {
         super(Messages.getString("OpenSQLBuilderDialogJob.openSqlbuilderDialog")); //$NON-NLS-1$
         this.connectionParameters = connectionParameters;
 
@@ -83,6 +89,7 @@ public class OpenSQLBuilderDialogJob extends Job {
         this.commandStack = commandStack;
         this.elem = elem;
         this.propertyName = propertyName;
+        this.controller = controller;
     }
 
     /**
@@ -113,11 +120,7 @@ public class OpenSQLBuilderDialogJob extends Job {
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
                                 String sql = connectionParameters.getQuery();
-                                if (ConnectionParameters.isJavaProject()) {
-                                    sql = "\"" + sql + "\"";
-                                } else {
-                                    sql = "'" + sql + "'";
-                                }
+                                sql = TalendTextUtils.addQuotes(sql);
                                 Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
                                 commandStack.execute(cmd);
                             }
@@ -131,8 +134,15 @@ public class OpenSQLBuilderDialogJob extends Job {
                     public void run() {
                         String pid = SqlBuilderPlugin.PLUGIN_ID;
                         String mainMsg = Messages.getString("ConnectionError.Message"); //$NON-NLS-1$
-                        new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters
-                                .getConnectionComment());
+                        if (new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters
+                                .getConnectionComment()).getCodeOfButton() == Dialog.OK) {
+                            ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
+                                    connectionParameters, controller.getDynamicTabbedPropertySection().part.getTalendEditor()
+                                            .getProcess().getContextManager());
+                            if (paramDialog.open() == Window.OK) {
+                                controller.openSqlBuilderBuildIn(connectionParameters, propertyName);
+                            }
+                        }
                     }
                 });
 

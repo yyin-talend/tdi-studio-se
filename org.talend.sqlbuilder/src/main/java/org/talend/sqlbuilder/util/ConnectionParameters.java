@@ -30,6 +30,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.sqlbuilder.Messages;
@@ -43,10 +44,12 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    private Hashtable<String, String> repositoryNameParaName = new Hashtable<String, String>();
+
     private boolean showDesignerPage = false;
-    
+
     private boolean isNeedTakePrompt = true;
-    
+
     private static boolean isNodeReadOnly;
 
     private IMetadataTable metadataTable;
@@ -89,12 +92,14 @@ public class ConnectionParameters {
 
     private static Hashtable<String, String> hashTable = new Hashtable<String, String>();
 
+    private boolean isShowDialog = false;
+
     static {
         try {
             hashTable.put("MySQL", "MySQL"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("PostgreSQL", "PostgreSQL"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Oracle", "Oracle with SID"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Oracle with service name", "oracle.jdbc.driver.OracleDriver");
+            hashTable.put("Oracle with service name", "Oracle with service name");
             hashTable.put("Generic ODBC", "Generic ODBC"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("IBM DB2", "IBM DB2"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -130,7 +135,10 @@ public class ConnectionParameters {
      * @param schema the schema to set
      */
     public void setSchema(String schema) {
-        this.schema = trimInvertedComma(schema);
+        this.schema = TextUtil.removeQuots(schema);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(schema);
+        }
     }
 
     /**
@@ -185,7 +193,6 @@ public class ConnectionParameters {
      * ConnectionParameters constructor.
      */
     public ConnectionParameters() {
-
     }
 
     /**
@@ -203,7 +210,7 @@ public class ConnectionParameters {
      * @param filename the filename to set
      */
     public void setFilename(String filename) {
-        this.filename = trimInvertedComma(filename);
+        this.filename = TextUtil.removeQuots(filename);
     }
 
     /**
@@ -221,7 +228,7 @@ public class ConnectionParameters {
      * @param datasource the datasource to set
      */
     public void setDatasource(String datasource) {
-        this.datasource = trimInvertedComma(datasource);
+        this.datasource = TextUtil.removeQuots(datasource);
     }
 
     /**
@@ -240,7 +247,7 @@ public class ConnectionParameters {
      */
     public void setDbType(String dbType) {
         if (dbType != null) {
-            this.dbType = trimInvertedComma(hashTable.get(dbType));
+            this.dbType = TextUtil.removeQuots(hashTable.get(dbType));
         } else {
             this.dbType = "";
         }
@@ -265,7 +272,10 @@ public class ConnectionParameters {
      * @param dbName the dbName to set
      */
     public void setDbName(String dbName) {
-        this.dbName = trimInvertedComma(dbName);
+        this.dbName = TextUtil.removeQuots(dbName);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(dbName);
+        }
         if (this.datasource == null || this.datasource.equals("")) { //$NON-NLS-1$
             this.datasource = this.dbName;
         }
@@ -286,7 +296,10 @@ public class ConnectionParameters {
      * @param host the host to set
      */
     public void setHost(String host) {
-        this.host = trimInvertedComma(host);
+        this.host = TextUtil.removeQuots(host);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(host);
+        }
     }
 
     /**
@@ -304,7 +317,11 @@ public class ConnectionParameters {
      * @param password the password to set
      */
     public void setPassword(String password) {
-        this.password = trimInvertedComma(password);
+        this.password = TextUtil.removeQuots(password);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(password);
+        }
+
     }
 
     /**
@@ -322,7 +339,10 @@ public class ConnectionParameters {
      * @param port the port to set
      */
     public void setPort(String port) {
-        this.port = trimInvertedComma(port);
+        this.port = TextUtil.removeQuots(port);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(port);
+        }
     }
 
     /**
@@ -358,7 +378,10 @@ public class ConnectionParameters {
      * @param userName the userName to set
      */
     public void setUserName(String userName) {
-        this.userName = trimInvertedComma(userName);
+        this.userName = TextUtil.removeQuots(userName);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(userName);
+        }
     }
 
     /**
@@ -376,23 +399,7 @@ public class ConnectionParameters {
      * @param repositoryName the repositoryName to set
      */
     public void setRepositoryName(String repositoryName) {
-        this.repositoryName = trimInvertedComma(repositoryName);
-    }
-
-    /**
-     * Trims the "'" of the input String.
-     * 
-     * @param input
-     * @return the String without " ' "
-     */
-    private String trimInvertedComma(String input) {
-        String out = null;
-        if (isJavaProject()) {
-            out = input.replaceAll("\"", "");
-        } else {
-            out = input.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return out;
+        this.repositoryName = TextUtil.removeQuots(repositoryName);
     }
 
     /**
@@ -419,7 +426,7 @@ public class ConnectionParameters {
      * @param selectedComponentName
      */
     public void setSelectedComponentName(String selectedComponentName) {
-        this.selectedComponentName = trimInvertedComma(selectedComponentName);
+        this.selectedComponentName = TextUtil.removeQuots(selectedComponentName);
 
     }
 
@@ -496,24 +503,38 @@ public class ConnectionParameters {
         this.schemaName = schemaName;
     }
 
-    
     public boolean isNeedTakePrompt() {
         return this.isNeedTakePrompt;
     }
 
-    
     public void setNeedTakePrompt(boolean isNeedTakePrompt) {
         this.isNeedTakePrompt = isNeedTakePrompt;
     }
 
-    
     public boolean isShowDesignerPage() {
         return this.showDesignerPage;
     }
 
-    
     public void setShowDesignerPage(boolean showDesignerPage) {
         this.showDesignerPage = showDesignerPage;
+    }
+
+    public Hashtable<String, String> getRepositoryNameParaName() {
+        return this.repositoryNameParaName;
+    }
+
+    public void setRepositoryNameParaName(Hashtable<String, String> repositoryNameParaName) {
+        this.repositoryNameParaName = repositoryNameParaName;
+    }
+
+    
+    public boolean isShowConfigParamDialog() {
+        return this.isShowDialog;
+    }
+
+    
+    public void setShowConfigParamDialog(boolean isShowDialog) {
+        this.isShowDialog = isShowDialog;
     }
 
 }

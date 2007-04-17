@@ -174,16 +174,19 @@ public class TextUtil {
             } else {
                 sql = "\"" + sql + "\"";
             }
-            
+
         } else {
             if (schema != null && !"".equals(schema)) {
                 sql = schema + "." + sql;
-            } 
+            }
         }
         return sql;
     }
 
     public static String removeQuots(String query) {
+        if (query == null) {
+            return "";
+        }
         if (ConnectionParameters.isJavaProject()) {
             if (query.startsWith("\"") && query.endsWith("\"") && query.length() > 1) {
                 return query.substring(1, query.length() - 1);

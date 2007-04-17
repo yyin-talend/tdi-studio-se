@@ -54,16 +54,19 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
+import org.talend.sqlbuilder.util.ConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -73,8 +76,6 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  * 
  */
 public class SqlMemoController extends AbstractElementPropertySectionController {
-
-    private static final String INVIVALDSTR = "$_context{";
 
     private static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
@@ -135,6 +136,17 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return "";
     }
 
+    private String getParaNameFromRepositoryName(String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    return param.getName();
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * DOC ftang Comment method "getRepositoryItemFromRepositoryName".
      * 
@@ -171,8 +183,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String query = (String) elem.getPropertyValue(propertyName);
         String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
                 : TalendTextUtils.SINGLE_QUOTE;
-        boolean isCanOpen = !query.contains(INVIVALDSTR) && query.startsWith(qoute) && query.endsWith(qoute)
-                && query.length() > 1;
+
+        boolean isCanOpen = !ContextParameterUtils.isContainContextParam(query) && query.startsWith(qoute)
+                && query.endsWith(qoute) && query.length() > 1;
         isCanOpen = isCanOpen || "".equals(query);
         if (!isCanOpen) {
             String pid = SqlBuilderPlugin.PLUGIN_ID;
@@ -201,43 +214,41 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setSchemaName(dynamicTabbedPropertySection.getRepositoryTableMap().get(
                     elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName());
         }
-        String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
+        String schema = setConnectionParameter(connParameters, ConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
-
-            String userName = getValueFromRepositoryName("USERNAME"); //$NON-NLS-1$
-
+            String userName = setConnectionParameter(connParameters, ConnectionParameterName.USERNAME.getName());
             connParameters.setUserName(userName);
 
-            String password = (String) getValueFromRepositoryName("PASSWORD"); //$NON-NLS-1$
+            String password = setConnectionParameter(connParameters, ConnectionParameterName.PASSWORD.getName());
             connParameters.setPassword(password);
 
-            String host = (String) getValueFromRepositoryName("SERVER_NAME"); //$NON-NLS-1$
+            String host = setConnectionParameter(connParameters, ConnectionParameterName.SERVER_NAME.getName());
             connParameters.setHost(host);
 
-            String port = (String) getValueFromRepositoryName("PORT"); //$NON-NLS-1$
+            String port = setConnectionParameter(connParameters, ConnectionParameterName.PORT.getName());
             connParameters.setPort(port);
 
-            String dbName = getValueFromRepositoryName("SID"); //$NON-NLS-1$
+            String dbName = setConnectionParameter(connParameters, ConnectionParameterName.SID.getName());
             connParameters.setDbName(dbName);
-
             connParameters.setQuery(query);
-            
+            if (connParameters.isShowConfigParamDialog()) {
+                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
+                        .getTalendEditor().getProcess().getContextManager());
+                if (paramDialog.open() == Window.OK) {
+                    openSqlBuilderBuildIn(connParameters, propertyName);
+                }
+            } else {
+                openSqlBuilderBuildIn(connParameters, propertyName);
+            }
 
-            OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
-                    getCommandStack());
-
-            IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
-                    IWorkbenchSiteProgressService.class);
-            siteps.showInDialog(composite.getShell(), openDialogJob);
-            openDialogJob.schedule();
             // SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
 
             // connParameters.setRepositoryNodeBuiltIn(
             // manager.getRepositoryNodeByBuildIn(null, connParameters));
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
-            String repositoryName = ""; //$NON-NLS-1$
+            String repositoryName2 = ""; //$NON-NLS-1$
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 // System.out.println(param.toString());
                 if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
@@ -245,7 +256,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                     for (String key : this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().keySet()) {
 
                         if (key.equals(value)) {
-                            repositoryName = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(key)
+                            repositoryName2 = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(key)
                                     .getProperty().getLabel();
 
                         }
@@ -254,12 +265,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             }
 
             // When no repository avaiable on "Repository" mode, open a MessageDialog.
-            if (repositoryName == null || repositoryName.length() == 0) {
+            if (repositoryName2 == null || repositoryName2.length() == 0) {
                 MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages //$NON-NLS-1$
                         .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
-            connParameters.setRepositoryName(repositoryName);
+            connParameters.setRepositoryName(repositoryName2);
             Shell parentShell = new Shell(composite.getShell().getDisplay());
             SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
             connParameters.setQuery(query);
@@ -273,6 +284,38 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             }
         }
         return null;
+    }
+
+    /**
+     * qzhang Comment method "openSqlBuilderBuildIn".
+     * 
+     * @param connParameters
+     * @param propertyName
+     */
+    public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
+        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
+                getCommandStack(), this);
+
+        IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
+                IWorkbenchSiteProgressService.class);
+        siteps.showInDialog(composite.getShell(), openDialogJob);
+        openDialogJob.schedule();
+    }
+
+    /**
+     * DOC qzhang Comment method "setConnectionParameter".
+     * 
+     * @param connParameters
+     * @param repositoryName
+     * @return
+     */
+    private String setConnectionParameter(ConnectionParameters connParameters, String repositoryName) {
+        String userName = getValueFromRepositoryName(repositoryName); //$NON-NLS-1$
+        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(repositoryName);
+        if (paraNameFromRepositoryName != null) {
+            connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
+        }
+        return userName;
     }
 
     /**
@@ -375,7 +418,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         if (elem instanceof Node) {
             queryText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-        
+
         addDragAndDropTarget(queryText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());

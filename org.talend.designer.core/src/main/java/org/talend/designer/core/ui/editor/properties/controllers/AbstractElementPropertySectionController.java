@@ -253,6 +253,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             this.undoRedoHelper.register(control);
         }
 
+        public void unregisterUndo(Control control){
+            this.undoRedoHelper.unregister(control);
+        }
         /**
          * DOC amaumont Comment method "register".
          * 
