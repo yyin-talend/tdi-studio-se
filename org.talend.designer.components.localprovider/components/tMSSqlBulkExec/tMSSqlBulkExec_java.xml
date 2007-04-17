@@ -124,6 +124,7 @@
       FIELD="TEXT"
       NUM_ROW="6"
       REQUIRED="true"
+      SHOW_IF="ACTION=='INSERT'"
     >
       <DEFAULT>"employee"</DEFAULT>
     </PARAMETER>

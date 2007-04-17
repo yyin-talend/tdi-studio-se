@@ -41,12 +41,16 @@ con_<%=cid %>.close();
 
 <%
 }else if(action.equals("EXPORT")){
+
 String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
 String server = ElementParameterParser.getValue(node, "__SERVER__");
 String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
 	   query_statement = query_statement.replaceAll("\n"," ");
 	   query_statement = query_statement.replaceAll("\r"," ");
 	   
+String output_file_name = ElementParameterParser.getValue(node, "__OUTPUT_FILE_NAME__");
+String row_terminated_export = ElementParameterParser.getValue(node, "__ROW_TERMINATED_EXPORT__");
+
 String char_type =  "char type error!";
 if(data_file_type.equals("char")){
 	char_type = "-c";
@@ -60,10 +64,8 @@ StringBuffer command =  new StringBuffer();
 command.append(bcp_utility.replaceAll("\"",""));
 command.append(" ");
 command.append(query_statement.replaceAll("\"","\\\\\""));
-command.append(" ");
-command.append("queryout");
-command.append(" ");
-command.append(file.replaceAll("\"","\\\\\""));
+command.append(" queryout ");
+command.append(output_file_name.replaceAll("\"","\\\\\""));
 command.append(" ");
 command.append(char_type);
 if(!server.equals("")&&!server.equals("\"\"")&&!(server==null)){
@@ -81,7 +83,7 @@ if((user.equals("")||user.equals("\"\"")||user==null)&&(pas.equals("")||pas==nul
 command.append(" -t");
 command.append(field_separator.replaceAll("\"",""));
 command.append(" -r");
-command.append(row_separator.replaceAll("\"",""));
+command.append(row_terminated_export.replaceAll("\"",""));
 
 %>
 Runtime runtime_<%=cid%> = Runtime.getRuntime();
