@@ -46,6 +46,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
@@ -92,6 +93,9 @@ public class RunProcessContext {
     /** The selected context to run process with. */
     private IContext selectedContext;
 
+    /** The selected server configuration to run process with. */
+    private ITargetExecutionConfig selectedTargetExecutionConfiguration;
+    
     /** Performance monitoring activated. */
     private boolean monitorPerf;
 
@@ -299,6 +303,7 @@ public class RunProcessContext {
                                 String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
                                 IContext context = getSelectedContext();
                                 processor.setContext(context);
+                                processor.setTargetExecutionConfig(getSelectedTargetExecutionConfiguration());
                                 ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam);
                                 psMonitor = new ProcessMonitor(ps);
                                 new Thread(psMonitor).start();
@@ -744,4 +749,16 @@ public class RunProcessContext {
             firePropertyChange(PROR_SWITCH_TIME, Boolean.valueOf(!watchAllowed), Boolean.valueOf(watchAllowed));
         }
     }
+
+    
+    public ITargetExecutionConfig getSelectedTargetExecutionConfiguration() {
+        return this.selectedTargetExecutionConfiguration;
+    }
+
+    
+    public void setSelectedTargetExecutionConfiguration(ITargetExecutionConfig selectedTargetExecutionConfiguration) {
+        this.selectedTargetExecutionConfiguration = selectedTargetExecutionConfiguration;
+    }
+    
+    
 }

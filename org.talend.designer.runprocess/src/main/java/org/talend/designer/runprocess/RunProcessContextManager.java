@@ -114,7 +114,7 @@ public class RunProcessContextManager {
     public void setActiveProcess(IProcess activeProcess) {
         RunProcessContext tempActiveContext = findContext(activeProcess);
         if (tempActiveContext == null && activeProcess != null) {
-            tempActiveContext = new RunProcessContext(activeProcess);
+            tempActiveContext = getRunProcessContext(activeProcess);
         }
         if (!contexts.contains(tempActiveContext) && tempActiveContext != null) {
             contexts.add(tempActiveContext);
@@ -125,6 +125,15 @@ public class RunProcessContextManager {
             this.activeContext = tempActiveContext;
             firePropertyChange(PROP_ACTIVE, oldContext, activeContext);
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "getRunProcessContext".
+     * @param activeProcess
+     * @return
+     */
+    protected RunProcessContext getRunProcessContext(IProcess activeProcess) {
+        return new RunProcessContext(activeProcess);
     }
 
     public void removeProcess(IProcess process) {

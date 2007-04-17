@@ -39,6 +39,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -62,6 +63,8 @@ public abstract class Processor implements IProcessor {
     private static boolean externalUse = false;
 
     protected IContext context;
+    
+    private ITargetExecutionConfig targetExecutionConfig;
 
     private String libraryPath;
 
@@ -454,4 +457,19 @@ public abstract class Processor implements IProcessor {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         }
     }
+
+    
+    public ITargetExecutionConfig getTargetExecutionConfig() {
+        return this.targetExecutionConfig;
+    }
+
+    
+    public void setTargetExecutionConfig(ITargetExecutionConfig serverConfiguration) {
+        this.targetExecutionConfig = serverConfiguration;
+    }
+    
+    
+    
 }
+
+

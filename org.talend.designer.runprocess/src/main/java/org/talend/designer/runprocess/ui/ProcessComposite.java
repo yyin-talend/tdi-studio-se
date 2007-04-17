@@ -174,10 +174,11 @@ public class ProcessComposite extends Composite {
         contextTabItem.setControl(contextComposite);
 
         Composite targetExecutionComposite = createTargetExecutionComposite(leftTabFolder);
+        targetExecutionComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         
         targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
         targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
-        targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+//        targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
         targetExecutionTabItem.setControl(targetExecutionComposite);
         
         
@@ -350,7 +351,7 @@ public class ProcessComposite extends Composite {
         return processContext != null;
     }
 
-    private void addListeners() {
+    protected void addListeners() {
         perfBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -464,7 +465,7 @@ public class ProcessComposite extends Composite {
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<ProcessMessage>());
     }
 
-    private void setRunnable(boolean runnable) {
+    protected void setRunnable(boolean runnable) {
         perfBtn.setEnabled(runnable);
         traceBtn.setEnabled(runnable);
         clearTracePerfBtn.setEnabled(runnable);
@@ -636,6 +637,11 @@ public class ProcessComposite extends Composite {
      */
     public CTabFolder getLeftTabFolder() {
         return this.leftTabFolder;
+    }
+
+    
+    protected RunProcessContext getProcessContext() {
+        return this.processContext;
     }
 
     

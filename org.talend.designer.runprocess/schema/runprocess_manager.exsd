@@ -3,7 +3,7 @@
 <schema targetNamespace="org.talend.designer.runprocess">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.talend.designer.runprocess" id="runprocess_view_helper" name="Runprocess View Helper"/>
+         <meta.schema plugin="org.talend.designer.runprocess" id="runprocess_manager" name="Runprocess Manager"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -13,7 +13,7 @@
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="runprocess_view_helper"/>
+            <element ref="runprocess_manager"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,7 +42,7 @@
       </complexType>
    </element>
 
-   <element name="runprocess_view_helper">
+   <element name="runprocess_manager">
       <complexType>
          <attribute name="label" type="string">
             <annotation>
@@ -57,7 +57,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.talend.designer.runprocess.ui.views.IProcessViewHelper"/>
+                  <meta.attribute kind="java" basedOn="org.talend.designer.runprocess.RunProcessContextManager"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -23,9 +23,13 @@ package org.talend.designer.runprocess;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
+import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
+import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.runprocess.ui.views.IProcessViewHelper;
 import org.talend.repository.model.IRepositoryService;
 
 /**
@@ -56,7 +60,14 @@ public class RunProcessPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        runProcessContextManager = new RunProcessContextManager();
+        IExtensionPointLimiter extensionPointLimiter = new ExtensionPointLimiterImpl(
+                "org.talend.designer.runprocess.runprocess_manager", "runprocess_manager"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        runProcessContextManager = ExtensionImplementationProvider.getSingleInstance(extensionPointLimiter, null);
+
+        if (runProcessContextManager == null) {
+            runProcessContextManager = new RunProcessContextManager();
+        }
     }
 
     /*
