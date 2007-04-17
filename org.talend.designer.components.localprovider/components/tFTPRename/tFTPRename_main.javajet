@@ -13,6 +13,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String cid = node.getUniqueName();
 %>	
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
@@ -20,7 +21,31 @@
     	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{     
+     		<%if(overwrite.equals("always")){%>
      		ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     		<%}%>
+     		<%if(overwrite.equals("never")){%>
+     			if(!(ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
+     			{
+     			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			}
+     		<%}%>
+     		<%if(overwrite.equals("size_differ")){%>
+     			if((ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
+				{
+					com.enterprisedt.net.ftp.FTPFile ftpnewNamefile<%=cid%>=ftp<%=cid%>.fileDetails(map<%=cid %>.get(key<%=cid %>));
+					com.enterprisedt.net.ftp.FTPFile ftporigNamefile<%=cid%>=ftp<%=cid%>.fileDetails(key<%=cid %>);
+					long newNameSize<%=cid%>=ftpnewNamefile<%=cid%>.size();
+					long origNameSize<%=cid%>=ftporigNamefile<%=cid%>.size();
+					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
+					{
+						ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+					}
+				}else
+				{
+					ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+				}
+     		<%}%>
    		}
 	}
 

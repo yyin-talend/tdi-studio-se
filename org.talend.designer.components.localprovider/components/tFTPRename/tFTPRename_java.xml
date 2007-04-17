@@ -42,7 +42,17 @@ COMPATIBILITY="ALL"
     </PARAMETER>
     <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="3">
       <DEFAULT>"."</DEFAULT>
-    </PARAMETER>   
+    </PARAMETER>  
+    <PARAMETER 
+    	NAME="OVERWRITE" 
+    	FIELD="CLOSED_LIST" 
+    	NUM_ROW="3" >
+    	<ITEMS DEFAULT="always">
+     	<ITEM NAME="NEVER" VALUE="never" />
+        <ITEM NAME="ALWAYS"  VALUE="always" />        
+        <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ" />        
+      </ITEMS>
+    </PARAMETER> 
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="4" NB_LINES="4">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
