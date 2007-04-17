@@ -104,7 +104,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"C:/temp/mysql_data.txt"</DEFAULT>
+      <DEFAULT>"C:/temp/mssql_data.txt"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
