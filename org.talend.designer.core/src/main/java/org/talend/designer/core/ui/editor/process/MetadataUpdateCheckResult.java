@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.process;
 
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -34,8 +35,22 @@ public class MetadataUpdateCheckResult {
      * 
      */
     public static enum ResultType {
-        delete,
-        change
+        delete(Messages.getString("MetadataUpdateCheckResult.changeToBuildinMode")), //$NON-NLS-1$
+        change(Messages.getString("MetadataUpdateCheckResult.UpdateFromRepository")); //$NON-NLS-1$
+
+        private String displayName;
+
+        ResultType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getName() {
+            return this.toString();
+        }
+
+        public String getDisplayName() {
+            return this.displayName;
+        }
     }
 
     /**

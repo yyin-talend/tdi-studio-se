@@ -265,7 +265,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         });
         column.setSortable(true);
         column.setModifiable(false);
-        column.setWidth(SIZING_COLUMN_WIDTH * 5);
+        column.setWidth(SIZING_COLUMN_WIDTH * 7);
 
         // the column "RepositoryType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
@@ -283,7 +283,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         });
         column.setSortable(true);
         column.setModifiable(false);
-        column.setWidth(SIZING_COLUMN_WIDTH * 5);
+        column.setWidth(SIZING_COLUMN_WIDTH * 7);
 
         // the column "ResultType"
         column = new TableViewerCreatorColumn(tableViewerCreator);
@@ -291,7 +291,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataUpdateCheckResult, Object>() {
 
             public String get(MetadataUpdateCheckResult bean) {
-                return bean.getResultType().name();
+                return bean.getResultType().getDisplayName();
             }
 
             public void set(MetadataUpdateCheckResult bean, Object value) {
@@ -301,7 +301,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         });
         column.setSortable(true);
         column.setModifiable(false);
-        column.setWidth(SIZING_COLUMN_WIDTH * 5);
+        column.setWidth(SIZING_COLUMN_WIDTH * 7);
 
     }
 
@@ -345,7 +345,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        createButton(parent, IDialogConstants.OK_ID, Messages.getString("MetadataUpdateCheckDialog.OK.button.label"), true); //$NON-NLS-1$
     }
 }
 
