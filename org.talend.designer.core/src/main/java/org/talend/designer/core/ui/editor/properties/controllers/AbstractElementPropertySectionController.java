@@ -48,6 +48,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
@@ -253,9 +259,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             this.undoRedoHelper.register(control);
         }
 
-        public void unregisterUndo(Control control){
+        public void unregisterUndo(Control control) {
             this.undoRedoHelper.unregister(control);
         }
+
         /**
          * DOC amaumont Comment method "register".
          * 
@@ -660,12 +667,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param valueChanged
      */
     protected void fixedCursorPosition(IElementParameter param, Text labelText, Object value, boolean valueChanged) {
-        Object control = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getActiveControl();
-        if (param.getName().equals(control) && valueChanged && !param.isRepositoryValueUsed()) {
-            String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
-            String currentText = (String) value;
-            labelText.setFocus();
-            ControlUtils.setCursorPosition(labelText, getcursorPosition(previousText, currentText));
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IWorkbenchPart workbenchPart = page.getActivePart();
+        if (workbenchPart instanceof PropertySheet) {
+            Object control = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getActiveControl();
+            if (param.getName().equals(control) && valueChanged && !param.isRepositoryValueUsed()) {
+                String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
+                String currentText = (String) value;
+                labelText.setFocus();
+                ControlUtils.setCursorPosition(labelText, getcursorPosition(previousText, currentText));
+            }
         }
     }
 
