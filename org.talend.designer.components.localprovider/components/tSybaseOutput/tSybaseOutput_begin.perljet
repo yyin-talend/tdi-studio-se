@@ -115,9 +115,14 @@ my $dbh_<%=cid %> = DBI->connect(
 #        <%=encoding %>,
     ),
     <%=dbuser %>,
-    <%=dbpass %>
+    <%=dbpass %>,
+    {
+        RaiseError => 1,
+        AutoCommit => 0,
+    }
 )
     or die "can't connect to database";
+
 
 my $sth_<%=cid %>;
 my $query;
@@ -159,6 +164,7 @@ DROP TABLE '.<%=dbtable%>.'
 
     $sth_<%=cid %>->execute()
         or die "can't drop table";
+    $dbh_<%=cid %>->commit();
 
     # the table does not exist anymore
     $table_exists = 0;
@@ -188,6 +194,7 @@ $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
 
 $sth_<%=cid %>->execute()
     or die "can't create table\n===\n$query\n===\n";
+$dbh_<%=cid %>->commit();
 <%
             if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
 %>
@@ -206,12 +213,13 @@ DELETE
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 $sth_<%=cid %>->execute()
     or die "can't clear table";
-$sth_<%=cid %>->finish()
+$dbh_<%=cid %>->commit();
+$sth_<%=cid %>->finish();
 <%
         }
 %>
 
-my $query = '';
+my $query_upd = '';
 
 <%
 if ((dataAction.equals("UPDATE"))
@@ -285,7 +293,8 @@ if ((dataAction.equals("UPDATE"))
         || (dataAction.equals("INSERT_OR_UPDATE"))) {
 %>
 
-$query = '
+
+$query_upd = '
 UPDATE '.<%=dbtable%>.'
   SET <%=updateString%>
 <%
@@ -297,7 +306,40 @@ if(keyString.trim().length() > 0){
 %>
 ';
 
-my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+<%
+    if ( dataAction.equals("UPDATE") ){
+%>
+my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query_upd);
+<%
+    }
+    else
+    {
+%>
+# Can't have multiple statement handles on a single database handle when AutoCommit is OFF
+# we use another connexion to perform UPDATE statements
+my $dbh2_<%=cid %> = DBI->connect(
+    sprintf(
+#        'DBI:Sybase:server=%s;database=%s;charset=%s',
+        'DBI:Sybase:server=%s;database=%s',
+        <%=dbserver %>,
+        <%=dbname %>,
+#        <%=encoding %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        RaiseError => 1,
+        AutoCommit => 0,
+    }
+)
+    or die "can't connect to database";
+
+my $usth_<%=cid %> = $dbh2_<%=cid %>->prepare($query_upd);
+
+<%
+    }
+%>
+
 
 <%
     }
@@ -363,7 +405,7 @@ if ((dataAction.equals("INSERT"))
     String parametersString = StringUtils.join(parameters.toArray(), ", ");
 %>
 
-$query = '
+$query_ins = '
 INSERT
   INTO '.<%=dbtable%>.'
   (<%=keyString%>)
@@ -371,7 +413,7 @@ INSERT
   (<%=parametersString%>)
 ';
 
-my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query_ins);
 
 <%
 }

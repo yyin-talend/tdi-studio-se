@@ -8,10 +8,10 @@ sub getTableCreationQuery {
     my %talendtype_to_dbtype = (
         char    => 'CHAR',
         Day     => 'DATETIME',
-        double  => 'FLOAT',
-        float   => 'FLOAT',
+        double  => 'DECIMAL',
+        float   => 'DECIMAL',
         int     => 'INT',
-        long    => 'NUMBER',
+        long    => 'INT',
         String  => 'VARCHAR',
     );
 
@@ -62,7 +62,7 @@ sub getTableCreationQuery {
         $query.= ' '.$column_href->{dbtype};
 
         if (lc $column_href->{dbtype} eq 'varchar'
-            or lc $column_href->{dbtype} eq 'number'
+            or lc $column_href->{dbtype} eq 'decimal'
             or lc $column_href->{dbtype} eq 'char') {
             $query.= ' (';
             $query.= $column_href->{len};

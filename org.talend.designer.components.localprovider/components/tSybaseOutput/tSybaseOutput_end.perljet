@@ -21,10 +21,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 
 %>
+
+
 $usth_<%=cid %>->finish() if defined( $usth_<%=cid %> );
 $isth_<%=cid %>->finish() if defined( $isth_<%=cid %> );
 
-$dbh_<%=cid %>->disconnect();
+$dbh_<%=cid %>->commit() if defined($dbh_<%=cid %>);
+$dbh_<%=cid %>->disconnect() if defined($dbh_<%=cid %>);
+
+$dbh2_<%=cid %>->commit() if defined($dbh2_<%=cid %>);
+$dbh2_<%=cid %>->disconnect() if defined($dbh2_<%=cid %>);
+
 
 <%
     if (stats) {
