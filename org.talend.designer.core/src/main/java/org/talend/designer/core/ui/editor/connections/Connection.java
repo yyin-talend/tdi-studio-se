@@ -31,6 +31,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -156,17 +157,8 @@ public class Connection extends Element implements IConnection {
      * @param name
      */
     public void setName(String name) {
-        String labelText;
         boolean canModify = true;
         List connections;
-        // if (source != null) {
-        // connections = source.getOutgoingConnections();
-        // for (int i = 0; i < connections.size(); i++) {
-        // if (((Connection) connections.get(i)).getName().equals(name)) {
-        // canModify = false;
-        // }
-        // }
-        // }
         if (target != null) {
             connections = target.getIncomingConnections();
             for (int i = 0; i < connections.size(); i++) {
@@ -183,31 +175,6 @@ public class Connection extends Element implements IConnection {
                 uniqueName = name;
             }
 
-            labelText = name;
-            if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
-                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if (source != null) {
-                if (getLineStyle().equals(EConnectionType.TABLE)) {
-                    int id = getOutputId();
-                    if (id >= 0) {
-                        labelText += " (" + metaName + ", order:" + id + ")";
-                    } else {
-                        labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                }
-            }
-            if (label == null) {
-                label = new ConnectionLabel(labelText, this);
-            } else {
-                if (!label.getLabelText().equals(labelText)) {
-                    label.setLabelText(labelText);
-                }
-            }
-
             if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
                 if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                     IMetadataTable table = getMetadataTable();
@@ -220,8 +187,10 @@ public class Connection extends Element implements IConnection {
                 IMetadataTable table = getMetadataTable();
                 table.setLabel(name);
             }
-
-            firePropertyChange(NAME, null, name);
+            if (label == null) {
+                label = new ConnectionLabel(name, this);
+            }
+            updateName();
         }
     }
 
@@ -230,38 +199,43 @@ public class Connection extends Element implements IConnection {
             return;
         }
         String labelText = name;
-        int id = getOutputId();
+        int outputId = getOutputId();
 
         boolean updateName = false;
         if (getLineStyle().equals(EConnectionType.TABLE)) {
-            if (id >= 0) {
-                labelText += " (" + metaName + ", order:" + id + ")";
+            if (outputId >= 0) {
+                labelText += " (" + metaName + ", order:" + outputId + ")";
             } else {
                 labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            if (id >= 0) {
-                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ", order:" + id + ")";
+            if (outputId >= 0) {
+                labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ", order:" + outputId + ")";
             } else {
                 labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")";
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
-            if (id >= 0) {
-                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ", order:" + id + ")";
+            if (outputId >= 0) {
+                labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ", order:" + outputId + ")";
             } else {
                 labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")";
             }
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+            int inputId = getInputId();
+            if (outputId >= 0) {
+                labelText += " (Output order:" + outputId + ", " + EDesignerConnection.FLOW_MERGE.getLinkName()
+                        + " order:" + inputId + ")";
+            } else {
+                labelText += " (" + EDesignerConnection.FLOW_MERGE.getLinkName() + " order:" + inputId + ")";
+            }
+            updateName = true;
         }
         if (updateName) {
-            if (label == null) {
-                label = new ConnectionLabel(labelText, this);
-            } else {
-                if (!label.getLabelText().equals(labelText)) {
-                    label.setLabelText(labelText);
-                }
+            if (!label.getLabelText().equals(labelText)) {
+                label.setLabelText(labelText);
             }
             firePropertyChange(NAME, null, name);
         }
@@ -326,7 +300,7 @@ public class Connection extends Element implements IConnection {
                 // }
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && source.getConnectorFromType(lineStyle).isBuiltIn())
-                    || lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
+                    || lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }
@@ -344,8 +318,7 @@ public class Connection extends Element implements IConnection {
     public void disconnect() {
         if (isConnected) {
             if (!source.getConnectorFromType(lineStyle).isBuiltIn()) {
-                if (lineStyle.equals(EConnectionType.TABLE) || lineStyle.equals(EConnectionType.FLOW_MAIN)
-                        || lineStyle.equals(EConnectionType.FLOW_REF)) {
+                if (lineStyle.hasConnectionCategory(IConnectionCategory.CUSTOM_NAME)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
@@ -377,7 +350,7 @@ public class Connection extends Element implements IConnection {
      */
     public void setLineStyle(EConnectionType lineStyle) {
         this.lineStyle = lineStyle;
-        setName(name);
+        updateName();
         firePropertyChange(LINESTYLE_PROP, null, lineStyle);
     }
 
@@ -502,11 +475,17 @@ public class Connection extends Element implements IConnection {
         }
     }
 
-    private void updateAllId() {
+    public void updateAllId() {
         if (source != null && source.getConnectorFromType(lineStyle).isBuiltIn()) {
             orderConnectionsByMetadata();
             for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
                 Connection connection = (Connection) source.getOutgoingConnections().get(i);
+                connection.updateName();
+            }
+        }
+        if (target != null) {
+            for (int i = 0; i < target.getIncomingConnections().size(); i++) {
+                Connection connection = (Connection) target.getIncomingConnections().get(i);
                 connection.updateName();
             }
         }
@@ -516,7 +495,18 @@ public class Connection extends Element implements IConnection {
         if (source != null && source.getConnectorFromType(lineStyle).isBuiltIn()) {
             for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
                 if (source.getOutgoingConnections().get(i).equals(this)) {
-                    return i;
+                    return i + 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int getInputId() {
+        if (target != null) {
+            for (int i = 0; i < target.getIncomingConnections().size(); i++) {
+                if (target.getIncomingConnections().get(i).equals(this)) {
+                    return i + 1;
                 }
             }
         }

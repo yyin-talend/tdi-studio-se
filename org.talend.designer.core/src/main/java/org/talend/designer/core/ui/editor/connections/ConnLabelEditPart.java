@@ -41,6 +41,7 @@ import org.eclipse.gef.requests.GroupRequest;
 import org.talend.commons.utils.workbench.gef.LabelCellEditorLocator;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 
 /**
@@ -164,9 +165,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
             return;
         }
         if (request.getType() == RequestConstants.REQ_DIRECT_EDIT
-                && (connectionParent.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connectionParent
-                        .getLineStyle().equals(EConnectionType.FLOW_REF)|| connectionParent
-                        .getLineStyle().equals(EConnectionType.TABLE))) {
+                && (connectionParent.getLineStyle().hasConnectionCategory(IConnectionCategory.CUSTOM_NAME))) {
             performDirectEdit();
         }
     }

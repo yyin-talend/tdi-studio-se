@@ -1231,5 +1231,9 @@ public class EmfComponent implements IComponent {
         }
         return pluginDependencyList;
     }
+    
+    public boolean useMerge() {
+        return compType.getHEADER().isUSEMERGE();
+    }
 
 }

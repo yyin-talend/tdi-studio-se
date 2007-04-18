@@ -624,10 +624,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         protected void configureOutlineViewer() {
             getViewer().setEditDomain(getEditDomain());
             getViewer().setEditPartFactory(new ProcessTreePartFactory());
-//            ContextMenuProvider provider = new TalendEditorContextMenuProvider(null, getViewer(), getActionRegistry());
-//            getViewer().setContextMenu(provider);
-//            getSite().registerContextMenu(TalendEditorContextMenuProvider.ID, provider,
-//                    getSite().getSelectionProvider());
             getViewer().setKeyHandler(getCommonKeyHandler());
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
             showOutlineAction = new Action() {

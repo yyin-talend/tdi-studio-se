@@ -31,6 +31,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -69,8 +70,7 @@ public class NodeLabelCellEditor extends TextCellEditor {
         text.setBackground(null);
         if (connection != null) {
             if (text.getText() != null) {
-                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                     if (!connection.getSource().getProcess().checkValidConnectionName(text.getText(), true)) {
                         text.setBackground(ERROR_COLOR);
                         return;

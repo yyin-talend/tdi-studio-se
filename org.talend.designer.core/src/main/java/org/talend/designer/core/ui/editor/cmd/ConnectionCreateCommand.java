@@ -128,10 +128,15 @@ public class ConnectionCreateCommand extends Command {
             }
 
             if (lineStyle.equals(EConnectionType.FLOW_MAIN)) {
-                for (IConnection connec : target.getIncomingConnections()) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                        lineStyle = EConnectionType.FLOW_REF;
+                // if the component don't use merge links, then use ref links for additionals
+                if (!target.getComponent().useMerge()) {
+                    for (IConnection connec : target.getIncomingConnections()) {
+                        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                            lineStyle = EConnectionType.FLOW_REF;
+                        }
                     }
+                } else {
+                    lineStyle = EConnectionType.FLOW_MERGE;
                 }
             }
 
@@ -144,7 +149,8 @@ public class ConnectionCreateCommand extends Command {
                     }
                 }
             }
-            boolean targetHasRefLinks = ((Process) target.getProcess()).isThereRefLink(target) | lineStyle.equals(EConnectionType.FLOW_REF);
+            boolean targetHasRefLinks = ((Process) target.getProcess()).isThereRefLink(target)
+                    | lineStyle.equals(EConnectionType.FLOW_REF);
             if (lineStyle.equals(EConnectionType.RUN_IF) || lineStyle.equals(EConnectionType.RUN_IF_ERROR)
                     || lineStyle.equals(EConnectionType.RUN_IF_OK)) {
                 if (targetHasRefLinks) {

@@ -30,6 +30,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -52,7 +53,7 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
         ConnLabelEditPart labelPart = (ConnLabelEditPart) getHost();
         Connection connec = (Connection) getHost().getParent().getModel();
         boolean ok = true;
-        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+        if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
             if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
                 ok = false;
             }
@@ -77,7 +78,8 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
             return null;
         }
 
-        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(), labelText);
+        ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(),
+                labelText);
         return command;
     }
 

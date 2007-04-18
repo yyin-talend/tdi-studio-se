@@ -34,26 +34,39 @@ import org.talend.designer.core.i18n.Messages;
  * 
  */
 public enum EDesignerConnection {
-    FLOW_MAIN(EConnectionType.FLOW_MAIN, "Main", Messages.getString("EDesignerConnection.main"), new Integer(Graphics.LINE_SOLID), new Color(null, new RGB(230, //$NON-NLS-1$ //$NON-NLS-2$
-            100, 0))),
-    FLOW_REF(EConnectionType.FLOW_REF, "Lookup", Messages.getString("EDesignerConnection.lookup"), new Integer(Graphics.LINE_DOT), new Color(null, new RGB(230, //$NON-NLS-1$ //$NON-NLS-2$
-            100, 0))),
-    RUN_BEFORE(EConnectionType.RUN_BEFORE, "RunBefore", Messages.getString("EDesignerConnection.runBefore"), new Integer(Graphics.LINE_SOLID), new Color(null, //$NON-NLS-1$ //$NON-NLS-2$
-            new RGB(100, 100, 100))),
-    RUN_AFTER(EConnectionType.RUN_AFTER, "RunAfter", Messages.getString("EDesignerConnection.runAfter"), new Integer(Graphics.LINE_SOLID), new Color(null, //$NON-NLS-1$ //$NON-NLS-2$
-            new RGB(100, 100, 100))),
-    REFERENCE(EConnectionType.REFERENCE, "Ref", Messages.getString("EDesignerConnection.reference"), new Integer(Graphics.LINE_DASHDOTDOT), new Color(null, //$NON-NLS-1$ //$NON-NLS-2$
-            new RGB(150, 150, 0))),
-    RUN_IF_OK(EConnectionType.RUN_IF_OK, "OnOk", Messages.getString("EDesignerConnection.runIfOK"), new Integer(Graphics.LINE_SOLID), new Color(null, //$NON-NLS-1$ //$NON-NLS-2$
-            new RGB(0, 150, 0))),
-    RUN_IF_ERROR(EConnectionType.RUN_IF_ERROR, "OnError", Messages.getString("EDesignerConnection.runIfError"), new Integer(Graphics.LINE_SOLID), new Color( //$NON-NLS-1$ //$NON-NLS-2$
-            null, new RGB(200, 0, 0))),
-    RUN_IF(EConnectionType.RUN_IF, "If", Messages.getString("EDesignerConnection.RunIf"), new Integer(Graphics.LINE_DASHDOTDOT), new Color(null, new RGB(180, //$NON-NLS-1$ //$NON-NLS-2$
-            100, 30))),
-    ITERATE(EConnectionType.ITERATE, "Iterate", Messages.getString("EDesignerConnection.Iterator"), new Integer(Graphics.LINE_SOLID), new Color(null, new RGB( //$NON-NLS-1$ //$NON-NLS-2$
-            100, 230, 0))),
-    TABLE(EConnectionType.TABLE, "Table", Messages.getString("EDesignerConnection.Table"), new Integer(Graphics.LINE_SOLID), new Color(null, new RGB( //$NON-NLS-1$ //$NON-NLS-2$
-            0, 150, 100)));
+    FLOW_MAIN(EConnectionType.FLOW_MAIN, "Main", Messages.getString("EDesignerConnection.main"), //$NON-NLS-1$ //$NON-NLS-2$
+              new Integer(Graphics.LINE_SOLID),
+              new Color(null, new RGB(230, 100, 0))),
+    FLOW_REF(EConnectionType.FLOW_REF, "Lookup", Messages.getString("EDesignerConnection.lookup"), //$NON-NLS-1$ //$NON-NLS-2$
+             new Integer(Graphics.LINE_DOT),
+             new Color(null, new RGB(230, 100, 0))),
+    RUN_BEFORE(EConnectionType.RUN_BEFORE, "RunBefore", Messages.getString("EDesignerConnection.runBefore"), //$NON-NLS-1$ //$NON-NLS-2$
+               new Integer(Graphics.LINE_SOLID),
+               new Color(null, new RGB(100, 100, 100))),
+    RUN_AFTER(EConnectionType.RUN_AFTER, "RunAfter", Messages.getString("EDesignerConnection.runAfter"), //$NON-NLS-1$ //$NON-NLS-2$
+              new Integer(Graphics.LINE_SOLID),
+              new Color(null, new RGB(100, 100, 100))),
+    REFERENCE(EConnectionType.REFERENCE, "Ref", Messages.getString("EDesignerConnection.reference"), //$NON-NLS-1$ //$NON-NLS-2$
+              new Integer(Graphics.LINE_DASHDOTDOT),
+              new Color(null, new RGB(150, 150, 0))),
+    RUN_IF_OK(EConnectionType.RUN_IF_OK, "OnOk", Messages.getString("EDesignerConnection.runIfOK"), //$NON-NLS-1$ //$NON-NLS-2$
+              new Integer(Graphics.LINE_SOLID),
+              new Color(null, new RGB(0, 150, 0))),
+    RUN_IF_ERROR(EConnectionType.RUN_IF_ERROR, "OnError", Messages.getString("EDesignerConnection.runIfError"), //$NON-NLS-1$ //$NON-NLS-2$
+                 new Integer(Graphics.LINE_SOLID),
+                 new Color(null, new RGB(200, 0, 0))),
+    RUN_IF(EConnectionType.RUN_IF, "If", Messages.getString("EDesignerConnection.RunIf"), //$NON-NLS-1$ //$NON-NLS-2$
+           new Integer(Graphics.LINE_DASHDOTDOT),
+           new Color(null, new RGB(180, 100, 30))),
+    ITERATE(EConnectionType.ITERATE, "Iterate", Messages.getString("EDesignerConnection.Iterator"), //$NON-NLS-1$ //$NON-NLS-2$
+            new Integer(Graphics.LINE_SOLID),
+            new Color(null, new RGB(100, 230, 0))),
+    TABLE(EConnectionType.TABLE, "Table", Messages.getString("EDesignerConnection.Table"), //$NON-NLS-1$ //$NON-NLS-2$
+          new Integer(Graphics.LINE_SOLID),
+          new Color(null, new RGB(0, 150, 100))),
+    FLOW_MERGE(EConnectionType.FLOW_MERGE, "Merge", Messages.getString("EDesignerConnection.Merge"), //$NON-NLS-1$ //$NON-NLS-2$
+               new Integer(Graphics.LINE_DASHDOT),
+               new Color(null, new RGB(230, 100, 0)));
 
     private EConnectionType connectionType;
 

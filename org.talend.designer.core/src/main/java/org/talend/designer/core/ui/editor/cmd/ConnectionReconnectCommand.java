@@ -235,21 +235,29 @@ public class ConnectionReconnectCommand extends Command {
                 return false;
             }
         }
-
-        int nbMain = 0;
-        for (IConnection connec : newTarget.getIncomingConnections()) {
-            if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                nbMain++;
-            }
+        if (oldTarget.getComponent().useMerge() && oldConnectionType.equals(EConnectionType.FLOW_MERGE)) {
+            // if the previous connection was a merge, then we just change it to a main, then the rules below will apply the same.
+            oldConnectionType = EConnectionType.FLOW_MAIN;
         }
-        if (nbMain > 0) {
-            if (oldConnectionType.equals(EConnectionType.FLOW_MAIN)) {
-                newConnectionType = EConnectionType.FLOW_REF;
+
+        if (!newTarget.getComponent().useMerge()) {
+            int nbMain = 0;
+            for (IConnection connec : newTarget.getIncomingConnections()) {
+                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    nbMain++;
+                }
+            }
+            if (nbMain > 0) {
+                if (oldConnectionType.equals(EConnectionType.FLOW_MAIN)) {
+                    newConnectionType = EConnectionType.FLOW_REF;
+                }
+            } else {
+                if (oldConnectionType.equals(EConnectionType.FLOW_REF)) {
+                    newConnectionType = EConnectionType.FLOW_MAIN;
+                }
             }
         } else {
-            if (oldConnectionType.equals(EConnectionType.FLOW_REF)) {
-                newConnectionType = EConnectionType.FLOW_MAIN;
-            }
+            newConnectionType = EConnectionType.FLOW_MERGE;
         }
 
         boolean targetHasRefLinks = ((Process) newTarget.getProcess()).isThereRefLink(newTarget)
@@ -332,6 +340,7 @@ public class ConnectionReconnectCommand extends Command {
                 connection.setMetaName(newSource.getUniqueName());
             }
             connection.reconnect(newSource, oldTarget);
+            connection.updateName();
             ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
@@ -342,6 +351,7 @@ public class ConnectionReconnectCommand extends Command {
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
             connection.reconnect(oldSource, newTarget);
+            connection.updateName();
             if (newTargetSchemaType != null) {
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
@@ -423,6 +433,7 @@ public class ConnectionReconnectCommand extends Command {
             }
         }
         connection.reconnect(oldSource, oldTarget);
+        connection.updateName();
         ((Process) oldSource.getProcess()).checkStartNodes();
         ((Process) oldSource.getProcess()).checkProcess();
     }
