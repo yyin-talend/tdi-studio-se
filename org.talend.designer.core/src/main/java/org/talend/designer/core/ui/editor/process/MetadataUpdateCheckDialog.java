@@ -58,9 +58,9 @@ import org.talend.designer.core.i18n.Messages;
 public class MetadataUpdateCheckDialog extends SelectionDialog {
 
     // sizing constants
-    private static final int SIZING_SELECTION_WIDGET_HEIGHT = 250;
+    private static final int SIZING_SELECTION_WIDGET_HEIGHT = 400;
 
-    private static final int SIZING_SELECTION_WIDGET_WIDTH = 300;
+    private static final int SIZING_SELECTION_WIDGET_WIDTH = 500;
 
     private static final int SIZING_COLUMN_WIDTH = 20;
 
@@ -82,7 +82,6 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         setTitle(""); //$NON-NLS-1$
         setShellStyle(SWT.TITLE | SWT.RESIZE | SWT.APPLICATION_MODAL | getDefaultOrientation());
         inputElement = input;
-
         if (message != null) {
             setMessage(message);
         } else {
@@ -164,6 +163,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
+        shell.setSize(SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
     }
 
     /*
@@ -178,8 +178,8 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         createMessageArea(composite);
 
         GridData data = new GridData(GridData.FILL_BOTH);
-        data.heightHint = SIZING_SELECTION_WIDGET_HEIGHT;
-        data.widthHint = SIZING_SELECTION_WIDGET_WIDTH;
+//        data.heightHint = SIZING_SELECTION_WIDGET_HEIGHT;
+//        data.widthHint = SIZING_SELECTION_WIDGET_WIDTH;
 
         tableViewerCreator = new TableViewerCreator<MetadataUpdateCheckResult>(composite);
         tableViewerCreator.setHeaderVisible(true);
@@ -301,7 +301,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         });
         column.setSortable(true);
         column.setModifiable(false);
-        column.setWidth(SIZING_COLUMN_WIDTH * 7);
+        column.setWidth(SIZING_COLUMN_WIDTH * 10);
 
     }
 
