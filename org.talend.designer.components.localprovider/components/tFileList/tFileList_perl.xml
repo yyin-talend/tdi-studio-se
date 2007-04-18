@@ -38,11 +38,12 @@
       <DEFAULT>'*.txt'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="CASE_SENSITIVE" FIELD="CLOSED_LIST" NUM_ROW="3">
-      <ITEMS DEFAULT="YES">
-        <ITEM NAME="YES" VALUE="YES"/>
-         <ITEM NAME="NO" VALUE="NO"/>
-      </ITEMS>
+    <PARAMETER
+      NAME="CASE_SENSITIVE"
+      FIELD="CHECK"
+      NUM_ROW="3"
+    >
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
 
