@@ -115,6 +115,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
@@ -294,7 +295,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction deleteAction = new GEFDeleteAction(this);
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
-
+        
+        IAction setRefAction = new ConnectionSetAsMainRef(this);
+        getActionRegistry().registerAction(setRefAction);
+        getSelectionActions().add(setRefAction.getId());
+        
+        
         viewer.setRootEditPart(root);
 
         PartFactory partFactory = new PartFactory();

@@ -92,7 +92,6 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 getAction(ActionFactory.UNDO.getId())); // action to add
         menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId()));
 
-
         if (part != null) {
             action = new NodesCopyAction(part);
             ((NodesCopyAction) action).update();
@@ -111,8 +110,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
 
-            action = new ConnectionSetAsMainRef(part);
-            ((ConnectionSetAsMainRef) action).update();
+            action = getAction(ConnectionSetAsMainRef.ID);
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
@@ -131,7 +129,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     subMenu.add(action);
                 }
             }
-
+            
             action = new ConnectionCreateAction(part, EConnectionType.ITERATE);
             ((ConnectionCreateAction) action).update();
             if (action.isEnabled()) {
@@ -206,7 +204,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
             }
-            
+
             action = new SendBackwardAction(part);
             ((SelectionAction) action).update();
             if (action.isEnabled()) {
@@ -223,5 +221,4 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
     private IAction getAction(final String actionId) {
         return actionRegistry.getAction(actionId);
     }
-
 }
