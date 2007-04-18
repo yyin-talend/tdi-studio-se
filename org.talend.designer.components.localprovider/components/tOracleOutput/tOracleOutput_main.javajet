@@ -198,7 +198,7 @@ if(incomingConnName != null && columnList != null){
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -210,10 +210,10 @@ if(incomingConnName != null && columnList != null){
 		
 pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         	<%			
-			}else if(typeToGenerate.equals("Date")){
+			}else if(typeToGenerate.equals("Timestamp")){
 			%>
 if(<%=incomingConnName%>.<%=column.getName()%>!=null){
-	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 }else{
 	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,null);
 }
@@ -238,7 +238,7 @@ nb_line_inserted_<%=cid%>++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -250,10 +250,10 @@ nb_line_inserted_<%=cid%>++;
 				%>
 pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
-	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 }else{
 	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
 }
@@ -272,7 +272,7 @@ pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -284,10 +284,10 @@ pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=
 				%>
 pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
-	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 }else{
 	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
 }
@@ -315,7 +315,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -326,11 +326,11 @@ nb_line_update_<%=cid%> ++;
 		
 	pstmtInsert_<%=cid %>.setString(<%=counterInsert%>,String.valueOf(<%=incomingConnName%>.<%=columnInsert.getName()%>));
     	    <%
-			}else if(typeToGenerate.equals("Date")){
+			}else if(typeToGenerate.equals("Timestamp")){
 			%>
 		
 	if(<%=incomingConnName%>.<%=columnInsert.getName()%>!=null){				
-		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,new java.sql.Date(<%=incomingConnName%>.<%=columnInsert.getName()%>.getTime()));
+		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=columnInsert.getName()%>.getTime()));
 	}else{
 		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,null);
 	}
@@ -360,7 +360,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -372,10 +372,10 @@ nb_line_update_<%=cid%> ++;
 				%>
 	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
-		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 	}else{
 		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
 	}
@@ -394,7 +394,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -406,10 +406,10 @@ nb_line_update_<%=cid%> ++;
 				%>
 	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%				
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
-		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 	}else{
 		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,null);
 	}
@@ -441,7 +441,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -453,10 +453,10 @@ nb_line_update_<%=cid%> ++;
 				%>
 	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
         		<%					
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 	if(<%=incomingConnName%>.<%=columnUpdate.getName()%>!=null){
-		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
 	}else{
 		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,null);
 	}
@@ -477,7 +477,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -489,10 +489,10 @@ nb_line_update_<%=cid%> ++;
 				%>
 	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
         		<%				
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 	if(<%=incomingConnName%>.<%=columnUpdate.getName()%>!=null){
-		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
 	}else{
 		pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,null);
 	}
@@ -522,7 +522,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -533,10 +533,10 @@ nb_line_update_<%=cid%> ++;
 		
 	pstmtInsert_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         	<%			
-			}else if(typeToGenerate.equals("Date")){
+			}else if(typeToGenerate.equals("Timestamp")){
 			%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){		
-		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 	}else{
 		pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,null);
 	}
@@ -565,7 +565,7 @@ nb_line_update_<%=cid%> ++;
 			if(typeToGenerate.equals("byte[]")){
  	  			typeToGenerate = "Bytes";
  	   		}else if(typeToGenerate.equals("java.util.Date")){
- 	   			typeToGenerate = "Date";
+ 	   			typeToGenerate = "Timestamp";
  	  	 	}else if(typeToGenerate.equals("Integer")){
  	   	  		typeToGenerate = "Int";
  	   	  	}else{
@@ -577,10 +577,10 @@ nb_line_update_<%=cid%> ++;
 				%>
 pstmt_<%=cid %>.setString(<%=keyCounter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%		
-				}else if(typeToGenerate.equals("Date")){
+				}else if(typeToGenerate.equals("Timestamp")){
 				%>
 if(<%=incomingConnName%>.<%=column.getName()%>!=null){				
-	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 }else{
 	pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,null);
 }
