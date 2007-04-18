@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -58,9 +59,9 @@ import org.talend.designer.core.i18n.Messages;
 public class MetadataUpdateCheckDialog extends SelectionDialog {
 
     // sizing constants
-    private static final int SIZING_SELECTION_WIDGET_HEIGHT = 400;
+    private static final int SIZING_SELECTION_WIDGET_HEIGHT = 300;
 
-    private static final int SIZING_SELECTION_WIDGET_WIDTH = 500;
+    private static final int SIZING_SELECTION_WIDGET_WIDTH = 450;
 
     private static final int SIZING_COLUMN_WIDTH = 20;
 
@@ -163,7 +164,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      */
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        shell.setSize(SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
+        // shell.setSize(SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
     }
 
     /*
@@ -175,11 +176,11 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         initializeDialogUnits(composite);
 
-        createMessageArea(composite);
+        Label messageLabel = createMessageArea(composite);
 
         GridData data = new GridData(GridData.FILL_BOTH);
-//        data.heightHint = SIZING_SELECTION_WIDGET_HEIGHT;
-//        data.widthHint = SIZING_SELECTION_WIDGET_WIDTH;
+        data.heightHint = SIZING_SELECTION_WIDGET_HEIGHT;
+        data.widthHint = SIZING_SELECTION_WIDGET_WIDTH;
 
         tableViewerCreator = new TableViewerCreator<MetadataUpdateCheckResult>(composite);
         tableViewerCreator.setHeaderVisible(true);
