@@ -125,7 +125,7 @@
     <IMPORTS>
       <IMPORT
         NAME="Mysql_Driver"
-        MODULE="mysql-connector-java-5.0.4-bin.jar"
+        MODULE="mysql-connector-java-5.1.0-bin.jar"
         REQUIRED="true"
       />
     </IMPORTS>

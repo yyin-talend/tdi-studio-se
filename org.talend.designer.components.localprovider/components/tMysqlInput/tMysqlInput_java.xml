@@ -135,7 +135,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-5.0.4-bin.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
