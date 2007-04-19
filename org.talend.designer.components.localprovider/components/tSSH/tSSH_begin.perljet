@@ -1,0 +1,102 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="SSHBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String host = ElementParameterParser.getValue(
+            node,
+            "__HOST__"
+        );
+
+        String port = ElementParameterParser.getValue(
+            node,
+            "__PORT__"
+        );
+
+        String user = ElementParameterParser.getValue(
+            node,
+            "__USER__"
+        );
+
+        String authMethod = ElementParameterParser.getValue(
+            node,
+            "__AUTH_METHOD__"
+        );
+%>
+use Net::SSH2;
+
+my $ssh2_<%=cid%> = Net::SSH2->new();
+$ssh2_<%=cid%>->connect(
+    <%=host%>,
+    <%=port%>
+)
+    or die "[<%=cid%>] failed to connect to ".<%=host%>.":".<%=port%>;
+
+# print join("\n", $ssh2_<%=cid%>->auth_list(<%=user%>)), "\n";
+
+<%
+        if (authMethod.equals("PASSWORD")) {
+            String password = ElementParameterParser.getValue(
+                node,
+                "__PASSWORD__"
+            );
+%>
+$ssh2_<%=cid%>->auth_password(
+    <%=user%>,
+    <%=password%>
+)
+    or die "[<%=cid%>] authentication failure in password mode";
+<%
+        }
+        else {
+            String publickey = ElementParameterParser.getValue(
+                node,
+                "__PUBLICKEY__"
+            );
+            String privatekey = ElementParameterParser.getValue(
+                node,
+                "__PRIVATEKEY__"
+            );
+            String keypassword = ElementParameterParser.getValue(
+                node,
+                "__KEYPASSWORD__"
+            );
+%>
+$ssh2_<%=cid%>->auth_publickey(
+    <%=user%>,
+    <%=publickey%>,
+    <%=privatekey%>,
+    <%=keypassword%>
+)
+    or die "[<%=cid%>] authentication failure in publickey mode";
+
+<%
+        }
+%>
+my $chan_<%=cid%> = $ssh2_<%=cid%>->channel();
+$chan_<%=cid%>->ext_data('merge');
+$chan_<%=cid%>->shell();
+<%
+    }
+}
+%>
