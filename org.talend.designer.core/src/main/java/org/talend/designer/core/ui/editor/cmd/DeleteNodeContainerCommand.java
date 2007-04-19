@@ -26,6 +26,7 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -115,8 +116,7 @@ public class DeleteNodeContainerCommand extends Command {
                     INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() + 1);
                     connection.reconnect();
-                    if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         process.addUniqueConnectionName(connection.getName());
                     }
                 }
@@ -143,7 +143,6 @@ public class DeleteNodeContainerCommand extends Command {
                 }
             }
         }
-        
 
         process.setActivate(true);
         process.checkStartNodes();

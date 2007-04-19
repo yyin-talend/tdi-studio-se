@@ -75,6 +75,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -489,7 +490,8 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
+                        .getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -907,7 +909,8 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                        .getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
@@ -977,7 +980,8 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                .getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1112,8 +1116,8 @@ public class Process extends Element implements IProcess {
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                 Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                        repositoryValue);
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result
+                                                .getParameter(), repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1183,8 +1187,8 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
-                    .getLabel(), cType.getMetaname());
+            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
+                    cType.getLabel(), cType.getMetaname());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
@@ -1596,17 +1600,20 @@ public class Process extends Element implements IProcess {
                         node.setStart(false);
                         boolean isActivatedConnection = false;
                         for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
-                            if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
+                            Connection connection = (Connection) node.getIncomingConnections().get(j);
+                            // connection that will generate a hash file are not considered as activated for this test.
+                            if (connection.isActivate()
+                                    && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                                 isActivatedConnection = true;
                             }
                         }
                         if (!isActivatedConnection) {
-                            if (!isThereRefLink(node)) {
+                            if (!isThereLinkWithHash(node)) {
                                 node.setStart(true);
                             }
                         } else {
                             if (node.getIncomingConnections().size() == 0) {
-                                if (!isThereRefLink(node)) {
+                                if (!isThereLinkWithHash(node)) {
                                     node.setStart(true);
                                 }
                             }
@@ -1625,20 +1632,20 @@ public class Process extends Element implements IProcess {
      * @param node
      * @return
      */
-    public boolean isThereRefLink(final INode node) {
+    public boolean isThereLinkWithHash(final INode node) {
         boolean refLink = false;
 
         for (int i = 0; i < node.getOutgoingConnections().size() && !refLink; i++) {
             IConnection connec = node.getOutgoingConnections().get(i);
             if (connec.isActivate()) {
-                if (connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                     refLink = true;
                 } else {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                             || connec.getLineStyle().equals(EConnectionType.ITERATE)
                             || connec.getLineStyle().equals(EConnectionType.RUN_BEFORE)
                             || connec.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                        refLink = isThereRefLink(connec.getTarget());
+                        refLink = isThereLinkWithHash(connec.getTarget());
                     }
                 }
             }

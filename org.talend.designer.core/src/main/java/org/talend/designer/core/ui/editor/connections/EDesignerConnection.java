@@ -46,7 +46,7 @@ public enum EDesignerConnection {
     RUN_AFTER(EConnectionType.RUN_AFTER, "RunAfter", Messages.getString("EDesignerConnection.runAfter"), //$NON-NLS-1$ //$NON-NLS-2$
               new Integer(Graphics.LINE_SOLID),
               new Color(null, new RGB(100, 100, 100))),
-    REFERENCE(EConnectionType.REFERENCE, "Ref", Messages.getString("EDesignerConnection.reference"), //$NON-NLS-1$ //$NON-NLS-2$
+    LOOKUP(EConnectionType.LOOKUP, "Lookup", Messages.getString("EDesignerConnection.lookup"), //$NON-NLS-1$ //$NON-NLS-2$
               new Integer(Graphics.LINE_DASHDOTDOT),
               new Color(null, new RGB(150, 150, 0))),
     RUN_IF_OK(EConnectionType.RUN_IF_OK, "OnOk", Messages.getString("EDesignerConnection.runIfOK"), //$NON-NLS-1$ //$NON-NLS-2$

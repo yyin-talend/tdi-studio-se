@@ -232,6 +232,9 @@ public class Connection extends Element implements IConnection {
                 labelText += " (" + EDesignerConnection.FLOW_MERGE.getLinkName() + " order:" + inputId + ")";
             }
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.LOOKUP)) {
+            labelText += " (" + EDesignerConnection.LOOKUP.getLinkName() + ")";
+            updateName = true;
         }
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {
@@ -300,7 +303,7 @@ public class Connection extends Element implements IConnection {
                 // }
             }
             if ((lineStyle.equals(EConnectionType.TABLE) && source.getConnectorFromType(lineStyle).isBuiltIn())
-                    || lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    || lineStyle.hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                 if (source.getProcess().checkValidConnectionName(uniqueName)) {
                     source.getProcess().addUniqueConnectionName(uniqueName);
                 }

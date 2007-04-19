@@ -32,6 +32,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -52,26 +53,8 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
         String labelText = (String) edit.getCellEditor().getValue();
         ConnLabelEditPart labelPart = (ConnLabelEditPart) getHost();
         Connection connec = (Connection) getHost().getParent().getModel();
-        boolean ok = true;
-        if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-            if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
-                ok = false;
-            }
-        } else if (connec.getLineStyle().equals(EConnectionType.TABLE)) {
-            if (labelText.equals("")) {
-                ok = false;
-            } else {
-                List<? extends IConnection> cons = connec.getTarget().getIncomingConnections();
-                for (Iterator iter = cons.iterator(); iter.hasNext();) {
-                    Connection conn = (Connection) iter.next();
-                    if (conn.getName().equals(labelText)) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        }
-        if (!ok) {
+
+        if (!ConnectionManager.canRename(connec.getSource(), connec.getTarget(), connec.getLineStyle(), labelText)) {
             String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
             MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages
                     .getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$

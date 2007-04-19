@@ -63,7 +63,7 @@ public class ChangeConnTextCommand extends Command {
         oldName = connection.getName();
         connection.setName(newName);
 
-        if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+        if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             connection.getSource().getProcess().removeUniqueConnectionName(oldName);
             connection.getSource().getProcess().addUniqueConnectionName(newName);
         }
@@ -86,8 +86,7 @@ public class ChangeConnTextCommand extends Command {
     public void undo() {
         connection.setName(oldName);
 
-        if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+        if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
             connection.getSource().getProcess().removeUniqueConnectionName(newName);
             connection.getSource().getProcess().addUniqueConnectionName(oldName);
         }

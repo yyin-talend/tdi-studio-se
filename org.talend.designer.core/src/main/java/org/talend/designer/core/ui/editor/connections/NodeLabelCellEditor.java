@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.designer.core.model.process.ConnectionManager;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -43,7 +44,7 @@ public class NodeLabelCellEditor extends TextCellEditor {
 
     private static final Color ERROR_COLOR = new Color(null, new RGB(0xFF, 0, 0));
 
-    private IConnection connection;
+    private Connection connection;
 
     public NodeLabelCellEditor() {
         super();
@@ -60,7 +61,7 @@ public class NodeLabelCellEditor extends TextCellEditor {
         // TODO Auto-generated constructor stub
     }
 
-    public void setCurrentConnection(IConnection connection) {
+    public void setCurrentConnection(Connection connection) {
         this.connection = connection;
     }
 
@@ -70,26 +71,9 @@ public class NodeLabelCellEditor extends TextCellEditor {
         text.setBackground(null);
         if (connection != null) {
             if (text.getText() != null) {
-                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                    if (!connection.getSource().getProcess().checkValidConnectionName(text.getText(), true)) {
-                        text.setBackground(ERROR_COLOR);
-                        return;
-                    }
-                }
-                if (connection.getLineStyle().equals(EConnectionType.TABLE)) {
-                    if (text.getText().equals("")) {
-                        text.setBackground(ERROR_COLOR);
-                        return;
-                    }
-                    List<? extends IConnection> cons = connection.getTarget().getIncomingConnections();
-                    for (Iterator iter = cons.iterator(); iter.hasNext();) {
-                        Connection conn = (Connection) iter.next();
-
-                        if (conn.getName().equals(text.getText())) {
-                            text.setBackground(ERROR_COLOR);
-                            return;
-                        }
-                    }
+                if (!ConnectionManager.canRename(connection.getSource(), connection.getTarget(), connection
+                        .getLineStyle(), text.getText())) {
+                    text.setBackground(ERROR_COLOR);
                 }
             }
         }

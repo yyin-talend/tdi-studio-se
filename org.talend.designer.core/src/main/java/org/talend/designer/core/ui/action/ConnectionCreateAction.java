@@ -35,6 +35,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -147,7 +148,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 menuList.add(getNewOutputMenuName());
             } else {
                 String menuName;
-                if (node.getConnectorFromType(connecType).isCustomName()) {
+                if (connecType.equals(EConnectionType.TABLE)) {
                     menuName = getNewOutputMenuName();
                 } else {
                     menuName = EDesignerConnection.getConnection(connecType).getMenuName();
@@ -155,7 +156,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 setText(menuName);
                 menuList.add(menuName);
             }
-            
+
             return true;
         }
         return false;
@@ -218,7 +219,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     if (connectionName.equals("")) {
                         return;
                     }
-                    if (node.getConnectorFromType(connecType).isCustomName()
+                    if (connecType.equals(EConnectionType.TABLE)
                             || node.getProcess().checkValidConnectionName(connectionName)) {
                         nameOk = true;
                     } else {
@@ -229,7 +230,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     }
                 }
 
-                if (node.getConnectorFromType(connecType).isCustomName()) {
+                if (connecType.equals(EConnectionType.TABLE)) {
                     meta = new MetadataTable();
                     meta.setTableName(connectionName);
                     meta.setLabel(connectionName);
@@ -250,35 +251,36 @@ public class ConnectionCreateAction extends SelectionAction {
                 }
             } else {
                 String tableName;
-//                int tableId = -1;
-                if (node.getConnectorFromType(connecType).isCustomName()) {
+                // int tableId = -1;
+                if (connecType.equals(EConnectionType.TABLE)) {
                     int end = getText().length() - 1;
                     int start = getText().lastIndexOf("(") + 1;
                     tableName = getText().substring(start, end);
-//                    table = Integer.parseInt(stringId);
-//                    tableName = getText().substring(0, start - 2);
+                    // table = Integer.parseInt(stringId);
+                    // tableName = getText().substring(0, start - 2);
                     meta = node.getMetadataTable(tableName);
-//                    meta = (IMetadataTable) node.getMetadataList().get(tableId);
+                    // meta = (IMetadataTable) node.getMetadataList().get(tableId);
                     connectionName = meta.getLabel();
                 } else {
                     tableName = getText();
-//                    tableId = -1;
-                    
+                    // tableId = -1;
+
                     meta = node.getMetadataTable(tableName);
-//                    for (int i = 0; i < node.getMetadataList().size(); i++) {
-//                        IMetadataTable table = (IMetadataTable) node.getMetadataList().get(i);
-//                        if (table.getTableName().equals(tableName)) {
-//                            meta = (IMetadataTable) node.getMetadataList().get(i);
-//                        }
-//                    }
+                    // for (int i = 0; i < node.getMetadataList().size(); i++) {
+                    // IMetadataTable table = (IMetadataTable) node.getMetadataList().get(i);
+                    // if (table.getTableName().equals(tableName)) {
+                    // meta = (IMetadataTable) node.getMetadataList().get(i);
+                    // }
+                    // }
                     connectionName = meta.getTableName();
                 }
             }
         } else {
-            if (node.getConnectorFromType(connecType).isCustomName()) {
+            if (connecType.equals(EConnectionType.TABLE)) {
                 connectionName = askForConnectionName(node.getLabel());
             } else {
-                if (connecType.equals(EConnectionType.FLOW_MAIN)) {
+                if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)
+                        || connecType.equals(EConnectionType.LOOKUP)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
                 } else {
                     connectionName = EDesignerConnection.getConnection(connecType).getLinkName();

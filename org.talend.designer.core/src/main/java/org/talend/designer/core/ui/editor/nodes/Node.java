@@ -55,6 +55,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
@@ -230,7 +231,7 @@ public class Node extends Element implements INode {
 
         EConnectionType testedType;
 
-        if (connType.equals(EConnectionType.FLOW_REF) || connType.equals(EConnectionType.FLOW_MERGE)) {
+        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
             testedType = EConnectionType.FLOW_MAIN;
         } else {
             testedType = connType;
@@ -801,11 +802,11 @@ public class Node extends Element implements INode {
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
             Node nodeTmp = (Node) connection.getTarget();
-            if (connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + " from:" + this);
                 targetWithRef = nodeTmp;
             } else {
-                if (this.process.isThereRefLink(nodeTmp)) {
+                if (this.process.isThereLinkWithHash(nodeTmp)) {
                     // System.out.println(" ** Ref Link Found in:" + nodeTmp + " from:" + this);
                     targetWithRef = nodeTmp;
                 }
@@ -1039,7 +1040,7 @@ public class Node extends Element implements INode {
         }
 
         for (EConnectionType type : EConnectionType.values()) {
-            if (type != EConnectionType.FLOW_REF && type != EConnectionType.FLOW_MERGE) {
+            if (!type.hasConnectionCategory(IConnectionCategory.USE_HASH) && type != EConnectionType.FLOW_MERGE) {
                 int nbMaxOut;
                 nbMaxOut = getConnectorFromType(type).getMaxLinkOutput();
                 int nbMaxIn;

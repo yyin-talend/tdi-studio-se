@@ -36,6 +36,7 @@ import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
@@ -411,7 +412,7 @@ public class DataProcess {
         }
         checkRefList.add(graphicalNode);
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 // retrieve the starts node of each current nodes to add a before link
