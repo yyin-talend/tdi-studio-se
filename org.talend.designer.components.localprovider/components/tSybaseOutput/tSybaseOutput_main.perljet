@@ -86,10 +86,16 @@ my $nb_rows = 0;
 %>
 $nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
     or die "can't execute update query\n";
-$dbh_<%=cid %>->commit();
 if ($nb_rows) {
     $nb_line_updated_<%=cid%>+= $nb_rows;
 }
+
+if (++$nb_line_current_commit_upd_<%=cid%> >= <%=commitEvery %>) {
+    $dbh_<%=cid %>->commit() ;
+    $nb_line_current_commit_upd_<%=cid%> = 0;
+}
+
+
 <%
         }
         else if (dataAction.equals("INSERT")) {
@@ -99,6 +105,12 @@ $isth_<%=cid %>->execute(@<%=cid %>)
     or die "can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
+
+if (++$nb_line_current_commit_ins_<%=cid%> >= <%=commitEvery %>) {
+    $dbh_<%=cid %>->commit() ;
+    $nb_line_current_commit_ins_<%=cid%> = 0;
+}
+
 <%
         }
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
@@ -126,7 +138,7 @@ if($@){
         }
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
 %>
-$usth_<%=cid %>->{PrintError} = 1;
+$usth_<%=cid %>->{PrintError} = 0;
     $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>]) 
         or die "can't execute update query\n";
 
