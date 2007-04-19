@@ -65,12 +65,12 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
         IDialogSettings section = workbenchSettings.getSection("JobScriptsExportWizard"); //$NON-NLS-1$
         if (section == null) {
             section = workbenchSettings.addNewSection("JobScriptsExportWizard"); //$NON-NLS-1$
-            section.put(JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_MODEL_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_JOB_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_MODEL_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_JOB_ID, true);
+            section.put(PerlJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             
             section.put(JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
@@ -98,7 +98,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             mainPage = new JavaJobScriptsExportWizardPage(selection);
             break;
         case PERL:
-            mainPage = new JobScriptsExportWizardPage(selection);
+            mainPage = new PerlJobScriptsExportWizardPage(selection);
             break;
         }
         addPage(mainPage);

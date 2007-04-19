@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.custom.BusyIndicator;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -33,30 +32,30 @@ import org.eclipse.swt.custom.BusyIndicator;
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
-public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
+public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     // dialog store id constants
-    public static final  String STORE_SHELL_LAUNCHER_ID = "JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
+    public static final String STORE_SHELL_LAUNCHER_ID = "PerlJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
-    public static final String STORE_SYSTEM_ROUTINE_ID = "JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_SYSTEM_ROUTINE_ID = "PerlJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_USER_ROUTINE_ID = "JavaJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_USER_ROUTINE_ID = "PerlJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_MODEL_ID = "JavaJobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
+    public static final String STORE_MODEL_ID = "PerlJobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
 
-    public static final String STORE_JOB_ID = "JavaJobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
+    public static final String STORE_JOB_ID = "PerlJobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
-    public static final String STORE_CONTEXT_ID = "JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
+    public static final String STORE_CONTEXT_ID = "PerlJobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
 
-    // public static final String STORE_GENERATECODE_ID = "JavaJobScriptsExportWizardPage.STORE_GENERATECODE_ID";
+    // public static final String STORE_GENERATECODE_ID = "PerlJobScriptsExportWizardPage.STORE_GENERATECODE_ID";
     // //$NON-NLS-1$
 
-    public static final String STORE_SOURCE_ID = "JavaJobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
+    public static final String STORE_SOURCE_ID = "PerlJobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
 
-    private static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+    private static final String STORE_DESTINATION_NAMES_ID = "PerlJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     protected JobScriptsManager createJobScriptsManager() {
-        return new JobJavaScriptsManager();
+        return new JobPerlScriptsManager();
     }
 
     /**
@@ -64,25 +63,20 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * 
      * @param selection the selection
      */
-    public JavaJobScriptsExportWizardPage(IStructuredSelection selection) {
-        super("JavaJobscriptsExportPage1", selection); //$NON-NLS-1$
+    public PerlJobScriptsExportWizardPage(IStructuredSelection selection) {
+        super("PerlJobscriptsExportPage1", selection); //$NON-NLS-1$
     }
 
-    /**
-     * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
+    /*
+     * (non-Javadoc)
      * 
-     * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExporterOperation(java.util.List)
      */
-    protected List<ExportFileResource> getExportResources() {
-        final List<ExportFileResource>[] resourcesToExportxx = new List[1];
-
-        BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
-
-            public void run() {
-                resourcesToExportxx[0] = JavaJobScriptsExportWizardPage.super.getExportResources();
-            }
-        });
-        return resourcesToExportxx[0];
+    @Override
+    protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
+        ArchiveFileExportOperationFullPath operation = super.getExporterOperation(resourcesToExport);
+        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        return operation;
     }
 
     /**
@@ -146,5 +140,6 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
                 contextCombo.select(0);
             }
         }
+
     }
 }

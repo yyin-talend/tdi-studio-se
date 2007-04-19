@@ -63,53 +63,30 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
-public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
+public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
     // widgets
-    private Button shellLauncherButton;
+    protected Button shellLauncherButton;
 
-    private Button systemRoutineButton;
+    protected Button systemRoutineButton;
 
-    private Button userRoutineButton;
+    protected Button userRoutineButton;
 
-    private Button modelButton;
+    protected Button modelButton;
 
-    private Button jobButton;
+    protected Button jobButton;
 
-    private Button contextButton;
+    protected Button contextButton;
 
-    private Button sourceButton;
+    protected Button sourceButton;
 
-    private ExportFileResource[] process;
+    protected ExportFileResource[] process;
 
-    private Combo contextCombo;
+    protected Combo contextCombo;
 
-    private Combo launcherCombo;
+    protected Combo launcherCombo;
 
-    private JobScriptsManager manager;
-
-    //
-    // private Button genCodeButton;
-
-    // dialog store id constants
-    public final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
-
-    public final static String STORE_SYSTEM_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
-
-    public static final String STORE_USER_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
-
-    public final static String STORE_MODEL_ID = "JobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
-
-    public final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
-
-    public final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
-
-    // public final static String STORE_GENERATECODE_ID = "JobScriptsExportWizardPage.STORE_GENERATECODE_ID";
-    // //$NON-NLS-1$
-
-    public static final String STORE_SOURCE_ID = "JobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
-
-    private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+    protected JobScriptsManager manager;
 
     /**
      * Create an instance of this class.
@@ -132,8 +109,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
                     list.add(resource);
                 }
             }
@@ -161,9 +137,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         }
     }
 
-    private JobScriptsManager createJobScriptsManager() {
-        return new JobPerlScriptsManager();
-    }
+    protected abstract JobScriptsManager createJobScriptsManager();
 
     /**
      * Create an instance of this class.
@@ -427,9 +401,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
-                resourcesToExport, getDestinationValue());
-        exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
         boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name
@@ -439,11 +411,21 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
-                    .getDefaultContext());
-            System.out.println("regenerate:"+processItem.getProperty().getLabel());
+            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext());
         }
         return ok;
+    }
+
+    /**
+     * Get the export operation.
+     * 
+     * @param resourcesToExport
+     * @return
+     */
+    protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue());
+        return exporterOperation;
     }
 
     /**
@@ -564,25 +546,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
     protected void internalSaveWidgetValues() {
-        // update directory names history
-        IDialogSettings settings = getDialogSettings();
-        if (settings != null) {
-            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames == null) {
-                directoryNames = new String[0];
-            }
-
-            directoryNames = addToHistory(directoryNames, getDestinationValue());
-            settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
-            settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
-            settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
-            settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
-            settings.put(STORE_MODEL_ID, modelButton.getSelection());
-            settings.put(STORE_JOB_ID, jobButton.getSelection());
-            settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
-            settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
-            // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
-        }
     }
 
     /**
@@ -590,38 +553,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * completion.
      */
     protected void restoreWidgetValues() {
-        IDialogSettings settings = getDialogSettings();
-        if (settings != null) {
-            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
-                setDestinationValue(directoryNames[0]);
-                for (int i = 0; i < directoryNames.length; i++) {
-                    addDestinationItem(directoryNames[i]);
-                }
-            }
-            shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
-            systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
-            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
-            modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
-            contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
-            // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
-        }
-
-        launcherCombo.setItems(manager.getLauncher());
-        if (manager.getLauncher().length > 0) {
-            launcherCombo.select(0);
-        }
-        if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
-            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
-            if (contextNames.size() > 0) {
-                contextCombo.select(0);
-            }
-        }
-
     }
 
     /*
