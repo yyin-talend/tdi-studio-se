@@ -230,7 +230,7 @@ public class Node extends Element implements INode {
 
         EConnectionType testedType;
 
-        if (connType.equals(EConnectionType.FLOW_REF)) {
+        if (connType.equals(EConnectionType.FLOW_REF) || connType.equals(EConnectionType.FLOW_MERGE)) {
             testedType = EConnectionType.FLOW_MAIN;
         } else {
             testedType = connType;
@@ -1039,7 +1039,7 @@ public class Node extends Element implements INode {
         }
 
         for (EConnectionType type : EConnectionType.values()) {
-            if (type != EConnectionType.FLOW_REF) {
+            if (type != EConnectionType.FLOW_REF && type != EConnectionType.FLOW_MERGE) {
                 int nbMaxOut;
                 nbMaxOut = getConnectorFromType(type).getMaxLinkOutput();
                 int nbMaxIn;
