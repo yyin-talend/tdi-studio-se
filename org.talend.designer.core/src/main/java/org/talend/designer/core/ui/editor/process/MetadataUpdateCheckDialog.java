@@ -33,6 +33,9 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -328,6 +331,16 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         setResult(list);
 
         super.okPressed();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.window.Window#canHandleShellCloseEvent()
+     */
+    @Override
+    protected boolean canHandleShellCloseEvent() {
+        return false;
     }
 
     /**
