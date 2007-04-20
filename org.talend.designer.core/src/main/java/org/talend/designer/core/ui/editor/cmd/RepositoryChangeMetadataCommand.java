@@ -33,12 +33,8 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
@@ -56,8 +52,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private Node node;
 
-    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue,
-            IMetadataTable newOutputMetadata) {
+    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata) {
         super(node, null, newOutputMetadata);
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
@@ -69,6 +64,15 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
+        if (node.isExternalNode() && !node.isELTComponent()) {
+            for (IElementParameter parameter : node.getElementParameters()) {
+                if (parameter.getField() == EParameterFieldType.TABLE) {
+                    if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
+                        parameter.setValue(new ArrayList<Map<String, Object>>());
+                    }
+                }
+            }
+        }
         refreshPropertyView();
         super.execute();
     }

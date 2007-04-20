@@ -65,7 +65,7 @@ public class ChangeMetadataCommand extends Command {
 
     private Node node, inputNode;
 
-    private IMetadataTable currentOutputMetadata, newOutputMetadata, oldOutputMetadata;
+    protected IMetadataTable currentOutputMetadata, newOutputMetadata, oldOutputMetadata;
 
     private boolean outputWasRepository = false, inputWasRepository = false;
 

@@ -118,14 +118,12 @@ public class ExternalNodeChangeCommand extends Command {
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                         if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                    EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                         }
                     }
                 }
@@ -183,13 +181,11 @@ public class ExternalNodeChangeCommand extends Command {
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
                     IMetadataTable oldMetadata = connection.getMetadataTable().clone();
                     currentIO.setTable(oldMetadata);
-                    String schemaType = (String) connection.getSource().getPropertyValue(
-                            EParameterName.SCHEMA_TYPE.getName());
+                    String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                     if (schemaType != null) {
                         // if there is a SCHEMA_TYPE, then switch it to BUILT_IN if REPOSITORY is set.
                         if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                    EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                             metadataInputWasRepository.put(connection, Boolean.TRUE);
                         }
                     }
@@ -218,7 +214,10 @@ public class ExternalNodeChangeCommand extends Command {
                 ((Connection) connection).updateName();
             }
         }
-
+        if (!oldMetaDataList.isEmpty() && !newMetaDataList.isEmpty()
+                && !oldMetaDataList.get(0).sameMetadataAs(newMetaDataList.get(0))) {
+            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+        }
         node.setExternalData(newExternalData);
         node.setMetadataList(newMetaDataList);
         for (Connection connection : connectionsToDelete) {
@@ -252,8 +251,7 @@ public class ExternalNodeChangeCommand extends Command {
                     currentIO.setTable(oldMetadata);
                     connection.getMetadataTable().setListColumns(metadata.getListColumns());
                     if (metadataInputWasRepository.get(connection) != null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.REPOSITORY);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                     }
                 }
             }

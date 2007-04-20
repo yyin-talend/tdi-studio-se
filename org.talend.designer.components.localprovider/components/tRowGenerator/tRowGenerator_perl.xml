@@ -31,6 +31,14 @@
   </CONNECTORS>
 
   <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="1"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER NAME="NB_ROWS" FIELD="TEXT" NUM_ROW="2" SHOW="false">
       <DEFAULT>'100'</DEFAULT>
     </PARAMETER>

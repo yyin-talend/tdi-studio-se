@@ -190,7 +190,7 @@ public class FunctionManager {
         Function currentFun = null;
         boolean isExsit = false;
         for (Function function : funs) {
-            if (value.indexOf(function.getName()) != -1) {
+            if (value != null && value.indexOf(function.getName()) != -1) {
                 isExsit = true;
             }
         }
