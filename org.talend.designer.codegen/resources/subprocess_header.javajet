@@ -36,8 +36,7 @@
 				if (
 					(templateOrigin.compareTo("")!=0) ||
 					(conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||
-					(conn.getLineStyle().equals(EConnectionType.FLOW_REF))||
-					(conn.getLineStyle().equals(EConnectionType.REFERENCE))
+					(conn.getLineStyle().equals(EConnectionType.FLOW_REF))
 				) {
 					if (!hSet.contains(conn.getName())) {
 						hSet.add(conn.getName());
