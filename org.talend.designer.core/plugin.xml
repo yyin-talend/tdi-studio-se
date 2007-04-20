@@ -304,6 +304,10 @@
             mapping="PREV_COLUMN_LIST"
             name="Pre Column List"/>
       <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColumnListGenerator"
+            mapping="LOOKUP_COLUMN_LIST"
+            name="Lookup Column List"/>
+      <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.SqlMemoGenerator"
             mapping="MEMO_SQL"
             name="Sql Memo"/>

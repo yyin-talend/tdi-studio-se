@@ -97,7 +97,7 @@ public class Connection extends Element implements IConnection {
     private void init(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName) {
         this.lineStyle = lineStyle;
         this.metaName = metaName;
-        if (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
+        if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
         }
 
@@ -175,7 +175,7 @@ public class Connection extends Element implements IConnection {
                 uniqueName = name;
             }
 
-            if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
+            if (source != null && lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
                 if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                     IMetadataTable table = getMetadataTable();
                     table.setTableName(name);

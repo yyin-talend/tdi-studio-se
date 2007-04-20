@@ -1542,7 +1542,7 @@ public class Process extends Element implements IProcess {
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.getSource().isActivate() != active) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                         if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
                             setActivate(connec.getSource().getSubProcessStartNode(false), active, activateNode);
                         }
@@ -1560,7 +1560,7 @@ public class Process extends Element implements IProcess {
                 node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                         if (connec.getSource().isActivate() != active) {
                             setActivate(connec.getSource(), active, activateNode);
                         }
@@ -1568,7 +1568,7 @@ public class Process extends Element implements IProcess {
                 }
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                         if (connec.getTarget().isActivate() != active) {
                             setActivate(connec.getTarget(), active, activateNode);
                         }

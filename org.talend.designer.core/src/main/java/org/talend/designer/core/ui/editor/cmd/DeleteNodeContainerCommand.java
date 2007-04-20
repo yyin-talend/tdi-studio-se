@@ -130,8 +130,7 @@ public class DeleteNodeContainerCommand extends Command {
                     connection.reconnect();
                 }
                 if (!builtIn) {
-                    if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         process.addUniqueConnectionName(connection.getName());
                     }
                 }

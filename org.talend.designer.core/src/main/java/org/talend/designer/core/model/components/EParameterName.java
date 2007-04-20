@@ -72,6 +72,7 @@ public enum EParameterName {
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
     COLUMN_LIST(Messages.getString("EParameterName.columnList")), //$NON-NLS-1$
     PREV_COLUMN_LIST(Messages.getString("EParameterName.prevColumnList")), //$NON-NLS-1$
+    LOOKUP_COLUMN_LIST(Messages.getString("EParameterName.lookupColumnList")), //$NON-NLS-1$
     TSTATCATCHER_STATS(Messages.getString("EParameterName.tStatCatcherStats")), //$NON-NLS-1$
     COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
     REPOSITORY_ENCODING_TYPE("Repository"), 

@@ -790,7 +790,7 @@ public class Node extends Element implements INode {
 
         for (int j = 0; j < getIncomingConnections().size(); j++) {
             connec = (Connection) getIncomingConnections().get(j);
-            if (!connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+            if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 return connec.getSource().getSubProcessStartNode(withConditions);
             }
         }

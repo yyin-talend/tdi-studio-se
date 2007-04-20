@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,8 +67,6 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * 
  */
 public class ColumnListController extends AbstractElementPropertySectionController {
-
-    private static final String REFRESH_BUTTON = "icons/refresh.gif"; //$NON-NLS-1$
 
     private boolean updateColumnListFlag;
 
@@ -151,8 +150,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                             }
                         } else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
                             String connectionSelected;
-                            connectionSelected = (String) elem
-                                    .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                            connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                    .getName());
 
                             if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
                                 repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
@@ -169,7 +168,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         } else if (name.equals(EParameterName.SCHEMA_TYPE.getName())) {
                             if (elem instanceof Node) {
                                 String schemaSelected;
-                                schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                                schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                                        .getName());
                                 if (repositoryTableMap.containsKey(schemaSelected)) {
                                     repositoryMetadata = repositoryTableMap.get(schemaSelected);
                                 } else {
@@ -201,8 +201,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         if (param.getField() == EParameterFieldType.COLUMN_LIST) {
             param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
-        } else {
+        } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
             param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
+        } else if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+            param.setDisplayName(EParameterName.LOOKUP_COLUMN_LIST.getDisplayName());
         }
 
         // Button refreshBtn;
@@ -318,62 +320,33 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     };
 
-    private void refreshLatestValuesForParam(IElementParameter param) {
-
-    }
-
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        List<String> columnList = getDynamicTabbedPropertySection().getColumnList();
-        List<String> prevColumnList = getDynamicTabbedPropertySection().getPrevColumnList();
-        List<String> curColumnList = null;
+        this.dynamicTabbedPropertySection.updateColumnList(null);
 
-        String[] columnNameList = (String[]) columnList.toArray(new String[0]);
-        String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
-        String[] curColumnNameList = null;
+        String[] curColumnNameList = param.getListItemsDisplayName();
+        String[] curColumnValueList = (String[]) param.getListItemsValue();
 
-        if (param.getField() == EParameterFieldType.COLUMN_LIST) {
-            curColumnList = columnList;
-            curColumnNameList = columnNameList;
-        }
-        if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-            curColumnList = prevColumnList;
-            curColumnNameList = prevColumnNameList;
-        }
-        if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-            param.setListItemsDisplayName(curColumnNameList);
-            param.setListItemsValue(curColumnNameList);
+        Object value = param.getValue();
+        boolean listContainValue = false;
+        int numValue = 0;
+        for (int i = 0; i < curColumnValueList.length && !listContainValue; i++) {
+            if (curColumnValueList[i].equals(value)) {
+                listContainValue = true;
+                numValue = i;
+            }
         }
 
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
         combo.setItems(curColumnNameList);
-        if (!curColumnList.contains(param.getValue())) {
+        if (!listContainValue) {
             if (curColumnNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curColumnNameList[0]);
+                elem.setPropertyValue(param.getName(), curColumnValueList[0]);
                 combo.setText(curColumnNameList[0]);
             }
         } else {
-            combo.setText((String) param.getValue());
+            combo.setText(curColumnNameList[numValue]);
         }
-
-//        Object value = param.getValue();
-//        if (value instanceof String) {
-//            String strValue = (String) value; //$NON-NLS-1$
-//            int nbInList = 0, nbMax = param.getListItemsValue().length;
-//            String name = (String) elem.getPropertyValue(param.getName());
-//            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-//                if (name.equals(param.getListItemsValue()[nbInList])) {
-//                    strValue = param.getListItemsDisplayName()[nbInList];
-//                }
-//                nbInList++;
-//            }
-//            String[] paramItems = param.getListItemsDisplayName();
-//            String[] comboItems = combo.getItems();
-//            if (!paramItems.equals(comboItems)) {
-//                combo.setItems(paramItems);
-//            }
-//            combo.setText(strValue);
-//        }
     }
 }

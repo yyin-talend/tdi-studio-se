@@ -144,6 +144,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Map<String, String> tableIdAndDbTypeMap;
 
     private Map<String, String> tableIdAndDbSchemaMap;
+    
 
     /**
      * ftang Comment method "showSchemaRepositoryList".
@@ -891,36 +892,44 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     public void updateColumnList(List<ColumnNameChanged> columnsChanged) {
         List<String> columnList = getColumnList();
         List<String> prevColumnList = getPrevColumnList();
-        List<String> curColumnList = null;
+        Map<IConnection, List<String>> refColumnLists = getRefColumnLists();
 
         String[] columnNameList = (String[]) columnList.toArray(new String[0]);
         String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
         String[] curColumnNameList = null;
+        String[] curColumnValueList = null;
+        
+        List<String> refColumnListNamesTmp = new ArrayList<String>(); 
+        List<String> refColumnListValuesTmp = new ArrayList<String>(); 
+        for (IConnection connection: refColumnLists.keySet()) {
+            String name = connection.getName() +".";
+            String value = connection.getSource().getUniqueName() +".";
+            for (String column:refColumnLists.get(connection)) {
+                refColumnListNamesTmp.add(name + column);
+                refColumnListValuesTmp.add(value + column);
+            }
+        }
+        String[] refColumnListNames = (String[]) refColumnListNamesTmp.toArray(new String[0]);
+        String[] refColumnListValues = (String[]) refColumnListValuesTmp.toArray(new String[0]);
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
-                curColumnList = columnList;
                 curColumnNameList = columnNameList;
+                curColumnValueList = columnNameList;
             }
             if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-                curColumnList = prevColumnList;
                 curColumnNameList = prevColumnNameList;
+                curColumnValueList = prevColumnNameList;
+            }
+            if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                curColumnNameList = refColumnListNames;
+                curColumnValueList = refColumnListValues;
             }
             if (param.getField() == EParameterFieldType.COLUMN_LIST
-                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                    || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
-                param.setListItemsValue(curColumnNameList);
-
-                // CCombo combo = (CCombo) hashCurControls.get(param.getName());
-                // combo.setItems(curColumnNameList);
-                // if (!curColumnList.contains(param.getValue())) {
-                // if (curColumnNameList.length > 0) {
-                // elem.setPropertyValue(param.getName(), curColumnNameList[0]);
-                // combo.setText(curColumnNameList[0]);
-                // }
-                // } else {
-                // combo.setText((String) param.getValue());
-                // }
+                param.setListItemsValue(curColumnValueList);
             }
             if (param.getField() == EParameterFieldType.TABLE) {
                 TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
@@ -931,20 +940,25 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         if (itemsValue[j] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                             if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
-                                curColumnList = columnList;
                                 curColumnNameList = columnNameList;
+                                curColumnValueList = columnNameList;
                             }
                             if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-                                curColumnList = prevColumnList;
                                 curColumnNameList = prevColumnNameList;
+                                curColumnValueList = prevColumnNameList;
+                            }
+                            if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                                curColumnNameList = refColumnListNames;
+                                curColumnValueList = refColumnListValues;
                             }
                             if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
-                                    || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                                    || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                                    || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                                 tmpParam.setListItemsDisplayCodeName(curColumnNameList);
                                 tmpParam.setListItemsDisplayName(curColumnNameList);
-                                tmpParam.setListItemsValue(curColumnNameList);
-                                if (curColumnNameList.length > 0) {
-                                    tmpParam.setDefaultClosedListValue(curColumnNameList[0]);
+                                tmpParam.setListItemsValue(curColumnValueList);
+                                if (curColumnValueList.length > 0) {
+                                    tmpParam.setDefaultClosedListValue(curColumnValueList[0]);
                                 } else {
                                     tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                                 }
@@ -1091,6 +1105,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         return columnList;
+    }
+
+    public Map<IConnection, List<String>> getRefColumnLists() {
+        Map<IConnection, List<String>> refColumnLists = new HashMap<IConnection, List<String>>();
+
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            List<IConnection> refConnections = new ArrayList<IConnection>();
+            for (int i = 0; i < node.getIncomingConnections().size(); i++) {
+                IConnection curConnec = node.getIncomingConnections().get(i);
+                if (curConnec.getLineStyle() == EConnectionType.FLOW_REF) {
+                    refConnections.add(curConnec);
+                }
+            }
+            for (IConnection connection : refConnections) {
+                List<String> columnList = new ArrayList<String>();
+                IMetadataTable table = connection.getMetadataTable();
+                for (IMetadataColumn column : table.getListColumns()) {
+                    columnList.add(column.getLabel());
+                }
+                refColumnLists.put(connection, columnList);
+            }
+        }
+        return refColumnLists;
     }
 
     /**

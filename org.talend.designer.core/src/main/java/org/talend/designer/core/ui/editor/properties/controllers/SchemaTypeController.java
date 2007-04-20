@@ -473,7 +473,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     btnSize.y = resetBtnSize.y;
                 }
 
-                lastControlUsed = btn;
+                lastControlUsed = resetBtn;
             }
         }
 

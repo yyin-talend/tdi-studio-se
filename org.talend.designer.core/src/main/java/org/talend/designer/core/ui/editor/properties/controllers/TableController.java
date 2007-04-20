@@ -91,9 +91,9 @@ public class TableController extends AbstractElementPropertySectionController {
         final Composite container = parentComposite;
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
-        tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess(), this.dynamicTabbedPropertySection
-                .getColumnList(), this.dynamicTabbedPropertySection.getPrevColumnList());
 
+        dynamicTabbedPropertySection.updateColumnList(null);
+        tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess());
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());

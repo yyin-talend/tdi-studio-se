@@ -36,6 +36,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -301,8 +302,7 @@ public class NodesPasteCommand extends Command {
                     String newConnectionName;
                     String metaTableName;
 
-                    if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
                         newConnectionName = createNewConnectionName(connection.getName());
                     } else {
                         newConnectionName = connection.getName();

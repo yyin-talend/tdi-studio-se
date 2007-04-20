@@ -146,6 +146,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 IElementParameter tmpParam = (IElementParameter) itemsValue[i];
                 switch (tmpParam.getField()) {
                 case CLOSED_LIST:
+                case LOOKUP_COLUMN_LIST:
                 case COLUMN_LIST:
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
@@ -230,6 +231,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             switch (tmpParam.getField()) {
                             case CLOSED_LIST:
                             case COLUMN_LIST:
+                            case LOOKUP_COLUMN_LIST:
                             case PREV_COLUMN_LIST:
                                 String[] namesSet = tmpParam.getListItemsDisplayName();
                                 if (namesSet.length == 0) {
@@ -269,6 +271,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         switch (tmpParam.getField()) {
                         case CLOSED_LIST:
                         case COLUMN_LIST:
+                        case LOOKUP_COLUMN_LIST:
                         case PREV_COLUMN_LIST:
                             if (value instanceof String) {
                                 Object[] itemNames = ((IElementParameter) itemsValue[curCol]).getListItemsDisplayName();

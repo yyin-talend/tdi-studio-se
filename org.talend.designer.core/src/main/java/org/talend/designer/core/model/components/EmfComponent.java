@@ -842,6 +842,7 @@ public class EmfComponent implements IComponent {
                 switch (currentField) {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
+                case LOOKUP_COLUMN_LIST:
                 case PREV_COLUMN_LIST:
                     addItemsPropertyParameters(
                             paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$

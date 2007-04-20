@@ -47,13 +47,13 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
     private Process process;
 
-    private List<String> columnList;
+//    private List<String> columnList;
+//
+//    private List<String> prevColumnList;
 
-    private List<String> prevColumnList;
-
-    private String[] columnArrayList;
-
-    private String[] prevColumnArrayList;
+//    private String[] columnArrayList;
+//
+//    private String[] prevColumnArrayList;
 
     private boolean dynamicData;
 
@@ -68,50 +68,10 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         super(titleName);
     }
 
-    public void setData(Element element, IElementParameter elemParameter, Process process, List<String> columnList,
-            List<String> prevColumnList) {
+    public void setData(Element element, IElementParameter elemParameter, Process process) {
         this.element = element;
         this.process = process;
         this.elemParameter = elemParameter;
-        this.columnList = columnList;
-        this.prevColumnList = prevColumnList;
-        columnArrayList = columnList.toArray(new String[0]);
-        prevColumnArrayList = prevColumnList.toArray(new String[0]);
-
-        Object[] itemsValue = getItemsValue();
-
-        if (elemParameter.isBasedOnSchema()) {
-            dynamicData = true;
-        }
-
-        for (int i = 0; i < itemsValue.length; i++) {
-            if (itemsValue[i] instanceof IElementParameter) {
-                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
-                    dynamicData = true;
-                    tmpParam.setListItemsDisplayCodeName(columnArrayList);
-                    tmpParam.setListItemsDisplayName(columnArrayList);
-                    tmpParam.setListItemsValue(columnArrayList);
-                    if (columnArrayList.length != 0) {
-                        tmpParam.setDefaultClosedListValue(columnArrayList[0]);
-                    } else {
-                        tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
-                    }
-                }
-                if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-                    dynamicData = true;
-                    tmpParam.setListItemsDisplayCodeName(prevColumnArrayList);
-                    tmpParam.setListItemsDisplayName(prevColumnArrayList);
-                    tmpParam.setListItemsValue(prevColumnArrayList);
-                    if (prevColumnArrayList.length != 0) {
-                        tmpParam.setDefaultClosedListValue(prevColumnArrayList[0]);
-                    } else {
-                        tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
-                    }
-                }
-            }
-        }
-
         registerDataList((List<B>) elemParameter.getValue());
     }
 
@@ -130,6 +90,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         switch (tmpParam.getField()) {
         case CLOSED_LIST:
         case COLUMN_LIST:
+        case LOOKUP_COLUMN_LIST:
         case PREV_COLUMN_LIST:
             line.put(items[0], null);
             break;
@@ -149,6 +110,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             switch (tmpParam.getField()) {
             case CLOSED_LIST:
             case COLUMN_LIST:
+            case LOOKUP_COLUMN_LIST:
             case PREV_COLUMN_LIST:
                 line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                         .getDefaultClosedListValue())));
@@ -165,18 +127,18 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * 
      * @return the columnArrayList
      */
-    public String[] getColumnArrayList() {
-        return this.columnArrayList;
-    }
+//    public String[] getColumnArrayList() {
+//        return this.columnArrayList;
+//    }
 
     /**
      * Getter for columnList.
      * 
      * @return the columnList
      */
-    public List<String> getColumnList() {
-        return this.columnList;
-    }
+//    public List<String> getColumnList() {
+//        return this.columnList;
+//    }
 
     /**
      * Getter for dynamicData.
@@ -246,18 +208,18 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * 
      * @return the prevColumnArrayList
      */
-    public String[] getPrevColumnArrayList() {
-        return this.prevColumnArrayList;
-    }
+//    public String[] getPrevColumnArrayList() {
+//        return this.prevColumnArrayList;
+//    }
 
     /**
      * Getter for prevColumnList.
      * 
      * @return the prevColumnList
      */
-    public List<String> getPrevColumnList() {
-        return this.prevColumnList;
-    }
+//    public List<String> getPrevColumnList() {
+//        return this.prevColumnList;
+//    }
 
     /**
      * Getter for process.
