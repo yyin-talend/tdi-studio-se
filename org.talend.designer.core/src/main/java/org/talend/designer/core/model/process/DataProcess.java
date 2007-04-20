@@ -102,6 +102,7 @@ public class DataProcess {
         dataNode.setElementParameters(graphicalNode.getElementParameters());
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+        dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
@@ -165,6 +166,7 @@ public class DataProcess {
         dataNode = itemsMap.get(multipleComponentManager.getInput());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+        dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
         for (IConnection connection : previousNode.getIncomingConnections()) {
             AbstractConnection asbractConnect = (AbstractConnection) connection;

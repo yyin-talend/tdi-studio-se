@@ -389,4 +389,12 @@ public abstract class ShadowNode implements INode {
     {
         return null;
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
+     */
+    public boolean isThereLinkWithHash() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

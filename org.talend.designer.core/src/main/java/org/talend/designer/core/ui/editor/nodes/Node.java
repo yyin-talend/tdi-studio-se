@@ -1294,4 +1294,14 @@ public class Node extends Element implements INode {
     public boolean isELTComponent() {
         return getComponent().getFamily().startsWith("ELT");
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
+     */
+    public boolean isThereLinkWithHash() {
+        return process.isThereLinkWithHash(this);
+    }
+
 }

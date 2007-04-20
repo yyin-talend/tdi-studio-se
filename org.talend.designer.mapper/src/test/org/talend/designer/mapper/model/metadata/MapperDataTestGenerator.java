@@ -1757,6 +1757,10 @@ public class MapperDataTestGenerator {
             return null;
         }
 
+        public boolean isThereLinkWithHash() {
+            return false;
+        }
+
     }
 
     public ArrayList<IConnection> getInputConnectionsList() {
