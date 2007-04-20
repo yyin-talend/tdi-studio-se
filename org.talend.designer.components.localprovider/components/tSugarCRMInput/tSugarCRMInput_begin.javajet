@@ -1,0 +1,148 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		"
+class="tSugarCRMInput" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+    
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+	String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+
+	String username = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASS__");
+	
+	String condition = ElementParameterParser.getValue(node, "__CONDITION__");
+	String fields = ElementParameterParser.getValue(node, "__FIELD__");
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+%>
+////////////////////////////        
+        
+         	class Util_<%=cid %>
+            {
+                    public String getFieldbyOrder(int index, String[] filedArr, org.talend.sugarws.Name_value[] nameValue) {
+           				
+           				if (filedArr==null) return nameValue[index].getValue();
+           				String fieldName = filedArr[index].trim();
+           				for (int j = 0; j < nameValue.length; j++) {
+                    		if(fieldName.equals(nameValue[j].getName()))
+                    		{
+                    			return 	nameValue[j].getValue();
+                    		}
+                          }
+                        return "";                       
+                    }                   
+            }        
+        
+        
+        int nb_line_<%=cid %> = 0;
+        String modulename_<%=cid %> = <%=modulename %>;
+        org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","4.5.0");
+        sugarManagement_<%=cid %>.login();
+        
+        String[] filedArr_<%=cid %> = null;
+        String condition_<%=cid %> = "";
+        
+        Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+        
+<% if (fields!=null && fields.trim().length()>0) { %>   filedArr_<%=cid %> = <%=fields %>.replaceAll(" ", "").split(","); <% } %> 
+       
+<% if (condition!=null && condition.trim().length()>0) { %>   condition_<%=cid %> = <%=condition %>; <% } %> 
+         
+        org.talend.sugarws.Get_entry_list_result getEntryListResult_<%=cid %> = sugarManagement_<%=cid %>.getRecordswithQuery(modulename_<%=cid %>, condition_<%=cid %>, filedArr_<%=cid %>, 0, 100); 
+
+        // read the record from remote, one time 100 records.
+        while (getEntryListResult_<%=cid %>.getResult_count() != 0) {
+            org.talend.sugarws.Entry_value[] entry_value_<%=cid %> = getEntryListResult_<%=cid %>.getEntry_list();
+            // get every record
+            for (int i_<%=cid %> = 0; i_<%=cid %> < entry_value_<%=cid %>.length; i_<%=cid %>++) {
+                org.talend.sugarws.Name_value[] nameValue_<%=cid %> = entry_value_<%=cid %>[i_<%=cid %>].getName_value_list(); 
+        		nb_line_<%=cid %>++;
+                
+//////////       
+
+<%
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	String firstConnName = "";
+	if (conns!=null) {//1
+		if (conns.size()>0) {//2
+		
+			IConnection conn = conns.get(0); //the first connection
+			firstConnName = conn.getName();			
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {//3
+
+				%>
+
+			
+<%
+			List<IMetadataColumn> columns=metadata.getListColumns();
+			int columnSize = columns.size();
+			for (int i=0;i<columnSize;i++) {//4
+					IMetadataColumn column=columns.get(i);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+			%>
+						
+			
+				if(<%=i %> < nameValue_<%=cid %>.length){				
+<%
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
+%>
+					<%=conn.getName() %>.<%=column.getLabel() %> = util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>);
+<%
+					} else if(javaType == JavaTypesManager.DATE) { //Date
+%>
+					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>), <%= patternValue %>);
+<%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
+%>
+					<%=conn.getName() %>.<%=column.getLabel() %> = util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>).getBytes();
+	
+<%
+					} else  { //other
+%>						
+					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(util_<%=cid %>.getFieldbyOrder(<%=i %>, filedArr_<%=cid %>, nameValue_<%=cid %>));
+<%
+					}
+%>
+			
+			} else { 
+			
+					<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+			}
+			
+			
+<%			
+			} //4
+		}//3
+		
+	}//2
+	
+}//1
+
+%> 
+////////////////////////////
+<%
+  }
+}
+%>
