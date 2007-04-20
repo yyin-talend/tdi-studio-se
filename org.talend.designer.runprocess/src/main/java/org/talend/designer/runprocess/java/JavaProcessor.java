@@ -28,8 +28,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -68,6 +70,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
@@ -81,6 +84,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -439,11 +443,16 @@ public class JavaProcessor extends Processor {
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
-
+        
+        Set<String> listModulesReallyNeeded = new HashSet<String>();
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+        }
+        
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile()) {
+                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
                     classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
                 }
             }
@@ -638,13 +647,20 @@ public class JavaProcessor extends Processor {
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
-
+        
+        
         // init lib path
+        
+        Set<String> listModulesReallyNeeded = new HashSet<String>();
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+        }
+        
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile()) {
+                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
                                 + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
