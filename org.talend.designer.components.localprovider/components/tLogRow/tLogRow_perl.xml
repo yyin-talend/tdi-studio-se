@@ -36,9 +36,18 @@
     />
 
     <PARAMETER
+      NAME="TABLE_PRINT"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
       NUM_ROW="20"
+      SHOW_IF="TABLE_PRINT == 'false'"
     >
       <DEFAULT>'|'</DEFAULT>
     </PARAMETER>
@@ -47,6 +56,7 @@
       NAME="PRINT_UNIQUE_NAME"
       FIELD="CHECK"
       NUM_ROW="30"
+      SHOW_IF="TABLE_PRINT == 'false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -55,6 +65,7 @@
       NAME="PRINT_COLNAMES"
       FIELD="CHECK"
       NUM_ROW="40"
+      SHOW_IF="TABLE_PRINT == 'false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -63,6 +74,7 @@
       NAME="USE_FIXED_LENGTH"
       FIELD="CHECK"
       NUM_ROW="50"
+      SHOW_IF="TABLE_PRINT == 'false'"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -82,7 +94,15 @@
 
   </PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="Text-ASCIITable"
+        MODULE="Text::ASCIITable"
+        REQUIRED="false"
+      />
+    </IMPORTS>
+   </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>

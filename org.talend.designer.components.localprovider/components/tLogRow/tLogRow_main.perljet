@@ -40,6 +40,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__USE_FIXED_LENGTH__"
         );
+
+        String tablePrint = ElementParameterParser.getValue(
+            node,
+            "__TABLE_PRINT__"
+        );
+%>
+
+<%
+        if (tablePrint.equals("true")) {
+%>
+$table_<%=cid%>->addRow(@<%=cid %>);
+<%
+        }
+        else {
 %>
 
 $colnum1 = 0;
@@ -47,25 +61,25 @@ $colnum2 = 0;
 
 print STDOUT (
 <%
-        if (printUniqueName.equals("true")) {
+            if (printUniqueName.equals("true")) {
 %>
     '[<%=cid%>] ',
 <%
-        }
+            }
 %>
     join(
         <%=fieldSeparator %>,
 <%
-        if (printColumnNames.equals("true")) {
+            if (printColumnNames.equals("true")) {
 %>
         map {$colnames_<%=cid%>[$colnum1++].': '.$_}
 <%
-        }
-        if (useFixedLength.equals("true")) {
+            }
+            if (useFixedLength.equals("true")) {
 %>
             map {sprintf('%*s', $collengths_<%=cid%>[$colnum2++], $_)}
 <%
-        }
+            }
 %>
                 @<%=cid %>
     ),
@@ -74,6 +88,8 @@ print STDOUT (
     or die "[<%=cid%>] can't print to STDOUT\n";
 
 <%
+        }
+
         if (stats) {
 %>
 UpdateStat('<%=metadata.getTableName() %>', 1);

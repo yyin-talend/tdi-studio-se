@@ -33,6 +33,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__USE_FIXED_LENGTH__"
         );
+
+        String tablePrint = ElementParameterParser.getValue(
+            node,
+            "__TABLE_PRINT__"
+        );
 %>
 
 my %desc_<%=cid %> = (
@@ -59,7 +64,16 @@ my %desc_<%=cid %> = (
 
 my @colnames_<%=cid%> = map {$_->{name}} @{ $desc_<%=cid%>{schema} };
 my @collengths_<%=cid%> = map {$_->{printLength}} @{ $desc_<%=cid%>{schema} };
+
 <%
+        if (tablePrint.equals("true")) {
+%>
+use Text::ASCIITable;
+
+my $table_<%=cid%> = Text::ASCIITable->new({headingText => '<%=cid%>'});
+$table_<%=cid%>->setCols(@colnames_<%=cid%>);
+<%
+        }
     }
 }
 %>
