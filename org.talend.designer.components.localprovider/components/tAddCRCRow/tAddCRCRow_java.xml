@@ -68,7 +68,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Java-FTP" MODULE="OneWireAPI.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-CRC" MODULE="OneWireAPI.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
 

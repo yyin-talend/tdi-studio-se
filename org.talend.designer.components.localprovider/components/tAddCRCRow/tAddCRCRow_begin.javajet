@@ -13,16 +13,6 @@ class="AddCRCRowBegin"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String crcType = ElementParameterParser.getValue(
-            node,
-            "__CRC_TYPE__"
-        );
-    }
-}
+String cid = node.getUniqueName();
 %>
+int nb_line_<%=cid%> = 0;
