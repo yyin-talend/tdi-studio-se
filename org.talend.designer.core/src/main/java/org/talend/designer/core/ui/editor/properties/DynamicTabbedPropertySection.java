@@ -144,7 +144,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Map<String, String> tableIdAndDbTypeMap;
 
     private Map<String, String> tableIdAndDbSchemaMap;
-    
 
     /**
      * ftang Comment method "showSchemaRepositoryList".
@@ -898,13 +897,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
         String[] curColumnNameList = null;
         String[] curColumnValueList = null;
-        
-        List<String> refColumnListNamesTmp = new ArrayList<String>(); 
-        List<String> refColumnListValuesTmp = new ArrayList<String>(); 
-        for (IConnection connection: refColumnLists.keySet()) {
-            String name = connection.getName() +".";
-            String value = connection.getSource().getUniqueName() +".";
-            for (String column:refColumnLists.get(connection)) {
+
+        List<String> refColumnListNamesTmp = new ArrayList<String>();
+        List<String> refColumnListValuesTmp = new ArrayList<String>();
+        for (IConnection connection : refColumnLists.keySet()) {
+            String name = connection.getName() + ".";
+            String value = connection.getSource().getUniqueName() + ".";
+            for (String column : refColumnLists.get(connection)) {
                 refColumnListNamesTmp.add(name + column);
                 refColumnListValuesTmp.add(value + column);
             }
@@ -1068,9 +1067,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         if (elem instanceof Node) {
             Node node = (Node) elem;
-            IMetadataTable table = node.getMetadataList().get(0);
-            for (IMetadataColumn column : table.getListColumns()) {
-                columnList.add(column.getLabel());
+            if (node.getMetadataList().size() > 0) {
+                IMetadataTable table = node.getMetadataList().get(0);
+                for (IMetadataColumn column : table.getListColumns()) {
+                    columnList.add(column.getLabel());
+                }
             }
         }
 

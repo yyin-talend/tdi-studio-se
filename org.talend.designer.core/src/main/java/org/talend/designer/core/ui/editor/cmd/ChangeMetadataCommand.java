@@ -236,7 +236,7 @@ public class ChangeMetadataCommand extends Command {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).isExternalNode() && getPropagate()) {
+                            if (!((Node) targetNode).isExternalNode() && getPropagate() && targetNode.getMetadataList().size() > 0) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     IMetadataTable toCopy = newOutputMetadata.clone();
                                     IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
