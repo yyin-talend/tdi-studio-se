@@ -17,5 +17,7 @@ class="tSugarCRMInput"
             getEntryListResult_<%=cid %> = sugarManagement_<%=cid %>.getRecordswithQuery(modulename_<%=cid %>, condition_<%=cid %>, filedArr_<%=cid %>, getEntryListResult_<%=cid %>.getNext_offset(), 100); 
         } 
  	
+ 	sugarManagement_<%=cid %>.logout(); 
+ 	
  	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);                
             
