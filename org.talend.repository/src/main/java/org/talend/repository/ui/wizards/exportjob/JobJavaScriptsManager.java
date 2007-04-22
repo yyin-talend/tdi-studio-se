@@ -27,9 +27,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -39,15 +41,14 @@ import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.general.Project;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 
@@ -82,21 +83,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
-            String contextName, String launcher) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath + "/"
-                    + USERROUTINE_JAR;
+            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath
+                    + "/" + USERROUTINE_JAR;
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher)));
+            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
+                    escapeSpace(contextName), escapeSpace(launcher)));
 
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
@@ -146,8 +147,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -164,8 +165,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return allJobScripts;
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
+            String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
+            Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
@@ -193,7 +195,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (childProcess == null) {
                 return;
             }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource,
+                    exportChoice);
         }
     }
 
@@ -212,6 +215,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String path = librariesService.getLibrariesPath();
         File file = new File(path);
         // Lists all the jar files
+        Set<String> listModulesReallyNeeded = new HashSet<String>();
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
+        }
+
         File[] files = file.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
@@ -221,7 +229,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         for (int i = 0; i < files.length; i++) {
             File tempFile = files[i];
             try {
-                list.add(tempFile.toURL());
+                if (listModulesReallyNeeded.contains(tempFile.getName())) {
+                    list.add(tempFile.toURL());
+                }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             }
