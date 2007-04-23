@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -102,15 +103,14 @@ public abstract class Processor implements IProcessor {
 
     /**
      * Run the process using a given context.
-     * 
-     * @param context The context to be used.
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
+     * @param context The context to be used.
      * @param watchPort
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-    public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor, IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
             throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
@@ -466,6 +466,16 @@ public abstract class Processor implements IProcessor {
     
     public void setTargetExecutionConfig(ITargetExecutionConfig serverConfiguration) {
         this.targetExecutionConfig = serverConfiguration;
+    }
+
+    
+    public IProcess getProcess() {
+        return this.process;
+    }
+
+    
+    public IContext getContext() {
+        return this.context;
     }
     
     

@@ -27,10 +27,10 @@ package org.talend.designer.runprocess;
  * $Id$
  * 
  */
-public class ProcessMessage {
+public class ProcessMessage implements IProcessMessage {
 
     /** Type of the message. */
-    public enum MsgType {
+    public enum MsgType implements IMsgType {
         STD_OUT,
         STD_ERR,
         CORE_OUT,
@@ -38,15 +38,15 @@ public class ProcessMessage {
     }
 
     /** Type of the message. */
-    private MsgType type;
+    public IMsgType type;
 
     /** Content of the message. */
-    private String content;
+    public String content;
 
     /**
      * Constrcucts a new ProcessMessage.
      */
-    public ProcessMessage(MsgType type, String content) {
+    public ProcessMessage(IMsgType type, String content) {
         super();
 
         this.type = type;
@@ -67,8 +67,9 @@ public class ProcessMessage {
      * 
      * @return the type
      */
-    public MsgType getType() {
+    public IMsgType getType() {
         return this.type;
     }
 
+    
 }
