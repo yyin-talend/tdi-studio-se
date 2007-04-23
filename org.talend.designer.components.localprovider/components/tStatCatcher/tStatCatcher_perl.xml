@@ -46,6 +46,7 @@
         <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="origin" TYPE="String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="duration" TYPE="int" LENGTH="10"/>
       </TABLE>
     </PARAMETER>
    </PARAMETERS>

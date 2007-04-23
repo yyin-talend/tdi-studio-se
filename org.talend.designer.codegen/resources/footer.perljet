@@ -52,28 +52,22 @@ StopThreadStat() if defined $opt{stat_port};
 
 $_globals{stop} = [gettimeofday];
 
-$_globals{duration} = sprintf(
-    '%.1f', 
+$_globals{duration} = int(
     tv_interval(
         $_globals{start},
         $_globals{stop}
     )
+    * 1000
 );
+
 
 <%
         for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
     message => 'end',
+    duration => $_globals{duration}
 );
-
-<%=statCatcher.getUniqueName()%>_subprocess(
-    message => sprintf(
-        '%s seconds',
-        $_globals{duration}
-    ),
-);
-
 <%
         }
 %>

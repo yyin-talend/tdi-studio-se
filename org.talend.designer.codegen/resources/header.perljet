@@ -162,16 +162,12 @@ sub global_die_catcher {
         if (exists $_globals{$dying_component}{start}) {
             <%=statCatcher.getUniqueName()%>_subprocess(
                 message => 'failure',
-                origin  => $dying_component,
-            );
-            
-            <%=statCatcher.getUniqueName()%>_subprocess(
-                message => sprintf(
-                    '%.1f seconds',
+                duration => int(
                     tv_interval(
                         $_globals{$dying_component}{start},
                         [gettimeofday]
                     )
+                    * 1000
                 ),
                 origin  => $dying_component,
             );
@@ -187,25 +183,19 @@ sub global_die_catcher {
 <%
     for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
-    <%=statCatcher.getUniqueName()%>_subprocess(
-        message => $_globals{job_failure} ? 'failure' : 'end',
-    );
-
     $_globals{stop} = [gettimeofday];
 
-    $_globals{duration} = sprintf(
-        '%.1f', 
+    $_globals{duration} = int(
         tv_interval(
             $_globals{start},
             $_globals{stop}
         )
+        * 1000
     );
-    
+
     <%=statCatcher.getUniqueName()%>_subprocess(
-        message => sprintf(
-            '%s seconds',
-            $_globals{duration}
-        ),
+        message => $_globals{job_failure} ? 'failure' : 'end',
+        duration => $_globals{duration},
     );
 <%
     }

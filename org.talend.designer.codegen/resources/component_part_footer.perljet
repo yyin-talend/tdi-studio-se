@@ -115,16 +115,12 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
     message => 'end',
-    origin  => '<%=node.getUniqueName() %>',
-);
-
-<%=statCatcher.getUniqueName()%>_subprocess(
-    message => sprintf(
-        '%.1f seconds',
+    duration => int(
         tv_interval(
             $_globals{<%=node.getUniqueName() %>}{start},
             [gettimeofday]
         )
+        * 1000
     ),
     origin  => '<%=node.getUniqueName() %>',
 );

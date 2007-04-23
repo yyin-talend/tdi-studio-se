@@ -37,6 +37,7 @@ my @<%=cid %> = (
     $opt{context},
     $params{origin},
     $params{message},
+    $params{duration},
 );
 
 $| = 1;
