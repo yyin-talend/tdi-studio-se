@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -540,7 +542,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         IElementParameter repositorySchemaTypeParameter = elem
                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
-        combo.setItems(paramItems);
+        ControlUtils.setSortedValuesForCombo(combo, paramItems);
 
         return cLayout;
     }
@@ -589,7 +591,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String[] paramItems = schemaTypeParameter.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
             if (!paramItems.equals(comboItems)) {
-                combo.setItems(paramItems);
+            	ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }
@@ -617,7 +619,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
             if (!paramItems.equals(comboItems)) {
-                combo.setItems(paramItems);
+            	ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }

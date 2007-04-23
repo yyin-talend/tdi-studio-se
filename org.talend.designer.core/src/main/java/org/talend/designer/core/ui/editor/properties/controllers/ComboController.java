@@ -23,11 +23,13 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.talend.commons.ui.utils.ControlUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -75,475 +77,544 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class ComboController extends AbstractElementPropertySectionController {
 
-    private boolean updateColumnListFlag;
+	private boolean updateColumnListFlag;
 
-    private SelectionEvent e;
+	private SelectionEvent e;
 
-    private Map<String, IMetadataTable> repositoryTableMap;
+	private Map<String, IMetadataTable> repositoryTableMap;
 
-    private Map<String, ConnectionItem> repositoryConnectionItemMap;
+	private Map<String, ConnectionItem> repositoryConnectionItemMap;
 
-    private Map<String, List<String>> tablesmap;
+	private Map<String, List<String>> tablesmap;
 
-    private Map<String, List<String>> queriesmap;
+	private Map<String, List<String>> queriesmap;
 
-    private static final String GUESS_QUERY_NAME = "Guess Query";
+	private static final String GUESS_QUERY_NAME = "Guess Query";
 
-    /**
-     * DOC dev ColumnListController constructor comment.
-     * 
-     * @param parameterBean
-     */
-    public ComboController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
-    }
+	/**
+	 * DOC dev ColumnListController constructor comment.
+	 * 
+	 * @param parameterBean
+	 */
+	public ComboController(DynamicTabbedPropertySection dtp) {
+		super(dtp);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
-     */
-    public Command createComboCommand() {
-        repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-        Collection<IMetadataTable> ss = repositoryTableMap.values();
-        repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
-        tablesmap = dynamicTabbedPropertySection.getTablesMap();
-        queriesmap = dynamicTabbedPropertySection.getQueriesMap();
-        Set<String> elementsName;
-        Control ctrl;
-        IMetadataTable repositoryMetadata = new MetadataTable();
-        Connection repositoryConnection = null;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+	 */
+	public Command createComboCommand() {
+		repositoryTableMap = dynamicTabbedPropertySection
+				.getRepositoryTableMap();
+		Collection<IMetadataTable> ss = repositoryTableMap.values();
+		repositoryConnectionItemMap = dynamicTabbedPropertySection
+				.getRepositoryConnectionItemMap();
+		tablesmap = dynamicTabbedPropertySection.getTablesMap();
+		queriesmap = dynamicTabbedPropertySection.getQueriesMap();
+		Set<String> elementsName;
+		Control ctrl;
+		IMetadataTable repositoryMetadata = new MetadataTable();
+		Connection repositoryConnection = null;
 
-        elementsName = hashCurControls.keySet();
-        for (String name : elementsName) {
-            Object o = hashCurControls.get(name);
-            if (o instanceof Control) {
-                ctrl = (Control) o;
-                if (ctrl == null) {
-                    hashCurControls.remove(name);
-                    return null;
-                }
+		elementsName = hashCurControls.keySet();
+		for (String name : elementsName) {
+			Object o = hashCurControls.get(name);
+			if (o instanceof Control) {
+				ctrl = (Control) o;
+				if (ctrl == null) {
+					hashCurControls.remove(name);
+					return null;
+				}
 
-                if (ctrl.equals(e.getSource()) && ctrl instanceof CCombo) {
-                    if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                        Object obj = elem.getPropertyValue(name);
-                    }
+				if (ctrl.equals(e.getSource()) && ctrl instanceof CCombo) {
+					if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
+						Object obj = elem.getPropertyValue(name);
+					}
 
-                    boolean isDisposed = ((CCombo) ctrl).isDisposed();
-                    if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
+					boolean isDisposed = ((CCombo) ctrl).isDisposed();
+					if (!isDisposed
+							&& (!elem.getPropertyValue(name).equals(
+									((CCombo) ctrl).getText()))) {
 
-                        String value = new String(""); //$NON-NLS-1$
-                        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                            IElementParameter param = elem.getElementParameters().get(i);
-                            if (param.getName().equals(name)) {
-                                for (int j = 0; j < param.getListItemsValue().length; j++) {
-                                    if (((CCombo) ctrl).getText().equals(param.getListItemsDisplayName()[j])) {
-                                        value = (String) param.getListItemsValue()[j];
-                                    }
-                                }
-                            }
-                        }
+						String value = new String(""); //$NON-NLS-1$
+						for (int i = 0; i < elem.getElementParameters().size(); i++) {
+							IElementParameter param = elem
+									.getElementParameters().get(i);
+							if (param.getName().equals(name)) {
+								for (int j = 0; j < param.getListItemsValue().length; j++) {
+									if (((CCombo) ctrl).getText().equals(
+											param.getListItemsDisplayName()[j])) {
+										value = (String) param
+												.getListItemsValue()[j];
+									}
+								}
+							}
+						}
 
-                        if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-                            this.dynamicTabbedPropertySection.updateRepositoryList();
-                            if (elem instanceof Node) {
-                                Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
-                                        .getRepositoryQueryStoreMap();
-                                if (repositoryQueryStoreMap.containsKey(value)) {
-                                    Query query = repositoryQueryStoreMap.get(value);
-                                    IElementParameter queryText = getQueryTextElementParameter(elem);
-                                    if (queryText != null) {
-                                        return new RepositoryChangeQueryCommand(elem, query, name, value);
-                                    }
-                                }
-                            }
+						if (name
+								.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+										.getName())) {
+							this.dynamicTabbedPropertySection
+									.updateRepositoryList();
+							if (elem instanceof Node) {
+								Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
+										.getRepositoryQueryStoreMap();
+								if (repositoryQueryStoreMap.containsKey(value)) {
+									Query query = repositoryQueryStoreMap
+											.get(value);
+									IElementParameter queryText = getQueryTextElementParameter(elem);
+									if (queryText != null) {
+										return new RepositoryChangeQueryCommand(
+												elem, query, name, value);
+									}
+								}
+							}
 
-                        } else {
-                            ChangeValuesFromRepository changeValuesFromRepository;
+						} else {
+							ChangeValuesFromRepository changeValuesFromRepository;
 
-                            if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                                if (repositoryConnectionItemMap.containsKey(value)) {
-                                    repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
-                                } else {
-                                    repositoryConnection = null;
-                                }
+							if (name
+									.equals(EParameterName.REPOSITORY_PROPERTY_TYPE
+											.getName())) {
+								if (repositoryConnectionItemMap
+										.containsKey(value)) {
+									repositoryConnection = repositoryConnectionItemMap
+											.get(value).getConnection();
+								} else {
+									repositoryConnection = null;
+								}
 
-                                if (repositoryConnection != null) {
-                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-                                            repositoryConnection, name, value);
-                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
-                                    return changeValuesFromRepository;
-                                }
-                            }
+								if (repositoryConnection != null) {
+									changeValuesFromRepository = new ChangeValuesFromRepository(
+											elem, repositoryConnection, name,
+											value);
+									changeValuesFromRepository.setMaps(
+											tablesmap, queriesmap,
+											repositoryTableMap);
+									return changeValuesFromRepository;
+								}
+							}
 
-                            else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                                String connectionSelected;
-                                connectionSelected = (String) elem
-                                        .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+							else if (name.equals(EParameterName.PROPERTY_TYPE
+									.getName())) {
+								String connectionSelected;
+								connectionSelected = (String) elem
+										.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+												.getName());
 
-                                if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-                                    repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
-                                            .get(connectionSelected).getConnection();
-                                } else {
-                                    repositoryConnection = null;
-                                }
+								if (repositoryConnectionItemMap
+										.containsKey(connectionSelected)) {
+									repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
+											.get(connectionSelected)
+											.getConnection();
+								} else {
+									repositoryConnection = null;
+								}
 
-                                if (repositoryConnection != null) {
-                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-                                            repositoryConnection, name, value);
+								if (repositoryConnection != null) {
+									changeValuesFromRepository = new ChangeValuesFromRepository(
+											elem, repositoryConnection, name,
+											value);
 
-                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
-                                    return changeValuesFromRepository;
-                                } else {
-                                    return new PropertyChangeCommand(elem, name, value);
-                                }
-                            }
+									changeValuesFromRepository.setMaps(
+											tablesmap, queriesmap,
+											repositoryTableMap);
+									return changeValuesFromRepository;
+								} else {
+									return new PropertyChangeCommand(elem,
+											name, value);
+								}
+							}
 
-                            else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
-                                if (elem instanceof Node) {
-                                    this.dynamicTabbedPropertySection.updateRepositoryList();
-                                    String querySelected;
-                                    Query repositoryQuery = null;
-                                    querySelected = (String) elem
-                                            .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+							else if (name.equals(EParameterName.QUERYSTORE_TYPE
+									.getName())) {
+								if (elem instanceof Node) {
+									this.dynamicTabbedPropertySection
+											.updateRepositoryList();
+									String querySelected;
+									Query repositoryQuery = null;
+									querySelected = (String) elem
+											.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+													.getName());
 
-                                    Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
-                                            .getRepositoryQueryStoreMap();
-                                    if (repositoryQueryStoreMap.containsKey(querySelected)) {
-                                        repositoryQuery = repositoryQueryStoreMap.get(querySelected);
-                                    }
-                                    if (repositoryQuery != null) {
-                                        Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery, name,
-                                                value);
-                                        getCommandStack().execute(cmd);
-                                    } else {
-                                        Command cmd = new PropertyChangeCommand(elem, name, value);
-                                        getCommandStack().execute(cmd);
-                                    }
+									Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
+											.getRepositoryQueryStoreMap();
+									if (repositoryQueryStoreMap
+											.containsKey(querySelected)) {
+										repositoryQuery = repositoryQueryStoreMap
+												.get(querySelected);
+									}
 
-                                }
+									if (repositoryQuery != null) {
+										Command cmd = new RepositoryChangeQueryCommand(
+												elem, repositoryQuery, name,
+												value);
+										getCommandStack().execute(cmd);
+									} else {
+										Command cmd = new PropertyChangeCommand(
+												elem, name, value);
+										getCommandStack().execute(cmd);
+									}
 
-                            } else {
-                                return new PropertyChangeCommand(elem, name, value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
+								}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
-     */
-    @Override
-    public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl) {
+							} else {
+								return new PropertyChangeCommand(elem, name,
+										value);
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
 
-        IControlCreator cbCtrl = new IControlCreator() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
+	 */
+	@Override
+	public Control createControl(final Composite subComposite,
+			final IElementParameter param, final int numInRow,
+			final int nbInRow, final int top, final Control lastControl) {
 
-            public Control createControl(final Composite parent, final int style) {
-                CCombo cb = new CCombo(parent, style);
-                return cb;
-            }
-        };
-        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
-        if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                    FieldDecorationRegistry.DEC_REQUIRED);
-            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
-        }
-        if (param.isRepositoryValueUsed()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                    FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
-            decoration.setDescription(Messages.getString("ComboController.valueFromRepository")); //$NON-NLS-1$
-            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM, false);
-        }
+		IControlCreator cbCtrl = new IControlCreator() {
 
-        Control cLayout = dField.getLayoutControl();
-        CCombo combo = (CCombo) dField.getControl();
-        FormData data;
-        String[] originalList = param.getListItemsDisplayName();
-        List<String> stringToDisplay = new ArrayList<String>();
-        String[] itemsShowIf = param.getListItemsShowIf();
-        if (itemsShowIf != null) {
-            String[] itemsNotShowIf = param.getListItemsNotShowIf();
-            for (int i = 0; i < originalList.length; i++) {
-                if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
-                    stringToDisplay.add(originalList[i]);
-                }
-            }
-        } else {
-            for (int i = 0; i < originalList.length; i++) {
-                stringToDisplay.add(originalList[i]);
-            }
-        }
-        combo.setItems(stringToDisplay.toArray(new String[0]));
-        combo.setEditable(false);
-        cLayout.setBackground(subComposite.getBackground());
-        combo.setEnabled(!param.isReadOnly());
-        combo.addSelectionListener(listenerSelection);
-        if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-            combo.setVisibleItemCount(10);
-        }
-        if (elem instanceof Node) {
-            combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
-        }
+			public Control createControl(final Composite parent, final int style) {
+				CCombo cb = new CCombo(parent, style);
+				return cb;
+			}
+		};
+		DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER,
+				cbCtrl);
+		if (param.isRequired()) {
+			FieldDecoration decoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+			dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
+		}
+		if (param.isRepositoryValueUsed()) {
+			FieldDecoration decoration = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(
+							FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+			decoration.setDescription(Messages
+					.getString("ComboController.valueFromRepository")); //$NON-NLS-1$
+			dField
+					.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM,
+							false);
+		}
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
-        data = new FormData();
-        if (lastControl != null) {
-            data.left = new FormAttachment(lastControl, 0);
-        } else {
-            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-        }
+		Control cLayout = dField.getLayoutControl();
+		CCombo combo = (CCombo) dField.getControl();
+		FormData data;
+		String[] originalList = param.getListItemsDisplayName();
+		List<String> stringToDisplay = new ArrayList<String>();
+		String[] itemsShowIf = param.getListItemsShowIf();
+		if (itemsShowIf != null) {
+			String[] itemsNotShowIf = param.getListItemsNotShowIf();
+			for (int i = 0; i < originalList.length; i++) {
+				if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem
+						.getElementParameters())) {
+					stringToDisplay.add(originalList[i]);
+				}
+			}
+		} else {
+			for (int i = 0; i < originalList.length; i++) {
+				stringToDisplay.add(originalList[i]);
+			}
+		}
+		combo.setItems(stringToDisplay.toArray(new String[0]));
+		combo.setEditable(false);
+		cLayout.setBackground(subComposite.getBackground());
+		combo.setEnabled(!param.isReadOnly());
+		combo.addSelectionListener(listenerSelection);
+		if (param.getName().equals(
+				EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+			combo.setVisibleItemCount(10);
+		}
+		if (elem instanceof Node) {
+			combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+		}
 
-        IElementParameter queryStoreTypeParameter = elem.getElementParameter(EParameterName.QUERYSTORE_TYPE.getName());
-        if (queryStoreTypeParameter != null) {
-            String queryStoreType = (String) queryStoreTypeParameter.getValue();
-            if (param.getName().equals(EParameterName.QUERYSTORE_TYPE.getName()) && queryStoreType != null
-                    && queryStoreType.equals(EmfComponent.BUILTIN)) {
-                Control lastUsedControl = combo;
-                addGuessQueryButton(subComposite, param, lastUsedControl, numInRow, top);
-            }
-        }
-        data.top = new FormAttachment(0, top);
-        labelLabel.setLayoutData(data);
-        if (numInRow != 1) {
-            labelLabel.setAlignment(SWT.RIGHT);
-        }
-        // *********************
-        data = new FormData();
-        int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        GC gc = new GC(labelLabel);
-        Point labelSize = gc.stringExtent(param.getDisplayName());
-        gc.dispose();
+		CLabel labelLabel = getWidgetFactory().createCLabel(subComposite,
+				param.getDisplayName());
+		data = new FormData();
+		if (lastControl != null) {
+			data.left = new FormAttachment(lastControl, 0);
+		} else {
+			data.left = new FormAttachment(
+					(((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+		}
 
-        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
-        }
+		IElementParameter queryStoreTypeParameter = elem
+				.getElementParameter(EParameterName.QUERYSTORE_TYPE.getName());
+		if (queryStoreTypeParameter != null) {
+			String queryStoreType = (String) queryStoreTypeParameter.getValue();
+			if (param.getName()
+					.equals(EParameterName.QUERYSTORE_TYPE.getName())
+					&& queryStoreType != null
+					&& queryStoreType.equals(EmfComponent.BUILTIN)) {
+				Control lastUsedControl = combo;
+				addGuessQueryButton(subComposite, param, lastUsedControl,
+						numInRow, top);
+			}
+		}
+		data.top = new FormAttachment(0, top);
+		labelLabel.setLayoutData(data);
+		if (numInRow != 1) {
+			labelLabel.setAlignment(SWT.RIGHT);
+		}
+		// *********************
+		data = new FormData();
+		int currentLabelWidth = STANDARD_LABEL_WIDTH;
+		GC gc = new GC(labelLabel);
+		Point labelSize = gc.stringExtent(param.getDisplayName());
+		gc.dispose();
 
-        if (numInRow == 1) {
-            if (lastControl != null) {
-                data.left = new FormAttachment(lastControl, currentLabelWidth);
-            } else {
-                data.left = new FormAttachment(0, currentLabelWidth);
-            }
+		if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+			currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+		}
 
-        } else {
-            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-        }
-        data.top = new FormAttachment(0, top);
-        cLayout.setLayoutData(data);
-        // **********************
-        hashCurControls.put(param.getName(), combo);
+		if (numInRow == 1) {
+			if (lastControl != null) {
+				data.left = new FormAttachment(lastControl, currentLabelWidth);
+			} else {
+				data.left = new FormAttachment(0, currentLabelWidth);
+			}
 
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        return cLayout;
-    }
+		} else {
+			data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
+		}
+		data.top = new FormAttachment(0, top);
+		cLayout.setLayoutData(data);
+		// **********************
+		hashCurControls.put(param.getName(), combo);
 
-    /**
-     * This method is used for creating a Button named "Guess Query".
-     * 
-     * @param subComposite
-     * @param lastControl
-     * @param numInRow
-     * @param top
-     */
-    private void addGuessQueryButton(Composite subComposite, IElementParameter param, Control lastControl,
-            int numInRow, int top) {
-        final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
+		Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT,
+				SWT.DEFAULT);
+		dynamicTabbedPropertySection.setCurRowSize(initialSize.y
+				+ ITabbedPropertyConstants.VSPACE);
+		return cLayout;
+	}
 
-            public Control createControl(Composite parent, int style) {
-                return new Button(parent, style);
-            }
-        });
-        Button guessQueryButton = null;
-        Control buttonControl = dField1.getLayoutControl();
-        guessQueryButton = (Button) dField1.getControl();
-        guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        buttonControl.setBackground(subComposite.getBackground());
-        guessQueryButton.setEnabled(true);
-        guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
-        guessQueryButton.setData(PROPERTY, param.getName());
-        guessQueryButton.setText(GUESS_QUERY_NAME);
+	/**
+	 * This method is used for creating a Button named "Guess Query".
+	 * 
+	 * @param subComposite
+	 * @param lastControl
+	 * @param numInRow
+	 * @param top
+	 */
+	private void addGuessQueryButton(Composite subComposite,
+			IElementParameter param, Control lastControl, int numInRow, int top) {
+		final DecoratedField dField1 = new DecoratedField(subComposite,
+				SWT.PUSH, new IControlCreator() {
 
-        FormData data1 = new FormData();
-        data1.left = new FormAttachment(lastControl, 210);
-        data1.top = new FormAttachment(0, top);
+					public Control createControl(Composite parent, int style) {
+						return new Button(parent, style);
+					}
+				});
+		Button guessQueryButton = null;
+		Control buttonControl = dField1.getLayoutControl();
+		guessQueryButton = (Button) dField1.getControl();
+		guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		buttonControl.setBackground(subComposite.getBackground());
+		guessQueryButton.setEnabled(true);
+		guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
+		guessQueryButton.setData(PROPERTY, param.getName());
+		guessQueryButton.setText(GUESS_QUERY_NAME);
 
-        buttonControl.setLayoutData(data1);
-        guessQueryButton.addSelectionListener(listenerSelection);
+		FormData data1 = new FormData();
+		data1.left = new FormAttachment(lastControl, 210);
+		data1.top = new FormAttachment(0, top);
 
-    }
+		buttonControl.setLayoutData(data1);
+		guessQueryButton.addSelectionListener(listenerSelection);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
-    }
+	}
 
-    SelectionListener listenerSelection = new SelectionAdapter() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+	}
 
-        public void widgetSelected(SelectionEvent event) {
-            e = event;
-            dynamicTabbedPropertySection.updateRepositoryList();
-            Command cmd = createCommand(e);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-                if (updateColumnListFlag) {
-                    ComboController.this.dynamicTabbedPropertySection.updateColumnList(null);
-                }
-            }
-        }
-    };
+	SelectionListener listenerSelection = new SelectionAdapter() {
 
-    /**
-     * This method is used for getting command base on component type.
-     * 
-     * @param e
-     * @return
-     */
-    private Command createCommand(SelectionEvent e) {
-        Command cmd = null;
-        if (e.getSource() instanceof CCombo) {
-            cmd = createComboCommand();
-        } else if (e.getSource() instanceof Button) {
-            cmd = createButtonCommand();
-        }
-        return cmd;
-    }
+		public void widgetSelected(SelectionEvent event) {
+			e = event;
+			dynamicTabbedPropertySection.updateRepositoryList();
+			Command cmd = createCommand(e);
+			if (cmd != null) {
+				getCommandStack().execute(cmd);
+				if (updateColumnListFlag) {
+					ComboController.this.dynamicTabbedPropertySection
+							.updateColumnList(null);
+				}
+			}
+		}
+	};
 
-    /**
-     * This method is used for "Guess Query" button.
-     * 
-     * @return
-     */
-    private Command createButtonCommand() {
-        IMetadataTable repositoryMetadata = null;
-        IMetadataTable newRepositoryMetadata = null;
-        String realTableName = null;
-        String realTableId = null;
+	/**
+	 * This method is used for getting command base on component type.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	private Command createCommand(SelectionEvent e) {
+		Command cmd = null;
+		if (e.getSource() instanceof CCombo) {
+			cmd = createComboCommand();
+		} else if (e.getSource() instanceof Button) {
+			cmd = createButtonCommand();
+		}
+		return cmd;
+	}
 
-        // Only for get the real table name.
-        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-            String paramName;
-            Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+	/**
+	 * This method is used for "Guess Query" button.
+	 * 
+	 * @return
+	 */
+	private Command createButtonCommand() {
+		IMetadataTable repositoryMetadata = null;
+		IMetadataTable newRepositoryMetadata = null;
+		String realTableName = null;
+		String realTableId = null;
 
-            paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+		// Only for get the real table name.
+		if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(
+				EmfComponent.REPOSITORY)) {
+			Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection
+					.getRepositoryTableMap();
+			String paramName;
+			Object repositoryControl = hashCurControls
+					.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
 
-            if (repositoryControl != null) {
+			paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
 
-                String selectedComboItem = ((CCombo) repositoryControl).getText();
-                if (selectedComboItem != null && selectedComboItem.length() > 0) {
-                    String value = new String(""); //$NON-NLS-1$
-                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                        IElementParameter param = elem.getElementParameters().get(i);
-                        if (param.getName().equals(paramName)) {
-                            for (int j = 0; j < param.getListItemsValue().length; j++) {
-                                if (selectedComboItem.equals(param.getListItemsDisplayName()[j])) {
-                                    value = (String) param.getListItemsValue()[j];
-                                }
-                            }
-                        }
-                    }
-                    if (elem instanceof Node) {
-                        this.dynamicTabbedPropertySection.updateRepositoryList();
-                        if (repositoryTableMap.containsKey(value)) {
-                            repositoryMetadata = repositoryTableMap.get(value);
-                            realTableName = repositoryMetadata.getTableName();
-                            realTableId = repositoryMetadata.getId();
-                        } else {
-                            repositoryMetadata = new MetadataTable();
-                        }
-                    }
-                }
-            }
-        }// Ends
+			if (repositoryControl != null) {
 
-        QueryGuessCommand cmd = null;
-        Node node = null;
-        if (elem instanceof Node) {
-            node = (Node) elem;
-        } else { // else instanceof Connection
-            node = ((org.talend.designer.core.ui.editor.connections.Connection) elem).getSource();
-        }
+				String selectedComboItem = ((CCombo) repositoryControl)
+						.getText();
+				if (selectedComboItem != null && selectedComboItem.length() > 0) {
+					String value = new String(""); //$NON-NLS-1$
+					for (int i = 0; i < elem.getElementParameters().size(); i++) {
+						IElementParameter param = elem.getElementParameters()
+								.get(i);
+						if (param.getName().equals(paramName)) {
+							for (int j = 0; j < param.getListItemsValue().length; j++) {
+								if (selectedComboItem.equals(param
+										.getListItemsDisplayName()[j])) {
+									value = (String) param.getListItemsValue()[j];
+								}
+							}
+						}
+					}
+					if (elem instanceof Node) {
+						this.dynamicTabbedPropertySection
+								.updateRepositoryList();
+						if (repositoryTableMap.containsKey(value)) {
+							repositoryMetadata = repositoryTableMap.get(value);
+							realTableName = repositoryMetadata.getTableName();
+							realTableId = repositoryMetadata.getId();
+						} else {
+							repositoryMetadata = new MetadataTable();
+						}
+					}
+				}
+			}
+		}// Ends
 
-        newRepositoryMetadata = node.getMetadataList().get(0);
+		QueryGuessCommand cmd = null;
+		Node node = null;
+		if (elem instanceof Node) {
+			node = (Node) elem;
+		} else { // else instanceof Connection
+			node = ((org.talend.designer.core.ui.editor.connections.Connection) elem)
+					.getSource();
+		}
 
-        if (newRepositoryMetadata == null) {
-            String schemaSelected = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            if (repositoryTableMap != null && schemaSelected != null && repositoryTableMap.containsKey(schemaSelected)) {
-                repositoryMetadata = repositoryTableMap.get(schemaSelected);
-            } else if (newRepositoryMetadata == null) {
-                MessageDialog.openWarning(new Shell(), "Alert", "Nothing to guess.");
-                return cmd;
-            }
-        }
-        cmd = new QueryGuessCommand(node, newRepositoryMetadata);
+		newRepositoryMetadata = node.getMetadataList().get(0);
 
-        cmd.setMaps(dynamicTabbedPropertySection.getTableIdAndDbTypeMap(), dynamicTabbedPropertySection
-                .getTableIdAndDbSchemaMap(), repositoryTableMap);
+		if (newRepositoryMetadata == null) {
+			String schemaSelected = (String) node
+					.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+							.getName());
+			if (repositoryTableMap != null && schemaSelected != null
+					&& repositoryTableMap.containsKey(schemaSelected)) {
+				repositoryMetadata = repositoryTableMap.get(schemaSelected);
+			} else if (newRepositoryMetadata == null) {
+				MessageDialog.openWarning(new Shell(), "Alert",
+						"Nothing to guess.");
+				return cmd;
+			}
+		}
+		cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
-        cmd.setParameters(realTableId, realTableName);
+		cmd.setMaps(dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+				dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(),
+				repositoryTableMap);
 
-        return cmd;
-    }
+		cmd.setParameters(realTableId, realTableName);
 
-    /**
-     * DOC ftang Comment method "getQueryTextElementParameter".
-     * 
-     * @param elem
-     * @return
-     */
-    private IElementParameter getQueryTextElementParameter(Element elem) {
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                return param;
-            }
-        }
-        return null;
-    }
+		return cmd;
+	}
 
-    @Override
-    public void refresh(IElementParameter param, boolean check) {
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+	/**
+	 * DOC ftang Comment method "getQueryTextElementParameter".
+	 * 
+	 * @param elem
+	 * @return
+	 */
+	private IElementParameter getQueryTextElementParameter(Element elem) {
+		for (IElementParameter param : (List<IElementParameter>) elem
+				.getElementParameters()) {
+			if (param.getField() == EParameterFieldType.MEMO_SQL) {
+				return param;
+			}
+		}
+		return null;
+	}
 
-        if (combo == null) {
-            return;
-        }
-        Object value = param.getValue();
+	@Override
+	public void refresh(IElementParameter param, boolean check) {
+		CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
-        if (value instanceof String) {
-            String strValue = ""; //$NON-NLS-1$
-            int nbInList = 0, nbMax = param.getListItemsValue().length;
-            String name = (String) value;
-            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                if (name.equals(param.getListItemsValue()[nbInList])) {
-                    strValue = param.getListItemsDisplayName()[nbInList];
-                }
-                nbInList++;
-            }
-            String[] paramItems = param.getListItemsDisplayName();
-            String[] comboItems = combo.getItems();
-            if (!paramItems.equals(comboItems)) {
-                combo.setItems(paramItems);
-            }
-            combo.setText(strValue);
-        }
-    }
+		if (combo == null) {
+			return;
+		}
+		Object value = param.getValue();
 
-    @Override
-    public Command createCommand() {
-        // do nothing
-        return null;
-    }
+		if (value instanceof String) {
+			String strValue = ""; //$NON-NLS-1$
+			int nbInList = 0, nbMax = param.getListItemsValue().length;
+			String name = (String) value;
+			while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+				if (name.equals(param.getListItemsValue()[nbInList])) {
+					strValue = param.getListItemsDisplayName()[nbInList];
+				}
+				nbInList++;
+			}
+			String[] paramItems = param.getListItemsDisplayName();
+			String[] comboItems = combo.getItems();
+
+			if (!paramItems.equals(comboItems)) {
+				ControlUtils.setSortedValuesForCombo(combo, paramItems);
+			}
+			combo.setText(strValue);
+		}
+	}
+
+	@Override
+	public Command createCommand() {
+		// do nothing
+		return null;
+	}
 }
