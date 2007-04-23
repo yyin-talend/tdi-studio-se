@@ -254,8 +254,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
 
                 inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
-                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(), outputMetaCopy, node,
-                        getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(),
+                        outputMetaCopy, node, getCommandStack());
             } else {
                 metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node, getCommandStack());
             }
@@ -542,7 +542,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         IElementParameter repositorySchemaTypeParameter = elem
                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
-        ControlUtils.setSortedValuesForCombo(combo, paramItems);
+        //ControlUtils.setSortedValuesForCombo(combo, paramItems);
+        combo.setItems(paramItems);
 
         return cLayout;
     }
@@ -591,7 +592,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String[] paramItems = schemaTypeParameter.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
             if (!paramItems.equals(comboItems)) {
-            	ControlUtils.setSortedValuesForCombo(combo, paramItems);
+                combo.setItems(paramItems);
+                // ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }
@@ -619,7 +621,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
             if (!paramItems.equals(comboItems)) {
-            	ControlUtils.setSortedValuesForCombo(combo, paramItems);
+                combo.setItems(paramItems);
+                // ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }

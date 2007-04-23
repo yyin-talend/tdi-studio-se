@@ -606,7 +606,8 @@ public class ComboController extends AbstractElementPropertySectionController {
 			String[] comboItems = combo.getItems();
 
 			if (!paramItems.equals(comboItems)) {
-				ControlUtils.setSortedValuesForCombo(combo, paramItems);
+                combo.setItems(paramItems);
+//				ControlUtils.setSortedValuesForCombo(combo, paramItems);
 			}
 			combo.setText(strValue);
 		}
