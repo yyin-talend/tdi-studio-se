@@ -33,6 +33,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -126,17 +127,15 @@ public class PropertyChangeCommand extends Command {
 
                 String showIf = param.getShowIf();
                 String notShowIf = param.getNotShowIf();
-                boolean contains = false;
+
                 if (showIf != null) {
                     if (showIf.contains(currentParam.getName())) {
                         toUpdate = true;
-                        contains = true;
                     }
                 } else {
                     if (notShowIf != null) {
                         if (notShowIf.contains(currentParam.getName())) {
                             toUpdate = true;
-                            contains = true;
                         }
                     }
                 }
@@ -148,16 +147,29 @@ public class PropertyChangeCommand extends Command {
                             if (showIf != null) {
                                 if (showIf.contains(currentParam.getName())) {
                                     toUpdate = true;
-                                    contains = true;
                                 }
                             } else {
                                 if (notShowIf != null) {
                                     if (notShowIf.contains(currentParam.getName())) {
                                         toUpdate = true;
-                                        contains = true;
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+                boolean contains = false;
+                for (IElementParameterDefaultValue value : param.getDefaultValues()) {
+                    if (value.getIfCondition() != null) {
+                        if (value.getIfCondition().contains(currentParam.getName())) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (value.getNotIfCondition() != null) {
+                        if (value.getNotIfCondition().contains(currentParam.getName())) {
+                            contains = true;
+                            break;
                         }
                     }
                 }
