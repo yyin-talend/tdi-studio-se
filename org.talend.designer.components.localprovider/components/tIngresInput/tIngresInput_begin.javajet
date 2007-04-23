@@ -100,7 +100,11 @@ if(conns != null && conns.size()>0){
 			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null){
 			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
 			  	}else{
+			  	    <%if(typeToGenerate.equals("Char")){%>
+			  		<%=firstConnName%>.<%=column.getLabel()%>='\u0000';
+			  		<%}else{%>
 			  		<%=firstConnName%>.<%=column.getLabel()%>=null;
+			  		<%}%>
 			  	}			
 			  <%
 			  }else{
