@@ -105,7 +105,9 @@ public class ConnectionParameters {
             hashTable.put("IBM DB2", "IBM DB2"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Sybase ASE", "Sybase ASE"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Sybase IQ", "Sybase IQ"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("MSSQL", "Microsoft SQL Server");
+            hashTable.put("MSSQL", "Microsoft SQL Server"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Ingres", "com.ingres.jdbc.IngresDriver"); //$NON-NLS-1$ //$NON-NLS-2$
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
