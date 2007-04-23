@@ -46,6 +46,7 @@
         <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="duration" TYPE="id_Long"/>
       </TABLE>
     </PARAMETER>
    </PARAMETERS>

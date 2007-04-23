@@ -28,6 +28,7 @@
     	<%=conn.getName() %>.context = contextStr;
 		<%=conn.getName() %>.origin = scm.getOrigin();
 		<%=conn.getName() %>.message = scm.getMessage();
+		<%=conn.getName() %>.duration = scm.getDuration();
 		<%=conn.getName() %>.moment = scm.getMoment();
 <%
 		}
