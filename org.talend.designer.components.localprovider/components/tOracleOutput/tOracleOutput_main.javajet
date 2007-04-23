@@ -207,8 +207,11 @@ if(incomingConnName != null && columnList != null){
 			
 			if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			%>
-		
-pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+if(<%=incomingConnName%>.<%=column.getName()%>!=null){		
+	pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+}else{
+	pstmt_<%=cid %>.setNull(<%=counter%>,java.sql.Types.CHAR);
+}
         	<%			
 			}else if(typeToGenerate.equals("Timestamp")){
 			%>
