@@ -1,0 +1,24 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+		"
+class="tSugarCRMOutput" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+    
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+	String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+
+	String username = ElementParameterParser.getValue(node, "__USER__");
+	String password = ElementParameterParser.getValue(node, "__PASS__");
+%>       
+        int nb_line_<%=cid %> = 0;
+        String modulename_<%=cid %> = <%=modulename %>;
+        org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","4.5.0");
+        sugarManagement_<%=cid %>.login(); 
