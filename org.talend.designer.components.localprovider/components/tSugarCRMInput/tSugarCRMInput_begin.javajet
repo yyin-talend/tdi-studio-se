@@ -136,6 +136,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			} //4
 		}//3
 		
+		
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn2 = conns.get(i);
+				if ((conn2.getName().compareTo(firstConnName)!=0)&&((conn2.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn2.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			    	for (IMetadataColumn column: metadata.getListColumns()) {%>
+      			<%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+				 <%
+				 	}
+				}
+			}
+		}
+		
+		
 	}//2
 	
 }//1
