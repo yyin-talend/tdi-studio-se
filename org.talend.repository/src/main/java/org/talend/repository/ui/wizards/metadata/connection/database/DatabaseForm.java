@@ -210,6 +210,7 @@ public class DatabaseForm extends AbstractForm {
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
             databasePerl.remove("Microsoft SQL Server");
+            databasePerl.remove("Ingres");
             String [] dbPerl = (String [])databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$

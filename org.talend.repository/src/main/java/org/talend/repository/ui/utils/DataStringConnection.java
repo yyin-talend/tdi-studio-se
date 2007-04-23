@@ -49,9 +49,9 @@ public class DataStringConnection {
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[9];
+        dataConnection = new DataConnection[10];
 
-        defaultTable = new String[9];
+        defaultTable = new String[10];
 
         dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -82,7 +82,9 @@ public class DataStringConnection {
         dataConnection[8] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
                 "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        
+        dataConnection[9] = new DataConnection("Ingres", "jdbc:ingres://<host>:<port>/<sid>",
+                "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 //        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 //                + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
 
