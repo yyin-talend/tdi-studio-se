@@ -176,7 +176,7 @@ public class CodeGenerator implements ICodeGenerator {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN));
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree.getRootNode()));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END));
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                 }
