@@ -65,10 +65,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IContext;
-import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
-import org.talend.designer.runprocess.ProcessMessageManager;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -464,7 +462,7 @@ public class ProcessComposite extends Composite {
         killBtn.setEnabled(processContext != null && processContext.isRunning());
         // clearLogBtn.setEnabled(processContext != null);
         contextComposite.setProcess(processContext != null ? processContext.getProcess() : null);
-        fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
+        fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<ProcessMessage>());
     }
 
     protected void setRunnable(boolean runnable) {
@@ -478,7 +476,7 @@ public class ProcessComposite extends Composite {
         watchBtn.setEnabled(runnable);
     }
 
-    private void appendToConsole(final IProcessMessage message) {
+    private void appendToConsole(final ProcessMessage message) {
         getDisplay().asyncExec(new Runnable() {
 
             public void run() {
@@ -488,7 +486,7 @@ public class ProcessComposite extends Composite {
         });
     }
 
-    private void doAppendToConsole(final IProcessMessage message) {
+    private void doAppendToConsole(final ProcessMessage message) {
         StyleRange style = new StyleRange();
         style.start = consoleText.getText().length();
         style.length = message.getContent().length();
@@ -496,7 +494,7 @@ public class ProcessComposite extends Composite {
             style.fontStyle = SWT.ITALIC;
         }
         Color color;
-        switch ((MsgType) message.getType()) {
+        switch (message.getType()) {
         case CORE_OUT:
             color = getDisplay().getSystemColor(SWT.COLOR_BLUE);
             break;
@@ -517,11 +515,11 @@ public class ProcessComposite extends Composite {
         consoleText.setStyleRange(style);
     }
 
-    private void fillConsole(List<IProcessMessage> messages) {
+    private void fillConsole(List<ProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
         int messagesListSize = messages.size();
         for (int i = 0; i < messagesListSize; i++) {
-            IProcessMessage message = (IProcessMessage) messages.get(i);
+            ProcessMessage message = (ProcessMessage) messages.get(i);
             doAppendToConsole(message);
         }
         scrollToEnd();
@@ -594,9 +592,9 @@ public class ProcessComposite extends Composite {
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
-        if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)) {
-            appendToConsole((IProcessMessage) evt.getNewValue());
-        } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
+        if (RunProcessContext.PROP_MESSAGE_ADD.equals(propName)) {
+            appendToConsole((ProcessMessage) evt.getNewValue());
+        } else if (RunProcessContext.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
 
                 public void run() {
