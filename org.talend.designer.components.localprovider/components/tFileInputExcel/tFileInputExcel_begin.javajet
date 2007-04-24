@@ -58,7 +58,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 //begin
 //
-		List< ? extends IConnection> conns = node.getOutgoingConnections();
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		String firstConnName = "";
 		if (conns!=null) {
 			if (conns.size()>0) {

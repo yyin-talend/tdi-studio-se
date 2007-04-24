@@ -32,7 +32,7 @@ if (limit.equals("")) {
 	limit = "-1";
 }
 
-List< ? extends IConnection> conns = node.getOutgoingConnections();
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 String firstConnName = "";
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {

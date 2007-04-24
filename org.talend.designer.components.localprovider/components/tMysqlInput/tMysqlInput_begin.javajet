@@ -57,7 +57,7 @@ globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 
 
 <%
-List< ? extends IConnection> conns = node.getOutgoingConnections();
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 List<IMetadataColumn> columnList = metadata.getListColumns();
 %>
 while (rs_<%=cid %>.next()) {

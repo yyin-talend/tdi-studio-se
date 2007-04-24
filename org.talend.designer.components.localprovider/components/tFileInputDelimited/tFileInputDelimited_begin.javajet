@@ -151,7 +151,7 @@ while (<%if((footer > 0 || limit >= 0) && randoms < 0){%>delReader_<%=cid %>.get
 %>
 
 <%
-	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	String firstConnName = "";
 	if (conns!=null) {
 		if (conns.size()>0) {
