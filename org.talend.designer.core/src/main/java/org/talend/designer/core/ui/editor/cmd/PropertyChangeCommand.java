@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
@@ -30,12 +31,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
@@ -62,6 +65,8 @@ public class PropertyChangeCommand extends Command {
     private boolean toUpdate;
 
     private Map<IElementParameter, Object> oldElementValues;
+
+    private ChangeMetadataCommand changeMetadataCommand;
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
@@ -158,6 +163,7 @@ public class PropertyChangeCommand extends Command {
                         }
                     }
                 }
+
                 boolean contains = false;
                 for (IElementParameterDefaultValue value : param.getDefaultValues()) {
                     if (value.getIfCondition() != null) {
@@ -178,7 +184,18 @@ public class PropertyChangeCommand extends Command {
                     oldElementValues.put(param, param.getValue());
                     param.setValueToDefault(elem.getElementParameters());
                 }
+
             }
+            // See issue 975, update the schema.
+            Node node = (Node) elem;
+            IMetadataTable metadataTable = ((Node) elem).getMetadataList().get(0);
+            List<IElementParameter> listParam = (List<IElementParameter>) node.getElementParameters();
+
+            IMetadataTable newMetadataTable = getNewMetadataTableForSchema(listParam);
+
+            changeMetadataCommand = new ChangeMetadataCommand(node, metadataTable, newMetadataTable);
+            changeMetadataCommand.execute(true);
+
         }
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
@@ -189,6 +206,32 @@ public class PropertyChangeCommand extends Command {
 
         refreshPropertyView();
         refreshCodeView();
+    }
+
+    private IMetadataTable getNewMetadataTableForSchema(List<IElementParameter> listParam) {
+        for (IElementParameter param : listParam) {
+            if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                continue;
+            }
+            if (param.getDefaultValues().size() > 0) {
+                boolean isSet = false;
+                for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
+                    String conditionIf = defaultValue.getIfCondition();
+                    String conditionNotIf = defaultValue.getNotIfCondition();
+
+                    if (param.isShow(conditionIf, conditionNotIf, listParam)) {
+                        isSet = true;
+
+                        // todo
+                        return (IMetadataTable) defaultValue.getDefaultValue();
+                    }
+                }
+                if (!isSet) {
+                    return (IMetadataTable) param.getDefaultValues().get(0).getDefaultValue();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -218,6 +261,9 @@ public class PropertyChangeCommand extends Command {
         }
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
+        }
+        if (changeMetadataCommand != null) {
+            changeMetadataCommand.undo();
         }
         refreshPropertyView();
         refreshCodeView();
@@ -254,6 +300,10 @@ public class PropertyChangeCommand extends Command {
         }
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
+        }
+        
+        if (changeMetadataCommand != null) {
+            changeMetadataCommand.redo();
         }
         refreshPropertyView();
         refreshCodeView();

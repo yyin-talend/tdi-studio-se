@@ -31,18 +31,20 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
  */
 public class ElementParameterDefaultValue implements IElementParameterDefaultValue {
 
-    String defaultValue;
+    Object defaultValue;
 
     String ifCondition;
 
     String notIfCondition;
 
+    
+    
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#getDefaultValue()
      */
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return this.defaultValue;
     }
 
@@ -51,7 +53,7 @@ public class ElementParameterDefaultValue implements IElementParameterDefaultVal
      * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#setDefaultValue(java.lang.String)
      */
-    public void setDefaultValue(String defaultValue) {
+    public void setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
     }
 

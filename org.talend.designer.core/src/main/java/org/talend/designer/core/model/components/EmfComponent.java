@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.commons.collections.functors.ForClosure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
@@ -71,6 +72,7 @@ import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.LINKTOType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.model.utils.emf.component.RETURNType;
+import org.talend.designer.core.model.utils.emf.component.TABLEType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
@@ -132,8 +134,8 @@ public class EmfComponent implements IComponent {
         this.file = file;
         this.pathSource = pathSource;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     public ResourceBundle getResourceBundle() {
@@ -525,12 +527,11 @@ public class EmfComponent implements IComponent {
             newParam.setCategory(EComponentCategory.PROPERTY);
             newParam.setName(EParameterName.ENCODING_TYPE.getName());
             newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
-                    ENCODING_TYPE_CUSTOM });
+            newParam
+                    .setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
                     ENCODING_TYPE_CUSTOM });
-            newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
-                    ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8, ENCODING_TYPE_CUSTOM });
             newParam.setValue(ENCODING_TYPE_ISO_8859_15);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
@@ -663,9 +664,7 @@ public class EmfComponent implements IComponent {
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
             case SCHEMA_TYPE:
-                IMetadataTable defaultTable = new MetadataTable();
-                initializeTableFromXml(defaultTable, xmlParam);
-                param.setValue(defaultTable);
+                initializeTableFromXml(xmlParam, param);
                 break;
             case PROCESS_TYPE:
                 param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
@@ -674,19 +673,16 @@ public class EmfComponent implements IComponent {
                 param.setValue(""); //$NON-NLS-1$
             }
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)
                     && !param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
 
                     if (node.getProcess() != null) {
-                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType
-                                .getValue()));
-                        if (param.getField() == EParameterFieldType.FILE
-                                || param.getField() == EParameterFieldType.DIRECTORY) {
-                            IPath path = Path.fromOSString(defaultValue.getDefaultValue());
+                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType.getValue()));
+                        if (param.getField() == EParameterFieldType.FILE || param.getField() == EParameterFieldType.DIRECTORY) {
+                            IPath path = Path.fromOSString(defaultValue.getDefaultValue().toString());
                             defaultValue.setDefaultValue(path.toPortableString());
                         }
                     } else {
@@ -707,44 +703,59 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    private void initializeTableFromXml(IMetadataTable defaultTable, PARAMETERType xmlParam) {
-        if (xmlParam.getTABLE() == null) {
+    private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
+        List<TABLEType> tableList = xmlParam.getTABLE();
+        if (tableList == null) {
             return;
         }
-        EList xmlColumnList = xmlParam.getTABLE().getCOLUMN();
-        COLUMNType xmlColumn;
-        List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
-        IMetadataColumn talendColumn;
 
-        if (xmlParam.getTABLE().isSetREADONLY()) {
-            defaultTable.setReadOnly(xmlParam.getTABLE().isREADONLY());
-        }
+        for (TABLEType tableType : tableList) {
+            IMetadataTable defaultTable = new MetadataTable();
+            EList xmlColumnList = tableType.getCOLUMN();
+            COLUMNType xmlColumn;
+            List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
+            IMetadataColumn talendColumn;
 
-        for (int i = 0; i < xmlColumnList.size(); i++) {
-            xmlColumn = (COLUMNType) xmlColumnList.get(i);
-            talendColumn = new MetadataColumn();
-            talendColumn.setLabel(xmlColumn.getNAME());
-            talendColumn.setTalendType(xmlColumn.getTYPE());
-            talendColumn.setPrecision(new Integer(xmlColumn.getPRECISION()));
-            talendColumn.setLength(new Integer(xmlColumn.getLENGTH()));
-            talendColumn.setNullable(xmlColumn.isNULLABLE());
-            talendColumn.setKey(xmlColumn.isKEY());
-            talendColumn.setPattern(xmlColumn.getPATTERN());
-            if (xmlColumn.isSetREADONLY()) {
-                talendColumn.setReadOnly(xmlColumn.isREADONLY());
-            } else if (xmlParam.getTABLE().isSetREADONLY()) {
-                talendColumn.setReadOnly(xmlParam.getTABLE().isREADONLY());
-            } else {
-                talendColumn.setReadOnly(xmlParam.isREADONLY());
+            boolean isReadOnly = tableType.isSetREADONLY();
+            if (isReadOnly) {
+                defaultTable.setReadOnly(isReadOnly);
             }
-            if (xmlColumn.isSetCUSTOM()) {
-                talendColumn.setCustom(xmlColumn.isCUSTOM());
-            }
-            talendColumn.setCustomId(i);
-            talendColumnList.add(talendColumn);
-        }
 
-        defaultTable.setListColumns(talendColumnList);
+            for (int i = 0; i < xmlColumnList.size(); i++) {
+                xmlColumn = (COLUMNType) xmlColumnList.get(i);
+                talendColumn = new MetadataColumn();
+                talendColumn.setLabel(xmlColumn.getNAME());
+                talendColumn.setTalendType(xmlColumn.getTYPE());
+                talendColumn.setPrecision(new Integer(xmlColumn.getPRECISION()));
+                talendColumn.setLength(new Integer(xmlColumn.getLENGTH()));
+                talendColumn.setNullable(xmlColumn.isNULLABLE());
+                talendColumn.setKey(xmlColumn.isKEY());
+                talendColumn.setPattern(xmlColumn.getPATTERN());
+                if (xmlColumn.isSetREADONLY()) {
+                    talendColumn.setReadOnly(xmlColumn.isREADONLY());
+                } else if (isReadOnly) {
+                    talendColumn.setReadOnly(isReadOnly);
+                } else {
+                    talendColumn.setReadOnly(xmlParam.isREADONLY());
+                }
+                if (xmlColumn.isSetCUSTOM()) {
+                    talendColumn.setCustom(xmlColumn.isCUSTOM());
+                }
+                talendColumn.setCustomId(i);
+                talendColumnList.add(talendColumn);
+            }
+
+            defaultTable.setListColumns(talendColumnList);
+
+            // store the default table in default value
+            IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+            defaultValue.setDefaultValue(defaultTable);
+            defaultValue.setIfCondition(tableType.getIF());
+            defaultValue.setNotIfCondition(tableType.getNOTIF());
+            param.getDefaultValues().add(defaultValue);
+
+            // param.setValue(defaultTable);
+        }
     }
 
     /**
@@ -763,7 +774,7 @@ public class EmfComponent implements IComponent {
                     if (param.isShow(conditionIf, conditionNotIf, listParam)) {
                         isSet = true;
                         if (param.getField().equals(EParameterFieldType.CHECK)) {
-                            param.setValue(new Boolean(defaultValue.getDefaultValue()));
+                            param.setValue(new Boolean(defaultValue.getDefaultValue().toString()));
                         } else {
                             param.setValue(defaultValue.getDefaultValue());
                         }
@@ -771,17 +782,48 @@ public class EmfComponent implements IComponent {
                 }
                 if (!isSet) {
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
-                        param.setValue(new Boolean(param.getDefaultValues().get(0).getDefaultValue()));
+                        param.setValue(new Boolean(param.getDefaultValues().get(0).getDefaultValue().toString()));
                     } else {
                         param.setValue(param.getDefaultValues().get(0).getDefaultValue());
                     }
                 }
             }
         }
+        
+        initializePropertyParametersForSchema(listParam);
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
-            EParameterFieldType type, INode node) {
+    /**
+     * Sometimes the property parameters of schema are base on other parameters,but they might be initialized after the
+     * schema. So there need to initialize the schema's again.
+     * 
+     * @param listParam
+     */
+    private void initializePropertyParametersForSchema(List<ElementParameter> listParam) {
+        for (ElementParameter param : listParam) {
+            if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                continue;
+            }
+            if (param.getDefaultValues().size() > 0) {
+                boolean isSet = false;
+                for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
+                    String conditionIf = defaultValue.getIfCondition();
+                    String conditionNotIf = defaultValue.getNotIfCondition();
+
+                    if (param.isShow(conditionIf, conditionNotIf, listParam)) {
+                        isSet = true;
+                        param.setValue(defaultValue.getDefaultValue());
+                    }
+                }
+                if (!isSet) {
+                    param.setValue(param.getDefaultValues().get(0).getDefaultValue());
+                }
+            }
+        }
+    }
+
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
+            INode node) {
         ITEMType item;
         ElementParameter newParam;
 
@@ -844,8 +886,7 @@ public class EmfComponent implements IComponent {
                 case COLUMN_LIST:
                 case LOOKUP_COLUMN_LIST:
                 case PREV_COLUMN_LIST:
-                    addItemsPropertyParameters(
-                            paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
+                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
                             node);
                     break;
                 case CHECK:
@@ -1012,8 +1053,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
-                        importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
@@ -1232,7 +1273,7 @@ public class EmfComponent implements IComponent {
         }
         return pluginDependencyList;
     }
-    
+
     public boolean useMerge() {
         return compType.getHEADER().isUSEMERGE();
     }
