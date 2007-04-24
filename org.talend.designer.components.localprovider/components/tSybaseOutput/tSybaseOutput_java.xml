@@ -144,6 +144,14 @@
       </ITEMS>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>100</DEFAULT>
+    </PARAMETER>
 
   </PARAMETERS>
 
