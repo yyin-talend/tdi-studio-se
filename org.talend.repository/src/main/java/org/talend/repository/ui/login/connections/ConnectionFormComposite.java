@@ -194,7 +194,11 @@ public class ConnectionFormComposite extends Composite {
             dynamicRequiredControls.put(current, listRequired);
             Control baseControl = passwordLabel;
             for (DynamicFieldBean currentField : current.getFields()) {
-                Text text = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
+                int textStyle = SWT.BORDER;
+                if (currentField.isPassword()) {
+                    textStyle = textStyle | SWT.PASSWORD;
+                }
+                Text text = toolkit.createText(formBody, "", textStyle); //$NON-NLS-1$
                 data = new FormData();
                 data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
                 data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
