@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.utils.TalendTextUtils;
 
 /**
@@ -69,6 +70,30 @@ public class FileOutputXmlNode extends ShadowNode {
      * @see org.talend.core.model.process.INode#isStart()
      */
     public boolean isStart() {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
+     */
+    public List<? extends IConnection> getMainOutgoingConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
+     */
+    public List<? extends IConnection> getOutgoingSortedConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
+     */
+    public boolean isThereLinkWithHash() {
+        // TODO Auto-generated method stub
         return false;
     }
 

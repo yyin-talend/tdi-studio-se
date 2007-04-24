@@ -21,7 +21,10 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.util.List;
+
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.process.IConnection;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -55,5 +58,29 @@ public class FileInputCSVNode extends FileInputNode {
     public Point getLocation() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
+     */
+    public List<? extends IConnection> getMainOutgoingConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
+     */
+    public List<? extends IConnection> getOutgoingSortedConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
+     */
+    public boolean isThereLinkWithHash() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

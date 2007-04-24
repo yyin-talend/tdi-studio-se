@@ -24,6 +24,8 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.process.IConnection;
+
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
  * 
@@ -74,6 +76,30 @@ public class FileInputXmlNode extends FileInputNode {
     @Override
     public void setMappingList(List<Map<String, String>> mapping) {
         this.mapping = mapping;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
+     */
+    public List<? extends IConnection> getMainOutgoingConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
+     */
+    public List<? extends IConnection> getOutgoingSortedConnections() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
+     */
+    public boolean isThereLinkWithHash() {
+        // TODO Auto-generated method stub
+        return false;
     }
     
 }

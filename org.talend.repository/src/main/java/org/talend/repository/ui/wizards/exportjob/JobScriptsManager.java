@@ -63,11 +63,11 @@ public abstract class JobScriptsManager {
 
     protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
 
-    private static final String ALL_PERL_INTERPRETERS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
+    public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
 
-    private static final String PERL_INTERPRETER_UNIX = "Unix"; //$NON-NLS-1$
+    public static final String UNIX_ENVIRONMENT = "Unix"; //$NON-NLS-1$
 
-    private static final String PERL_INTERPRETER_WINDOWS = "Windows"; //$NON-NLS-1$
+    public static final String WINDOWS_ENVIRONMENT = "Windows"; //$NON-NLS-1$
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public abstract class JobScriptsManager {
      * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下午06:14:19 +0000 ylv $
      * 
      */
-    enum ExportChoice {
+    public enum ExportChoice {
         needLauncher,
         needSystemRoutine,
         needUserRoutine,
@@ -116,18 +116,22 @@ public abstract class JobScriptsManager {
      * @return
      */
     public String[] getLauncher() {
-        String[] launchers = { ALL_PERL_INTERPRETERS, PERL_INTERPRETER_UNIX, PERL_INTERPRETER_WINDOWS };
+        String[] launchers = { ALL_ENVIRONMENTS, UNIX_ENVIRONMENT, WINDOWS_ENVIRONMENT };
         return launchers;
     }
 
     /**
-     * Gets perl intepreter.
+     * 
+     * Create launcher(s) and get url(s).
      * 
      * @param needLauncher
      * @param process
+     * @param contextName
+     * @param environment use JobScriptsManager.ALL_ENVIRONMENTS, JobScriptsManager.UNIX_ENVIRONMENT or
+     * JobScriptsManager.WINDOWS_ENVIRONMENT
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String launcher) {
+    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
@@ -139,12 +143,12 @@ public abstract class JobScriptsManager {
         if (!fileTemp.exists()) {
             fileTemp.mkdir();
         }
-        if (launcher.equals(ALL_PERL_INTERPRETERS)) {
+        if (environment.equals(ALL_ENVIRONMENTS)) {
             createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
             createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
-        } else if (launcher.equals(PERL_INTERPRETER_UNIX)) {
+        } else if (environment.equals(UNIX_ENVIRONMENT)) {
             createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
-        } else if (launcher.equals(PERL_INTERPRETER_WINDOWS)) {
+        } else if (environment.equals(WINDOWS_ENVIRONMENT)) {
             createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
         }
         return list;
@@ -174,7 +178,8 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
+            String tmpFold) {
         PrintWriter pw = null;
         try {
 
@@ -272,8 +277,8 @@ public abstract class JobScriptsManager {
         if (sourceResouces == null) {
             try {
                 List<IResource> sourceFile = new ArrayList<IResource>();
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 addNodeToResource(folder.members(), sourceFile);

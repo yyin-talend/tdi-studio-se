@@ -65,6 +65,7 @@ import org.xml.sax.SAXException;
  * $Id$
  * 
  * @param <T>
+ * 
  */
 public class ShadowProcess<T extends IProcessDescription> {
 
@@ -199,7 +200,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
             IContext context = talendProcess.getContextManager().getDefaultContext();
             processor.setContext(context);
-            process = processor.run(Processor.NO_STATISTICS, Processor.NO_TRACES, null);
+            process = processor.run(Processor.NO_STATISTICS, Processor.NO_TRACES, null, null, null);
             ProcessStreamTrashReader.readAndForget(process);
 
             if (!outPath.toFile().exists()) {

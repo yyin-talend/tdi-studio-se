@@ -77,6 +77,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     /**
      * Sets the regEx.
+     * 
      * @param regEx the regEx to set
      */
     public void setRegEx(String regEx) {

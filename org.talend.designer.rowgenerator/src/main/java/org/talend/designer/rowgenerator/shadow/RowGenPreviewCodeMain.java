@@ -127,7 +127,7 @@ public class RowGenPreviewCodeMain {
         }
         IProcessor processor = ProcessorUtilities.getProcessor(proc, context2);
         try {
-            return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
+            return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null, null, null);
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return null;
