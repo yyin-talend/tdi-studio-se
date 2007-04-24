@@ -41,7 +41,10 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
@@ -71,10 +74,6 @@ public class RunProcessContext {
 
     public static final String TRACE_MONITOR = "RunProcessContext.MonitorTrace"; //$NON-NLS-1$
 
-    public static final String PROP_MESSAGE_ADD = "RunProcessContext.Message.Added"; //$NON-NLS-1$
-
-    public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
-
     // Added by ftang
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
 
@@ -94,8 +93,8 @@ public class RunProcessContext {
     private IContext selectedContext;
 
     /** The selected server configuration to run process with. */
-    private ITargetExecutionConfig selectedTargetExecutionConfiguration;
-    
+    private ITargetExecutionConfig selectedTargetExecutionConfig;
+
     /** Performance monitoring activated. */
     private boolean monitorPerf;
 
@@ -104,9 +103,6 @@ public class RunProcessContext {
 
     /** Is process running. */
     private boolean running;
-
-    /** Messages associated to the process. */
-    private List<ProcessMessage> messages;
 
     /** The executing process. */
     private Process ps;
@@ -123,6 +119,8 @@ public class RunProcessContext {
     /** Kill is in progress. */
     private boolean killing;
 
+    private IProcessMessageManager processMessageManager;
+
     /**
      * Constrcuts a new RunProcessContext.
      * 
@@ -133,9 +131,9 @@ public class RunProcessContext {
 
         this.process = process;
         selectedContext = process.getContextManager().getDefaultContext();
-        messages = new ArrayList<ProcessMessage>();
 
         pcsDelegate = new PropertyChangeSupport(this);
+        this.processMessageManager = new ProcessMessageManager();
     }
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
@@ -143,6 +141,7 @@ public class RunProcessContext {
             throw new IllegalArgumentException();
         }
 
+        processMessageManager.addPropertyChangeListener(l);
         pcsDelegate.addPropertyChangeListener(l);
     }
 
@@ -162,20 +161,8 @@ public class RunProcessContext {
         return process;
     }
 
-    protected void addMessage(ProcessMessage message) {
-        synchronized (messages) {
-            messages.add(message);
-        }
-
-        firePropertyChange(PROP_MESSAGE_ADD, null, message);
-    }
-
     public void clearMessages() {
-        synchronized (messages) {
-            messages.clear();
-        }
-
-        firePropertyChange(PROP_MESSAGE_CLEAR, messages, null);
+        processMessageManager.clearMessages();
     }
 
     // Added by ftang
@@ -186,8 +173,8 @@ public class RunProcessContext {
 
     // Ends
 
-    public List<ProcessMessage> getMessages() {
-        return messages;
+    public List<IProcessMessage> getMessages() {
+        return processMessageManager.getMessages();
     }
 
     /**
@@ -269,11 +256,6 @@ public class RunProcessContext {
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext())) {
 
-            final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
-            MessageFormat mf = new MessageFormat(startingPattern);
-            String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
-            addMessage(new ProcessMessage(MsgType.CORE_OUT, welcomeMsg));
-
             ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
             clearPerfAction.setProcess(process);
             clearPerfAction.run();
@@ -281,41 +263,64 @@ public class RunProcessContext {
             ClearTraceAction clearTraceAction = new ClearTraceAction();
             clearTraceAction.setProcess(process);
             clearTraceAction.run();
-            
+
             final IProcessor processor = getProcessor(process);
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
+                // progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
+                progressService.run(false, true, new IRunnableWithProgress() {
+
+                    // ProgressDialog progressDialog = new ProgressDialog(shell) {
 
                     public void run(final IProgressMonitor monitor) {
-                        monitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-                        try {
-                            try {
-                                if (monitorPerf) {
-                                    perfMonitor = new PerformanceMonitor();
-                                    new Thread(perfMonitor).start();
-                                }
-                                if (monitorTrace) {
-                                    traceMonitor = new TraceMonitor();
-                                    new Thread(traceMonitor).start();
-                                }
 
-                                String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
-                                IContext context = getSelectedContext();
-                                processor.setContext(context);
-                                processor.setTargetExecutionConfig(getSelectedTargetExecutionConfiguration());
-                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam);
-                                psMonitor = new ProcessMonitor(ps);
-                                new Thread(psMonitor).start();
-                            } catch (ProcessorException e) {
-                                addErrorMessage(e);
-                                kill();
+                        EventLoopProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                        monitorWrap.beginTask(
+                                Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                        try {
+                            if (monitorPerf) {
+                                perfMonitor = new PerformanceMonitor();
+                                new Thread(perfMonitor).start();
                             }
+                            if (monitorTrace) {
+                                traceMonitor = new TraceMonitor();
+                                new Thread(traceMonitor).start();
+                            }
+
+                            String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
+                            IContext context = getSelectedContext();
+                            processor.setContext(context);
+                            processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
+                            ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam, monitorWrap,
+                                    processMessageManager);
+
+                            if (ps != null) {
+                                psMonitor = new ProcessMonitor(ps);
+                                final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
+                                MessageFormat mf = new MessageFormat(startingPattern);
+                                String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
+                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, welcomeMsg));
+
+                                new Thread(psMonitor).start();
+                            }
+                        } catch (ProcessorException e) {
+                            ExceptionHandler.process(e);
+                            addErrorMessage(e);
+                            kill();
+                        } catch (Exception e) {
+                            ExceptionHandler.process(e);
+                            addErrorMessage(e);
+                            kill();
                         } finally {
-                            monitor.done();
+                            monitorWrap.done();
                         }
                     }
-                }, null);
+                    // };
+                    // progressDialog.executeProcess();
+                });
+                // }, null);
             } catch (InvocationTargetException e1) {
                 addErrorMessage(e1);
             } catch (InterruptedException e1) {
@@ -329,12 +334,13 @@ public class RunProcessContext {
 
     /**
      * DOC amaumont Comment method "getProcessor".
+     * 
      * @return
      */
     protected IProcessor getProcessor(IProcess process) {
         return ProcessorUtilities.getProcessor(process);
     }
-    
+
     /**
      * Kill the process.
      * 
@@ -351,7 +357,7 @@ public class RunProcessContext {
                 final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                 MessageFormat mf = new MessageFormat(endingPattern);
                 String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
+                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
             } finally {
                 killing = false;
             }
@@ -401,8 +407,8 @@ public class RunProcessContext {
         }
         message.append("\n"); //$NON-NLS-1$
 
-        ProcessMessage processMsg = new ProcessMessage(MsgType.CORE_ERR, message.toString());
-        addMessage(processMsg);
+        IProcessMessage processMsg = new ProcessMessage(MsgType.CORE_ERR, message.toString());
+        processMessageManager.addMessage(processMsg);
     }
 
     private int getStatisticsPort() {
@@ -492,16 +498,16 @@ public class RunProcessContext {
         }
 
         private boolean extractMessages() {
-            ProcessMessage messageOut = null;
-            ProcessMessage messageErr = null;
+            IProcessMessage messageOut = null;
+            IProcessMessage messageErr = null;
             try {
                 messageOut = extractMessage(outIs, MsgType.STD_OUT);
                 if (messageOut != null) {
-                    addMessage(messageOut);
+                    processMessageManager.addMessage(messageOut);
                 }
                 messageErr = extractMessage(errIs, MsgType.STD_ERR);
                 if (messageErr != null) {
-                    addMessage(messageErr);
+                    processMessageManager.addMessage(messageErr);
                 }
             } catch (IOException ioe) {
                 addErrorMessage(ioe);
@@ -517,8 +523,8 @@ public class RunProcessContext {
          * @return the message extracted or null if no message was present.
          * @throws IOException Extraction failure.
          */
-        private ProcessMessage extractMessage(final InputStream is, MsgType type) throws IOException {
-            ProcessMessage msg;
+        private IProcessMessage extractMessage(final InputStream is, MsgType type) throws IOException {
+            IProcessMessage msg;
             int len = is.available();
             if (len > 0) {
                 byte[] data = new byte[len];
@@ -750,15 +756,12 @@ public class RunProcessContext {
         }
     }
 
-    
-    public ITargetExecutionConfig getSelectedTargetExecutionConfiguration() {
-        return this.selectedTargetExecutionConfiguration;
+    public ITargetExecutionConfig getSelectedTargetExecutionConfig() {
+        return this.selectedTargetExecutionConfig;
     }
 
-    
-    public void setSelectedTargetExecutionConfiguration(ITargetExecutionConfig selectedTargetExecutionConfiguration) {
-        this.selectedTargetExecutionConfiguration = selectedTargetExecutionConfiguration;
+    public void setSelectedTargetExecutionConfig(ITargetExecutionConfig selectedTargetExecutionConfiguration) {
+        this.selectedTargetExecutionConfig = selectedTargetExecutionConfiguration;
     }
-    
-    
+
 }
