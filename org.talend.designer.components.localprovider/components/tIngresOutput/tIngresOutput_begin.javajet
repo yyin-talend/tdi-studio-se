@@ -45,6 +45,8 @@ class="IngresOutputBegin"
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+	
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 %>
 java.lang.Class.forName("com.ingres.jdbc.IngresDriver");
@@ -317,9 +319,23 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+
 
 <%		
 	}
-}
-%>
+	
+	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+	%>
+
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+int commitCounter_<%=cid%> = 0;
+
+conn_<%=cid%>.setAutoCommit(false);
+	<%
+	}
+	%>
+	
 int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
 int nb_line_deleted_<%=cid%> = 0;
+<%
+}
+%>
