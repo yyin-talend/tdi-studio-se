@@ -186,8 +186,8 @@ public class RowGeneratorUI {
         convert(outputMetaTable);
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
-        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
-                !inputReadOnly, externalNode, functionManager);
+        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor,
+                inputReadOnly, !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         dataTableView.setGeneratorUI(this);
         dataTableView.setShowDbTypeColumn(true, true, false);
@@ -204,8 +204,9 @@ public class RowGeneratorUI {
      * qzhang Comment method "convert".
      * 
      * @param outputMetaTable2
+     * @return TODO
      */
-    private void convert(IMetadataTable outputMetaTable2) {
+    public void convert(IMetadataTable outputMetaTable2) {
         List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
         for (IMetadataColumn column : outputMetaTable2.getListColumns()) {
             if (column instanceof MetadataColumn) {

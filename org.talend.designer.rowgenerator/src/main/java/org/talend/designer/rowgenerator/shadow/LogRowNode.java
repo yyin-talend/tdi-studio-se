@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
@@ -328,7 +329,12 @@ public class LogRowNode implements INode {
         return null;
     }
 
-    public boolean isThereLinkWithHash() {
+    public IExternalNode getExternalNode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+        public boolean isThereLinkWithHash() {
         // TODO Auto-generated method stub
         return false;
     }

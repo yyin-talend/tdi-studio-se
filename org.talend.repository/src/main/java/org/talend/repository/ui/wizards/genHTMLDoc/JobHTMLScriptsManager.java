@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
@@ -54,10 +55,10 @@ public class JobHTMLScriptsManager {
      * Deletes the temporary files.
      */
     public void deleteTempFiles() {
-        String tmpFold = new HTMLDocGenerator().getTmpFolder();
+        String tmpFold = HTMLDocUtils.getTmpFolder();
         File dir = new File(tmpFold);
         if (dir.exists()) {
-            deleteDirectory(dir);
+//            deleteDirectory(dir);
         }
     }
 

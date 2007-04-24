@@ -42,20 +42,26 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.rowgenerator.data.Function;
+import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.shadow.RowGenPreviewCodeMain;
+import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.utils.problems.ProblemsAnalyser;
 
 /**
@@ -452,4 +458,56 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             setTableElementParameter(newMap);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
+     */
+    public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
+        RowGeneratorComponentDocumentation componentDocumentation = new RowGeneratorComponentDocumentation();
+        componentDocumentation.setComponentName(componentName);
+        componentDocumentation.setTempFolderPath(tempFolderPath);
+        componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
+        
+        // Added parameters, preview and functions value.
+        for (IMetadataTable table : this.metadataListOut) {
+            this.convert(table);
+        }
+
+      
+        componentDocumentation.setMetadataListOut(this.metadataListOut);
+
+        return componentDocumentation;
+    }
+
+    /**
+     * Coverts <code>MetadataColumn</code> to <code>MetadataColumnExt</code>
+     * 
+     * @param metadataTable
+     * @return
+     */
+    private void convert(IMetadataTable metadataTable) {
+        List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
+        for (IMetadataColumn column : metadataTable.getListColumns()) {
+            if (column instanceof MetadataColumn) {
+                MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
+
+                FunctionManager functionManager = new FunctionManager();
+
+                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
+                String[] arrayTalendFunctions2 = new String[funs.size()];
+                for (int i = 0; i < funs.size(); i++) {
+                    arrayTalendFunctions2[i] = funs.get(i).getName();
+                }
+                ext.setArrayFunctions(arrayTalendFunctions2);
+                if (!funs.isEmpty()) {
+                    ext.setFunction(functionManager.getFuntionFromArray(ext, this));
+                }
+                exts.add(ext);
+            }
+        }
+        metadataTable.setListColumns(exts);
+    }
+
 }

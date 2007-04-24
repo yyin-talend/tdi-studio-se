@@ -40,8 +40,10 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
@@ -447,6 +449,19 @@ public class MapperComponent extends AbstractExternalNode {
      */
     public MapperMain getMapperMain() {
         return this.mapperMain;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
+     */
+    public IComponentDocumentation getComponentDocumentation(String componentLabel, String tempFolderPath) {
+        MapperComponentDocumentation componentDocumentation = new MapperComponentDocumentation();
+        componentDocumentation.setComponentName(componentLabel);
+        componentDocumentation.setTempFolderPath(tempFolderPath);
+        componentDocumentation.setExternalData(this.externalData);
+        componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
+        
+        return componentDocumentation;
     }
 
 }
