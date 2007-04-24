@@ -490,8 +490,7 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -681,9 +680,9 @@ public class Process extends Element implements IProcess {
 
         res.getContents().add(xmlDoc);
 
-        HashMap options = new HashMap(1);
+        HashMap options = new HashMap(2);
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
-
+        options.put(XMLResource.OPTION_XML_VERSION, "1.1");
         res.save(options);
         return process;
     }
@@ -909,8 +908,7 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                        .getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
@@ -980,8 +978,7 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                .getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1116,8 +1113,8 @@ public class Process extends Element implements IProcess {
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                 Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result
-                                                .getParameter(), repositoryValue);
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1187,8 +1184,8 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
-                    cType.getLabel(), cType.getMetaname());
+            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
+                    .getLabel(), cType.getMetaname());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
