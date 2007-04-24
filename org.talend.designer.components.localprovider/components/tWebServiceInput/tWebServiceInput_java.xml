@@ -45,7 +45,7 @@
       NUM_ROW="20"
       REQUIRED="true"
     >
-      <DEFAULT>"http://localhost:8080/webservices/tanxian.lian?wsdl"</DEFAULT>
+      <DEFAULT>"http://localhost:8080/webservices/map?wsdl"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

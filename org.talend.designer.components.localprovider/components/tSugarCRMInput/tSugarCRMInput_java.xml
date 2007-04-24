@@ -55,7 +55,7 @@
       NUM_ROW="4"
       REQUIRED="true"
     >
-      <DEFAULT>"soya"</DEFAULT>
+      <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

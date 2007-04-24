@@ -161,7 +161,7 @@
    <CODEGENERATION>
      <IMPORTS>
 		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="true" />
-		<IMPORT NAME="Delimited_File_Reader" MODULE="gke_delimited.jar" REQUIRED="true"/>
+		<IMPORT NAME="Delimited_File_Reader" MODULE="file_delimited.jar" REQUIRED="true"/>
      </IMPORTS>
    </CODEGENERATION>
 
