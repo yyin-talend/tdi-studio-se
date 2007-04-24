@@ -34,18 +34,15 @@ public class DynamicFieldBean {
     private String name;
 
     private boolean required;
+    
+    private boolean password;
 
-    /**
-     * DOC smallet DynamicFieldBean constructor comment.
-     * 
-     * @param id
-     * @param name
-     */
-    public DynamicFieldBean(String id, String name, boolean required) {
+    public DynamicFieldBean(String id, String name, boolean required, boolean password) {
         super();
         this.id = id;
         this.name = name;
         this.required = required;
+        this.password = password;
     }
 
     public String getId() {
@@ -70,6 +67,16 @@ public class DynamicFieldBean {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    
+    public boolean isPassword() {
+        return password;
+    }
+
+    
+    public void setPassword(boolean password) {
+        this.password = password;
     }
 
 }
