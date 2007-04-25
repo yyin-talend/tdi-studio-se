@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dbmap Plug-in
 Bundle-SymbolicName: org.talend.designer.dbmap
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: org.talend.designer.dbmap.DbMapActivator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
