@@ -1,0 +1,57 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+class="FileOutputCSVBegin" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+     	String cid = node.getUniqueName();
+        String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+    	String delim = delim1.substring(1,delim1.length()-1);
+    	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+    	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
+ %>
+ com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(<%=filename %>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+                
+ int nb_line_<%=cid%> = 0;
+ <%
+ 		  if(isIncludeHeader&&!isAppend)
+ 		  {
+ 		  	List<IMetadataColumn> columns = metadata.getListColumns();
+    		int sizeColumns = columns.size();
+ %>
+ 		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
+ <%   		
+    		for(int i = 0; i < sizeColumns; i++)
+    		{
+    			IMetadataColumn column = columns.get(i);
+ %>
+   				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+   <%
+    		}
+    %>
+    		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+    <%		
+ 		  }
+    	}
+    }
+%>

@@ -1,0 +1,90 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+class="FileOutputCSVMain" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+    	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+    	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
+    	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+    	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+          	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
+ %>
+          	CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
+<%				}
+        if(escapeChar.equals("\\\\")){
+        %>
+            CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
+<%
+        }else if(escapeChar.equals(textEnclosure)){
+        %>
+            CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
+<%
+        }else{
+%>
+            //doesn't work for other escapeChar
+<%
+        }
+ 
+    	if(conns!=null){
+    		if (conns.size()>0){
+       		IConnection conn =conns.get(0);
+    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+  %>  	
+            	String[] row<%=cid%>=new String[<%=sizeColumns%>];		
+ <%
+    			for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
+    			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				if(javaType == JavaTypesManager.STRING )
+				{
+					
+ %>
+ 				row<%=cid%>[<%=i%>]=<%=conn.getName() %>.<%=column.getLabel() %>;
+ <%   			
+    			
+  		    	}else{
+  		    	
+  	%>	  
+  				row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
+  	<% 	
+  		    	}
+  		    			
+    			}
+ %>
+ 				CsvWriter<%=cid%>.writeRecord(row<%=cid%>);			
+     			nb_line_<%=cid %>++;
+<%
+    		}
+ 		}
+ 	  }	
+	
+	}
+
+}
+%>

@@ -1,0 +1,16 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+	class="FileOutputCSVEnd" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+%>	
+CsvWriter<%=cid%>.close();
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
