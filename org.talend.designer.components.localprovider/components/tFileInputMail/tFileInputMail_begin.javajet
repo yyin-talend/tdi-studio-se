@@ -80,7 +80,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 if ((disposition<%=cid%> != null)
                         && ((disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))) {
                     attachfileName<%=cid%> = mpart<%=cid%>.getFileName();
-                    path<%=cid%> = <%=directory%> + attachfileName<%=cid%>;
+                     if(!<%=directory%>.endsWith("/")){
+           				 path<%=cid%> = <%=directory%> + "/";
+        				}else
+        				{
+        					path<%=cid%> =<%=directory%>;
+        				}
+                    path<%=cid%> = path<%=cid%> + attachfileName<%=cid%>;
                     java.io.File attachFile  = new java.io.File(path<%=cid%>);
                     out<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(attachFile));
                     in<%=cid%> = new java.io.BufferedInputStream(mpart<%=cid%>.getInputStream());
