@@ -32,6 +32,7 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.genHTMLDoc.GenerateDocAsHTMLWizard;
@@ -44,7 +45,7 @@ import org.talend.repository.ui.wizards.genHTMLDoc.GenerateDocAsHTMLWizard;
  */
 public class GenerateDocAsHTMLAction extends AContextualAction {
 
-    private static final String GENERATEDOCASHTML = "Generate Doc as HTML"; //$NON-NLS-1$
+    private static final String GENERATE_DOC_AS_HTML = Messages.getString("GenerateDocAsHTMLAction.GenerateDocAsHTML");
 
     /*
      * (non-Javadoc)
@@ -78,8 +79,8 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      */
     public GenerateDocAsHTMLAction() {
         super();
-        this.setText(GENERATEDOCASHTML);
-        this.setToolTipText(GENERATEDOCASHTML);
+        this.setText(GENERATE_DOC_AS_HTML);
+        this.setToolTipText(GENERATE_DOC_AS_HTML);
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
     }
 
@@ -91,7 +92,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
     public void run() {
         GenerateDocAsHTMLWizard processWizard = new GenerateDocAsHTMLWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
-        processWizard.setWindowTitle(GENERATEDOCASHTML);
+        processWizard.setWindowTitle(GENERATE_DOC_AS_HTML);
         processWizard.init(workbench, (IStructuredSelection) this.getSelection());
 
         Shell activeShell = Display.getCurrent().getActiveShell();
