@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,7 +42,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -146,6 +146,14 @@ public abstract class AbstractSection extends AbstractPropertySection {
         Assert.isTrue(selection instanceof IStructuredSelection);
         Object input = ((IStructuredSelection) selection).getFirstElement();
 
+        if (!(input instanceof RepositoryNode)) {
+            if (input instanceof IAdaptable) {
+                //see ProcessPart.getAdapter()
+                IAdaptable adaptable = (IAdaptable) input;
+                input = adaptable.getAdapter(RepositoryNode.class);
+            }
+        }
+        
         Assert.isTrue(input instanceof RepositoryNode);
         repositoryNode = (RepositoryNode) input;
         repositoryObject = repositoryNode.getObject();

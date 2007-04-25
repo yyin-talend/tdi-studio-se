@@ -157,8 +157,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private boolean readOnly;
 
-    public static final String ID = "org.talend.designer.core.ui.editor.TalendEditor"; //$NON-NLS-1$
-
     public static final int GRID_SIZE = 32;
 
     private boolean dirtyState = false;
@@ -263,7 +261,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         /** * Manage the view in the Outline ** */
         ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer) getGraphicalViewer();
 
-        TalendScalableFreeformRootEditPart root = new TalendScalableFreeformRootEditPart();
+        TalendScalableFreeformRootEditPart root = new TalendScalableFreeformRootEditPart(getEditorInput());
 
         List<String> zoomLevels = new ArrayList<String>();
         zoomLevels.add(ZoomManager.FIT_ALL);
@@ -416,7 +414,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      * @return contributorId String
      */
     public String getContributorId() {
-        return ID;
+        return "org.talend.repository.views.repository"; //$NON-NLS-1$
     }
 
     IPropertySheetPage properties;

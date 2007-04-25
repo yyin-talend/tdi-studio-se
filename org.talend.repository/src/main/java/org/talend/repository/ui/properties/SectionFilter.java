@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.properties;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IFilter;
 import org.talend.repository.model.RepositoryNode;
 
@@ -33,10 +34,24 @@ import org.talend.repository.model.RepositoryNode;
 public class SectionFilter implements IFilter {
 
     public boolean select(Object object) {
+        return getRepositoryNode(object) != null;
+    }
+
+    public static RepositoryNode getRepositoryNode(Object object) {
         if (object instanceof RepositoryNode) {
-            return true;
+            return (RepositoryNode) object;
         }
-        return false;
+        
+        if (object instanceof IAdaptable) {
+            //see ProcessPart.getAdapter()
+            IAdaptable adaptable = (IAdaptable) object;
+            Object adapter = adaptable.getAdapter(RepositoryNode.class);
+            if (adapter != null) {
+                return  (RepositoryNode) adapter;
+            }
+        }
+        
+        return null;
     }
 
 }

@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -33,14 +34,18 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.ui.IEditorInput;
+import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * EditPart of the Diagram that will set the main layer, and the differents kinds of rulers. <br/>
@@ -48,7 +53,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id$
  * 
  */
-public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
 
     private FreeformLayer fig2;
 
@@ -122,6 +127,18 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
      */
     public Object getAdapter(final Class adapter) {
+        if (adapter.equals(RepositoryNode.class)) {
+            RootEditPart rootEditPart = getRoot();
+            if (rootEditPart instanceof TalendScalableFreeformRootEditPart) {
+                TalendScalableFreeformRootEditPart rootEditPart2 = (TalendScalableFreeformRootEditPart) rootEditPart;
+                IEditorInput editorInput = rootEditPart2.getEditorInput();
+                if (editorInput instanceof ProcessEditorInput) {
+                    ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
+                    return processEditorInput.getRepositoryNode();
+                }
+            }
+        }
+        
         if (adapter == SnapToHelper.class) {
             List<Object> snapStrategies = new ArrayList<Object>();
             Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);

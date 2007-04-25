@@ -31,18 +31,21 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
  * $Id: SectionFilter.java 295 2006-11-02 08:28:03 +0000 (jeu., 02 nov. 2006) smallet $
  * 
  */
-public class ExcludeFolderSectionFilter implements IFilter {
+public class ExcludeFolderSectionFilter extends SectionFilter implements IFilter {
 
     public boolean select(Object object) {
-        if (object instanceof RepositoryNode) {
-            RepositoryNode node = (RepositoryNode) object;
-            if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER
-                    || node.getType() == ENodeType.SIMPLE_FOLDER) {
-                return false;
-            }
-            return true;
+        RepositoryNode node = getRepositoryNode(object);
+
+        if (node == null) {
+            return false;
         }
-        return false;
+
+        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER
+                || node.getType() == ENodeType.SIMPLE_FOLDER) {
+            return false;
+        }
+
+        return true;
     }
 
 }

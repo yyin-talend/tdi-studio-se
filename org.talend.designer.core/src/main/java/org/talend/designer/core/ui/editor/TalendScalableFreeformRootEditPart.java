@@ -28,6 +28,8 @@ import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.ui.IEditorInput;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * Modification of the default RootEditPart to add the possibility to change the color of the background and change the
@@ -39,6 +41,12 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEditPart {
 
     public static final String PROCESS_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
+
+    private IEditorInput editorInput;
+
+    public TalendScalableFreeformRootEditPart(IEditorInput editorInput) {
+        this.editorInput = editorInput;
+    }
 
     @Override
     protected LayeredPane createPrintableLayers() {
@@ -73,5 +81,9 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         FeedbackLayer() {
             setEnabled(false);
         }
+    }
+
+    public IEditorInput getEditorInput() {
+        return editorInput;
     }
 }

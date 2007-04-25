@@ -38,21 +38,25 @@ public class PropsTitleLabelProvider extends LabelProvider {
     @Override
     public String getText(Object element) {
         RepositoryNode repositoryNode = getRepositoryNode(element);
+        if (repositoryNode == null) {
+            return ""; //$NON-NLS-1$
+        }
         return repositoryNode.getLabel();
     }
 
     @Override
     public Image getImage(Object element) {
         RepositoryNode repositoryNode = getRepositoryNode(element);
+        if (repositoryNode == null) {
+            return null;
+        }
         return ImageProvider.getImage(repositoryNode.getIcon());
     }
 
     private RepositoryNode getRepositoryNode(Object element) {
         if (element instanceof IStructuredSelection) {
             Object firstElement = ((IStructuredSelection) element).getFirstElement();
-            if (firstElement instanceof RepositoryNode) {
-                return (RepositoryNode) firstElement;
-            }
+            return SectionFilter.getRepositoryNode(firstElement);
         }
         return null;
     }

@@ -49,7 +49,7 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
-            contributorId="org.talend.designer.core.ui.editor.TalendEditor"
+            contributorId="org.talend.repository.views.repository"
             labelProvider="org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider"
             typeMapper="org.talend.designer.core.ui.editor.properties.GefEditorTypeMapper">
          <propertyCategory category="TalendEditor"/>
@@ -57,7 +57,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
-      <propertyTabs contributorId="org.talend.designer.core.ui.editor.TalendEditor">
+      <propertyTabs contributorId="org.talend.repository.views.repository">
          <propertyTab
                category="TalendEditor"
                id="mainTab"
@@ -98,7 +98,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
-        <propertySections contributorId="org.talend.designer.core.ui.editor.TalendEditor">
+        <propertySections contributorId="org.talend.repository.views.repository">
          <propertySection
                class="org.talend.designer.core.ui.editor.properties.nodes.MainNodeSection"
                id="MainNodeSection"
