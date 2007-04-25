@@ -66,6 +66,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.CorePlugin;
@@ -353,11 +355,15 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
-        ProxyRepositoryFactory.getInstance().initialize();
-        root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
-        viewer.refresh();
-        // unsetting the selection will prevent the propertyView from displaying dirty data
-        viewer.setSelection(new TreeSelection());
+        try {
+            ProxyRepositoryFactory.getInstance().initialize();
+            root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+            viewer.refresh();
+            // unsetting the selection will prevent the propertyView from displaying dirty data
+            viewer.setSelection(new TreeSelection());
+        } catch (PersistenceException exception) {
+            MessageBoxExceptionHandler.process(exception);
+        }
     }
 
     public void refresh(Object object) {

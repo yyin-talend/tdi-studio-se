@@ -66,7 +66,7 @@ public interface IRepositoryFactory {
 
     public void setAuthenticationNeeded(boolean aBnthenticationNeeded);
 
-    public void initialize();
+    public void initialize() throws PersistenceException;
 
     public void logOnProject(Project project) throws LoginException, PersistenceException;
 

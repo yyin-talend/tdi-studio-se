@@ -753,7 +753,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#initialize()
      */
-    public void initialize() {
+    public void initialize() throws PersistenceException {
         this.repositoryFactoryFromProvider.initialize();
     }
 

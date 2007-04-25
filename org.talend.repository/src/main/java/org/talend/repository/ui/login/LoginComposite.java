@@ -402,7 +402,8 @@ public class LoginComposite extends Composite {
         projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                        .getPreferenceStore());
                 prefManipulator.setLastProject(getProject().getLabel());
                 dialog.updateButtons();
                 setRepositoryContextInContext();
@@ -525,19 +526,32 @@ public class LoginComposite extends Composite {
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
                 .getRepositoryId()));
-        repositoryFactory.initialize();
 
+        boolean initialized = false;
         try {
-            projects = repositoryFactory.readProject();
+            repositoryFactory.initialize();
+            initialized = true;
         } catch (PersistenceException e) {
             projects = new Project[0];
 
-            dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
-                    + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
-        } catch (BusinessException e) {
-            projects = new Project[0];
+            MessageDialog.openError(getShell(),
+                    "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
 
-            MessageDialog.openError(getShell(), "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+        if (initialized) {
+            try {
+                projects = repositoryFactory.readProject();
+            } catch (PersistenceException e) {
+                projects = new Project[0];
+
+                dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
+                        + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
+            } catch (BusinessException e) {
+                projects = new Project[0];
+
+                MessageDialog.openError(getShell(),
+                        "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         projectViewer.setInput(projects);
 
