@@ -117,6 +117,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getFileXmlMetadata();
         } else if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
             return BusinessPackage.eINSTANCE.getFileLdifMetadata();
+        } else if (type == ERepositoryObjectType.CONTEXT) {
+            return BusinessPackage.eINSTANCE.getContext();
         }
         return null;
     }
