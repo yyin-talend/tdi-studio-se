@@ -60,6 +60,8 @@ public interface IRepositoryFactory {
 
     public void setFields(List<DynamicFieldBean> fields);
 
+    public List<DynamicButtonBean> getButtons();
+
     public boolean isAuthenticationNeeded();
 
     public void setAuthenticationNeeded(boolean aBnthenticationNeeded);
@@ -238,4 +240,5 @@ public interface IRepositoryFactory {
     List<ContextItem> getContextItem() throws PersistenceException;
 
     public List<org.talend.core.model.properties.Project> getReferencedProjects();
+
 }

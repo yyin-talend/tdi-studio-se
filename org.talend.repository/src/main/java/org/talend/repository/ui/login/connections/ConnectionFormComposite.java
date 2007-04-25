@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -36,11 +38,14 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -49,7 +54,9 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.DynamicButtonBean;
 import org.talend.repository.model.DynamicFieldBean;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -85,6 +92,8 @@ public class ConnectionFormComposite extends Composite {
     private Map<IRepositoryFactory, Map<String, LabelText>> dynamicControls = new HashMap<IRepositoryFactory, Map<String, LabelText>>();
 
     private Map<IRepositoryFactory, Map<String, LabelText>> dynamicRequiredControls = new HashMap<IRepositoryFactory, Map<String, LabelText>>();
+
+    private Map<IRepositoryFactory, Map<String, Button>> dynamicButtons = new HashMap<IRepositoryFactory, Map<String, Button>>();
 
     /**
      * DOC smallet ConnectionsComposite constructor comment.
@@ -152,7 +161,8 @@ public class ConnectionFormComposite extends Composite {
         data.top = new FormAttachment(nameText, ConnectionsDialog.VSPACE);
         descriptionText.setLayoutData(data);
 
-        Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
+        Label descriptionLabel = toolkit
+                .createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(descriptionText, 0, SWT.BOTTOM);
@@ -190,8 +200,10 @@ public class ConnectionFormComposite extends Composite {
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
             Map<String, LabelText> listRequired = new HashMap<String, LabelText>();
+            Map<String, Button> listButtons = new HashMap<String, Button>();
             dynamicControls.put(current, list);
             dynamicRequiredControls.put(current, listRequired);
+            dynamicButtons.put(current, listButtons);
             Control baseControl = passwordLabel;
             for (DynamicFieldBean currentField : current.getFields()) {
                 int textStyle = SWT.BORDER;
@@ -219,6 +231,21 @@ public class ConnectionFormComposite extends Composite {
                 }
                 list.put(currentField.getId(), labelText);
             }
+
+            for (final DynamicButtonBean currentButtonBean : current.getButtons()) {
+                Button button = new Button(formBody, SWT.PUSH);
+                button.setText(currentButtonBean.getName());
+                button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
+                
+                data = new FormData();
+                data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
+                data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
+                data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
+                button.setLayoutData(data);
+                
+                listButtons.put(currentButtonBean.getId(), button);
+            }
+
         }
 
         addListeners();
@@ -275,11 +302,19 @@ public class ConnectionFormComposite extends Composite {
             for (LabelText control : dynamicControls.get(f).values()) {
                 control.setVisible(false);
             }
+
+            for (Button control : dynamicButtons.get(f).values()) {
+                control.setVisible(false);
+            }
         }
 
         // 2. Show active repository controls:
         if (getRepository() != null) {
             for (LabelText control : dynamicControls.get(getRepository()).values()) {
+                control.setVisible(true);
+            }
+
+            for (Button control : dynamicButtons.get(getRepository()).values()) {
                 control.setVisible(true);
             }
         }
@@ -429,6 +464,25 @@ public class ConnectionFormComposite extends Composite {
         showHideDynamicsControls();
         validateFields();
         showHideTexts();
+    }
+
+    /**
+     */
+    private final class DelegateSelectionListener implements SelectionListener {
+
+        private DynamicButtonBean bean;
+
+        private DelegateSelectionListener(DynamicButtonBean bean) {
+            this.bean = bean;
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+        }
+
+        public void widgetSelected(SelectionEvent e) {
+            e.data = connection;
+            bean.getListener().widgetSelected(e);
+        }
     }
 
     /**

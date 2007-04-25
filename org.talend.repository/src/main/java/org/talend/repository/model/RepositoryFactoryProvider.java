@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.swt.events.SelectionListener;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProvider;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointLimiterImpl;
 import org.talend.commons.utils.workbench.extensions.IExtensionPointLimiter;
@@ -67,6 +68,13 @@ public class RepositoryFactoryProvider {
                                         new Boolean(currentLoginField.getAttribute("required")), //$NON-NLS-1$
                                         new Boolean(currentLoginField.getAttribute("password"))); //$NON-NLS-1$
                         currentAction.getFields().add(key);
+                    }
+
+                    for (IConfigurationElement currentLoginField : current.getChildren("button")) { //$NON-NLS-1$
+                        DynamicButtonBean key = new DynamicButtonBean(currentLoginField.getAttribute("id"), //$NON-NLS-1$
+                                currentLoginField.getAttribute("name"), //$NON-NLS-1$
+                                (SelectionListener) currentLoginField.createExecutableExtension("selectionListener")); //$NON-NLS-1$
+                        currentAction.getButtons().add(key);
                     }
 
                     list.add(currentAction);

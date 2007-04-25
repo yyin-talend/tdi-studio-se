@@ -50,6 +50,12 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     private List<DynamicFieldBean> fields = new ArrayList<DynamicFieldBean>();
 
+    private List<DynamicButtonBean> buttons = new ArrayList<DynamicButtonBean>();
+
+    public List<DynamicButtonBean> getButtons() {
+        return buttons;
+    }
+
     /**
      * Getter for authenticationNeeded.
      * 
