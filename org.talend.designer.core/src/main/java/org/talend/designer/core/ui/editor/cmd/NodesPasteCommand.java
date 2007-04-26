@@ -84,6 +84,14 @@ public class NodesPasteCommand extends Command {
         return newName;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.commands.Command#canExecute()
+     */
+    @Override
+    public boolean canExecute() {
+        return !process.isReadOnly();
+    }
+    
     private void orderNodeParts(List<NodePart> nodeParts) {
         this.nodeParts = new ArrayList<NodePart>();
 
