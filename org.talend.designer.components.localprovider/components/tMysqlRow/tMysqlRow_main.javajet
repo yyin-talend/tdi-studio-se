@@ -78,6 +78,10 @@ pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.
 						}
 						parameterIndex++;
 					}
+
+				}//end of connection size.
+			}//end of metadatas
+	}
 	%>
 try {
 	pstmt_<%=cid %>.execute();
@@ -85,13 +89,10 @@ try {
 <%	if (dieOnError.equals("true")) { %>
 	throw(e);
 <% } else { %>
-	// do nothing, continue Job
+	throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
 <% } %>
 }
 	<%
-				}
-			}
-	}
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 %>
 if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
