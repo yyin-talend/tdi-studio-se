@@ -128,10 +128,10 @@ public class PropertyChangeCommand extends Command {
                 || currentParam.getField().equals(EParameterFieldType.CHECK)) {
             toUpdate = false;
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                IElementParameter param = elem.getElementParameters().get(i);
+                IElementParameter testedParam = elem.getElementParameters().get(i);
 
-                String showIf = param.getShowIf();
-                String notShowIf = param.getNotShowIf();
+                String showIf = testedParam.getShowIf();
+                String notShowIf = testedParam.getNotShowIf();
 
                 if (showIf != null) {
                     if (showIf.contains(currentParam.getName())) {
@@ -145,10 +145,10 @@ public class PropertyChangeCommand extends Command {
                     }
                 }
                 if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
-                    if (param.getListItemsShowIf() != null) {
-                        for (int j = 0; j < param.getListItemsShowIf().length && !toUpdate; j++) {
-                            showIf = param.getListItemsShowIf()[j];
-                            notShowIf = param.getListItemsNotShowIf()[j];
+                    if (testedParam.getListItemsShowIf() != null) {
+                        for (int j = 0; j < testedParam.getListItemsShowIf().length && !toUpdate; j++) {
+                            showIf = testedParam.getListItemsShowIf()[j];
+                            notShowIf = testedParam.getListItemsNotShowIf()[j];
                             if (showIf != null) {
                                 if (showIf.contains(currentParam.getName())) {
                                     toUpdate = true;
@@ -164,38 +164,8 @@ public class PropertyChangeCommand extends Command {
                     }
                 }
 
-                boolean contains = false;
-                for (IElementParameterDefaultValue value : param.getDefaultValues()) {
-                    if (value.getIfCondition() != null) {
-                        if (value.getIfCondition().contains(currentParam.getName())) {
-                            contains = true;
-                            break;
-                        }
-                    }
-                    if (value.getNotIfCondition() != null) {
-                        if (value.getNotIfCondition().contains(currentParam.getName())) {
-                            contains = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (param.getDefaultValues().size() > 0 && contains) {
-                    oldElementValues.put(param, param.getValue());
-                    param.setValueToDefault(elem.getElementParameters());
-                }
-
+                setDefaultValues(currentParam, testedParam);
             }
-            // See issue 975, update the schema.
-            Node node = (Node) elem;
-            IMetadataTable metadataTable = ((Node) elem).getMetadataList().get(0);
-            List<IElementParameter> listParam = (List<IElementParameter>) node.getElementParameters();
-
-            IMetadataTable newMetadataTable = getNewMetadataTableForSchema(listParam);
-
-            changeMetadataCommand = new ChangeMetadataCommand(node, metadataTable, newMetadataTable);
-            changeMetadataCommand.execute(true);
-
         }
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
@@ -208,30 +178,49 @@ public class PropertyChangeCommand extends Command {
         refreshCodeView();
     }
 
-    private IMetadataTable getNewMetadataTableForSchema(List<IElementParameter> listParam) {
-        for (IElementParameter param : listParam) {
-            if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                continue;
-            }
-            if (param.getDefaultValues().size() > 0) {
-                boolean isSet = false;
-                for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
-                    String conditionIf = defaultValue.getIfCondition();
-                    String conditionNotIf = defaultValue.getNotIfCondition();
-
-                    if (param.isShow(conditionIf, conditionNotIf, listParam)) {
-                        isSet = true;
-
-                        // todo
-                        return (IMetadataTable) defaultValue.getDefaultValue();
-                    }
+    /**
+     * Set the values to default if needed.
+     * 
+     * @param currentParam Current parameter that has been modified in the interface
+     * @param testedParam Tested parameter, to know if there is a link for the default values between this parameter and
+     * the current.
+     */
+    private void setDefaultValues(IElementParameter currentParam, IElementParameter testedParam) {
+        boolean contains = false;
+        for (IElementParameterDefaultValue value : testedParam.getDefaultValues()) {
+            if (value.getIfCondition() != null) {
+                if (value.getIfCondition().contains(currentParam.getName())) {
+                    contains = true;
+                    break;
                 }
-                if (!isSet) {
-                    return (IMetadataTable) param.getDefaultValues().get(0).getDefaultValue();
+            }
+            if (value.getNotIfCondition() != null) {
+                if (value.getNotIfCondition().contains(currentParam.getName())) {
+                    contains = true;
+                    break;
                 }
             }
         }
-        return null;
+
+        if (testedParam.getDefaultValues().size() > 0 && contains) {
+            oldElementValues.put(testedParam, testedParam.getValue());
+
+            // if the field is not a schema type, then use standard "set value".
+            if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                testedParam.setValueToDefault(elem.getElementParameters());
+            } else {
+                // See issue 975, update the schema.
+                Node node = (Node) elem;
+                if (((Node) elem).getMetadataList().size() > 0) {
+                    IMetadataTable metadataTable = ((Node) elem).getMetadataList().get(0);
+                    testedParam.setValueToDefault(elem.getElementParameters());
+                    IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
+
+                    changeMetadataCommand = new ChangeMetadataCommand(node, metadataTable, newMetadataTable);
+                    changeMetadataCommand.execute(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -301,7 +290,7 @@ public class PropertyChangeCommand extends Command {
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
-        
+
         if (changeMetadataCommand != null) {
             changeMetadataCommand.redo();
         }
