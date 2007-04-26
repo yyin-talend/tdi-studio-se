@@ -28,6 +28,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -37,8 +38,9 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -82,7 +84,7 @@ public class ContextRepositoryCommand extends Command {
             oldRepositoryId = process.getRepositoryId();
             process.setRepositoryId(null);
         }
-        updateContextSection();
+        refreshContextView();
     }
 
     @Override
@@ -96,7 +98,7 @@ public class ContextRepositoryCommand extends Command {
                 process.setRepositoryId(oldRepositoryId);
             }
         }
-        updateContextSection();
+        refreshContextView();
     }
 
     private boolean loadContextFromId(String repositoryId) {
@@ -125,13 +127,30 @@ public class ContextRepositoryCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
-        for (int i = 0; i < sections.length; i++) {
-            if (sections[i] instanceof ContextProcessSection2) {
-                ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
-                currentSection.updateContextView();
+        final IPage currentPage = sheet.getCurrentPage();
+        if (currentPage instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
+            tabbedPropertySheetPage.refresh();
+            ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+            for (int i = 0; i < sections.length; i++) {
+                if (sections[i] instanceof ContextProcessSection2) {
+                    ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
+                    currentSection.updateContextView();
+                }
             }
+        } 
+
+    }
+
+    /**
+     * qzhang Comment method "refreshContextView".
+     */
+    private void refreshContextView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).updateContextView(contextItem == null);
         }
     }
+
 }

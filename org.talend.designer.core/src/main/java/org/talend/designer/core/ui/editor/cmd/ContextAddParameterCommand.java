@@ -28,12 +28,14 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 
 /**
  * Command that will add a new parameter in all contexts. <br/>
@@ -60,10 +62,24 @@ public class ContextAddParameterCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        final IPage currentPage = sheet.getCurrentPage();
+        if (currentPage instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
+            tabbedPropertySheetPage.refresh();
+        } 
     }
 
+    /**
+     * qzhang Comment method "refreshContextView".
+     */
+    private void refreshContextView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).updateContextView(true);
+        }
+    }
+    
     @Override
     public void execute() {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
@@ -73,7 +89,7 @@ public class ContextAddParameterCommand extends Command {
             context.getContextParameterList().add(toAdd);
         }
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 
     @Override
@@ -88,6 +104,6 @@ public class ContextAddParameterCommand extends Command {
             context.getContextParameterList().remove(addedParameters.get(context));
         }
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 }

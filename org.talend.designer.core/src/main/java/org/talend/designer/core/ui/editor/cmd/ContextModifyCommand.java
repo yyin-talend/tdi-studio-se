@@ -27,6 +27,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
@@ -36,6 +37,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 
 /**
  * Command that will modify a context.
@@ -55,8 +57,8 @@ public class ContextModifyCommand extends Command {
 
     private IProcess process;
 
-    public ContextModifyCommand(IProcess process,IContextManager contextManager, IContext oldContext, IContext newContext) {
-        this.process=process;
+    public ContextModifyCommand(IProcess process, IContextManager contextManager, IContext oldContext, IContext newContext) {
+        this.process = process;
         this.contextManager = contextManager;
         this.oldContext = oldContext;
         this.currentContext = newContext;
@@ -67,8 +69,26 @@ public class ContextModifyCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        final IPage currentPage = sheet.getCurrentPage();
+        if (currentPage instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
+            tabbedPropertySheetPage.refresh();
+        }
+        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).refresh();
+        }
+    }
+
+    /**
+     * qzhang Comment method "refreshContextView".
+     */
+    private void refreshContextView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).updateContextView(true, false);
+        }
     }
 
     public void execute() {
@@ -81,7 +101,7 @@ public class ContextModifyCommand extends Command {
             }
         }
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
         // Removes the attached context files
         try {
             CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().removeContextFiles(process, oldContext);
@@ -137,7 +157,7 @@ public class ContextModifyCommand extends Command {
         }
 
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 
     @Override
@@ -179,6 +199,6 @@ public class ContextModifyCommand extends Command {
         }
 
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 }

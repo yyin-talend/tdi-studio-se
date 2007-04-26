@@ -26,9 +26,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
  * Track the active Process being edited. <br/>
@@ -60,32 +60,32 @@ public class ActiveProcessTracker implements IPartListener {
                 }
             }
 
-//            if (updateContextSection()) {
-//                mpte.getTalendEditor().setDirty(true);
-//            }
+            // if (updateContextSection()) {
+            // mpte.getTalendEditor().setDirty(true);
+            // }
         }
     }
 
-//    private boolean updateContextSection() {
-//        boolean modified = false;
-//        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-//        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-//        PropertySheet sheet = (PropertySheet) view;
-//        if (view instanceof TabbedPropertySheetPage) {
-//            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-//            if (tabbedPropertySheetPage.getCurrentTab() == null) {
-//                return modified;
-//            }
-//            ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
-//            for (int i = 0; i < sections.length; i++) {
-//                if (sections[i] instanceof ContextProcessSection2) {
-//                    ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
-//                    modified = currentSection.updateContextView();
-//                }
-//            }
-//        }
-//        return modified;
-//    }
+    // private boolean updateContextSection() {
+    // boolean modified = false;
+    // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+    // PropertySheet sheet = (PropertySheet) view;
+    // if (view instanceof TabbedPropertySheetPage) {
+    // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+    // if (tabbedPropertySheetPage.getCurrentTab() == null) {
+    // return modified;
+    // }
+    // ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+    // for (int i = 0; i < sections.length; i++) {
+    // if (sections[i] instanceof ContextProcessSection2) {
+    // ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
+    // modified = currentSection.updateContextView();
+    // }
+    // }
+    // }
+    // return modified;
+    // }
 
     /*
      * (non-Javadoc)
@@ -99,14 +99,38 @@ public class ActiveProcessTracker implements IPartListener {
             IProcess process = mpte.getTalendEditor().getProcess();
             currentProcess = process;
 
-            Problems.setCurrentProcess(currentProcess);
-
-            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            service.setActiveProcess(process);
-
-            Problems.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
-            Problems.switchToCurProblemView();
+            setProblemsView(process);
+            setContextsView(process);
         }
+    }
+
+    /**
+     * qzhang Comment method "setProblemsView".
+     * 
+     * @param process
+     */
+    private void setProblemsView(IProcess process) {
+        Problems.setCurrentProcess(currentProcess);
+
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        service.setActiveProcess(process);
+
+        Problems.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
+        Problems.switchToCurProblemView();
+    }
+
+    /**
+     * qzhang Comment method "setProblemsView".
+     * 
+     * @param process
+     */
+    private void setContextsView(IProcess process) {
+
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        service.setActiveProcess(process);
+
+        Contexts.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
+        Contexts.switchToCurContextsView();
     }
 
     /*
@@ -126,6 +150,8 @@ public class ActiveProcessTracker implements IPartListener {
             if (currentProcess == process) {
                 Problems.setTitle(""); //$NON-NLS-1$
                 Problems.clearAll();
+                Contexts.setTitle("");
+                Contexts.clearAll();
             }
         }
     }

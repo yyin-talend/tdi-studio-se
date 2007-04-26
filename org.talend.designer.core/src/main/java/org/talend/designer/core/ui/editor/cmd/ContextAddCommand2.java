@@ -27,16 +27,20 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.ui.context.JobContextComposite;
+import org.talend.core.ui.context.JobContextCompositeForView;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.contexts.ContextsView;
 
 /**
  * Command that will add a new Context and copy all parameters from the selected context.
@@ -50,7 +54,7 @@ public class ContextAddCommand2 extends Command {
 
     IContext context;
 
-    JobContextComposite composite;
+    Composite composite;
 
     CCombo combo;
 
@@ -74,17 +78,47 @@ public class ContextAddCommand2 extends Command {
         setLabel(Messages.getString("ContextAddCommand.label")); //$NON-NLS-1$
     }
 
+    public ContextAddCommand2(JobContextCompositeForView composite, IContext newContext, CCombo combo) {
+        this.context = newContext;
+        this.composite = composite;
+        this.combo = combo;
+        this.tabFolder = composite.getTabFolder();
+        this.tableViewerCreatorMap = composite.getTableViewerCreatorMap();
+
+        contextManager = composite.getContextManager();
+        listContext = contextManager.getListContext();
+        setLabel(Messages.getString("ContextAddCommand.label")); //$NON-NLS-1$
+    }
+
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        final IPage currentPage = sheet.getCurrentPage();
+        if (currentPage instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
+            tabbedPropertySheetPage.refresh();
+        }
+    }
+
+    /**
+     * qzhang Comment method "refreshContextView".
+     */
+    private void refreshContextView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view2 = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view2 instanceof ContextsView) {
+            ((ContextsView) view2).updateContextView(true);
+        }
     }
 
     public void execute() {
         listContext.add(context);
-        composite.addContext(context);
+        if (composite instanceof JobContextCompositeForView) {
+            ((JobContextCompositeForView) composite).addContext(context);
+        } else if (composite instanceof JobContextComposite) {
+            ((JobContextComposite) composite).addContext(context);
+        }
 
         String[] stringList = new String[listContext.size()];
         for (int i = 0; i < listContext.size(); i++) {
@@ -93,7 +127,7 @@ public class ContextAddCommand2 extends Command {
 
         combo.setItems(stringList);
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 
     @Override
@@ -121,6 +155,6 @@ public class ContextAddCommand2 extends Command {
         }
         combo.setItems(stringList);
         contextManager.fireContextsChangedEvent();
-        refreshPropertyView();
+        refreshContextView();
     }
 }

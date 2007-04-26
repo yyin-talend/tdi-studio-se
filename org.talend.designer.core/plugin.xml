@@ -80,11 +80,6 @@
                id="docTab"
                label="%documentation"/>
          <propertyTab
-               afterTab="mainTab"
-               category="TalendEditor"
-               id="contextTab"
-               label="%contexts"/>
-         <propertyTab
                afterTab="contextTab"
                category="TalendEditor"
                id="versionsTab"
@@ -141,13 +136,6 @@
             <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
          </propertySection>
          <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2"
-               id="ContextProcessSection"
-               tab="contextTab">
-            <input type="org.talend.designer.core.ui.editor.process.Process"/>
-            <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
-         </propertySection>
-         <propertySection
                class="org.talend.designer.core.ui.editor.properties.process.VersionsProcessSection"
                id="VersionsProcessSection"
                tab="versionsTab">
@@ -190,6 +178,12 @@
                         icon="icons/problems_view.gif"
                         id="org.talend.designer.core.ui.views.ProblemsView"
                         name="%problems"/>
+                  <view
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.contexts.ContextsView"
+                        icon="icons/contexts.jpg"
+                        id="org.talend.designer.core.ui.views.ContextsView"
+                        name="%contexts"/>
    </extension>
    <extension
          point="org.talend.core.repositoryContextualsActions">
