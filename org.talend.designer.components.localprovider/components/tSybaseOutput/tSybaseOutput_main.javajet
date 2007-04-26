@@ -284,7 +284,14 @@ if(isObject){
 	
 	if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 	%>
-	<%=prefix+cid%>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+	if(String.valueOf(<%=incomingConnName%>.<%=column.getName()%>).length()==0){
+	
+		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.CHAR);
+		
+	}else{
+	
+		<%=prefix+cid%>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
+	}
 	<%
 	}else if(typeToGenerate.equals("Date")){
 	%>

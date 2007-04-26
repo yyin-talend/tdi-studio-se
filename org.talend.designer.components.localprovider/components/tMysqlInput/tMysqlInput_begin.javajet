@@ -96,10 +96,12 @@ if(conns != null && conns.size()>0){
 			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null){
 			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
 			  	}else{
-			  	    <%if(typeToGenerate.equals("Char")){%>
-			  		<%=firstConnName%>.<%=column.getLabel()%>='\u0000';
-			  		<%}else{%>
+			  	    <%if(typeToGenerate.equals("Character")){%>
 			  		<%=firstConnName%>.<%=column.getLabel()%>=null;
+			  		<%}else{%>
+			  		throw new RuntimeException(
+							"Value is empty for column : '<%=column.getLabel()%>', value is invalid or this column should be nullable or have a default value.");
+			  		
 			  		<%}%>
 			  	}			
 			  <%
