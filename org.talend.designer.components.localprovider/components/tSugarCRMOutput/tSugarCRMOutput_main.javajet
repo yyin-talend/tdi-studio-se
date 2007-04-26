@@ -12,7 +12,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
 		"
-class="tSugarCRMOutput" 
+class="tSugarCRMOutputMain" 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;

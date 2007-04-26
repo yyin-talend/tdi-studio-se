@@ -5,7 +5,7 @@ imports="
     	org.talend.core.model.process.ElementParameterParser
     	org.talend.designer.codegen.config.CodeGeneratorArgument
 		"
-class="tSugarCRMOutput" 
+class="tSugarCRMOutputBegin" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -19,6 +19,6 @@ class="tSugarCRMOutput"
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 %>       
         int nb_line_<%=cid %> = 0;
-        String modulename_<%=cid %> = <%=modulename %>;
+        String modulename_<%=cid %> = "<%=modulename %>";
         org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","4.5.0");
         sugarManagement_<%=cid %>.login(); 

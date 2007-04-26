@@ -12,7 +12,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
 		"
-class="tSugarCRMInput" 
+class="tSugarCRMInputBegin" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -55,7 +55,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         
         int nb_line_<%=cid %> = 0;
-        String modulename_<%=cid %> = <%=modulename %>;
+        String modulename_<%=cid %> = "<%=modulename %>";
         org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","4.5.0");
         sugarManagement_<%=cid %>.login();
         

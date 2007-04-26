@@ -4,7 +4,7 @@ imports="
     	org.talend.core.model.process.INode    
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		" 
-class="tSugarCRMOutput" 
+class="tSugarCRMOutputEnd" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
