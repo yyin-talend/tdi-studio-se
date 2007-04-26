@@ -272,7 +272,7 @@
       		class="org.talend.designer.core.DesignerCoreService"/>
    </extension>
       <extension
-         point="org.talend.designer.core.generators">
+            point="org.talend.designer.core.generators">
       <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.SchemaTypeGenerator"
             mapping="SCHEMA_TYPE"
@@ -301,6 +301,10 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColumnListGenerator"
             mapping="LOOKUP_COLUMN_LIST"
             name="Lookup Column List"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ComponentListGenerator"
+            mapping="COMPONENT_LIST"
+            name="Component List"/>
       <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.SqlMemoGenerator"
             mapping="MEMO_SQL"

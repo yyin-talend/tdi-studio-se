@@ -22,8 +22,6 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,11 +40,9 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -70,7 +66,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     private boolean updateColumnListFlag;
 
-    private SelectionEvent e;
+    private SelectionEvent selectionEvent;
 
     private Map<String, IMetadataTable> repositoryTableMap;
 
@@ -110,11 +106,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     return null;
                 }
 
-                if (ctrl.equals(e.getSource()) && ctrl instanceof CCombo) {
-                    if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                        Object obj = elem.getPropertyValue(name);
-                    }
-
+                if (ctrl.equals(selectionEvent.getSource()) && ctrl instanceof CCombo) {
                     boolean isDisposed = ((CCombo) ctrl).isDisposed();
                     if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
 
@@ -307,7 +299,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            e = event;
+            selectionEvent = event;
             // updateRepositoryList();
             dynamicTabbedPropertySection.updateRepositoryList();
             Command cmd = createCommand();

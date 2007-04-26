@@ -472,4 +472,14 @@ public class TextElementParameter implements IElementParameter {
         // TODO Auto-generated method stub
         
     }
+
+    public String getFilter() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setFilter(String filter) {
+        // TODO Auto-generated method stub
+        
+    }
 }

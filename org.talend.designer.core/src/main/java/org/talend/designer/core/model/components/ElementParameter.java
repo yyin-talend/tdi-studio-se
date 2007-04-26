@@ -86,6 +86,8 @@ public class ElementParameter implements IElementParameter {
     private String notShowIf = null;
 
     private List<IElementParameterDefaultValue> defaultValues = new ArrayList<IElementParameterDefaultValue>();
+    
+    private String filter = null;
 
     public ElementParameter(final IElement parent) {
         this.parent = parent;
@@ -403,5 +405,13 @@ public class ElementParameter implements IElementParameter {
     @Override
     public String toString() {
         return name + ": " + value.toString(); //$NON-NLS-1$
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }
