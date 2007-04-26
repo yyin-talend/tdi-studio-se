@@ -425,7 +425,7 @@ public class Process extends Element implements IProcess {
     }
 
     public List<? extends INode> getGeneratingNodes() {
-        DataProcess.buildFromGraphicalProcess(nodes);
+        DataProcess.buildFromGraphicalProcess(this, nodes);
         return DataProcess.getNodeList();
     }
 

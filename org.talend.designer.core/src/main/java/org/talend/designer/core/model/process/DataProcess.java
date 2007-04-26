@@ -41,7 +41,9 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -57,18 +59,18 @@ public class DataProcess {
 
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
-    private static Map<Node, INode> buildCheckMap = null;
+    private static Map<INode, INode> buildCheckMap = null;
 
     private static List<Node> checkRefList = null;
 
-    private static Map<Node, INode> checkMultipleMap = null;
+    private static Map<INode, INode> checkMultipleMap = null;
 
     private static List<INode> dataNodeList;
 
     private static void initialize() {
-        buildCheckMap = new HashMap<Node, INode>();
+        buildCheckMap = new HashMap<INode, INode>();
         checkRefList = new ArrayList<Node>();
-        checkMultipleMap = new HashMap<Node, INode>();
+        checkMultipleMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
     }
 
@@ -150,7 +152,7 @@ public class DataProcess {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static AbstractNode addMultipleNode(Node graphicalNode, IMultipleComponentManager multipleComponentManager) {
+    private static AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
         AbstractNode dataNode;
         // prepare all the nodes
 
@@ -214,7 +216,7 @@ public class DataProcess {
      * @param dataNode
      */
     private static void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
-            IMultipleComponentManager multipleComponentManager, Node graphicalNode, AbstractNode dataNode,
+            IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode,
             INode previousNode) {
         List<IConnection> incomingConnections, outgoingConnections;
 
@@ -291,7 +293,7 @@ public class DataProcess {
      * @param graphicalNode
      */
     private static void prepareAllMultipleComponentNodes(Map<IMultipleComponentItem, AbstractNode> itemsMap,
-            IMultipleComponentManager multipleComponentManager, Node graphicalNode) {
+            IMultipleComponentManager multipleComponentManager, INode graphicalNode) {
 
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
 
@@ -325,7 +327,7 @@ public class DataProcess {
      * @param graphicalNode
      */
     private static void setMultipleComponentParameters(IMultipleComponentManager multipleComponentManager,
-            Map<IMultipleComponentItem, AbstractNode> itemsMap, Node graphicalNode) {
+            Map<IMultipleComponentItem, AbstractNode> itemsMap, INode graphicalNode) {
 
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
         boolean targetFound;
@@ -337,7 +339,14 @@ public class DataProcess {
                 if (targetNode.getElementParameters().get(j).getName().equals(
                         EParameterName.TSTATCATCHER_STATS.getName())) {
                     IElementParameter param = targetNode.getElementParameters().get(j);
-                    param.setValue(graphicalNode.getPropertyValue(EParameterName.TSTATCATCHER_STATS.getName()));
+                    boolean statsFound = false;
+                    for (int k = 0; k < graphicalNode.getElementParameters().size() && !statsFound; k++) {
+                        IElementParameter currentParam = graphicalNode.getElementParameters().get(k);
+                        if (currentParam.getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
+                            param.setValue(currentParam.getValue());
+                            statsFound = true;
+                        }
+                    }
                     targetFound = true;
                 }
             }
@@ -489,7 +498,7 @@ public class DataProcess {
      * 
      * @param node
      */
-    private static INode replaceMultipleComponents(Node graphicalNode) {
+    private static INode replaceMultipleComponents(INode graphicalNode) {
         if (checkMultipleMap.containsKey(graphicalNode)) {
             return checkMultipleMap.get(graphicalNode);
         }
@@ -509,7 +518,7 @@ public class DataProcess {
         return dataNode;
     }
 
-    public static void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
+    public static void buildFromGraphicalProcess(Process process, List<Node> graphicalNodeList) {
 
         initialize();
         for (Node node : graphicalNodeList) {
@@ -527,6 +536,15 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
+
+        // disabled to wait for the task 982.
+        
+        // will add the Stats & Logs managements
+//        for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
+//            buildCheckMap.put(node, node);
+//            dataNodeList.add(node);
+//            replaceMultipleComponents(node);
+//        }
     }
 
     public static List<INode> getNodeList() {
