@@ -37,15 +37,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
@@ -73,16 +71,16 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
-            String contextName, String launcher) {
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            generateJobFiles(processItem, contextName);
+            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher)));
+                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             // Gets system routines.
             List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));

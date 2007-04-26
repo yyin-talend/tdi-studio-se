@@ -47,6 +47,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.RepositoryPlugin;
@@ -84,7 +85,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
@@ -94,10 +96,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     + "/" + USERROUTINE_JAR;
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
-            generateJobFiles(processItem, contextName);
+            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
-                    escapeSpace(contextName), escapeSpace(launcher)));
+                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));

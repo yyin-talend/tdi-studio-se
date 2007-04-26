@@ -102,7 +102,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher);
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions);
 
     protected String getTmpFolder() {
         String tmpFold = System.getProperty("user.dir"); //$NON-NLS-1$
@@ -129,15 +130,20 @@ public abstract class JobScriptsManager {
      * @param contextName
      * @param environment use JobScriptsManager.ALL_ENVIRONMENTS, JobScriptsManager.UNIX_ENVIRONMENT or
      * JobScriptsManager.WINDOWS_ENVIRONMENT
+     * @param statisticPort TODO
+     * @param tracePort TODO
+     * @param codeOptions TODO
      * @return
      */
-    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment) {
+    protected List<URL> getLauncher(boolean needLauncher, ProcessItem process, String contextName, String environment,
+            int statisticPort, int tracePort, String... codeOptions) {
 
         List<URL> list = new ArrayList<URL>();
         if (!needLauncher) {
             return list;
         }
-        String cmd = getCommandByTalendJob(escapeFileNameSpace(process), contextName);
+        String cmd = getCommandByTalendJob(escapeFileNameSpace(process), contextName, statisticPort, tracePort,
+                codeOptions);
         String tmpFold = getTmpFolder();
         File fileTemp = new File(tmpFold);
         if (!fileTemp.exists()) {
@@ -154,10 +160,11 @@ public abstract class JobScriptsManager {
         return list;
     }
 
-    protected String getCommandByTalendJob(String jobName, String context) {
+    protected String getCommandByTalendJob(String jobName, String context, int statisticPort, int tracePort,
+            String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities.getCommandLine(true, jobName, context, new String[] {});
+            cmd = ProcessorUtilities.getCommandLine(true, jobName, context, statisticPort, tracePort, codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -267,8 +274,8 @@ public abstract class JobScriptsManager {
      * @param contextName
      * @param process
      */
-    protected void generateJobFiles(ProcessItem process, String contextName) {
-        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName); //$NON-NLS-1$
+    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace) {
+        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace); //$NON-NLS-1$
     }
 
     protected IResource[] sourceResouces = null;

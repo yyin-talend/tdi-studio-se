@@ -42,6 +42,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -304,7 +305,7 @@ public class TalendJobManager {
         // String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode, //$NON-NLS-1$
         // contextArg + exePath + "/" + contextCode }; //$NON-NLS-1$
 
-        String[] cmd = ProcessorUtilities.getCommandLine(true, jobName, context, new String[] {});
+        String[] cmd = ProcessorUtilities.getCommandLine(true, jobName, context, IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$

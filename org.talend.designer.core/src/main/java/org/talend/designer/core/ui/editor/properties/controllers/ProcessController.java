@@ -126,7 +126,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            ProcessorUtilities.generateCode(getCurrentProcessName(), getCurrentContextName());
+            ProcessorUtilities.generateCode(getCurrentProcessName(), getCurrentContextName(), false, false);
         }
     };
 

@@ -50,6 +50,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -109,7 +110,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -411,7 +413,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext());
+            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
+                    .getDefaultContext(), false, false);
         }
         return ok;
     }
@@ -423,8 +426,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport, getDestinationValue());
         return exporterOperation;
     }
 
@@ -469,7 +472,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText());
+        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
+                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 
     private Map<ExportChoice, Boolean> getExportChoiceMap() {

@@ -42,7 +42,7 @@ public class ProcessMessageManager implements IProcessMessageManager {
     private List<IProcessMessage> messages;
 
     public static final String PROP_MESSAGE_ADD = "RunProcessContext.Message.Added"; //$NON-NLS-1$
-
+    
     public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
 
 
@@ -79,17 +79,17 @@ public class ProcessMessageManager implements IProcessMessageManager {
     public void addMessage(IProcessMessage message) {
         synchronized (messages) {
             messages.add(message);
+            firePropertyChange(PROP_MESSAGE_ADD, null, message);
         }
 
-        firePropertyChange(PROP_MESSAGE_ADD, null, message);
     }
 
     public void clearMessages() {
         synchronized (messages) {
             messages.clear();
+            firePropertyChange(PROP_MESSAGE_CLEAR, messages, null);
         }
 
-        firePropertyChange(PROP_MESSAGE_CLEAR, messages, null);
     }
 
 

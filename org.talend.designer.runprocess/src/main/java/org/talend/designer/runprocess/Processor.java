@@ -65,7 +65,7 @@ public abstract class Processor implements IProcessor {
     private static boolean externalUse = false;
 
     protected IContext context;
-    
+
     private ITargetExecutionConfig targetExecutionConfig;
 
     private String libraryPath;
@@ -104,6 +104,7 @@ public abstract class Processor implements IProcessor {
 
     /**
      * Run the process using a given context.
+     * 
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
      * @param context The context to be used.
@@ -111,7 +112,8 @@ public abstract class Processor implements IProcessor {
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor, IProcessMessageManager processMessageManager) throws ProcessorException {
+    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+            IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
             throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
@@ -191,7 +193,15 @@ public abstract class Processor implements IProcessor {
      */
     protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
             int traceOption, String... codeOptions) {
-        String[] cmd = (String[]) ArrayUtils.addAll(commandLine, codeOptions);
+        String[] cmd = commandLine;
+        if (codeOptions != null) {
+            for (int i = 0; i < codeOptions.length; i++) {
+                String string = codeOptions[i];
+                if (string != null) {
+                    cmd = (String[]) ArrayUtils.add(cmd, string);
+                }
+            }
+        }
         if (contextName != null) {
             cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + contextName);
         }
@@ -459,28 +469,20 @@ public abstract class Processor implements IProcessor {
         }
     }
 
-    
     public ITargetExecutionConfig getTargetExecutionConfig() {
         return this.targetExecutionConfig;
     }
 
-    
     public void setTargetExecutionConfig(ITargetExecutionConfig serverConfiguration) {
         this.targetExecutionConfig = serverConfiguration;
     }
 
-    
     public IProcess getProcess() {
         return this.process;
     }
 
-    
     public IContext getContext() {
         return this.context;
     }
-    
-    
-    
+
 }
-
-

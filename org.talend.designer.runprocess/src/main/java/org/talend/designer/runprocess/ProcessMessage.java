@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import org.talend.commons.exception.ExceptionHandler;
+
 /**
  * Message about a process. <br/>
  * 
@@ -50,6 +52,13 @@ public class ProcessMessage implements IProcessMessage {
     public ProcessMessage(IMsgType type, String content) {
         super();
 
+        if (type == null) {
+            ExceptionHandler.process(new IllegalArgumentException("Type is null"));
+        }
+        if (content == null) {
+            ExceptionHandler.process(new IllegalArgumentException("Content is null"));
+        }
+
         this.type = type;
         this.content = content;
     }
@@ -72,5 +81,4 @@ public class ProcessMessage implements IProcessMessage {
         return this.type;
     }
 
-    
 }

@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
@@ -155,6 +156,7 @@ public class RunProcessContext {
     public synchronized void removePropertyChangeListener(PropertyChangeListener l) {
         if (l != null) {
             pcsDelegate.removePropertyChangeListener(l);
+            processMessageManager.removePropertyChangeListener(l);
         }
     }
 
@@ -302,7 +304,7 @@ public class RunProcessContext {
                                 final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                 MessageFormat mf = new MessageFormat(startingPattern);
                                 String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
-                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, welcomeMsg));
+                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + welcomeMsg));
 
                                 new Thread(psMonitor).start();
                             }
@@ -358,7 +360,7 @@ public class RunProcessContext {
                 final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                 MessageFormat mf = new MessageFormat(endingPattern);
                 String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
+                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + byeMsg));
             } finally {
                 killing = false;
             }
@@ -562,24 +564,23 @@ public class RunProcessContext {
             // Waiting connection from process
             Socket processSocket = null;
             ServerSocket serverSock = null;
-            try {
-                do {
-                    try {
-                        serverSock = new ServerSocket(getStatisticsPort());
-                        serverSock.setSoTimeout(acceptTimeout);
-                        processSocket = serverSock.accept();
-                    } catch (IOException e) {
-                        stopThread |= !isRunning();
-                    }
-                } while (processSocket == null && !stopThread);
-            } finally {
+            do {
                 try {
-                    serverSock.close();
+                    serverSock = new ServerSocket(getStatisticsPort());
+                    serverSock.setSoTimeout(acceptTimeout);
+                    processSocket = serverSock.accept();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    stopThread = true;
+                    stopThread |= !isRunning();
+                } finally {
+                    try {
+                        if (serverSock != null) {
+                            serverSock.close();
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
-            }
+            } while (processSocket == null && !stopThread);
 
             if (processSocket != null && !stopThread) {
                 try {
@@ -659,24 +660,30 @@ public class RunProcessContext {
             // Waiting connection from process
             Socket processSocket = null;
             ServerSocket serverSock = null;
-            try {
-                do {
-                    try {
-                        serverSock = new ServerSocket(getTracesPort());
-                        serverSock.setSoTimeout(acceptTimeout);
-                        processSocket = serverSock.accept();
-                    } catch (IOException e) {
-                        stopThread |= !isRunning();
-                    }
-                } while (processSocket == null && !stopThread);
-            } finally {
+            do {
                 try {
-                    serverSock.close();
+                    serverSock = new ServerSocket(getTracesPort());
+                    serverSock.setSoTimeout(acceptTimeout);
+                    processSocket = serverSock.accept();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    stopThread = true;
+                    try {
+                        if (serverSock != null) {
+                            serverSock.close();
+                        }
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } finally {
+                        try {
+                            if (serverSock != null) {
+                                serverSock.close();
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                    stopThread |= !isRunning();
                 }
-            }
+            } while (processSocket == null && !stopThread);
 
             if (processSocket != null && !stopThread) {
                 try {
