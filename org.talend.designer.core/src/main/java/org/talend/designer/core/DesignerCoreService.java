@@ -25,10 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 
 /**
@@ -52,6 +54,10 @@ public class DesignerCoreService implements IDesignerCoreService {
         return process;
     }
 
+    public ILabelProvider getGEFEditorNodeLabelProvider() {
+        return new GefEditorLabelProvider();
+    }
+
     // used for generating HTML only
     /**
      * Constructs a new instance.
@@ -72,9 +78,10 @@ public class DesignerCoreService implements IDesignerCoreService {
         list.add(repositoryValueUtils.getRepositoryDBIdAndNameMap());
         return list;
     }
-   
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem)
      */
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
