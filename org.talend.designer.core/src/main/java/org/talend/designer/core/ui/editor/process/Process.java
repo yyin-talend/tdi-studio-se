@@ -50,11 +50,8 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -63,6 +60,8 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.Project;
@@ -241,8 +240,310 @@ public class Process extends Element implements IProcess {
      * Add all parameters for a process.
      */
     private void createProcessParameters() {
+        createMainParameters();
+        createStatsAndLogsParameters();
+    }
+
+    /**
+     * crate parameters for tabbed page 'Stats & Logs'.
+     */
+    private void createStatsAndLogsParameters() {
         ElementParameter param;
 
+        param = new ElementParameter(this);
+        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        addElementParameter(param);
+
+        /*
+         * param = new ElementParameter(this); param.setName("TITLE"); param.setDisplayName("Enabled log and statics
+         * modify"); // param.setField(EParameterFieldType.*); param.setCategory(EComponentCategory.STATSANDLOGS);
+         * param.setNumRow(1); addElementParameter(param);
+         */
+        // on files
+        param = new ElementParameter(this);
+        param.setName("ON_FILES_FLAG");
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName("On Files");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(2);
+        addElementParameter(param);
+
+        // file path
+        param = new ElementParameter(this);
+        param.setName("FILE_PATH");
+        param.setValue(new String());
+        param.setDisplayName("File Path");
+        param.setField(EParameterFieldType.DIRECTORY);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(3);
+        addElementParameter(param);
+
+        // start file name
+        param = new ElementParameter(this);
+        param.setName("FILENAME_STATS");
+        param.setValue(new String());
+        param.setDisplayName("Start File Name");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(4);
+
+        addElementParameter(param);
+
+        // split every ** rows
+        /*
+         * param = new ElementParameter(this); param.setName("ON_FIlES_START_FILE_SPLIT_ROWS");
+         * param.setValue(Boolean.FALSE); param.setDisplayName("Split Rows"); param.setField(EParameterFieldType.CHECK);
+         * param.setCategory(EComponentCategory.STATSANDLOGS); param.setNumRow(5); addElementParameter(param);
+         */
+        // rows
+        // param = new ElementParameter(this);
+        // param.setName("ON_FIlES_START_FILE_SPLIT_ROWS");
+        // param.setValue(new String());
+        // param.setField(EParameterFieldType);
+        // param.setCategory(EComponentCategory.STATSANDLOGS);
+        // param.setNumRow(5);
+        // addElementParameter(param);
+        // Log file name
+        param = new ElementParameter(this);
+        param.setName("FILENAME_LOGS");
+        param.setDisplayName("Log File Name");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(6);
+        addElementParameter(param);
+
+        // split every ** rows
+        /*
+         * param = new ElementParameter(this); param.setName("ON_FIlES_LOG_FILE_SPLIT_ROWS_FLAG");
+         * param.setValue(Boolean.FALSE); param.setDisplayName("Split Rows"); param.setField(EParameterFieldType.CHECK);
+         * param.setCategory(EComponentCategory.STATSANDLOGS); param.setNumRow(7); addElementParameter(param);
+         */
+        // rows
+        // param = new ElementParameter(this);
+        // param.setName("ON_FIlES_LOG_FILE_SPLIT_ROWS");
+        // param.setValue(new String());
+        // param.setField(EParameterFieldType.TEXT);
+        // param.setCategory(EComponentCategory.STATSANDLOGS);
+        // param.setNumRow(8);
+        // addElementParameter(param);
+        // on database
+        param = new ElementParameter(this);
+        param.setName("ON_DATABASE_FLAG");
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName("On Database");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(9);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setName(EParameterName.PROPERTY_TYPE.getName());
+        param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
+        param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
+        param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
+        param.setValue(EmfComponent.BUILTIN);
+        param.setNumRow(10);
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setRepositoryValue("DATABASE");
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        param.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
+        param.setListItemsDisplayName(new String[] {});
+        param.setListItemsValue(new String[] {});
+        param.setNumRow(10);
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setValue(""); //$NON-NLS-1$
+        param.setShow(false);
+        param.setRequired(true);
+        addElementParameter(param);
+
+        // dbType
+        param = new ElementParameter(this);
+        param.setName("DB_TYPE");
+        param.setDisplayName("DB Type");
+        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        String[] strDisplay, strValue, strItems, strCodes;
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
+                    "PostgreSQL","IBM DB2","Sybase ASE",};
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput","tDB2Output","tSybaseOutput"};
+            strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
+                    RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.ORACLE,
+                    RepositoryToComponentProperty.POSTGRESQL };
+            strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
+                    RepositoryToComponentProperty.ODBC, "OCLE",
+                    RepositoryToComponentProperty.POSTGRESQL };
+        } else {
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", "tPostgresqlOutput" };
+            strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
+                    RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
+                    RepositoryToComponentProperty.POSTGRESQL };
+            strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
+                    RepositoryToComponentProperty.SQL_SERVER, "OCLE",
+                    RepositoryToComponentProperty.POSTGRESQL };
+        }
+
+        /*
+         * } if (dbType.equals("Oracle with SID")) { //$NON-NLS-1$ return ORACLE; } if (dbType.equals("Oracle with
+         * service name")) { //$NON-NLS-1$ return ORACLE; } if (dbType.equals("Generic ODBC")) { //$NON-NLS-1$ return
+         * ODBC; } if (dbType.equals("Microsoft SQL Server (Odbc driver)")) { //$NON-NLS-1$ return ODBC; } if
+         * (dbType.equals("Microsoft SQL Server")) { //$NON-NLS-1$ return SQL_SERVER; } if (dbType.equals("IBM DB2")) {
+         * //$NON-NLS-1$ return IBM_DB2; } if (dbType.equals("Sybase ASE")) { //$NON-NLS-1$ return SYBASE; } if
+         * (dbType.equals("Sybase IQ")) { //$NON-NLS-1$ return SYBASE; } if (dbType.equals("Ingres")) { //$NON-NLS-1$
+         * return INGRES; } return ""; //$NON-NLS-1$
+         */
+        param.setListItemsDisplayName(strDisplay);
+        param.setListItemsValue(strValue);
+        param.setListRepositoryItems(strItems);
+        param.setListItemsDisplayCodeName(strCodes);
+        param.setNumRow(11);
+        param.setRepositoryValue("TYPE");
+        param.setRequired(true);
+        addElementParameter(param);
+
+        // dbName
+        param = new ElementParameter(this);
+        param.setName("DBNAME");
+        param.setValue(new String());
+        param.setDisplayName("DB Name");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(11);
+        param.setRepositoryValue("SID");
+        addElementParameter(param);
+
+        // schema
+        param = new ElementParameter(this);
+        param.setName("SCHEMA_DB");
+        param.setValue(new String());
+        param.setDisplayName("Schema");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(11);
+
+        String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')";
+
+        param.setShowIf(showIfStr);
+
+        System.out.println("showIfStr = " + showIfStr);
+
+        param.setRepositoryValue("SCHEMA");
+        addElementParameter(param);
+
+        // username
+        param = new ElementParameter(this);
+        param.setName("USER");
+        param.setValue(new String());
+        param.setDisplayName("User");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(12);
+        param.setRequired(true);
+        param.setRepositoryValue("USERNAME");
+        addElementParameter(param);
+
+        // password
+        param = new ElementParameter(this);
+        param.setName("PASS");
+        param.setValue(new String());
+        param.setDisplayName("Password");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(12);
+        param.setRequired(true);
+        param.setRepositoryValue("PASSWORD");
+        addElementParameter(param);
+
+        // Stats table
+        param = new ElementParameter(this);
+        param.setName("TABLE_STATS");
+        param.setValue(new String());
+        param.setDisplayName("Stats Table");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(13);
+        addElementParameter(param);
+
+        /*
+         * // Stats table button param = new ElementParameter(this); param.setName("OPEN_STATS_TABLE");
+         * param.setField(EParameterFieldType.QUERYSTORE_TYPE); param.setCategory(EComponentCategory.STATSANDLOGS);
+         * 
+         * String[] str3 = new String[] { "Built-in", "repository" }; param.setListItemsDisplayName(str3);
+         * 
+         * param.setNumRow(13); addElementParameter(param);
+         */
+        // Log table
+        param = new ElementParameter(this);
+        param.setName("TABLE_LOGS");
+        param.setValue(new String());
+        param.setDisplayName("Log Table");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(13);
+        addElementParameter(param);
+
+        // Check1
+        param = new ElementParameter(this);
+        param.setName("CATCH_RUNTIME_ERRORS");
+        param.setValue(Boolean.TRUE);
+        param.setDisplayName("Catch runtime errors");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(15);
+        addElementParameter(param);
+
+        // Check2
+        param = new ElementParameter(this);
+        param.setName("CATCH_USER_ERRORS");
+        param.setValue(Boolean.TRUE);
+        param.setDisplayName("Catch user errors");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(15);
+        addElementParameter(param);
+
+        // Check3
+        param = new ElementParameter(this);
+        param.setName("CATCH_USER_WARNING");
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName("Catch user warning");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(15);
+        addElementParameter(param);
+
+        // Check4
+        param = new ElementParameter(this);
+        param.setName("CATCH_REALTIME_STATS");
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName("Catch realtime statistics");
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(15);
+        addElementParameter(param);
+    }
+
+    /**
+     * Creates parameters for tabbed page 'Main'.
+     */
+    private void createMainParameters() {
+        ElementParameter param;
         param = new ElementParameter(this);
         param.setName(EParameterName.NAME.getName());
         param.setCategory(EComponentCategory.MAIN);
@@ -299,79 +600,6 @@ public class Process extends Element implements IProcess {
         param.setDisplayName(EParameterName.DESCRIPTION.getDisplayName());
         param.setNumRow(4);
         param.setValue(new String());
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LEVEL_LOG_TO_FILE.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setDisplayName(EParameterName.LEVEL_LOG_TO_FILE.getDisplayName());
-        String[] levelValues = new String[MAX_LOG_LEVEL];
-        for (Integer i = new Integer(1); i <= MAX_LOG_LEVEL; i++) {
-            levelValues[i - 1] = new String(i.toString());
-        }
-        param.setListItemsValue(levelValues);
-        param.setListItemsDisplayName(levelValues);
-        param.setValue(MAX_LOG_LEVEL.toString());
-        param.setNumRow(1);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LOG_TO_FILE.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CHECK);
-        param.setDisplayName(EParameterName.LOG_TO_FILE.getDisplayName());
-        param.setNumRow(1);
-        param.setValue(new Boolean(false));
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LOG_FILENAME.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.FILE);
-        param.setDisplayName(EParameterName.LOG_FILENAME.getDisplayName());
-        param.setNumRow(1);
-        param.setValue(new String());
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LEVEL_LOG_TO_DB.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setDisplayName(EParameterName.LEVEL_LOG_TO_DB.getDisplayName());
-        param.setListItemsValue(levelValues);
-        param.setListItemsDisplayName(levelValues);
-        param.setValue(MAX_LOG_LEVEL.toString());
-        param.setNumRow(2);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LOG_TO_DB.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CHECK);
-        param.setDisplayName(EParameterName.LOG_TO_DB.getDisplayName());
-        param.setNumRow(2);
-        param.setValue(new Boolean(false));
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LEVEL_LOG_TO_STDOUT.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setDisplayName(EParameterName.LEVEL_LOG_TO_STDOUT.getDisplayName());
-        param.setListItemsValue(levelValues);
-        param.setListItemsDisplayName(levelValues);
-        param.setValue(MAX_LOG_LEVEL.toString());
-        param.setNumRow(3);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.LOG_TO_STDOUT.getName());
-        param.setCategory(EComponentCategory.LOGS);
-        param.setField(EParameterFieldType.CHECK);
-        param.setDisplayName(EParameterName.LOG_TO_STDOUT.getDisplayName());
-        param.setNumRow(3);
-        param.setValue(new Boolean(false));
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -1733,8 +1961,15 @@ public class Process extends Element implements IProcess {
     }
 
     @Override
-    public void setPropertyValue(String propertyName, Object value) {
-        super.setPropertyValue(propertyName, value);
+    public void setPropertyValue(String id, Object value) {
+        if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.ENCODING_TYPE.getName())) {
+            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+        }
+
+        super.setPropertyValue(id, value);
     }
 
     public Property getProperty() {

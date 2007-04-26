@@ -38,7 +38,7 @@ public class ElementParameterTest {
     private static boolean testParam(String expression, ElementParameter paramToTest, List<IElementParameter> listParams) {
         boolean returnValue;
         paramToTest.setShowIf(expression);
-        System.out.println("Test: " + expression);
+        System.out.println("Test OK: " + expression);
         returnValue = paramToTest.isShow(listParams);
         return returnValue;
     }
@@ -90,6 +90,14 @@ public class ElementParameterTest {
         param.setValue(new Boolean(true));
         listParams.add(param);
 
+        param = new ElementParameter(null);
+        param.setName("VAR7");
+        param.setValue("value1");
+        param.setListItemsDisplayCodeName(new String[] { "POSTGRESQL", "ORACLE" });
+        param.setListItemsValue(new String[] { "value1", "value2" });
+        listParams.add(param);
+
+        
         ElementParameter paramToTest = new ElementParameter(null);
         paramToTest.setName("VAR_TEST");
 
@@ -111,6 +119,8 @@ public class ElementParameterTest {
         Assert.assertTrue(testParam("(VAR5 == 'VALUE5_6') and (VAR6 == 'true')", paramToTest, listParams));
         
         Assert.assertTrue(testParam("VAR6 == 'true'", paramToTest, listParams));
+
+        Assert.assertTrue(testParam("(VAR7 == 'POSTGRESQL') or (VAR7 == 'ORACLE')", paramToTest, listParams));
     }
 
 }

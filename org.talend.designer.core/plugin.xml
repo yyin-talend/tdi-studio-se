@@ -89,6 +89,11 @@
                category="TalendEditor"
                id="logsTab"
                label="%logs"/>
+         <propertyTab
+               afterTab="contextTab"
+               category="TalendEditor"
+               id="statsAndLogsTab"
+               label="%statsAndLogs"/>
       </propertyTabs>
    </extension>
    <extension
@@ -159,6 +164,13 @@
                id="OpaqueNotePropertySection"
                tab="mainTab">
             <input type="org.talend.designer.core.ui.editor.notes.Note"/>
+         </propertySection>
+         <propertySection
+               afterSection="VersionsProcessSection"
+               class="org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection"
+               id="StatsAndLogsTabPropertySection"
+               tab="statsAndLogsTab">
+            <input type="org.talend.designer.core.ui.editor.process.Process"/>
          </propertySection>
       </propertySections>
    </extension>
