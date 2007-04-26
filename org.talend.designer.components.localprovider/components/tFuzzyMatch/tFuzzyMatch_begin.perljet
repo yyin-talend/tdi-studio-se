@@ -1,0 +1,99 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+class="FuzzyMatchBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    String cid = metadata.getTableName();
+    String colname = ElementParameterParser.getValue(node, "__MATCH__");
+
+    int icolmatch = 0 ;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( colname.equals( column.getLabel() ) ){
+            break ;
+        }
+        icolmatch++;
+    }
+
+ 
+    List<IConnection> inputConnections;
+    inputConnections = (List<IConnection>) node.getIncomingConnections();
+    for (IConnection connection : inputConnections) {
+        if (connection == null) {
+            continue;
+        }
+        EConnectionType connectionType = connection.getLineStyle();
+        if (connectionType == EConnectionType.FLOW_MAIN) {
+            continue;
+        } else if (connectionType == EConnectionType.FLOW_REF) {
+            String connectionName = connection.getName();
+    %>
+    #printf("name %s\n", <%=connectionName %>);
+    my $tLookupRef = [ keys %tHash_<%=connectionName %> ] ;
+
+    <%
+        }    
+    }
+
+    List<? extends IConnection> inConns = node.getIncomingConnections();
+
+    if (inConns != null && !inConns.isEmpty()) {
+        IConnection inConn = inConns.get(0);
+        IMetadataTable inMetadata = inConn.getMetadataTable();
+        String inputRowName = inConn.getName();
+    
+ 
+%>
+
+my $icolmatch = <%=icolmatch%> ;
+my $inputRow_ref = \@<%=inputRowName%> ;
+
+<%
+    }
+%>
+use tFuzzyMatch::FuzzyMatch ;
+use Data::Dumper ;
+
+my $nb_lines_<%=cid%> = 0 ;
+
+
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+#print Dumper( $tLookupRef );
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+    
+}
+%>

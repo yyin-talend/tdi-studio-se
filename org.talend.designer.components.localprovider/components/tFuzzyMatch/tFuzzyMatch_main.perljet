@@ -1,0 +1,108 @@
+<%@ jet
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+"
+class="FuzzyMatchMain"
+%>
+
+<%@ jet
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+"
+class="FuzzyMatchMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    String cid = metadata.getTableName();
+    String matching = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
+    String dmin = ElementParameterParser.getValue(node, "__MIN__");
+    String dmax = ElementParameterParser.getValue(node, "__MAX__");
+    String sensitive = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__");
+    String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+
+    List<? extends IConnection> inConns = node.getIncomingConnections();
+
+    if (inConns != null && !inConns.isEmpty()) {
+        IConnection inConn = inConns.get(0);
+        IMetadataTable inMetadata = inConn.getMetadataTable();
+        String inputRowName = inConn.getName();
+
+ 
+%>
+
+@<%=cid%> = @<%=inputRowName%> ;
+my $result = tFuzzyMatch::FuzzyMatch::<%=matching%>( 
+    sensitive => <%=sensitive%>,
+    unique => <%=ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true")%>,
+    dmin => <%=dmin%>, 
+    dmax => <%=dmax%>, 
+    value => $<%=cid%>[$icolmatch], 
+    lookup => $tLookupRef
+    );
+    
+( $<%=cid%>[<%=metadata.getListColumns().size() - 2%>] ) = keys %$result ;
+
+<%
+    if (ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true")) {
+%>
+$<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = $result->{$<%=cid%>[<%=metadata.getListColumns().size() - 2%>]}->[0] ;
+<%
+    }
+    else {
+%>
+
+$<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = join(<%=separator%>, @{$result->{$<%=cid%>[<%=metadata.getListColumns().size() - 2%>]}} ) ;
+
+<%
+    }
+%>
+
+$nb_lines_<%=cid%>++;
+
+<%
+    }
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+    }
+%>
+
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+    
+}
+%>
