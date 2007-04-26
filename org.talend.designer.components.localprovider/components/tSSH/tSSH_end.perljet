@@ -20,8 +20,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 %>
-$chan_<%=cid%>->close();
-$ssh2_<%=cid%>->disconnect();
 <%
     }
 }

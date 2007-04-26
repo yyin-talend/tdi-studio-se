@@ -27,9 +27,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 %>
 {
-    print $chan_<%=cid%> <%=command%>, "\n";
-    my @output = <$chan_<%=cid%>>;
-    $_globals{<%=cid%>}{OUTPUT} = join '', @output;
+    (
+        $_globals{<%=cid%>}{STDOUT},
+        $_globals{<%=cid%>}{STDERR},
+        $_globals{<%=cid%>}{EXIT_CODE}
+    ) = $ssh_<%=cid%>->cmd(<%=command%>);
 }
 <%
     }

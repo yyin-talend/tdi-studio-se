@@ -42,60 +42,67 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__AUTH_METHOD__"
         );
+
+        String privatekey = ElementParameterParser.getValue(
+            node,
+            "__PRIVATEKEY__"
+        );
+
+        String password = ElementParameterParser.getValue(
+            node,
+            "__PASSWORD__"
+        );
 %>
-use Net::SSH2;
+my $ssh_<%=cid%>;
 
-my $ssh2_<%=cid%> = Net::SSH2->new();
-$ssh2_<%=cid%>->connect(
-    <%=host%>,
-    <%=port%>
-)
-    or die "[<%=cid%>] failed to connect to ".<%=host%>.":".<%=port%>;
+if ($^O =~ m/win/i) {
+    require Net::SSH::W32Perl;
 
-# print join("\n", $ssh2_<%=cid%>->auth_list(<%=user%>)), "\n";
+    $ssh_<%=cid%> = Net::SSH::W32Perl->new(
+        <%=host%>,
+        {
+            port => <%=port%>,
+<%
+        if (authMethod.equals("PUBLICKEY")) {
+%>
+            identity_files => [<%=privatekey%>],
+<%
+        }
+%>
+        }
+    )
+      or die "failed to connect to <%=host%>";
+}
+else {
+    require Net::SSH::Perl;
 
+    $ssh_<%=cid%> = Net::SSH::Perl->new(
+        <%=host%>,
+        {
+            port => <%=port%>,
+<%
+        if (authMethod.equals("PUBLICKEY")) {
+%>
+            identity_files => [<%=privatekey%>],
+<%
+        }
+%>
+        }
+    )
+      or die "failed to connect to <%=host%>";
+}
+
+$ssh_<%=cid%>->login(
+    <%=user%>,
 <%
         if (authMethod.equals("PASSWORD")) {
-            String password = ElementParameterParser.getValue(
-                node,
-                "__PASSWORD__"
-            );
 %>
-$ssh2_<%=cid%>->auth_password(
-    <%=user%>,
     <%=password%>
-)
-    or die "[<%=cid%>] authentication failure in password mode";
-<%
-        }
-        else {
-            String publickey = ElementParameterParser.getValue(
-                node,
-                "__PUBLICKEY__"
-            );
-            String privatekey = ElementParameterParser.getValue(
-                node,
-                "__PRIVATEKEY__"
-            );
-            String keypassword = ElementParameterParser.getValue(
-                node,
-                "__KEYPASSWORD__"
-            );
-%>
-$ssh2_<%=cid%>->auth_publickey(
-    <%=user%>,
-    <%=publickey%>,
-    <%=privatekey%>,
-    <%=keypassword%>
-)
-    or die "[<%=cid%>] authentication failure in publickey mode";
-
 <%
         }
 %>
-my $chan_<%=cid%> = $ssh2_<%=cid%>->channel();
-$chan_<%=cid%>->ext_data('merge');
-$chan_<%=cid%>->shell();
+)
+    or die 'failed to login';
 <%
     }
 }
