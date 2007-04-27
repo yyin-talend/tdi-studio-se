@@ -463,8 +463,6 @@ public class Process extends Element implements IProcess {
 
         param.setShowIf(showIfStr);
 
-        System.out.println("showIfStr = " + showIfStr);
-
         param.setRepositoryValue("SCHEMA");
         addElementParameter(param);
 
