@@ -14,14 +14,18 @@ class="DB2RowEnd"
 	String cid = node.getUniqueName();
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
+
+	conn_<%=cid%>.commit();
 	
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-	%>
-conn_<%=cid %>.commit();
-	<%
+	commitCounter_<%=cid%>=0;
+	
+}
+<%
 }
 %>
-
 pstmt_<%=cid %>.close();
-
 conn_<%=cid %> .close();

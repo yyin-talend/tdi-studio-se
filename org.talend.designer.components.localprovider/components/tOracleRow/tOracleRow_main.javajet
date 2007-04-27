@@ -51,7 +51,7 @@ while (index>=0) {
 					if(typeToGenerate.equals("byte[]")){
 	 	  	   			typeToGenerate = "Bytes";
  	   	  			}else if(typeToGenerate.equals("java.util.Date")){
-	 	   	  			typeToGenerate = "Timestamp";
+	 	   	  			typeToGenerate = "Date";
  	   	  			}else if(typeToGenerate.equals("Integer")){
  	   	  				typeToGenerate = "Int";
  	   	 			}else{
@@ -62,13 +62,13 @@ while (index>=0) {
 							%>						
 pstmt_<%=cid %>.setString(<%=parameterIndex%>,String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));					
 							<%
-							}else if(typeToGenerate.equals("Timestamp")){
-							%>						
+							}else if(typeToGenerate.equals("Date")){
+							%>
 if(<%=conn.getName()%>.<%=column.getLabel()%>!=null){													
-	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Timestamp(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));
+	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Date(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));
 }else{
 	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,null);
-}					
+}				
 							<%
 							}else{
 							%>						
@@ -78,6 +78,10 @@ pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.
 						}
 						parameterIndex++;
 					}
+
+				}//end of connection size.
+			}//end of metadatas
+	}
 	%>
 try {
 	pstmt_<%=cid %>.execute();
@@ -85,13 +89,10 @@ try {
 <%	if (dieOnError.equals("true")) { %>
 	throw(e);
 <% } else { %>
-	// do nothing, continue Job
+	throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
 <% } %>
 }
 	<%
-				}
-			}
-	}
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 %>
 if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
@@ -104,4 +105,3 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 <%
 }
 %>
-

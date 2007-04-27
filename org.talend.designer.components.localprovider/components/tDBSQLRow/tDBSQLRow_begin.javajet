@@ -15,46 +15,21 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
-    String[] dbtypes = dbtypeDefinition.split(";");
-    String javaDbtype   = dbtypes[0];
-    String javaDbDriver   = dbtypes[1];
-    
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
-	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");    
-    	   dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
+	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+		   dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");   
+    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
-java.lang.Class.forName("<%=javaDbDriver %>");
-<%
-if(javaDbtype.equals("undef")){
-%>
+java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+
 String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
-<%
-}else if(javaDbtype.equals("mssql")){
-%>
-String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
-<%
-}else if(javaDbtype.equals("oracle")){
-String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
-%>
-String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
-<%
-}else if(javaDbtype.equals("postgresql")){
-%>
-String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-<%
-}else if(javaDbtype.equals("mysql")){
-%>
-String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-<%
-}
-%>
+
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
@@ -63,5 +38,16 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
+<%
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
 
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+int commitCounter_<%=cid%> = 0;
+
+conn_<%=cid%>.setAutoCommit(false);
+<%
+}
+%>
 
