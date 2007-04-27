@@ -291,7 +291,7 @@ public class Process extends Element implements IProcess {
         param = new ElementParameter(this);
         param.setName("FILENAME_STATS");
         param.setValue(new String());
-        param.setDisplayName("Start File Name");
+        param.setDisplayName("Stats File Name");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(4);
@@ -315,7 +315,7 @@ public class Process extends Element implements IProcess {
         // Log file name
         param = new ElementParameter(this);
         param.setName("FILENAME_LOGS");
-        param.setDisplayName("Log File Name");
+        param.setDisplayName("Logs File Name");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(6);
@@ -417,6 +417,28 @@ public class Process extends Element implements IProcess {
         param.setRequired(true);
         addElementParameter(param);
 
+        // host
+        param = new ElementParameter(this);
+        param.setName("HOST");
+        param.setValue(new String());
+        param.setDisplayName("Host");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(11);
+        param.setRepositoryValue("SERVER_NAME");
+        addElementParameter(param);
+        
+        // port
+        param = new ElementParameter(this);
+        param.setName("PORT");
+        param.setValue(new String());
+        param.setDisplayName("Port");
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(11);
+        param.setRepositoryValue("PORT");
+        addElementParameter(param);
+
         // dbName
         param = new ElementParameter(this);
         param.setName("DBNAME");
@@ -424,7 +446,7 @@ public class Process extends Element implements IProcess {
         param.setDisplayName("DB Name");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(11);
+        param.setNumRow(12);
         param.setRepositoryValue("SID");
         addElementParameter(param);
 
@@ -435,7 +457,7 @@ public class Process extends Element implements IProcess {
         param.setDisplayName("Schema");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(11);
+        param.setNumRow(12);
 
         String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')";
 
@@ -453,7 +475,7 @@ public class Process extends Element implements IProcess {
         param.setDisplayName("User");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(12);
+        param.setNumRow(13);
         param.setRequired(true);
         param.setRepositoryValue("USERNAME");
         addElementParameter(param);
@@ -465,7 +487,7 @@ public class Process extends Element implements IProcess {
         param.setDisplayName("Password");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(12);
+        param.setNumRow(13);
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD");
         addElementParameter(param);

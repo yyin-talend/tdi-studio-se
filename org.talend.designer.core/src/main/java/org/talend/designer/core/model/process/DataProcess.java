@@ -536,15 +536,13 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
-
-        // disabled to wait for the task 982.
         
         // will add the Stats & Logs managements
-//        for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
-//            buildCheckMap.put(node, node);
-//            dataNodeList.add(node);
-//            replaceMultipleComponents(node);
-//        }
+        for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
+            buildCheckMap.put(node, node);
+            dataNodeList.add(node);
+            replaceMultipleComponents(node);
+        }
     }
 
     public static List<INode> getNodeList() {

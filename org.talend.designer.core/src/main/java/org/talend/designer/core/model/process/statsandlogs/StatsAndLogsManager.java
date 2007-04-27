@@ -24,6 +24,8 @@ package org.talend.designer.core.model.process.statsandlogs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
@@ -60,20 +62,32 @@ public class StatsAndLogsManager {
         // dbOutput = "tSybaseOutput";
 
         // these two functions are for test only.
-        createTempParams(process);
-        fillParamsFor(process, dbOutput);
+        // createTempParams(process);
+        // fillParamsFor(process, dbOutput);
 
         // process.getElementParameter("DB_TYPE").setValue("tMysqlOutput");
 
-        if (!(Boolean) process.getElementParameter("USE_DB").getValue()) {
+        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
+        if (!dbFlag) {
             dbOutput = null;
         } else {
             dbOutput = (String) process.getElementParameter("DB_TYPE").getValue();
         }
-        boolean file = (Boolean) process.getElementParameter("USE_FILE").getValue();
+        boolean file = (Boolean) process.getElementParameter("ON_FILES_FLAG").getValue();
 
+        if (!file && !dbFlag) {
+            return nodeList;
+        }
+
+        String basePath = (String) process.getElementParameter("FILE_PATH").getValue();
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            basePath += ". '/' .";
+        } else {
+            basePath += "+ \"/\" +";
+        }
         DataNode logsNode = createLogsNode(file, dbOutput);
-        logsNode.getElementParameter("FILENAME").setValue(process.getElementParameter("FILENAME_LOGS").getValue());
+        logsNode.getElementParameter("FILENAME").setValue(
+                basePath + process.getElementParameter("FILENAME_LOGS").getValue());
         logsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
         logsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue());
         logsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue());
@@ -85,7 +99,8 @@ public class StatsAndLogsManager {
         nodeList.add(logsNode);
 
         DataNode statsNode = createStatsNode(file, dbOutput);
-        statsNode.getElementParameter("FILENAME").setValue(process.getElementParameter("FILENAME_STATS").getValue());
+        statsNode.getElementParameter("FILENAME").setValue(
+                basePath + process.getElementParameter("FILENAME_STATS").getValue());
         statsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
         statsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue());
         statsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue());
@@ -98,117 +113,117 @@ public class StatsAndLogsManager {
 
         return nodeList;
     }
-
-    private static void fillParamsFor(Process process, String dbOutput) {
-        process.getElementParameter("FILENAME_LOGS").setValue(TalendTextUtils.addQuotes("c:/tmp/logs.csv"));
-        process.getElementParameter("FILENAME_STATS").setValue(TalendTextUtils.addQuotes("c:/tmp/stats.csv"));
-        if (dbOutput == null) {
-            return;
-        }
-        process.getElementParameter("HOST").setValue(TalendTextUtils.addQuotes("talend-dbms"));
-        process.getElementParameter("USER").setValue(TalendTextUtils.addQuotes("root"));
-        process.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes("toor"));
-        process.getElementParameter("TABLE_LOGS").setValue(TalendTextUtils.addQuotes(LOG_UNIQUE_NAME + "_test1"));
-        process.getElementParameter("TABLE_STATS").setValue(TalendTextUtils.addQuotes(STAT_UNIQUE_NAME + "_test1"));
-        process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("Talend"));
-        if (dbOutput.equals("tMysqlOutput")) {
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("3306"));
-        } else if (dbOutput.equals("tPostgresqlOutput")) {
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("5432"));
-            process.getElementParameter("SCHEMA_DB").setValue(TalendTextUtils.addQuotes("\"mypostgres\""));
-            process.getElementParameter("TABLE_LOGS").setValue(
-                    TalendTextUtils.addQuotes("\"" + LOG_UNIQUE_NAME + "_test1\""));
-            process.getElementParameter("TABLE_STATS").setValue(
-                    TalendTextUtils.addQuotes("\"" + STAT_UNIQUE_NAME + "_test1\""));
-        } else if (dbOutput.equals("tOracleOutput")) {
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("1521"));
-            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("TALEND"));
-        } else if (dbOutput.equals("tMSSqlOutput")) {
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("1433"));
-        } else if (dbOutput.equals("tDBOutput")) {
-            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("msServer"));
-        } else if (dbOutput.equals("tDB2Output")) {
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("50000"));
-            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("TALEND"));
-        } else if (dbOutput.equals("tSybaseOutput")) {
-            process.getElementParameter("HOST").setValue(TalendTextUtils.addQuotes("SOYA104"));
-            process.getElementParameter("USER").setValue(TalendTextUtils.addQuotes("sa"));
-            process.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(""));
-            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("5001"));
-            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("soyatec_test"));
-        }
-    }
-
-    private static void createTempParams(Process process) {
-        List<IElementParameter> params = (List<IElementParameter>) process.getElementParameters();
-
-        IElementParameter newParam = new ElementParameter(process);
-        newParam.setName("FILENAME_LOGS");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("USE_FILE");
-        newParam.setField(EParameterFieldType.CHECK);
-        newParam.setValue(Boolean.FALSE);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("USE_DB");
-        newParam.setField(EParameterFieldType.CHECK);
-        newParam.setValue(Boolean.FALSE);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("DB_TYPE");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("FILENAME_STATS");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("HOST");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("PORT");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("DBNAME");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("SCHEMA_DB");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("USER");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("PASS");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("TABLE_LOGS");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-
-        newParam = new ElementParameter(process);
-        newParam.setName("TABLE_STATS");
-        newParam.setField(EParameterFieldType.TEXT);
-        params.add(newParam);
-    }
+//
+//    private static void fillParamsFor(Process process, String dbOutput) {
+//        process.getElementParameter("FILENAME_LOGS").setValue(TalendTextUtils.addQuotes("c:/tmp/logs.csv"));
+//        process.getElementParameter("FILENAME_STATS").setValue(TalendTextUtils.addQuotes("c:/tmp/stats.csv"));
+//        if (dbOutput == null) {
+//            return;
+//        }
+//        process.getElementParameter("HOST").setValue(TalendTextUtils.addQuotes("talend-dbms"));
+//        process.getElementParameter("USER").setValue(TalendTextUtils.addQuotes("root"));
+//        process.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes("toor"));
+//        process.getElementParameter("TABLE_LOGS").setValue(TalendTextUtils.addQuotes(LOG_UNIQUE_NAME + "_test1"));
+//        process.getElementParameter("TABLE_STATS").setValue(TalendTextUtils.addQuotes(STAT_UNIQUE_NAME + "_test1"));
+//        process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("Talend"));
+//        if (dbOutput.equals("tMysqlOutput")) {
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("3306"));
+//        } else if (dbOutput.equals("tPostgresqlOutput")) {
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("5432"));
+//            process.getElementParameter("SCHEMA_DB").setValue(TalendTextUtils.addQuotes("\"mypostgres\""));
+//            process.getElementParameter("TABLE_LOGS").setValue(
+//                    TalendTextUtils.addQuotes("\"" + LOG_UNIQUE_NAME + "_test1\""));
+//            process.getElementParameter("TABLE_STATS").setValue(
+//                    TalendTextUtils.addQuotes("\"" + STAT_UNIQUE_NAME + "_test1\""));
+//        } else if (dbOutput.equals("tOracleOutput")) {
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("1521"));
+//            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("TALEND"));
+//        } else if (dbOutput.equals("tMSSqlOutput")) {
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("1433"));
+//        } else if (dbOutput.equals("tDBOutput")) {
+//            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("msServer"));
+//        } else if (dbOutput.equals("tDB2Output")) {
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("50000"));
+//            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("TALEND"));
+//        } else if (dbOutput.equals("tSybaseOutput")) {
+//            process.getElementParameter("HOST").setValue(TalendTextUtils.addQuotes("SOYA104"));
+//            process.getElementParameter("USER").setValue(TalendTextUtils.addQuotes("sa"));
+//            process.getElementParameter("PASS").setValue(TalendTextUtils.addQuotes(""));
+//            process.getElementParameter("PORT").setValue(TalendTextUtils.addQuotes("5001"));
+//            process.getElementParameter("DBNAME").setValue(TalendTextUtils.addQuotes("soyatec_test"));
+//        }
+//    }
+//
+//    private static void createTempParams(Process process) {
+//        List<IElementParameter> params = (List<IElementParameter>) process.getElementParameters();
+//
+//        IElementParameter newParam = new ElementParameter(process);
+//        newParam.setName("FILENAME_LOGS");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("USE_FILE");
+//        newParam.setField(EParameterFieldType.CHECK);
+//        newParam.setValue(Boolean.FALSE);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("USE_DB");
+//        newParam.setField(EParameterFieldType.CHECK);
+//        newParam.setValue(Boolean.FALSE);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("DB_TYPE");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("FILENAME_STATS");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("HOST");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("PORT");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("DBNAME");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("SCHEMA_DB");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("USER");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("PASS");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("TABLE_LOGS");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//
+//        newParam = new ElementParameter(process);
+//        newParam.setName("TABLE_STATS");
+//        newParam.setField(EParameterFieldType.TEXT);
+//        params.add(newParam);
+//    }
 
     private static DataNode createLogsNode(boolean useFile, String dbOutput) {
         JobLogsComponent logsComponent = new JobLogsComponent(useFile, dbOutput);
@@ -238,7 +253,7 @@ public class StatsAndLogsManager {
     }
 
     private static DataNode createStatsNode(boolean useFile, String dbOutput) {
-        JobStatsComponent statsComponent = new JobStatsComponent(true, dbOutput);
+        JobStatsComponent statsComponent = new JobStatsComponent(useFile, dbOutput);
         DataNode statsNode = new DataNode(statsComponent, STAT_UNIQUE_NAME);
         statsNode.setStart(true);
         statsNode.setSubProcessStart(true);
