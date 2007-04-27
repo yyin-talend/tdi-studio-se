@@ -36,6 +36,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.wizards.exportjob.GenerateSpagoBIXML;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 
 /**
@@ -44,7 +45,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
  * $Id: ExportJobScriptAction.java 1 2006-12-13 下午03:12:05 bqian
  * 
  */
-public final class ExportJobScriptAction extends AContextualAction {
+public class ExportJobScriptAction extends AContextualAction {
 
     private static final String EXPORTJOBSCRIPTS = Messages.getString("ExportJobScriptAction.actionLabel"); //$NON-NLS-1$
 
@@ -76,6 +77,7 @@ public final class ExportJobScriptAction extends AContextualAction {
         this.setText(EXPORTJOBSCRIPTS);
         this.setToolTipText(EXPORTJOBSCRIPTS);
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
+        GenerateSpagoBIXML.setSpagoBI(false);
     }
 
     public void run() {

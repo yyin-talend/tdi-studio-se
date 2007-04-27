@@ -102,8 +102,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort,
-            int tracePort, String... codeOptions);
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
+            String... codeOptions);
 
     protected String getTmpFolder() {
         String tmpFold = System.getProperty("user.dir"); //$NON-NLS-1$
@@ -142,13 +142,13 @@ public abstract class JobScriptsManager {
         if (!needLauncher) {
             return list;
         }
-        String cmd = getCommandByTalendJob(escapeFileNameSpace(process), contextName, statisticPort, tracePort,
-                codeOptions);
+        String cmd = getCommandByTalendJob(escapeFileNameSpace(process), contextName, statisticPort, tracePort, codeOptions);
         String tmpFold = getTmpFolder();
         File fileTemp = new File(tmpFold);
         if (!fileTemp.exists()) {
             fileTemp.mkdir();
         }
+
         if (environment.equals(ALL_ENVIRONMENTS)) {
             createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
             createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
@@ -156,6 +156,14 @@ public abstract class JobScriptsManager {
             createLauncherFile(process, list, cmd, UNIX_LAUNCHER, tmpFold);
         } else if (environment.equals(WINDOWS_ENVIRONMENT)) {
             createLauncherFile(process, list, cmd, WINDOWS_LAUNCHER, tmpFold);
+        }
+        if (GenerateSpagoBIXML.isSpagoBI()) {
+            //            File spagobi = new File(tmpFold + "/" + "spagobi.xml");
+            try {
+                list.add(new GenerateSpagoBIXML(fileTemp, process).getResult());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return list;
     }
@@ -185,8 +193,7 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
-            String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
         PrintWriter pw = null;
         try {
 
@@ -284,8 +291,8 @@ public abstract class JobScriptsManager {
         if (sourceResouces == null) {
             try {
                 List<IResource> sourceFile = new ArrayList<IResource>();
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                        .getProject();
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 addNodeToResource(folder.members(), sourceFile);
@@ -368,4 +375,5 @@ public abstract class JobScriptsManager {
     protected ProcessItem findProcess(String name) {
         return ProcessorUtilities.getProcessItem(name);
     }
+
 }

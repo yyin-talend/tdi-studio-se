@@ -158,6 +158,12 @@
             level="99"
             name="Export job scripts"/>
        <Action
+            class="org.talend.repository.ui.actions.ExportJobScriptWithSpagoBIAction"
+            id="org.talend.repository.ui.actions.exportjobscriptWithSpagoBI"
+            level="99"
+            name="Export job scripts With SpagoBI"/>
+            
+       <Action
              class="org.talend.repository.ui.actions.EditPropertiesAction"
              id="org.talend.repository.actions.editProperties"
              isPropertiesAction="true"
