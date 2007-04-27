@@ -28,6 +28,8 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -62,7 +64,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         BooleanFieldEditor onDatabaseField;
         ComboFieldEditor propertyTypeField;
 
-        StringFieldEditor dbTypeField;
+        ComboFieldEditor dbTypeField;
         StringFieldEditor hostField;
         StringFieldEditor portField;
         StringFieldEditor dbNameField;
@@ -83,11 +85,32 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         logsFileNameField = new StringFieldEditor("FILENAME_LOGS", "Logs File Name", getFieldEditorParent());
         onDatabaseField = new BooleanFieldEditor("ON_DATABASE_FLAG", "On Database", getFieldEditorParent());
 
-        String[][] stringSForPropertyType = new String[][] { { EmfComponent.BUILTIN, EmfComponent.TEXT_BUILTIN } };
+        String[][] stringSForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN } };
+
         propertyTypeField = new ComboFieldEditor(EParameterName.PROPERTY_TYPE.getDisplayName(),
                 EParameterName.PROPERTY_TYPE.getDisplayName(), stringSForPropertyType, getFieldEditorParent());
 
-        dbTypeField = new StringFieldEditor("DB_NAME", "DB type", getFieldEditorParent());
+        String[] strDisplay, strValue;
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
+                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
+                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+        } else {
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
+                    "IBM DB2", "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
+                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+        }
+
+        String[][] strsForDBType = new String[strDisplay.length][2];
+
+        for (int i = 0; i < strDisplay.length; i++) {
+            strsForDBType[i][0] = strDisplay[i];
+            strsForDBType[i][1] = strValue[i];
+        }
+
+        dbTypeField = new ComboFieldEditor("DB_TYPE", "DB type", strsForDBType, getFieldEditorParent());
         hostField = new StringFieldEditor("HOST", "Host", getFieldEditorParent());
         portField = new StringFieldEditor("PORT", "Port", getFieldEditorParent());
         dbNameField = new StringFieldEditor("DB_NAME", "DB name", getFieldEditorParent());
