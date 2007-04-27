@@ -47,7 +47,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
  */
 public class ExportJobScriptAction extends AContextualAction {
 
-    private static final String EXPORTJOBSCRIPTS = Messages.getString("ExportJobScriptAction.actionLabel"); //$NON-NLS-1$
+    protected static final String EXPORTJOBSCRIPTS = Messages.getString("ExportJobScriptAction.actionLabel"); //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -77,10 +77,10 @@ public class ExportJobScriptAction extends AContextualAction {
         this.setText(EXPORTJOBSCRIPTS);
         this.setToolTipText(EXPORTJOBSCRIPTS);
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
-        GenerateSpagoBIXML.setSpagoBI(false);
     }
 
     public void run() {
+        GenerateSpagoBIXML.setSpagoBI(false);
         JobScriptsExportWizard processWizard = new JobScriptsExportWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(EXPORTJOBSCRIPTS);
