@@ -186,8 +186,9 @@ public class RowGeneratorUI {
         convert(outputMetaTable);
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
-        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor,
-                inputReadOnly, !inputReadOnly, externalNode, functionManager);
+        inputReadOnly = this.externalNode.getProcess().isReadOnly();
+        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
+                !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         dataTableView.setGeneratorUI(this);
         dataTableView.setShowDbTypeColumn(true, true, false);

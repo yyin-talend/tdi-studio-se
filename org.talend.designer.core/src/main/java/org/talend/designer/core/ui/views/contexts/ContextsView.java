@@ -160,9 +160,11 @@ public class ContextsView extends ViewPart {
 
     public void refresh() {
         if (composite != null) {
-            part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
-            composite.setPart(part);
-            initialContents();
+            if (getSite().getPage().getActiveEditor() instanceof MultiPageTalendEditor) {
+                part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+                composite.setPart(part);
+                initialContents();
+            }
         } else {
             createJobComposite();
         }
