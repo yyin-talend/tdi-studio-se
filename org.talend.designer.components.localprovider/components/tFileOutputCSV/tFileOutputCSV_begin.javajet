@@ -23,25 +23,38 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
      	String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
+        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String delim = delim1.substring(1,delim1.length()-1);
     	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
     	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
- %>
- com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                new java.io.FileOutputStream(<%=filename %>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
-                
+    	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+ %>        
  int nb_line_<%=cid%> = 0;
+ int splitEvery_<%=cid%> = <%=splitEvery %>;
+ int splitedFileNo_<%=cid%> =0;
+ int currentRow_<%=cid%> = 0;
+ <%if(!split){%>
+    com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(<%=filename %>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');  
+                java.io.File file<%=cid%>=new java.io.File(<%=filename%>);	
+ <%}else{%>
+	  com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+                java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
  <%
+ 		  }
+ 		  List<IMetadataColumn> columns = metadata.getListColumns();
+    		int sizeColumns = columns.size();
+   %>
+   		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
+   <% 		
  		  if(isIncludeHeader&&!isAppend)
  		  {
- 		  	List<IMetadataColumn> columns = metadata.getListColumns();
-    		int sizeColumns = columns.size();
- %>
- 		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
- <%   		
-    		for(int i = 0; i < sizeColumns; i++)
+ 		  	for(int i = 0; i < sizeColumns; i++)
     		{
     			IMetadataColumn column = columns.get(i);
  %>
@@ -52,6 +65,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
     <%		
  		  }
+ 		   if(isIncludeHeader&&isAppend)
+ 		   {
+ 		   
+ 	%>		   
+     	      if(file<%=cid%>.length()==0)  
+     	      {
+    <%			
+     			for(int i = 0; i < sizeColumns; i++)
+    			{
+    				IMetadataColumn column = columns.get(i);
+     %>	      	
+     	     	headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+     <%
+     			}
+      %>	 
+      		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);    	
+     	      }
+ 
+ <%		  } 
     	}
     }
 %>

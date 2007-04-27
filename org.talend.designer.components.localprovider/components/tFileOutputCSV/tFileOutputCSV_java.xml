@@ -101,6 +101,24 @@
       REQUIRED="true"
       NUM_ROW="4"
     />
+      <PARAMETER
+      NAME="SPLIT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SPLIT_EVERY"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="5"
+      SHOW_IF="SPLIT == 'true'"
+    >
+    <DEFAULT>1000</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"

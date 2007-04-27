@@ -23,6 +23,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = node.getUniqueName();
+        String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
+        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+    	String delim = delim1.substring(1,delim1.length()-1);
+    	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
+    	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
     	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
@@ -30,6 +38,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
     	List< ? extends IConnection> conns = node.getIncomingConnections();
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
  %>
@@ -48,6 +57,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             //doesn't work for other escapeChar
 <%
         }
+  %>
+  		
+  		CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>'); 
+  		CsvWriter<%=cid %>.setForceQualifier(true);
+  <%      
  
     	if(conns!=null){
     		if (conns.size()>0){
@@ -71,16 +85,75 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   		    	}else{
   		    	
   	%>	  
-  				row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
+  				row<%=cid%>[<%=i%>] =String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
   	<% 	
   		    	}
   		    			
     			}
+    			if(split){
  %>
- 				CsvWriter<%=cid%>.writeRecord(row<%=cid%>);			
-     			nb_line_<%=cid %>++;
+ 				
+ 					if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
+ 						splitedFileNo_<%=cid%>++;
+ 						CsvWriter<%=cid%>.close(); //close original outputStream
+ 						CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+                		//set header.
+                		<%if(isIncludeHeader&&!isAppend){
+                		%>
+                		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+                		<%
+                		}
+                		 if(isIncludeHeader&&isAppend){
+                		 %>
+                		   file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);
+                		    if(file<%=cid%>.length()==0) {
+                		    CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
+                		    }	  
+                		 <%
+                		 }
+                		%>
+                		//initialize new CsvWriter information 
+						<%
+						if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
+						%>
+						CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
+						<%
+						}if(escapeChar.equals("\\\\")){
+						%>
+						  CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
+						<%
+						}else if(escapeChar.equals(textEnclosure)){
+						%>
+						 CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
+						<%
+						}else{
+						%>
+						    //doesn't work for other escapeChar
+						<%
+						}
+						%> 
+						CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>'); 
+  						CsvWriter<%=cid %>.setForceQualifier(true);            		
+                		CsvWriter<%=cid%>.writeRecord(row<%=cid%>); 
+ 				
+ 					}else{
+ 					CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+ 				}	
+ 				currentRow_<%=cid%>++;		
+     			
 <%
+    			}else{
+ %>
+ 				CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+ <%   		
+    		
+    			}
+ %>
+ 			nb_line_<%=cid %>++;
+ <%   		
     		}
+    		
  		}
  	  }	
 	
