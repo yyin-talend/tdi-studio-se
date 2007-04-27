@@ -111,7 +111,7 @@ if(conns != null && conns.size()>0){
 			  		}
 			  		<%}else{%>
 			  		
-			  		if((rs_<%=cid %>.getString(<%=currentColNo%>)).length() == 0){
+			  		if((rs_<%=cid %>.getString(<%=currentColNo%>)).equals("")){
 			  		
 			  			<%=firstConnName%>.<%=column.getLabel()%> = '\0';
 			  			
