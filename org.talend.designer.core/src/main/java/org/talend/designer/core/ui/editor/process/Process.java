@@ -103,6 +103,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
+import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -380,34 +381,32 @@ public class Process extends Element implements IProcess {
         String[] strDisplay, strValue, strItems, strCodes;
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
             strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                    "PostgreSQL","IBM DB2","Sybase ASE",};
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput","tDB2Output","tSybaseOutput"};
+                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
+                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.ORACLE,
-                    RepositoryToComponentProperty.POSTGRESQL };
+                    RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
+                    RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
             strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.ODBC, "OCLE",
-                    RepositoryToComponentProperty.POSTGRESQL };
+                    RepositoryToComponentProperty.ODBC, "OCLE", RepositoryToComponentProperty.POSTGRESQL,
+                    RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+                    RepositoryToComponentProperty.INGRES };
         } else {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", "tPostgresqlOutput" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
+                    "IBM DB2", "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
+                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
-                    RepositoryToComponentProperty.POSTGRESQL };
+                    RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
+                    RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
             strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.SQL_SERVER, "OCLE",
-                    RepositoryToComponentProperty.POSTGRESQL };
+                    RepositoryToComponentProperty.SQL_SERVER, "OCLE", RepositoryToComponentProperty.POSTGRESQL,
+                    RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+                    RepositoryToComponentProperty.INGRES };
         }
 
-        /*
-         * } if (dbType.equals("Oracle with SID")) { //$NON-NLS-1$ return ORACLE; } if (dbType.equals("Oracle with
-         * service name")) { //$NON-NLS-1$ return ORACLE; } if (dbType.equals("Generic ODBC")) { //$NON-NLS-1$ return
-         * ODBC; } if (dbType.equals("Microsoft SQL Server (Odbc driver)")) { //$NON-NLS-1$ return ODBC; } if
-         * (dbType.equals("Microsoft SQL Server")) { //$NON-NLS-1$ return SQL_SERVER; } if (dbType.equals("IBM DB2")) {
-         * //$NON-NLS-1$ return IBM_DB2; } if (dbType.equals("Sybase ASE")) { //$NON-NLS-1$ return SYBASE; } if
-         * (dbType.equals("Sybase IQ")) { //$NON-NLS-1$ return SYBASE; } if (dbType.equals("Ingres")) { //$NON-NLS-1$
-         * return INGRES; } return ""; //$NON-NLS-1$
-         */
         param.setListItemsDisplayName(strDisplay);
         param.setListItemsValue(strValue);
         param.setListRepositoryItems(strItems);
@@ -427,7 +426,7 @@ public class Process extends Element implements IProcess {
         param.setNumRow(11);
         param.setRepositoryValue("SERVER_NAME");
         addElementParameter(param);
-        
+
         // port
         param = new ElementParameter(this);
         param.setName("PORT");
@@ -458,9 +457,7 @@ public class Process extends Element implements IProcess {
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(12);
-
         String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')";
-
         param.setShowIf(showIfStr);
 
         param.setRepositoryValue("SCHEMA");
@@ -564,63 +561,6 @@ public class Process extends Element implements IProcess {
      */
     private void createMainParameters() {
         ElementParameter param;
-        param = new ElementParameter(this);
-        param.setName(EParameterName.NAME.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
-        param.setDisplayName(EParameterName.NAME.getDisplayName());
-        param.setNumRow(1);
-        param.setValue(new String());
-        param.setRequired(true);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.AUTHOR.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
-        param.setDisplayName(EParameterName.AUTHOR.getDisplayName());
-        param.setNumRow(2);
-        param.setValue(new String());
-        param.setRequired(true);
-        param.setReadOnly(true);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.VERSION.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.VERSION);
-        param.setDisplayName(EParameterName.VERSION.getDisplayName());
-        param.setNumRow(2);
-        param.setValue(new String());
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.STATUS.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
-        param.setDisplayName(EParameterName.STATUS.getDisplayName());
-        param.setNumRow(2);
-        param.setValue(new String());
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.PURPOSE.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.TEXT);
-        param.setDisplayName(EParameterName.PURPOSE.getDisplayName());
-        param.setNumRow(3);
-        param.setValue(new String());
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.DESCRIPTION.getName());
-        param.setCategory(EComponentCategory.MAIN);
-        param.setField(EParameterFieldType.MEMO);
-        param.setNbLines(5);
-        param.setDisplayName(EParameterName.DESCRIPTION.getDisplayName());
-        param.setNumRow(4);
-        param.setValue(new String());
-        addElementParameter(param);
 
         param = new ElementParameter(this);
         param.setName(EParameterName.COMP_DEFAULT_FILE_DIR.getName());
@@ -904,6 +844,12 @@ public class Process extends Element implements IProcess {
         ProcessType process = fileFact.createProcessType();
         xmlDoc.setProcess(process);
 
+        ParametersType params = fileFact.createParametersType();
+        process.setParameters(params);
+
+        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(),
+                process);
+
         EList nList = process.getNode();
         EList cList = process.getConnection();
         MetadataEmfFactory factory = new MetadataEmfFactory();
@@ -975,6 +921,14 @@ public class Process extends Element implements IProcess {
         }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
+
+        // Added a condition to check if it is Stats and Logs.
+        // saveElementParameters(fileFact, paramList, listParamType, process);
+        {
+            List<? extends IElementParameter> paramListForStatsAndLogs = node.getNodeContainer().getElementParameters();
+
+        }
+
         saveElementParameters(fileFact, paramList, listParamType, process);
         listMetaType = nType.getMetadata();
         listMetaData = node.getMetadataList();
@@ -1017,6 +971,10 @@ public class Process extends Element implements IProcess {
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
         setActivate(false);
+
+        if (process.getParameters() != null) {
+            loadElementParameters(this, process.getParameters().getElementParameter());
+        }
 
         try {
             loadNodes(process, nodesHashtable);
