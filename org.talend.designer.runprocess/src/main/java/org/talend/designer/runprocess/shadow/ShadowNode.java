@@ -405,4 +405,12 @@ public abstract class ShadowNode implements INode {
     public List<? extends IConnection> getMainOutgoingConnections() {
         return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IElement#getElementParameter(java.lang.String)
+     */
+    public IElementParameter getElementParameter(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

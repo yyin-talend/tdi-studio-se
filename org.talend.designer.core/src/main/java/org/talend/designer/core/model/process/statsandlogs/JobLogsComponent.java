@@ -21,6 +21,14 @@
 // ============================================================================
 package org.talend.designer.core.model.process.statsandlogs;
 
+import java.util.List;
+
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.ElementParameter;
+
 
 /**
  * This class will create a virtual component that will create the logs for the job. It's not used at all in the
@@ -43,5 +51,47 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
 
     public String getVersion() {
         return "0.1";
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createElementParameters(org.talend.core.model.process.INode)
+     */
+    @Override
+    public List<? extends IElementParameter> createElementParameters(INode node) {
+        List<IElementParameter> paramList = (List<IElementParameter>) super.createElementParameters(node);
+        
+        IElementParameter newParam = new ElementParameter(node);
+        newParam.setName("CATCH_RUNTIME_ERRORS");
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setValue(Boolean.TRUE);
+        paramList.add(newParam);
+        
+        newParam = new ElementParameter(node);
+        newParam.setName("CATCH_USER_ERRORS");
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setValue(Boolean.TRUE);
+        paramList.add(newParam);
+        
+        newParam = new ElementParameter(node);
+        newParam.setName("CATCH_USER_WARNING");
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setValue(Boolean.FALSE);
+        paramList.add(newParam);
+        
+        return paramList;
+    }
+    
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createMultipleComponentsParameters()
+     */
+    @Override
+    protected void createMultipleComponentsParameters() {
+        super.createMultipleComponentsParameters();
+        
+        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION");
+        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE");
+        multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE");
+        multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN");
     }
 }

@@ -536,12 +536,28 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
-        
-        // will add the Stats & Logs managements
-        for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
-            buildCheckMap.put(node, node);
-            dataNodeList.add(node);
-            replaceMultipleComponents(node);
+
+        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
+        boolean file = (Boolean) process.getElementParameter("ON_FILES_FLAG").getValue();
+
+        if (dbFlag || file) {
+            // will add the Stats & Logs managements
+            Boolean realTimeStats = (Boolean) process.getElementParameter("CATCH_REALTIME_STATS").getValue();
+
+            if (!realTimeStats) {
+                for (INode node : dataNodeList) {
+                    IElementParameter param = node.getElementParameter(EParameterName.TSTATCATCHER_STATS.getName());
+                    if (param != null) {
+                        param.setValue(Boolean.FALSE);
+                    }
+                }
+            }
+
+            for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
+                buildCheckMap.put(node, node);
+                dataNodeList.add(node);
+                replaceMultipleComponents(node);
+            }
         }
     }
 

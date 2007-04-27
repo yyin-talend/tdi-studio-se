@@ -1524,6 +1524,11 @@ public class MapperDataTestGenerator {
             return name;
         }
 
+        public IElementParameter getElementParameter(String name) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     };
 
     /**
@@ -1773,6 +1778,11 @@ public class MapperDataTestGenerator {
         
         public List<? extends IConnection> getMainOutgoingConnections() {
             return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
+        }
+
+        public IElementParameter getElementParameter(String name) {
+            // TODO Auto-generated method stub
+            return null;
         }
 
     }

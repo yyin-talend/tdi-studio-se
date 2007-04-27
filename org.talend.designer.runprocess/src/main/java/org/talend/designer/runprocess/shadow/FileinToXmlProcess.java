@@ -526,4 +526,9 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
         
     }
+
+    public IElementParameter getElementParameter(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -346,4 +346,9 @@ public class LogRowNode implements INode {
    public List<? extends IConnection> getMainOutgoingConnections() {
        return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
    }
+
+public IElementParameter getElementParameter(String name) {
+    // TODO Auto-generated method stub
+    return null;
+}
 }

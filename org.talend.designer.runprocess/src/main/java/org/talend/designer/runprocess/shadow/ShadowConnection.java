@@ -160,4 +160,9 @@ public class ShadowConnection implements IConnection {
     public String getUniqueName() {
         return getName();
     }
+
+    public IElementParameter getElementParameter(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

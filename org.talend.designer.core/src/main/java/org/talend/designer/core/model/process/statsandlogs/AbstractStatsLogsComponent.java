@@ -305,6 +305,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             currentItem = multipleComponentManager.addItem("DB", dbComponent);
         }
 
+        createMultipleComponentsParameters();
+        multipleComponentManager.validateItems();
+    }
+
+    protected void createMultipleComponentsParameters() {
         // create parameters
         if (useFile) {
             multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME");
@@ -329,7 +334,6 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY");
             multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB");
         }
-        multipleComponentManager.validateItems();
     }
 
     /* (non-Javadoc)
