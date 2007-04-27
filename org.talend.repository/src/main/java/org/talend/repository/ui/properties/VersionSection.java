@@ -21,14 +21,18 @@
 // ============================================================================
 package org.talend.repository.ui.properties;
 
+import java.text.Collator;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,15 +43,19 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
@@ -79,7 +87,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         composite = getWidgetFactory().createFlatFormComposite(parent);
 
         tableViewer = new TableViewer(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
-        Table table = tableViewer.getTable();
+        final Table table = tableViewer.getTable();
         TableLayout tableLayout = new TableLayout();
         table.setLayout(tableLayout);
         table.setHeaderVisible(true);
@@ -88,15 +96,15 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         final String[] columnProperties = new String[] {
                 Messages.getString("VersionSection.Version"), Messages.getString("VersionSection.CreationDate"), Messages.getString("VersionSection.ModificationDate") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        TableColumn column1 = new TableColumn(table, SWT.NONE);
+        final TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
         column1.setText(columnProperties[0]);
 
-        TableColumn column2 = new TableColumn(table, SWT.NONE);
+        final TableColumn column2 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
         column2.setText(columnProperties[1]);
 
-        TableColumn column3 = new TableColumn(table, SWT.NONE);
+        final TableColumn column3 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnWeightData(1, 150, true));
         column3.setText(columnProperties[2]);
 
@@ -223,7 +231,51 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         });
         Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(menu);
+        
+        Listener sortListener = new Listener() {
+            private int direction = 1;
 
+            public void handleEvent(Event e) {
+                final TableColumn column = (TableColumn) e.widget;
+                
+                if (column == table.getSortColumn()) {
+                    direction  = -direction; 
+                }
+                if (direction == 1) {
+                    table.setSortDirection(SWT.DOWN);
+                } else {
+                    table.setSortDirection(SWT.UP);
+                }
+                
+                table.setSortColumn(column);
+                tableViewer.setSorter(new ViewerSorter() {
+                    
+                    int index = 0;
+
+                    @Override
+                    public void sort(Viewer viewer, Object[] elements) {
+                        while (index < table.getColumns().length && table.getColumn(index) != column) {
+                            index++;
+                        }
+                        super.sort(viewer, elements);
+                    }
+
+                    @Override
+                    public int compare(Viewer viewer, Object e1, Object e2) {
+                        ITableLabelProvider labelProvider = (ITableLabelProvider) tableViewer.getLabelProvider();
+                        String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider.getColumnText(e1, index) : "";
+                        String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider.getColumnText(e2, index) : "";
+                        return getComparator().compare(columnText, columnText2) * direction;
+                    }
+                });
+            }
+        };
+        column1.addListener(SWT.Selection, sortListener);
+        column2.addListener(SWT.Selection, sortListener);
+        column3.addListener(SWT.Selection, sortListener);
+        table.setSortColumn(column1);
+        table.setSortDirection(SWT.DOWN);
+        
         aTabbedPropertySheetPage.getSite().setSelectionProvider(this);
     }
 
@@ -255,10 +307,12 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
     }
 
     public void setSelection(ISelection selection) {
+        System.out.println("set");
     }
 
     @Override
     public ISelection getSelection() {
+        refresh();
         return tableViewer.getSelection();
     }
 
