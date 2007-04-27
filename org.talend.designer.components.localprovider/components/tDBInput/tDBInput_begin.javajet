@@ -122,12 +122,24 @@ if(conns != null && conns.size()>0){
 		  
 			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			  %>
-			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null){
+			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null&&(rs_<%=cid %>.getString(<%=currentColNo%>)).length()>0){
+			  	
 			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
-			  	}else{
+			  		
+			  	}else{			  	
 			  	    <%if(typeToGenerate.equals("Character")){%>
-			  		<%=firstConnName%>.<%=column.getLabel()%>=null;
+			  	    
+			  	   	if((rs_<%=cid %>.getString(<%=currentColNo%>))==null){
+			  	   	
+			  			<%=firstConnName%>.<%=column.getLabel()%>=null;
+			  			
+			  		}else{
+			  		
+			  			<%=firstConnName%>.<%=column.getLabel()%>='\0';
+			  			
+			  		}
 			  		<%}else{%>
+			  		
 			  		throw new RuntimeException(
 							"Value is empty for column : '<%=column.getLabel()%>', value is invalid or this column should be nullable or have a default value.");
 			  		

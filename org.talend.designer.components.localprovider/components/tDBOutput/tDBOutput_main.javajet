@@ -285,12 +285,19 @@ if(isObject){
 	
 	if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 	%>
-	if(String.valueOf(<%=incomingConnName%>.<%=column.getName()%>).length()==0){
-	
+	<%if(isObject){%>
+	if(<%=incomingConnName%>.<%=column.getName()%>==null){
+	<%}else{%>
+	if(String.valueOf(<%=incomingConnName%>.<%=column.getName()%>).toLowerCase().equals("null")){
+	<%}%>
 		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.CHAR);
 		
-	}else{
+	}else if(<%=incomingConnName%>.<%=column.getName()%> == '\0'){
 	
+		<%=prefix+cid%>.setString(<%=counter%>,"");
+		
+	}else{
+		
 		<%=prefix+cid%>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
 	}
 	<%

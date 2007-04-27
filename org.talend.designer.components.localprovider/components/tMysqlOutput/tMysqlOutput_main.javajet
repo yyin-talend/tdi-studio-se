@@ -284,12 +284,19 @@ if(isObject){
 	
 	if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 	%>
-	if(String.valueOf(<%=incomingConnName%>.<%=column.getName()%>).length()==0){
-	
+	<%if(isObject){%>
+	if(<%=incomingConnName%>.<%=column.getName()%>==null){
+	<%}else{%>
+	if(String.valueOf(<%=incomingConnName%>.<%=column.getName()%>).toLowerCase().equals("null")){
+	<%}%>
 		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.CHAR);
 		
-	}else{
+	}else if(<%=incomingConnName%>.<%=column.getName()%> == '\0'){
 	
+		<%=prefix+cid%>.setString(<%=counter%>,"");
+		
+	}else{
+		
 		<%=prefix+cid%>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
 	}
 	<%
@@ -322,8 +329,6 @@ if(incomingConnName != null && columnList != null){
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
 			operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,0);
 			
         	counter++;
@@ -339,8 +344,6 @@ nb_line_inserted_<%=cid%>++;
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
 			if(!column.getColumn().isKey()){
 				
 				operation.generateSetStmt(typeToGenerate,column,counterCol,incomingConnName,cid,0);
@@ -351,8 +354,6 @@ nb_line_inserted_<%=cid%>++;
 
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			//typeToGenerate = operation.generateType(typeToGenerate);
 			
 			if(column.getColumn().isKey()){
 			
@@ -374,8 +375,6 @@ nb_line_update_<%=cid%> ++;
 			for(Column columnInsert:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
 			operation.generateSetStmt(typeToGenerate,columnInsert,counterInsert,incomingConnName,cid,1);
 			
         	counterInsert++;
@@ -395,7 +394,6 @@ nb_line_update_<%=cid%> ++;
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
 			
 			if(!column.getColumn().isKey()){
 				
@@ -407,8 +405,6 @@ nb_line_update_<%=cid%> ++;
 
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			//typeToGenerate = operation.generateType(typeToGenerate);
 			
 			if(column.getColumn().isKey()){
 			
@@ -434,8 +430,6 @@ nb_line_update_<%=cid%> ++;
 		for(Column columnUpdate:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
 			if(!columnUpdate.getColumn().isKey()){
 			
 				operation.generateSetStmt(typeToGenerate,columnUpdate,counterColUpdate,incomingConnName,cid,2);
@@ -446,8 +440,6 @@ nb_line_update_<%=cid%> ++;
 
 		for(Column columnUpdate:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
-			
-			//typeToGenerate = operation.generateType(typeToGenerate);
 			
 			if(columnUpdate.getColumn().isKey()){
 			
@@ -471,8 +463,6 @@ nb_line_update_<%=cid%> ++;
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
 			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
 			operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,1);
 			
         	counter++;
@@ -490,8 +480,6 @@ nb_line_update_<%=cid%> ++;
 		int keyCounter = 1;
 		for(Column column:colStruct){
 			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			//typeToGenerate = operation.generateType(typeToGenerate);
 			
 			if(column.getColumn().isKey()){
 				
