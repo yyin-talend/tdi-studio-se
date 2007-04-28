@@ -21,8 +21,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.process;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -32,6 +39,26 @@ public class StatsAndLogsTabPropertySection extends DynamicTabbedPropertySection
 
     public StatsAndLogsTabPropertySection() {
         super(EComponentCategory.STATSANDLOGS);
-        // TODO Auto-generated constructor stub
     }
+
+    public void setInput(final IWorkbenchPart workbenchPart, final ISelection selection) {
+        Object inupt = ((IStructuredSelection) selection).getFirstElement();
+        if (inupt instanceof RepositoryNode) {
+            // This is the only RepositoryNode that displays the Job.
+            Process process = StatsAndLogsSectionFilter.getProcessPartByRepositoryNode((RepositoryNode) inupt);
+            if (process == null) {
+                return;
+            }
+            //make a mock processPart here for super.setInput();
+            ProcessPart part = new ProcessPart();
+            part.setModel(process);
+
+            StructuredSelection sel = new StructuredSelection(part);
+            super.setInput(workbenchPart, sel);
+        } else {
+            super.setInput(workbenchPart, selection);
+        }
+    }
+    
+
 }

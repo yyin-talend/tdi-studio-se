@@ -95,9 +95,14 @@
                id="logsTab"
                label="%logs"/>
          <propertyTab
-               afterTab="contextTab"
-               category="TalendEditor"
+               afterTab="repository.versiontab"
+               category="logsandstats"
                id="statsAndLogsTab"
+               label="%statsAndLogs"/>
+         <propertyTab
+               afterTab="repository.versiontab"
+               category="logsandstats"
+               id="emptyStatsAndLogsTab"
                label="%statsAndLogs"/>
       </propertyTabs>
    </extension>
@@ -171,12 +176,18 @@
             <input type="org.talend.designer.core.ui.editor.notes.Note"/>
          </propertySection>
          <propertySection
-               afterSection="VersionsProcessSection"
                class="org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection"
+               enablesFor="1"
+               filter="org.talend.designer.core.ui.editor.properties.process.StatsAndLogsSectionFilter"
                id="StatsAndLogsTabPropertySection"
                tab="statsAndLogsTab">
-            <input type="org.talend.designer.core.ui.editor.process.Process"/>
          </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.process.EmptyStatsAndLogsTabPropertySection"
+               enablesFor="1"
+               filter="org.talend.designer.core.ui.editor.properties.process.EmptyStatsAndLogsSectionFilter"
+               id="EmptyStatsAndLogsTabPropertySection"
+               tab="emptyStatsAndLogsTab"/>
       </propertySections>
    </extension>
    <extension
