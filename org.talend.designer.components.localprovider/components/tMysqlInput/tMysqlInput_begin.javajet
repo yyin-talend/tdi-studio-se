@@ -125,6 +125,10 @@ if(conns != null && conns.size()>0){
 			  		<%}%>
 			  	}			
 			  <%
+			  }else if(typeToGenerate.euqals("Timestamp")){
+			  %>
+		    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			  <%
 			  }else{
 		  
  	   	 %>
