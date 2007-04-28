@@ -131,7 +131,15 @@ if(conns != null && conns.size()>0){
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
 			 <% 	
-			  }else{
+			  }else if(typeToGenerate.equals("Timestamp")){
+			 %>
+			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
+			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			 }else{
+			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
+			 }
+			 <% 	
+			 }else{
  	   	      %>
  			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
  			<%

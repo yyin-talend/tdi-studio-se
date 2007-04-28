@@ -88,7 +88,7 @@ if(conns != null && conns.size()>0){
  	  	  if(typeToGenerate.equals("byte[]")){
  	  	   	typeToGenerate = "Bytes";
  	   	  }else if(typeToGenerate.equals("java.util.Date")){
- 	   	  	typeToGenerate = "Date";
+ 	   	  	typeToGenerate = "Timestamp";
  	   	  }else if(typeToGenerate.equals("Integer")){
  	   	  	typeToGenerate = "Int";
  	   	  }else{
@@ -129,7 +129,15 @@ if(conns != null && conns.size()>0){
 			  		<%}%>
 			  	}			
 			  <%
-			  }else{
+			  }else if(typeToGenerate.equals("Timestamp")){
+			 %>
+			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
+			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			 }else{
+			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
+			 }
+			 <% 	
+			 }else{
 		  
  	   	 %>
 

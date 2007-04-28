@@ -302,7 +302,15 @@ if(isObject){
 	<%
 	}else if(typeToGenerate.equals("Date")){
 	%>
-	<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
+	
+		<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		
+	}else{
+	
+		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.DATE);
+		
+	}
 	<%
 	}else{
 	%>

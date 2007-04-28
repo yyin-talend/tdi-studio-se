@@ -133,7 +133,7 @@ if(conns != null && conns.size()>0){
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
 			 <% 	
-			  }else{
+			 }else{
  	   		%>
  			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
  			<%
