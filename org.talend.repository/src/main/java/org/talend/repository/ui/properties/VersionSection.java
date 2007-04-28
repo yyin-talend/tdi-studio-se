@@ -140,7 +140,8 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
                         IRepositoryObject repositoryObjectVersion = allVersion.get(i);
-                        RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode, repositoryObjectVersion);
+                        RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode,
+                                repositoryObjectVersion);
                         objects[i] = repositoryNode;
                     }
                     return objects;
@@ -149,12 +150,13 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 }
             }
 
-            private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode, IRepositoryObject repositoryObjectVersion) {
+            private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode,
+                    IRepositoryObject repositoryObjectVersion) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion
                         .getProperty().getItem());
 
-                RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion,
-                        parentRepositoryNode, ENodeType.REPOSITORY_ELEMENT);
+                RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
+                        ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
                 return repositoryNode;
             }
@@ -231,25 +233,26 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         });
         Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(menu);
-        
+
         Listener sortListener = new Listener() {
+
             private int direction = 1;
 
             public void handleEvent(Event e) {
                 final TableColumn column = (TableColumn) e.widget;
-                
+
                 if (column == table.getSortColumn()) {
-                    direction  = -direction; 
+                    direction = -direction;
                 }
                 if (direction == 1) {
                     table.setSortDirection(SWT.DOWN);
                 } else {
                     table.setSortDirection(SWT.UP);
                 }
-                
+
                 table.setSortColumn(column);
                 tableViewer.setSorter(new ViewerSorter() {
-                    
+
                     int index = 0;
 
                     @Override
@@ -263,8 +266,10 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     @Override
                     public int compare(Viewer viewer, Object e1, Object e2) {
                         ITableLabelProvider labelProvider = (ITableLabelProvider) tableViewer.getLabelProvider();
-                        String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider.getColumnText(e1, index) : "";
-                        String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider.getColumnText(e2, index) : "";
+                        String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider
+                                .getColumnText(e1, index) : "";
+                        String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider
+                                .getColumnText(e2, index) : "";
                         return getComparator().compare(columnText, columnText2) * direction;
                     }
                 });
@@ -275,16 +280,18 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         column3.addListener(SWT.Selection, sortListener);
         table.setSortColumn(column1);
         table.setSortDirection(SWT.DOWN);
-        
+
         aTabbedPropertySheetPage.getSite().setSelectionProvider(this);
     }
 
     @Override
     public void refresh() {
-        if (getObject() != null && getObject().getProperty() != null) {
-            tableViewer.setInput(getObject());
-        } else {
-            tableViewer.setInput(null);
+        if (tableViewer.getContentProvider() != null) {
+            if (getObject() != null && getObject().getProperty() != null) {
+                tableViewer.setInput(getObject());
+            } else {
+                tableViewer.setInput(null);
+            }
         }
     }
 

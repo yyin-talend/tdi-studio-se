@@ -145,22 +145,6 @@
             <input type="org.talend.designer.core.ui.editor.connections.ConnectionLabel"/>
          </propertySection>
          <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.MainProcessSection"
-               id="MainProcessSection"
-               tab="mainTab">
-            <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.VersionsProcessSection"
-               id="VersionsProcessSection"
-               tab="versionsTab">
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.LogsProcessSection"
-               id="LogsProcessSection"
-               tab="logsTab">
-         </propertySection>
-         <propertySection
                class="org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertySection"
                enablesFor="1"
                id="TextNotePropertySection"

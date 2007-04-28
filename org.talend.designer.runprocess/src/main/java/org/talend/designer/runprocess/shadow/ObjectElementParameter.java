@@ -482,4 +482,14 @@ public class ObjectElementParameter implements IElementParameter {
         // TODO Auto-generated method stub
         
     }
+
+    public boolean isNoCheck() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setNoCheck(boolean noCheck) {
+        // TODO Auto-generated method stub
+        
+    }
 }

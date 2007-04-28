@@ -32,7 +32,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator;
-import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -42,19 +41,11 @@ import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabProp
  */
 public class DynamicTabbedPropertyGenerator {
 
-    private boolean isIterance;
-
-    private static IConfigurationElement[] extensionElements;
-
     private static DynamicTabbedPropertyGenerator instance = null;
 
-    private Map<EParameterFieldType, AbstractElementPropertySectionController> controllers = new HashMap<EParameterFieldType, AbstractElementPropertySectionController>();
+    private boolean initialized = false;
 
-    static {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        extensionElements = registry.getConfigurationElementsFor("org.talend.designer.core.generators"); //$NON-NLS-1$
-    }
-
+    private Map<EParameterFieldType, AbstractElementPropertySectionController> dtpControls;
 
     public static DynamicTabbedPropertyGenerator getDefault() {
         if (instance == null) {
@@ -67,28 +58,36 @@ public class DynamicTabbedPropertyGenerator {
      * DOC yzhang Comment method "initController".
      */
     public void initController(DynamicTabbedPropertySection dtp) {
-        for (int i = 0; i < extensionElements.length; i++) {
-            IConfigurationElement element = extensionElements[i];
+        if (!initialized) {
+            dtpControls = new HashMap<EParameterFieldType, AbstractElementPropertySectionController>();
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IConfigurationElement[] extensionElements = registry
+                    .getConfigurationElementsFor("org.talend.designer.core.generators"); //$NON-NLS-1$
 
-            try {
-                String controllerName = element.getAttribute("mapping"); //$NON-NLS-1$
-                EParameterFieldType key = EParameterFieldType.getFieldTypeByName(controllerName);
-                if (!controllers.containsKey(key)) {
-                if (!controllerName.equals(key.toString())) {
-                    throw new RuntimeException("Mapping attribute " + controllerName //$NON-NLS-1$
-                            + " not included in eumn EParameterFieldType"); //$NON-NLS-1$
+            for (int i = 0; i < extensionElements.length; i++) {
+                IConfigurationElement element = extensionElements[i];
+
+                try {
+                    String controllerName = element.getAttribute("mapping"); //$NON-NLS-1$
+                    EParameterFieldType key = EParameterFieldType.getFieldTypeByName(controllerName);
+                    if (!dtpControls.containsKey(key)) {
+                        if (!controllerName.equals(key.toString())) {
+                            throw new RuntimeException("Mapping attribute " + controllerName //$NON-NLS-1$
+                                    + " not included in eumn EParameterFieldType"); //$NON-NLS-1$
+                        }
+                        IControllerGenerator generator = (IControllerGenerator) element
+                                .createExecutableExtension("class"); //$NON-NLS-1$
+                        generator.setDynamicTabbedPropertySection(dtp);
+                        AbstractElementPropertySectionController controller = generator.generate();
+                        dtpControls.put(key, controller);
+                    }
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
                 }
-                    IControllerGenerator generator = (IControllerGenerator) element.createExecutableExtension("class"); //$NON-NLS-1$
-                    generator.setDynamicTabbedPropertySection(dtp);
-                    AbstractElementPropertySectionController controller = generator.generate();
-                    controllers.put(key, controller);
-                }
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
+
             }
-
+            initialized = true;
         }
-
     }
 
     /**
@@ -102,14 +101,14 @@ public class DynamicTabbedPropertyGenerator {
             DynamicTabbedPropertySection dtp) {
 
         AbstractElementPropertySectionController controller = null;
-
-        if (controllers.containsKey(controllerName)) {
-            controller = controllers.get(controllerName);
+        // Map<EParameterFieldType, AbstractElementPropertySectionController> dtpControls = controllers.get(dtp);
+        if (dtpControls.containsKey(controllerName)) {
+            controller = dtpControls.get(controllerName);
             if (controller != null) {
                 controller.init(dtp);
                 return controller;
             } else {
-                controllers.remove(controllerName);
+                dtpControls.remove(controllerName);
             }
         }
         return controller;

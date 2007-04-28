@@ -48,12 +48,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
@@ -77,7 +75,6 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
-import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection;
 import org.talend.designer.runprocess.IRunProcessService;
 
 /**
@@ -137,8 +134,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
+            final int numInRow, final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -242,14 +239,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (!elem.getElementParameter(parameterName).isReadOnly()) {
                 IProcess process = part.getTalendEditor().getProcess();
                 this.extendedProposal = ProcessProposalUtils.installOn(control, process);
-                this.checkErrorsHelper.register(control, extendedProposal);
+                if (!elem.getElementParameter(parameterName).isNoCheck()) {
+                    this.checkErrorsHelper.register(control, extendedProposal);
+                }
                 extendedProposal.addContentProposalListener(new IContentProposalListener() {
 
                     public void proposalAccepted(IContentProposal proposal) {
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor
+                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -385,8 +385,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null,
-                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null, Messages
+                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 

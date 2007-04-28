@@ -631,12 +631,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
             numInRow = 0;
             lastControl = null;
+            generator.initController(this);
             for (int i = 0; i < listParam.size(); i++) {
                 if (listParam.get(i).getCategory() == section) {
                     if (listParam.get(i).getNumRow() == curRow && listParam.get(i).isShow(listParam)) {
                         numInRow++;
-
-                        generator.initController(this);
                         AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
                                 .getField(), this);
 

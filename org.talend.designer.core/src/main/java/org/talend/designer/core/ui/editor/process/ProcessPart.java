@@ -57,6 +57,9 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
 
     private FreeformLayer fig2;
 
+    private RepositoryNode node;
+
+
     /*
      * (non-Javadoc)
      * 
@@ -128,17 +131,20 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      */
     public Object getAdapter(final Class adapter) {
         if (adapter.equals(RepositoryNode.class)) {
-            RootEditPart rootEditPart = getRoot();
-            if (rootEditPart instanceof TalendScalableFreeformRootEditPart) {
-                TalendScalableFreeformRootEditPart rootEditPart2 = (TalendScalableFreeformRootEditPart) rootEditPart;
-                IEditorInput editorInput = rootEditPart2.getEditorInput();
-                if (editorInput instanceof ProcessEditorInput) {
-                    ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
-                    return processEditorInput.getRepositoryNode();
+            if (node == null) {
+                RootEditPart rootEditPart = getRoot();
+                if (rootEditPart instanceof TalendScalableFreeformRootEditPart) {
+                    TalendScalableFreeformRootEditPart rootEditPart2 = (TalendScalableFreeformRootEditPart) rootEditPart;
+                    IEditorInput editorInput = rootEditPart2.getEditorInput();
+                    if (editorInput instanceof ProcessEditorInput) {
+                        ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
+                        node = processEditorInput.getRepositoryNode();
+                    }
                 }
             }
+            return node;
         }
-        
+
         if (adapter == SnapToHelper.class) {
             List<Object> snapStrategies = new ArrayList<Object>();
             Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);

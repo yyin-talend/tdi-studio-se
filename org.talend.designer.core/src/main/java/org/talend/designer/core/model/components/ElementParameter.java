@@ -29,6 +29,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.process.INode;
 
 /**
  * Each parameter of the components are read and written in this class. <br/>
@@ -86,8 +87,10 @@ public class ElementParameter implements IElementParameter {
     private String notShowIf = null;
 
     private List<IElementParameterDefaultValue> defaultValues = new ArrayList<IElementParameterDefaultValue>();
-    
+
     private String filter = null;
+
+    private boolean noCheck = false;
 
     public ElementParameter(final IElement parent) {
         this.parent = parent;
@@ -413,5 +416,26 @@ public class ElementParameter implements IElementParameter {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    /**
+     * Getter for noCheck.
+     * 
+     * @return the noCheck
+     */
+    public boolean isNoCheck() {
+        if (!(parent instanceof INode)) {
+            return true;
+        }
+        return noCheck;
+    }
+
+    /**
+     * Sets the noCheck.
+     * 
+     * @param noCheck the noCheck to set
+     */
+    public void setNoCheck(boolean noCheck) {
+        this.noCheck = noCheck;
     }
 }
