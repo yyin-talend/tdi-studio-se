@@ -36,6 +36,8 @@ class="PostgresqlOutputBegin"
     
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	
+	String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
@@ -99,7 +101,7 @@ class Column{
 	
 	public Column(String colName,String sqlStmt,boolean addCol){
 		this.column = null;
-		this.name = colName;
+		this.name = "\\\""+colName+"\\\"";
 		this.sqlStmt = sqlStmt;
 		this.value = "?";
 		this.addCol =addCol;
@@ -107,7 +109,7 @@ class Column{
 	
 	public Column(IMetadataColumn column){
 		this.column = column;
-		this.name = column.getLabel();
+		this.name = "\\\""+column.getLabel()+"\\\"";
 		this.sqlStmt = "=?";
 		this.value = "?";
 		this.addCol =false;
@@ -134,7 +136,7 @@ class Column{
 	}
 	
 	public void setName(String name){
-		this.name = name;
+		this.name = "\\\""+name+"\\\"";
 	}
 
 	public String getName(){
@@ -284,36 +286,36 @@ for(Column colStmt:stmtStructure){
 	if(dataAction.equals("INSERT")){
 	%>	
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 	
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
 
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}
