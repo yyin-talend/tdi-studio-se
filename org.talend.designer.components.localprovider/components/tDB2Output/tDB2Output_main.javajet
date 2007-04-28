@@ -304,7 +304,7 @@ if(isObject){
 	%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
 	
-		<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		<%=prefix+cid%>.setTimestamp(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 		
 	}else{
 	
