@@ -1,73 +1,108 @@
-<%@ jet
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
-	"
-	class="LogRowMain"
+		"
+class="tLogRowMain" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+        String cid = node.getUniqueName();
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {//4
+%>
+///////////////////////		
+						
+<%  
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+%>
+				StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+<%    			
+    			for (int i = 0; i < sizeColumns; i++) {//5
+  			
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-			List< ? extends IConnection> conns = node.getIncomingConnections();
-			if(conns!=null){
-				if( conns.size()>0 ){
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) { //begin
+%>   				
+	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
+<%
+    				} 
+%>              
+                 strBuffer_<%=cid%>.append(    						
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
-StringBuffer strBuffer_<%=cid%> = new StringBuffer();
-<%
-					IConnection conn = conns.get(0);
-					List colList = metadata.getListColumns();
-					for(int i = 0;i<colList.size();i++){
-						IMetadataColumn column = (IMetadataColumn)colList.get(i);
-						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-						if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%				
+					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
-strBuffer_<%=cid%>.append(FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>));
-<%
-						} else {
+								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%				
+					} else {//others
 %>
-strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
-<%
-						}
-						if(i!=(colList.size()-1)){
-%> 
-strBuffer_<%=cid%>.append(OUTPUT_FIELD_SEPARATOR_<%=cid %>);
-<%
-						}
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%				
 					}
 %>
+					          );	
+							
+<%
+					if(!isPrimitive) {//end
+%>
+	    		} //
+<%
+					} 
+%>  			
 
-java.io.PrintStream consoleOut_<%=cid%> = null;
-if (globalMap.get("tLogRow_CONSOLE")!=null)
-{
-	consoleOut_<%=cid%> = (java.io.PrintStream) globalMap.get("tLogRow_CONSOLE");
-}
-else
-{
-	consoleOut_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out));
-	globalMap.put("tLogRow_CONSOLE",consoleOut_<%=cid%>);
-}
-
-consoleOut_<%=cid%>.println(strBuffer_<%=cid%>.toString());
-consoleOut_<%=cid%>.flush();
-nb_line_<%=cid %>++;
-<%	
-				}
-			}
-		}
-	}
+<%
+				if(i == sizeColumns-1) break;								
+%>
+    			strBuffer_<%=cid%>.append(OUTPUT_FIELD_SEPARATOR_<%=cid %>);
+    			
+<%
+				}//5	
+%> 
+                    java.io.PrintStream consoleOut_<%=cid%> = null;
+                    if (globalMap.get("tLogRow_CONSOLE")!=null)
+                    {
+                    	consoleOut_<%=cid%> = (java.io.PrintStream) globalMap.get("tLogRow_CONSOLE");
+                    }
+                    else
+                    {
+                    	consoleOut_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out));
+                    	globalMap.put("tLogRow_CONSOLE",consoleOut_<%=cid%>);
+                    }
+                    
+                    consoleOut_<%=cid%>.println(strBuffer_<%=cid%>.toString());
+                    consoleOut_<%=cid%>.flush();
+                    nb_line_<%=cid %>++;
+///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
 %>
