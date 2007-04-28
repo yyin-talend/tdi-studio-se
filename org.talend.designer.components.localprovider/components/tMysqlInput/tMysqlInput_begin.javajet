@@ -84,7 +84,7 @@ if(conns != null && conns.size()>0){
  	  	  if(typeToGenerate.equals("byte[]")){
  	  	   	typeToGenerate = "Bytes";
  	   	  }else if(typeToGenerate.equals("java.util.Date")){
- 	   	  	typeToGenerate = "Date";
+ 	   	  	typeToGenerate = "Timestamp";
  	   	  }else if(typeToGenerate.equals("Integer")){
  	   	  	typeToGenerate = "Int";
  	   	  }else{
