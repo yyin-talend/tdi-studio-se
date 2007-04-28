@@ -66,7 +66,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-import org.talend.sqlbuilder.util.ConnectionParameterName;
+import org.talend.sqlbuilder.util.EConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -214,23 +214,23 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setSchemaName(dynamicTabbedPropertySection.getRepositoryTableMap().get(
                     elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName());
         }
-        String schema = setConnectionParameter(connParameters, ConnectionParameterName.SCHEMA.getName());
+        String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
-            String userName = setConnectionParameter(connParameters, ConnectionParameterName.USERNAME.getName());
+            String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
             connParameters.setUserName(userName);
 
-            String password = setConnectionParameter(connParameters, ConnectionParameterName.PASSWORD.getName());
+            String password = setConnectionParameter(connParameters, EConnectionParameterName.PASSWORD.getName());
             connParameters.setPassword(password);
 
-            String host = setConnectionParameter(connParameters, ConnectionParameterName.SERVER_NAME.getName());
+            String host = setConnectionParameter(connParameters, EConnectionParameterName.SERVER_NAME.getName());
             connParameters.setHost(host);
 
-            String port = setConnectionParameter(connParameters, ConnectionParameterName.PORT.getName());
+            String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
             connParameters.setPort(port);
 
-            String dbName = setConnectionParameter(connParameters, ConnectionParameterName.SID.getName());
+            String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
             connParameters.setDbName(dbName);
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {

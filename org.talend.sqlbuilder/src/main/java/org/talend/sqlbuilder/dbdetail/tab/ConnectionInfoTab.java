@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.dbdetail.tab;
 
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 
@@ -29,6 +30,8 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
+
+import com.sybase.jdbc3.utils.UnimplementedOperationException;
 
 /**
  * @author Davy Vanherbergen
@@ -171,24 +174,32 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[114][0] = Messages.getString("ConnectionInfoTab.property14"); //$NON-NLS-1$
         try {
             data[114][1] = "" + jdbcMetaData.supportsNamedParameters(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage13"), e); //$NON-NLS-1$
         }
         data[115][0] = Messages.getString("ConnectionInfoTab.property15"); //$NON-NLS-1$
         try {
             data[115][1] = "" + jdbcMetaData.supportsGetGeneratedKeys(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException unimplementedOperationException) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage14"), e); //$NON-NLS-1$
         }
         data[116][0] = Messages.getString("ConnectionInfoTab.property16"); //$NON-NLS-1$
         try {
             data[116][1] = "" + jdbcMetaData.getDatabaseMajorVersion(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage15"), e); //$NON-NLS-1$
         }
         data[117][0] = Messages.getString("ConnectionInfoTab.property17"); //$NON-NLS-1$
         try {
             data[117][1] = "" + jdbcMetaData.getDatabaseMinorVersion(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage16"), e); //$NON-NLS-1$
         }
@@ -201,24 +212,32 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[119][0] = Messages.getString("ConnectionInfoTab.property19"); //$NON-NLS-1$
         try {
             data[119][1] = "" + jdbcMetaData.getJDBCMajorVersion(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage18"), e); //$NON-NLS-1$
         }
         data[120][0] = Messages.getString("ConnectionInfoTab.property20"); //$NON-NLS-1$
         try {
             data[120][1] = "" + jdbcMetaData.getSQLStateType(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException unimplementedOperationException) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage19"), e); //$NON-NLS-1$
         }
         data[121][0] = Messages.getString("ConnectionInfoTab.property21"); //$NON-NLS-1$
         try {
             data[121][1] = "" + jdbcMetaData.locatorsUpdateCopy(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage20"), e); //$NON-NLS-1$
         }
         data[122][0] = Messages.getString("ConnectionInfoTab.property22"); //$NON-NLS-1$
         try {
             data[122][1] = "" + jdbcMetaData.supportsStatementPooling(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage21"), e); //$NON-NLS-1$
         }
@@ -884,12 +903,18 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[14][0] = Messages.getString("DatabaseDetailView.Tab.ConnectionInfo.NullsSortedEnd"); //$NON-NLS-1$
         try {
             data[14][1] = "" + jdbcMetaData.nullsAreSortedAtEnd(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage117"), e); //$NON-NLS-1$
         }
         data[15][0] = Messages.getString("ConnectionInfoTab.property103"); //$NON-NLS-1$
         try {
             data[15][1] = "" + jdbcMetaData.getResultSetHoldability(); //$NON-NLS-1$
+        } catch (UnsupportedOperationException operationException) {
+            // do nothing.
+        } catch (SQLException sql) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage118"), e); //$NON-NLS-1$
         }

@@ -39,6 +39,16 @@
       REPOSITORY_VALUE="DATABASE:INGRES"
     />
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Ingres</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"

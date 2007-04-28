@@ -39,6 +39,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -690,8 +691,8 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-        boolean isNeedSchema = !parameters.getDbType().equals("MySQL") && !parameters.getDbType().equals("Generic ODBC")
-                && !parameters.getDbType().equals("Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$
+        
+        boolean isNeedSchema = EDatabaseTypeName.isNeedSchemaFromDbType(parameters.getDbType());
         if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;

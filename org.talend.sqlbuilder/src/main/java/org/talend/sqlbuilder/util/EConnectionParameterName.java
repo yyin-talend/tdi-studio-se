@@ -27,7 +27,7 @@ import org.talend.sqlbuilder.Messages;
  * qzhang class global comment. Detailled comment <br/>
  * 
  */
-public enum ConnectionParameterName {
+public enum EConnectionParameterName {
     SERVER_NAME(Messages.getString("ConnectionParameterName.HostLabel")), //$NON-NLS-1$
     PORT(Messages.getString("ConnectionParameterName.PortLabel")), //$NON-NLS-1$
     SID(Messages.getString("ConnectionParameterName.DatabaseLabel")), //$NON-NLS-1$
@@ -40,7 +40,7 @@ public enum ConnectionParameterName {
     /**
      * qzhang ConnectionParameterName constructor comment.
      */
-    ConnectionParameterName(String displayName) {
+    EConnectionParameterName(String displayName) {
         this.displayName = displayName;
     }
 

@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -90,28 +91,7 @@ public class ConnectionParameters {
 
     private String schema;
 
-    private static Hashtable<String, String> hashTable = new Hashtable<String, String>();
-
     private boolean isShowDialog = false;
-
-    static {
-        try {
-            hashTable.put("MySQL", "MySQL"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("PostgreSQL", "PostgreSQL"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Oracle", "Oracle with SID"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Oracle with service name", "Oracle with service name");
-            hashTable.put("Generic ODBC", "Generic ODBC"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("IBM DB2", "IBM DB2"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Sybase ASE", "Sybase ASE"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Sybase IQ", "Sybase IQ"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("MSSQL", "Microsoft SQL Server"); //$NON-NLS-1$ //$NON-NLS-2$
-            hashTable.put("Ingres", "com.ingres.jdbc.IngresDriver"); //$NON-NLS-1$ //$NON-NLS-2$
-            
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Sets the connectionComment.
@@ -249,7 +229,7 @@ public class ConnectionParameters {
      */
     public void setDbType(String dbType) {
         if (dbType != null) {
-            this.dbType = TextUtil.removeQuots(hashTable.get(dbType));
+            this.dbType = TextUtil.removeQuots(EDatabaseTypeName.getDisplayNameFromDbType(dbType));
         } else {
             this.dbType = "";
         }

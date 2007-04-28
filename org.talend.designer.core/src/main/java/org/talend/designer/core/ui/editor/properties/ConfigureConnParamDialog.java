@@ -48,7 +48,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.sqlbuilder.util.ConnectionParameterName;
+import org.talend.sqlbuilder.util.EConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -69,7 +69,7 @@ public class ConfigureConnParamDialog extends Dialog {
 
     private static IContextManager contextManager;
 
-    private Map<ConnectionParameterName, String> pvValues = new HashMap<ConnectionParameterName, String>();
+    private Map<EConnectionParameterName, String> pvValues = new HashMap<EConnectionParameterName, String>();
 
     /**
      * qzhang ConfigureConnParamDialog constructor comment.
@@ -81,12 +81,12 @@ public class ConfigureConnParamDialog extends Dialog {
     public ConfigureConnParamDialog(Shell parentShell, ConnectionParameters parameters, IContextManager contextManager) {
         super(parentShell);
         this.parameters = parameters;
-        pvValues.put(ConnectionParameterName.PASSWORD, parameters.getPassword());
-        pvValues.put(ConnectionParameterName.PORT, parameters.getPort());
-        pvValues.put(ConnectionParameterName.SCHEMA, parameters.getSchema());
-        pvValues.put(ConnectionParameterName.SERVER_NAME, parameters.getHost());
-        pvValues.put(ConnectionParameterName.USERNAME, parameters.getUserName());
-        pvValues.put(ConnectionParameterName.SID, parameters.getDbName());
+        pvValues.put(EConnectionParameterName.PASSWORD, parameters.getPassword());
+        pvValues.put(EConnectionParameterName.PORT, parameters.getPort());
+        pvValues.put(EConnectionParameterName.SCHEMA, parameters.getSchema());
+        pvValues.put(EConnectionParameterName.SERVER_NAME, parameters.getHost());
+        pvValues.put(EConnectionParameterName.USERNAME, parameters.getUserName());
+        pvValues.put(EConnectionParameterName.SID, parameters.getDbName());
         ConfigureConnParamDialog.contextManager = contextManager;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.DIALOG_TRIM);
     }
@@ -156,14 +156,14 @@ public class ConfigureConnParamDialog extends Dialog {
      * @param defaultContext
      */
     private void addComponents(IContext defaultContext) {
-        for (ConnectionParameterName key : ConnectionParameterName.values()) {
+        for (EConnectionParameterName key : EConnectionParameterName.values()) {
             if (parameters.getRepositoryNameParaName().get(key.getName()) != null) {
                 createOneComponent(key, defaultContext);
             }
         }
     }
 
-    private void createOneComponent(ConnectionParameterName key, IContext defaultContext) {
+    private void createOneComponent(EConnectionParameterName key, IContext defaultContext) {
         GridLayout gridLayout;
         GridData gridData;
         Composite hostComposite = new Composite(mainComposite, SWT.NONE);
@@ -272,7 +272,7 @@ public class ConfigureConnParamDialog extends Dialog {
     @Override
     protected void okPressed() {
         for (Text text : allParamText) {
-            ConnectionParameterName name = (ConnectionParameterName) text.getData();
+            EConnectionParameterName name = (EConnectionParameterName) text.getData();
             String value = ((Text) text.getData(TEXT_CONTROL)).getText().substring(CONTEXT_WITH.length());
             switch (name) {
             case SID:
