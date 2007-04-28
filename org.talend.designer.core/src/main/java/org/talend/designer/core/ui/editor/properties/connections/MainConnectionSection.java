@@ -98,7 +98,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             for (IElementParameter cur : listParam) {
                 if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                    generator.initController();
+                    generator.initController(this);
                     AbstractElementPropertySectionController contorller = generator.getController(
                             EParameterFieldType.SCHEMA_TYPE, this);
                     contorller.createControl(composite, cur, 0, 0, 0, null);

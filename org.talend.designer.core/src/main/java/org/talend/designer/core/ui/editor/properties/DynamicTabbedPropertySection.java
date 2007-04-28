@@ -119,7 +119,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     protected int curRowSize;
 
-    protected DynamicTabbedPropertyGenerator generator = DynamicTabbedPropertyGenerator.getDefault(this);;
+    protected DynamicTabbedPropertyGenerator generator = DynamicTabbedPropertyGenerator.getDefault();
 
     private String oldProcessType;
 
@@ -636,7 +636,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (listParam.get(i).getNumRow() == curRow && listParam.get(i).isShow(listParam)) {
                         numInRow++;
 
-                        generator.initController();
+                        generator.initController(this);
                         AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
                                 .getField(), this);
 
@@ -759,6 +759,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         if (elem instanceof ConnectionLabel) {
             elem = ((ConnectionLabel) elem).getConnection();
+        }
+        if (elem == null) {
+            System.out.println("pb");
         }
 
         if (currentComponent == null || elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {

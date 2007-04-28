@@ -32,6 +32,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator;
+import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -42,8 +43,6 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.ICont
 public class DynamicTabbedPropertyGenerator {
 
     private boolean isIterance;
-
-    private DynamicTabbedPropertySection dtp;
 
     private static IConfigurationElement[] extensionElements;
 
@@ -56,16 +55,10 @@ public class DynamicTabbedPropertyGenerator {
         extensionElements = registry.getConfigurationElementsFor("org.talend.designer.core.generators"); //$NON-NLS-1$
     }
 
-    /**
-     * DOC yzhang DynamicTabbedPropertyGenerator constructor comment.
-     */
-    private DynamicTabbedPropertyGenerator(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
-    }
 
-    public static DynamicTabbedPropertyGenerator getDefault(DynamicTabbedPropertySection dtp) {
+    public static DynamicTabbedPropertyGenerator getDefault() {
         if (instance == null) {
-            instance = new DynamicTabbedPropertyGenerator(dtp);
+            instance = new DynamicTabbedPropertyGenerator();
         }
         return instance;
     }
@@ -73,7 +66,7 @@ public class DynamicTabbedPropertyGenerator {
     /**
      * DOC yzhang Comment method "initController".
      */
-    public void initController() {
+    public void initController(DynamicTabbedPropertySection dtp) {
         for (int i = 0; i < extensionElements.length; i++) {
             IConfigurationElement element = extensionElements[i];
 
@@ -119,18 +112,6 @@ public class DynamicTabbedPropertyGenerator {
                 controllers.remove(controllerName);
             }
         }
-        // } else {
-        // if (!isIterance) {
-        // isIterance = true;
-        // initController();
-        // controller = getController(controllerName, dtp);
-        // isIterance = false;
-        // } else {
-        // isIterance = false;
-        // throw new RuntimeException("Controller " + controllerName + " not registered.");
-        // }
-        //            
-        // }
         return controller;
     }
 

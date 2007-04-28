@@ -77,6 +77,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection;
 import org.talend.designer.runprocess.IRunProcessService;
 
 /**
