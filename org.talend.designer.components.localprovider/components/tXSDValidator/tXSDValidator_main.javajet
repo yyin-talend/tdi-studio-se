@@ -1,0 +1,74 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+	java.io.*
+	javax.xml.transform.Source
+	javax.xml.transform.stream.StreamSource
+	javax.xml.validation.*
+	org.xml.sax.SAXException
+"
+class="XSDValidatorMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String xsdfile = ElementParameterParser.getValue(node, "__XSDFILE__");
+Boolean print = new Boolean(ElementParameterParser.getValue(node, "__PRINT__"));
+String validMessage = ElementParameterParser.getValue(node, "__VALID_MESSAGE__");
+String invalidMessage = ElementParameterParser.getValue(node, "__INVALID_MESSAGE__");
+String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
+%>
+
+javax.xml.validation.SchemaFactory factory<%=cid %> =javax.xml.validation.SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+java.io.File schemaLocation<%=cid %> = new java.io.File(<%=xsdfile %>);
+javax.xml.validation.Schema schema<%=cid %> = factory<%=cid %>.newSchema(schemaLocation<%=cid %>);
+javax.xml.validation.Validator validator<%=cid %> = schema<%=cid %>.newValidator();
+java.io.File xmlfile<%=cid %> = new java.io.File(<%=xmlfile %>);
+javax.xml.transform.Source source<%=cid %> = new javax.xml.transform.stream.StreamSource(xmlfile<%=cid %>);
+
+String message<%=cid %> = "";
+int validate<%=cid %> = 0;
+try {
+    validator<%=cid %>.validate(source<%=cid %>);
+  			message<%=cid %> = <%=validMessage%>;
+			validate<%=cid %> = 0;  	
+}
+catch (org.xml.sax.SAXException ex) {
+    		message<%=cid %> = <%=invalidMessage%>;
+			validate<%=cid %> = 1;
+System.out.println(ex.getMessage());
+} 
+
+globalMap.put("<%=cid %>_DIFFERENCE",validate<%=cid %>);
+
+<%
+if (print) {
+%>
+    System.out.println(message<%=cid %>);
+<%
+}
+
+
+
+for (IConnection conn : node.getOutgoingConnections()) {
+	if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+%>
+		<%=conn.getName() %>.xsdfile = <%=xsdfile %>;
+		<%=conn.getName() %>.xmlfile = <%=xmlfile %>;	
+    	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
+    	<%=conn.getName() %>.job = jobName;
+		<%=conn.getName() %>.component = currentComponent;
+		<%=conn.getName() %>.validate = validate<%=cid %>;
+		<%=conn.getName() %>.message = message<%=cid %>;
+<%
+	}
+}
+%>
