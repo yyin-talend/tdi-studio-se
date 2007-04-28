@@ -2,7 +2,6 @@ package tFuzzyMatch::FuzzyMatch ;
 use strict;
 use Text::LevenshteinXS qw(distance);
 use Text::Metaphone qw(Metaphone);
-
 # unique : stop after the first successful matching result
 # lookup : values to lookup
 # dmin : min value
@@ -15,9 +14,7 @@ sub matchLevenshteinDistance {
     my $lk_candidates = {} ;
     my $best = $params{dmax} ;
     foreach my $lookup ( @{$params{lookup}} ){
-	# specific to editdistance !!!
         next if abs( ( length($params{value}) - length($lookup) ) ) > $params{dmax} ;
-        last if ( $params{unique} && ( $best eq $params{dmin}) );
         my $dist = $params{sensitive} ? distance( $params{value}, $lookup ) : distance( lc $params{value}, lc $lookup ) ;
         next if $dist < $params{dmin} ;
         next if $dist > $params{dmax} ; 
@@ -25,6 +22,7 @@ sub matchLevenshteinDistance {
         $lk_candidates->{$dist} ||= [] ;
         push @{$lk_candidates->{$dist}}, $lookup ;
         $best = $dist ;
+        last if ( $params{unique} && ( $best eq $params{dmin}) );
     }
     
     my $result = {} ;
@@ -34,7 +32,6 @@ sub matchLevenshteinDistance {
     return $result ;
 }
 
-# unique : stop after the first successful matching result
 # lookup : values to lookup
 # value : value to be matched
 sub matchMetaphone {
@@ -42,18 +39,12 @@ sub matchMetaphone {
 
     my $result = {} ;
     my $phoned_value = Metaphone($params{value});
-    $result->{$phoned_value} = [] ;
-    foreach my $lookup ( @{$params{lookup}} ){
-        last if ( $params{unique} && scalar(@{$result->{$phoned_value}}) );
-        my $phoned_lookup = Metaphone( $lookup ) ;
-        next unless $phoned_value eq $phoned_lookup ;
-        push @{$result->{$phoned_value}}, $lookup ;
+    my $lookup_result = $params{lookup}->{$phoned_value} || [] ;
+    if(scalar(@$lookup_result)){
+    	$result->{$phoned_value} = $lookup_result ;
     }
-    
-    # resultset is empty
-    delete $result->{$phoned_value} unless( $result->{$phoned_value} ) ;
+
     return $result ;
-	
 }
 
 1;

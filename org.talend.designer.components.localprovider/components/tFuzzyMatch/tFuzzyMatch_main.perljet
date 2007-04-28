@@ -65,7 +65,7 @@ my $result = tFuzzyMatch::FuzzyMatch::<%=matching%>(
     dmin => <%=dmin%>, 
     dmax => <%=dmax%>, 
     value => $<%=cid%>[$icolmatch], 
-    lookup => $tLookupRef
+    lookup => $tLookup_<%=cid%>,
     );
     
 ( $<%=cid%>[<%=metadata.getListColumns().size() - 2%>] ) = keys %$result ;
