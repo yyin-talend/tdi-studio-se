@@ -47,7 +47,7 @@ class="RunJobMain"
     String[] codeOptions = new String[] {"--father_pid=\"+pid+\"", "--root_pid=\"+rootPid+\""};
     String[] commandLine = new String[] {"<command>"};
     try {
-    	commandLine = ProcessorUtilities.getCommandLine(true, process, context, codeOptions);
+    	commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
     } catch (ProcessorException e) {
     }
 %>
