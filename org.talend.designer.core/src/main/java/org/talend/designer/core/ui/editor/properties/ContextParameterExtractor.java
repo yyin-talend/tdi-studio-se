@@ -66,7 +66,8 @@ public final class ContextParameterExtractor {
      * @param text Component on wich extractor is installed.
      * @param process Process on wich context parameter is added.
      */
-    public static void installOn(final Control text, final Process process, final String parameterName, final Element elem) {
+    public static void installOn(final Control text, final Process process, final String parameterName,
+            final Element elem) {
         text.addKeyListener(new KeyAdapter() {
 
             @SuppressWarnings("unchecked")
@@ -74,11 +75,13 @@ public final class ContextParameterExtractor {
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
-                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
+                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
+                            parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
-                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        String replaceCode = ContextParameterUtils.getScriptCode(parameter,
+                                ((RepositoryContext) CorePlugin.getContext()
+                                        .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);
@@ -102,9 +105,9 @@ public final class ContextParameterExtractor {
                 }
             }
 
-            
         });
     }
+
     /**
      * qzhang Comment method "saveContext".
      * 
@@ -124,6 +127,7 @@ public final class ContextParameterExtractor {
 
         }
     }
+
     private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager,
             final String parameterName) {
         String nameProposal = ""; //$NON-NLS-1$
@@ -140,6 +144,15 @@ public final class ContextParameterExtractor {
                 }
             }
         }
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            if (nameProposal.startsWith("\"") && nameProposal.endsWith("\"") && (nameProposal.length() > 1)) {
+                nameProposal = nameProposal.substring(1, nameProposal.length() - 1);
+            }
+        }
+
+        String value = nameProposal;
+
+        nameProposal = nameProposal.replace(" ", "_");
 
         IContextParameter parameter = new JobContextParameter();
         if (manager.checkValidParameterName(parameterName)) {
@@ -156,7 +169,7 @@ public final class ContextParameterExtractor {
             parameter.setType(JavaTypesManager.getDefaultJavaType().getId());
         }
         parameter.setPrompt(parameterName + "?"); //$NON-NLS-1$
-        parameter.setValue(nameProposal);
+        parameter.setValue(value);
         return parameter;
     }
 }
