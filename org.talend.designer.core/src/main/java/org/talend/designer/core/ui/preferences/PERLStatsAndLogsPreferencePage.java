@@ -21,28 +21,44 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.designer.core.DesignerCoreService;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
- * This class is used to create a preference page for tabbed page 'Stats & logs'. <br/>
- * 
- * @author ftang
+ * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
-public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class PERLStatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public StatsAndLogsPreferencePage() {
+    ComboFieldEditor repositoryField = null;
+
+    public PERLStatsAndLogsPreferencePage() {
         super(GRID);
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
@@ -84,10 +100,6 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
 
         int languageType = 0;
 
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            languageType = 1;
-        }
-
         onFilesField = new BooleanFieldEditor(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getName(),
                 StatsAndLogsConstants.ON_FILE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
         filePathField = new DirectoryFieldEditor(StatsAndLogsConstants.FILE_PATH[languageType].getName(),
@@ -99,25 +111,50 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         onDatabaseField = new BooleanFieldEditor(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName(),
                 StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
 
-        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN },
-                { "Repository", EmfComponent.REPOSITORY } };
+        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN } };
+        // { "Repository", EmfComponent.REPOSITORY } };
+
+        Composite composite = new Composite(getFieldEditorParent(), SWT.NONE);
+
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 4;
+        composite.setLayoutData(gridData);
 
         propertyTypeField = new ComboFieldEditor(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName(),
-                StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName(), stringsForPropertyType,
-                getFieldEditorParent());
+                StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName(), stringsForPropertyType, composite);
+
+        // propertyTypeField.setEnabled(false, composite);
+
+        // propertyTypeField.getComboBoxControl(composite).addSelectionListener(new SelectionListener() {
+        //
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        // }
+        //
+        // public void widgetSelected(SelectionEvent e) {
+        // if (e.getSource() instanceof Combo) {
+        // Combo combo = (Combo) e.getSource();
+        // if (combo.getText().equals("Repository")) {
+        //
+        // }
+        // }
+        // }
+        // });
+        // String[][] stringsForRepositoryPropertyType = new String[][] {};
+        //
+        // repositoryField = new
+        // ComboFieldEditor(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName(),
+        // StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getDisplayName(),
+        // stringsForRepositoryPropertyType, composite);
+
+        GridLayout gridLayout = (GridLayout) composite.getLayout();
+        gridLayout.numColumns = 16;
+        composite.setLayout(gridLayout);
 
         String[] strDisplay, strValue;
-        if (languageType==0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
-                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
-        } else {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
-                    "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
-                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
-        }
+        strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
+                "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
+        strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
+                "tDB2Output", "tSybaseOutput", "tIngresOutput" };
 
         String[][] strsForDBType = new String[strDisplay.length][2];
 
@@ -127,7 +164,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         }
 
         dbTypeField = new ComboFieldEditor(StatsAndLogsConstants.DB_TYPE[languageType].getName(),
-                StatsAndLogsConstants.DB_TYPE[languageType].getDisplayName(), strsForDBType, getFieldEditorParent());
+                StatsAndLogsConstants.DB_TYPE[languageType].getDisplayName(), strsForDBType, composite);
         hostField = new StringFieldEditor(StatsAndLogsConstants.HOST[languageType].getName(),
                 StatsAndLogsConstants.HOST[languageType].getDisplayName(), getFieldEditorParent());
         portField = new StringFieldEditor(StatsAndLogsConstants.PORT[languageType].getName(),
@@ -164,6 +201,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         addField(logsFileNameField);
         addField(onDatabaseField);
         addField(propertyTypeField);
+        // addField(repositoryField);
 
         addField(dbTypeField);
         addField(hostField);
@@ -180,9 +218,45 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         addField(catchUserErrorsField);
         addField(catchUserWarningField);
         addField(catchRealtimeStatsField);
+
+        getRepositoryValue();
     }
 
     public void init(IWorkbench workbench) {
+    }
+
+    /**
+     * Gets the repository value.
+     * 
+     * @param newList
+     * @param repositoryName
+     * @return
+     */
+    private String[] getRepositoryValue() {
+        List<String> repostioryValueList = new ArrayList<String>();
+        String value = null;
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+        List<ConnectionItem> metadataConnectionsItem = null;
+        try {
+            metadataConnectionsItem = factory.getMetadataConnectionsItem();
+            if (metadataConnectionsItem != null) {
+                for (ConnectionItem connectionItem : metadataConnectionsItem) {
+                    String aliasName = new RepositoryValueUtils().getRepositoryAliasName(connectionItem);
+                    value = aliasName + ":" + connectionItem.getProperty().getLabel();
+                    if (value != null && value.length() != 0) {
+                        repostioryValueList.add(value);
+                    }
+                }
+            }
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+        return (String[]) repostioryValueList.toArray(new String[0]);
+    }
+
+    public void add() {
+        addField(repositoryField);
     }
 
 }

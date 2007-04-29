@@ -41,9 +41,20 @@
       </page>
       <page
             category="org.talend.core.prefs"
-            class="org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage"
-            id="org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage"
-            name="%statsAndLogs"/>
+            class="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
+            id="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
+            name="%statsAndLogs">
+      </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
+            class="org.talend.designer.core.ui.preferences.PERLStatsAndLogsPreferencePage"
+            id="org.talend.designer.core.ui.preferences.PERLStatsAndLogsPreferencePage"
+            name="Perl"/>
+      <page
+            category="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
+            class="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
+            id="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
+            name="Java"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

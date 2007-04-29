@@ -25,24 +25,23 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 
 /**
- * This class is used to create a preference page for tabbed page 'Stats & logs'. <br/>
- * 
- * @author ftang
+ * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
-public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class JAVAStatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public StatsAndLogsPreferencePage() {
+    public JAVAStatsAndLogsPreferencePage() {
         super(GRID);
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
@@ -64,6 +63,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         StringFieldEditor logsFileNameField;
         BooleanFieldEditor onDatabaseField;
         ComboFieldEditor propertyTypeField;
+        ComboFieldEditor repositoryField;
 
         ComboFieldEditor dbTypeField;
         StringFieldEditor hostField;
@@ -80,13 +80,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         BooleanFieldEditor catchUserWarningField;
         BooleanFieldEditor catchRealtimeStatsField;
 
-        // Checks the language type, perl is 0(default), java is 1.
-
-        int languageType = 0;
-
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            languageType = 1;
-        }
+        int languageType = 1;
 
         onFilesField = new BooleanFieldEditor(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getName(),
                 StatsAndLogsConstants.ON_FILE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
@@ -99,25 +93,37 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         onDatabaseField = new BooleanFieldEditor(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName(),
                 StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
 
-        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN },
-                { "Repository", EmfComponent.REPOSITORY } };
+         Composite composite = new Composite(getFieldEditorParent(), SWT.NONE);
+        
+         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+         gridData.horizontalSpan = 4;
+         composite.setLayoutData(gridData);
+
+        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN } };
+        // { "Repository", EmfComponent.REPOSITORY } };
 
         propertyTypeField = new ComboFieldEditor(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName(),
                 StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName(), stringsForPropertyType,
-                getFieldEditorParent());
+                composite);
+        
+        GridLayout gridLayout = (GridLayout) composite.getLayout();
+        gridLayout.numColumns = 16;
+        composite.setLayout(gridLayout);
+
+        // propertyTypeField.setEnabled(false, getFieldEditorParent());
+
+        // String[][] stringsForRepositoryPropertyType = new String[][] {};
+
+        // repositoryField = new
+        // ComboFieldEditor(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName(),
+        // StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getDisplayName(),
+        // stringsForRepositoryPropertyType, getFieldEditorParent());
 
         String[] strDisplay, strValue;
-        if (languageType==0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
-                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
-        } else {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
-                    "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
-                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
-        }
+        strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL", "IBM DB2",
+                "Sybase", "Ingres" };
+        strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", "tPostgresqlOutput",
+                "tDB2Output", "tSybaseOutput", "tIngresOutput" };
 
         String[][] strsForDBType = new String[strDisplay.length][2];
 
@@ -127,7 +133,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         }
 
         dbTypeField = new ComboFieldEditor(StatsAndLogsConstants.DB_TYPE[languageType].getName(),
-                StatsAndLogsConstants.DB_TYPE[languageType].getDisplayName(), strsForDBType, getFieldEditorParent());
+                StatsAndLogsConstants.DB_TYPE[languageType].getDisplayName(), strsForDBType, composite);
         hostField = new StringFieldEditor(StatsAndLogsConstants.HOST[languageType].getName(),
                 StatsAndLogsConstants.HOST[languageType].getDisplayName(), getFieldEditorParent());
         portField = new StringFieldEditor(StatsAndLogsConstants.PORT[languageType].getName(),
@@ -164,6 +170,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         addField(logsFileNameField);
         addField(onDatabaseField);
         addField(propertyTypeField);
+        // addField(repositoryField);
 
         addField(dbTypeField);
         addField(hostField);
