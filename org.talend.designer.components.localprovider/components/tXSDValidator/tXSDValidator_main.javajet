@@ -38,13 +38,12 @@ String message<%=cid %> = "";
 int validate<%=cid %> = 0;
 try {
     validator<%=cid %>.validate(source<%=cid %>);
-  			message<%=cid %> = <%=validMessage%>;
-			validate<%=cid %> = 0;  	
-}
-catch (org.xml.sax.SAXException ex) {
-    		message<%=cid %> = <%=invalidMessage%>;
-			validate<%=cid %> = 1;
-System.out.println(ex.getMessage());
+  	message<%=cid %> = <%=validMessage%>;
+	validate<%=cid %> = 0;  	
+} catch (org.xml.sax.SAXException ex) {
+	message<%=cid %> = <%=invalidMessage%> " " + ex.getMessage();
+	validate<%=cid %> = 1;
+	System.err.println(ex.getMessage());
 } 
 
 globalMap.put("<%=cid %>_DIFFERENCE",validate<%=cid %>);
@@ -55,8 +54,6 @@ if (print) {
     System.out.println(message<%=cid %>);
 <%
 }
-
-
 
 for (IConnection conn : node.getOutgoingConnections()) {
 	if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
