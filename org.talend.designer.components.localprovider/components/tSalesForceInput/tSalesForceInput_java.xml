@@ -37,7 +37,7 @@
       NUM_ROW="1"
       REQUIRED="true"
     >
-      <DEFAULT>"qiang.zhang@soyatec.com"</DEFAULT>
+      <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -46,7 +46,7 @@
       NUM_ROW="2"
       REQUIRED="true"
     >
-      <DEFAULT>"4mL8C"</DEFAULT>
+      <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
     
     
