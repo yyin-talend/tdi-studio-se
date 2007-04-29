@@ -39,7 +39,7 @@
       <TABLE>
         <COLUMN NAME="file" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="file_ref" TYPE="id_String" LENGTH="255"/>
-        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"y-M-d"'/>
+        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
         <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="component" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="differ" TYPE="id_Integer" LENGTH="1"/>
