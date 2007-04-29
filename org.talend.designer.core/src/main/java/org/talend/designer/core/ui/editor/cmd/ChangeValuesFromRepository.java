@@ -98,7 +98,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) {
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -115,7 +116,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         if (param.getField().equals(EParameterFieldType.TABLE)
                                 && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
+                                    .getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                             RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
@@ -127,9 +129,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
             elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
-
             setOtherProperties();
-
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
@@ -145,8 +145,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                     IElementParameter repositorySchemaTypeParameter = elem
                             .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                    String repositoryValue = (String) repositorySchemaTypeParameter.getValue();
-                    IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryValue);
+                    String repositoryTable = getFirstRepositoryTable(value);
+                    repositorySchemaTypeParameter.setRepositoryValue(repositoryTable);
+                    IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
                     if (table != null) {
                         table = table.clone();
                         table.setTableName(node.getMetadataList().get(0).getTableName());
@@ -170,6 +171,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         refreshPropertyView();
     }
 
+    private String getFirstRepositoryTable(String repository) {
+        for (String id : repositoryTableMap.keySet()) {
+            if (id.startsWith(repository)) {
+                return id;
+            }
+        }
+        return "";
+    }
+
     /**
      * qzhang Comment method "setOtherProperties".
      */
@@ -190,7 +200,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             } else {
                 if (!metadataInput) {
                     if (tablesmap != null
-                            && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                            && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                                    .isEmpty()) {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
                         IElementParameter repositorySchemaTypeParameter = elem
                                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
@@ -216,7 +227,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
                                 && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
                         if (isTake && getTake()) {
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null, sourceMetadataTable);
+                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
+                                    sourceMetadataTable);
                             cmd.execute(true);
                             elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
                             if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
@@ -228,7 +240,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
             if (queriesmap != null
-                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
+                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                            .isEmpty()) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
             }
         }
@@ -239,7 +252,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         Node sourceNode = null;
         IODataComponent input = null;
         List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
-        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target.getIncomingConnections();
+        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target
+                .getIncomingConnections();
         for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
             if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                 input = new IODataComponent(connec);
