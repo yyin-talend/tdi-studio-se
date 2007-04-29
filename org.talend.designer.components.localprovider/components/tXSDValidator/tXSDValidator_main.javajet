@@ -41,12 +41,12 @@ try {
   	message<%=cid %> = <%=validMessage%>;
 	validate<%=cid %> = 0;  	
 } catch (org.xml.sax.SAXException ex) {
-	message<%=cid %> = <%=invalidMessage%> " " + ex.getMessage();
+	message<%=cid %> = <%=invalidMessage%> + " " + ex.getMessage();
 	validate<%=cid %> = 1;
 	System.err.println(ex.getMessage());
 } 
 
-globalMap.put("<%=cid %>_DIFFERENCE",validate<%=cid %>);
+globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
 
 <%
 if (print) {
