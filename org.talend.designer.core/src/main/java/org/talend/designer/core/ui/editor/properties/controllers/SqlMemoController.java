@@ -179,7 +179,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
-        String propertyName = (String) openSQLEditorButton.getData(PROPERTY);
+        String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
         String qoute = (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) ? TalendTextUtils.QUOTATION_MARK
                 : TalendTextUtils.SINGLE_QUOTE;
@@ -370,7 +370,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         buttonControl.setBackground(subComposite.getBackground());
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
-        openSQLEditorButton.setData(PROPERTY, param.getName());
+        openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
 
         openSQLEditorButton.addSelectionListener(listenerSelection);
 

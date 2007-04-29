@@ -228,7 +228,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 }
             }
 
-            String propertyName = (String) inputButton.getData(PROPERTY);
+            String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
 
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
@@ -437,7 +437,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, SCHEMA);
-        btn.setData(PROPERTY, param.getName());
+        btn.setData(PARAMETER_NAME, param.getName());
 
         lastControlUsed = btn;
 
@@ -465,7 +465,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 data.height = resetBtnSize.y;
                 resetBtn.setLayoutData(data);
                 resetBtn.setData(NAME, RESET_COLUMNS);
-                resetBtn.setData(PROPERTY, param.getName());
+                resetBtn.setData(PARAMETER_NAME, param.getName());
                 resetBtn.setEnabled(!param.isReadOnly());
 
                 if (resetBtnSize.y > btnSize.y) {

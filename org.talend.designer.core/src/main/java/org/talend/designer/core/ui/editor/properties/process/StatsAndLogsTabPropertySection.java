@@ -24,8 +24,11 @@ package org.talend.designer.core.ui.editor.properties.process;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -42,14 +45,14 @@ public class StatsAndLogsTabPropertySection extends DynamicTabbedPropertySection
     }
 
     public void setInput(final IWorkbenchPart workbenchPart, final ISelection selection) {
-        Object inupt = ((IStructuredSelection) selection).getFirstElement();
-        if (inupt instanceof RepositoryNode) {
+        Object input = ((IStructuredSelection) selection).getFirstElement();
+        if (input instanceof RepositoryNode) {
             // This is the only RepositoryNode that displays the Job.
-            Process process = StatsAndLogsSectionFilter.getProcessPartByRepositoryNode((RepositoryNode) inupt);
+            Process process = StatsAndLogsSectionFilter.getProcessPartByRepositoryNode((RepositoryNode) input);
             if (process == null) {
                 return;
             }
-            //make a mock processPart here for super.setInput();
+            // make a mock processPart here for super.setInput();
             ProcessPart part = new ProcessPart();
             part.setModel(process);
 
@@ -59,6 +62,32 @@ public class StatsAndLogsTabPropertySection extends DynamicTabbedPropertySection
             super.setInput(workbenchPart, selection);
         }
     }
-    
 
+    IWorkbenchPart oldPart;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection#refresh()
+     */
+    @Override
+    public void refresh() {
+        // as the view can have several inputs, will check for each component if need to redraw the view or not.
+        boolean needRedraw = false;
+        for (int i = 0; i < elem.getElementParameters().size() && !needRedraw; i++) {
+            IElementParameter elementParameter = elem.getElementParameters().get(i);
+            if (elementParameter.getCategory().equals(section)) {
+                // if the component must be displayed, then check if the control exists or not.
+                boolean show = elementParameter.isShow(elem.getElementParameters());
+                Object control = this.hashCurControls.get(elementParameter.getName());
+                if ((control == null && show) || (control != null && !show)) {
+                    needRedraw = true;
+                }
+            }
+        }
+        if (needRedraw) {
+            addComponents();
+        }
+        super.refresh();
+    }
 }

@@ -95,7 +95,7 @@ public class FileController extends AbstractElementPropertySectionController {
         String file = dial.open();
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) button.getData(PROPERTY);
+                String propertyName = (String) button.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
                     String portableValue = Path.fromOSString(file).toPortableString();
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
@@ -127,7 +127,7 @@ public class FileController extends AbstractElementPropertySectionController {
         data.height = STANDARD_HEIGHT - 2;
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, FILE);
-        btnEdit.setData(PROPERTY, param.getName());
+        btnEdit.setData(PARAMETER_NAME, param.getName());
         btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
@@ -146,7 +146,7 @@ public class FileController extends AbstractElementPropertySectionController {
 
         Control cLayout = dField.getLayoutControl();
         filePathText = (Text) dField.getControl();
-        filePathText.setData(PROPERTY, param.getName());
+        filePathText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
         filePathText.setEditable(!param.isReadOnly());
 

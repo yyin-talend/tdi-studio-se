@@ -146,20 +146,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Map<String, String> tableIdAndDbSchemaMap;
 
     /**
-     * ftang Comment method "showSchemaRepositoryList".
-     * 
-     * @param show boolean
-     */
-    private void showSchemaRepositoryList(boolean show) {
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-                param.setShow(show);
-            }
-        }
-    }
-
-    /**
      * ftang Comment method "showQueryStoreRepositoryList".
      * 
      * @param show
@@ -758,9 +744,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         if (elem instanceof ConnectionLabel) {
             elem = ((ConnectionLabel) elem).getConnection();
-        }
-        if (elem == null) {
-            System.out.println("pb");
         }
 
         if (currentComponent == null || elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {

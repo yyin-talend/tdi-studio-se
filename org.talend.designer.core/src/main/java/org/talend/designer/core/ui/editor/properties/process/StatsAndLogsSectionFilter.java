@@ -72,7 +72,7 @@ public class StatsAndLogsSectionFilter implements IFilter {
                 IEditorInput editorInput = editors[i].getEditorInput();
                 if (editorInput instanceof ProcessEditorInput) {
                     ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
-                    if (node.equals(processEditorInput.getRepositoryNode())) {
+                    if (node.getObject().getProperty().equals(processEditorInput.getRepositoryNode().getObject().getProperty())) {
                         return processEditorInput.getLoadedProcess();
                     }
                 }

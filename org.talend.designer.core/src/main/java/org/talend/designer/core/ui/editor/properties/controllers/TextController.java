@@ -98,7 +98,7 @@ public class TextController extends AbstractElementPropertySectionController {
         Control cLayout = dField.getLayoutControl();
         labelText = (Text) dField.getControl();
 
-        labelText.setData(PROPERTY, param.getName());
+        labelText.setData(PARAMETER_NAME, param.getName());
 
         editionControlHelper.register(param.getName(), labelText, true);
 

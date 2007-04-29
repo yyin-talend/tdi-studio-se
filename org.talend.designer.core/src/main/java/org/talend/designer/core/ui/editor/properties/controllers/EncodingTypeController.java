@@ -237,7 +237,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         }
         Control cLayout = dField.getLayoutControl();
         labelText = (Text) dField.getControl();
-        labelText.setData(PROPERTY, encodingTypeParameter.getName());
+        labelText.setData(PARAMETER_NAME, encodingTypeParameter.getName());
 
         editionControlHelper.register(encodingTypeParameter.getName(), labelText, true);
 

@@ -91,7 +91,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         String directory = dial.open();
         if (directory != null) {
             if (!directory.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) btnEdit.getData(PROPERTY);
+                String propertyName = (String) btnEdit.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(directory)) {
                     String portableValue = Path.fromOSString(directory).toPortableString();
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
@@ -126,7 +126,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         data.height = STANDARD_HEIGHT - 2;
         btnEdit.setLayoutData(data);
         btnEdit.setData(NAME, DIRECTORY);
-        btnEdit.setData(PROPERTY, param.getName());
+        btnEdit.setData(PARAMETER_NAME, param.getName());
         btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
@@ -142,6 +142,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
         cLayout.setBackground(subComposite.getBackground());
         labelText.setEditable(!param.isReadOnly());
+        labelText.setData(PARAMETER_NAME, param.getName());
 
         editionControlHelper.register(param.getName(), labelText, true);
 

@@ -35,12 +35,17 @@ import org.eclipse.ui.IPersistableElement;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.data.container.Content;
+import org.talend.commons.utils.data.container.ContentList;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -51,6 +56,8 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.ResourceModelUtils;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -283,7 +290,33 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @param node
      */
     public void setRepositoryNode(RepositoryNode repositoryNode) {
+        if (repositoryNode != null) {
         this.repositoryNode = repositoryNode;
+        } else {
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+            IRepositoryObject repositoryObject = null;
+            RepositoryNode parentNode = null;
+            try {
+                RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
+                ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
+
+                for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+                    IRepositoryObject process = (IRepositoryObject) object.getContent();
+                    if (process.getLabel().equals(this.getProcessItem().getProperty().getLabel())) {
+                        repositoryObject = process;
+                    }
+                }
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
+            ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(this.getProcessItem());
+            if (repositoryObject != null) {
+                this.repositoryNode = new RepositoryNode(repositoryObject, parentNode,
+                        ENodeType.REPOSITORY_ELEMENT);
+                this.repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+            }
+
+        }
     }
 
     /**

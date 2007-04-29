@@ -107,7 +107,7 @@ public class ExternalController extends AbstractElementPropertySectionController
         btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
         FormData data;
         btnEdit.setData(NAME, EXTERNAL);
-        btnEdit.setData(PROPERTY, param.getName());
+        btnEdit.setData(PARAMETER_NAME, param.getName());
 //        btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
         if (elem instanceof Node) {

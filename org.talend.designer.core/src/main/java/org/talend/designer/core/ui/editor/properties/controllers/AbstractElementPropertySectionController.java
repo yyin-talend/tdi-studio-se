@@ -107,7 +107,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
-    protected static final String PROPERTY = TypedTextCommandExecutor.PROPERTY; //$NON-NLS-1$
+//    protected static final String PROPERTY = TypedTextCommandExecutor.PROPERTY; //$NON-NLS-1$
+
+    protected static final String PARAMETER_NAME = "PARAMETER_NAME"; //$NON-NLS-1$
 
     protected static final int MAX_PERCENT = 100;
 
@@ -533,7 +535,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     private String getParameterName(Control control) {
-        String name = (String) hashCurControls.getKey(control);
+        
+        String name = (String) control.getData(PARAMETER_NAME);
+        if (name == null) { // if the control don't support this property, then take in the list.
+            name = (String) hashCurControls.getKey(control);
+        }
         if (name == null) {
             throw new IllegalStateException(
                     "parameterName shouldn't be null or you call this method too early ! (control value : '" //$NON-NLS-1$
