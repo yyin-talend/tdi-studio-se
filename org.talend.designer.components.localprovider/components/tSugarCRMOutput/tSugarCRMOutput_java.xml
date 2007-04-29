@@ -173,7 +173,7 @@
          <COLUMN KEY="true" LENGTH="255" NAME="reports_to_id" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="report_to_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="10" NAME="birthdate" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="do_not_call" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="do_not_call" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_home" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_mobile" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_work" NULLABLE="true" TYPE="id_String"/>
@@ -183,7 +183,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="email2" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant_phone" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="email_opt_out" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="true" TYPE="id_String"/>
@@ -267,7 +267,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="department" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="true" LENGTH="255" NAME="reports_to_id" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="report_to_name" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="do_not_call" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="do_not_call" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_home" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_mobile" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_work" NULLABLE="true" TYPE="id_String"/>
@@ -275,7 +275,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="phone_fax" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="email1" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="email2" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="email_opt_out" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="true" TYPE="id_String"/>
@@ -719,7 +719,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="department" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="10" NAME="birthdate" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="do_not_call" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="do_not_call" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_home" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_mobile" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="phone_work" NULLABLE="true" TYPE="id_String"/>
@@ -729,7 +729,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="email2" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant_phone" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="email_opt_out" NULLABLE="true" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="true" TYPE="id_String"/>
