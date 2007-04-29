@@ -291,20 +291,25 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             Node node = (Node) elem;
             IMetadataTable meta = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable metaCopy = meta.clone(true);
-            List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
-            for (IMetadataColumn column : metaCopy.getListColumns()) {
-                if (!column.isCustom()) {
-                    columnsToRemove.add(column);
-                }
-            }
-            metaCopy.getListColumns().removeAll(columnsToRemove);
-
+            
+            boolean inputFound = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                         || connec.getLineStyle().equals(EConnectionType.TABLE)) {
                     MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                    inputFound = true;
                 }
             }
+            if (!inputFound) {
+                List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+                for (IMetadataColumn column : metaCopy.getListColumns()) {
+                    if (!column.isCustom()) {
+                        columnsToRemove.add(column);
+                    }
+                }
+                metaCopy.getListColumns().removeAll(columnsToRemove);
+            }
+
 
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }
