@@ -63,6 +63,15 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
     
+        <PARAMETER 
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SCHEMA"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"

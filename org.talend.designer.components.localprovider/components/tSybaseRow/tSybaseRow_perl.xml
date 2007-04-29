@@ -55,7 +55,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>Sybase ASE</DEFAULT>
+      <DEFAULT>SybaseASE</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

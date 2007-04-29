@@ -168,6 +168,8 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[113][0] = Messages.getString("ConnectionInfoTab.property13"); //$NON-NLS-1$
         try {
             data[113][1] = "" + jdbcMetaData.supportsSavepoints(); //$NON-NLS-1$
+        } catch (SQLException exception) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage12"), e); //$NON-NLS-1$
         }
@@ -206,6 +208,8 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[118][0] = Messages.getString("ConnectionInfoTab.property18"); //$NON-NLS-1$
         try {
             data[118][1] = "" + jdbcMetaData.getJDBCMinorVersion(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException operationException) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage17"), e); //$NON-NLS-1$
         }
@@ -571,6 +575,8 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         data[43][0] = Messages.getString("ConnectionInfoTab.property65"); //$NON-NLS-1$
         try {
             data[43][1] = "" + jdbcMetaData.supportsMultipleOpenResults(); //$NON-NLS-1$
+        } catch (UnimplementedOperationException operationException) {
+            // do nothing.
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("ConnectionInfoTab.logMessage65"), e); //$NON-NLS-1$
         }

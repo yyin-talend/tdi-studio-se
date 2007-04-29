@@ -38,6 +38,16 @@
       REPOSITORY_VALUE="DATABASE:ODBC"
     />
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Generic ODBC</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
