@@ -55,7 +55,7 @@ public class StatsAndLogsManager {
         } else {
             dbOutput = (String) process.getElementParameter("DB_TYPE").getValue();
         }
-        boolean file = (Boolean) process.getElementParameter("ON_FILES_FLAG").getValue();
+        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
 
         if (!file && !dbFlag) {
             return nodeList;
@@ -63,9 +63,9 @@ public class StatsAndLogsManager {
 
         String basePath = (String) process.getElementParameter("FILE_PATH").getValue();
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            basePath += ". '/' .";
+            basePath = basePath.replace("\\", "/") + ". '/' .";
         } else {
-            basePath += "+ \"/\" +";
+            basePath = basePath.replace("\\", "/") + "+ \"/\" +";
         }
         DataNode logsNode = createLogsNode(file, dbOutput);
         logsNode.getElementParameter("FILENAME").setValue(

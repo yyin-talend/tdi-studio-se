@@ -538,7 +538,7 @@ public class DataProcess {
         }
 
         boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
-        boolean file = (Boolean) process.getElementParameter("ON_FILES_FLAG").getValue();
+        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
 
         if (dbFlag || file) {
             // will add the Stats & Logs managements

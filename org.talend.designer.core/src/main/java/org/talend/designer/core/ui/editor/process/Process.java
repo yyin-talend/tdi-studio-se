@@ -88,6 +88,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -130,8 +131,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class Process extends Element implements IProcess {
-
-    private static final Integer MAX_LOG_LEVEL = new Integer(100);
 
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
@@ -248,6 +247,34 @@ public class Process extends Element implements IProcess {
     }
 
     /**
+     * This function will add quotes only if necessary for the stats & logs.
+     * 
+     * @param str
+     * @return
+     */
+    private String addQuotes(String str) {
+        // function?
+        if (str.contains("(") && str.contains(")")) {
+            return str;
+        }
+
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            // if the user already added quotes (anywhere) then don't add.
+            if (str.contains("\"")) {
+                return str;
+            }
+            break;
+        default: // PERL
+            // if the user already added quotes (anywhere) then don't add.
+            if (str.contains("'")) {
+                return str;
+            }
+        }
+        return TalendTextUtils.addQuotes(str);
+    }
+
+    /**
      * crate parameters for tabbed page 'Stats & Logs'.
      */
     private void createStatsAndLogsParameters() {
@@ -283,8 +310,8 @@ public class Process extends Element implements IProcess {
 
         // file path
         param = new ElementParameter(this);
-        param.setName("FILE_PATH");// File path
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType].getName()));
+        param.setName("FILE_PATH"); // File path
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -294,7 +321,8 @@ public class Process extends Element implements IProcess {
         // stats file name
         param = new ElementParameter(this);
         param.setName("FILENAME_STATS"); // Stats file name
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore
+                .getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -319,8 +347,10 @@ public class Process extends Element implements IProcess {
         // Log file name
         param = new ElementParameter(this);
         param.setName("FILENAME_LOGS");
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName());// "Logs File Name"
+        param
+                .setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType]
+                        .getName())));
+        param.setDisplayName(StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName()); // "Logs File Name"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(6);
@@ -344,7 +374,7 @@ public class Process extends Element implements IProcess {
         param = new ElementParameter(this);
         param.setName("ON_DATABASE_FLAG");
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName());// On Database
+        param.setDisplayName(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName()); // On Database
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(9);
@@ -380,7 +410,7 @@ public class Process extends Element implements IProcess {
         param = new ElementParameter(this);
         param.setName("DB_TYPE");
         param.setValue(preferenceStore.getString(EParameterName.PERL_DB_TYPE.getName()));
-        param.setDisplayName(EParameterName.PERL_DB_TYPE.getDisplayName());// "DB Type");
+        param.setDisplayName(EParameterName.PERL_DB_TYPE.getDisplayName()); // "DB Type");
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         String[] strDisplay = null, strValue = null, strItems = null, strCodes = null;
@@ -429,7 +459,7 @@ public class Process extends Element implements IProcess {
         // host
         param = new ElementParameter(this);
         param.setName("HOST");
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.HOST[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.HOST[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.HOST[languageType].getDisplayName()); // Host
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -440,7 +470,7 @@ public class Process extends Element implements IProcess {
         // port
         param = new ElementParameter(this);
         param.setName("PORT");
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.PORT[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PORT[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.PORT[languageType].getDisplayName()); // Port
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -451,7 +481,7 @@ public class Process extends Element implements IProcess {
         // dbName
         param = new ElementParameter(this);
         param.setName("DBNAME");// DBNAME
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.DBNAME[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.DBNAME[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.DBNAME[languageType].getDisplayName()); // "DB Name"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -462,7 +492,7 @@ public class Process extends Element implements IProcess {
         // schema
         param = new ElementParameter(this);
         param.setName("SCHEMA_DB"); // SCHEMA_DB
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.SCHEMA_DB[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.SCHEMA_DB[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.SCHEMA_DB[languageType].getDisplayName());// "Schema"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -476,7 +506,7 @@ public class Process extends Element implements IProcess {
         // username
         param = new ElementParameter(this);
         param.setName("USER");
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.USER[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.USER[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.USER[languageType].getDisplayName()); // User
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -488,7 +518,7 @@ public class Process extends Element implements IProcess {
         // password
         param = new ElementParameter(this);
         param.setName("PASS"); // Pass
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.PASS[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PASS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.PASS[languageType].getDisplayName()); // "Password"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -500,7 +530,7 @@ public class Process extends Element implements IProcess {
         // Stats table
         param = new ElementParameter(this);
         param.setName("TABLE_STATS"); // "TABLE_STATS"
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.TABLE_STATS[languageType].getName()));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.TABLE_STATS[languageType].getDisplayName());// "Stats Table");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -518,8 +548,8 @@ public class Process extends Element implements IProcess {
         // Log table
         param = new ElementParameter(this);
         param.setName("TABLE_LOGS");
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.TABLE_LOGS[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName());// "Log Table");
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_LOGS[languageType].getName())));
+        param.setDisplayName(StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName()); // "Log Table");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(13);
