@@ -57,6 +57,7 @@ import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.UserProjectAuthorization;
@@ -617,6 +618,15 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getTechnicalStatus()
+     */
+    public List<SpagoBiServer> getSpagoBiServer() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getSpagoBiServer();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#setDocumentationStatus(java.util.List)
      */
     public void setDocumentationStatus(List<Status> list) throws PersistenceException {
@@ -631,6 +641,16 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void setTechnicalStatus(List<Status> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setTechnicalStatus(list);
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#setSpagoBiServer(java.util.List)
+     */
+    public void setSpagoBiServer(List<SpagoBiServer> list) throws PersistenceException {
+        this.repositoryFactoryFromProvider.setSpagoBiServer(list);
+    }
+
 
     public void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setMigrationTasksDone(project, list);

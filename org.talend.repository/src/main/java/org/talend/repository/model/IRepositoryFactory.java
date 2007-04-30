@@ -33,6 +33,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -179,11 +180,15 @@ public interface IRepositoryFactory {
     List<Status> getTechnicalStatus() throws PersistenceException;
 
     List<Status> getDocumentationStatus() throws PersistenceException;
+    
+    List<SpagoBiServer> getSpagoBiServer() throws PersistenceException;
 
     void setTechnicalStatus(List<Status> list) throws PersistenceException;
 
     void setDocumentationStatus(List<Status> list) throws PersistenceException;
 
+    void setSpagoBiServer(List<SpagoBiServer> list) throws PersistenceException;
+    
     void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException;
 
     public String isServerValid() throws BusinessException;

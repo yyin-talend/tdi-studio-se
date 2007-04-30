@@ -158,11 +158,10 @@
             level="99"
             name="Export job scripts"/>
        <Action
-            class="org.talend.repository.ui.actions.ExportJobScriptWithSpagoBIAction"
-            id="org.talend.repository.ui.actions.exportjobscriptWithSpagoBI"
+            class="org.talend.repository.ui.actions.PublishOnSpagoAction"
+            id="org.talend.repository.ui.actions.publishonspago"
             level="99"
-            name="Export job scripts With SpagoBI"/>
-            
+            name="Publish on SpagoBI"/>
        <Action
              class="org.talend.repository.ui.actions.EditPropertiesAction"
              id="org.talend.repository.actions.editProperties"
@@ -275,6 +274,11 @@
             class="org.talend.repository.preference.StatusPreferencePage"
             id="org.talend.repository.prefs.status"
             name="%prefsStatusName"/>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.repository.preference.SpagoBiPreferencePage"
+            id="org.talend.repository.prefs.spagobi"
+            name="SpagoBi Server"/>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
