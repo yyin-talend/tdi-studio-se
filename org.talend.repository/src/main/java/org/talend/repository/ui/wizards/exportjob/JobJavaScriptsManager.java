@@ -92,11 +92,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ProcessItem processItem = process[i].getProcess();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
-            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + JavaUtils.JAVA_CLASSPATH_SEPARATOR + libPath
-                    + "/" + USERROUTINE_JAR;
+            // use character @ as temporary classpath separator, this one will be replaced during the export.
+            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
+                    + libPath + "/" + USERROUTINE_JAR;
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
-            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS, tracePort != IProcessor.NO_TRACES);
+            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                    tracePort != IProcessor.NO_TRACES);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));

@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -85,6 +86,8 @@ public abstract class Processor implements IProcessor {
 
     /** Path to generated perl code. */
     protected IPath codePath;
+    
+    protected String targetPlatform;
 
     /**
      * Construct a new Processor.
@@ -483,6 +486,14 @@ public abstract class Processor implements IProcessor {
 
     public IContext getContext() {
         return this.context;
+    }
+
+    public String getTargetPlatform() {
+        return targetPlatform;
+    }
+    
+    public void setTargetPlatform(String targetPlatform) {
+        this.targetPlatform = targetPlatform;
     }
 
 }

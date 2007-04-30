@@ -443,12 +443,12 @@ public class JavaProcessor extends Processor {
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
-        
+
         Set<String> listModulesReallyNeeded = new HashSet<String>();
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
             listModulesReallyNeeded.add(moduleNeeded.getModuleName());
         }
-        
+
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
@@ -647,15 +647,25 @@ public class JavaProcessor extends Processor {
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
-        
-        
+
         // init lib path
-        
+
         Set<String> listModulesReallyNeeded = new HashSet<String>();
         for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
             listModulesReallyNeeded.add(moduleNeeded.getModuleName());
         }
-        
+
+        String classPathSeparator;
+        if (targetPlatform == null) {
+            classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
+        } else {
+            if (targetPlatform.equals(Platform.OS_WIN32)) {
+                classPathSeparator = ";";
+            } else {
+                classPathSeparator = ":";
+            }
+        }
+
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
@@ -663,7 +673,7 @@ public class JavaProcessor extends Processor {
                 if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
-                                + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                                + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
                                 + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
@@ -676,6 +686,9 @@ public class JavaProcessor extends Processor {
         String projectPath;
         if (ProcessorUtilities.isExportConfig()) {
             projectPath = getCodeLocation();
+            if (projectPath != null) {
+                projectPath = projectPath.replace(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR, classPathSeparator);
+            }
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
@@ -689,7 +702,7 @@ public class JavaProcessor extends Processor {
 
         String exportJar = "";
         if (ProcessorUtilities.isExportConfig()) {
-            exportJar = JavaUtils.JAVA_CLASSPATH_SEPARATOR + process.getName().toLowerCase() + ".jar";
+            exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar";
         }
 
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
