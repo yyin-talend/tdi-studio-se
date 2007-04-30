@@ -2,12 +2,10 @@
 package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
-    java.util.List
 "
 class="RunJobMain"
 %>
@@ -45,23 +43,63 @@ class="RunJobMain"
     process = process.replace("'", "");
     context = context.replace("'", "");
     String[] codeOptions = new String[] {"--father_pid=\"+pid+\"", "--root_pid=\"+rootPid+\""};
+    String[] commandLineWindows = new String[] {"<command>"};
+    String[] commandLineUnix = new String[] {"<command>"};
     String[] commandLine = new String[] {"<command>"};
     try {
-    	commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+        // for windows
+       	commandLineWindows = ProcessorUtilities.getCommandLine("win32", true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+        // for linux
+       	commandLineUnix = ProcessorUtilities.getCommandLine("linux", true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+        // for current OS
+       	commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
     } catch (ProcessorException e) {
     }
 %>
 
 Runtime runtime_<%=cid %> = Runtime.getRuntime();
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
+final Process ps_<%=cid %>;
 <%
-for (int i=0; i<commandLine.length; i++) {
+// if the generation is to export, then there will be a test for the current OS.
+if (ProcessorUtilities.isExportConfig()) { 
 %>
-"<%=commandLine[i] %>"<%if (i <= (commandLine.length -2)) {%>,<%}%>
+if (System.getenv("OS").startsWith("Windows")) {
+   ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
+   <%
+   for (int i=0; i<commandLineWindows.length; i++) {
+   %>
+   "<%=commandLineWindows[i] %>"<%if (i <= (commandLineWindows.length -2)) {%>,<%}%>
+   <%
+   }
+   %>
+   });
+} else {
+   ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
+   <%
+   for (int i=0; i<commandLineUnix.length; i++) {
+   %>
+   "<%=commandLineUnix[i] %>"<%if (i <= (commandLineUnix.length -2)) {%>,<%}%>
+   <%
+   }
+   %>
+   });
+}
+<%
+} else {
+%>
+   ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
+   <%
+   for (int i=0; i<commandLine.length; i++) {
+   %>
+   "<%=commandLine[i] %>"<%if (i <= (commandLine.length -2)) {%>,<%}%>
+   <%
+   }
+   %>
+   });
 <%
 }
 %>
-});
+
 
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
