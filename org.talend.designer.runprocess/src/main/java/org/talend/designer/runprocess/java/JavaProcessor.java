@@ -676,7 +676,7 @@ public class JavaProcessor extends Processor {
                                 + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
-                                + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+                                + classPathSeparator);
                     }
                 }
             }
