@@ -304,7 +304,7 @@ public class RunProcessContext {
                                 final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                 MessageFormat mf = new MessageFormat(startingPattern);
                                 String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
-                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + welcomeMsg));
+                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, welcomeMsg));
 
                                 new Thread(psMonitor).start();
                             }
