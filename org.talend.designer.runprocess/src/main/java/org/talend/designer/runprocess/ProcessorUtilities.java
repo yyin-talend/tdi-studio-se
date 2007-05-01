@@ -215,6 +215,23 @@ public class ProcessorUtilities {
      * 
      * Get the command line to launch the job.
      * 
+     * WARNING : this method is used in jet templates, don't modify method signature
+     * 
+     * @param externalUse if true, will add "" around path and change \ to /
+     * @param processName
+     * @param contextName
+     * @param codeOptions
+     * @return
+     * @throws ProcessorException
+     */
+    public static String[] getCommandLine(boolean externalUse, String processName, String contextName,
+             String[] codeOptions) throws ProcessorException {
+        return getCommandLine(externalUse, processName, contextName, codeOptions);
+    }
+    /**
+     * 
+     * Get the command line to launch the job.
+     * 
      * @param externalUse if true, will add "" around path and change \ to /
      * @param processName
      * @param contextName
