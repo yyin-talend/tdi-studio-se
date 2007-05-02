@@ -40,7 +40,7 @@ public class FileOutputXmlNode extends ShadowNode {
      * Constructs a new FileOutputXmlNode.
      */
     public FileOutputXmlNode(String filename, String encoding) {
-        super("tFileOutputXML"); //$NON-NLS-1$
+        super("tFileOutputShadow"); //$NON-NLS-1$
         
         List<Map<String, String>> rootTags = new ArrayList<Map<String, String>>();
 

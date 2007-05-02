@@ -1,0 +1,143 @@
+<%@ jet
+package="org.talend.designer.codegen.translators"
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="FileOutputShadowBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+        if (encoding!=null) {
+            if (encoding.equals("")) {
+                encoding = "undef";
+            }
+        }
+
+        String cid = metadata.getTableName();
+        List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+        String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");
+        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
+        String fieldTag = ElementParameterParser.getValue(node, "__FIELD_TAG__");
+        String split = ElementParameterParser.getValue(node, "__SPLIT__");
+        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+%>
+
+use FileHandle;
+
+my %desc_<%=cid %> = (
+    filename => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    encoding => <%=encoding%> || 'UTF-8',
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+    root_tags     => [
+<%
+        for (int i=0; i<rootTags.size(); i++) {
+            Map<String, String> rootTag = rootTags.get(i);
+%>
+        <%= rootTag.get("TAG") %>,
+<%
+        }
+        if (rootTags.size() == 0) {
+%>
+        'array',
+<%
+        }
+%>
+    ],
+    row_tag => <%=rowTag %>,
+    colname_as_tagname => <%=colnameAsTagname %>,
+    field_tag => <%=fieldTag %>,
+    split => <%=split %>,
+    split_every => <%=splitEvery %>,
+);
+
+my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
+my @colnames_<%=cid %> = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+my $nb_line_<%=cid %> = 0;
+my $output_FH_<%=cid %> = new FileHandle;
+my $filename_<%=cid%> = $desc_<%=cid %>{filename};
+
+<%
+        if (split.equals("true")) {
+%>
+my ($filepath_wo_ext_<%=cid %>, $ext_<%=cid %>) = ();
+
+if ($desc_<%=cid %>{filename} =~ m{^(.*)\.([a-zA-Z0-9_-]+)$}) {
+    ($filepath_wo_ext_<%=cid %>, $ext_<%=cid %>) = ($1, $2);
+
+    $filename_<%=cid%> = sprintf(
+        '%s-%03u.%s',
+        $filepath_wo_ext_<%=cid %>,
+        1,
+        $ext_<%=cid %>,
+    );
+}
+else {
+    $filename_<%=cid%> = sprintf(
+        '%s-%03u',
+        $filename_<%=cid %>,
+        1,
+    );
+}
+<%
+        }
+%>
+
+open($output_FH_<%=cid %>, '>', $filename_<%=cid %>)
+    or die 'cannot open file "' . $filename_<%=cid %> . '"';
+
+print {$output_FH_<%=cid %>} (
+    '<?xml version="1.0" encoding="',
+    $desc_<%=cid %>{encoding},
+    '"?>',
+    "\n"
+);
+
+print {$output_FH_<%=cid %>} (
+    (map {'<'.$_.'>'} @{ $desc_<%=cid %>{root_tags} }),
+    "\n",
+);
+
+<%
+    }
+}
+%>
