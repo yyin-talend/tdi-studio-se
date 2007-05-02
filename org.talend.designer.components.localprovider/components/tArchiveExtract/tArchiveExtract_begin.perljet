@@ -1,0 +1,44 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	"
+	class="ArchiveExtractBegin"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+
+	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+	String archFile = ElementParameterParser.getValue(node, "__ARCHFILE__").toLowerCase();
+%>      
+
+use Archive::Extract ;
+use File::Spec;
+use File::Basename;
+use talend::filesOp;
+
+my $ae = Archive::Extract->new( archive => <%=archFile%> );
+
+<%
+if(directory.length() > 0 ){
+%>
+
+my $status = $ae->extract( to => <%=directory%> ) or die $ae->error ;
+my @files = $ae->files ;
+
+for my $filename (@{ $ae->files }) {
+	$_globals{<%=cid%>}{CURRENT_FILE} = basename($filename) ;
+	$_globals{<%=cid%>}{CURRENT_FILEPATH} = File::Spec->catfile( <%=directory%>, $filename) ;
+}
+
+
+<%
+}
+%>
+
+
+
