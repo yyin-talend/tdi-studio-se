@@ -2,6 +2,7 @@ package tFuzzyMatch::FuzzyMatch ;
 use strict;
 use Text::LevenshteinXS qw(distance);
 use Text::Metaphone qw(Metaphone);
+use Text::DoubleMetaphone qw(double_metaphone);
 # unique : stop after the first successful matching result
 # lookup : values to lookup
 # dmin : min value
@@ -39,6 +40,19 @@ sub matchMetaphone {
 
     my $result = {} ;
     my $phoned_value = Metaphone($params{value});
+    my $lookup_result = $params{lookup}->{$phoned_value} || [] ;
+    if(scalar(@$lookup_result)){
+    	$result->{$phoned_value} = $lookup_result ;
+    }
+
+    return $result ;
+}
+
+sub matchDoubleMetaphone {
+    my ( %params ) = @_ ;
+
+    my $result = {} ;
+    my $phoned_value = join('', double_metaphone($params{value}));
     my $lookup_result = $params{lookup}->{$phoned_value} || [] ;
     if(scalar(@$lookup_result)){
     	$result->{$phoned_value} = $lookup_result ;

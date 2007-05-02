@@ -49,6 +49,7 @@
       <ITEMS DEFAULT="matchLevenshteinDistance">
         <ITEM NAME="LEVENSHTEIN" VALUE="matchLevenshteinDistance" />
         <ITEM NAME="METAPHONE" VALUE="matchMetaphone" />
+        <ITEM NAME="DOUBLEMETAPHONE" VALUE="matchDoubleMetaphone" />
       </ITEMS>
     </PARAMETER>
 
@@ -116,6 +117,7 @@
      <IMPORTS>
        <IMPORT NAME="Text-LevenshteinXS" MODULE="Text::LevenshteinXS" REQUIRED="true" />
        <IMPORT NAME="Text-Metaphone" MODULE="Text::Metaphone" REQUIRED="true" />
+       <IMPORT NAME="Text-DoubleMetaphone" MODULE="Text::DoubleMetaphone" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

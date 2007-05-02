@@ -88,6 +88,22 @@ $tLookup_<%=cid%> = $lookup_metaphone_<%=cid%> ;
     }
 %>
 
+<%
+    if (ElementParameterParser.getValue(node, "__MATCHING_TYPE__").equals("matchDoubleMetaphone")) {
+%>
+use Text::DoubleMetaphone qw(double_metaphone);
+my $lookup_metaphone_<%=cid%> = {} ;
+foreach ( @$tLookup_<%=cid%> ){
+    my $lookup_phone = join('', double_metaphone($_) ) ;
+    $lookup_metaphone_<%=cid%>->{$lookup_phone} ||= [] ;	
+    push @{$lookup_metaphone_<%=cid%>->{$lookup_phone}}, $_ ;
+}
+
+$tLookup_<%=cid%> = $lookup_metaphone_<%=cid%> ;
+<%
+    }
+%>
+
 
 my $nb_lines_<%=cid%> = 0 ;
 
