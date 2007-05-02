@@ -4,7 +4,9 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.Map
 "
 class="FileOutputXMLEnd"
 %>
@@ -19,6 +21,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
+
+        String useDynamicGrouping = ElementParameterParser.getValue(
+            node,
+            "__USE_DYNAMIC_GROUPING__"
+        );
+
+        List<Map<String, String>> groupBys =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUP_BY__"
+            );
+%>
+
+<%
+        if (useDynamicGrouping.equals("true")) {
+            for (int i=groupBys.size() - 1; i>=0; i--) {
+                Map<String, String> subgroupBy = groupBys.get(i);
+%>
+print {$output_FH_<%=cid %>} '</<%=subgroupBy.get("COLUMN")%>>', "\n";
+<%
+            }
+        }
 %>
 
 print {$output_FH_<%=cid %>} (
@@ -26,9 +50,9 @@ print {$output_FH_<%=cid %>} (
     "\n",
 );
 
-close($output_FH_<%=metadata.getTableName() %>);
+close($output_FH_<%=cid %>);
 
-$_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
+$_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
 
 <%
         if (stats) {

@@ -21,23 +21,58 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+        String cid = metadata.getTableName();
+
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+
         if (encoding!=null) {
             if (encoding.equals("")) {
                 encoding = "undef";
             }
         }
 
-        String cid = metadata.getTableName();
-        List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
-        String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");
-        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
-        String fieldTag = ElementParameterParser.getValue(node, "__FIELD_TAG__");
-        String split = ElementParameterParser.getValue(node, "__SPLIT__");
-        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+        List<Map<String, String>> rootTags =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__ROOT_TAGS__"
+            );
+
+        String rowTag = ElementParameterParser.getValue(
+            node,
+            "__ROW_TAG__"
+        );
+
+        String colnameAsTagname = ElementParameterParser.getValue(
+            node,
+            "__COLNAME_AS_TAGNAME__"
+        );
+
+        String fieldTag = ElementParameterParser.getValue(
+            node,
+            "__FIELD_TAG__"
+        );
+
+        String split = ElementParameterParser.getValue(
+            node,
+            "__SPLIT__"
+        );
+
+        String splitEvery = ElementParameterParser.getValue(
+            node,
+            "__SPLIT_EVERY__"
+        );
+
+        String useDynamicGrouping = ElementParameterParser.getValue(
+            node,
+            "__USE_DYNAMIC_GROUPING__"
+        );
 %>
 
 use FileHandle;
+use talend::filesOp;
 
 my %desc_<%=cid %> = (
     filename => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
@@ -48,12 +83,6 @@ my %desc_<%=cid %> = (
 %>
         {
             name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
         },
 <%
         }
@@ -85,6 +114,14 @@ my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 my @colnames_<%=cid %> = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
 
 <%
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=cid%>__<%=column.getLabel() %> => <%= i %>;
+<%
+            i++;
+        }
+
         if (stats) {
 %>
     UpdateStat('<%=cid %>', 0);
@@ -93,31 +130,26 @@ my @colnames_<%=cid %> = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
 %>
 
 my $nb_line_<%=cid %> = 0;
+<%
+        if (useDynamicGrouping.equals("true")) {
+%>
+my @current_keys_<%=cid %> = ();
+<%
+        }
+%>
 my $output_FH_<%=cid %> = new FileHandle;
-my $filename_<%=cid%> = $desc_<%=cid %>{filename};
-
 <%
         if (split.equals("true")) {
 %>
-my ($filepath_wo_ext_<%=cid %>, $ext_<%=cid %>) = ();
-
-if ($desc_<%=cid %>{filename} =~ m{^(.*)\.([a-zA-Z0-9_-]+)$}) {
-    ($filepath_wo_ext_<%=cid %>, $ext_<%=cid %>) = ($1, $2);
-
-    $filename_<%=cid%> = sprintf(
-        '%s-%03u.%s',
-        $filepath_wo_ext_<%=cid %>,
-        1,
-        $ext_<%=cid %>,
-    );
-}
-else {
-    $filename_<%=cid%> = sprintf(
-        '%s-%03u',
-        $filename_<%=cid %>,
-        1,
-    );
-}
+my $filename_<%=cid%> = getSplittedFilename(
+    $desc_<%=cid %>{filename},
+    1
+);
+<%
+        }
+        else {
+%>
+my $filename_<%=cid%> = $desc_<%=cid %>{filename};
 <%
         }
 %>

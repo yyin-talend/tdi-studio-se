@@ -3,9 +3,11 @@ package="org.talend.designer.codegen.translators"
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.Map
 "
 class="FileOutputXMLMain"
 %>
@@ -20,68 +22,218 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
-        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
-        String split = ElementParameterParser.getValue(node, "__SPLIT__");
-        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+
+        String colnameAsTagname = ElementParameterParser.getValue(
+            node,
+            "__COLNAME_AS_TAGNAME__"
+        );
+
+        String split = ElementParameterParser.getValue(
+            node,
+            "__SPLIT__"
+        );
+
+        String splitEvery = ElementParameterParser.getValue(
+            node,
+            "__SPLIT_EVERY__"
+        );
+
+
+        String useDynamicGrouping = ElementParameterParser.getValue(
+            node,
+            "__USE_DYNAMIC_GROUPING__"
+        );
+
+        List<Map<String, String>> groupBys =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUP_BY__"
+            );
+
+        if (useDynamicGrouping.equals("false")) {
+            groupBys.clear();
+        }
+
+        String rowTag = ElementParameterParser.getValue(
+            node,
+            "__ROW_TAG__"
+        );
+
+        String fieldTag = ElementParameterParser.getValue(
+            node,
+            "__FIELD_TAG__"
+        );
 %>
 
-if (@<%=cid %>) {
+@<%=cid %> = map {
+    s/</&lt;/g;
+    s/>/&gt;/g;
+    s/&/&amp;/g;
+    $_;
+} @<%=cid %>;
+
 <%
-        if (colnameAsTagname.equals("true")) {
+        if (useDynamicGrouping.equals("false")) {
 %>
-    my $colnum = 0;
+print {$output_FH_<%=cid %>} (
+    '<'.<%=rowTag%>.'>'."\n",
+<%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                boolean displayColumn = true;
+                for (int i=0; i<groupBys.size(); i++) {
+                    Map<String, String> groupBy = groupBys.get(i);
+                    if (column.getLabel().equals(groupBy.get("COLUMN"))) {
+                        displayColumn = false;
+                    }
+                }
+
+                if (displayColumn) {
+                    String fieldname = fieldTag;
+                    if (colnameAsTagname.equals("true")) {
+                        fieldname = "'" + column.getLabel() + "'";
+                    }
+%>
+    '<'.<%=fieldname%>.'>'.$<%=cid%>[<%=cid%>__<%=column.getLabel()%>].'</'.<%=fieldname%>.'>'."\n",
+<%
+                }
+            }
+%>
+    '</'.<%=rowTag%>.'>'."\n"
+)
+    or die "can't write to file ".$output_desc_<%=cid %>{filename}."\n";
+
 <%
         }
         else {
 %>
-    my $fieldname = $desc_<%=cid %>{field_tag};
+if (not defined @current_keys_<%=cid %>) {
+    @current_keys_<%=cid %> = (
 <%
-        }
+            for (int i=0; i<groupBys.size(); i++) {
+                Map<String, String> groupBy = groupBys.get(i);
 %>
-    print {$output_FH_<%=cid %>} (
-        '<'.$desc_<%=cid %>{row_tag}.'>', "\n",
-        (
-            map {
-                s/</&lt;/g;
-                s/>/&gt;/g;
-                s/&/&amp;/g;
+        $<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>],
 <%
-        if (colnameAsTagname.equals("true")) {
+            }
 %>
-                my $fieldname = $colnames_<%=cid %>[$colnum++];
-                '<'.$fieldname.'>'.$_.'</'.$fieldname.'>'."\n";
-<%
-        }
-        else {
-%>
-                '<'.$fieldname.'>'.$_.'</'.$fieldname.'>'."\n";
-<%
-        }
-%>
-            } @<%=cid %><% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>
-        ),
-        '</'.$desc_<%=cid %>{row_tag}.'>', "\n",
-    ) or die "can't write to file " . $output_desc_<%=cid %>{filename} . "\n";
+    );
 
 <%
-        if (stats) {
+            for (int i=0; i<groupBys.size(); i++) {
+                Map<String, String> groupBy = groupBys.get(i);
 %>
-    UpdateStat('<%=cid %>', 1);
+    printf {$output_FH_<%=cid %>} (
+        '<<%=groupBy.get("COLUMN")%> name="%s">'."\n",
+        $<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>]
+    );
 <%
-        }
+            }
 %>
 }
-else {
-    print {$output_FH_<%=cid %>} '<'.$desc_<%=cid %>{row_tag}.'/>', "\n"
-        or die "can't write to file " . $output_desc_<%=cid %>{filename} . "\n";
+
+<%
+            for (int i=0; i<groupBys.size(); i++) {
+                Map<String, String> groupBy = groupBys.get(i);
+
+                String control = "elsif";
+                if (i==0) {
+                    control = "if";
+                }
+%>
+<%=control%> ($<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>] ne $current_keys_<%=cid %>[<%=i%>]) {
+<%
+                for (int j=i; j<groupBys.size(); j++) {
+                    Map<String, String> subgroupBy = groupBys.get(j);
+%>        
+    $current_keys_<%=cid%>[<%=j%>] = $<%=cid%>[<%=cid%>__<%=subgroupBy.get("COLUMN")%>];
+<%
+                }
+%>
+
+<%
+                for (int j=groupBys.size() - 1; j>=i; j--) {
+                    Map<String, String> subgroupBy = groupBys.get(j);
+%>
+    print {$output_FH_<%=cid %>} '</<%=subgroupBy.get("COLUMN")%>>', "\n";
+<%
+                }
+%>
+
+<%
+                for (int j=i; j<groupBys.size(); j++) {
+                    Map<String, String> subgroupBy = groupBys.get(j);
+%>
+    printf {$output_FH_<%=cid %>} (
+        '<<%=subgroupBy.get("COLUMN")%> %s="%s">'."\n",
+        <%=subgroupBy.get("ATTRIBUTE_LABEL")%>,
+        $<%=cid%>[<%=cid%>__<%=subgroupBy.get("COLUMN")%>]
+    );
+<%
+                }
+%>
 }
+<%
+            }
+%>
+
+print {$output_FH_<%=cid %>} (
+    '<'.<%=rowTag%>.'>'."\n",
+<%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                boolean displayColumn = true;
+                for (int i=0; i<groupBys.size(); i++) {
+                    Map<String, String> groupBy = groupBys.get(i);
+                    if (column.getLabel().equals(groupBy.get("COLUMN"))) {
+                        displayColumn = false;
+                    }
+                }
+
+                if (displayColumn) {
+                    String fieldname = fieldTag;
+                    if (colnameAsTagname.equals("true")) {
+                        fieldname = "'" + column.getLabel() + "'";
+                    }
+%>
+    '<'.<%=fieldname%>.'>'.$<%=cid%>[<%=cid%>__<%=column.getLabel()%>].'</'.<%=fieldname%>.'>'."\n",
+<%
+                }
+            }
+%>
+    '</'.<%=rowTag%>.'>'."\n"
+);
+
+<%
+        } // use dynamic grouping
+%>
 
 $nb_line_<%=cid %>++;
+<%
+            if (stats) {
+%>
+UpdateStat('<%=cid %>', 1);
+<%
+            }
+%>
 
 <%
         if (split.equals("true")) {
 %>
 if ($nb_line_<%=cid %> % <%=splitEvery %> == 0) {
+<%
+            if (useDynamicGrouping.equals("true")) {
+                for (int i=groupBys.size() - 1; i>=0; i--) {
+                    Map<String, String> subgroupBy = groupBys.get(i);
+%>
+    print {$output_FH_<%=cid %>} '</<%=subgroupBy.get("COLUMN")%>>', "\n";
+<%
+                }
+%>
+
+    undef @current_keys_<%=cid %>;
+<%
+            }
+%>
+
     print {$output_FH_<%=cid %>} (
         (map {'</'.$_.'>'} reverse @{ $desc_<%=cid %>{root_tags} }),
         "\n",
@@ -91,23 +243,10 @@ if ($nb_line_<%=cid %> % <%=splitEvery %> == 0) {
 
     $output_FH_<%=cid %> = new FileHandle;
 
-    my $filenum = $nb_line_<%=cid %>/<%=splitEvery %> + 1;
-
-    if (defined $ext_<%=cid %>) {
-        $filename_<%=cid %> = sprintf(
-            '%s-%03u.%s',
-            $filepath_wo_ext_<%=cid %>,
-            $filenum,
-            $ext_<%=cid %>,
-        );
-    }
-    else {
-        $filename_<%=cid %> = sprintf(
-            '%s-%03u.%s',
-            $desc_<%=cid %>{filename},
-            $filenum,
-        );
-    }
+    $filename_<%=cid%> = getSplittedFilename(
+        $desc_<%=cid %>{filename},
+        $nb_line_<%=cid %>/<%=splitEvery %> + 1
+    );
 
     open($output_FH_<%=cid %>, '>', $filename_<%=cid %>)
         or die 'cannot open file "' . $filename_<%=cid %> . '"';
