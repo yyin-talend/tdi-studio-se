@@ -43,7 +43,7 @@ public class AutoMapper {
     private MapperManager mapperManager;
 
     /**
-     * DOC amaumont AutoMapper constructor comment.
+     * Map all empty output expression cells if possible.
      * 
      * @param manager
      */
