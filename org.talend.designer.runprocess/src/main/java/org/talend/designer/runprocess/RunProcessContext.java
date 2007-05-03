@@ -254,7 +254,7 @@ public class RunProcessContext {
     /**
      * Launch the process.
      */
-    public void exec(Shell shell) {
+    public void exec(final Shell shell) {
         setRunning(true);
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext())) {
@@ -278,7 +278,7 @@ public class RunProcessContext {
 
                     public void run(final IProgressMonitor monitor) {
 
-                        EventLoopProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
+                        final EventLoopProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
 
                         monitorWrap.beginTask(
                                 Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
@@ -292,26 +292,68 @@ public class RunProcessContext {
                                 new Thread(traceMonitor).start();
                             }
 
-                            String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
+                            final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
                             IContext context = getSelectedContext();
                             processor.setContext(context);
                             processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
-                            ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam, monitorWrap,
-                                    processMessageManager);
+                            final boolean[] refreshUiAndWait = new boolean[1];
+                            refreshUiAndWait[0] = true;
+                            final Display display = shell.getDisplay();
+                            new Thread(new Runnable() {
 
-                            if (ps != null) {
-                                psMonitor = new ProcessMonitor(ps);
-                                final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
-                                MessageFormat mf = new MessageFormat(startingPattern);
-                                String welcomeMsg = mf.format(new Object[] { process.getLabel(), new Date() });
-                                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, welcomeMsg));
+                                public void run() {
+                                    display.syncExec(new Runnable() {
 
-                                new Thread(psMonitor).start();
+                                        public void run() {
+                                            try {
+                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
+                                                        monitorWrap, processMessageManager);
+                                                if (ps != null && !monitorWrap.isCanceled()) {
+                                                    psMonitor = new ProcessMonitor(ps);
+                                                    final String startingPattern = Messages
+                                                            .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
+                                                    MessageFormat mf = new MessageFormat(startingPattern);
+                                                    String welcomeMsg = mf.format(new Object[] { process.getLabel(),
+                                                            new Date() });
+                                                    processMessageManager.addMessage(new ProcessMessage(
+                                                            MsgType.CORE_OUT, welcomeMsg));
+                                                    new Thread(psMonitor).start();
+                                                } else {
+                                                    setRunning(false);
+                                                }
+                                            } catch (Exception e) {
+                                                Throwable cause = e.getCause();
+                                                if (cause != null
+                                                        && cause.getClass().equals(InterruptedException.class)) {
+                                                    setRunning(false);
+                                                } else {
+                                                    ExceptionHandler.process(e);
+                                                    addErrorMessage(e);
+                                                    kill();
+                                                }
+                                            } finally {
+                                                monitorWrap.done();
+                                                refreshUiAndWait[0] = false;
+                                            }
+                                        }
+                                    });
+                                }
+                            }).start();
+                            while (refreshUiAndWait[0] && !monitorWrap.isCanceled()) {
+                                if (!display.readAndDispatch()) {
+                                    display.sleep();
+                                }
+                                synchronized (this) {
+                                    try {
+                                        final long waitTime = 50;
+                                        wait(waitTime);
+                                    } catch (InterruptedException e) {
+                                        // Do nothing
+                                    }
+                                }
+
                             }
-                        } catch (ProcessorException e) {
-                            ExceptionHandler.process(e);
-                            addErrorMessage(e);
-                            kill();
+
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
                             addErrorMessage(e);
@@ -355,12 +397,15 @@ public class RunProcessContext {
         if (!killing && isRunning()) {
             killing = true;
             try {
+                boolean showEndMessage = (ps != null);
                 exitCode = killProcess();
 
-                final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
-                MessageFormat mf = new MessageFormat(endingPattern);
-                String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + byeMsg));
+                if (showEndMessage) {
+                    final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
+                    MessageFormat mf = new MessageFormat(endingPattern);
+                    String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
+                    processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + byeMsg));
+                }
             } finally {
                 killing = false;
             }
