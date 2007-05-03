@@ -131,6 +131,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                     description.getRowSeparator(), description.getPattern(), description.getHeaderRow(), description
                             .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(),
                     description.getEncoding());
+            outNode.setColumnNumber(inPositionalNode.getColumnNumber());
             ps = new FileinToXmlProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
         case FILE_CSV:

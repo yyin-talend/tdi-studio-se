@@ -36,6 +36,10 @@ public abstract class FileInputNode extends ShadowNode {
     public FileInputNode(String nodeType) {
         super(nodeType);
     }
+    
+    public FileInputNode(String nodeType, int nbColumn) {
+        super(nodeType, nbColumn);
+    }
 
     /*
      * (non-Javadoc)

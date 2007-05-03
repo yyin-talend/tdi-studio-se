@@ -70,6 +70,8 @@ public abstract class ShadowNode implements INode {
     private IProcess process;
 
     private List<IMetadataTable> metadatas;
+    
+    private int columnNumber = 256;
 
     /**
      * DOC chuger ShadowNode constructor comment.
@@ -82,6 +84,18 @@ public abstract class ShadowNode implements INode {
 
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
+    }
+    
+    public ShadowNode(String componentName, int nbColumn) {
+        super();
+
+        this.componentName = componentName;
+        parameters = new ArrayList<IElementParameter>();
+
+        IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
+        setComponent(compFac.get(componentName));
+        
+        this.columnNumber = nbColumn;
     }
 
     /*
@@ -153,7 +167,7 @@ public abstract class ShadowNode implements INode {
         metadata.setTableName(this.getUniqueName());
         if (LanguageManager.getCurrentLanguage().compareTo(ECodeLanguage.JAVA) == 0) {
             List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
-            for (int i = 0; i < 256; i++) {
+            for (int i = 0; i < columnNumber; i++) {
                 MetadataColumn col = new MetadataColumn();
                 col.setLabel("row" + i);
                 col.setTalendType("id_String");
@@ -413,4 +427,12 @@ public abstract class ShadowNode implements INode {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public int getColumnNumber() {
+        return columnNumber;
+    }
+    
+    public void setColumnNumber(int columnNumber) {
+        this.columnNumber = columnNumber;
+    }   
 }
