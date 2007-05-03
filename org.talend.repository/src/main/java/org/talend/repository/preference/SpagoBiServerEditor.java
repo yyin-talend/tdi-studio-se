@@ -72,6 +72,10 @@ public class SpagoBiServerEditor extends TableEditor {
         shortDescription.setText(Messages.getString("SpagoBiServerEditor.descriptionColumnTitle")); //$NON-NLS-1$
         shortDescription.setWidth(150);
 
+        TableColumn host = new TableColumn(contextTable, SWT.NONE);
+        host.setText(Messages.getString("SpagoBiServerEditor.hostColumnTitle")); //$NON-NLS-1$
+        host.setWidth(150);
+
         return contextTable;
     }
 
@@ -108,7 +112,9 @@ public class SpagoBiServerEditor extends TableEditor {
                 if (columnIndex == 1) {
                     return SpagoBiServerHelper.getShortDescription(value);
                 }
-
+                if (columnIndex == 2) {
+                    return SpagoBiServerHelper.getHost(value);
+                }
                 throw new IllegalStateException();
             }
 
@@ -148,8 +154,6 @@ public class SpagoBiServerEditor extends TableEditor {
     @Override
     protected String getExistingInputObject(String obj) {
         Shell shell = RepositoryPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-//        SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(), SpagoBiServerHelper
-//                .getEngineName(obj), SpagoBiServerHelper.getShortDescription(obj), null, null, null, null, null);
         SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(), SpagoBiServerHelper
                 .getEngineName(obj), SpagoBiServerHelper.getShortDescription(obj), SpagoBiServerHelper.getHost(obj),
                 SpagoBiServerHelper.getPort(obj), SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper

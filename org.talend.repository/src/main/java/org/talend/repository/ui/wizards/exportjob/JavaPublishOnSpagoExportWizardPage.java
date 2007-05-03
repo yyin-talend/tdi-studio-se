@@ -117,6 +117,7 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
+
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null) {
                 // destination

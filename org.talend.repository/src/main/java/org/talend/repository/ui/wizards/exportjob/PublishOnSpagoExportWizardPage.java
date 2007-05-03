@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -51,6 +53,11 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExpo
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -58,7 +65,9 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice;
@@ -72,27 +81,13 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice
 public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemResourceExportPage1 {
 
     // widgets
-    // protected Button shellLauncherButton;
-    //
-    // protected Button systemRoutineButton;
-    //
-    // protected Button userRoutineButton;
-    //
-    // protected Button modelButton;
-    //
-    // protected Button jobButton;
-
     protected Button contextButton;
-
-    // protected Button sourceButton;
 
     protected ExportFileResource[] process;
 
     protected LabelledCombo serverSpagoBi;
 
     protected Combo contextCombo;
-
-//    protected Combo launcherCombo;
 
     protected JobScriptsManager manager;
 
@@ -102,7 +97,11 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
     protected LabelledText jobDescription;
 
-    protected Button spagoVisible;
+//    protected Button spagoVisible;
+
+    protected String jobLabelName;
+    
+    protected String jobPurposeDescription;
 
     /**
      * Create an instance of this class.
@@ -127,6 +126,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
                             .getLabel());
+                    jobLabelName = processItem.getProperty().getLabel();
+                    jobPurposeDescription = processItem.getProperty().getPurpose();
                     list.add(resource);
                 }
             }
@@ -182,9 +183,6 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         composite.setFont(parent.getFont());
 
-        // createResourcesGroup(composite);
-        // createButtonsGroup(composite);
-
         createDestinationGroup(composite);
 
         createOptionsGroup(composite);
@@ -237,49 +235,6 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected void createOptions(Composite optionsGroup, Font font) {
         // create directory structure radios
-        // shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // shellLauncherButton.setText(Messages.getString("JobScriptsExportWizardPage.shellLauncher")); //$NON-NLS-1$
-        // shellLauncherButton.setSelection(true);
-        // shellLauncherButton.setFont(font);
-                
-        // launcherCombo = new Combo(optionsGroup, SWT.PUSH);
-        
-        // create directory structure radios
-        // systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // systemRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.systemRoutines")); //$NON-NLS-1$
-        // systemRoutineButton.setSelection(true);
-        // systemRoutineButton.setFont(font);
-        //        
-        // userRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
-        // userRoutineButton.setSelection(true);
-        // userRoutineButton.setFont(font);
-        //
-        // modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // modelButton.setText(Messages.getString("JobScriptsExportWizardPage.requiredTalendPerlModules"));
-        // //$NON-NLS-1$
-        // modelButton.setSelection(true);
-        // modelButton.setFont(font);
-        // GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        // gd.horizontalSpan = 2;
-        // modelButton.setLayoutData(gd);
-        //        
-        // jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // jobButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
-        // jobButton.setSelection(true);
-        // jobButton.setFont(font);
-        // gd = new GridData(GridData.FILL_HORIZONTAL);
-        // gd.horizontalSpan = 2;
-        // jobButton.setLayoutData(gd);
-        //        
-        // sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        // sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
-        // sourceButton.setSelection(true);
-        // sourceButton.setFont(font);
-        // gd = new GridData(GridData.FILL_HORIZONTAL);
-        // gd.horizontalSpan = 2;
-        // sourceButton.setLayoutData(gd);
-
         List<SpagoBiServer> listServerSapgo = null;
         List<String> listEngine = new ArrayList<String>();
 
@@ -294,19 +249,22 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
                 }
             }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            displayErrorDialog(e.getMessage());
         }
-
-        serverSpagoBi = new LabelledCombo(optionsGroup, "Serveur SpagoBI", "specify you server where you want publish",
+        serverSpagoBi = new LabelledCombo(optionsGroup, "Serveur SpagoBI", "specify your server to publish your job",
                 listEngine);
+        serverSpagoBi.select(0);
 
         jobLabel = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobLabel"), true);
+        jobLabel.setText(jobLabelName);
 
         jobName = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobName"), true);
+        jobName.setText(jobLabelName);
 
         jobDescription = new LabelledText(optionsGroup, Messages
                 .getString("PublishOnSpagoExportWizardPage.jobDescription"), true);
-
+        jobDescription.setText(jobPurposeDescription);
+        
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
         contextButton.setSelection(true);
@@ -314,10 +272,10 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
-        spagoVisible = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        spagoVisible.setText(Messages.getString("PublishOnSpagoExportWizardPage.spagoVisible")); //$NON-NLS-1$
-        spagoVisible.setSelection(true);
-        spagoVisible.setFont(font);
+//        spagoVisible = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+//        spagoVisible.setText(Messages.getString("PublishOnSpagoExportWizardPage.spagoVisible")); //$NON-NLS-1$
+//        spagoVisible.setSelection(true);
+//        spagoVisible.setFont(font);
 
     }
 
@@ -546,8 +504,22 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
-        String destinationText = super.getDestinationValue();
+//        String destinationText = super.getDestinationValue();
+        
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
+        IProject fsProject;
+        IFolder folder = null;
+        
+        try {
+            fsProject = ResourceModelUtils.getProject(project);
+            folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
+        } catch (PersistenceException e) {
+            displayErrorDialog(e.getMessage());
+        }
 
+        System.out.println(folder.getLocation()+jobLabelName);
+        String destinationText = folder.getLocation()+jobLabelName;
+        
         // only append a suffix if the destination doesn't already have a . in
         // its last path segment.
         // Also prevent the user from selecting a directory. Allowing this will
