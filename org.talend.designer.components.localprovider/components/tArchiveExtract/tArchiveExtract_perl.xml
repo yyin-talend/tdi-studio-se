@@ -36,11 +36,22 @@
     <PARAMETER NAME="DIRECTORY" FIELD="DIRECTORY" REQUIRED="true" NUM_ROW="2">
       <DEFAULT/>
     </PARAMETER>   
+
+    <PARAMETER
+      NAME="PREFER_BIN"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="3"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
        
   </PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>
+       <IMPORT NAME="IPC-Run" MODULE="IPC::Run" REQUIRED="true" />
        <IMPORT NAME="Archive-Extract" MODULE="Archive::Extract" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION> 

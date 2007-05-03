@@ -21,13 +21,19 @@ use File::Spec;
 use File::Basename;
 use talend::filesOp;
 
+
 my $ae = Archive::Extract->new( archive => <%=archFile%> );
 
 <%
-if(directory.length() > 0 ){
+    if (ElementParameterParser.getValue(node, "__PREFER_BIN__").equals("true")) {
+%>
+$Archive::Extract::PREFER_BIN = 1 ;
+<%
+    }
 %>
 
-my $status = $ae->extract( to => <%=directory%> ) or die $ae->error ;
+
+my $status = $ae->extract( to => <%=directory%> ) or die '[<%=cid%>] '.$ae->error ;
 my @files = $ae->files ;
 
 for my $filename (@{ $ae->files }) {
@@ -36,9 +42,6 @@ for my $filename (@{ $ae->files }) {
 }
 
 
-<%
-}
-%>
 
 
 
