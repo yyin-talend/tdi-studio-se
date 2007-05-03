@@ -214,19 +214,18 @@ if(temp_<%=cid %>.length() > 0) {
 				}
 			}
 		}
-	}
-	if (conns.size()>1) {
-		for (int i=1;i<conns.size();i++) {
-			IConnection conn = conns.get(i);
-			if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
-			     for (IMetadataColumn column: metadata.getListColumns()) {%>
-      				<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
-      				
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
+      					<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%
-				 }
+				 	}
+				}
 			}
 		}
-	}
+		}
 	}
 }
 %>

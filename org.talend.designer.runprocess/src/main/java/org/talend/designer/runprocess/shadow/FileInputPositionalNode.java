@@ -21,10 +21,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
-import java.util.List;
-
-import org.talend.core.model.process.IConnection;
-
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -40,9 +36,10 @@ public class FileInputPositionalNode extends FileInputNode {
             int limitRows, boolean removeEmptyRow, String encoding) {
         super("tFileInputPositional"); //$NON-NLS-1$
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "PATTERN", "HEADER", "FOOTER", "LIMIT", "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        String[] paramNames = new String[] {
+                "FILENAME", "ROWSEPARATOR", "PATTERN", "HEADER", "FOOTER", "LIMIT", "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
         String[] paramValues = new String[] { filename, rowSep, pattern, Integer.toString(headerRows),
-                Integer.toString(footerRows), Integer.toString(limitRows), Boolean.toString(removeEmptyRow), encoding  };
+                Integer.toString(footerRows), Integer.toString(limitRows), Boolean.toString(removeEmptyRow), encoding };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
@@ -50,29 +47,5 @@ public class FileInputPositionalNode extends FileInputNode {
                 addParameter(param);
             }
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
-     */
-    public List<? extends IConnection> getMainOutgoingConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
-     */
-    public List<? extends IConnection> getOutgoingSortedConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
-     */
-    public boolean isThereLinkWithHash() {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

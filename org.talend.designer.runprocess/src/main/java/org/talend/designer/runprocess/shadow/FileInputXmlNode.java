@@ -24,8 +24,6 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.model.process.IConnection;
-
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
  * 
@@ -35,18 +33,19 @@ import org.talend.core.model.process.IConnection;
 public class FileInputXmlNode extends FileInputNode {
 
     private List<Map<String, String>> mapping = null;
-    
+
     /**
      * Constructs a new FileInputNode.
      */
-    public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping, Integer loopLimit, String encoding) {
+    public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping, Integer loopLimit,
+            String encoding) {
         super("tFileInputXML"); //$NON-NLS-1$
-        
+
         String limitLoop = "";
-        if( loopLimit != null && loopLimit != 0){
-            limitLoop = Integer.toString(loopLimit);    
+        if (loopLimit != null && loopLimit != 0) {
+            limitLoop = Integer.toString(loopLimit);
         }
-        
+
         String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding };
 
@@ -57,7 +56,7 @@ public class FileInputXmlNode extends FileInputNode {
             }
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -77,29 +76,4 @@ public class FileInputXmlNode extends FileInputNode {
     public void setMappingList(List<Map<String, String>> mapping) {
         this.mapping = mapping;
     }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
-     */
-    public List<? extends IConnection> getMainOutgoingConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
-     */
-    public List<? extends IConnection> getOutgoingSortedConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
-     */
-    public boolean isThereLinkWithHash() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
 }

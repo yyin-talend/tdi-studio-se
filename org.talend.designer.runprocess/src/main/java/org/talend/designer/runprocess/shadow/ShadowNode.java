@@ -399,7 +399,7 @@ public abstract class ShadowNode implements INode {
     }
     
     public List<? extends IConnection> getOutgoingSortedConnections() {
-        return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
+        return getOutgoingConnections();
     }
     
     public List<? extends IConnection> getMainOutgoingConnections() {
