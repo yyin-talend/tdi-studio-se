@@ -13,5 +13,5 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String pause = ElementParameterParser.getValue(node, "__PAUSE__");
 %>
-    Thread.sleep(<%=pause%>*1000);
+    Thread.sleep((<%=pause%>)*1000);
 
