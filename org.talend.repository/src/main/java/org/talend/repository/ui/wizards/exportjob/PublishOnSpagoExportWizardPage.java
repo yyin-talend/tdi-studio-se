@@ -504,21 +504,21 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
-//        String destinationText = super.getDestinationValue();
+        String destinationText = super.getDestinationValue();
         
-        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
-        IProject fsProject;
-        IFolder folder = null;
-        
-        try {
-            fsProject = ResourceModelUtils.getProject(project);
-            folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-        } catch (PersistenceException e) {
-            displayErrorDialog(e.getMessage());
-        }
-
-        System.out.println(folder.getLocation()+jobLabelName);
-        String destinationText = folder.getLocation()+jobLabelName;
+//        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
+//        IProject fsProject;
+//        IFolder folder = null;
+//        
+//        try {
+//            fsProject = ResourceModelUtils.getProject(project);
+//            folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
+//        } catch (PersistenceException e) {
+//            displayErrorDialog(e.getMessage());
+//        }
+//
+//        System.out.println(folder.getLocation()+jobLabelName);
+//        String destinationText = folder.getLocation()+jobLabelName;
         
         // only append a suffix if the destination doesn't already have a . in
         // its last path segment.
