@@ -21,14 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob;
 
-import it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient;
-import it.eng.spagobi.engines.talend.client.JobDeploymentDescriptor;
-import it.eng.spagobi.engines.talend.client.SpagoBITalendEngineClient;
-import it.eng.spagobi.engines.talend.client.exception.AuthenticationFailedException;
-import it.eng.spagobi.engines.talend.client.exception.EngineUnavailableException;
-import it.eng.spagobi.engines.talend.client.exception.ServiceInvocationFailedException;
-import it.eng.spagobi.engines.talend.client.exception.UnsupportedEngineVersionException;
-
 import java.io.File;
 import java.net.URL;
 import java.text.DateFormat;
@@ -79,44 +71,6 @@ public class GenerateSpagoBIXML {
         this.file = new File(spagobiFolder, SPAGOBI_FILE); //$NON-NLS-1$
         this.item = item;
         createSpagoBIXML();
-        
-//        PTODO cantoine : connection to SpagoBiEngineClient to publish Job.
-        try {       
-            
-            // create the client
-            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient("biadmin", "biadmin", "localhost", "8080", "SpagoBITalendEngine");
-            boolean engineAvailable = client.isEngineAvailible();
-
-            // get some informations about the engine instance referenced by the client
-            System.out.println("Engine version: " + client.getEngineVersion());
-            System.out.println("Engine fullname: " + client.getEngineName());
-                
-            // prepare parameters used during deployment
-            JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor("Test", "perl");
-            File zipFile = this.file;//new File(deploymentFile);
-                
-            // deploy job on engine runtime
-            boolean result = client.deployJob(jobDeploymentDescriptor, zipFile);
-            if(result) System.out.println("Jobs deployed succesfully");
-            else System.out.println("Jobs not deployed");
-                
-        
-        } catch (EngineUnavailableException e) {
-            System.err.println("ERROR: " + e.getMessage());
-        } catch(AuthenticationFailedException e) {
-            System.err.println("ERROR: " + e.getMessage());
-        } catch (UnsupportedEngineVersionException e) {
-            System.err.println("ERROR: Unsupported engine version");    
-            System.err.println("You are using TalendEngineClientAPI version " 
-                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". "
-                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version "
-                    + e.getComplianceVersion() + " or grater.");
-        } catch (ServiceInvocationFailedException e) {
-            System.err.println("ERROR: " + e.getMessage());
-            System.err.println("StatusLine: " + e.getStatusLine()
-                               + "responseBody: " + e.getResponseBody());
-        } 
-        
     }
 
     private static boolean isSpagoBI = true;

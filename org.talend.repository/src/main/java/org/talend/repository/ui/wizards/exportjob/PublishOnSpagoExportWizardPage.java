@@ -21,6 +21,14 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob;
 
+import it.eng.spagobi.engines.talend.client.ISpagoBITalendEngineClient;
+import it.eng.spagobi.engines.talend.client.JobDeploymentDescriptor;
+import it.eng.spagobi.engines.talend.client.SpagoBITalendEngineClient;
+import it.eng.spagobi.engines.talend.client.exception.AuthenticationFailedException;
+import it.eng.spagobi.engines.talend.client.exception.EngineUnavailableException;
+import it.eng.spagobi.engines.talend.client.exception.ServiceInvocationFailedException;
+import it.eng.spagobi.engines.talend.client.exception.UnsupportedEngineVersionException;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -31,8 +39,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -53,10 +59,10 @@ import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExpo
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.SpagoBiServer;
@@ -65,9 +71,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice;
@@ -415,7 +419,75 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             ProcessItem processItem = process[i].getProcess();
             ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
                     .getDefaultContext(), false, false);
-        }
+
+        }        
+
+        // cantoine : connection to SpagoBiEngineClient to publish Job.
+        try {       
+            
+            Project project= ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
+
+            // retrieve user, password, host, port from selected SpagoBiServer
+
+            String selectedSpagoBiEngineName = serverSpagoBi.getItem(serverSpagoBi.getSelectionIndex());
+            SpagoBiServer spagoBiServer = null;
+
+            List<SpagoBiServer> listServerSapgo = null;
+
+            ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+            try {
+                listServerSapgo = proxyRepositoryFactory.getSpagoBiServer();
+                if (listServerSapgo != null && !listServerSapgo.isEmpty()) {
+                    Iterator<SpagoBiServer> iterator = listServerSapgo.iterator();
+                    while (iterator.hasNext()) {
+                        spagoBiServer = iterator.next();
+                        if(spagoBiServer.getEngineName().equals(selectedSpagoBiEngineName)){
+                            break;
+                        }
+                    }
+                }
+            } catch (PersistenceException e) {
+                displayErrorDialog(e.getMessage());
+            }
+            
+            String user = spagoBiServer.getLogin();//"biadmin";
+            String password = spagoBiServer.getPassword();//"biadmin";
+            String host = spagoBiServer.getHost();
+            String port = spagoBiServer.getPort();
+            
+            // create the client
+            ISpagoBITalendEngineClient client = new SpagoBITalendEngineClient(user, password, host, port, "SpagoBITalendEngine");
+
+            // get some informations about the engine instance referenced by the client
+            System.out.println("Engine version: " + client.getEngineVersion());
+            System.out.println("Engine fullname: " + client.getEngineName());
+                
+            // prepare parameters used during deployment
+            JobDeploymentDescriptor jobDeploymentDescriptor = new JobDeploymentDescriptor(project.getLabel(), project.getLanguage().getName());
+            File zipFile = new File(getDestinationValue());
+                
+            // deploy job on engine runtime
+            boolean result = client.deployJob(jobDeploymentDescriptor, zipFile);
+            if(result) System.out.println("Jobs deployed succesfully");
+            else System.out.println("Jobs not deployed");
+                
+        
+        } catch (EngineUnavailableException e) {
+            System.err.println("ERROR: " + e.getMessage());
+        } catch(AuthenticationFailedException e) {
+            System.err.println("ERROR: " + e.getMessage());
+        } catch (UnsupportedEngineVersionException e) {
+            System.err.println("ERROR: Unsupported engine version");    
+            System.err.println("You are using TalendEngineClientAPI version " 
+                    + SpagoBITalendEngineClient.CLIENTAPI_VERSION_NUMBER + ". "
+                    + "The TalendEngine instance you are trying to connect to require TalendEngineClientAPI version "
+                    + e.getComplianceVersion() + " or grater.");
+        } catch (ServiceInvocationFailedException e) {
+            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("StatusLine: " + e.getStatusLine()
+                               + "responseBody: " + e.getResponseBody());
+        } 
+        
         return ok;
     }
 
@@ -505,20 +577,6 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
         String destinationText = super.getDestinationValue();
-        
-//        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
-//        IProject fsProject;
-//        IFolder folder = null;
-//        
-//        try {
-//            fsProject = ResourceModelUtils.getProject(project);
-//            folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-//        } catch (PersistenceException e) {
-//            displayErrorDialog(e.getMessage());
-//        }
-//
-//        System.out.println(folder.getLocation()+jobLabelName);
-//        String destinationText = folder.getLocation()+jobLabelName;
         
         // only append a suffix if the destination doesn't already have a . in
         // its last path segment.
