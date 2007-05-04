@@ -99,6 +99,9 @@ $_globals{root_pid} = defined $opt{root_pid}
 ;
 
 $_globals{job_name} = '<%=codeGenArgument.getJobName() %>';
+$_globals{job_repository_id} = '<%=process.getId() %>';
+$_globals{job_version} = '<%=process.getVersion() %>';
+$_globals{system_pid} = $$;
 $_globals{project_name} = '<%=codeGenArgument.getCurrentProjectName() %>';
 $_globals{start} = [gettimeofday];
 
@@ -106,7 +109,7 @@ $_globals{start} = [gettimeofday];
     for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
-    message => 'begin',
+    message_type => 'begin',
 );
 
 <%
@@ -161,6 +164,7 @@ sub global_die_catcher {
 %>
         if (exists $_globals{$dying_component}{start}) {
             <%=statCatcher.getUniqueName()%>_subprocess(
+                message_type => 'end',
                 message => 'failure',
                 duration => int(
                     tv_interval(
@@ -194,7 +198,8 @@ sub global_die_catcher {
     );
 
     <%=statCatcher.getUniqueName()%>_subprocess(
-        message => $_globals{job_failure} ? 'failure' : 'end',
+        message_type => 'end',
+        message => $_globals{job_failure} ? 'failure' : 'success',
         duration => $_globals{duration},
     );
 <%

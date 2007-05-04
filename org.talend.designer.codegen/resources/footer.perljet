@@ -65,7 +65,8 @@ $_globals{duration} = int(
         for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
-    message => 'end',
+    message_type => 'end',
+    message => 'success',
     duration => $_globals{duration}
 );
 <%

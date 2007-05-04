@@ -114,7 +114,8 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
         for (INode statCatcher : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
-    message => 'end',
+    message_type => 'end',
+    message => 'success',
     duration => int(
         tv_interval(
             $_globals{<%=node.getUniqueName() %>}{start},

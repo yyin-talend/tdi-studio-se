@@ -45,7 +45,7 @@ $_globals{<%=node.getUniqueName() %>}{OK} = false;
         for (INode statCatcher : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
-    message => 'begin',
+    message_type => 'begin',
     origin  => '<%=node.getUniqueName() %>',
 );
 
