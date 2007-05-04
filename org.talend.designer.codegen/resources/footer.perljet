@@ -74,7 +74,7 @@ $_globals{duration} = int(
 
 if (defined $opt{watch}) {
     printf(
-        "===\nexecution time: %s seconds\n===\n",
+        "===\nexecution time: %u milliseconds\n===\n",
         $_globals{duration}
     );
 }
