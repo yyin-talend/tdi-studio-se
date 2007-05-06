@@ -30,6 +30,10 @@
 		<%=conn.getName() %>.message = scm.getMessage();
 		<%=conn.getName() %>.duration = scm.getDuration();
 		<%=conn.getName() %>.moment = scm.getMoment();
+		<%=conn.getName() %>.message_type = scm.getMessageType();
+		<%=conn.getName() %>.job_version = scm.getJobVersion();
+		<%=conn.getName() %>.job_repository_id = scm.getJobId();
+		<%=conn.getName() %>.system_pid = scm.getSystemPid();
 <%
 		}
 	}

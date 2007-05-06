@@ -51,10 +51,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * <%=process.getName() %> <%=ElementParameterParser.getValue(process, "__PURPOSE__") %>
- * <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> 
+ * <%=process.getName() %> <%=process.getPurpose() %>
+ * <%=process.getDescription() %> 
  * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
- * @version <%=ElementParameterParser.getValue(process, "__VERSION__") %>
+ * @version <%=process.getVersion() %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */
  public class <%=process.getName() %> {    
@@ -95,7 +95,7 @@ private static RunTrace runTrace = new RunTrace();
 
 	for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
-	StatCatcherUtils <%=statCatcher.getUniqueName() %> = new StatCatcherUtils(); 
+	StatCatcherUtils <%=statCatcher.getUniqueName() %> = new StatCatcherUtils("<%=process.getId() %>", "<%=process.getVersion() %>"); 
 <%
 	}
 %>
