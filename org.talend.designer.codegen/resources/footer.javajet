@@ -33,7 +33,6 @@
     		<%=process.getName() %>.evalParam(arg);
     	}
     	
-    	//pid = java.util.Calendar.getInstance().getTimeInMillis()+"_"+Math.round(Math.random()*1000);
     	pid = TalendString.getAsciiRandomString(6);
     	if (rootPid==null) {
     		rootPid = pid;
