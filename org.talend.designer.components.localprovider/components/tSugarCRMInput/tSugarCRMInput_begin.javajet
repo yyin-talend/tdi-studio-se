@@ -26,14 +26,14 @@ class="tSugarCRMInputBegin"
 	String password = ElementParameterParser.getValue(node, "__PASS__");
 	
 	String condition = ElementParameterParser.getValue(node, "__CONDITION__");
-	String fields = ElementParameterParser.getValue(node, "__FIELD__");
 %>
 
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
+    if (metadata!=null) {    
+   
 %>
 ////////////////////////////        
         
@@ -41,7 +41,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             {
                     public String getFieldbyOrder(int index, String[] filedArr, org.talend.sugarws.Name_value[] nameValue) {
            				
-           				if (filedArr==null) return nameValue[index].getValue();
+
            				String fieldName = filedArr[index].trim();
            				for (int j = 0; j < nameValue.length; j++) {
                     		if(fieldName.equals(nameValue[j].getName()))
@@ -59,12 +59,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         org.talend.SugarManagement.SugarManagement sugarManagement_<%=cid %> = new org.talend.SugarManagement.SugarManagementImpl(<%=username %>, <%=password %>, <%=endpoint %>, "sugarcrm","4.5.0");
         sugarManagement_<%=cid %>.login();
         
-        String[] filedArr_<%=cid %> = null;
+        String[] filedArr_<%=cid %> = new String[]{
+<%
+	//get the select fields from schema
+    List<IMetadataColumn> columnsFields=metadata.getListColumns();
+
+    for (int i=0;i < columnsFields.size();i++) {//4
+		IMetadataColumn column=columnsFields.get(i);
+%>
+		"<%=column.getLabel() %>",
+<%
+	}
+%>      
+        };
+        
         String condition_<%=cid %> = "";
         
         Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         
-<% if (fields!=null && fields.trim().length()>0) { %>   filedArr_<%=cid %> = <%=fields %>.replaceAll(" ", "").split(","); <% } %> 
+
        
 <% if (condition!=null && condition.trim().length()>0) { %>   condition_<%=cid %> = <%=condition %>; <% } %> 
          
@@ -104,7 +117,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 						
 			
-				if(<%=i %> < nameValue_<%=cid %>.length){				
+			if(<%=i %> < nameValue_<%=cid %>.length){				
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
 %>
