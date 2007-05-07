@@ -181,6 +181,7 @@ public interface IRepositoryFactory {
 
     List<Status> getDocumentationStatus() throws PersistenceException;
     
+    // TODO SML Remove this method
     List<SpagoBiServer> getSpagoBiServer() throws PersistenceException;
 
     void setTechnicalStatus(List<Status> list) throws PersistenceException;

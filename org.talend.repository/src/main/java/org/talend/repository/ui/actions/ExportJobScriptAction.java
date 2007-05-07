@@ -36,7 +36,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.exportjob.GenerateSpagoBIXML;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 
 /**
@@ -80,7 +79,6 @@ public class ExportJobScriptAction extends AContextualAction {
     }
 
     public void run() {
-        GenerateSpagoBIXML.setSpagoBI(false);
         JobScriptsExportWizard processWizard = new JobScriptsExportWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(EXPORTJOBSCRIPTS);

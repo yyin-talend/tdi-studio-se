@@ -72,7 +72,7 @@ import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
-import org.talend.repository.ui.wizards.exportjob.JobJavaScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -620,9 +620,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getTechnicalStatus()
      */
-    public List<SpagoBiServer> getSpagoBiServer() throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getSpagoBiServer();
-    }
+//    public List<SpagoBiServer> getSpagoBiServer() throws PersistenceException {
+//        return this.repositoryFactoryFromProvider.getSpagoBiServer();
+//    }
     
     /*
      * (non-Javadoc)

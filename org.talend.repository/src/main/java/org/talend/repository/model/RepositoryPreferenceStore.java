@@ -26,11 +26,8 @@ import java.io.IOException;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
-import org.talend.core.model.properties.helper.SpagoBiServerHelper;
 import org.talend.core.model.properties.helper.StatusHelper;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment Implementation for local repository remote implementation will
@@ -44,8 +41,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     private String initialTechStatusList, techStatusList, defaultTechnicalStatusList;
 
     private String initialDocStatusList, docStatusList, defaultDocumentationStatusList;
-    
-    private String initialServerSpagoBiList, serverSpagoBiList, defaultServerSpagoBiList;
 
     private final IProxyRepositoryFactory factory;
 
@@ -61,7 +56,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
         try {
             factory.setDocumentationStatus(StatusHelper.parse(docStatusList));
             factory.setTechnicalStatus(StatusHelper.parse(techStatusList));
-            factory.setSpagoBiServer(SpagoBiServerHelper.parse(serverSpagoBiList));
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             throw new IOException(e.getMessage());
@@ -76,10 +70,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
         initialDocStatusList = StatusHelper.flat(factory.getDocumentationStatus());
         docStatusList = initialDocStatusList;
         defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validée"; //$NON-NLS-1$
-
-        initialServerSpagoBiList = SpagoBiServerHelper.flat(factory.getSpagoBiServer());
-        serverSpagoBiList = initialServerSpagoBiList;
-        defaultServerSpagoBiList = ""; //$NON-NLS-1$
     }
 
     public void setValue(String name, String value) {
@@ -87,8 +77,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
             techStatusList = value;
         } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             docStatusList = value;
-        } else if (SpagoBiServer.SPAGOBI_SERVER.equals(name)) {
-            serverSpagoBiList = value;
         }
     }
 
@@ -98,9 +86,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
         }
         if (Status.DOCUMENTATION_STATUS.equals(name)) {
             return docStatusList;
-        }
-        if (SpagoBiServer.SPAGOBI_SERVER.equals(name)) {
-            return serverSpagoBiList;
         }
         return null;
     }
@@ -144,8 +129,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
             return defaultTechnicalStatusList;
         } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             return defaultDocumentationStatusList;
-        } else if (SpagoBiServer.SPAGOBI_SERVER.equals(name)) {
-            return defaultServerSpagoBiList;
         }
         return null;
     }
@@ -172,7 +155,7 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     }
 
     public boolean needsSaving() {
-        return !(docStatusList.equals(initialDocStatusList) && techStatusList.equals(initialTechStatusList) && serverSpagoBiList.equals(initialServerSpagoBiList));
+        return !(docStatusList.equals(initialDocStatusList) && techStatusList.equals(initialTechStatusList));
     }
 
     public void putValue(String name, String value) {
@@ -198,8 +181,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
             defaultTechnicalStatusList = value;
         } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             defaultDocumentationStatusList = value;
-        } else if (SpagoBiServer.SPAGOBI_SERVER.equals(name)) {
-            defaultServerSpagoBiList = value;
         }
     }
 
@@ -211,8 +192,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
             techStatusList = defaultTechnicalStatusList;
         } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             docStatusList = defaultDocumentationStatusList;
-        } else if (SpagoBiServer.SPAGOBI_SERVER.equals(name)) {
-            serverSpagoBiList = defaultServerSpagoBiList;
         }
     }
 
