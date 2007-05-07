@@ -26,6 +26,8 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>

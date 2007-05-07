@@ -56,7 +56,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.exportjob.JobScriptsManager.ExportChoice;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>

@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
