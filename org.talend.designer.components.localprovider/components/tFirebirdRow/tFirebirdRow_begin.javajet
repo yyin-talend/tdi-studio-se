@@ -1,0 +1,74 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+			org.talend.core.model.process.INode 
+			org.talend.core.model.process.ElementParameterParser 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+		
+			java.util.List
+		" 
+class="FirebirdRowBegin" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	String dbjnilib = ElementParameterParser.getValue(node, "__JNI_LIB__");	
+	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
+	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+		   dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");
+    String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+    String javaDbDriver   = "org.firebirdsql.jdbc.FBDriver";  
+%>
+// Reset the "sys_paths" field of the ClassLoader to null.
+Class clazz = ClassLoader.class;
+java.lang.reflect.Field field = clazz.getDeclaredField("sys_paths");
+boolean accessible = field.isAccessible();
+if (!accessible)
+	field.setAccessible(true);
+	Object original = field.get(clazz);
+// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed
+// value.
+	field.set(clazz, null);
+try {
+// Change the value and load the library.
+	System.setProperty("java.library.path", <%=dbjnilib%>);
+	System.loadLibrary("jaybird21");
+} finally {
+// Revert back the changes.
+	field.set(clazz, original);
+	field.setAccessible(accessible);
+}
+
+java.lang.Class.forName("<%=javaDbDriver %>");
+
+String url_<%=cid %> = "jdbc:firebirdsql:"+<%=dbhost%>+":"+<%=dbname%>;
+
+String dbUser_<%=cid %> = <%=dbuser%>;
+String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
+
+globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
+<%
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+int commitCounter_<%=cid%> = 0;
+
+conn_<%=cid%>.setAutoCommit(false);
+<%
+}
+%>
+
