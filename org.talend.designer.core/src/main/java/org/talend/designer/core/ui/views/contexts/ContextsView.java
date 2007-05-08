@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -64,7 +65,7 @@ public class ContextsView extends ViewPart {
         parent.setLayoutData(gridData);
         // final Label label = new Label(parent, SWT.NONE);
         // label.setText("This is not available");
-        part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+        getPart();
         if (part == null) {
             composite = new JobContextViewComposite(parent);
             GridLayout gridLayout = new GridLayout();
@@ -95,7 +96,7 @@ public class ContextsView extends ViewPart {
         // child.dispose();
         // }
         // }
-        part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+        getPart();
         composite = new JobContextViewComposite(parent, part);
         GridLayout gridLayout = new GridLayout();
         gridLayout.marginWidth = ITabbedPropertyConstants.HSPACE + 2;
@@ -114,7 +115,7 @@ public class ContextsView extends ViewPart {
 
     public void updateContextView() {
         composite.disposeAllComponents();
-        part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+        getPart();
         if (part != null) {
             boolean modified = composite.updateContextFromRepository();
             if (modified) {
@@ -128,7 +129,7 @@ public class ContextsView extends ViewPart {
 
     public void updateContextView(boolean isBuildIn) {
         composite.disposeAllComponents();
-        part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+        getPart();
         if (part != null) {
             boolean modified = composite.updateContextFromRepository();
             if (modified) {
@@ -145,7 +146,7 @@ public class ContextsView extends ViewPart {
         if (isDisposeAll) {
             composite.disposeAllComponents();
         }
-        part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+        getPart();
         if (part != null) {
             boolean modified = composite.updateContextFromRepository();
             if (modified) {
@@ -160,8 +161,8 @@ public class ContextsView extends ViewPart {
 
     public void refresh() {
         if (composite != null) {
-            if (getSite().getPage().getActiveEditor() instanceof MultiPageTalendEditor) {
-                part = (MultiPageTalendEditor) getSite().getPage().getActiveEditor();
+            getPart();
+            if (part != null) {
                 composite.setPart(part);
                 initialContents();
             }
@@ -203,4 +204,12 @@ public class ContextsView extends ViewPart {
         super.setPartName(viewName);
     }
 
+    private void getPart() {
+        final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
+        if (activeEditor instanceof MultiPageTalendEditor) {
+            part = (MultiPageTalendEditor) activeEditor;
+        } else {
+            part = null;
+        }
+    }
 }
