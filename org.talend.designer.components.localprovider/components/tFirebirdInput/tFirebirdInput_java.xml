@@ -49,6 +49,26 @@
     	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
     
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>FireBird</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      REPOSITORY_VALUE="PORT"
+      SHOW="false"
+    >
+      <DEFAULT>"3050"</DEFAULT>
+    </PARAMETER>    
+    
     <PARAMETER
       NAME="JNI_LIB"
       FIELD="DIRECTORY"

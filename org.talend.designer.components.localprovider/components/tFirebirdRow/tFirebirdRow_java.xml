@@ -74,6 +74,16 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="PORT"
+      SHOW="false"
+    >
+      <DEFAULT>"3050"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="6"
