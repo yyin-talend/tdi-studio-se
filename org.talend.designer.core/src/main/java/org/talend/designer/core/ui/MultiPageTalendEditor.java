@@ -254,13 +254,14 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         }
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
-        getTalendEditor().getProperty().eAdapters().add(dirtyListener);
+    
 
         alreadyGenerated = false;
         codeSync();
 
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
+        getTalendEditor().getProperty().eAdapters().add(dirtyListener);
     }
 
     public void codeSync() {
@@ -488,8 +489,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
@@ -521,7 +522,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 if (structSel.getFirstElement() instanceof EditPart) {
                     if (designerEditor.equals(getActiveEditor())) {
                         designerEditor.selectionChanged(getActiveEditor(), selection);
-                        
+
                     }
                 }
             }
