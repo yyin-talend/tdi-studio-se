@@ -31,13 +31,11 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
-import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -147,7 +145,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     IElementParameter repositorySchemaTypeParameter = elem
                             .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     String repositoryTable = getFirstRepositoryTable(value);
-                    repositorySchemaTypeParameter.setRepositoryValue(repositoryTable);
+                    repositorySchemaTypeParameter.setValue(repositoryTable);
                     IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
                     if (table != null) {
                         table = table.clone();
@@ -173,9 +171,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     }
 
     private String getFirstRepositoryTable(String repository) {
-        for (String id : repositoryTableMap.keySet()) {
-            if (id.startsWith(repository)) {
-                return id;
+        IElementParameter repositorySchemaTypeParameter = elem
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        String[] listId = (String[]) repositorySchemaTypeParameter.getListItemsValue();
+        for (int i = 0; i < listId.length; i++) {
+            if (listId[i].startsWith(repository)) {
+                return listId[i];
             }
         }
         return "";

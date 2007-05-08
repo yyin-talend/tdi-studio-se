@@ -221,7 +221,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (param.getValue().equals("NO_PROCESS")) { //$NON-NLS-1$
                     if (!processMap.keySet().contains(param.getValue())) {
                         if (processTableNameList.length > 0) {
-                            elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(), processTableValueList[0]);
+                            elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(),
+                                    processTableValueList[0]);
                         }
                     }
                 }
@@ -402,11 +403,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryTableNameList);
                 param.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(param.getValue())) {
-                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(true,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
+                                true, repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -414,16 +416,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
-                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(false,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                getDefaultRepository(false, repositoryConnectionValueList[0]));
                     }
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getRepositoryValue();
+                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                        .getRepositoryValue();
                 if (repositoryValue != null) {
                     List<String> connectionNamesList = new ArrayList<String>();
                     List<String> connectionValuesList = new ArrayList<String>();
@@ -456,31 +460,31 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                     }
-                    if (elem instanceof Node) {
-                        if (("".equals(repositoryPropType) || !currentNodeUName.equals(((Node) elem).getUniqueName()))) {
-                            getDefaultRepository(true, null);
-                        } else {
-                            if (!repositoryPropType.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName()))) {
-                                if (repositoryTableNameList.length > 0) {
-                                    List<String> list2 = tablesMap.get(elem
-                                            .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                                    if (list2 != null && !list2.isEmpty()) {
-                                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                                                getDefaultRepository(true, null));
-                                    }
-                                }
-                                if (repositoryQueryNameList.length > 0) {
-                                    List<String> list2 = queriesMap.get(elem
-                                            .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                                    if (list2 != null && !list2.isEmpty()) {
-                                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
-                                                getDefaultRepository(false, null));
-                                    }
-                                }
-                            }
-                        }
-                    }
+//                    if (elem instanceof Node) {
+//                        if (("".equals(repositoryPropType) || !currentNodeUName.equals(((Node) elem).getUniqueName()))) {
+//                            getDefaultRepository(true, null);
+//                        } else {
+//                            if (!repositoryPropType.equals(elem
+//                                    .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+//                                if (repositoryTableNameList.length > 0) {
+//                                    List<String> list2 = tablesMap.get(elem
+//                                            .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+//                                    if (list2 != null && !list2.isEmpty()) {
+//                                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
+//                                                getDefaultRepository(true, null));
+//                                    }
+//                                }
+//                                if (repositoryQueryNameList.length > 0) {
+//                                    List<String> list2 = queriesMap.get(elem
+//                                            .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+//                                    if (list2 != null && !list2.isEmpty()) {
+//                                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+//                                                getDefaultRepository(false, null));
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
 
                     repositoryConnectionNameList = (String[]) connectionNamesList.toArray(new String[0]);
                     repositoryConnectionValueList = (String[]) connectionValuesList.toArray(new String[0]);
@@ -499,9 +503,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsValue(repositoryConnectionValueList);
                 if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
                     if (repositoryConnectionNameList.length > 0) {
-                        elem
-                                .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                                        repositoryConnectionValueList[0]);
+                        elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
+                                repositoryConnectionValueList[0]);
                     }
                 }
             }
@@ -592,7 +595,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
+            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                    .getListItemsDisplayName();
             if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
                 updateProcessList();
                 updateContextList();
@@ -640,14 +644,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (listParam.get(i).getCategory() == section) {
                     if (listParam.get(i).getNumRow() == curRow && listParam.get(i).isShow(listParam)) {
                         numInRow++;
-                        AbstractElementPropertySectionController controller = generator.getController(
-                                listParam.get(i).getField(), this);
+                        AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
+                                .getField(), this);
 
                         if (controller == null) {
                             break;
                         }
-                        lastControl = controller.createControl(composite, listParam.get(i), numInRow, nbInRow, heightSize,
-                                lastControl);
+                        lastControl = controller.createControl(composite, listParam.get(i), numInRow, nbInRow,
+                                heightSize, lastControl);
 
                         if (curRowSize > maxRowSize) {
                             maxRowSize = curRowSize;
@@ -706,8 +710,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getField(),
-                            this);
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
+                            .getField(), this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
                     }
@@ -739,7 +743,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
         } else {
-            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getActiveEditor();
         }
         super.setInput(part, selection);
         Assert.isTrue(selection instanceof IStructuredSelection);
@@ -926,7 +931,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if (param.getField() == EParameterFieldType.COLUMN_LIST
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
@@ -1040,9 +1046,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     paramValues.addAll(newParamValues);
 
                     if (param.isRepositoryValueUsed() && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
-                        String connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                        String connectionSelected = (String) elem
+                                .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
                                 .getName());
-                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                         IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                         RepositoryToComponentProperty.getTableXmlFileValue(
 
@@ -1149,7 +1156,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         case CLOSED_LIST:
         case COLUMN_LIST:
         case PREV_COLUMN_LIST:
-            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                    .getDefaultClosedListValue())));
             break;
         case CHECK:
             line.put(items[0], tmpParam.getValue());
@@ -1168,7 +1176,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             case CLOSED_LIST:
             case COLUMN_LIST:
             case PREV_COLUMN_LIST:
-                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                        .getDefaultClosedListValue())));
                 break;
             default: // TEXT or CHECK (means String or Boolean)
                 line.put(items[i], tmpParam.getValue());
@@ -1204,7 +1213,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                             IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
                             PropertySheet sheet = (PropertySheet) view;
-                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
+                                    .getCurrentPage();
                             tabbedPropertySheetPage.refresh();
 
                         }
