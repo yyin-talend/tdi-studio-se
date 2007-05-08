@@ -22,15 +22,12 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -80,7 +77,7 @@ public class ConnectionReconnectCommand extends Command {
         this.oldTarget = connection.getTarget();
         oldConnectionType = connection.getLineStyle();
         newConnectionType = oldConnectionType;
-        if (oldConnectionType.getCategory().equals(EConnectionCategory.MAIN)) {
+        if (oldConnectionType.hasConnectionCategory(IConnectionCategory.DATA)) {
             oldMetadataTable = connection.getMetadataTable().clone();
         }
         oldSourceSchemaType = (String) oldSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -132,61 +129,6 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkSourceReconnection() {
-        // if (newSource.equals(oldTarget)) {
-        // return false;
-        // }
-        //
-        // if (newSource.sameProcessAs(oldTarget, false)) {
-        // return false;
-        // }
-        //
-        // // return false, if the connection exists already
-        // for (Iterator iter = newSource.getOutgoingConnections().iterator(); iter.hasNext();) {
-        // Connection conn = (Connection) iter.next();
-        // if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
-        // return false;
-        // }
-        // // return false if the connection's Label exists already.
-        // // if (conn.getName().equals(connection.getName())) {
-        // // return false;
-        // // }
-        // }
-        // for (Iterator iter = newSource.getIncomingConnections().iterator(); iter.hasNext();) {
-        // Connection conn = (Connection) iter.next();
-        // if (conn.getSource().equals(oldTarget) && !conn.equals(connection)) {
-        // return false;
-        // }
-        // }
-        //
-        // INodeConnector nodeConnectorSource;
-        // nodeConnectorSource = newSource.getConnectorFromType(newConnectionType);
-        // if (nodeConnectorSource.getMaxLinkOutput() != -1) {
-        // if (nodeConnectorSource.getCurLinkNbOutput() >= nodeConnectorSource.getMaxLinkOutput()) {
-        // return false;
-        // }
-        // }
-        //
-        // if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)
-        // || connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
-        // if (!(Boolean) newSource.getPropertyValue(EParameterName.STARTABLE.getName())
-        // || (!newSource.isSubProcessStart())) {
-        // return false;
-        // }
-        // }
-        //
-        // boolean targetHasRefLinks = ((Process) oldTarget.getProcess()).isThereRefLink(oldTarget)
-        // | newConnectionType.equals(EConnectionType.FLOW_REF);
-        // if (newConnectionType.equals(EConnectionType.RUN_IF) ||
-        // newConnectionType.equals(EConnectionType.RUN_IF_ERROR)
-        // || newConnectionType.equals(EConnectionType.RUN_IF_OK)) {
-        // if (targetHasRefLinks) {
-        // return false;
-        // }
-        // }
-        // if (targetHasRefLinks && newSource.hasRunIfLink()) {
-        // return false;
-        // }
-
         if (!ConnectionManager.canConnectToSource(oldSource, newSource, oldTarget, oldConnectionType, connection
                 .getName())) {
             return false;
@@ -202,95 +144,6 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkTargetReconnection() {
-        // if (newTarget.equals(oldSource)) {
-        // return false;
-        // }
-        // if (!newTarget.isActivate()) {
-        // return false;
-        // }
-        //
-        // if (oldSource.sameProcessAs(newTarget, false)) {
-        // return false;
-        // }
-        //
-        // // return false, if the connection exists already
-        // for (Iterator iter = newTarget.getIncomingConnections().iterator(); iter.hasNext();) {
-        // Connection conn = (Connection) iter.next();
-        // if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
-        // return false;
-        // }
-        // // return false if the connection's Label exists already.
-        // if (oldConnectionType.equals(EConnectionType.FLOW_MAIN)
-        // || oldConnectionType.equals(EConnectionType.FLOW_REF)
-        // || oldConnectionType.equals(EConnectionType.TABLE)) {
-        // if (conn.getName().equals(connection.getName())) {
-        // return false;
-        // }
-        // }
-        // }
-        // for (Iterator iter = newTarget.getOutgoingConnections().iterator(); iter.hasNext();) {
-        // Connection conn = (Connection) iter.next();
-        // if (conn.getTarget().equals(oldSource) && !conn.equals(connection)) {
-        // return false;
-        // }
-        // }
-        //
-        // INodeConnector nodeConnectorTarget;
-        // newConnectionType = oldConnectionType;
-        // nodeConnectorTarget = newTarget.getConnectorFromType(newConnectionType);
-        // if (nodeConnectorTarget.getMaxLinkInput() != -1) {
-        // if (nodeConnectorTarget.getCurLinkNbInput() >= nodeConnectorTarget.getMaxLinkInput()) {
-        // return false;
-        // }
-        // }
-        //
-        // if ((!newConnectionType.getCategory().equals(EConnectionCategory.MAIN))
-        // && (!newConnectionType.equals(EConnectionType.ITERATE))) {
-        // if (!(Boolean) newTarget.getPropertyValue(EParameterName.STARTABLE.getName())) {
-        // return false;
-        // }
-        // if (!newTarget.isSubProcessStart()) {
-        // return false;
-        // }
-        // }
-        // if (oldTarget.getComponent().useMerge() && oldConnectionType.equals(EConnectionType.FLOW_MERGE)) {
-        // // if the previous connection was a merge, then we just change it to a main, then the rules below will apply
-        // the same.
-        // oldConnectionType = EConnectionType.FLOW_MAIN;
-        // }
-        //
-        // if (!newTarget.getComponent().useMerge()) {
-        // int nbMain = 0;
-        // for (IConnection connec : newTarget.getIncomingConnections()) {
-        // if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-        // nbMain++;
-        // }
-        // }
-        // if (nbMain > 0) {
-        // if (oldConnectionType.equals(EConnectionType.FLOW_MAIN)) {
-        // newConnectionType = EConnectionType.FLOW_REF;
-        // }
-        // } else {
-        // if (oldConnectionType.equals(EConnectionType.FLOW_REF)) {
-        // newConnectionType = EConnectionType.FLOW_MAIN;
-        // }
-        // }
-        // } else {
-        // newConnectionType = EConnectionType.FLOW_MERGE;
-        // }
-        //
-        // boolean targetHasRefLinks = ((Process) newTarget.getProcess()).isThereRefLink(newTarget)
-        // | newConnectionType.equals(EConnectionType.FLOW_REF);
-        // if (newConnectionType.equals(EConnectionType.RUN_IF) ||
-        // newConnectionType.equals(EConnectionType.RUN_IF_ERROR)
-        // || newConnectionType.equals(EConnectionType.RUN_IF_OK)) {
-        // if (targetHasRefLinks) {
-        // return false;
-        // }
-        // }
-        // if (targetHasRefLinks && oldSource.hasRunIfLink()) {
-        // return false;
-        // }
         if (!ConnectionManager.canConnectToTarget(oldSource, oldTarget, newTarget, oldConnectionType, connection
                 .getName())) {
             return false;
@@ -311,7 +164,7 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
             connector = newSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
-            if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 newSourceSchemaType = (String) newSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                 boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
                 boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
@@ -398,7 +251,7 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
             connector = newSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
-            if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
                 boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {

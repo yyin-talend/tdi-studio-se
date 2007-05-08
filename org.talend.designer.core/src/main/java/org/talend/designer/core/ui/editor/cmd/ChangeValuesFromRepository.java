@@ -35,6 +35,7 @@ import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
@@ -255,7 +256,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target
                 .getIncomingConnections();
         for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
-            if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+            if (connec.isActivate() && connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 input = new IODataComponent(connec);
             }
         }

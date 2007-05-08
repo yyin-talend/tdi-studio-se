@@ -91,8 +91,10 @@ public class ConnectionManager {
         connections = target.getIncomingConnections();
         for (int i = 0; i < connections.size(); i++) {
             if (connType.equals(EConnectionType.TABLE)) {
-                if (((Connection) connections.get(i)).getName().equals(connectionName)) {
-                    return false;
+                if (((Connection) connections.get(i)).isActivate()) {
+                    if (((Connection) connections.get(i)).getName().equals(connectionName)) {
+                        return false;
+                    }
                 }
             }
         }
