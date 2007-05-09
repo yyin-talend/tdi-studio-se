@@ -101,8 +101,8 @@ public class SessionTreeNodeUtils {
      * @param dbType dbType
      * @return SessionTreeNode SessionTreeNode.
      */
-    public static SessionTreeNode getSessionTreeNode(String name, String dbType, String url, String userName,
-            String password, String databaseName, RepositoryNode repositoryNode) throws Exception {
+    public static SessionTreeNode getSessionTreeNode(String name, String dbType, String url, String userName, String password,
+            String databaseName, RepositoryNode repositoryNode) throws Exception {
         SQLConnection connection = createSQLConnection(dbType, url, userName, password);
         ISQLAlias alias = createSQLAlias(name, url, userName, password, databaseName);
         SessionTreeModel stm = new SessionTreeModel();
@@ -120,8 +120,7 @@ public class SessionTreeNodeUtils {
      * @param name RepositoryName
      * @return ISQLAlias
      */
-    private static ISQLAlias createSQLAlias(String name, String url, String userName, String password,
-            String databaseName) {
+    private static ISQLAlias createSQLAlias(String name, String url, String userName, String password, String databaseName) {
         SQLAlias alias = new SQLAlias(IdentifierFactory.getInstance().createIdentifier());
         try {
             alias.setName(databaseName);
@@ -129,27 +128,29 @@ public class SessionTreeNodeUtils {
             alias.setUserName(userName);
             alias.setPassword(password);
             alias.setSchemaFilterExpression(databaseName);
-           alias.setFolderFilterExpression("Tables,Views,Synonyms");
+            alias.setFolderFilterExpression("Tables,Views,Synonyms");
         } catch (Exception e) {
-             SqlBuilderPlugin.log(e.getMessage(), e);
+            SqlBuilderPlugin.log(e.getMessage(), e);
         }
         return alias;
     }
 
     /**
      * DOC qianbing Comment method "createSQLConnection".
+     * 
      * @param dbType database Type
-     * @param url  url
+     * @param url url
      * @param userName userName
      * @param password password
      * @return SQLConnection
-     * @throws Exception  Exception
+     * @throws Exception Exception
      */
     private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
             throws Exception {
-        Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
-        Connection connection = DriverManager.getConnection(url, userName, password);
-        SQLConnection sqlConnection = new SQLConnection(connection, null);
+        ExtractMetaDataUtils.getConnection(dbType, url, userName, url, userName, password);
+        // Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
+        // Connection connection = DriverManager.getConnection(url, userName, password);
+        SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }
 

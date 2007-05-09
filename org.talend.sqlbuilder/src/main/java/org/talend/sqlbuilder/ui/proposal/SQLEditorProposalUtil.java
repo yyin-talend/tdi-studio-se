@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -41,7 +42,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
 /**
- * DOC dev class global comment. Detailled comment <br/>
+ * dev class global comment. Detailled comment <br/>
  * 
  * $Id: SQLEditorProposalUtil.java,v 1.19 2006/11/08 10:03:04 qiang.zhang Exp $
  * 
@@ -81,7 +82,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "getSQLEditorContentProposals".
+     * dev Comment method "getSQLEditorContentProposals".
      * 
      * @param content editor has input all String
      * @param position edit current position
@@ -135,7 +136,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "handleStrBetweenFromAndWhere".
+     * ftang Comment method "handleStrBetweenFromAndWhere".
      * 
      * @param splitArray
      */
@@ -150,7 +151,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "handleAliasBetweenFromAndWhere".
+     * ftang Comment method "handleAliasBetweenFromAndWhere".
      * 
      * @param string
      * @param indexOfWhiteSpace
@@ -164,7 +165,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "addChangedEntry".
+     * ftang Comment method "addChangedEntry".
      * 
      * @param originalStr
      * @param aliasStr
@@ -214,7 +215,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "handleKeyStr".
+     * ftang Comment method "handleKeyStr".
      * 
      * @param element
      * @return
@@ -228,7 +229,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "getIndex".
+     * ftang Comment method "getIndex".
      * 
      * @param beforeCursorSql
      * @param indexStr
@@ -247,7 +248,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "isTable".
+     * ftang Comment method "isTable".
      * 
      * @param str
      * @param originalStr
@@ -265,7 +266,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC ftang Comment method "findAlias".
+     * ftang Comment method "findAlias".
      * 
      * @param input
      */
@@ -293,7 +294,7 @@ public class SQLEditorProposalUtil {
             }
         }
 
-        // // /TODO: in case of: columnname1 as alias1, column2 as alias2
+        // // /: in case of: columnname1 as alias1, column2 as alias2
         // int indexOfFrom = this.getIndex(currentSql, "from");
         // if (indexOfFrom != -1) {
         // splitStr1 = currentSql.split(",");
@@ -317,7 +318,7 @@ public class SQLEditorProposalUtil {
     // }
 
     /**
-     * DOC ftang Comment method "isExisting".
+     * ftang Comment method "isExisting".
      * 
      * @param str
      * @return
@@ -338,7 +339,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "getAllQqlQuery". s
+     * dev Comment method "getAllQqlQuery". s
      * 
      * @param content editor has input all String
      * @return list of all SQL Query.
@@ -382,7 +383,7 @@ public class SQLEditorProposalUtil {
             if (before.lastIndexOf(";") == -1) { //$NON-NLS-1$
                 curSql[0] = before.replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", "");
             }
         } else {
             curSql[0] = ""; //$NON-NLS-1$
@@ -401,7 +402,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "getAllKeywords".
+     * dev Comment method "getAllKeywords".
      * 
      * @return all Key words of SQL.
      */
@@ -412,7 +413,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "getAllProposalString".
+     * dev Comment method "getAllProposalString".
      */
     private void getAllProposalString() {
         tableAndColumns = SQLBuilderRepositoryNodeManager.getAllNamesByRepositoryNode(session);
@@ -441,8 +442,10 @@ public class SQLEditorProposalUtil {
         }
     }
 
+    String hasInput = "";
+
     /**
-     * DOC dev Comment method "hasSQLQueryProposal".
+     * dev Comment method "hasSQLQueryProposal".
      * 
      * @param queryStrings all Sql Query String.
      * @param curSql current Sql Query String.
@@ -450,12 +453,12 @@ public class SQLEditorProposalUtil {
     private void hasSQLQueryProposal(List<String> queryStrings, String[] curSql) {
         String querySql = (String) queryStrings.remove(0);
         if ((curSql[0] + curSql[1]).trim().startsWith(querySql.trim())) {
-            String hasInput = ""; //$NON-NLS-1$
-            int seqIndex = curSql[0].lastIndexOf(" "); //$NON-NLS-1$
+            int seqIndex = checkTableName(curSql); //$NON-NLS-1$
             int dotIndex = curSql[0].lastIndexOf("."); //$NON-NLS-1$
             List<String> list = new ArrayList<String>();
             if (seqIndex > -1 && dotIndex > seqIndex + 1) {
-                String tableName = curSql[0].substring(seqIndex, dotIndex).trim();
+                String tableName = curSql[0].substring(seqIndex, dotIndex).replaceAll(TalendTextUtils.getQuoteByDBType(dbType),
+                        "");
                 List<String> columns = getColumnsByTableName(tableName);
                 if (columns != null) {
                     list.addAll(columns);
@@ -463,25 +466,53 @@ public class SQLEditorProposalUtil {
             } else {
                 list.addAll(allString);
             }
-            if (seqIndex > -1) {
-                hasInput = curSql[0].substring(seqIndex + 1);
-            } else {
-                hasInput = curSql[0];
-            }
-
             createProposal(hasInput, list);
         }
     }
 
     /**
-     * DOC dev Comment method "createProposal".
+     * qzhang Comment method "getLastIndex".
+     * 
+     * @param curSql
+     * @return
+     */
+    private int checkTableName(String[] curSql) {
+        int seqIndex = curSql[0].lastIndexOf(" ");
+        int quoteIndex = curSql[0].lastIndexOf(",");
+        if (quoteIndex > seqIndex) {
+            seqIndex = quoteIndex;
+        }
+        
+        String quote = TalendTextUtils.getQuoteByDBType(dbType);
+        if (curSql[0].contains(quote) && seqIndex < curSql[0].lastIndexOf(quote)) {
+            int lquote = curSql[0].substring(0, curSql[0].lastIndexOf(quote) - 1).lastIndexOf(quote);
+            if (lquote > -1 && lquote < seqIndex) {
+                seqIndex = lquote;
+                hasInput = curSql[0].substring(seqIndex);
+                
+            } else {
+                seqIndex += 1;
+            }
+        } else {
+            if (seqIndex > -1) {
+                hasInput = curSql[0].substring(seqIndex + 1);
+                seqIndex += 1;
+            } else {
+                hasInput = curSql[0];
+            }
+        }
+        return seqIndex;
+    }
+
+    /**
+     * dev Comment method "createProposal".
      * 
      * @param hasInput
      * @param list
      */
     private void createProposal(String hasInput, List<String> list) {
         if (list != null) {
-            String newHasInput = hasInput.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            String newHasInput = hasInput; //$NON-NLS-1$ //$NON-NLS-2$
             int hasIndex = newHasInput.indexOf("."); //$NON-NLS-1$
             for (String string : list) {
                 int index = string.indexOf("."); //$NON-NLS-1$
@@ -505,8 +536,10 @@ public class SQLEditorProposalUtil {
                     index = string2.indexOf("."); //$NON-NLS-1$
                     tmp2 = string2.substring(index + 2, string2.length() - 1).replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                if (tmp2.toLowerCase().startsWith(newHasInput.toLowerCase())
-                        || column.toLowerCase().startsWith(newHasInput.toLowerCase())) {
+                if (tmp2.toLowerCase().startsWith(
+                        newHasInput.toLowerCase().replaceAll(TalendTextUtils.getQuoteByDBType(dbType), ""))
+                        || column.toLowerCase().startsWith(
+                                newHasInput.toLowerCase().replaceAll(TalendTextUtils.getQuoteByDBType(dbType), ""))) {
                     proposals.add(createAllProposal(hasInput, string));
                 }
             }
@@ -514,7 +547,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "createAllProposal".
+     * dev Comment method "createAllProposal".
      * 
      * @param hasInput
      * @param string
@@ -526,7 +559,7 @@ public class SQLEditorProposalUtil {
     }
 
     /**
-     * DOC dev Comment method "getColumnsByTableName".
+     * dev Comment method "getColumnsByTableName".
      * 
      * @param tableName
      * @return
@@ -537,7 +570,7 @@ public class SQLEditorProposalUtil {
         for (String string : alltablenames) {
             tables.put(string.substring(string.indexOf(".") + 2, string.length() - 1), string); //$NON-NLS-1$
         }
-        List<String> columns = tableAndColumns.get(tables.get(tableName.replaceAll("\"", "").trim())); //$NON-NLS-1$ //$NON-NLS-2$
+        List<String> columns = tableAndColumns.get(tables.get(tableName.replaceAll("\"", ""))); //$NON-NLS-1$ //$NON-NLS-2$
         return columns;
     }
 }

@@ -42,6 +42,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Column;
@@ -247,7 +248,7 @@ public class ErDiagramComposite extends SashForm {
                                 tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } else {
-                            tables.add(table.getElementName());
+                            tables.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(), getCurrentDbType()));
                         }
                         for (Object obj : tablePart.getChildren()) {
                             if (obj instanceof ColumnPart) {
@@ -258,7 +259,11 @@ public class ErDiagramComposite extends SashForm {
                                     if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
                                         columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\"");
                                     } else {
-                                        columns.add(table.getElementName() + "." + column.getElementName()); //$NON-NLS-1$
+                                        columns.add(TalendTextUtils.addQuotesWithSpaceField(table.getElementName(),
+                                                getCurrentDbType())
+                                                + "."
+                                                + TalendTextUtils.addQuotesWithSpaceField(column.getElementName(),
+                                                        getCurrentDbType()));
                                     }
                                 }
                                 for (Relation rel : (List<Relation>) column.getOutputs()) {
@@ -272,8 +277,17 @@ public class ErDiagramComposite extends SashForm {
                                             wheres.add(where1);
                                         }
                                     } else {
-                                        String where1 = source.getTable().getElementName() + "." + source.getElementName() + "="
-                                                + target.getTable().getElementName() + "." + target.getElementName();
+                                        String where1 = TalendTextUtils.addQuotesWithSpaceField(source.getTable()
+                                                .getElementName(), getCurrentDbType())
+                                                + "."
+                                                + TalendTextUtils.addQuotesWithSpaceField(source.getElementName(),
+                                                        getCurrentDbType())
+                                                + "="
+                                                + TalendTextUtils.addQuotesWithSpaceField(target.getTable().getElementName(),
+                                                        getCurrentDbType())
+                                                + "."
+                                                + TalendTextUtils.addQuotesWithSpaceField(target.getElementName(),
+                                                        getCurrentDbType());
                                         if (!wheres.contains(where1)) {
                                             wheres.add(where1);
                                         }
@@ -396,9 +410,8 @@ public class ErDiagramComposite extends SashForm {
         setSqlText(getSqlStatement());
     }
 
-    
     public ISQLBuilderDialog getDialog() {
         return this.dialog;
     }
-    
+
 }
