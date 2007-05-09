@@ -1,0 +1,300 @@
+<%@ jet
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="FuzzyMatchMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    
+    String colName = ElementParameterParser.getValue(node, "__MATCH__");
+    String matchingType = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
+	int minDistance = Integer.parseInt(ElementParameterParser.getValue(node, "__MIN__"));
+	int maxDistance = Integer.parseInt(ElementParameterParser.getValue(node, "__MAX__"));
+	int invalidDistance = maxDistance+1;
+	boolean unique = ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true");
+	boolean caseSens = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("true");
+	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+
+
+
+    List< ? extends IConnection> conns = node.getIncomingConnections();
+    IConnection inRefCon = null;
+    IConnection inMainCon = null;
+    String keyName = "A key is mandatory set in lookup Schema";
+    for (IConnection connection : conns) {
+        if (connection == null) {
+            continue;
+        }
+        EConnectionType connectionType = connection.getLineStyle();
+        if (connectionType == EConnectionType.FLOW_MAIN) {
+            inMainCon = connection;
+        } else if (connectionType == EConnectionType.FLOW_REF) {
+            inRefCon = connection;
+            List<IMetadataColumn> listColumns = inRefCon.getMetadataTable().getListColumns();
+            int sizeListColumns = listColumns.size();
+			for (int valueN=0; valueN<sizeListColumns; valueN++) {
+				IMetadataColumn column = listColumns.get(valueN);
+				if(column.isKey()){
+					keyName = column.getLabel();
+					break;
+				}
+			}
+        }
+    }
+	conns = null;
+
+	conns = node.getOutgoingSortedConnections();
+	String firstConnName = "";
+	if (conns!=null) {
+		if (conns.size()>0) {
+			IConnection conn = conns.get(0);
+			firstConnName = conn.getName();
+			
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+				List<IMetadataColumn> listColumns = inMainCon.getMetadataTable().getListColumns();
+				int sizeListColumns = listColumns.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);%>
+<%=conn.getName() %>.<%=column.getLabel() %> = <%=inMainCon.getName() %>.<%=column.getLabel() %>;
+
+<%				
+				}%>
+if(<%=conn.getName() %>.VALUE != null){
+
+	<%=conn.getName() %>.VALUE = null;
+}
+if(<%=conn.getName() %>.MATCHING != null){
+	
+<%=conn.getName() %>.MATCHING = null;
+
+}				
+							
+java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>_<%=cid %> = tSet_<%=inRefCon.getName() %>_<%=cid %>.iterator();
+
+<%
+if(matchingType.equals("matchLevenshteinDistance")){
+%>
+int value_<%=cid %> = <%=invalidDistance %>;
+
+String tomatch_<%=cid %> = (""+<%=inMainCon.getName() %>.<%=colName %>)<%if(!caseSens){%>.toLowerCase()<%}%>;
+
+<%
+	if(unique){
+%>
+String matching_<%=cid %> = null;
+
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	int distance = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, dic_value<%if(!caseSens){%>.toLowerCase()<%}%>);
+	
+	if(distance < value_<%=cid %>){
+		
+		if(distance >= <%=minDistance %>){
+		
+			value_<%=cid %> = distance;
+			
+			matching_<%=cid %> = dic_value;		
+			
+		}
+		
+		if(value_<%=cid %> == <%=minDistance %>){
+		
+			break;
+							
+		}
+	}
+	
+}
+
+if(value_<%=cid %> >= <%=minDistance %> && value_<%=cid %> <= <%=maxDistance %>){
+
+	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
+
+	<%=conn.getName() %>.MATCHING = matching_<%=cid %>;
+	
+}
+
+<%
+	}else{
+%>
+StringBuilder matching_<%=cid %> = null;
+
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	int distance = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, dic_value<%if(!caseSens){%>.toLowerCase()<%}%>);
+	
+	if(distance < value_<%=cid %>){
+		
+		if(distance >= <%=minDistance %>){
+		
+			value_<%=cid %> = distance;
+			
+			matching_<%=cid %> = new StringBuilder(dic_value);		
+			
+		}
+		
+	}else if(distance == value_<%=cid %> && value_<%=cid %> <= <%=maxDistance %>){
+
+		matching_<%=cid %>.append(<%=separator %>).append(dic_value);
+
+	}
+	
+}
+
+if(value_<%=cid %> >= <%=minDistance %> && value_<%=cid %> <= <%=maxDistance %>){
+
+	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
+
+	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
+	
+}
+
+<%
+	}
+}else if(matchingType.equals("matchMetaphone")){%>
+<%=conn.getName() %>.VALUE = metaphone_<%=cid %>.metaphone(""+<%=inMainCon.getName() %>.<%=colName %>);
+
+<%
+	if(unique){
+%>
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	if(metaphone_<%=cid %>.metaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
+	
+		<%=conn.getName() %>.MATCHING = dic_value;
+		
+		break;
+	
+	}
+	
+}
+
+<%
+	}else{
+%>
+StringBuilder matching_<%=cid %> = null;
+
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	if(metaphone_<%=cid %>.metaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
+	
+		if(matching_<%=cid %> == null){
+			
+			matching_<%=cid %> = new StringBuilder(dic_value);
+		
+		}else{
+		
+			matching_<%=cid %>.append(<%=separator %>).append(dic_value);
+			
+		}
+	
+	}
+	
+}
+
+if(matching_<%=cid %> != null){
+
+	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
+	
+}
+
+<%
+	}
+}else{%>
+<%=conn.getName() %>.VALUE = doublemetaphone_<%=cid %>.doubleMetaphone(""+<%=inMainCon.getName() %>.<%=colName %>);
+
+<%
+	if(unique){
+%>
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	if(doublemetaphone_<%=cid %>.doubleMetaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
+	
+		<%=conn.getName() %>.MATCHING = dic_value;
+		
+		break;
+	
+	}
+	
+}
+
+<%
+	}else{
+%>
+StringBuilder matching_<%=cid %> = null;
+
+while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+
+	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
+	
+	if(doublemetaphone_<%=cid %>.doubleMetaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
+	
+		if(matching_<%=cid %> == null){
+			
+			matching_<%=cid %> = new StringBuilder(dic_value);
+		
+		}else{
+		
+			matching_<%=cid %>.append(<%=separator %>).append(dic_value);
+			
+		}
+	
+	}
+	
+}
+
+if(matching_<%=cid %> != null){
+
+	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
+	
+}
+
+<%
+	}
+}%>
+nb_line_<%=cid%>++;
+
+	
+<%
+			}
+		}
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
+<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+<%
+				 	}
+				}
+			}
+		}
+	}
+}
+%>
