@@ -100,11 +100,19 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
-                propertyIsDirty = true;
-                firePropertyChange(IEditorPart.PROP_DIRTY);
+                if (isFocus()) {
+                    propertyIsDirty = true;
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
+
             }
         }
     };
+
+    public boolean isFocus() {
+        boolean visible = this.getSite().getWorkbenchWindow().getActivePage().isPartVisible(this);
+        return visible;
+    }
 
     private boolean propertyIsDirty = false;
 
@@ -254,14 +262,13 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         }
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
-    
-
+        getTalendEditor().getProperty().eAdapters().add(dirtyListener);
         alreadyGenerated = false;
         codeSync();
 
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-        getTalendEditor().getProperty().eAdapters().add(dirtyListener);
+       
     }
 
     public void codeSync() {
