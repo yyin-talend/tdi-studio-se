@@ -1,0 +1,61 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+	java.io.File
+	javax.xml.transform.Transformer 
+	javax.xml.transform.TransformerConfigurationException 
+	javax.xml.transform.TransformerException 
+	javax.xml.transform.TransformerFactory 
+	javax.xml.transform.stream.StreamResult 
+	javax.xml.transform.stream.StreamSource 	
+"
+class="XSLTMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String xmlFile = ElementParameterParser.getValue(node, "__XML_FILE__");
+String xslFile = ElementParameterParser.getValue(node, "__XSLT_FILE__");
+String outputFile = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
+String isContinue = "true";
+if(xmlFile == null || xmlFile.trim().length() == 0
+|| xslFile == null || xslFile.trim().length() == 0 
+|| outputFile == null || outputFile.trim().length() == 0)
+{
+%>
+	System.out.println("xmlFile,xslFile and outputFile are not allowed to be null");
+<%
+}
+else
+{
+%>
+	java.io.File xsltFile<%=cid%> = new java.io.File(<%=xslFile%>);
+	javax.xml.transform.stream.StreamSource styleSource<%=cid%> = new javax.xml.transform.stream.StreamSource(xsltFile<%=cid%>);
+	javax.xml.transform.Transformer t<%=cid%> = javax.xml.transform.TransformerFactory.newInstance().newTransformer(styleSource<%=cid%>);
+	javax.xml.transform.stream.StreamSource xmlSource<%=cid%> = new javax.xml.transform.stream.StreamSource(new java.io.File(<%=xmlFile%>));
+	t<%=cid%>.transform(xmlSource<%=cid%>, new javax.xml.transform.stream.StreamResult(new java.io.File(<%=outputFile%>)));
+	
+	System.out.println(<%=xmlFile%> + "'s transformation is completed.");
+	System.out.println("Result file is " + <%=outputFile%>);
+	
+	if(<%=outputFile%>.indexOf("/") != -1)
+	{
+		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", <%=outputFile%>.substring(0,<%=outputFile%>.lastIndexOf("/")));
+		globalMap.put("<%=cid %>_OUTPUT_FILENAME", <%=outputFile%>.substring(<%=outputFile%>.lastIndexOf("/") + 1));
+	}
+	else
+	{
+		globalMap.put("<%=cid %>_OUTPUT_FILEPATH", <%=outputFile%>);
+		globalMap.put("<%=cid %>_OUTPUT_FILENAME", <%=outputFile%>);	
+	}					
+<%
+}
+%>
