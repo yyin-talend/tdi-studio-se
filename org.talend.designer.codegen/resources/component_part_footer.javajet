@@ -1,17 +1,17 @@
 <%@ jet 
   package="org.talend.designer.codegen.translators" 
   imports="
-		org.talend.core.model.process.INode
-		org.talend.core.model.temp.ECodePart		
+  org.talend.core.model.process.INode
+  org.talend.core.model.temp.ECodePart  
         org.talend.core.model.process.ElementParameterParser
-		org.talend.core.model.process.IConnection 
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.core.model.process.EConnectionType 
-		org.talend.core.model.process.IExternalNode
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
+  org.talend.core.model.process.IConnection 
+  org.talend.core.model.metadata.IMetadataTable
+  org.talend.core.model.metadata.IMetadataColumn 
+  org.talend.core.model.process.EConnectionType 
+  org.talend.core.model.process.IExternalNode
+  org.talend.designer.codegen.config.CodeGeneratorArgument
+  java.util.List
+ "
   class="ComponentPartFooter"     
 %>
 <%
@@ -23,101 +23,100 @@ boolean stat = codeGenArgument.isStatistics();
 %>
 
 <%
-	if ((codePart.equals(ECodePart.MAIN))&&(stat)) {
+ if ((codePart.equals(ECodePart.MAIN))&&(stat)) {
 %>
-	runStat.updateStat("<%=node.getUniqueName() %>",1, 1); 
+ runStat.updateStat("<%=node.getUniqueName() %>",1, 1); 
 <%
-	}
-	if ((codePart.equals(ECodePart.END))&&(stat)) {
+ }
+ if ((codePart.equals(ECodePart.END))&&(stat)) {
 %>
-	runStat.updateStat("<%=node.getUniqueName() %>",2, 0); 
+ runStat.updateStat("<%=node.getUniqueName() %>",2, 0); 
 <%
-	}
+ }
 
-	if (codePart.equals(ECodePart.MAIN)) {
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas != null) && (metadatas.size() > 0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata != null) {
-				for (IConnection conn : node.getOutgoingConnections()) {
-					if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-						if (trace) {				
+ if (codePart.equals(ECodePart.MAIN)) {
+  for (IConnection conn : node.getOutgoingConnections()) {
+   IMetadataTable metadata = conn.getMetadataTable();
+   if (metadata!=null) {
+    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+     if (trace) {    
 %>
-			// here we dump the line content for trace purpose
-			runTrace.sendTrace("<%=conn.getName() %>","<%
-									for (IMetadataColumn column : metadata.getListColumns()) {
-			%><%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
-									}
+  if (<%=conn.getName() %> !=null) {
+   // here we dump the line content for trace purpose
+   runTrace.sendTrace("<%=conn.getName() %>","<%
+         for (IMetadataColumn column : metadata.getListColumns()) {
+   %><%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
+         }
 %>");
+  }
 <%
-						}
-					}
-				}
-			}
-		}
-		
-		String inputColName = null;
-		if (node.getIncomingConnections()!=null) {
-			for (IConnection incomingConn : node.getIncomingConnections()) {
-				if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-					inputColName = incomingConn.getName();
-					break;
-				}
-			}
-		}
-		if ((!node.isSubProcessStart())&&(node.getComponent().isDataAutoPropagated())) {
-			if (inputColName!=null) {
-				if ((metadatas != null) && (metadatas.size() > 0)) {
-					IMetadataTable metadata = metadatas.get(0);
-					if (metadata != null) {
-						for (IConnection conn : node.getOutgoingConnections()) {
-							if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-								for (IMetadataColumn column : metadata.getListColumns()) {
+     }
+    }
+   }
+  }
+  
+  String inputColName = null;
+  if (node.getIncomingConnections()!=null) {
+   for (IConnection incomingConn : node.getIncomingConnections()) {
+    if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+     inputColName = incomingConn.getName();
+     break;
+    }
+   }
+  }
+  List<IMetadataTable> metadatas = node.getMetadataList();
+  if ((!node.isSubProcessStart())&&(node.getComponent().isDataAutoPropagated())) {
+   if (inputColName!=null) {
+    if ((metadatas != null) && (metadatas.size() > 0)) {
+     IMetadataTable metadata = metadatas.get(0);
+     if (metadata != null) {
+      for (IConnection conn : node.getOutgoingConnections()) {
+       if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+        for (IMetadataColumn column : metadata.getListColumns()) {
 %>
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
+ <%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
 <% 
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	if (codePart.equals(ECodePart.END)) {
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+ if (codePart.equals(ECodePart.END)) {
 %>
 
 ok_Hash.put("<%=node.getUniqueName() %>", true);
 end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 
 <%
-		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
-		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
-			for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
+  String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
+   for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("end","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
 <%=statCatcherNode.getUniqueName() %>Process();
 <%
-			}
-		}
-		
-		for (IConnection outgoingConn : node.getOutgoingConnections()) {
-			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
+   }
+  }
+  
+  for (IConnection outgoingConn : node.getOutgoingConnections()) {
+   if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
 %>
 <%=outgoingConn.getTarget().getUniqueName() %>Process();
 <%
-			}
-			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+   }
+   if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
-			if (<%=outgoingConn.getCondition() %>) {
-				<%=outgoingConn.getTarget().getUniqueName() %>Process();
-			}
+   if (<%=outgoingConn.getCondition() %>) {
+    <%=outgoingConn.getTarget().getUniqueName() %>Process();
+   }
 <%
-			}
-		}
-	}
+   }
+  }
+ }
 %>
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] stop
  */
- 
