@@ -280,6 +280,7 @@ public class Process extends Element implements IProcess {
     private void createStatsAndLogsParameters() {
         ElementParameter param;
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+
         param = new ElementParameter(this);
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(Boolean.FALSE);
@@ -311,7 +312,8 @@ public class Process extends Element implements IProcess {
         // file path
         param = new ElementParameter(this);
         param.setName("FILE_PATH"); // File path
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType].getName())));
+        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
+                .getName()))));
         param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -387,7 +389,7 @@ public class Process extends Element implements IProcess {
         param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
         param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
-        param.setValue(EmfComponent.BUILTIN);
+        param.setValue(preferenceStore.getString(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName()));
         param.setNumRow(10);
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setRepositoryValue("DATABASE");
@@ -401,7 +403,8 @@ public class Process extends Element implements IProcess {
         param.setListItemsValue(new String[] {});
         param.setNumRow(10);
         param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setValue(""); //$NON-NLS-1$
+        param.setValue(preferenceStore
+                .getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
         addElementParameter(param);
@@ -409,7 +412,7 @@ public class Process extends Element implements IProcess {
         // dbType
         param = new ElementParameter(this);
         param.setName("DB_TYPE");
-        param.setValue(preferenceStore.getString(EParameterName.PERL_DB_TYPE.getName()));
+        param.setValue(preferenceStore.getString(StatsAndLogsConstants.DB_TYPE[languageType].getName()));
         param.setDisplayName(EParameterName.PERL_DB_TYPE.getDisplayName()); // "DB Type");
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -2097,5 +2100,15 @@ public class Process extends Element implements IProcess {
      */
     public void setProcessor(IProcessor processor) {
         this.processor = processor;
+    }
+
+    /**
+     * DOC Administrator Comment method "change".
+     * 
+     * @param str
+     */
+    private String replaceSlash(String str) {
+        String tempStr = str.replaceAll("\\\\", "/");
+        return tempStr;
     }
 }
