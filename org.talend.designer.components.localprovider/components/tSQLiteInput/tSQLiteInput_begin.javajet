@@ -49,7 +49,7 @@ if (!accessible_<%=cid%>)
 try {
 // Change the value and load the library.
 	System.setProperty("java.library.path", <%=dbjnilib%>);
-	System.loadLibrary("jaybird21");
+	System.loadLibrary("sqlitejdbc");
 } finally {
 // Revert back the changes.
 	field_<%=cid%>.set(clazz_<%=cid%>, original_<%=cid%>);
