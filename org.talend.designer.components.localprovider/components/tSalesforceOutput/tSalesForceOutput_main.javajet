@@ -1,0 +1,136 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		"
+class="tSalesforceOutputMain" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String action = ElementParameterParser.getValue(node, "__ACTION__");
+String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+        String cid = node.getUniqueName();
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {//4
+%>
+///////////////////////		
+
+
+
+<%
+ if ("insert".equals(action)|| "update".equals(action)) {//************
+%>
+
+						
+<%  
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+%>
+				java.util.List<org.apache.axis.message.MessageElement> list_<%=cid %> = new java.util.ArrayList<org.apache.axis.message.MessageElement>();				
+<%    			
+    			for (int i = 0; i < sizeColumns; i++) {//5  			
+
+  			        
+    				IMetadataColumn column = columns.get(i);
+    				
+    				//make sure to filter the schema "Id", when updating
+  			        if("Id".equals(column.getLabel())) continue;
+    				
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+%>
+
+<%
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) { //begin
+%>   				
+	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
+<%
+    				} 
+%>              
+                 list_<%=cid %>.add(sforceManagement_<%=cid %>.newMessageElement("<%=column.getLabel() %>",    						
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+%>
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%				
+					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
+%>
+								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%				
+					} else {//others
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%				
+					}
+%>
+					          ));
+					          				          
+							
+<%
+					if(!isPrimitive) {//end
+%>
+	    		} //
+<%
+					} 
+%>  			
+    			
+<%
+				}//5	
+%> 
+
+ 				
+<%
+ if ("insert".equals(action)) {//#######
+%> 				
+ 				sforceManagement_<%=cid %>.insert("<%=modulename %>", (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+
+<%
+	} else if ("update".equals(action)) {//#######
+%> 
+    			sforceManagement_<%=cid %>.update("<%=modulename %>", <%=conn.getName() %>.Id, (org.apache.axis.message.MessageElement[])list_<%=cid %>.toArray(new org.apache.axis.message.MessageElement[list_<%=cid %>.size()]));    			
+
+<%
+  }//#######
+%> 
+ 
+    			
+<%
+	} else if ("delete".equals(action)) {//*************	
+%>
+    			sforceManagement_<%=cid %>.delete(<%=conn.getName() %>.Id);    			
+    							
+				
+<%
+  }//************
+%>     			
+    			
+				nb_line_<%=cid %>++; 
+				
+				    			
+    			
+///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
+%>
