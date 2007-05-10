@@ -29,11 +29,8 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -56,7 +53,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    private ComboFieldEditor repositoryField = null;
+    // private ComboFieldEditor repositoryField = null;
 
     /**
      * Default contructor.
@@ -116,8 +113,8 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         onDatabaseField = new BooleanFieldEditor(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName(),
                 StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
 
-        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN },
-                { "Repository", EmfComponent.REPOSITORY } };
+        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN } };
+        // { "Repository", EmfComponent.REPOSITORY } };
 
         final Composite composite = new Composite(getFieldEditorParent(), SWT.NONE);
 
@@ -135,34 +132,34 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         propertyTypeField = new ComboFieldEditor(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName(),
                 StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName(), stringsForPropertyType, composite);
 
-        propertyTypeField.getComboBoxControl(composite).addSelectionListener(new SelectionListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetDefaultSelected(SelectionEvent e) {
-                widgetSelected(e);
-            }
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetSelected(SelectionEvent e) {
-                if (e.getSource() instanceof Combo) {
-                    Combo combo = (Combo) e.getSource();
-                    if (combo.getText().equals("Repository")) {
-                        repositoryField.getComboBoxControl(composite).setEnabled(true);
-                    } else {
-
-                        repositoryField.getComboBoxControl(composite).setEnabled(false);
-                    }
-                }
-            }
-        });
+        // propertyTypeField.getComboBoxControl(composite).addSelectionListener(new SelectionListener() {
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+        // */
+        // public void widgetDefaultSelected(SelectionEvent e) {
+        // widgetSelected(e);
+        // }
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+        // */
+        // public void widgetSelected(SelectionEvent e) {
+        // if (e.getSource() instanceof Combo) {
+        // Combo combo = (Combo) e.getSource();
+        // if (combo.getText().equals("Repository")) {
+        // repositoryField.getComboBoxControl(composite).setEnabled(true);
+        // } else {
+        //
+        // repositoryField.getComboBoxControl(composite).setEnabled(false);
+        // }
+        // }
+        // }
+        // });
 
         GridLayout gridLayout = (GridLayout) composite.getLayout();
         gridLayout.numColumns = 16;
@@ -175,12 +172,13 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
             newStrArr[i][1] = tempStrArr[i];
         }
 
-        repositoryField = new ComboFieldEditor(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName(),
-                StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getDisplayName(), newStrArr, composite);
-
-        if (tempStrArr != null && tempStrArr.length > 0) {
-            repositoryField.getComboBoxControl(composite).setText(newStrArr[0][1]);
-        }
+        // repositoryField = new
+        // ComboFieldEditor(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName(),
+        // StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getDisplayName(), newStrArr, composite);
+        //
+        // if (tempStrArr != null && tempStrArr.length > 0) {
+        // repositoryField.getComboBoxControl(composite).setText(newStrArr[0][1]);
+        // }
 
         String[][] strsForDBType = new String[strDisplay.length][2];
 
@@ -228,7 +226,7 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
         addField(onDatabaseField);
         addField(propertyTypeField);
 
-        addField(repositoryField);
+        // addField(repositoryField);
 
         addField(dbTypeField);
         addField(hostField);
