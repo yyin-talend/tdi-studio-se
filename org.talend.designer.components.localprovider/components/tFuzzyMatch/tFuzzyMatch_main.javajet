@@ -36,7 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     List< ? extends IConnection> conns = node.getIncomingConnections();
     IConnection inRefCon = null;
     IConnection inMainCon = null;
-    String keyName = "A key is mandatory set in lookup Schema";
+    String keyName = "Setting a key is mandatory in lookup Schema";
     for (IConnection connection : conns) {
         if (connection == null) {
             continue;
