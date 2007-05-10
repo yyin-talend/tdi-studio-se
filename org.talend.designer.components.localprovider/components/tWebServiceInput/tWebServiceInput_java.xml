@@ -45,14 +45,30 @@
       NUM_ROW="20"
       REQUIRED="true"
     >
-      <DEFAULT>"http://localhost:8080/webservices/map?wsdl"</DEFAULT>
+      <DEFAULT>"http://www.atomic-x.com/xmlservices/ImageExtractor"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ENDPOINT"
+      FIELD="TEXT"
+      NUM_ROW="30"
+    >
+      <DEFAULT>"http://www.atomic-x.com/xmlservices/imageextractorws.asmx?wsdl"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SOAPActionURI"
+      FIELD="TEXT"
+      NUM_ROW="40"
+    >
+      <DEFAULT>"http://www.atomic-x.com/xmlservices/ImageExtractor/ExtractImages"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="30"
+      NUM_ROW="50"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -61,7 +77,7 @@
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="30"
+      NUM_ROW="50"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"username"</DEFAULT>
@@ -70,7 +86,7 @@
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="30"
+      NUM_ROW="50"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"password"</DEFAULT>
@@ -79,19 +95,85 @@
     <PARAMETER
       NAME="METHOD"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="60"
     >
-      <DEFAULT>"getMap"</DEFAULT>
+      <DEFAULT>"ExtractImages"</DEFAULT>
+    </PARAMETER>  
+
+    
+    <PARAMETER
+       NAME="RETURN_CLASS"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="60"
+    >
+          <ITEMS DEFAULT="String">
+            <ITEM NAME="Integer" VALUE="java.lang.Integer.class"/>
+            <ITEM NAME="Short" VALUE="java.lang.Short.class"/>
+            <ITEM NAME="Boolean" VALUE="java.lang.Boolean.class"/>
+            <ITEM NAME="Byte" VALUE="java.lang.Byte.class"/>
+            <ITEM NAME="Long" VALUE="java.lang.Long.class"/>
+            <ITEM NAME="Double" VALUE="java.lang.Double.class"/>
+            <ITEM NAME="Float" VALUE="java.lang.Float.class"/>
+            <ITEM NAME="Character" VALUE="java.lang.Character.class"/>
+            <ITEM NAME="String" VALUE="java.lang.String.class"/>
+            <ITEM NAME="Date" VALUE="java.util.Date.class"/>
+            <ITEM NAME="Map" VALUE="java.util.Map.class"/>
+            <ITEM NAME="Object" VALUE="java.lang.Object.class"/>
+            <ITEM NAME="Integer[]" VALUE="java.lang.Integer[].class"/>
+            <ITEM NAME="Short[]" VALUE="java.lang.Short[].class"/>
+            <ITEM NAME="Boolean[]" VALUE="java.lang.Boolean[].class"/>
+            <ITEM NAME="Byte[]" VALUE="java.lang.Byte[].class"/>
+            <ITEM NAME="Long[]" VALUE="java.lang.Long[].class"/>
+            <ITEM NAME="Double[]" VALUE="java.lang.Double[].class"/>
+            <ITEM NAME="Float[]" VALUE="java.lang.Float[].class"/>
+            <ITEM NAME="Character[]" VALUE="java.lang.Character[].class"/>
+            <ITEM NAME="String[]" VALUE="java.lang.String[].class"/>
+            <ITEM NAME="Date[]" VALUE="java.util.Date[].class"/>
+            <ITEM NAME="Map[]" VALUE="java.util.Map[].class"/>
+            <ITEM NAME="Object[]" VALUE="java.lang.Object[].class"/>
+            <ITEM NAME="Schema" VALUE="org.apache.axis.types.Schema.class"/>            
+          </ITEMS>
     </PARAMETER>
+    
 
     <PARAMETER
       NAME="PARAMS"
       FIELD="TABLE"
-      NUM_ROW="50"
+      NUM_ROW="80"
       NB_LINES="2"
     >
       <ITEMS>
-        <ITEM NAME="VALUE" />
+        <ITEM NAME="NAME"/>
+        <ITEM NAME="VALUE"/>
+        <ITEM NAME="CLASS" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="String">
+            <ITEM NAME="Integer" VALUE="java.lang.Integer.class"/>
+            <ITEM NAME="Short" VALUE="java.lang.Short.class"/>
+            <ITEM NAME="Boolean" VALUE="java.lang.Boolean.class"/>
+            <ITEM NAME="Byte" VALUE="java.lang.Byte.class"/>
+            <ITEM NAME="Long" VALUE="java.lang.Long.class"/>
+            <ITEM NAME="Double" VALUE="java.lang.Double.class"/>
+            <ITEM NAME="Float" VALUE="java.lang.Float.class"/>
+            <ITEM NAME="Character" VALUE="java.lang.Character.class"/>
+            <ITEM NAME="String" VALUE="java.lang.String.class"/>
+            <ITEM NAME="Date" VALUE="java.util.Date.class"/>
+            <ITEM NAME="Map" VALUE="java.util.Map.class"/>
+            <ITEM NAME="Object" VALUE="java.lang.Object.class"/>
+            <ITEM NAME="Integer[]" VALUE="java.lang.Integer[].class"/>
+            <ITEM NAME="Short[]" VALUE="java.lang.Short[].class"/>
+            <ITEM NAME="Boolean[]" VALUE="java.lang.Boolean[].class"/>
+            <ITEM NAME="Byte[]" VALUE="java.lang.Byte[].class"/>
+            <ITEM NAME="Long[]" VALUE="java.lang.Long[].class"/>
+            <ITEM NAME="Double[]" VALUE="java.lang.Double[].class"/>
+            <ITEM NAME="Float[]" VALUE="java.lang.Float[].class"/>
+            <ITEM NAME="Character[]" VALUE="java.lang.Character[].class"/>
+            <ITEM NAME="String[]" VALUE="java.lang.String[].class"/>
+            <ITEM NAME="Date[]" VALUE="java.util.Date[].class"/>
+            <ITEM NAME="Map[]" VALUE="java.util.Map[].class"/>
+            <ITEM NAME="Object[]" VALUE="java.lang.Object[].class"/>
+            <ITEM NAME="Schema" VALUE="org.apache.axis.types.Schema.class"/>            
+          </ITEMS>
+        </ITEM>       
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>

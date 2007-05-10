@@ -26,17 +26,67 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         // component id
         String cid = node.getUniqueName();
-        String filename = ElementParameterParser.getValue(node,"__FILENAME__");       
+     
         List<IMetadataColumn> listColumns = metadata.getListColumns(); 
         
-        List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node,"__PARAMS__");
+        List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
         String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
 		String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
 		String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
+		String wsdl_uri = ElementParameterParser.getValue(node,"__WSDL__");
 %>
+
+        String endpoint_<%=cid %> = <%=ElementParameterParser.getValue(node,"__ENDPOINT__") %>;
+        String soapAction_uri_<%=cid %> = <%=ElementParameterParser.getValue(node,"__SOAPActionURI__") %>;
+        String method_<%=cid %> = <%=ElementParameterParser.getValue(node,"__METHOD__") %>; 
 ///////////////////////////////////
-        String wsdl_<%=cid %> = <%=ElementParameterParser.getValue(node,"__WSDL__") %>;
-        String method_<%=cid %> = <%=ElementParameterParser.getValue(node,"__METHOD__") %>;  
+		    class Util_<%=cid %>
+            {
+                    public org.apache.axis.description.OperationDesc _initOperationDesc(){
+                                            
+                        org.apache.axis.description.OperationDesc oper;
+                        ;
+                        oper = new org.apache.axis.description.OperationDesc();
+                        oper.setName(<%=ElementParameterParser.getValue(node,"__METHOD__") %>);
+                        
+                        
+                        <%
+                                for (int i = 0; i < params.size(); i++) {
+                                    Map<String, String> line = params.get(i);
+                        %>
+                        org.apache.axis.description.ParameterDesc param<%=i %> = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, <%= line.get("NAME") %>), org.apache.axis.description.ParameterDesc.IN, org.apache.axis.Constants.XSD_ANYTYPE, <%= line.get("CLASS") %>, false, false);
+                        param<%=i %>.setOmittable(true);
+                        oper.addParameter(param<%=i %>);
+                        <%
+                                }
+                        %>
+						
+						
+						<% 
+						    if (ElementParameterParser.getValue(node,"__RETURN_CLASS__").equals("org.apache.axis.types.Schema.class")) {
+						%>
+						oper.setReturnType(org.apache.axis.Constants.XSD_SCHEMA);
+						<%
+						  } else {
+						%>
+						oper.setReturnType(org.apache.axis.Constants.XSD_ANYTYPE);
+						<%
+							}
+						%>
+                        
+                        oper.setReturnClass(<%=ElementParameterParser.getValue(node,"__RETURN_CLASS__") %>);
+                        
+                        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+                        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+                        
+                        return oper;                
+                    }
+            } 
+            
+		   Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+		   
+///////////////////////////////////
+ 
         
         Object[] params_<%=cid %> = new Object[] {         
 <%
@@ -47,24 +97,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }
 %>      
-        };   
+        };  
         
-        String[] filters_<%=cid %> = new String[] {         
-<%
-        for (IMetadataColumn column: listColumns) {
-%> 
-		"<%=column.getLabel() %>",
-<%
-        }
-%>        
-        };   
+ 
         
         String[] results_<%=cid %> = null;
 	    int nb_line_<%=cid %> = 0;	  
 
 		org.apache.axis.client.Service  service_<%=cid %> = new org.apache.axis.client.Service();
 		org.apache.axis.client.Call call_<%=cid %> = (org.apache.axis.client.Call) service_<%=cid %>.createCall();
-	    call_<%=cid %>.setTargetEndpointAddress(new java.net.URL(wsdl_<%=cid %>));
+	    call_<%=cid %>.setTargetEndpointAddress(new java.net.URL(endpoint_<%=cid %>));
 <% 
         if ("true".equals(needAuth)) {
 %> 
@@ -73,17 +115,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }	
 %>
-	    call_<%=cid %>.setOperationName(method_<%=cid %>);
-<%
-        for (int i = 0; i < params.size(); i++) {            
-%>
-        call_<%=cid %>.addParameter( "op<%=i %>", org.apache.axis.encoding.XMLType.XSD_ANYTYPE, javax.xml.rpc.ParameterMode.IN );
-<%
-        }
-%>       
-	    call_<%=cid %>.setReturnType(org.apache.axis.encoding.XMLType.XSD_ANYTYPE);
+        call_<%=cid %>.setOperation(util_<%=cid %>._initOperationDesc());
+        call_<%=cid %>.setUseSOAPAction(true);
+        call_<%=cid %>.setSOAPActionURI(soapAction_uri_<%=cid %>);
+        call_<%=cid %>.setEncodingStyle(org.apache.axis.Constants.URI_SOAP11_ENC);
+        call_<%=cid %>.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);       
+        call_<%=cid %>.setOperationName(new javax.xml.namespace.QName(<%=wsdl_uri %>, method_<%=cid %>));
+ 	    
+	    
+	    
 		//get the return value;
 		Object ret_<%=cid %> = call_<%=cid %>.invoke(params_<%=cid %>);
+
 
 		//create a array to hold the map
 		Object[] tempArray_<%=cid %> = null;
@@ -96,14 +139,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		for (int i_<%=cid %> = 0; i_<%=cid %> < tempArray_<%=cid %>.length; i_<%=cid %>++) {
 		    results_<%=cid %> = new String[<%=listColumns.size() %>];		    
+			
 			if (tempArray_<%=cid %>[i_<%=cid %>] instanceof java.util.Map) {
 				java.util.Map map_<%=cid %> = (java.util.Map)tempArray_<%=cid %>[i_<%=cid %>];
-				for(int k_<%=cid %> = 0; k_<%=cid %> < filters_<%=cid %>.length; k_<%=cid %> ++ )
-				{   
-				    if (map_<%=cid %>.get(filters_<%=cid %>[k_<%=cid %>])!=null)
-				    results_<%=cid %>[k_<%=cid %>] = map_<%=cid %>.get(filters_<%=cid %>[k_<%=cid %>]).toString();				
-				}				
+                java.util.Collection values_<%=cid %> = map_<%=cid %>.values();
+                int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
+                int k_<%=cid %> = 0;
+                for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
+                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
+                }				
+			} else if (tempArray_<%=cid %>[i_<%=cid %>] instanceof org.apache.axis.types.Schema) {
+                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) tempArray_<%=cid %>[i_<%=cid %>];
+                org.apache.axis.message.MessageElement[] _any_<%=cid %> = schema_<%=cid %>.get_any();
+                for (int s_<%=cid %> = 0; s_<%=cid %> < _any_<%=cid %>.length; s_<%=cid %>++) {
+                    results_<%=cid %>[s_<%=cid %>] = _any_<%=cid %>[s_<%=cid %>].toString();
+                }				
+			} else {
+				results_<%=cid %>[0] = String.valueOf(tempArray_<%=cid %>[i_<%=cid %>]);
 			}
+			
 	
         nb_line_<%=cid %>++;
 	       
