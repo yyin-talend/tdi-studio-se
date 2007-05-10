@@ -76,6 +76,8 @@ public class TalendJetEmitter extends JETEmitter {
 
     private TalendEclipseHelper talendEclipseHelper;
 
+    private String componentFamily;
+
     /**
      * DOC mhirt TalendJetEmitter constructor comment.
      * 
@@ -94,7 +96,7 @@ public class TalendJetEmitter extends JETEmitter {
         this.talendEclipseHelper = new TalendEclipseHelper(progressMonitor, this);
     }
 
-    public TalendJetEmitter(String arg0, ClassLoader arg1, String templateName, String templateLanguage,
+    public TalendJetEmitter(String arg0, ClassLoader arg1, String componentFamily, String templateName, String templateLanguage,
             String codePart, TalendEclipseHelper teh) {
         super(arg0, arg1);
         if (templateName.endsWith(codePart + "" + templateLanguage)) {
@@ -103,6 +105,7 @@ public class TalendJetEmitter extends JETEmitter {
         } else {
             this.templateName = templateName;
         }
+        this.componentFamily = componentFamily;
         this.templateLanguage = templateLanguage;
         this.codePart = codePart;
         this.talendEclipseHelper = teh;
@@ -134,7 +137,7 @@ public class TalendJetEmitter extends JETEmitter {
     @Override
     public void initialize(Monitor progressMonitor) throws JETException {
         if (EMFPlugin.IS_ECLIPSE_RUNNING) {
-            talendEclipseHelper.initialize(progressMonitor, this, templateName, templateLanguage, codePart);
+            talendEclipseHelper.initialize(progressMonitor, this, componentFamily, templateName, templateLanguage, codePart);
         }
     }
 
@@ -231,7 +234,7 @@ public class TalendJetEmitter extends JETEmitter {
             }
         }
 
-        public void initialize(Monitor monitor, TalendJetEmitter jetEmitter, String templateName,
+        public void initialize(Monitor monitor, TalendJetEmitter jetEmitter, String componentFamily, String templateName,
                 String templateLanguage, String codePart) throws JETException {
             IProgressMonitor progressMonitor = BasicMonitor.toIProgressMonitor(monitor);
             progressMonitor.beginTask("", 10);
@@ -247,6 +250,7 @@ public class TalendJetEmitter extends JETEmitter {
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETParsing_message",
                         new Object[] { jetCompiler.getResolvedTemplateURI() }));
                 jetCompiler.parse();
+                jetCompiler.getSkeleton().setPackageName("org.talend.designer.codegen.translators."+componentFamily);
                 jetCompiler.getSkeleton().setClassName(templateName + codePart + templateLanguage);
                 progressMonitor.worked(1);
 
@@ -278,7 +282,11 @@ public class TalendJetEmitter extends JETEmitter {
                     String folderName = stringTokenizer.nextToken();
                     sourceContainer = sourceContainer.getFolder(new Path(folderName));
                     if (!sourceContainer.exists()) {
-                        ((IFolder) sourceContainer).create(false, true, new SubProgressMonitor(subProgressMonitor, 1));
+                        try {
+                        ((IFolder) sourceContainer).create(true, true, new SubProgressMonitor(subProgressMonitor, 1));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 IFile targetFile = sourceContainer

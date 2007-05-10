@@ -56,6 +56,8 @@ public class JetBean {
     private String language = null;
 
     private String codePart = null;
+    
+    private String family = "common";
 
     /**
      * Minimal Constructor.
@@ -360,4 +362,14 @@ public class JetBean {
     public void setCodePart(String codePart) {
         this.codePart = codePart;
     }
+
+    public String getFamily() {
+        return family;
+    }
+
+    
+    public void setFamily(String family) {
+        this.family = family;
+    }
+    
 }

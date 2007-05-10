@@ -50,6 +50,7 @@ import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -204,6 +205,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES",
                         pluginDependency);
             }
+            
+            jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(component.getFamily()).toLowerCase());
 
             if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
                 jetBean.addClassPath("EXTERNAL_COMPONENT_"
@@ -255,7 +258,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         .loadEmittersPool(), components);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
-                            .getClassLoader(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
+                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
                             dummyEmitter.getTalendEclipseHelper());
                     emitter.setMethod(jetBean.getMethod());
                     emitterPool.put(jetBean, emitter);
@@ -269,7 +272,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             for (JetBean jetBean : components) {
                 if (!emitterPool.containsKey(jetBean)) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
-                            .getClassLoader(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
+                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
                             dummyEmitter.getTalendEclipseHelper());
                     emitter.initialize(sub);
                     if (emitter.getMethod() != null) {
