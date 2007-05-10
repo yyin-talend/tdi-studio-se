@@ -222,10 +222,10 @@ public class SQLEditorAllProposal implements IContentProposal {
                 }
                 index3 = newQualityName.indexOf("."); //$NON-NLS-1$
                 boolean b = qualityName.replaceAll("\"", "").toLowerCase().startsWith(
-                        hasString.replaceAll(TalendTextUtils.getQuoteByDBType(dbType), "").toLowerCase());
+                        TalendTextUtils.removeQuotesForField(hasString, dbType).toLowerCase());
                 b = b
                         || newQualityName.replaceAll("\"", "").toLowerCase().startsWith(
-                                newHasString.replaceAll(TalendTextUtils.getQuoteByDBType(dbType), "").toLowerCase());
+                                TalendTextUtils.removeQuotesForField(newHasString, dbType).toLowerCase());
                 b = b || qualityName.toLowerCase().startsWith(hasString.toLowerCase())
                         || newQualityName.toLowerCase().startsWith(newHasString.toLowerCase());
                 if (!"".equals(hasString) && b) {

@@ -457,8 +457,8 @@ public class SQLEditorProposalUtil {
             int dotIndex = curSql[0].lastIndexOf("."); //$NON-NLS-1$
             List<String> list = new ArrayList<String>();
             if (seqIndex > -1 && dotIndex > seqIndex + 1) {
-                String tableName = curSql[0].substring(seqIndex, dotIndex).replaceAll(TalendTextUtils.getQuoteByDBType(dbType),
-                        "");
+                final String substring = curSql[0].substring(seqIndex, dotIndex);
+                String tableName = TalendTextUtils.removeQuotesForField(substring, dbType);
                 List<String> columns = getColumnsByTableName(tableName);
                 if (columns != null) {
                     list.addAll(columns);
@@ -482,14 +482,16 @@ public class SQLEditorProposalUtil {
         if (quoteIndex > seqIndex) {
             seqIndex = quoteIndex;
         }
-        
-        String quote = TalendTextUtils.getQuoteByDBType(dbType);
+
+        String quote = TalendTextUtils.getQuoteByDBType(dbType, false);
         if (curSql[0].contains(quote) && seqIndex < curSql[0].lastIndexOf(quote)) {
-            int lquote = curSql[0].substring(0, curSql[0].lastIndexOf(quote) - 1).lastIndexOf(quote);
+            int i = curSql[0].lastIndexOf(quote) - 1;
+            quote = TalendTextUtils.getQuoteByDBType(dbType, true);
+            int lquote = curSql[0].substring(0, i).lastIndexOf(quote);
             if (lquote > -1 && lquote < seqIndex) {
                 seqIndex = lquote;
                 hasInput = curSql[0].substring(seqIndex);
-                
+
             } else {
                 seqIndex += 1;
             }
@@ -536,10 +538,8 @@ public class SQLEditorProposalUtil {
                     index = string2.indexOf("."); //$NON-NLS-1$
                     tmp2 = string2.substring(index + 2, string2.length() - 1).replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                if (tmp2.toLowerCase().startsWith(
-                        newHasInput.toLowerCase().replaceAll(TalendTextUtils.getQuoteByDBType(dbType), ""))
-                        || column.toLowerCase().startsWith(
-                                newHasInput.toLowerCase().replaceAll(TalendTextUtils.getQuoteByDBType(dbType), ""))) {
+                final String toLowerCase = TalendTextUtils.removeQuotesForField(newHasInput, dbType).toLowerCase();
+                if (tmp2.toLowerCase().startsWith(toLowerCase) || column.toLowerCase().startsWith(toLowerCase)) {
                     proposals.add(createAllProposal(hasInput, string));
                 }
             }
