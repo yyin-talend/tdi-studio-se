@@ -1,5 +1,4 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
@@ -17,7 +16,6 @@ imports="
 	java.util.LinkedList
 	
 "
-class="FirebirdOutputMain"
 %>
 
 <%

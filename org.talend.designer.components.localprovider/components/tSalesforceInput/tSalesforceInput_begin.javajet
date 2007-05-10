@@ -1,5 +1,4 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 
@@ -12,7 +11,6 @@ imports="
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
 		"
-class="tSalesforceInputBegin" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;

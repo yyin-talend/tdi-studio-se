@@ -1,5 +1,4 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
 	imports="
 	
 	org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -22,7 +21,7 @@
 		java.util.Set
 		java.util.HashSet
 	" 
-	class="ELTOracleMapMain" %>
+%>
 <%
 
 

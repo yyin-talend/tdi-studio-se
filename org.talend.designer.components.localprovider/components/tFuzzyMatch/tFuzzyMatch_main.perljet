@@ -1,5 +1,4 @@
 <%@ jet
-package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.EConnectionType
@@ -13,11 +12,9 @@ imports="
     java.util.ArrayList
     org.talend.commons.utils.StringUtils
 "
-class="FuzzyMatchMain"
 %>
 
 <%@ jet
-package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
@@ -29,7 +26,6 @@ imports="
     java.util.ArrayList
     org.talend.commons.utils.StringUtils
 "
-class="FuzzyMatchMain"
 %>
 
 <%

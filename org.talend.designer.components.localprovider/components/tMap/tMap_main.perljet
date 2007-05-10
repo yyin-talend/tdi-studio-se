@@ -1,5 +1,4 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
 	imports="
 	java.util.ArrayList
 	java.util.Collections
@@ -26,7 +25,7 @@
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
 	" 
-	class="MapperMain" %>
+%>
 <%
 
 

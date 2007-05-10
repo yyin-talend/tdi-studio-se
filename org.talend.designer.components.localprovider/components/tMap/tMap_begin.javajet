@@ -1,5 +1,4 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 	imports="
 	java.util.ArrayList
 	java.util.List
@@ -20,7 +19,6 @@ package="org.talend.designer.codegen.translators"
 	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
 	org.talend.core.model.metadata.types.JavaTypesManager
 	" 
-	class="MapperBegin" 
 %>
 
 <%

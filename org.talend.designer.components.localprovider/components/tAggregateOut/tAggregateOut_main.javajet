@@ -1,5 +1,4 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable
@@ -13,7 +12,6 @@ imports="
     java.util.List
     java.util.Map
 "
-class="AggregateOutMain"
 %>
 
 <%

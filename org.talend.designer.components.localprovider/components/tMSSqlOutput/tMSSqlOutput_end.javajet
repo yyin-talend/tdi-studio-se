@@ -1,11 +1,9 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 " 
-class="MsSqlOutputEnd" 
 %>
 
 <%

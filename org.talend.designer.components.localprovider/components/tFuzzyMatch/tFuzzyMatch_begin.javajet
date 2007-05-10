@@ -1,5 +1,4 @@
 <%@ jet 
-package="org.talend.designer.codegen.translators" 
 imports="
 
 	org.talend.core.model.process.IConnection
@@ -10,7 +9,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 " 
-class="FuzzyMatchBegin" 
 %>
 
 

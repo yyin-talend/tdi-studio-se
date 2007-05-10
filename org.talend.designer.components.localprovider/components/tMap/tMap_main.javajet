@@ -1,5 +1,4 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
 	imports="
 	java.util.ArrayList
 	java.util.Collections
@@ -32,7 +31,7 @@
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 	" 
-	class="MapperMain" %>
+%>
 <%
 
 
