@@ -32,9 +32,18 @@
 <PARAMETERS>
     
     <PARAMETER
-      NAME="USER"
+      NAME="ENDPOINT"
       FIELD="TEXT"
       NUM_ROW="1"
+      REQUIRED="true"
+    >
+      <DEFAULT>"https://www.salesforce.com/services/Soap/u/9.0"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="2"
       REQUIRED="true"
     >
       <DEFAULT>"youremail@yourcompany.com"</DEFAULT>
@@ -43,7 +52,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REQUIRED="true"
     >
       <DEFAULT>"password"</DEFAULT>
@@ -53,7 +62,7 @@
    <PARAMETER
       NAME="ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="3"      
+      NUM_ROW="4"      
       REQUIRED="true"
     >
       <ITEMS DEFAULT="insert">
@@ -63,7 +72,7 @@
       </ITEMS>
     </PARAMETER>
   
-    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="4" REQUIRED="true">
+    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
        <ITEMS DEFAULT="Account">
 	  <ITEM NAME="Account"   VALUE="Account" />
       <ITEM NAME="AccountContactRole"   VALUE="AccountContactRole" />
@@ -155,7 +164,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REQUIRED="true"
     >    
      
@@ -193,13 +202,6 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Rating" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="Site" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLAExpirationDate__c" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Active__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="CustomerPriority__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLA__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="UpsellOpportunity__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLASerialNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountContactRole') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -316,10 +318,6 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="PotentialLiability__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Product__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLAViolation__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="EngineeringReqNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseComment') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="ParentId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -381,8 +379,6 @@
          <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Level__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="Languages__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Contract') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -522,11 +518,6 @@
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsConverted" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsUnreadByOwner" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Primary__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="ProductInterest__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="15" NAME="SICCode__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadHistory') and (ACTION=='insert')">
       </TABLE>
@@ -570,11 +561,6 @@
          <COLUMN KEY="false" LENGTH="18" NAME="CampaignId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="Pricebook2Id" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="DeliveryInstallationStatus__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="MainCompetitors__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="8" NAME="OrderNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="TrackingNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="OpportunityId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -808,13 +794,6 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Rating" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="Site" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLAExpirationDate__c" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Active__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="CustomerPriority__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLA__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="UpsellOpportunity__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLASerialNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountContactRole') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>      
@@ -934,10 +913,6 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="PotentialLiability__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Product__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLAViolation__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="EngineeringReqNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseComment') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1000,8 +975,6 @@
          <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Level__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="Languages__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Contract') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1130,11 +1103,6 @@
          <COLUMN KEY="false" LENGTH="0" NAME="NumberOfEmployees" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsUnreadByOwner" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Primary__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="ProductInterest__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="15" NAME="SICCode__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadHistory') and (ACTION=='update')">
       </TABLE>
@@ -1178,11 +1146,6 @@
          <COLUMN KEY="false" LENGTH="18" NAME="CampaignId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="Pricebook2Id" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="DeliveryInstallationStatus__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="MainCompetitors__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="8" NAME="OrderNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="TrackingNumber__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>

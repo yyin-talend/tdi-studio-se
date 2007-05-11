@@ -17,6 +17,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();    
 
+	String endpoint = ElementParameterParser.getValue(node, "__ENDPOINT__");
+	
 	String modulename = ElementParameterParser.getValue(node, "__MODULENAME__");
 
 	String username = ElementParameterParser.getValue(node, "__USER__");
@@ -46,7 +48,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int nb_line_<%=cid %> = 0;
         org.talend.salesforce.SforceManagement sforceManagement_<%=cid %> = new org.talend.salesforce.SforceManagementImpl();
         
-        sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>);
+        sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>);
         
         StringBuffer sb_<%=cid %> = new StringBuffer();
         sb_<%=cid %>.append("SELECT ");
