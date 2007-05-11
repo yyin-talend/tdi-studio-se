@@ -82,7 +82,7 @@ public final class ImportDemoProjectAction extends Action {
             return;
         }
 
-        ProgressDialog progressDialog = new ProgressDialog(shell, 1) {
+        ProgressDialog progressDialog = new ProgressDialog(shell) {
 
             private IProgressMonitor monitorWrap;
 
