@@ -539,8 +539,9 @@ public class DataProcess {
 
         boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
         boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
+        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue();
 
-        if (dbFlag || file) {
+        if (dbFlag || file || console) {
             // will add the Stats & Logs managements
             Boolean realTimeStats = (Boolean) process.getElementParameter("CATCH_REALTIME_STATS").getValue();
 
@@ -553,7 +554,9 @@ public class DataProcess {
                 }
             }
 
-            for (DataNode node : StatsAndLogsManager.getStatsAndLogsNodes(process)) {
+            List<DataNode> statsAndLogsNodeList = StatsAndLogsManager.getStatsAndLogsNodes(process);
+
+            for (DataNode node : statsAndLogsNodeList) {
                 buildCheckMap.put(node, node);
                 dataNodeList.add(node);
                 replaceMultipleComponents(node);

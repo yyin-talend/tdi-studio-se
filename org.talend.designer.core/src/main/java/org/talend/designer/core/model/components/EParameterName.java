@@ -119,7 +119,9 @@ public enum EParameterName {
     JAVA_CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")),
     JAVA_CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")),
     JAVA_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")),
-    JAVA_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats"));
+    JAVA_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), 
+    
+    ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag"));
 
     private String displayName;
 

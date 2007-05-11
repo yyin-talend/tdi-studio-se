@@ -57,7 +57,9 @@ public class StatsAndLogsManager {
         }
         boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
 
-        if (!file && !dbFlag) {
+        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue();
+
+        if (!file && !dbFlag && !console) {
             return nodeList;
         }
 
@@ -67,7 +69,7 @@ public class StatsAndLogsManager {
         } else {
             basePath = basePath.replace("\\", "/") + "+ \"/\" +";
         }
-        DataNode logsNode = createLogsNode(file, dbOutput);
+        DataNode logsNode = createLogsNode(file, console, dbOutput);
         logsNode.getElementParameter("FILENAME").setValue(
                 basePath + process.getElementParameter("FILENAME_LOGS").getValue());
         logsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
@@ -77,14 +79,17 @@ public class StatsAndLogsManager {
         logsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue());
         logsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue());
         logsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_LOGS").getValue());
-        logsNode.getElementParameter("CATCH_RUNTIME_ERRORS").setValue(process.getElementParameter("CATCH_RUNTIME_ERRORS").getValue());
-        logsNode.getElementParameter("CATCH_USER_ERRORS").setValue(process.getElementParameter("CATCH_USER_ERRORS").getValue());
-        logsNode.getElementParameter("CATCH_USER_WARNING").setValue(process.getElementParameter("CATCH_USER_WARNING").getValue());
+        logsNode.getElementParameter("CATCH_RUNTIME_ERRORS").setValue(
+                process.getElementParameter("CATCH_RUNTIME_ERRORS").getValue());
+        logsNode.getElementParameter("CATCH_USER_ERRORS").setValue(
+                process.getElementParameter("CATCH_USER_ERRORS").getValue());
+        logsNode.getElementParameter("CATCH_USER_WARNING").setValue(
+                process.getElementParameter("CATCH_USER_WARNING").getValue());
 
         logsNode.setProcess(process);
         nodeList.add(logsNode);
 
-        DataNode statsNode = createStatsNode(file, dbOutput);
+        DataNode statsNode = createStatsNode(file, console, dbOutput);
         statsNode.getElementParameter("FILENAME").setValue(
                 basePath + process.getElementParameter("FILENAME_STATS").getValue());
         statsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
@@ -94,14 +99,15 @@ public class StatsAndLogsManager {
         statsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue());
         statsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue());
         statsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_STATS").getValue());
+
         statsNode.setProcess(process);
         nodeList.add(statsNode);
 
         return nodeList;
     }
 
-    private static DataNode createLogsNode(boolean useFile, String dbOutput) {
-        JobLogsComponent logsComponent = new JobLogsComponent(useFile, dbOutput);
+    private static DataNode createLogsNode(boolean useFile, boolean console, String dbOutput) {
+        JobLogsComponent logsComponent = new JobLogsComponent(useFile, console, dbOutput);
         DataNode logsNode = new DataNode(logsComponent, LOG_UNIQUE_NAME);
         logsNode.setStart(true);
         logsNode.setSubProcessStart(true);
@@ -127,8 +133,8 @@ public class StatsAndLogsManager {
         return logsNode;
     }
 
-    private static DataNode createStatsNode(boolean useFile, String dbOutput) {
-        JobStatsComponent statsComponent = new JobStatsComponent(useFile, dbOutput);
+    private static DataNode createStatsNode(boolean useFile, boolean console, String dbOutput) {
+        JobStatsComponent statsComponent = new JobStatsComponent(useFile, console, dbOutput);
         DataNode statsNode = new DataNode(statsComponent, STAT_UNIQUE_NAME);
         statsNode.setStart(true);
         statsNode.setSubProcessStart(true);

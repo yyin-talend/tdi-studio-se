@@ -47,6 +47,8 @@ import org.talend.designer.core.model.components.MultipleComponentManager;
 public abstract class AbstractStatsLogsComponent implements IComponent {
 
     protected boolean useDb = false;
+    
+    protected boolean useConsole = false;
 
     protected String dbComponent;
 
@@ -55,7 +57,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     protected String componentId;
 
     protected String subComponent;
-    
+
     protected IMultipleComponentManager multipleComponentManager;
 
     // no use for virtual component
@@ -193,7 +195,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         newParam.setName("SERVER");
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
-        
+
         newParam = new ElementParameter(node);
         newParam.setName("DSN");
         newParam.setField(EParameterFieldType.TEXT);
@@ -287,10 +289,12 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     protected void loadMultipleComponentManager() {
-        String lastComponent;
-        if (useDb) {
+        String lastComponent= null;
+        if (useConsole) {
+            lastComponent = "CONSOLE";
+        } else if(useDb) {
             lastComponent = "DB";
-        } else {
+        }else{
             lastComponent = "FILE";
         }
         // create base items
@@ -303,6 +307,10 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         if (useDb) {
             currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "DB"));
             currentItem = multipleComponentManager.addItem("DB", dbComponent);
+        }
+        if (useConsole) {
+            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "CONSOLE"));
+            currentItem = multipleComponentManager.addItem("CONSOLE", "tLogRow");
         }
 
         createMultipleComponentsParameters();
@@ -334,9 +342,12 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY");
             multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB");
         }
+
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponent#getMultipleComponentManager()
      */
     public IMultipleComponentManager getMultipleComponentManager() {

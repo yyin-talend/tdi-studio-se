@@ -29,12 +29,13 @@ package org.talend.designer.core.model.process.statsandlogs;
  */
 public class JobStatsComponent extends AbstractStatsLogsComponent {
 
-    public JobStatsComponent(boolean useFile, String dbComponent) {
+    public JobStatsComponent(boolean useFile, boolean useConsole, String dbComponent) {
         if (dbComponent != null) {
             this.useDb = true;
             this.dbComponent = dbComponent;
         }
         this.useFile = useFile;
+        this.useConsole = useConsole;
         this.componentId = "STATS";
         this.subComponent = "tStatCatcher";
 

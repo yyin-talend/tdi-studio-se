@@ -37,12 +37,13 @@ import org.talend.designer.core.model.components.ElementParameter;
  */
 public class JobLogsComponent extends AbstractStatsLogsComponent {
 
-    public JobLogsComponent(boolean useFile, String dbComponent) {
+    public JobLogsComponent(boolean useFile, boolean useConsole, String dbComponent) {
         if (dbComponent != null) {
             this.useDb = true;
             this.dbComponent = dbComponent;
         }
         this.useFile = useFile;
+        this.useConsole = useConsole;
         this.componentId = "LOGS";
         this.subComponent = "tLogCatcher";
 
