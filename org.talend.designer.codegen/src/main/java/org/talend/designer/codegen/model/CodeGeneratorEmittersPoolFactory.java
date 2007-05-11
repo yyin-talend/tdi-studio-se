@@ -206,7 +206,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         pluginDependency);
             }
             
-            jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(component.getFamily()).toLowerCase());
+            jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(component.getFamily().split("|", 2)[1]).toLowerCase());
 
             if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
                 jetBean.addClassPath("EXTERNAL_COMPONENT_"
