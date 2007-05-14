@@ -205,8 +205,12 @@ public final class CodeGeneratorEmittersPoolFactory {
                 jetBean.addClassPath(pluginDependency.toUpperCase().replaceAll("\\.", "_") + "_LIBRARIES",
                         pluginDependency);
             }
-            
-            jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(component.getFamily().split("|", 2)[1]).toLowerCase());
+
+            String familyName = component.getFamily();
+            if (familyName.contains("|")) {
+                familyName = component.getFamily().substring(0, component.getFamily().indexOf("|"));
+            }
+            jetBean.setFamily(StringUtils.removeSpecialCharsForPackage(familyName.toLowerCase()));
 
             if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
                 jetBean.addClassPath("EXTERNAL_COMPONENT_"
@@ -252,14 +256,14 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         try {
             TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath);
-            
+
             try {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
                         .loadEmittersPool(), components);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
-                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                            dummyEmitter.getTalendEclipseHelper());
+                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(),
+                            jetBean.getCodePart(), dummyEmitter.getTalendEclipseHelper());
                     emitter.setMethod(jetBean.getMethod());
                     emitterPool.put(jetBean, emitter);
                     monitorWrap.worked(1);
@@ -272,8 +276,8 @@ public final class CodeGeneratorEmittersPoolFactory {
             for (JetBean jetBean : components) {
                 if (!emitterPool.containsKey(jetBean)) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
-                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                            dummyEmitter.getTalendEclipseHelper());
+                            .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(),
+                            jetBean.getCodePart(), dummyEmitter.getTalendEclipseHelper());
                     emitter.initialize(sub);
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
