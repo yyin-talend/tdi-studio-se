@@ -58,6 +58,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
 
+    private static boolean isFirst = true;
+
     /*
      * (non-Javadoc)
      * 
@@ -88,8 +90,9 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                 fileName = fileName.substring(1);
             }
             File f = new File(systemModuleURL.getPath());
-            if (f.isDirectory()) {
+            if (f.isDirectory() && isFirst) {
                 syncModule(f.listFiles());
+                isFirst = false;
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -153,7 +156,9 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             out.delete(true, null);
         }
         FileInputStream fis = new FileInputStream(in);
-        out.create(fis, true, null);
+        if (!out.exists()) {
+            out.create(fis, true, null);
+        }
         fis.close();
     }
 
