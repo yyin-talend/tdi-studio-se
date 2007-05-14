@@ -111,8 +111,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
                     list.add(resource);
                 }
             }
@@ -408,14 +407,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name
-        if (manager.existTempFile()) {
-            manager.deleteTempFiles();
-        }
+        manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess()
-                    .getDefaultContext(), false, false);
+            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext(),
+                    false, false);
         }
         return ok;
     }
@@ -427,8 +424,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
-                resourcesToExport, getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue());
         return exporterOperation;
     }
 

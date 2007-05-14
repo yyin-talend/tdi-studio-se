@@ -108,9 +108,18 @@ public abstract class JobScriptsManager {
             String... codeOptions);
 
     protected String getTmpFolder() {
-        String tmpFold = System.getProperty("user.dir"); //$NON-NLS-1$
-        tmpFold = tmpFold + "/talendExporter"; //$NON-NLS-1$
+        String tmpFold = getTmpFolderPath();
+        File f = new File(tmpFold);
+        if (!f.exists()) {
+            f.mkdir();
+        }
         return tmpFold;
+    }
+
+    private String getTmpFolderPath() {
+        String tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        tmpFolder = tmpFolder + "/talendExporter"; //$NON-NLS-1$
+        return tmpFolder;
     }
 
     /**
@@ -149,10 +158,6 @@ public abstract class JobScriptsManager {
         String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, escapeFileNameSpace(process), contextName, statisticPort,
                 tracePort, codeOptions);
         String tmpFold = getTmpFolder();
-        File fileTemp = new File(tmpFold);
-        if (!fileTemp.exists()) {
-            fileTemp.mkdir();
-        }
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
             createLauncherFile(process, list, unixCmd, UNIX_LAUNCHER, tmpFold);
@@ -162,7 +167,7 @@ public abstract class JobScriptsManager {
         } else if (environment.equals(WINDOWS_ENVIRONMENT)) {
             createLauncherFile(process, list, windowsCmd, WINDOWS_LAUNCHER, tmpFold);
         }
-        
+
         return list;
     }
 
@@ -220,8 +225,12 @@ public abstract class JobScriptsManager {
      * Deletes the temporary files.
      */
     public void deleteTempFiles() {
-        String tmpFold = getTmpFolder();
-        deleteDirectory(new File(tmpFold));
+        String tmpFold = getTmpFolderPath();
+        File file = new File(tmpFold);
+        if (!file.exists() && !file.isDirectory()) {
+            return;
+        }
+        deleteDirectory(file);
     }
 
     public void deleteDirectory(File dir) {
@@ -235,12 +244,6 @@ public abstract class JobScriptsManager {
             }
         }
         dir.delete();
-    }
-
-    public boolean existTempFile() {
-        String tmpFold = getTmpFolder();
-        File f = new File(tmpFold);
-        return f.exists();
     }
 
     /**

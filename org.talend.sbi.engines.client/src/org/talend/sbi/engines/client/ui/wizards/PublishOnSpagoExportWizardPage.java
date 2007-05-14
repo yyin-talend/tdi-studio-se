@@ -413,9 +413,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name
-        if (manager.existTempFile()) {
-            manager.deleteTempFiles();
-        }
+        manager.deleteTempFiles();
+        
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
@@ -437,22 +436,22 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
             List<SpagoBiServer> listServerSapgo = null;
 
-//            ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
-//            try {
-                listServerSapgo = SpagoBiServerHelper.parse(new SpagoBiPreferencePage().getPreferenceStore().getString(
-                        SpagoBiServer.SPAGOBI_SERVER));
-                if (listServerSapgo != null && !listServerSapgo.isEmpty()) {
-                    Iterator<SpagoBiServer> iterator = listServerSapgo.iterator();
-                    while (iterator.hasNext()) {
-                        spagoBiServer = iterator.next();
-                        if (spagoBiServer.getEngineName().equals(selectedSpagoBiEngineName)) {
-                            break;
-                        }
+            // ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+            // try {
+            listServerSapgo = SpagoBiServerHelper.parse(new SpagoBiPreferencePage().getPreferenceStore().getString(
+                    SpagoBiServer.SPAGOBI_SERVER));
+            if (listServerSapgo != null && !listServerSapgo.isEmpty()) {
+                Iterator<SpagoBiServer> iterator = listServerSapgo.iterator();
+                while (iterator.hasNext()) {
+                    spagoBiServer = iterator.next();
+                    if (spagoBiServer.getEngineName().equals(selectedSpagoBiEngineName)) {
+                        break;
                     }
                 }
-//            } catch (PersistenceException e) {
-//                displayErrorDialog(e.getMessage());
-//            }
+            }
+            // } catch (PersistenceException e) {
+            // displayErrorDialog(e.getMessage());
+            // }
 
             String user = spagoBiServer.getLogin();// "biadmin";
             String password = spagoBiServer.getPassword();// "biadmin";
