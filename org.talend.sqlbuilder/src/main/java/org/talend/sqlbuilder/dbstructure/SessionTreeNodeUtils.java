@@ -147,10 +147,9 @@ public class SessionTreeNodeUtils {
      */
     private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
             throws Exception {
-        ExtractMetaDataUtils.getConnection(dbType, url, userName, url, userName, password);
-        // Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
-        // Connection connection = DriverManager.getConnection(url, userName, password);
-        SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
+        Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        SQLConnection sqlConnection = new SQLConnection(connection, null);
         return sqlConnection;
     }
 
