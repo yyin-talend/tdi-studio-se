@@ -49,7 +49,7 @@
     	}
     	
     	try {
-    		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
+    		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getSystemResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
     		if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
@@ -57,7 +57,7 @@
 	    	}
     		
     		if (contextStr.compareTo("Default")!=0) {
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
+    			inContext = <%=process.getName() %>.class.getClassLoader().getSystemResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
     			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();
