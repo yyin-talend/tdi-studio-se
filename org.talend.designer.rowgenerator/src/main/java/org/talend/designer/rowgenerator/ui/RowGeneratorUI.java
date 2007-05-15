@@ -209,7 +209,8 @@ public class RowGeneratorUI {
      */
     public void convert(IMetadataTable outputMetaTable2) {
         List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
-        for (IMetadataColumn column : outputMetaTable2.getListColumns()) {
+        for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
+            IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
             if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
                 List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
@@ -219,7 +220,7 @@ public class RowGeneratorUI {
                 }
                 ext.setArrayFunctions(arrayTalendFunctions2);
                 if (!funs.isEmpty()) {
-                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode));
+                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode, j));
                 }
                 exts.add(ext);
             }

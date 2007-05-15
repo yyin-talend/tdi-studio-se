@@ -155,8 +155,8 @@ public class FunctionManager {
         return currentFun;
     }
 
-    public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode) {
-        String value = externalNode.getColumnValue(bean);
+    public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode, int index) {
+        String value = externalNode.getColumnValue(bean, index);
         List<Function> functions = getFunctionByName(bean.getTalendType());
         Function currentFun = getAvailableFunFromValue(value, functions);
         if (currentFun == null) {
@@ -276,4 +276,5 @@ public class FunctionManager {
         }
         return null;
     }
+
 }

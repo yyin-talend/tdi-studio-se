@@ -388,12 +388,12 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
     }
 
-    public String getColumnValue(IMetadataColumn ext) {
-        String arrayValue = ""; //$NON-NLS-1$
+    public String getColumnValue(IMetadataColumn ext, int index) {
         List<Map<String, Object>> map = getMapList();
+        String arrayValue = (String) map.get(index).get(ARRAY); //$NON-NLS-1$
         for (int i = 0; i < map.size(); i++) {
             Map<String, Object> line = map.get(i);
-            if (line.get(COLUMN_NAME).equals(ext.getLabel())) {
+            if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
                 arrayValue = (String) line.get(ARRAY);
             }
         }
@@ -469,13 +469,12 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         componentDocumentation.setComponentName(componentName);
         componentDocumentation.setTempFolderPath(tempFolderPath);
         componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
-        
+
         // Added parameters, preview and functions value.
         for (IMetadataTable table : this.metadataListOut) {
             this.convert(table);
         }
 
-      
         componentDocumentation.setMetadataListOut(this.metadataListOut);
 
         return componentDocumentation;
@@ -489,7 +488,8 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     private void convert(IMetadataTable metadataTable) {
         List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
-        for (IMetadataColumn column : metadataTable.getListColumns()) {
+        for (int j = 0; j < metadataTable.getListColumns().size(); j++) {
+            IMetadataColumn column = metadataTable.getListColumns().get(j);
             if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
 
@@ -502,7 +502,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
                 }
                 ext.setArrayFunctions(arrayTalendFunctions2);
                 if (!funs.isEmpty()) {
-                    ext.setFunction(functionManager.getFuntionFromArray(ext, this));
+                    ext.setFunction(functionManager.getFuntionFromArray(ext, this, j));
                 }
                 exts.add(ext);
             }
