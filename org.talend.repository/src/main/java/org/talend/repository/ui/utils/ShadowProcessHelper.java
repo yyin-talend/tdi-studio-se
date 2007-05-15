@@ -75,18 +75,21 @@ public class ShadowProcessHelper {
         processDescription.setFilepath(TalendTextUtils.addQuotes(PathUtils.getPortablePath(connection.getFilePath())));
 
         processDescription.setServer(TalendTextUtils.addQuotes(connection.getServer()));
-        processDescription.setFieldSeparator(TalendTextUtils.addQuotes(connection.getFieldSeparatorValue())); //$NON-NLS-1$
         
-        // PTODO cantoine : view with plegall for RowSeparator
+        // PTODO cantoine : view with plegall for FieldSeparator, RowSeparator to keep " character in perlProject
+        processDescription.setFieldSeparator("\"" + connection.getFieldSeparatorValue() +"\""); //$NON-NLS-1$
         processDescription.setRowSeparator("\"" + connection.getRowSeparatorValue() + "\""); //$NON-NLS-1$
-//        processDescription.setRowSeparator(TalendTextUtils.addQuotes(connection.getRowSeparatorValue())); //$NON-NLS-1$
 
-        processDescription.setPattern(TalendTextUtils.addQuotes(connection.getFieldSeparatorValue())); //$NON-NLS-1$
+        //we make differences between Pattern in DELIMITED, CSV and REGEX FileConnection
+        if (connection.getEscapeChar() != null || connection.getTextEnclosure() != null){
+            processDescription.setPattern("\"" + connection.getFieldSeparatorValue() + "\""); //$NON-NLS-1$    
+        }else{
+            processDescription.setPattern(TalendTextUtils.addQuotes(connection.getFieldSeparatorValue())); //$NON-NLS-1$            
+        }
 
         processDescription.setHeaderRow(connection.getHeaderValue());
         processDescription.setFooterRow(connection.getFooterValue());
         processDescription.setLimitRows(connection.getLimitValue());
-
         if (connection.getEscapeChar() != null
                 && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$
             processDescription.setEscapeCharacter(TalendTextUtils.addQuotes(connection.getEscapeChar())); //$NON-NLS-1$
