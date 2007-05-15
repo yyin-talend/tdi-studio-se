@@ -34,9 +34,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -104,11 +106,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
                     escapeSpace(launcher), statisticPort, tracePort, codeOptions));
-            
+
             List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
-            
-            
+
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
             // add children jobs
@@ -139,6 +140,33 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(talendLibraries);
 
         return list;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager#getSource(org.talend.core.model.properties.ProcessItem,
+     * boolean)
+     */
+    @Override
+    protected List<URL> getSource(ProcessItem processItem, boolean needSource) {
+        List<URL> urls = super.getSource(processItem, needSource);
+        if(!needSource){
+            return urls;
+        }
+        // Get java src
+        try {
+            String projectName = getCurrentProjectName();
+            String jobName = processItem.getProperty().getLabel();
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
+
+            IPath path = getSrcRootLocation();
+            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
+            urls.add(FileLocator.toFileURL(path.toFile().toURL()));
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return urls;
     }
 
     private String calculateLibraryPathFromDirectory(String directory) {
@@ -223,7 +251,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String path = librariesService.getLibrariesPath();
-        //Gets all the jar files
+        // Gets all the jar files
         File file = new File(path);
         File[] files = file.listFiles(new FilenameFilter() {
 
@@ -245,7 +273,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             }
         }
-     
+
         for (int i = 0; i < files.length; i++) {
             File tempFile = files[i];
             try {
@@ -353,11 +381,32 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         IPath binPath = javaProject.getOutputLocation();
 
         IPath root = project.getParent().getLocation();
-
         binPath = root.append(binPath);
-
         URL url = binPath.toFile().toURL();
         return url.getPath();
+    }
+
+    /**
+     * Get the path of .JAVA/src
+     * 
+     * @throws Exception
+     */
+    private IPath getSrcRootLocation() throws Exception {
+        IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
+
+        IJavaProject javaProject = JavaCore.create(project);
+        IPackageFragmentRoot[] pp = javaProject.getAllPackageFragmentRoots();
+        IPackageFragmentRoot src = null;
+        for (IPackageFragmentRoot root : pp) {
+            if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                src = root;
+                break;
+            }
+        }
+
+        IPath root = project.getParent().getLocation();
+        root = root.append(src.getPath());
+        return root;
     }
 
     /**
