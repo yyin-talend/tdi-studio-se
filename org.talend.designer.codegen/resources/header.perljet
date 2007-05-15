@@ -72,13 +72,17 @@ use Time::HiRes qw/gettimeofday tv_interval time/;
 my %opt = ();
 GetOptions(
     \%opt,
-    qw/context=s stat_port=i trace_port=i watch father_pid=s root_pid=s/
+    qw/context=s stat_port=i trace_port=i client_host=s watch father_pid=s root_pid=s/
 );
 
 <%
+
+    $defaultClientHost = "127.0.0.1";
+	 $clientHost = $opt{client_host} ? $opt{client_host} : $defaultClientHost;
+	
     if (trace) {
 %>
-StartTrace($opt{trace_port}, '127.0.0.1') if defined $opt{trace_port};
+StartTrace($opt{trace_port}, $clientHost) if defined $opt{trace_port};
 <%
     }
 %>

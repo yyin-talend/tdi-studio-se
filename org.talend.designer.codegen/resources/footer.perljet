@@ -24,9 +24,10 @@
 # +-------------------------------------------------------------------------+ 
 
 <%
+		
         if (stats) {
 %>
-StartThreadStat($opt{stat_port}) if defined $opt{stat_port};
+StartThreadStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
 <%
        }
 %>

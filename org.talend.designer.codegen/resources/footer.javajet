@@ -21,6 +21,8 @@
     public static boolean watch = false;
     public static int portStats = 3334;
     public static int portTraces = 4334;
+    public static String clientHost;
+    public static String defaultClientHost = "localhost";
     public static String contextStr = "<%=codeGenArgument.getContextName() %>";
     public static String pid = "0";
     public static String rootPid = null;
@@ -32,6 +34,11 @@
     	for (String arg : args) {
     		<%=process.getName() %>.evalParam(arg);
     	}
+    	
+    	if(clientHost == null) {
+    		clientHost = defaultClientHost;
+    	}
+    	
     	
     	pid = TalendString.getAsciiRandomString(6);
     	if (rootPid==null) {
@@ -65,7 +72,7 @@
 		if (stats) {
 %>
 	try {
-		runStat.startThreadStat(portStats);
+		runStat.startThreadStat(clientHost, portStats);
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
 	}
@@ -77,7 +84,7 @@
 		if (trace) {
 %>
 		try {
-		runTrace.startThreadTrace(portTraces);
+		runTrace.startThreadTrace(clientHost, portTraces);
 	} catch (java.io.IOException ioException) {
 		ioException.printStackTrace();
 	}
@@ -147,6 +154,8 @@
     		portStats = Integer.parseInt(arg.substring(12));
     	} else if (arg.startsWith("--trace_port=")) {
     		portTraces = Integer.parseInt(arg.substring(13));
+    	} else if (arg.startsWith("--client_host=")) {
+    		clientHost = arg.substring(14);
     	} else if (arg.startsWith("--context=")) {
     		contextStr = arg.substring(10);
     	} else if (arg.startsWith("--father_pid=")) {
