@@ -22,54 +22,12 @@
      <PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="1" REQUIRED="true">
        <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xml"</DEFAULT>
      </PARAMETER>
-
-    <PARAMETER
-      NAME="ROOT_TAGS"
-      FIELD="TABLE"
-      REQUIRED="false"
-      NUM_ROW="2"
-      NB_LINES="3"
-    >
-      <ITEMS>
-        <ITEM NAME="TAG" />
-        
-      </ITEMS>
      
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="ROW_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="2"
-    >
-      <DEFAULT>"row"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COLNAME_AS_TAGNAME"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="3"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELD_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="3"
-      SHOW_IF="COLNAME_AS_TAGNAME == 'false'"
-    >
-      <DEFAULT>"field"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
+     <PARAMETER
       NAME="SPLIT"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="2"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -78,29 +36,80 @@
       NAME="SPLIT_EVERY"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="2"
       SHOW_IF="SPLIT == 'true'"
     >
       <DEFAULT>1000</DEFAULT>
     </PARAMETER>
-     
-     <PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="5" REQUIRED="true">
-       <DEFAULT>"ISO-8859-15"</DEFAULT>
-     </PARAMETER>
-     
-     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="6">
-       <DEFAULT/> 
-     </PARAMETER>
-     
-     <PARAMETER
-      NAME="REMOVE_NULL_FIELD"
+
+    <PARAMETER
+      NAME="ROOT_TAGS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="3"
+      NB_LINES="2"
+    >
+      <ITEMS>
+        <ITEM NAME="TAG" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ROW_TAG"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="3"
+    >
+      <DEFAULT>"row"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="5"
+      NB_LINES="5"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="AS_ATTRIBUTE" FIELD="CHECK" />
+      	<ITEM NAME="SCHEMA_COLUMN_NAME" FIELD="CHECK" VALUE="true" />
+        <ITEM NAME="LABEL" VALUE="label"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    
+    <PARAMETER
+      NAME="USE_DYNAMIC_GROUPING"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="7"
-      SHOW_IF="1!=1"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="GROUP_BY"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="10"
+      NB_LINES="3"
+      SHOW_IF="USE_DYNAMIC_GROUPING == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="COLUMN" FIELD="COLUMN_LIST" />
+        <ITEM NAME="LABEL" VALUE="name" />
+      </ITEMS>
+    </PARAMETER>    
+
+    
+     
+     <PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="13" REQUIRED="true">
+       <DEFAULT>"ISO-8859-15"</DEFAULT>
+     </PARAMETER>
+     
+     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="13">
+       <DEFAULT/> 
+     </PARAMETER>
 
    </PARAMETERS>
 

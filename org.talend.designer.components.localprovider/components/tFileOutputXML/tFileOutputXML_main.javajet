@@ -5,241 +5,262 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.Map
     org.talend.core.model.process.IConnection
-    org.talend.core.model.metadata.IMetadataColumn
 "
 %>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String split = ElementParameterParser.getValue(node, "__SPLIT__");
-String removeNullField = ElementParameterParser.getValue(node, "__REMOVE_NULL_FIELD__");
+String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
-
     IMetadataTable metadata = metadatas.get(0);
-    String cid = node.getUniqueName();
-
-    if (metadata!=null) {    
+    if (metadata!=null) {
+    String split = ElementParameterParser.getValue(node, "__SPLIT__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");	
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-        if (encoding!=null) {
-            if (encoding.equals("")) {
+	List rootTags = (List)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+    int footers = rootTags.size();
+    List<Map<String, String>> columnMapping = 
+    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__MAPPING__"
+            );
+    String useDynamicGrouping = ElementParameterParser.getValue(
+            node,
+            "__USE_DYNAMIC_GROUPING__"
+        );
+    List<Map<String, String>> groupBys =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUP_BY__"
+            );
+    if (useDynamicGrouping.equals("false")) {
+        groupBys.clear();
+    }
+    if (encoding!=null) {
+        if (encoding.equals("")) {
                 encoding = "ISO-8859-15";
-            }
         }
-        if(split.equals("true")){
-         
-%>
-if(currentRowQtyWithinFile_<%=cid%> >= splitEvery_<%=cid%>){
-<%
-List< ? extends IConnection> conns = node.getIncomingConnections();
-if(conns!=null && conns.size()>0){
-IConnection conn = conns.get(0);
-%>
-   String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
-
-   java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
-
-   int counter_<%=cid%> = 0;
-					
-	while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-		strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
-					
-      	<%		
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals("true")) {
-%>
-if (tok_<%=cid%>.hasMoreTokens()) {
-<%
-				}
-%>
-tkTag = tok_<%=cid%>.nextToken();
-<%
-				if(colnameAsTagname.equals("true")){
-			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
-			<%	
-				}else{
-					if (removeNullField.equals("true")) {
-%>
-		if (tkTag.compareTo("null")!=0) {
-<%
-			}
-			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
-				<%
-				}
-				if (removeNullField.equals("true")) {
-%>
-		}
-<%
-			}
-				if (removeNullField.equals("true")) {
-				%>
-}
-				<%
-				}				
-			}
-		%>
-		strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
-		nb_line_<%=cid%>++;
-		counter_<%=cid%>++;
-	}
-			
- 	rowCounter_<%=cid%> = 0;
-
-    buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());
-
-		<%
-		  if(split.equals("true")){
-		  %>     
-	currentRowQtyWithinFile_<%=cid%>++;			  
-		  <%
-		  }					
-}
-%>
-	java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
-	java.io.BufferedWriter out_<%=cid%> = null;
-	
-	try{
-	 out_<%=cid%> = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
-	                                
-    for (int i<%=cid %> = rootTag_<%=cid%>.length-1; i<%=cid %> >=0 ; i<%=cid %>--) {
-			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
-   		}
-    	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
-		out_<%=cid%>.flush();
-		out_<%=cid%>.close();
-	
-	}catch(java.io.UnsupportedEncodingException err){
-	err.printStackTrace();
-	}
-    currentRowQtyWithinFile_<%=cid%>=0;
-    splitedFileNo_<%=cid%>++;
-    strBuffer_<%=cid%> = new StringBuffer();
-}
-if(currentRowQtyWithinFile_<%=cid%>==0){
-strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
-	for (int i<%=cid %> = 0; i<%=cid %> < rootTag_<%=cid%>.length; i<%=cid %>++) {
-		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
     }
-    strBuffer_<%=cid%>.append("\n");
-}
+    String groupby[][] = new String[groupBys.size()][3];
+    for(int i = 0; i < groupBys.size(); i++){
+    	groupby[i][0] = groupBys.get(i).get("COLUMN");
+    	groupby[i][1] = groupBys.get(i).get("LABEL");
+    }
+    int atts = 0;
+    int tags = 0;
+    outter1:
+    for(int i = 0; i < columnMapping.size(); i++){
+    	Map<String, String> map = columnMapping.get(i);
+    	String col = metadata.getListColumns().get(i).getLabel();
+    	for(int j = 0; j < groupby.length; j++){
+    		if(groupby[j][0].equals(col)){
+    			if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    				groupby[j][2] = col;
+    			}else{
+    				groupby[j][2] = map.get("LABEL");
+    			}
+    			continue outter1;
+    		}
+    	}
+    	if(map.get("AS_ATTRIBUTE").equals("true")){
+    		atts ++;
+    	}else{
+    		tags ++;
+    	}
+    }
+    String[][] attribute = new String[atts][2];
+    String[][] tag = new String[tags][2];
+    int ia=0;
+    int it=0;
+    outter2:
+    for(int i = 0; i < columnMapping.size(); i++){
+    	Map<String, String> map = columnMapping.get(i);
+    	String col = metadata.getListColumns().get(i).getLabel();
+    	for(int j = 0; j < groupby.length; j++){
+    		if(groupby[j][0].equals(col)){
+    			continue outter2;
+    		}
+    	}
+    	if(map.get("AS_ATTRIBUTE").equals("true")){
+    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    			attribute[ia][1] = col;
+    		}else{
+    			attribute[ia][1] = map.get("LABEL");
+    		}
+    		attribute[ia++][0] = col;
+    	}else{
+    		if(map.get("SCHEMA_COLUMN_NAME").equals("true")){
+    			tag[it][1] = col;
+    		}else{
+    			tag[it][1] = map.get("LABEL");
+    		}
+    	    tag[it++][0] = col;
+    	}
+    }
+	if(groupby.length>0){
+%>
+String tempSt_<%=cid %> = null;
+
+boolean flag_<%=cid %> = true;
+ 
+groupby_new_<%=cid %> = 0;
+
 <%
-	  }
-    List< ? extends IConnection> conns = node.getIncomingConnections();
-		if(conns!=null && conns.size()>0){
+	}
+%><%
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
-		%>
-if (rowCounter_<%=cid%> >= bufferRowQtys_<%=cid%>) {
+		for(int i = 0; i < groupby.length; i++){
+%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%=conn.getName() %>.<%=groupby[i][0] %>+"\">";
 
-   String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
+if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
+	
+	if(flag_<%=cid %>){
+	
+		groupby_new_<%=cid %> = <%=i %>;
 
-   java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
+		flag_<%=cid %> = false;
+		
+		for(int i_<%=cid %> = <%=groupby.length-1 %>; i_<%=cid %> >= groupby_new_<%=cid %> && start_<%=cid %>; i_<%=cid %>--){
 
-   int counter_<%=cid%> = 0;
-                    		
- 	
- 	
-					
-	while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-		strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
-					
-      	<%		
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals("true")) {
-%>
-if (tok_<%=cid%>.hasMoreTokens()) {
-<%
-				}
-%>
-		tkTag = tok_<%=cid%>.nextToken();
-<%
-				if(colnameAsTagname.equals("true")){
-			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
-			<%	
-				}else{
-					if (removeNullField.equals("true")) {
-%>
-		if (tkTag.compareTo("null")!=0) {
-<%
-			}
-			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
-				<%
-				if (removeNullField.equals("true")) {
-%>
-		}
-<%
-			}
-				}
-				if (removeNullField.equals("true")) {
-				%>
-}
-				<%
-				}				
-			}
-		%>
-		strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
-		nb_line_<%=cid%>++;
-		counter_<%=cid%>++;
+			out_<%=cid %>.write(groupby_<%=cid %>[i_<%=cid %>][1]);
+	
+			out_<%=cid %>.newLine();
+	
+		}	
 	}
+
+	groupby_<%=cid %>[<%=i %>][0] = tempSt_<%=cid %>;
+	
+	out_<%=cid %>.write(tempSt_<%=cid %>);
+
+	out_<%=cid %>.newLine();
+	
+	if(!start_<%=cid %>){
 			
- 	rowCounter_<%=cid%> = 0;
-
-    buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());
-} 
-
-	if(strBuffer_<%=cid %>.length()>=strBufferSize_<%=cid%>){
-<%
-	if(split.equals("true")){
-%>	
-	java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
-	java.io.BufferedWriter out_<%=cid%> = null;
-	
-	try{
-	
-	 	out_<%=cid%> = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
-	                                
-	}catch(java.io.UnsupportedEncodingException err){
-	
-		err.printStackTrace();
-	}    
-<%
+		start_<%=cid %> = true;
+			
 	}
-%>
-		out_<%=cid %>.write(strBuffer_<%=cid %>.toString());
 		
-		out_<%=cid %>.flush();
-		
-		strBuffer_<%=cid %>.delete(0,strBuffer_<%=cid %>.length());
-		
+}else if(!flag_<%=cid %>){
+	
+	out_<%=cid %>.write(tempSt_<%=cid %>);
+	
+	out_<%=cid %>.newLine();
+	
+	if(!start_<%=cid %>){
+			
+		start_<%=cid %> = true;
+			
 	}
 	
-<%  
-	for(IMetadataColumn column:metadata.getListColumns()) {
-%>
-		buffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%> + "\n");
+}
+
 <%
-	}
-%>
-
-    rowCounter_<%=cid%>++;
-
-		<%
-		  if(split.equals("true")){
-		  %>     
-	currentRowQtyWithinFile_<%=cid%>++;			  
-		  <%
-		  }					
 		}
-    }
+%>StringBuilder tempRes_<%=cid %> = new StringBuilder("<"+<%=ElementParameterParser.getValue(node, "__ROW_TAG__")%>);
+
+<%
+for(int i = 0; i < attribute.length; i++){
+%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%=conn.getName()%>.<%=attribute[i][0] %>+"\"");
+
+<%
+}
+%><%
+if(tags > 0){
+%>tempRes_<%=cid %>.append(">");
+
+<%
+}else{
+%>tempRes_<%=cid %>.append("/>");
+
+<%
+}
+%>out_<%=cid %>.write(tempRes_<%=cid %>.toString());
+
+out_<%=cid %>.newLine();
+
+<%
+for(int i = 0; i < tag.length; i++){
+%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%=conn.getName()%>.<%=tag[i][0] %>+"</<%=tag[i][1]%>>");
+
+out_<%=cid %>.newLine();
+
+<%
+	if(i == tag.length -1){
+%>out_<%=cid %>.write("</"+<%=ElementParameterParser.getValue(node, "__ROW_TAG__")%>+">");
+
+out_<%=cid %>.newLine();
+
+<%
+	}
+}
+%>nb_line_<%=cid %>++;
+
+<%
+    if(split.equals("true")){
+    	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>currentRowCount_<%=cid %>++;
+
+if(currentRowCount_<%=cid %> == <%=ElementParameterParser.getValue(node, "__SPLIT_EVERY__") %>){
+	
+<%
+	for(int i = groupby.length - 1; i >=0; i--){
+%>out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
+
+out_<%=cid%>.newLine();
+		
+<%
+}
+%><%
+	for(int i = 0; i < footers;i++){
+%>out_<%=cid%>.write(footers_<%=cid %>[<%=i %>]);
+
+	out_<%=cid%>.newLine();
+	
+<%
+	}
+%>	
+	
+	out_<%=cid %>.close();
+	
+	currentFileCount_<%=cid %>++;
+	
+	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+
+<%
+	if(groupby.length > 0){
+%>start_<%=cid %> = false;  
+
+<%
+	}
+%>
+	
+<%
+	for(int i = 0; i <= footers;i++){
+%>	out_<%=cid%>.write(headers_<%=cid %>[<%=i %>]);
+
+	out_<%=cid%>.newLine();
+	
+<%
+	}
+for(int i = 0; i < groupby.length; i++){
+%>	groupby_<%=cid %>[<%=i %>][0] = "";
+
+<%
+}
+%>	currentRowCount_<%=cid %> = 0;
+	
+}
+<%
+	}
+%><%
+		}
+	}
 }
 %>
