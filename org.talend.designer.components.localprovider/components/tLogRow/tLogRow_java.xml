@@ -16,12 +16,83 @@
 		<CONNECTOR CTYPE="RUN_ERROR"/>
 		<CONNECTOR CTYPE="RUN_IF"/>
 	</CONNECTORS>
-   <PARAMETERS>
-      <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1"/>
-      <PARAMETER NAME="FIELDSEPARATOR" FIELD="TEXT" NUM_ROW="2">
-         <DEFAULT>"|"</DEFAULT>
-      </PARAMETER>
-   </PARAMETERS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="10"
+    />
+
+    <PARAMETER
+      NAME="TABLE_PRINT"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIELDSEPARATOR"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      SHOW_IF="TABLE_PRINT == 'false'"
+    >
+      <DEFAULT>"|"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT_HEADER"
+      FIELD="CHECK"
+      NUM_ROW="25"
+      SHOW_IF="TABLE_PRINT == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT_UNIQUE_NAME"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="TABLE_PRINT == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT_COLNAMES"
+      FIELD="CHECK"
+      NUM_ROW="40"
+      SHOW_IF="TABLE_PRINT == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_FIXED_LENGTH"
+      FIELD="CHECK"
+      NUM_ROW="50"
+      SHOW_IF="TABLE_PRINT == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LENGTHS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="60"
+      NB_LINES="5"
+      SHOW_IF="(USE_FIXED_LENGTH == 'true') and (TABLE_PRINT == 'false')"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="LENGTH" VALUE="10" />
+      </ITEMS>
+    </PARAMETER>
+
+  </PARAMETERS>
+
    <CODEGENERATION/>
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>

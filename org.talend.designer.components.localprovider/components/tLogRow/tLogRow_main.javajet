@@ -10,6 +10,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
+		java.util.Map
 		"
 %>
 <%
@@ -20,7 +21,15 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {//2
-        String cid = node.getUniqueName();
+    
+        String cid = node.getUniqueName();        
+
+		String tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__");
+
+        String printUniqueName = ElementParameterParser.getValue(node,"__PRINT_UNIQUE_NAME__");
+        String printColumnNames = ElementParameterParser.getValue(node,"__PRINT_COLNAMES__");
+        String useFixedLength = ElementParameterParser.getValue(node,"__USE_FIXED_LENGTH__");
+        List<Map<String, String>> lengths = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__LENGTHS__");
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
@@ -32,12 +41,45 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
 %>
+
+<%
+   if (tablePrint.equals("false")) {  // don't print the table form//***
+%>
+
+
 				StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+<% 
+   if (printUniqueName.equals("true")) {//print the component name.
+%>
+				strBuffer_<%=cid%>.append("[<%=cid%>] ");
+<%
+   }
+%>
+
+
 <%    			
     			for (int i = 0; i < sizeColumns; i++) {//5
   			
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+%>
+
+
+<% 
+   if (useFixedLength.equals("true")) {//fix the column length
+%>
+				java.util.Formatter formatter_<%=column.getLabel() %>_<%=cid%> = new java.util.Formatter(new StringBuffer());
+<%
+   }
+%>
+
+
+<% 
+   if (printColumnNames.equals("true")) {//print the schema name
+%>
+				strBuffer_<%=cid%>.append("<%=column.getLabel() %>: ");
+<%
+   }
 %>
 
 <%
@@ -48,7 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
     				} 
 %>              
-                 strBuffer_<%=cid%>.append(    						
+                 String temp_<%=cid%> =
+                     						
 <%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
@@ -61,11 +104,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%				
 					} else {//others
 %>
-								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
 <%				
 					}
 %>
-					          );	
+                    ;
+
+
+                    
+<% 
+   if (useFixedLength.equals("true")) {//fixed the column length
+%>
+				strBuffer_<%=cid%>.append(formatter_<%=column.getLabel() %>_<%=cid%>.format("%1$<%=lengths.get(i).get("LENGTH") %>s", temp_<%=cid%>).toString());
+<%
+   } else {
+%>							
+       
+				strBuffer_<%=cid%>.append(temp_<%=cid%>);
+<%
+  }
+%>
+
+
 							
 <%
 					if(!isPrimitive) {//end
@@ -83,7 +143,70 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 				}//5	
 %> 
-                    java.io.PrintStream consoleOut_<%=cid%> = null;
+
+
+<%
+	} else { //print the table form//***
+%>
+				
+				String[] row_<%=cid%> = new String[<%=sizeColumns %>];
+
+<%    			
+    			for (int i = 0; i < sizeColumns; i++) {//5
+  			
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+%>
+
+<%
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) { //begin
+%>   				
+	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
+<%
+    				} 
+%>              
+                 row_<%=cid%>[<%=i %>]=    						
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+%>
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%				
+					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
+%>
+								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%				
+					} else {//others
+%>    
+				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
+<%				
+					}
+%>
+					          ;	
+							
+<%
+					if(!isPrimitive) {//end
+%>
+	    		} //
+<%
+					} 
+%>			
+    			
+<%
+				}//5	
+%> 
+
+				util_<%=cid %>.addRow(row_<%=cid%>);	
+				nb_line_<%=cid %>++;
+<%
+  }	//***
+%>
+//////
+<%
+	if (tablePrint.equals("false")) {//print record one by one
+%>                    
+
                     if (globalMap.get("tLogRow_CONSOLE")!=null)
                     {
                     	consoleOut_<%=cid%> = (java.io.PrintStream) globalMap.get("tLogRow_CONSOLE");
@@ -97,6 +220,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                     consoleOut_<%=cid%>.println(strBuffer_<%=cid%>.toString());
                     consoleOut_<%=cid%>.flush();
                     nb_line_<%=cid %>++;
+<%
+  }
+%>
+//////                    
+                    
 ///////////////////////    			
 <%
     		}//4
