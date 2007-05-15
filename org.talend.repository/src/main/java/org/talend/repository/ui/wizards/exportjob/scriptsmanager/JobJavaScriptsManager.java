@@ -104,7 +104,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
                     escapeSpace(launcher), statisticPort, tracePort, codeOptions));
-
+            
+            List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
+            process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
+            
+            
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
             // add children jobs
