@@ -43,7 +43,10 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.IProcessor;
@@ -84,24 +87,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
-            int tracePort, String... codeOptions) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + "/" + USERROUTINE_JAR;
+            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + libPath
+                    + "/" + USERROUTINE_JAR;
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
                     tracePort != IProcessor.NO_TRACES);
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
-                    escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
+            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
+                    escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
                     .get(ExportChoice.needContext)));
@@ -129,7 +131,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(exportChoice.get(ExportChoice.needTalendLibraries));
+        List<URL> talendLibraries = getExternalLibraries(exportChoice.get(ExportChoice.needTalendLibraries), process);
         rootResource.addResources(talendLibraries);
 
         return list;
@@ -151,8 +153,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, resource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
+                        resource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -169,9 +171,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return allJobScripts;
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
-            String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
+            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
@@ -199,37 +200,48 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (childProcess == null) {
                 return;
             }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource,
-                    exportChoice);
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
         }
     }
 
     /**
      * Gets required java jars.
      * 
+     * @param process
+     * 
      * @param boolean1
      * @return
      */
-    private List<URL> getExternalLibraries(boolean needLibraries) {
+    private List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process) {
         List<URL> list = new ArrayList<URL>();
         if (!needLibraries) {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String path = librariesService.getLibrariesPath();
+        //Gets all the jar files
         File file = new File(path);
-        // Lists all the jar files
-        Set<String> listModulesReallyNeeded = new HashSet<String>();
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-        }
-
         File[] files = file.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
                 return name.toLowerCase().endsWith(".jar") ? true : false;
             }
         });
+        // Lists all the needed jar files
+        Set<String> listModulesReallyNeeded = new HashSet<String>();
+        IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
+        for (int i = 0; i < process.length; i++) {
+            ExportFileResource resource = process[i];
+            IProcess iProcess = designerService.getProcessFromProcessItem(resource.getProcess());
+            List<? extends INode> l2 = iProcess.getGraphicalNodes();
+            for (INode node : l2) {
+                List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
+                for (ModuleNeeded needed : moduleList) {
+                    listModulesReallyNeeded.add(needed.getModuleName());
+                }
+            }
+        }
+     
         for (int i = 0; i < files.length; i++) {
             File tempFile = files[i];
             try {
