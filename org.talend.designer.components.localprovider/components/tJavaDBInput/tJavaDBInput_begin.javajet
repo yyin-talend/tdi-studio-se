@@ -1,0 +1,348 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
+		java.util.List
+		"
+class="JavaDBInputBegin" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	
+	INode node = (INode)codeGenArgument.getArgument();
+	
+	String cid = node.getUniqueName();
+	
+	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	
+	String dbport = ElementParameterParser.getValue(node, "__PORT__");
+	
+	String db = ElementParameterParser.getValue(node, "__DB__");
+	
+	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
+	
+	String dbRootPath = ElementParameterParser.getValue(node, "__DBPATH__");
+		
+	String dbuser = ElementParameterParser.getValue(node, "__USER__");
+	
+	String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+	
+	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
+	
+	String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
+		   dbquery = dbquery.replaceAll("\n"," ");
+		   dbquery = dbquery.replaceAll("\r"," ");
+    
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {%>
+			
+			class NetworkServerUtil{
+				private int port;
+				private org.apache.derby.drda.NetworkServerControl serverControl;
+				private java.io.PrintWriter printWriter;
+				public NetworkServerUtil(int port, java.io.PrintWriter printWriter)
+				{
+					this.port = port;
+					this.printWriter = printWriter;
+					try
+					{
+						serverControl = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName("localhost"),port);
+						//printWriter.println("Derby Network Server created");
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+                /**
+                 * trace utility of server
+                 */
+                public void trace(boolean onoff) 
+                {
+                    try 
+                    {
+                    	serverControl.trace(onoff);
+                    } 
+                    catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            	/**
+            	 * Try to test for a connection
+            	 * Throws exception if unable to get a connection
+            	 */
+            	public void testForConnection() throws Exception
+            	{
+            		serverControl.ping();
+            	}
+                /**
+                 * Shutdown the NetworkServer
+                 */
+                public void shutdown()
+                {
+                	try
+                	{
+                		serverControl.shutdown();
+                	}
+                	catch(Exception e)
+                	{
+                		e.printStackTrace();
+                	}
+                }
+            	/**
+            	 * Start Derby Network server
+            	 * 
+            	 */
+            	public void start()
+            	{
+            		try
+            		{
+            			serverControl.start(printWriter);
+            		}
+            		catch(Exception e)
+            		{
+            			e.printStackTrace();
+            		}
+            	}                              	                 
+			}
+			class ConnectionUtil
+			{
+				private final String EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+				private final String JCCJDBC_DRIVER = "com.ibm.db2.jcc.DB2Driver";
+				private final String DERBYCLIENT_DRIVER = "org.apache.derby.jdbc.ClientDriver"; 
+				private NetworkServerUtil networkServer;
+				private String host;
+				private int port;
+				private String dbName;
+				private String dbRootPath;
+				private String frameworkType;
+				private String jdbcDriver;
+				private String url;
+				private java.sql.Connection conn;
+				private String userName;
+				private String password;
+				public ConnectionUtil(NetworkServerUtil networkServer, String frameworkType, String host, int port, String dbName, String dbRootPath)
+				{
+					this.networkServer = networkServer;
+					this.frameworkType = frameworkType;
+					this.host = host;
+					this.port = port;
+					this.dbName = dbName;
+					this.dbRootPath = dbRootPath;
+				}
+				public NetworkServerUtil getNetworkServer()
+				{
+					return this.networkServer;
+				}
+				public void setUserName(String userName)
+				{
+					this.userName = userName;
+				}
+				public void setPassword(String password)
+				{
+					this.password = password;
+				}
+				public String getFrameworkType()
+				{
+					return this.frameworkType;
+				}
+				private void createServer() throws Exception
+				{
+					networkServer.start();
+					//do we know if server is ready to accept connections
+					boolean knowIfServerUp = false;
+					int numTimes = 5;
+					// Test to see if server is ready for connections, for 15 seconds.
+				    while(!knowIfServerUp && (numTimes >0)) {
+    					try {
+    						// testing for connection to see if the network server is up and running
+    						// if server is not ready yet, this method will throw an exception
+    						numTimes--;
+    						networkServer.testForConnection();
+    						knowIfServerUp = true;
+    					}
+    					catch(Exception e) {
+    						System.out.println("Unable to obtain a connection to network server, trying again after 3000 ms.");
+    						Thread.currentThread().sleep(3000);
+    					}
+					}
+    				if(!knowIfServerUp) {
+    					System.out.println("Exiting, since unable to connect to Derby Network Server.");
+    					System.out.println("Please try to increase the amount of time to keep trying to connect to the Server.");
+    					System.exit(1);
+    				}
+					System.out.println("Derby Network Server started.");										 
+				}
+				
+				public java.sql.Connection getConnection() throws Exception
+				{
+					if(frameworkType.equals("EMBEDED"))
+					{
+						jdbcDriver = EMBEDDED_DRIVER;
+						url = "jdbc:derby:" + dbName;
+						//set the root path of the database
+						System.setProperty("derby.system.home",dbRootPath);
+					}
+					else if(frameworkType.equals("JCCJDBC"))
+					{
+						jdbcDriver = JCCJDBC_DRIVER;
+						url = "jdbc:derby:net://" + host + ":" + port + "/" + dbName;
+						this.createServer();
+					}
+					else
+					{
+						jdbcDriver = DERBYCLIENT_DRIVER;
+						url = "jdbc:derby://" + host + ":" + port + "/" + dbName;
+						this.createServer();				
+					}
+					Class.forName(jdbcDriver).newInstance();
+					java.util.Properties properties = new java.util.Properties();
+					properties.put("user",userName);
+					properties.put("password",password);
+					conn = java.sql.DriverManager.getConnection(url,properties);
+					return conn;					
+				}
+			}
+			
+			int nb_line_<%=cid%> = 0;
+			
+			java.io.PrintWriter printWriter_<%=cid%> = new java.io.PrintWriter(System.out,true);
+			
+			NetworkServerUtil networkServer_<%=cid%> = new NetworkServerUtil(Integer.parseInt(<%=dbport%>),printWriter_<%=cid%>);
+			
+			ConnectionUtil connectionUtil_<%=cid%> = new ConnectionUtil(networkServer_<%=cid%>,"<%=frameworkType%>",<%=dbhost%>,Integer.parseInt(<%=dbport%>),<%=db%>,<%=dbRootPath%>);
+				
+			connectionUtil_<%=cid%>.setUserName(<%=dbuser%>);
+			
+			connectionUtil_<%=cid%>.setPassword(<%=dbpwd%>);
+					
+			java.sql.Connection conn_<%=cid%> = connectionUtil_<%=cid%>.getConnection();
+
+			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+			
+			java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
+			
+			java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
+			
+			int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
+
+			globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
+
+
+		  <%List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+			List<IMetadataColumn> columnList = metadata.getListColumns();%>
+			
+            while (rs_<%=cid %>.next()) {
+            nb_line_<%=cid%>++;
+            
+            <%
+            if(conns != null && conns.size()>0){
+             	IConnection conn = conns.get(0);
+             	String firstConnName = conn.getName();
+             	int currentColNo = 1;
+             	for(IMetadataColumn column:columnList){
+             	
+             	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+             	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
+             	
+             	if(((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))){
+             	%> 	
+             		if(colQtyInRs_<%=cid%><<%=currentColNo%>){
+             		
+             			<%=firstConnName%>.<%=column.getLabel()%>=<%=defVal%>;
+             			
+             		}else{
+             	  	  <%
+             	  	  if(typeToGenerate.equals("byte[]")){
+             	  	   	typeToGenerate = "Bytes";
+             	   	  }else if(typeToGenerate.equals("java.util.Date")){
+             	   	  	typeToGenerate = "Timestamp";
+             	   	  }else if(typeToGenerate.equals("Integer")){
+             	   	  	typeToGenerate = "Int";
+             	   	  }else{
+            			typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+            		  }
+            		  
+            			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+            			  %>
+            			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null&&(rs_<%=cid %>.getString(<%=currentColNo%>)).length()>0){
+            			  	
+            			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
+            			  		
+            			  	}else{			  	
+            			  	    <%if(typeToGenerate.equals("Character")){%>
+            			  	    
+            			  	   	if((rs_<%=cid %>.getString(<%=currentColNo%>))==null){
+            			  	   	
+            			  			<%=firstConnName%>.<%=column.getLabel()%>=null;
+            			  			
+            			  		}else{
+            			  		
+            			  			<%=firstConnName%>.<%=column.getLabel()%>='\0';
+            			  			
+            			  		}
+            			  		<%}else{%>
+            			  		
+            			  		if((rs_<%=cid %>.getString(<%=currentColNo%>)).equals("")){
+            			  		
+            			  			<%=firstConnName%>.<%=column.getLabel()%> = '\0';
+            			  			
+            			  		}else{
+            			  		
+            			  			throw new RuntimeException(
+            							"Value is empty for column : '<%=column.getLabel()%>', value is invalid or this column should be nullable or have a default value.");
+            							
+            					}
+            			  		
+            			  		<%}%>
+            			  	}			
+            			  <%
+            			  }else if(typeToGenerate.equals("Timestamp")){
+            			 %>
+            			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
+            			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+            			 }else{
+            			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
+            			 }
+            			 <% 	
+            			 }else{
+             	   		%>
+             			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+             			<%
+             			  }
+             			%>
+             		}
+             		
+               	 <%  
+               	 	currentColNo++;
+                	}
+             	}
+             	if(conns.size()>1){
+             		for(int connNO = 1; connNO < conns.size(); connNO++){
+             		  IConnection conn2 = conns.get(connNO);
+             		  if((conn2.getName().compareTo(firstConnName)!=0)&&((conn2.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn2.getLineStyle().equals(EConnectionType.FLOW_REF)))){
+             		  	for(IMetadataColumn column:columnList){
+             		  %>
+             		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=firstConnName%>.<%=column.getLabel()%>;
+             		  <% 
+             		  	}
+             		  }
+             		}
+             	}
+            }
+            		}
+            	}
+            %>
+

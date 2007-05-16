@@ -1,0 +1,514 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser  
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType 
+		
+		java.util.List
+		java.util.ArrayList
+		java.util.Map
+		java.util.HashMap
+		java.util.LinkedList
+" 
+class="JavaDBOutputBegin" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	
+	String cid = node.getUniqueName();
+	
+	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");		
+	
+    String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+    
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    
+	String dbport = ElementParameterParser.getValue(node, "__PORT__");	
+				
+    List<Map<String, String>> addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,"__ADD_COLS__" );
+	
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	
+	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+	
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	
+	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+	
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+	
+	String dbRootPath = ElementParameterParser.getValue(node, "__DBPATH__");	
+
+%>
+
+<%
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas !=null && metadatas.size()>0){
+	IMetadataTable metadata = metadatas.get(0);
+	if(metadata != null){
+		columnList = metadata.getListColumns();
+	}
+}
+%>
+
+class NetworkServerUtil{
+	private int port;
+	private org.apache.derby.drda.NetworkServerControl serverControl;
+	private java.io.PrintWriter printWriter;
+	public NetworkServerUtil(int port, java.io.PrintWriter printWriter)
+	{
+		this.port = port;
+		this.printWriter = printWriter;
+		try
+		{
+			serverControl = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName("localhost"),port);
+			//printWriter.println("Derby Network Server created");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+    /**
+     * trace utility of server
+     */
+    public void trace(boolean onoff) 
+    {
+        try 
+        {
+        	serverControl.trace(onoff);
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+    }
+	/**
+	 * Try to test for a connection
+	 * Throws exception if unable to get a connection
+	 */
+	public void testForConnection() throws Exception
+	{
+		serverControl.ping();
+	}
+    /**
+     * Shutdown the NetworkServer
+     */
+    public void shutdown()
+    {
+    	try
+    	{
+    		serverControl.shutdown();
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    }
+	/**
+	 * Start Derby Network server
+	 * 
+	 */
+	public void start()
+	{
+		try
+		{
+			serverControl.start(printWriter);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}                              	                 
+}
+class ConnectionUtil
+{
+	private final String EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+	private final String JCCJDBC_DRIVER = "com.ibm.db2.jcc.DB2Driver";
+	private final String DERBYCLIENT_DRIVER = "org.apache.derby.jdbc.ClientDriver"; 
+	private NetworkServerUtil networkServer;
+	private String host;
+	private int port;
+	private String dbName;
+	private String dbRootPath;
+	private String frameworkType;
+	private String jdbcDriver;
+	private String url;
+	private java.sql.Connection conn;
+	private String userName;
+	private String password;
+	public ConnectionUtil(NetworkServerUtil networkServer, String frameworkType, String host, int port, String dbName, String dbRootPath)
+	{
+		this.networkServer = networkServer;
+		this.frameworkType = frameworkType;
+		this.host = host;
+		this.port = port;
+		this.dbName = dbName;
+		this.dbRootPath = dbRootPath;
+	}
+	public NetworkServerUtil getNetworkServer()
+	{
+		return this.networkServer;
+	}
+	public void setUserName(String userName)
+	{
+		this.userName = userName;
+	}
+	public void setPassword(String password)
+	{
+		this.password = password;
+	}
+	public String getFrameworkType()
+	{
+		return this.frameworkType;
+	}
+	private void createServer() throws Exception
+	{
+		networkServer.start();
+		//do we know if server is ready to accept connections
+		boolean knowIfServerUp = false;
+		int numTimes = 5;
+		// Test to see if server is ready for connections, for 15 seconds.
+	    while(!knowIfServerUp && (numTimes >0)) {
+			try {
+				// testing for connection to see if the network server is up and running
+				// if server is not ready yet, this method will throw an exception
+				numTimes--;
+				networkServer.testForConnection();
+				knowIfServerUp = true;
+			}
+			catch(Exception e) {
+				System.out.println("Unable to obtain a connection to network server, trying again after 3000 ms.");
+				Thread.currentThread().sleep(3000);
+			}
+		}
+		if(!knowIfServerUp) {
+			System.out.println("Exiting, since unable to connect to Derby Network Server.");
+			System.out.println("Please try to increase the amount of time to keep trying to connect to the Server.");
+			System.exit(1);
+		}
+		System.out.println("Derby Network Server started.");										 
+	}
+	
+	public java.sql.Connection getConnection() throws Exception
+	{
+		if(frameworkType.equals("EMBEDED"))
+		{
+			jdbcDriver = EMBEDDED_DRIVER;
+			url = "jdbc:derby:" + dbName;
+			//set the root path of the database
+			System.setProperty("derby.system.home",dbRootPath);
+		}
+		else if(frameworkType.equals("JCCJDBC"))
+		{
+			jdbcDriver = JCCJDBC_DRIVER;
+			url = "jdbc:derby:net://" + host + ":" + port + "/" + dbName;
+			this.createServer();
+		}
+		else
+		{
+			jdbcDriver = DERBYCLIENT_DRIVER;
+			url = "jdbc:derby://" + host + ":" + port + "/" + dbName;
+			this.createServer();				
+		}
+		Class.forName(jdbcDriver).newInstance();
+		java.util.Properties properties = new java.util.Properties();
+		properties.put("user",userName);
+		properties.put("password",password);
+		conn = java.sql.DriverManager.getConnection(url,properties);
+		return conn;					
+	}
+}
+
+java.io.PrintWriter printWriter_<%=cid%> = new java.io.PrintWriter(System.out,true);
+
+NetworkServerUtil networkServer_<%=cid%> = new NetworkServerUtil(Integer.parseInt(<%=dbport%>),printWriter_<%=cid%>);
+
+ConnectionUtil connectionUtil_<%=cid%> = new ConnectionUtil(networkServer_<%=cid%>,"<%=frameworkType%>",<%=dbhost%>,Integer.parseInt(<%=dbport%>),<%=dbname%>,<%=dbRootPath%>);
+	
+connectionUtil_<%=cid%>.setUserName(<%=dbuser%>);
+
+connectionUtil_<%=cid%>.setPassword(<%=dbpwd%>);
+		
+java.sql.Connection conn_<%=cid%> = connectionUtil_<%=cid%>.getConnection();
+
+<%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
+
+java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
+
+java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
+
+java.sql.PreparedStatement pstmt_<%=cid %> =null;
+
+<%}else{%>
+
+java.sql.PreparedStatement pstmt_<%=cid %> =null;
+	
+<%
+}
+
+if(columnList != null && columnList.size()>0){
+
+class Column{
+
+	IMetadataColumn column;
+	
+	String name;
+	
+	String sqlStmt;
+	
+	String value;
+	
+	boolean addCol;
+	
+	List<Column> replacement = new ArrayList<Column>();
+	
+	public Column(String colName,String sqlStmt,boolean addCol){
+		this.column = null;
+		this.name = colName;
+		this.sqlStmt = sqlStmt;
+		this.value = "?";
+		this.addCol =addCol;
+	}
+	
+	public Column(IMetadataColumn column){
+		this.column = column;
+		this.name = column.getLabel();
+		this.sqlStmt = "=?";
+		this.value = "?";
+		this.addCol =false;
+	}
+	
+	public boolean isReplaced(){
+		return replacement.size()>0;
+	}
+	
+	public void replace(Column column){
+		this.replacement.add(column);
+	}
+	
+	public List<Column> getReplacement(){
+		return this.replacement;
+	}
+	
+	public void setColumn(IMetadataColumn column){
+		this.column = column;
+	}
+	
+	public IMetadataColumn getColumn(){
+		return this.column;
+	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
+
+	public String getName(){
+		return this.name;
+	}
+	
+	public void setIsAddCol(boolean isadd){
+		this.addCol = isadd;
+	}
+	
+	public boolean isAddCol(){
+		return this.addCol;
+	}
+	
+	public void setSqlStmt(String sql){
+		this.sqlStmt = sql;
+	}
+	
+	public String getSqlStmt(){
+		return this.sqlStmt;
+	}
+	
+	public void setValue(String value){
+		this.value = value;
+	}
+	
+	public String getValue(){
+		return this.value;
+	}
+}
+
+StringBuffer insertColName = new StringBuffer();
+
+StringBuffer insertValueStmt = new StringBuffer();
+
+StringBuffer updateSetStmt = new StringBuffer();
+
+StringBuffer updateWhereStmt = new StringBuffer();
+
+List<Column> stmtStructure =  new LinkedList<Column>();
+
+for(IMetadataColumn column:columnList){
+
+	stmtStructure.add(new Column(column));
+
+}
+
+for(IMetadataColumn column:columnList){
+	if(addCols != null && addCols.size()>0){
+		for(Map<String, String> addCol:addCols){
+			if(addCol.get("REFCOL").equals(column.getLabel())){
+				int stmtIndex = 0;
+				
+				for(Column stmtStr:stmtStructure){					
+					if(stmtStr.getName().equals(addCol.get("REFCOL"))){
+						break;
+					}
+					stmtIndex++;
+				}
+				
+				if(addCol.get("POS").equals("AFTER")){
+					Column insertAfter = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					stmtStructure.add(stmtIndex+1,insertAfter);
+				}else if(addCol.get("POS").equals("BEFORE")){
+					Column insertBefore = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					stmtStructure.add(stmtIndex,insertBefore);
+				}else if(addCol.get("POS").equals("REPLACE")){
+					Column replacementCol = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					Column replacedCol = (Column) stmtStructure.get(stmtIndex);
+					replacedCol.replace(replacementCol);
+				}
+			}
+		}
+	}
+}
+
+int counterOuter =0;
+boolean firstKey = true;
+boolean firstNoneKey = true;
+
+for(Column colStmt:stmtStructure){
+	String suffix = ",";
+	
+	if(colStmt.isReplaced()){		
+		List<Column> replacedColumns = colStmt.getReplacement();
+		int counterReplace = 0;
+		if(counterOuter==(stmtStructure.size()-1) && counterReplace==(replacedColumns.size()-1) ){
+			suffix = "";
+		}
+		for(Column replacement:replacedColumns){
+			insertColName.append(replacement.getName()+suffix);
+			insertValueStmt.append(replacement.getSqlStmt()+suffix);
+			if(!colStmt.getColumn().isKey()){
+				if(!firstNoneKey){
+					updateSetStmt.append(",");
+				}else{
+					firstNoneKey = false;
+				}
+				updateSetStmt.append(replacement.getName());
+				updateSetStmt.append(replacement.getSqlStmt());
+			}else{
+				if(!firstKey){
+					updateWhereStmt.append(" AND ");
+				}else{
+					firstKey = false;
+				}
+				updateWhereStmt.append(replacement.getName());
+				updateWhereStmt.append(replacement.getSqlStmt());
+			}
+			counterReplace++;
+		}
+	}else{
+		if(counterOuter==(stmtStructure.size()-1)){
+			suffix = "";
+		}
+		if(colStmt.isAddCol()){
+			insertColName.append(colStmt.getName()+suffix);
+			insertValueStmt.append(colStmt.getSqlStmt()+suffix);
+			updateSetStmt.append(colStmt.getName());
+			updateSetStmt.append(colStmt.getSqlStmt()+suffix);
+		}else{
+			insertColName.append(colStmt.getName()+suffix);
+			insertValueStmt.append(colStmt.getValue()+suffix);
+			if(!colStmt.getColumn().isKey()){
+				if(!firstNoneKey){
+					updateSetStmt.append(",");
+				}else{
+					firstNoneKey = false;
+				}
+				updateSetStmt.append(colStmt.getName());
+				updateSetStmt.append(colStmt.getSqlStmt());
+			}else{
+				if(!firstKey){
+					updateWhereStmt.append(" AND ");
+				}else{
+					firstKey = false;
+				}
+				updateWhereStmt.append(colStmt.getName());
+				updateWhereStmt.append(colStmt.getSqlStmt());
+			}
+		}
+	}
+	counterOuter ++;
+}
+
+
+	if(dataAction.equals("INSERT")){
+	%>	
+	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+
+	<%
+	}else if (dataAction.equals("UPDATE")){
+	%>
+	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+	<%		
+	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	%>
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+	<%
+	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	%>
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+		
+	<%
+			
+	}else if (dataAction.equals("DELETE")){
+	%>
+	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+
+	<%		
+	}
+}
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+
+int commitEvery_<%=cid%> = <%=commitEvery%>;
+
+int commitCounter_<%=cid%> = 0;
+
+conn_<%=cid%>.setAutoCommit(false);
+<%
+}
+%>
+
+int nb_line_<%=cid%> = 0;
+int nb_line_update_<%=cid%> = 0;
+int nb_line_inserted_<%=cid%> = 0;
+int nb_line_deleted_<%=cid%> = 0;
+
+
+

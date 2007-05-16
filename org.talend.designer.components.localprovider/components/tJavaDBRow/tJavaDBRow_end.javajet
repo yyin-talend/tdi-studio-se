@@ -1,0 +1,63 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+			org.talend.core.model.process.INode 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+			org.talend.core.model.process.ElementParameterParser 
+" 
+class="DB2RowEnd" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	
+	INode node = (INode)codeGenArgument.getArgument();
+	
+	String cid = node.getUniqueName();
+	
+	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");		
+	
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
+
+	conn_<%=cid%>.commit();
+	
+	commitCounter_<%=cid%>=0;
+	
+}
+<%
+}
+%>
+pstmt_<%=cid %>.close();
+conn_<%=cid %> .close();
+
+<%
+if(frameworkType.equals("EMBEDED"))
+{%>
+	try
+	{
+		java.sql.DriverManager.getConnection("jdbc:derby:;shutdown=true");
+	}
+	catch(java.sql.SQLException se)
+	{
+        /*
+           In embedded mode, an application should shut down Derby.
+           If the application fails to shut down Derby explicitly,
+           the Derby does not perform a checkpoint when the JVM shuts down, which means
+           that the next connection will be slower.
+           Explicitly shutting down Derby with the URL is preferred.
+           This style of shutdown will always throw an "exception".
+         */
+	}	
+<%
+}
+else
+{
+%>
+	connectionUtil_<%=cid%>.getNetworkServer().shutdown();
+<%
+}
+%>

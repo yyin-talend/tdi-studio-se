@@ -1,0 +1,181 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070514A"
+    STARTABLE="true"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:MYSQL"
+    />
+    
+    <PARAMETER
+      NAME="FRAMEWORK_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+    >
+      <ITEMS DEFAULT="EMBEDED">
+        <ITEM NAME="EMBEDED"    VALUE="EMBEDED" />
+        <ITEM NAME="JCCJDBC"     VALUE="JCCJDBC"/>
+        <ITEM NAME="DERBYCLIENT"     VALUE="DERBYCLIENT"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER 
+    	NAME="HOST"
+    	FIELD="TEXT"
+    	NUM_ROW="3"
+    	REPOSITORY_VALUE="SERVER_NAME"
+    	REQUIRED="true"
+    	NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+    >
+    	<DEFAULT>"localhost"</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>JavaDB</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="PORT"
+      REQUIRED="true"
+      NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+    >
+      <DEFAULT>"1527"</DEFAULT>
+    </PARAMETER>    
+    
+    <PARAMETER
+      NAME="DB"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DBPATH"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>    
+ 
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>FireBird</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="USERNAME"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PASS"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="PASSWORD"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="6"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="QUERYSTORE"
+      FIELD="QUERYSTORE_TYPE"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="QUERY"
+      FIELD="MEMO_SQL"
+      NUM_ROW="8"
+      REQUIRED="true"
+    >
+      <DEFAULT>"select id, name from employee"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+
+   <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-JavaDB" MODULE="derby.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-JavaDB" MODULE="derbyclient.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-JavaDB" MODULE="derbynet.jar" REQUIRED="true"/>
+       <IMPORT NAME="Driver-JavaDB" MODULE="db2jcc.jar" REQUIRED="true"/>
+     </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+      <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
+   </RETURNS>
+</COMPONENT>
