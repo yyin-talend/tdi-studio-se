@@ -144,7 +144,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         erDiagramComposite = new ErDiagramComposite(composite, SWT.VERTICAL);
         erDiagramComposite.setDialog(dialog);
         erDiagramComposite.setRootNode(repositoryNode);
-        erDiagramComposite.setNodes(nodes);
+        erDiagramComposite.setNodes(nodes, connParam.isShowDesignerPage());
         erDiagramComposite.setWeights(new int[] { 12, 3 });
     }
 

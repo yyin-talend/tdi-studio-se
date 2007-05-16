@@ -88,7 +88,7 @@ public class ErDiagramComposite extends SashForm {
      * admin Comment method "addErDiagramEditor".
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void addErDiagramEditor() {
+    private void addErDiagramEditor(boolean isShowDesignerPage) {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         this.setLayoutData(gridData);
 
@@ -106,7 +106,7 @@ public class ErDiagramComposite extends SashForm {
 
         editor = new ErdiagramDiagramEditor();
         editor.createPartControl(this);
-        editor.getViewer().setContents(createErDiagram());
+        editor.getViewer().setContents(createErDiagram(isShowDesignerPage));
         Control control = editor.getGraphicalControl();
         if (control != null) {
             control.setParent(this);
@@ -180,33 +180,39 @@ public class ErDiagramComposite extends SashForm {
      * 
      * @return
      */
-    private ErDiagram createErDiagram() {
+    private ErDiagram createErDiagram(boolean isShowDesignerPage) {
         erDiagram = new ErDiagram();
         erDiagram.setErDiagramComposite(this);
-        IRunnableWithProgress progress = new IRunnableWithProgress() {
+        if (isShowDesignerPage) {
+            IRunnableWithProgress progress = new IRunnableWithProgress() {
 
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask("", IProgressMonitor.UNKNOWN);
-                try {
-                    List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
-                    List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance().getTables(getNodes(), selectedColumns);
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                    try {
+                        List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
+                        List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance()
+                                .getTables(getNodes(), selectedColumns);
 
-                    erDiagram.setMetadataTables(tables);
-                    List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
-                    for (MetadataTable metadataTable : tables) {
-                        Table table = new Table();
-                        table.setMetadataTable(metadataTable, selectedColumns);
-                        table.setErDiagram(erDiagram);
-                        erDiagram.addTable(table);
+                        erDiagram.setMetadataTables(tables);
+                        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
+                        for (MetadataTable metadataTable : tables) {
+                            Table table = new Table();
+                            table.setMetadataTable(metadataTable, selectedColumns);
+                            table.setErDiagram(erDiagram);
+                            erDiagram.addTable(table);
+                        }
+                        erDiagram.setRelations(fks);
+
+                    } finally {
+                        monitor.done();
                     }
-                    erDiagram.setRelations(fks);
-
-                } finally {
-                    monitor.done();
                 }
-            }
-        };
-        UIUtils.runWithProgress(progress, true, dialog.getProgressMonitor(), dialog.getShell());
+            };
+            UIUtils.runWithProgress(progress, true, dialog.getProgressMonitor(), dialog.getShell());
+        } else {
+            erDiagram.setMetadataTables(new ArrayList<MetadataTable>());
+            erDiagram.setRelations(new ArrayList<String[]>());
+        }
         return erDiagram;
     }
 
@@ -344,9 +350,9 @@ public class ErDiagramComposite extends SashForm {
         return this.nodes;
     }
 
-    public void setNodes(List<RepositoryNode> nodes) {
+    public void setNodes(List<RepositoryNode> nodes, boolean isShowDesignerPage) {
         this.nodes = nodes;
-        addErDiagramEditor();
+        addErDiagramEditor(isShowDesignerPage);
     }
 
     private RepositoryNode rootNode;
@@ -363,7 +369,7 @@ public class ErDiagramComposite extends SashForm {
     public void updateNodes(List<RepositoryNode> nodes, String sqlText) {
         this.nodes = nodes;
         this.sqlText.setText(sqlText);
-        editor.getViewer().setContents(createErDiagram());
+        editor.getViewer().setContents(createErDiagram(true));
     }
 
     private boolean isModified = false;

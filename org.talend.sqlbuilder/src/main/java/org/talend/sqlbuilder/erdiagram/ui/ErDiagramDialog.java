@@ -114,7 +114,7 @@ public class ErDiagramDialog extends Dialog {
         erComposite = new ErDiagramComposite(container, SWT.VERTICAL);
         erComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         erComposite.setDialog(dialog);
-        erComposite.setNodes(getNodes());
+        erComposite.setNodes(getNodes(), true);
         erComposite.setRootNode(rootNode);
         erComposite.setSqlText(sql);
         erComposite.setWeights(new int[] { 12, 3 });
@@ -124,8 +124,8 @@ public class ErDiagramDialog extends Dialog {
         return container;
 
     }
+
     private RepositoryNode rootNode;
-    
 
     private String sql;
 
@@ -218,7 +218,7 @@ public class ErDiagramDialog extends Dialog {
     }
 
     /**
-     *  admin Comment method "getSql".
+     * admin Comment method "getSql".
      * 
      * @return
      */
@@ -233,7 +233,7 @@ public class ErDiagramDialog extends Dialog {
     public void setNodes(List<RepositoryNode> nodes) {
         this.nodes = nodes;
     }
-    
+
     public void setRootNode(RepositoryNode rootNode) {
         this.rootNode = rootNode;
         erComposite.setRootNode(rootNode);
