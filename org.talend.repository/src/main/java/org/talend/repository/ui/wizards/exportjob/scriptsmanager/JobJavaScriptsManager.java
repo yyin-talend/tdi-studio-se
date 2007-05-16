@@ -287,7 +287,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         for (int i = 0; i < process.length; i++) {
             ExportFileResource resource = process[i];
             IProcess iProcess = designerService.getProcessFromProcessItem(resource.getProcess());
-            List<? extends INode> l2 = iProcess.getGraphicalNodes();
+            List<? extends INode> l2 = iProcess.getGeneratingNodes();
             for (INode node : l2) {
                 List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
                 for (ModuleNeeded needed : moduleList) {
