@@ -66,14 +66,8 @@ import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
  */
 public class JobJavaScriptsManager extends JobScriptsManager {
 
-    /**
-     * 
-     */
     private static final String USER_ROUTINES_PATH = "routines";
 
-    /**
-     * 
-     */
     private static final String SYSTEM_ROUTINES_PATH = "routines/system";
 
     public static final String JOB_CONTEXT_FOLDER = "contexts";
@@ -110,8 +104,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
 
-            resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob), exportChoice
-                    .get(ExportChoice.needContext)));
+            resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
+
+            addContextScripts(process[i], exportChoice.get(ExportChoice.needContext));
+
             // add children jobs
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
             List<URL> childrenList = addChildrenResources(processItem, needChildren, process[i], exportChoice);
@@ -142,6 +138,33 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return list;
     }
 
+    /**
+     * DOC acer Comment method "addContextScripts".
+     * 
+     * @param resource
+     * @param boolean1
+     */
+    private void addContextScripts(ExportFileResource resource, Boolean needContext) {
+        if (!needContext) {
+            return;
+        }
+        ProcessItem processItem = resource.getProcess();
+        List<URL> list = new ArrayList<URL>(1);
+
+        String projectName = getCurrentProjectName();
+        String jobName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
+
+        try {
+            IPath classRoot = getClassRootPath();
+            classRoot = classRoot.append(projectName).append(jobName).append(JOB_CONTEXT_FOLDER);
+            list.add(classRoot.toFile().toURL());
+            String jobPackagePath = projectName + File.separatorChar + jobName + File.separatorChar;
+            resource.addResources(jobPackagePath, list);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -151,7 +174,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     @Override
     protected List<URL> getSource(ProcessItem processItem, boolean needSource) {
         List<URL> urls = super.getSource(processItem, needSource);
-        if(!needSource){
+        if (!needSource) {
             return urls;
         }
         // Get java src
@@ -196,8 +219,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> allJobScripts = new ArrayList<URL>();
         for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
             String jobName = iter.next();
-            allJobScripts.addAll(getJobScripts(jobName, exportChoice.get(ExportChoice.needJob), exportChoice
-                    .get(ExportChoice.needContext)));
+            allJobScripts.addAll(getJobScripts(jobName, exportChoice.get(ExportChoice.needJob)));
         }
 
         return allJobScripts;
@@ -307,8 +329,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needContext
      * @return
      */
-    private List<URL> getJobScripts(ProcessItem process, boolean needJob, boolean needContext) {
-        return this.getJobScripts(escapeFileNameSpace(process), needJob, needContext);
+    private List<URL> getJobScripts(ProcessItem process, boolean needJob) {
+        return this.getJobScripts(escapeFileNameSpace(process), needJob);
     }
 
     /**
@@ -319,10 +341,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needContext
      * @return
      */
-    private List<URL> getJobScripts(String jobName, boolean needJob, boolean needContext) {
-
+    private List<URL> getJobScripts(String jobName, boolean needJob) {
         List<URL> list = new ArrayList<URL>(1);
-        if (!(needJob || needContext)) {
+        if (!needJob) {
             return list;
         }
         String projectName = getCurrentProjectName();
@@ -335,25 +356,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
-            if (needJob) {
-                String jobPath = projectName + File.separatorChar + jobName;
-
-                List<String> include = new ArrayList<String>();
-                include.add(jobPath);
-                jarbuilder.setIncludeDir(include);
-                if (!needContext) {
-                    String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
-                    List<String> excludes = new ArrayList<String>(1);
-                    excludes.add(contextPaht);
-                    jarbuilder.setExcludeDir(excludes);
-                }
-            } else {
-                String jobPath = projectName + File.separatorChar + jobName;
-                String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
-                List<String> include = new ArrayList<String>();
-                include.add(contextPaht);
-                jarbuilder.setIncludeDir(include);
-            }
+            // add the job
+            String jobPath = projectName + File.separatorChar + jobName;
+            List<String> include = new ArrayList<String>();
+            include.add(jobPath);
+            jarbuilder.setIncludeDir(include);
+            // filter the context
+            String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
+            List<String> excludes = new ArrayList<String>(1);
+            excludes.add(contextPaht);
+            jarbuilder.setExcludeDir(excludes);
 
             jarbuilder.buildJar();
 
@@ -375,6 +387,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     private String getClassRootLocation() throws Exception {
+        IPath binPath = getClassRootPath();
+        URL url = binPath.toFile().toURL();
+        return url.getPath();
+    }
+
+    private IPath getClassRootPath() throws Exception {
         IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
 
         IJavaProject javaProject = JavaCore.create(project);
@@ -382,8 +400,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         IPath root = project.getParent().getLocation();
         binPath = root.append(binPath);
-        URL url = binPath.toFile().toURL();
-        return url.getPath();
+        return binPath;
     }
 
     /**
