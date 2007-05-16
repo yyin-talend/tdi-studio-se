@@ -19,12 +19,15 @@ INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
 String rowName = null;
+String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 
 	for (INode pNode : node.getProcess().getNodesOfType("tArray")) {
+		if (!pNode.getUniqueName().equals(origin + "_Array")) continue; 
 		for (IConnection conn : pNode.getIncomingConnections()) {
 			rowName = conn.getName();
 			break;
 		}
+		
 	}
 %>
 
@@ -37,7 +40,7 @@ if ((node.getOutgoingConnections()!=null)&&(node.getOutgoingConnections().size()
 }
 
 List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
-String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+
 %>
 
 	class Comparator<%=origin %> implements java.util.Comparator<<%=rowName %>Struct> {
