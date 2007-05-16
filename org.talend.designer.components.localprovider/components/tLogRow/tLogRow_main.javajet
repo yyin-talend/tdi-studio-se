@@ -90,8 +90,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
     				} 
 %>              
-                 String temp_<%=cid%> =
-                     						
+                    
+<% 
+   if (useFixedLength.equals("true")) {//fixed the column length
+%>
+				strBuffer_<%=cid%>.append(formatter_<%=column.getLabel() %>_<%=cid%>.format("%1$<%=lengths.get(i).get("LENGTH") %>s", 
 <%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
@@ -108,19 +111,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%				
 					}
 %>
-                    ;
-
-
-                    
-<% 
-   if (useFixedLength.equals("true")) {//fixed the column length
-%>
-				strBuffer_<%=cid%>.append(formatter_<%=column.getLabel() %>_<%=cid%>.format("%1$<%=lengths.get(i).get("LENGTH") %>s", temp_<%=cid%>).toString());
+					).toString());
+				
 <%
    } else {
 %>							
        
-				strBuffer_<%=cid%>.append(temp_<%=cid%>);
+				strBuffer_<%=cid%>.append(
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+%>
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%				
+					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
+%>
+								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%				
+					} else {//others
+%>
+				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
+<%				
+					}
+%>				
+				);
 <%
   }
 %>
