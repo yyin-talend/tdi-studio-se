@@ -1,0 +1,102 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+
+                    String cid = metadata.getTableName();
+                    String colname = ElementParameterParser.getValue(node, "__MATCH__");
+
+            int icolmatch = 0 ;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if( colname.equals( column.getLabel() ) ){
+                    break ;
+                }
+                icolmatch++;
+            }
+
+
+%>
+
+use FileHandle;
+
+my %desc_<%=cid %> = (
+    filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
+    lookup_indx   => <%=ElementParameterParser.getValue(node, "__LOOKUP_INDX__") %>,
+);
+
+use constant INPUT_FIELD_SEPARATOR_<%=cid %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+$/ = $desc_<%=cid %>{row_separator};
+my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+    }
+%>
+
+my $input_FH_<%=cid %> = new FileHandle;
+open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
+    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
+
+
+$nb_line_<%=cid %> = 0;
+
+
+my $icolmatch_<%=cid %> = <%=icolmatch%> ;
+my $a_lookup_<%=cid %> = [] ;
+my $a_data_<%=cid %> = [] ;
+
+while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
+
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+    }
+%>
+
+    chomp $_<%=cid %>;
+
+
+    # increase number of line really splitted
+    $nb_line_<%=cid %>++;
+
+    push @$a_lookup_<%=cid %> , (
+        split(
+            INPUT_FIELD_SEPARATOR_<%=cid %>,
+            $_<%=cid %>
+        )
+    )[<%=ElementParameterParser.getValue(node, "__LOOKUP_INDX__") %>] ;
+
+    push @$a_data_<%=cid %>, $_<%=cid %> ;
+}
+
+close($input_FH_<%=metadata.getTableName() %>);
+
+<%
+
+    }
+}
+
+%>
