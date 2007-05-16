@@ -92,7 +92,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + libPath
-                    + "/" + USERROUTINE_JAR;
+                    + "/" + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
@@ -145,15 +145,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param boolean1
      */
     private void addContextScripts(ExportFileResource resource, Boolean needContext) {
+        addContextScripts(escapeFileNameSpace(resource.getProcess()), resource, needContext);
+    }
+
+    /**
+     * DOC acer Comment method "addContextScripts".
+     * 
+     * @param resource
+     * @param boolean1
+     */
+    private void addContextScripts(String jobName, ExportFileResource resource, Boolean needContext) {
         if (!needContext) {
             return;
         }
-        ProcessItem processItem = resource.getProcess();
         List<URL> list = new ArrayList<URL>(1);
-
         String projectName = getCurrentProjectName();
-        String jobName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
-
+        jobName = JavaResourcesHelper.getJobFolderName(jobName);
         try {
             IPath classRoot = getClassRootPath();
             classRoot = classRoot.append(projectName).append(jobName).append(JOB_CONTEXT_FOLDER);
@@ -220,6 +227,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
             String jobName = iter.next();
             allJobScripts.addAll(getJobScripts(jobName, exportChoice.get(ExportChoice.needJob)));
+            addContextScripts(jobName,resource, exportChoice.get(ExportChoice.needContext));
         }
 
         return allJobScripts;
