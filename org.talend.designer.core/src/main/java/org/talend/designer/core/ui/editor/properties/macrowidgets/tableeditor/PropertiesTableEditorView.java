@@ -29,9 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
-import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -40,7 +38,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 
@@ -145,6 +142,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                 IElementParameter tmpParam = (IElementParameter) itemsValue[i];
                 switch (tmpParam.getField()) {
+                case CONTEXT_PARAM_NAME_LIST:
                 case CLOSED_LIST:
                 case LOOKUP_COLUMN_LIST:
                 case COLUMN_LIST:
@@ -229,6 +227,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
                             switch (tmpParam.getField()) {
+                            case CONTEXT_PARAM_NAME_LIST:
                             case CLOSED_LIST:
                             case COLUMN_LIST:
                             case LOOKUP_COLUMN_LIST:
@@ -269,6 +268,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         Object finalValue = value;
                         IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
                         switch (tmpParam.getField()) {
+                        case CONTEXT_PARAM_NAME_LIST:
                         case CLOSED_LIST:
                         case COLUMN_LIST:
                         case LOOKUP_COLUMN_LIST:

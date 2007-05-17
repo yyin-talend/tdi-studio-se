@@ -88,11 +88,13 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
         tmpParam = (IElementParameter) itemsValue[0];
         switch (tmpParam.getField()) {
+        case CONTEXT_PARAM_NAME_LIST:
         case CLOSED_LIST:
         case COLUMN_LIST:
         case LOOKUP_COLUMN_LIST:
         case PREV_COLUMN_LIST:
-            line.put(items[0], null);
+            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                    .getDefaultClosedListValue())));
             break;
         case CHECK:
             line.put(items[0], tmpParam.getValue());
@@ -108,6 +110,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         for (int i = 1; i < items.length; i++) {
             tmpParam = (IElementParameter) itemsValue[i];
             switch (tmpParam.getField()) {
+            case CONTEXT_PARAM_NAME_LIST:
             case CLOSED_LIST:
             case COLUMN_LIST:
             case LOOKUP_COLUMN_LIST:

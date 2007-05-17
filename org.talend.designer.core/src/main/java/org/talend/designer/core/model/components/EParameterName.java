@@ -78,7 +78,7 @@ public enum EParameterName {
     REPOSITORY_ENCODING_TYPE("Repository"),
     ENCODING_TYPE(Messages.getString("EParameterName.encodingType")),
     COMPONENT_LIST("Component List"),
-
+    
     PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")),
     PERL_FILE_PATH(Messages.getString("EParameterName.filePath")),
     PERL_FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")),

@@ -22,11 +22,14 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -37,13 +40,25 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.DesignerCoreService;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
+import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -92,7 +107,8 @@ public class TableController extends AbstractElementPropertySectionController {
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
 
-        dynamicTabbedPropertySection.updateColumnList(null);
+        updateTableValues(param);
+
         tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess());
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
@@ -182,12 +198,95 @@ public class TableController extends AbstractElementPropertySectionController {
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
         Object value = param.getValue();
         if (value instanceof List) {
-            dynamicTabbedPropertySection.updateColumnList(null);
+            updateTableValues(param);
             if (tableViewerCreator != null) {
                 if (!tableViewerCreator.getInputList().equals(value)) {
                     tableViewerCreator.init((List) value);
                 }
                 tableViewerCreator.getTableViewer().refresh();
+            }
+        }
+    }
+
+    private void updateTableValues(IElementParameter param) {
+        dynamicTabbedPropertySection.updateColumnList(null);
+        updateContextList(param);
+    }
+
+    private void updateContextList(IElementParameter param) {
+        List<String> contextParameterNamesList = new ArrayList<String>();
+
+        // get context list
+        String processName = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+        String contextName = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName());
+
+        if (processName == null || contextName == null) {
+            return;
+        }
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            processName = processName.replace("'", "");
+            contextName = contextName.replace("'", "");
+        } else {
+            processName = processName.replace("\"", "");
+            contextName = contextName.replace("\"", "");
+        }
+        ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
+        Process process = null;
+        process = new Process(processItem.getProperty());
+        process.loadXmlFile(processItem.getProcess());
+        IContext context = process.getContextManager().getContext(contextName);
+
+        for (IContextParameter contextParam : context.getContextParameterList()) {
+            contextParameterNamesList.add(contextParam.getName());
+        }
+
+        String[] contextParameterNames = contextParameterNamesList.toArray(new String[0]);
+
+        // update table values
+        TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
+        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        if (tableViewerCreator != null) {
+            List colList = tableViewerCreator.getColumns();
+            for (int j = 0; j < itemsValue.length; j++) {
+                if (itemsValue[j] instanceof IElementParameter) {
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                    if (tmpParam.getField() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
+                        tmpParam.setListItemsDisplayCodeName(contextParameterNames);
+                        tmpParam.setListItemsDisplayName(contextParameterNames);
+                        tmpParam.setListItemsValue(contextParameterNames);
+                        if (contextParameterNames.length > 0) {
+                            tmpParam.setDefaultClosedListValue(contextParameterNames[0]);
+                        } else {
+                            tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
+                        }
+                        // j + 1 because first column is masked
+                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+
+                        CCombo combo = (CCombo) column.getCellEditor().getControl();
+                        String[] oldItems = combo.getItems();
+                        combo.setItems(contextParameterNames);
+
+                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                        String[] items = param.getListItemsDisplayCodeName();
+
+                        for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
+                            Map<String, Object> currentLine = paramValues.get(currentIndex);
+                            Object o = currentLine.get(items[j]);
+                            if (o instanceof Integer) {
+                                Integer nb = (Integer) o;
+                                if ((nb >= oldItems.length) || (nb == -1)) {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                                            .getDefaultClosedListValue()));
+                                    currentLine.put(items[j], nb);
+                                } else {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList(oldItems[nb]));
+                                    currentLine.put(items[j], nb);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
