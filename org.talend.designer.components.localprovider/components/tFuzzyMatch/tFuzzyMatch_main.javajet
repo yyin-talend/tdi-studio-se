@@ -22,14 +22,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     String colName = ElementParameterParser.getValue(node, "__MATCH__");
     String matchingType = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
-	int minDistance = Integer.parseInt(ElementParameterParser.getValue(node, "__MIN__"));
-	int maxDistance = Integer.parseInt(ElementParameterParser.getValue(node, "__MAX__"));
-	int invalidDistance = maxDistance+1;
-	boolean unique = ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true");
-	boolean caseSens = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("true");
+    String min = ElementParameterParser.getValue(node, "__MIN__");
+    if(min.equals("")){
+    	min="0";
+    }
+    String max = ElementParameterParser.getValue(node, "__MAX__");
+    if(max.equals("")){
+    	max="0";
+    }
+	//int minDistance = Integer.parseInt(min);
+	//int maxDistance = Integer.parseInt(max);
+	//int invalidDistance = maxDistance+1;
+	String uniqueS = ElementParameterParser.getValue(node, "__GET_UNIQUE__");
+	boolean unique = uniqueS.equals("true");
+	String caseS = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__");
+	boolean caseSens = caseS.equals("true");
 	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
-
-
 
     List< ? extends IConnection> conns = node.getIncomingConnections();
     IConnection inRefCon = null;
@@ -88,7 +96,7 @@ java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>
 <%
 if(matchingType.equals("matchLevenshteinDistance")){
 %>
-int value_<%=cid %> = <%=invalidDistance %>;
+int value_<%=cid %> = invalid_dis_<%=cid %>;
 
 String tomatch_<%=cid %> = (""+<%=inMainCon.getName() %>.<%=colName %>)<%if(!caseSens){%>.toLowerCase()<%}%>;
 
@@ -105,7 +113,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 	
 	if(distance < value_<%=cid %>){
 		
-		if(distance >= <%=minDistance %>){
+		if(distance >= <%=min %>){
 		
 			value_<%=cid %> = distance;
 			
@@ -113,7 +121,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 			
 		}
 		
-		if(value_<%=cid %> == <%=minDistance %>){
+		if(value_<%=cid %> == <%=min %>){
 		
 			break;
 							
@@ -122,7 +130,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 	
 }
 
-if(value_<%=cid %> >= <%=minDistance %> && value_<%=cid %> <= <%=maxDistance %>){
+if(value_<%=cid %> >= <%=min %> && value_<%=cid %> <= <%=max %>){
 
 	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
 
@@ -143,7 +151,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 	
 	if(distance < value_<%=cid %>){
 		
-		if(distance >= <%=minDistance %>){
+		if(distance >= <%=min %>){
 		
 			value_<%=cid %> = distance;
 			
@@ -151,7 +159,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 			
 		}
 		
-	}else if(distance == value_<%=cid %> && value_<%=cid %> <= <%=maxDistance %>){
+	}else if(distance == value_<%=cid %> && value_<%=cid %> <= <%=max %>){
 
 		matching_<%=cid %>.append(<%=separator %>).append(dic_value);
 
@@ -159,7 +167,7 @@ while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
 	
 }
 
-if(value_<%=cid %> >= <%=minDistance %> && value_<%=cid %> <= <%=maxDistance %>){
+if(value_<%=cid %> >= <%=min %> && value_<%=cid %> <= <%=max %>){
 
 	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
 

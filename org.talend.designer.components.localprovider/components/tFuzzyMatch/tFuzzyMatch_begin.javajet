@@ -17,8 +17,10 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String matchingType = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
-
-
+String max = ElementParameterParser.getValue(node, "__MAX__");
+    if(max.equals("")){
+    	max="0";
+    }
 List<IConnection> inputConnections;
 inputConnections = (List<IConnection>) node.getIncomingConnections();
 for (IConnection connection : inputConnections) {
@@ -32,6 +34,8 @@ for (IConnection connection : inputConnections) {
         String connectionName = connection.getName();
 %>
 int nb_line_<%= cid %> = 0; 
+
+int invalid_dis_<%=cid %> = <%=max %> + 1;
 
 java.util.Set<<%=connectionName %>Struct> tSet_<%=connectionName 
 	%>_<%=cid %> = ((java.util.Map<<%=connectionName %>Struct, <%=connectionName %>Struct>) globalMap.get("tHash_<%=connectionName %>")).keySet();
