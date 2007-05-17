@@ -1610,7 +1610,9 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setAuthor(org.talend.core.model.temp.User)
      */
     public void setAuthor(User author) {
-        getProperty().setAuthor(author);
+        if (!getProperty().getAuthor().equals(author)) {
+            getProperty().setAuthor(author);
+        }
     }
 
     /*
@@ -1619,7 +1621,9 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setId(int)
      */
     public void setId(String id) {
-        getProperty().setId(id);
+        if (!getProperty().getId().equals(id)) {
+            getProperty().setId(id);
+        }
     }
 
     /*
@@ -1628,7 +1632,9 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setLabel(java.lang.String)
      */
     public void setLabel(String label) {
-        getProperty().setLabel(label);
+        if (!getProperty().getLabel().equals(label)) {
+            getProperty().setLabel(label);
+        }
     }
 
     /*
@@ -1646,7 +1652,9 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setVersion(int)
      */
     public void setVersion(String version) {
-        getProperty().setVersion(version);
+        if (!getProperty().getVersion().equals(version)) {
+            getProperty().setVersion(version);
+        }
     }
 
     // private InputStream content;
