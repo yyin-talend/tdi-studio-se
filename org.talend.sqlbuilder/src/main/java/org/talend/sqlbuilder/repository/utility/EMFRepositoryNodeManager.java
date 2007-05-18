@@ -178,7 +178,7 @@ public final class EMFRepositoryNodeManager {
         if (root != null) {
             try {
                 IMetadataConnection iMetadataConnection = ConvertionHelper
-                .convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root).getConnection());
+                        .convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root).getConnection());
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (Exception e) {
                 String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
@@ -424,80 +424,83 @@ public final class EMFRepositoryNodeManager {
         String select = lcSql.split("select ")[1];
         String[] s = select.split(" from ");
         String[] columns = s[0].split(",");
-        String fromStr = s[1];
-        String whereStr = "";
-        int indexWhere = s[1].indexOf(" where ");
-        if (indexWhere != -1) {
-            fromStr = s[1].split(" where ")[0];
-            whereStr = s[1].split(" where ")[1];
-        }
-        String[] tables = fromStr.split(",");
-        String[] rel = whereStr.split(" and ");
-
-        for (String string : columns) {
-            int dotIndex = string.indexOf(".");
-            if (dotIndex != -1) {
-                tableNames.add(string.substring(0, dotIndex).trim());
+        if (s.length > 1) {
+            String fromStr = s[1];
+            String whereStr = "";
+            int indexWhere = s[1].indexOf(" where ");
+            if (indexWhere != -1) {
+                fromStr = s[1].split(" where ")[0];
+                whereStr = s[1].split(" where ")[1];
             }
-            columnsNames.add(string.trim());
-        }
-        for (String string : tables) {
-            String tableName = string;
-            if (string.contains(".")) {
-                tableName = string.substring(string.indexOf(".") + 1);
-            }
-            if (!tableNames.contains(tableName.trim())) {
-                tableNames.add(tableName);
-            }
-        }
-        for (int i = 0; i < rel.length; i++) {
-            String[] strs = rel[i].split("=");
-            if (strs.length == 2) {
-                strs[0] = strs[0].trim();
-                strs[1] = strs[1].trim();
-                relations.add(strs);
-            }
-        }
-
-        // add column's name of relations to column names.
-        for (String[] string : relations) {
-            if (!columnsNames.contains(string[0])) {
-                columnsNames.add(string[0]);
-            }
-            if (!columnsNames.contains(string[1])) {
-                columnsNames.add(string[1]);
-            }
-        }
-        // fixed table Names when contains alias.
-        fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
-
-        // fixed column Names when contains alias.
-        fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
-
-        // replace table's alias with table real name in columnsNames.
-        for (int i = 0; i < columnsNames.size(); i++) {
-            String string = columnsNames.get(i);
-            if (string.contains(".")) {
-                columnsNames.set(i, string.substring(string.indexOf(".") + 1));
-
-            }
-        }
-        // fixed relations ,when contans alias.
-        for (int i = 0; i < relations.size(); i++) {
-            String[] strs = relations.get(i);
-            String s0 = strs[0];
-            String s1 = strs[1];
-            for (String string : tableNames) {
-                int di = s0.indexOf(".");
-                if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
-                    s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di);
+            String[] tables = fromStr.split(",");
+            String[] rel = whereStr.split(" and ");
+            
+            for (String string : columns) {
+                int dotIndex = string.indexOf(".");
+                if (dotIndex != -1) {
+                    tableNames.add(string.substring(0, dotIndex).trim());
                 }
-                di = s1.indexOf(".");
-                if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
-                    s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di);
+                columnsNames.add(string.trim());
+            }
+            for (String string : tables) {
+                String tableName = string;
+                if (string.contains(".")) {
+                    tableName = string.substring(string.indexOf(".") + 1);
+                }
+                if (!tableNames.contains(tableName.trim())) {
+                    tableNames.add(tableName);
                 }
             }
-            relations.set(i, new String[] { s0, s1 });
+            for (int i = 0; i < rel.length; i++) {
+                String[] strs = rel[i].split("=");
+                if (strs.length == 2) {
+                    strs[0] = strs[0].trim();
+                    strs[1] = strs[1].trim();
+                    relations.add(strs);
+                }
+            }
+            
+            // add column's name of relations to column names.
+            for (String[] string : relations) {
+                if (!columnsNames.contains(string[0])) {
+                    columnsNames.add(string[0]);
+                }
+                if (!columnsNames.contains(string[1])) {
+                    columnsNames.add(string[1]);
+                }
+            }
+            // fixed table Names when contains alias.
+            fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
+            
+            // fixed column Names when contains alias.
+            fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
+            
+            // replace table's alias with table real name in columnsNames.
+            for (int i = 0; i < columnsNames.size(); i++) {
+                String string = columnsNames.get(i);
+                if (string.contains(".")) {
+                    columnsNames.set(i, string.substring(string.indexOf(".") + 1));
+                    
+                }
+            }
+            // fixed relations ,when contans alias.
+            for (int i = 0; i < relations.size(); i++) {
+                String[] strs = relations.get(i);
+                String s0 = strs[0];
+                String s1 = strs[1];
+                for (String string : tableNames) {
+                    int di = s0.indexOf(".");
+                    if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
+                        s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di);
+                    }
+                    di = s1.indexOf(".");
+                    if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
+                        s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di);
+                    }
+                }
+                relations.set(i, new String[] { s0, s1 });
+            }
+
         }
         return columns;
     }

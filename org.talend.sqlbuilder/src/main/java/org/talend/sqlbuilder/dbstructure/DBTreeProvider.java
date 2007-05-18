@@ -48,16 +48,17 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.DBStructureComposite;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
@@ -97,8 +98,6 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
-    private RepositoryContentProvider repositoryContentProvider;
-
     private ConnectionParameters connectionParameters;
 
     private boolean isRefresh;
@@ -106,10 +105,17 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     private Map<String, Color> colors = new HashMap<String, Color>();
 
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
+        this(connectionParameters);
+    }
+
+    public DBTreeProvider(ConnectionParameters connectionParameters) {
         this.connectionParameters = connectionParameters;
-        this.repositoryContentProvider = new RepositoryContentProvider(repositoryView);
         colors.put(COLOR_RED, Display.getDefault().getSystemColor(SWT.COLOR_RED));
         colors.put(COLOR_GRAY, Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
+    }
+
+    public DBTreeProvider(DBStructureComposite composite, ConnectionParameters connectionParameters) {
+        this(connectionParameters);
     }
 
     public boolean isRefresh() {
@@ -180,7 +186,13 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     }
 
     public Object getParent(Object element) {
-        return repositoryContentProvider.getParent(element);
+        RepositoryNode node = (RepositoryNode) element;
+        final RepositoryNode parent = node.getParent();
+        if (parent != null) {
+            return parent;
+        } else {
+            return node;
+        }
     }
 
     public boolean hasChildren(Object element) {
@@ -192,10 +204,15 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             return new Object[0];
         }
         RepositoryNode treeRoot = (RepositoryNode) inputElement;
-        initialize(treeRoot);
+        if (!isInitialized) {
+            initialize(treeRoot);
+            isInitialized = true;
+        }
         return treeRoot.getChildren().toArray();
     }
 
+    private boolean isInitialized = false;
+    
     private void initialize(RepositoryNode treeRoot) {
         if (!connectionParameters.isRepository()) {
             addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject(), true,
@@ -238,12 +255,15 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             parent.getChildren().add(folder);
             convert(container, folder, type);
         }
-
+        maps.clear();
         for (Object obj : fromModel.getMembers()) {
-            IRepositoryObject repositoryObject = (IRepositoryObject) obj;
+            IRepositoryObject repositoryObject = ((RepositoryObject) obj).cloneNewObject();
+            maps.put(((RepositoryObject) obj).getId(), (RepositoryObject) obj);
             addNode(parent, repositoryObject, false, null);
         }
     }
+
+    private static Map<String, IRepositoryObject> maps = new HashMap<String, IRepositoryObject>();
 
     private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject, boolean isBuildIn, Integer index) {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -256,7 +276,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         } else {
             connectionRepositoryObject.setRepositoryName(repositoryObject.getLabel());
         }
-        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid); //$NON-NLS-1$
+        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
         if (!isBuildIn) {
             connectionRepositoryObject.setImage(IMAGES_CONNECTION_ICON);
         } else {
@@ -588,6 +608,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     public Color getForeground(Object element, int columnIndex) {
         return null;
+    }
+
+    public static Map<String, IRepositoryObject> getMaps() {
+        return maps;
     }
 
 }

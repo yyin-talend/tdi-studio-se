@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -201,7 +202,6 @@ public class DBStructureComposite extends Composite {
             this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
         }
 
-        repositoryNodeManager.clean();
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
     }
 
@@ -223,9 +223,6 @@ public class DBStructureComposite extends Composite {
      * Create contents of the dialog.
      */
     protected void createDBTree() {
-        RepositoryView repositoryView = (RepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView(RepositoryView.VIEW_ID);
-
         treeViewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         //
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
@@ -246,7 +243,7 @@ public class DBStructureComposite extends Composite {
 
         tree.setHeaderVisible(true);
 
-        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView, builderDialog.getConnParameters());
+        DBTreeProvider treeLabelProvider = new DBTreeProvider(this, builderDialog.getConnParameters());
         treeViewer.setContentProvider(treeLabelProvider);
         treeViewer.setLabelProvider(treeLabelProvider);
         treeViewer.addFilter(filter);
@@ -439,7 +436,6 @@ public class DBStructureComposite extends Composite {
                         Display.getDefault().asyncExec(new Runnable() {
 
                             public void run() {
-                                ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
                                 treeViewer.refresh();
                             }
                         });
@@ -561,7 +557,7 @@ public class DBStructureComposite extends Composite {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                @SuppressWarnings("unchecked") //$NON-NLS-1$
+                @SuppressWarnings("unchecked")//$NON-NLS-1$
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
                     try {
@@ -621,5 +617,9 @@ public class DBStructureComposite extends Composite {
      */
     public TreeViewer getTreeViewer() {
         return treeViewer;
+    }
+
+    public boolean isShowAllConnections() {
+        return this.isShowAllConnections;
     }
 }

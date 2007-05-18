@@ -65,6 +65,7 @@ public class OpenQueryAction extends OpenNewEditorAction {
             List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connectionParameters = new ConnectionParameters();
             connectionParameters.setQuery(dialog.getConnParameters().getQuery());
+            connectionParameters.setShowDesignerPage(false);
             dialog.openEditor(node, repositoryName, connectionParameters, false);
         }
     }

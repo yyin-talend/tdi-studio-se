@@ -38,9 +38,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -369,7 +366,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     }
 
     private void clean() {
-        SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
     }
@@ -485,81 +481,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
 
         }
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.eclipse.jface.window.Window#getShellListener()
-     */
-    @Override
-    protected ShellListener getShellListener() {
-        ShellListener shellListener = new ShellAdapter() {
-
-            // int i = 0;
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.ShellAdapter#shellActivated(org.eclipse.swt.events.ShellEvent)
-             */
-            @Override
-            public void shellActivated(ShellEvent e) {
-                // SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
-                SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-                SQLBuilderRepositoryNodeManager.setReduction(false);
-                SQLBuilderRepositoryNodeManager.setIncrease(true);
-                super.shellActivated(e);
-            }
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.ShellAdapter#shellClosed(org.eclipse.swt.events.ShellEvent)
-             */
-            @Override
-            public void shellClosed(ShellEvent e) {
-                e.doit = false; // don't close now
-                if (canHandleShellCloseEvent()) {
-                    handleShellCloseEvent();
-                }
-            }
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.ShellAdapter#shellDeactivated(org.eclipse.swt.events.ShellEvent)
-             */
-            @Override
-            public void shellDeactivated(ShellEvent e) {
-                SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
-                SQLBuilderRepositoryNodeManager.setIncrease(false);
-                SQLBuilderRepositoryNodeManager.setReduction(true);
-                // SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-                super.shellDeactivated(e);
-            }
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.ShellAdapter#shellDeiconified(org.eclipse.swt.events.ShellEvent)
-             */
-            @Override
-            public void shellDeiconified(ShellEvent e) {
-                super.shellDeiconified(e);
-            }
-
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.ShellAdapter#shellIconified(org.eclipse.swt.events.ShellEvent)
-             */
-            @Override
-            public void shellIconified(ShellEvent e) {
-                super.shellIconified(e);
-            }
-
-        };
-        return shellListener;
     }
 
     public boolean isFromRepositoryView() {

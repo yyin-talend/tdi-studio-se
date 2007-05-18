@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -65,6 +64,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
@@ -81,30 +81,6 @@ public class SQLBuilderRepositoryNodeManager {
 
     // /store all DatabaseConnection's RepositoryNode.
     private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
-
-    // store all label name of connections's tables and columns
-    private static Map<String, String> labelsAndNames = new HashMap<String, String>();
-
-    private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
-
-    private static boolean isDialogClosed = false;
-
-    private static boolean isReduction = false;
-
-    private static boolean isIncrease = false;
-
-    private static boolean isFirst = true;
-
-    private static String currentNodeLabel = ""; //$NON-NLS-1$
-
-    /**
-     * Getter for oldMetaData.
-     * 
-     * @return the oldMetaData
-     */
-    public static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> getOldMetaData() {
-        return oldMetaData;
-    }
 
     /**
      * dev Comment method "isChangeElementColor".
@@ -186,12 +162,6 @@ public class SQLBuilderRepositoryNodeManager {
         return new boolean[] { isDiffGray, isDiffDivergency, isDiffSyschronize };
     }
 
-    public void clean() {
-        repositoryNodes.clear();
-        labelsAndNames.clear();
-        oldMetaData.clear();
-    }
-
     /**
      * dev Comment method "removeAllRepositoryNodes".
      */
@@ -238,142 +208,6 @@ public class SQLBuilderRepositoryNodeManager {
                 it.remove();
             }
         }
-    }
-
-    /**
-     * dev Comment method "reductionALLRepositoryNode".
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static void reductionALLRepositoryNode() {
-        isFirst = false;
-        for (RepositoryNode node : repositoryNodes) {
-            reductionOneRepositoryNode(node);
-
-        }
-        if (isDialogClosed) {
-            repositoryNodes.clear();
-            labelsAndNames.clear();
-            oldMetaData.clear();
-        }
-        isDialogClosed = false;
-    }
-
-    /**
-     * dev Comment method "reductionOneRepositoryNode".
-     * 
-     * @param node
-     */
-    public static void reductionOneRepositoryNode(RepositoryNode node) {
-        // isReduction = true;
-        DatabaseConnection connection = (DatabaseConnection) getItem(getRoot(node)).getConnection();
-        currentNodeLabel = Messages.getString("SQLBuilderRepositoryNodeManager.label1") + getRoot(node).getObject().getLabel(); //$NON-NLS-1$
-        reductionOneConnection(connection);
-    }
-
-    /**
-     * dev Comment method "reductionOneConnection".
-     * 
-     * @param connection
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static void reductionOneConnection(DatabaseConnection connection) {
-
-        Map<MetadataTable, List<MetadataColumn>> oldtableColumns = new HashMap<MetadataTable, List<MetadataColumn>>();
-        List<MetadataTable> tables = connection.getTables();
-        List<MetadataTable> newtables = new ArrayList<MetadataTable>();
-        for (MetadataTable table : tables) {
-            String connAndTableLabel = currentNodeLabel
-                    + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + table.getLabel(); //$NON-NLS-1$
-            List<MetadataColumn> oldcloumns = table.getColumns();
-            List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
-            List<MetadataColumn> oldCloumns = new ArrayList<MetadataColumn>();
-            for (MetadataColumn column : oldcloumns) {
-                oldCloumns.add(column);
-                if (!column.getLabel().equals("")) { //$NON-NLS-1$
-                    if (column.getOriginalField() != null && column.getOriginalField().equals(" ")) { //$NON-NLS-1$
-                        column.setOriginalField(labelsAndNames.get(connAndTableLabel
-                                + Messages.getString("SQLBuilderRepositoryNodeManager.label3") + column.getLabel())); //$NON-NLS-1$
-                    }
-                    if (isDialogClosed) {
-                        column.setDivergency(false);
-                        column.setSynchronised(false);
-                    }
-                    newcloumns.add(column);
-                }
-            }
-            table.getColumns().clear();
-            table.getColumns().addAll(newcloumns);
-            if (!table.getLabel().equals("")) { //$NON-NLS-1$
-                if (table.getSourceName() != null && table.getSourceName().equals(" ")) { //$NON-NLS-1$
-                    table.setSourceName(labelsAndNames.get(connAndTableLabel));
-                }
-                if (isDialogClosed) {
-                    table.setDivergency(false);
-                    table.setSynchronised(false);
-                }
-                newtables.add(table);
-            }
-            oldtableColumns.put(table, oldCloumns);
-        }
-        oldMetaData.put(connection, oldtableColumns);
-        connection.getTables().clear();
-        connection.getTables().addAll(newtables);
-        if (isDialogClosed) {
-            connection.setDivergency(false);
-            connection.setSynchronised(false);
-        }
-    }
-
-    /**
-     * dev Comment method "increaseALLRepositoryNode".
-     */
-    public static void increaseALLRepositoryNode() {
-        if (!isFirst && !isIncrease) {
-            if (repositoryNodes != null) {
-                for (RepositoryNode node : repositoryNodes) {
-                    increaseOneRepositoryNode(node);
-                }
-            }
-        }
-
-    }
-
-    /**
-     * dev Comment method "increaseOneRepositoryNode".
-     * 
-     * @param node
-     */
-    public static void increaseOneRepositoryNode(RepositoryNode node) {
-        DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
-        increaseOneConnection(connection);
-    }
-
-    /**
-     * dev Comment method "increaseOneConnection".
-     * 
-     * @param connection
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static void increaseOneConnection(DatabaseConnection connection) {
-        if (oldMetaData != null && !oldMetaData.isEmpty()) {
-            Map<MetadataTable, List<MetadataColumn>> oldtableColumns = oldMetaData.get(connection);
-            if (oldtableColumns != null) {
-                connection.getTables().clear();
-                Set<MetadataTable> set = oldtableColumns.keySet();
-                List<MetadataTable> sortTables = sortTableColumn(set);
-                for (MetadataTable table : sortTables) {
-                    List<MetadataColumn> columns = oldtableColumns.get(table);
-                    List<MetadataColumn> newcolumns = new ArrayList<MetadataColumn>();
-                    for (MetadataColumn column : columns) {
-                        newcolumns.add(column);
-                    }
-                    table.getColumns().clear();
-                    table.getColumns().addAll(newcolumns);
-                    connection.getTables().add(table);
-                }
-            }
-        }
-        oldMetaData.clear();
     }
 
     /**
@@ -540,18 +374,15 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
-        if (!isReduction) {
-            currentNodeLabel = Messages.getString("SQLBuilderRepositoryNodeManager.label1") + getRoot(oldNode).getObject().getLabel(); //$NON-NLS-1$
-            DatabaseConnectionItem item = getItem(getRoot(oldNode));
-            DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-            IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
-            try {
-                modifyOldRepositoryNode(connection, iMetadataConnection, oldNode);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            }
-
+        DatabaseConnectionItem item = getItem(getRoot(oldNode));
+        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
+        try {
+            modifyOldRepositoryNode(connection, iMetadataConnection, oldNode);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
+
         return oldNode;
     }
 
@@ -577,9 +408,7 @@ public class SQLBuilderRepositoryNodeManager {
                 restoreConnection(connection, tablesFromEMF);
             } else if (oldNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.TABLE) {
                 MetadataTable metadataTable = ((MetadataTableRepositoryObject) oldNode.getObject()).getTable();
-                modifyOldOneTableFromDB(tablesFromDB, currentNodeLabel, metadataTable);
-                String connAndTableLabel = currentNodeLabel
-                        + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + metadataTable.getLabel(); //$NON-NLS-1$
+                modifyOldOneTableFromDB(tablesFromDB, metadataTable);
                 MetadataTable tableFromDB = null;
                 for (MetadataTable table : tablesFromDB) {
                     if (table.getSourceName().equals(metadataTable.getSourceName())) {
@@ -588,7 +417,7 @@ public class SQLBuilderRepositoryNodeManager {
                 }
                 if (tableFromDB != null) {
                     List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, tableFromDB);
-                    fixedColumns(columnsFromDB, (List<MetadataColumn>) metadataTable.getColumns(), connAndTableLabel);
+                    fixedColumns(columnsFromDB, (List<MetadataColumn>) metadataTable.getColumns());
                 }
                 // for (MetadataColumn metadataColumn : (List<MetadataColumn>) metadataTable.getColumns()) {
                 // modifyOneColumnFromDB(iMetadataConnection, tablesFromDB, metadataColumn);
@@ -602,18 +431,11 @@ public class SQLBuilderRepositoryNodeManager {
             List<MetadataTable> tablesFromEMF = connection.getTables();
             for (MetadataTable tableFromEMF : tablesFromEMF) {
                 List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
-                String connAndTableLabel = currentNodeLabel
-                        + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + tableFromEMF.getLabel(); //$NON-NLS-1$
                 for (MetadataColumn column : columnsFromEMF) {
-                    labelsAndNames
-                            .put(
-                                    connAndTableLabel
-                                            + Messages.getString("SQLBuilderRepositoryNodeManager.label3") + column.getLabel(), column.getOriginalField()); //$NON-NLS-1$
                     column.setOriginalField(" "); //$NON-NLS-1$
                     column.setDivergency(true);
                     column.setSynchronised(false);
                 }
-                labelsAndNames.put(connAndTableLabel, tableFromEMF.getSourceName());
                 tableFromEMF.setSourceName(" "); //$NON-NLS-1$
                 tableFromEMF.setDivergency(true);
             }
@@ -637,9 +459,7 @@ public class SQLBuilderRepositoryNodeManager {
         }
         if (tableFromDB != null) {
             List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, tableFromDB);
-            String connAndTableLabel = currentNodeLabel
-                    + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + metadataColumn.getTable().getLabel(); //$NON-NLS-1$
-            modifyOldOneColumnFromDB(columnsFromDB, connAndTableLabel, metadataColumn);
+            modifyOldOneColumnFromDB(columnsFromDB, metadataColumn);
         }
     }
 
@@ -658,15 +478,13 @@ public class SQLBuilderRepositoryNodeManager {
             List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, tableFromDB);
             for (MetadataTable tableFromEMF : tablesFromEMF) {
                 // /Get MetadataColumn From EMF
-                String connAndTableLabel = currentNodeLabel
-                        + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + tableFromEMF.getLabel(); //$NON-NLS-1$
                 List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
                 if (tableFromDB.getSourceName().equals(tableFromEMF.getSourceName())) {
-                    fixedColumns(columnsFromDB, columnsFromEMF, connAndTableLabel);
+                    fixedColumns(columnsFromDB, columnsFromEMF);
                 }
             }
         }
-        fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection, currentNodeLabel);
+        fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
     }
 
     /**
@@ -691,7 +509,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-        
+
         boolean isNeedSchema = EDatabaseTypeName.isNeedSchemaFromDbType(parameters.getDbType());
         if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
@@ -837,6 +655,12 @@ public class SQLBuilderRepositoryNodeManager {
         return item;
     }
 
+    public static DatabaseConnectionItem getEMFItem(String id) {
+        IRepositoryObject repositoryObject = DBTreeProvider.getMaps().get(id);
+        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+        return item;
+    }
+
     /**
      * method "getDatabaseNameByRepositoryNode" get databaseName .
      * 
@@ -911,7 +735,7 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<String> getALLQueryLabels(RepositoryNode repositoryNode) {
         List<String> allQueries = new ArrayList<String>();
-        DatabaseConnectionItem item = getItem(repositoryNode);
+        DatabaseConnectionItem item = getEMFItem(repositoryNode.getObject().getId());
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
         QueriesConnection queriesConnection = connection.getQueries();
         if (queriesConnection != null) {
@@ -930,7 +754,46 @@ public class SQLBuilderRepositoryNodeManager {
      * @param query need to save Query
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void saveEMFQuery(String id, Query query) {
+        DatabaseConnectionItem item = getEMFItem(id);   
+        if (query != null) {
+            Query query3 = ConnectionFactory.eINSTANCE.createQuery();
+            query3.setComment(query.getComment());
+            query3.setLabel(query.getLabel());
+            query3.setValue(query.getValue());
+            
+            Connection connection = (Connection) item.getConnection();
+            QueriesConnection queriesConnection = connection.getQueries();
+            if (queriesConnection == null) {
+                QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
+                qc.setConnection(connection);
+                qc.getQuery().add(query3);
+                assignQueryId(query3, qc); // assign id to new query
+            } else {
+                List<Query> queries = queriesConnection.getQuery();
+                boolean isModify = false;
+                for (Query query2 : queries) {
+                    if (query2.getLabel().equals(query3.getLabel())) {
+                        query2.setComment(query3.getComment());
+                        query2.setId(query3.getId());
+                        query2.setValue(query3.getValue());
+                        isModify = true;
+                    }
+                    assignQueryId(query2, queriesConnection); // assign id to old query without id
+                }
+                if (!isModify) {
+                    queriesConnection.getQuery().add(query3);
+                    assignQueryId(query3, queriesConnection); // assign id to new query
+                }
+            }
+        }
+
+        saveMetaData(item);
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void saveQuery(RepositoryNode repositoryNode, Query query) {
+        saveEMFQuery(repositoryNode.getObject().getId(), query);
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
             Connection connection = (Connection) item.getConnection();
@@ -939,7 +802,7 @@ public class SQLBuilderRepositoryNodeManager {
                 QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
                 qc.setConnection(connection);
                 qc.getQuery().add(query);
-                assignQueryId(query, qc); //assign id to new query
+                assignQueryId(query, qc); // assign id to new query
             } else {
                 List<Query> queries = queriesConnection.getQuery();
                 boolean isModify = false;
@@ -950,16 +813,15 @@ public class SQLBuilderRepositoryNodeManager {
                         query2.setValue(query.getValue());
                         isModify = true;
                     }
-                    assignQueryId(query2, queriesConnection); //assign id to old query without id
+                    assignQueryId(query2, queriesConnection); // assign id to old query without id
                 }
                 if (!isModify) {
                     queriesConnection.getQuery().add(query);
-                    assignQueryId(query, queriesConnection); //assign id to new query
+                    assignQueryId(query, queriesConnection); // assign id to new query
                 }
             }
         }
-        
-        saveMetaData(item);
+
     }
 
     private void assignQueryId(Query query, QueriesConnection connection) {
@@ -967,7 +829,7 @@ public class SQLBuilderRepositoryNodeManager {
             query.setId(ProxyRepositoryFactory.getInstance().getNextId());
         }
     }
-    
+
     /**
      * method "deleteQueries" use delete Queries.
      * 
@@ -997,6 +859,32 @@ public class SQLBuilderRepositoryNodeManager {
             queriesConnection.getQuery().clear();
             queriesConnection.getQuery().addAll(qs2);
         }
+        deleteEMFQueries(repositoryNode.getObject().getId(), queries);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void deleteEMFQueries(String id, List<Query> queries) {
+        DatabaseConnectionItem item = getEMFItem(id);
+        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+        QueriesConnection queriesConnection = connection.getQueries();
+        if (queriesConnection != null) {
+            List<Query> qs = queriesConnection.getQuery();
+            List<Query> qs2 = new ArrayList<Query>();
+            qs2.clear();
+            for (Query query : qs) {
+                boolean flag = true;
+                for (Query q : queries) {
+                    if (query.getLabel().equals(q.getLabel())) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    qs2.add(query);
+                }
+            }
+            queriesConnection.getQuery().clear();
+            queriesConnection.getQuery().addAll(qs2);
+        }
         saveMetaData(item);
     }
 
@@ -1005,7 +893,7 @@ public class SQLBuilderRepositoryNodeManager {
      * 
      * @param item need to be saved Item
      */
-    public void saveMetaData(DatabaseConnectionItem item) {
+    public static void saveMetaData(DatabaseConnectionItem item) {
 
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
@@ -1024,9 +912,9 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF,
-            IMetadataConnection iMetadataConnection, String connectionLabel) {
+            IMetadataConnection iMetadataConnection) {
         for (MetadataTable emf : metaFromEMF) {
-            modifyOldOneTableFromDB(metaFromDB, connectionLabel, emf);
+            modifyOldOneTableFromDB(metaFromDB, emf);
         }
         while (!metaFromDB.isEmpty()) {
             MetadataTable db = metaFromDB.remove(0);
@@ -1074,7 +962,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param emf
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void modifyOldOneTableFromDB(List<MetadataTable> metaFromDB, String connectionLabel, MetadataTable emf) {
+    private void modifyOldOneTableFromDB(List<MetadataTable> metaFromDB, MetadataTable emf) {
         boolean flag = true;
         for (MetadataTable db : metaFromDB) {
             if (db.getSourceName().equals(emf.getSourceName())) {
@@ -1085,19 +973,12 @@ public class SQLBuilderRepositoryNodeManager {
             }
         }
         if (flag) {
-            String connAndTableLabel = connectionLabel
-                    + Messages.getString("SQLBuilderRepositoryNodeManager.label2") + emf.getLabel(); //$NON-NLS-1$
             List<MetadataColumn> columns = emf.getColumns();
             for (MetadataColumn column : columns) {
-                labelsAndNames
-                        .put(
-                                connAndTableLabel
-                                        + Messages.getString("SQLBuilderRepositoryNodeManager.label3") + column.getLabel(), column.getOriginalField()); //$NON-NLS-1$
                 column.setOriginalField(" "); //$NON-NLS-1$
                 column.setDivergency(true);
                 column.setSynchronised(false);
             }
-            labelsAndNames.put(connAndTableLabel, emf.getSourceName());
             emf.setSourceName(" "); //$NON-NLS-1$
             emf.setDivergency(true);
             emf.setSynchronised(false);
@@ -1110,9 +991,9 @@ public class SQLBuilderRepositoryNodeManager {
      * @param columnsFromDB MetadataColumn from Database
      * @param cloumnsFromEMF MetadataColumn from Emf
      */
-    private void fixedColumns(List<MetadataColumn> columnsFromDB, List<MetadataColumn> cloumnsFromEMF, String connAndTableLabel) {
+    private void fixedColumns(List<MetadataColumn> columnsFromDB, List<MetadataColumn> cloumnsFromEMF) {
         for (MetadataColumn emf : cloumnsFromEMF) {
-            modifyOldOneColumnFromDB(columnsFromDB, connAndTableLabel, emf);
+            modifyOldOneColumnFromDB(columnsFromDB, emf);
         }
         while (!columnsFromDB.isEmpty()) {
             MetadataColumn db = columnsFromDB.remove(0);
@@ -1150,7 +1031,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param connAndTableLabel
      * @param emf
      */
-    private void modifyOldOneColumnFromDB(List<MetadataColumn> columnsFromDB, String connAndTableLabel, MetadataColumn emf) {
+    private void modifyOldOneColumnFromDB(List<MetadataColumn> columnsFromDB, MetadataColumn emf) {
         boolean flag = true;
         for (MetadataColumn db : columnsFromDB) {
 
@@ -1164,12 +1045,83 @@ public class SQLBuilderRepositoryNodeManager {
             }
         }
         if (flag) {
-            labelsAndNames
-                    .put(
-                            connAndTableLabel + Messages.getString("SQLBuilderRepositoryNodeManager.label3") + emf.getLabel(), emf.getOriginalField()); //$NON-NLS-1$
             emf.setOriginalField(" "); //$NON-NLS-1$
             emf.setDivergency(true);
             emf.setSynchronised(false);
+        }
+    }
+
+    public static void saveMetadataColumn(List<RepositoryNode> repositorynodes, List<MetadataColumn> columnNodes) {
+        saveEMFMetadataColumn(repositorynodes.get(0).getObject().getId(), columnNodes);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void saveEMFMetadataColumn(String id, List<MetadataColumn> columnNodes) {
+        DatabaseConnectionItem item = getEMFItem(id);
+        final DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
+        final List<MetadataTable> tables = connection.getTables();
+        List<MetadataColumn> emfCols = new ArrayList<MetadataColumn>();
+        List<MetadataColumn> dbCols = new ArrayList<MetadataColumn>();
+        for (MetadataColumn col : columnNodes) {
+            for (MetadataTable table : tables) {
+                if (table.getLabel().equals(col.getTable().getLabel())) {
+                    List<MetadataColumn> returnCols = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
+                            iMetadataConnection, table.getSourceName());
+                    for (MetadataColumn emfcolumn : (List<MetadataColumn>) table.getColumns()) {
+                        for (MetadataColumn column : returnCols) {
+                            if (emfcolumn.getLabel().equals(col.getLabel()) && column.getLabel().equals(col.getOriginalField())) {
+                                emfCols.add(emfcolumn);
+                                dbCols.add(column);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        saveOneMetadataColumn(emfCols, columnNodes, dbCols);
+        saveMetaData(item);
+    }
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private static void saveOneMetadataColumn(List<MetadataColumn> emfCols, List<MetadataColumn> columnNodes,
+            List<MetadataColumn> dbCols) {
+        for (int i = 0; i < columnNodes.size(); i++) {
+            MetadataColumn columnNode = columnNodes.get(i);
+            MetadataColumn emfCol = emfCols.get(i);
+            MetadataColumn metadataColumn = dbCols.get(i);
+            if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
+                if (columnNode.getLabel().equals("")) { //$NON-NLS-1$
+                    columnNode.setLabel(columnNode.getOriginalField());
+                }
+                columnNode.setComment(metadataColumn.getComment());
+                columnNode.setDefaultValue(metadataColumn.getDefaultValue());
+                columnNode.setKey(metadataColumn.isKey());
+                columnNode.setLength(metadataColumn.getLength());
+                columnNode.setNullable(metadataColumn.isNullable());
+                columnNode.setPattern(metadataColumn.getPattern());
+                columnNode.setPrecision(metadataColumn.getPrecision());
+                columnNode.setSourceType(metadataColumn.getSourceType());
+                columnNode.setTalendType(metadataColumn.getTalendType());
+                columnNode.setDivergency(false);
+                columnNode.setSynchronised(false);
+
+                if (emfCol.getLabel().equals("")) { //$NON-NLS-1$
+                    emfCol.setLabel(emfCol.getOriginalField());
+                }
+                emfCol.setComment(metadataColumn.getComment());
+                emfCol.setDefaultValue(metadataColumn.getDefaultValue());
+                emfCol.setKey(metadataColumn.isKey());
+                emfCol.setLength(metadataColumn.getLength());
+                emfCol.setNullable(metadataColumn.isNullable());
+                emfCol.setPattern(metadataColumn.getPattern());
+                emfCol.setPrecision(metadataColumn.getPrecision());
+                emfCol.setSourceType(metadataColumn.getSourceType());
+                emfCol.setTalendType(metadataColumn.getTalendType());
+                emfCol.setDivergency(false);
+                emfCol.setSynchronised(false);
+
+            }
         }
     }
 
@@ -1249,61 +1201,6 @@ public class SQLBuilderRepositoryNodeManager {
         }
         return getRoot(repositoryNode.getParent());
     }
-
-    /**
-     * Getter for isDialogClosed.
-     * 
-     * @return the isDialogClosed
-     */
-    public static boolean isDialogClosed() {
-        return isDialogClosed;
-    }
-
-    /**
-     * Sets the isDialogClosed.
-     * 
-     * @param isDialogClosed the isDialogClosed to set
-     */
-    public static void setDialogClosed(boolean isDialogClosed2) {
-        SQLBuilderRepositoryNodeManager.isDialogClosed = isDialogClosed2;
-    }
-
-    /**
-     * Getter for isIncrease.
-     * 
-     * @return the isIncrease
-     */
-    public static boolean isIncrease() {
-        return isIncrease;
-    }
-
-    /**
-     * Sets the isIncrease.
-     * 
-     * @param isIncrease the isIncrease to set
-     */
-    public static void setIncrease(boolean isIncrease2) {
-        SQLBuilderRepositoryNodeManager.isIncrease = isIncrease2;
-    }
-
-    /**
-     * Getter for isReduction.
-     * 
-     * @return the isReduction
-     */
-    public static boolean isReduction() {
-        return isReduction;
-    }
-
-    /**
-     * Sets the isReduction.
-     * 
-     * @param isReduction the isReduction to set
-     */
-    public static void setReduction(boolean isReduction2) {
-        SQLBuilderRepositoryNodeManager.isReduction = isReduction2;
-    }
-
 }
 
 /**

@@ -119,9 +119,6 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     @Override
     public void run() {
         try {
-            SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-            SQLBuilderRepositoryNodeManager.setIncrease(true);
-
             // String query = null;
             // ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
             // .getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
