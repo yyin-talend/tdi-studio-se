@@ -1,0 +1,124 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode 
+    	org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType			
+		java.util.List
+" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+    
+String cid = node.getUniqueName();
+
+//get the input Main and Lookup connection
+IConnection inMainCon = null;
+IConnection inRefCon = null;   
+List< ? extends IConnection> connsIn = node.getIncomingConnections();     
+for (IConnection conn : connsIn) {//3
+	if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+		inMainCon = conn;
+	}
+	else if(conn.getLineStyle().equals(EConnectionType.FLOW_REF))
+	{
+		inRefCon = conn;
+	}
+}//3
+
+
+String minNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MIN__");
+String maxNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MAX__");
+String lookupNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
+String mainName = ElementParameterParser.getValue(node, "__MAIN_COLUMN__");
+String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
+String maxName = maxNameOrigi.substring(maxNameOrigi.lastIndexOf('.')+1);
+String lookupName = lookupNameOrigi.substring(lookupNameOrigi.lastIndexOf('.')+1);
+String lookupConName = inRefCon.getName();
+
+
+String returnClassName = "Object";
+JavaType mainjavaType = JavaTypesManager.STRING;
+List<IMetadataColumn> columns = metadata.getListColumns();
+int sizeColumns = columns.size();			
+for (int i = 0; i < sizeColumns; i++) {//5
+
+	IMetadataColumn column = columns.get(i);
+	if(column.getLabel().equals("LOOKUP")) 
+	{
+    	returnClassName = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());    	
+	}
+	
+	if(column.getLabel().equals(mainName)) 
+	{
+    	mainjavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());  	
+	}
+}//5	
+%> 
+
+int nb_line_<%= cid %> = 0; 
+final java.util.Set<<%=lookupConName %>Struct> set_<%=cid %> = ((java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>")).keySet();
+
+class Util_<%= cid %> {
+
+    public <%=returnClassName%> getLookup(row1Struct row1) {
+    
+            for (java.util.Iterator iter = set_<%=cid %>.iterator(); iter.hasNext();) {
+            row2Struct row2 = (row2Struct) iter.next();
+
+<% 
+   if(mainjavaType == JavaTypesManager.DATE ) {
+%>
+            if (row1.<%=mainName %>.after(row2.<%=minName%>)
+                    && row1.<%=mainName %>.before(row2.<%=maxName%>)) 
+           
+<%
+  } else if(mainjavaType == JavaTypesManager.BYTE || 
+            mainjavaType == JavaTypesManager.SHORT || 
+            mainjavaType == JavaTypesManager.FLOAT ||
+            mainjavaType == JavaTypesManager.DOUBLE ||
+            mainjavaType == JavaTypesManager.LONG ||
+            mainjavaType == JavaTypesManager.INTEGER){
+%> 
+            if ((row1.<%=mainName %> > row2.<%=minName%>)
+                    && (row1.<%=mainName %> < row2.<%=maxName%>)) 
+<%
+  } else {
+%>
+            String main = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row1.<%=mainName %>)).toString()<%}else {%>String.valueOf(row1.<%=mainName %>) <%}%>;
+            String min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row2.<%=minName %>)).toString()<%}else {%>String.valueOf(row2.<%=minName %>) <%}%>;
+            String max =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row2.<%=maxName %>)).toString()<%}else {%>String.valueOf(row2.<%=maxName %>) <%}%>;
+            
+            if ((main.compareTo(min) > -1)
+                    && (main.compareTo(max) < 1)) 
+
+<%
+  }
+%>         
+            {
+                return row2.<%=lookupName %>;
+            }
+        
+         }
+        
+        return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
+    }
+}
+        
+Util_<%= cid %> util_<%= cid %> = new Util_<%= cid %>();
+
+<%
+    }//2
+}//1
+%>
