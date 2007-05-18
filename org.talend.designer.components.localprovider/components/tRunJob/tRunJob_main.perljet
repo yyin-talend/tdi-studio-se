@@ -5,6 +5,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
+    java.util.Map
+    java.util.List
 "
 %>
 
@@ -21,6 +23,13 @@ String context = ElementParameterParser.getValue(
    node,
    "__PROCESS_TYPE_CONTEXT__"
 );
+
+List<Map<String, String>> contextParams =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__CONTEXTPARAMS__"
+    );
+
 
 // if it's a generation to run in talend.
 if (!ProcessorUtilities.isExportConfig()) {
@@ -99,12 +108,25 @@ my @arguments = (
     '--father_pid='.$_globals{pid},
     '--context='.<%=context %>,
 );
+
+<%
+}
+
+for (int i=0; i<contextParams.size(); i++) {
+    Map<String, String> contextParam = contextParams.get(i);
+
+    String name = contextParam.get("PARAM_NAME_COLUMN");
+    String value = contextParam.get("PARAM_VALUE_COLUMN");
+%>
+push @arguments, '--context_param <%=name%>='.<%=value%>;
 <%
 }
 %>
+
 my $error = system(
     join(' ', @arguments)
 );
+
 if($error){
     die "Process <%=process %> died.\n" ;	
 }
