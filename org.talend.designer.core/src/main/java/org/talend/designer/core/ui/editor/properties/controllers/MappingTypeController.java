@@ -22,7 +22,8 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
@@ -43,39 +44,28 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.metadata.Dbms;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.cmd.SchemaPropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: ColumnListController.java 1 2006-12-12 下午02:04:32 +0000 (下午02:04:32) yzhang $
+ * $Id: ComboController.java 1 2006-12-12 涓嬪崍01:58:48 +0000 (涓嬪崍01:58:48) yzhang $
  * 
  */
-public class ColumnListController extends AbstractElementPropertySectionController {
-
-    private boolean updateColumnListFlag;
-
-    private Map<String, IMetadataTable> repositoryTableMap;
-
-    private Map<String, ConnectionItem> repositoryConnectionItemMap;
+public class MappingTypeController extends AbstractElementPropertySectionController {
 
     /**
      * DOC dev ColumnListController constructor comment.
      * 
      * @param parameterBean
      */
-    public ColumnListController(DynamicTabbedPropertySection dtp) {
+    public MappingTypeController(DynamicTabbedPropertySection dtp) {
         super(dtp);
     }
 
@@ -84,14 +74,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    public Command createCommand(SelectionEvent selectionEvent) {
-        repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-        repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
-
+    private Command createCommand(SelectionEvent event) {
         Set<String> elementsName;
         Control ctrl;
-        IMetadataTable repositoryMetadata = new MetadataTable();
-        Connection repositoryConnection = null;
+        // Connection repositoryConnection = null;
 
         elementsName = hashCurControls.keySet();
         for (String name : elementsName) {
@@ -102,8 +88,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     hashCurControls.remove(name);
                     return null;
                 }
+                CCombo combo = (CCombo) event.getSource();
 
-                if (ctrl.equals(selectionEvent.getSource()) && ctrl instanceof CCombo) {
+                Object data = ctrl.getData(PARAMETER_NAME);
+                if (data != null && data.equals(combo.getData(PARAMETER_NAME)) && ctrl instanceof CCombo) {
                     boolean isDisposed = ((CCombo) ctrl).isDisposed();
                     if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
 
@@ -118,62 +106,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                 }
                             }
                         }
-                        if (name.equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-                            if (elem instanceof Node) {
-                                if (repositoryTableMap.containsKey(value)) {
-                                    repositoryMetadata = repositoryTableMap.get(value);
-                                } else {
-                                    repositoryMetadata = new MetadataTable();
-                                }
-                                return new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
-                            }
-                        } else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                            if (repositoryConnectionItemMap.containsKey(value)) {
-                                repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
-                            } else {
-                                repositoryConnection = null;
-                            }
-
-                            if (repositoryConnection != null) {
-                                return new ChangeValuesFromRepository(elem, repositoryConnection, name, value);
-                            }
-                        } else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                            String connectionSelected;
-                            connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName());
-
-                            if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-                                repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
-                                        .get(connectionSelected).getConnection();
-                            } else {
-                                repositoryConnection = null;
-                            }
-
-                            if (repositoryConnection != null) {
-                                return new ChangeValuesFromRepository(elem, repositoryConnection, name, value);
-                            } else {
-                                return new PropertyChangeCommand(elem, name, value);
-                            }
-                        } else if (name.equals(EParameterName.SCHEMA_TYPE.getName())) {
-                            if (elem instanceof Node) {
-                                String schemaSelected;
-                                schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                                        .getName());
-                                if (repositoryTableMap.containsKey(schemaSelected)) {
-                                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                                } else {
-                                    repositoryMetadata = new MetadataTable();
-                                }
-
-                                updateColumnListFlag = true;
-                                return new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
-                            }
-                        } else {
-                            return new PropertyChangeCommand(elem, name, value);
-                        }
+                        return new PropertyChangeCommand(elem, name, value);
                     }
                 }
-
             }
         }
         return null;
@@ -188,25 +123,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        if (param.getField() == EParameterFieldType.COLUMN_LIST) {
-            param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
-        } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-            param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
-        } else if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
-            param.setDisplayName(EParameterName.LOOKUP_COLUMN_LIST.getDisplayName());
-        }
-
-        // Button refreshBtn;
-        // refreshBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        // refreshBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        //
-        // // refreshBtn.setImage(CorePlugin.getImageDescriptor(REFRESH_BUTTON).createImage());
-        //
-        // refreshBtn.addSelectionListener(listenerSelection);
-        // refreshBtn.setData(NAME, COLUMN);
-        // refreshBtn.setData(PROPERTY, param.getName());
-        // refreshBtn.setEnabled(!param.isReadOnly());
-
         IControlCreator cbCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
@@ -220,14 +136,24 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
+        if (param.isRepositoryValueUsed()) {
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+            decoration.setDescription(Messages.getString("ComboController.valueFromRepository")); //$NON-NLS-1$
+            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM, false);
+        }
 
         Control cLayout = dField.getLayoutControl();
         CCombo combo = (CCombo) dField.getControl();
         FormData data;
+        updateMappingList(param); // initialize the data with the mappings list
+        String[] originalList = param.getListItemsDisplayName();
+        combo.setItems(originalList);
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
         combo.addSelectionListener(listenerSelection);
+        combo.setData(PARAMETER_NAME, param.getName());
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
@@ -267,19 +193,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-        // data = new FormData();
-        // data.left = new FormAttachment(cLayout, 0, SWT.RIGHT);
-        // data.top = new FormAttachment(0, top);
-        // data.height = initialSize.y;
-        //
-        // refreshBtn.setLayoutData(data);
-
         // **********************
         hashCurControls.put(param.getName(), combo);
-        this.dynamicTabbedPropertySection.updateColumnList(null);
 
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
@@ -296,45 +213,67 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            // updateRepositoryList();
-            dynamicTabbedPropertySection.updateRepositoryList();
+            // dynamicTabbedPropertySection.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
-                if (updateColumnListFlag) {
-                    ColumnListController.this.dynamicTabbedPropertySection.updateColumnList(null);
-                }
+                // if (updateColumnListFlag) {
+                // MappingTypeController.this.dynamicTabbedPropertySection.updateColumnList(null);
+                // }
             }
         }
     };
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        this.dynamicTabbedPropertySection.updateColumnList(null);
-
-        String[] curColumnNameList = param.getListItemsDisplayName();
-        String[] curColumnValueList = (String[]) param.getListItemsValue();
-
-        Object value = param.getValue();
-        boolean listContainValue = false;
-        int numValue = 0;
-        for (int i = 0; i < curColumnValueList.length && !listContainValue; i++) {
-            if (curColumnValueList[i].equals(value)) {
-                listContainValue = true;
-                numValue = i;
-            }
-        }
-
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
-        combo.setItems(curColumnNameList);
-        if (!listContainValue) {
-            if (curColumnNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curColumnValueList[0]);
-                combo.setText(curColumnNameList[0]);
-            }
-        } else {
-            combo.setText(curColumnNameList[numValue]);
+        if (combo == null) {
+            return;
         }
+        Object value = param.getValue();
+
+        if (value instanceof String) {
+            String strValue = ""; //$NON-NLS-1$
+            int nbInList = 0, nbMax = param.getListItemsValue().length;
+            String name = (String) value;
+            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+                if (name.equals(param.getListItemsValue()[nbInList])) {
+                    strValue = param.getListItemsDisplayName()[nbInList];
+                }
+                nbInList++;
+            }
+            String[] paramItems = param.getListItemsDisplayName();
+            String[] comboItems = combo.getItems();
+
+            if (!paramItems.equals(comboItems)) {
+                combo.setItems(paramItems);
+            }
+            combo.setText(strValue);
+        }
+    }
+
+    private void updateMappingList(IElementParameter param) {
+        String[] mappings, mappingsId;
+        List<String> mappingsList = new ArrayList<String>();
+        List<String> mappingsIdList = new ArrayList<String>();
+        Dbms[] dbms = MetadataTalendType.getAllDbmsArray();
+        boolean toAdd;
+        for (int i = 0; i < dbms.length; i++) {
+            toAdd = true;
+            if (param.getFilter() != null && !param.getFilter().equals("")
+                    && !param.getFilter().equals(dbms.clone()[i].getProduct())) {
+                toAdd = false;
+            }
+            if (toAdd) {
+                mappingsList.add(dbms[i].getLabel());
+                mappingsIdList.add(dbms[i].getId());
+            }
+        }
+        mappings = mappingsList.toArray(new String[0]);
+        mappingsId = mappingsIdList.toArray(new String[0]);
+
+        param.setListItemsDisplayName(mappings);
+        param.setListItemsValue(mappingsId);
     }
 }

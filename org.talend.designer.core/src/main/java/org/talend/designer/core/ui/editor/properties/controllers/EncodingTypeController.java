@@ -78,17 +78,6 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         super(dtp);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand()
-     */
-    @Override
-    public Command createCommand() {
-        return null;// do nothing
-
-    }
-
     /**
      * DOC ftang Comment method "createComboCommand".
      * 

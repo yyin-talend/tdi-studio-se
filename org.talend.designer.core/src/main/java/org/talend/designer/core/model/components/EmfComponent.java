@@ -593,7 +593,11 @@ public class EmfComponent implements IComponent {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
-            newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
+            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+                newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
+            } else {
+                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
+            }
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setValue("NO_PROCESS"); //$NON-NLS-1$
@@ -667,9 +671,17 @@ public class EmfComponent implements IComponent {
             case SCHEMA_TYPE:
                 initializeTableFromXml(xmlParam, param);
                 break;
+            case MAPPING_TYPE:
+                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+                    param.setDisplayName(EParameterName.MAPPING_TYPE.getDisplayName());
+                }
+                break;
             case PROCESS_TYPE:
-                param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
+                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+                    param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
+                }
                 param.setValue(""); // TODO to change ? //$NON-NLS-1$
+                break;
             default:
                 param.setValue(""); //$NON-NLS-1$
             }

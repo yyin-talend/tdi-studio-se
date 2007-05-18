@@ -509,8 +509,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-
-        boolean isNeedSchema = EDatabaseTypeName.isNeedSchemaFromDbType(parameters.getDbType());
+        boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(parameters.getDbType()).isNeedSchema();
         if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;

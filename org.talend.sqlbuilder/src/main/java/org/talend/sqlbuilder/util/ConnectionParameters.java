@@ -229,7 +229,7 @@ public class ConnectionParameters {
      */
     public void setDbType(String dbType) {
         if (dbType != null) {
-            this.dbType = TextUtil.removeQuots(EDatabaseTypeName.getDisplayNameFromDbType(dbType));
+            this.dbType = TextUtil.removeQuots(EDatabaseTypeName.getTypeFromDbType(dbType).getDisplayName());
         } else {
             this.dbType = "";
         }

@@ -57,14 +57,11 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class ComponentListController extends AbstractElementPropertySectionController {
 
-    private SelectionEvent selectionEvent;
-
     public ComponentListController(DynamicTabbedPropertySection dtp) {
         super(dtp);
     }
 
-    @Override
-    public Command createCommand() {
+    private Command createCommand(SelectionEvent selectionEvent) {
         Set<String> elementsName;
         Control ctrl;
 
@@ -195,8 +192,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            selectionEvent = event;
-            Command cmd = createCommand();
+            Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }

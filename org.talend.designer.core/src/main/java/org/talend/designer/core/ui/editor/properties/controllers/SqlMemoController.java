@@ -167,13 +167,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return "";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
-     */
-    @Override
-    public Command createCommand() {
+
+    private Command createCommand() {
 
         ConnectionParameters connParameters = new ConnectionParameters();
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());

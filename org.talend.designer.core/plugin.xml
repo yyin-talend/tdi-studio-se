@@ -375,6 +375,10 @@
       <generator 
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.EncodingTypeControllerGenerator" 
             mapping="ENCODING_TYPE" 
-            name="Encoding type" />             
+            name="Encoding type" />
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.MappingTypeControllerGenerator"
+            mapping="MAPPING_TYPE"
+            name="Mapping Type"/>             
    </extension>
 </plugin>

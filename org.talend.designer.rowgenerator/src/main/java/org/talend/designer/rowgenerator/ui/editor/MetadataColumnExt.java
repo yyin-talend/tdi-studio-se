@@ -50,7 +50,6 @@ public class MetadataColumnExt extends MetadataColumn {
      */
     public MetadataColumnExt(MetadataColumn metadataColumn) {
         this.setComment(metadataColumn.getComment());
-        this.setDbms(metadataColumn.getDbms());
         this.setDefault(metadataColumn.getDefault());
         this.setLabel(metadataColumn.getLabel());
         this.setTalendType(metadataColumn.getTalendType());

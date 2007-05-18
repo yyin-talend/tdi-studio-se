@@ -300,14 +300,14 @@ public class Process extends Element implements IProcess {
         }
 
         // on console
-         param = new ElementParameter(this);
-         param.setName("ON_CONSOLE_FLAG");
-         param.setValue(Boolean.FALSE);
-         param.setDisplayName(EParameterName.ON_CONSOLE_FLAG.getDisplayName());
-         param.setField(EParameterFieldType.CHECK);
-         param.setCategory(EComponentCategory.STATSANDLOGS);
-         param.setNumRow(1);
-         addElementParameter(param);
+        param = new ElementParameter(this);
+        param.setName("ON_CONSOLE_FLAG");
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.ON_CONSOLE_FLAG.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(1);
+        addElementParameter(param);
 
         // on files
         param = new ElementParameter(this);
@@ -391,7 +391,7 @@ public class Process extends Element implements IProcess {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(9);
         addElementParameter(param);
-        
+
         param = new ElementParameter(this);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setName("PROPERTY_TYPE");
@@ -1106,10 +1106,26 @@ public class Process extends Element implements IProcess {
 
             addNodeContainer(new NodeContainer(nc));
             nodesHashtable.put(nc.getUniqueName(), nc);
+            updateAllMappingTypes();
         }
 
         if (!uploadedNodeNames.isEmpty()) {
             throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * to optimize.
+     */
+    private void updateAllMappingTypes() {
+        for (INode node : this.getGraphicalNodes()) {
+            for (IElementParameter param : node.getElementParameters()) {
+                if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                    for (IMetadataTable table : node.getMetadataList()) {
+                        table.setDbms((String) param.getValue());
+                    }
+                }
+            }
         }
     }
 

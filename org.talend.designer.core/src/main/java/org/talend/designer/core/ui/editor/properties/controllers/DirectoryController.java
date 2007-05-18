@@ -60,8 +60,6 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
     private static final String DIRECTORY = "DIRECTORY"; //$NON-NLS-1$
 
-    private Button btnEdit;
-
     /**
      * DOC yzhang DirectoryController constructor comment.
      * 
@@ -86,12 +84,13 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
      * 
      * @param propertyName
      */
-    public Command createCommand() {
+    private Command createCommand(SelectionEvent event) {
         DirectoryDialog dial = new DirectoryDialog(composite.getShell(), SWT.NONE);
         String directory = dial.open();
+        Button btn = (Button) event.getSource();
         if (directory != null) {
             if (!directory.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) btnEdit.getData(PARAMETER_NAME);
+                String propertyName = (String) btn.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(directory)) {
                     String portableValue = Path.fromOSString(directory).toPortableString();
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
@@ -114,7 +113,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
         btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
@@ -202,8 +201,8 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
         }
 
-        public void widgetSelected(SelectionEvent e) {
-            Command command = createCommand();
+        public void widgetSelected(SelectionEvent event) {
+            Command command = createCommand(event);
             if (command != null) {
                 getCommandStack().execute(command);
             }

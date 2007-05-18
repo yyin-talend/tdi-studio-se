@@ -75,8 +75,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
 
-    private SelectionEvent selectionEvent;
-
     public SchemaTypeController(DynamicTabbedPropertySection dtp) {
         super(dtp);
     }
@@ -86,8 +84,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand()
      */
-    @Override
-    public Command createCommand() {
+    private Command createCommand(SelectionEvent selectionEvent) {
         if (selectionEvent.getSource() instanceof Button) {
             return createButtonCommand((Button) selectionEvent.getSource());
         }
@@ -557,8 +554,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         }
 
         public void widgetSelected(SelectionEvent e) {
-            selectionEvent = e;
-            Command cmd = createCommand();
+            Command cmd = createCommand(e);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }

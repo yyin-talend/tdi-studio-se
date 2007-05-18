@@ -59,7 +59,6 @@ public class MetadataUtils {
                                 oldColumn.setLength(newColumn.getLength());
                                 oldColumn.setPrecision(newColumn.getPrecision());
                                 oldColumn.setPattern(newColumn.getPattern());
-                                oldColumn.setDbms(newColumn.getDbms());
                                 oldColumn.setType(newColumn.getType());
                                 oldColumn.setTalendType(newColumn.getTalendType());
                             }

@@ -56,8 +56,6 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * 
  */
 public class CheckController extends AbstractElementPropertySectionController {
-
-    private SelectionEvent e;
     
     /**
      * DOC yzhang CheckController constructor comment.
@@ -74,10 +72,9 @@ public class CheckController extends AbstractElementPropertySectionController {
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    @Override
-    public Command createCommand() {
+    private Command createCommand(SelectionEvent event) {
         Set<String> elementsName;
-        Control ctrl = (Control) e.getSource();
+        Control ctrl = (Control) event.getSource();
 
         elementsName = hashCurControls.keySet();
         for (String name : elementsName) {
@@ -88,7 +85,7 @@ public class CheckController extends AbstractElementPropertySectionController {
                     hashCurControls.remove(name);
                     return null;
                 }
-                if (ctrl.equals(e.getSource())) {
+                if (ctrl.equals(event.getSource())) {
                     if (ctrl instanceof Button) {
                         // only for checkbox, other buttons must be checked before
                         if (!elem.getPropertyValue(name).equals(new Boolean(((Button) ctrl).getSelection()))) {
@@ -167,8 +164,7 @@ public class CheckController extends AbstractElementPropertySectionController {
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            e = event;
-            Command cmd = createCommand();
+            Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }

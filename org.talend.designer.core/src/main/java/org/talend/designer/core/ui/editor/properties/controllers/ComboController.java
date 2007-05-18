@@ -23,13 +23,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.talend.commons.ui.utils.ControlUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -541,11 +538,5 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
             combo.setText(strValue);
         }
-    }
-
-    @Override
-    public Command createCommand() {
-        // do nothing
-        return null;
     }
 }

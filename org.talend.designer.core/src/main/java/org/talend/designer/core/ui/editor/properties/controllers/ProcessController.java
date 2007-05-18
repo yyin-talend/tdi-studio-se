@@ -55,12 +55,6 @@ public class ProcessController extends AbstractElementPropertySectionController 
     }
 
     @Override
-    public Command createCommand() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         Button btn;
@@ -68,7 +62,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.None);
+                return getWidgetFactory().createButton(parent, EParameterName.PROCESS_TYPE.getDisplayName(), SWT.None);
             }
 
         });

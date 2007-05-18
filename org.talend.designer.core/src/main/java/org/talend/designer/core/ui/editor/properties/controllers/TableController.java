@@ -85,16 +85,6 @@ public class TableController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
-     */
-    @Override
-    public Command createCommand() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#
      * createControl(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
      * org.eclipse.swt.widgets.Control)

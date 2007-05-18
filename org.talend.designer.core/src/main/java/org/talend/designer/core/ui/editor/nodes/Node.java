@@ -204,6 +204,11 @@ public class Node extends Element implements INode {
         meta.setTableName(uniqueName);
         for (int i = 0; i < getElementParameters().size(); i++) {
             IElementParameter param = getElementParameters().get(i);
+            if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                for (IMetadataTable table : getMetadataList()) {
+                    table.setDbms((String) param.getValue());
+                }
+            }
             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 if (param.getValue() instanceof IMetadataTable) {
                     IMetadataTable table = (IMetadataTable) param.getValue();
@@ -498,6 +503,7 @@ public class Node extends Element implements INode {
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     public void setPropertyValue(final String id, final Object value) {
+        IElementParameter parameter = getElementParameter(id);
         if (id.equals(EParameterName.LABEL.getName())) {
             labelToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, labelToParse);
@@ -530,7 +536,14 @@ public class Node extends Element implements INode {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
 
-        super.setPropertyValue(id, value);
+        if (parameter.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+            for (IMetadataTable table : getMetadataList()) {
+                table.setDbms((String) value);
+            }
+        }
+
+        parameter.setValue(value);
+//        super.setPropertyValue(id, value);
         updateVisibleData();
     }
 
@@ -1303,11 +1316,11 @@ public class Node extends Element implements INode {
     public boolean isThereLinkWithHash() {
         return process.isThereLinkWithHash(this);
     }
-    
+
     public List<? extends IConnection> getOutgoingSortedConnections() {
         return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
     }
-    
+
     public List<? extends IConnection> getMainOutgoingConnections() {
         return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
     }

@@ -80,7 +80,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             metadataTableEditor.setMetadataTable(outputMetaTable);
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-            CustomTableManager.addCustomManagementToTable(metadataTableEditorView.getTableViewerCreator(), true);
+            CustomTableManager.addCustomManagementToTable(metadataTableEditorView.getTableViewerCreator(), true, metadataTableEditorView.getCurrentDbms());
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
             composite.getParent().layout();

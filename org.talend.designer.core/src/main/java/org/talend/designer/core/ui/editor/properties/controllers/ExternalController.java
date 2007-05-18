@@ -71,8 +71,7 @@ public class ExternalController extends AbstractElementPropertySectionController
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    @Override
-    public Command createCommand() {
+    private Command createCommand() {
         Node node = (Node) elem;
         IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
 
