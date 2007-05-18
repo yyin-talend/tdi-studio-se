@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -43,22 +41,18 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.DesignerCoreService;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -214,25 +208,25 @@ public class TableController extends AbstractElementPropertySectionController {
             return;
         }
 
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            processName = processName.replace("'", "");
-            contextName = contextName.replace("'", "");
-        } else {
-            processName = processName.replace("\"", "");
-            contextName = contextName.replace("\"", "");
-        }
+            processName = processName.replaceAll("'", "");
+            contextName = contextName.replaceAll("'", "");
+
         ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
         Process process = null;
-        process = new Process(processItem.getProperty());
-        process.loadXmlFile(processItem.getProcess());
-        IContext context = process.getContextManager().getContext(contextName);
+        String[] contextParameterNames = null;
+        if (processItem != null) {
+            process = new Process(processItem.getProperty());
+            process.loadXmlFile(processItem.getProcess());
+            IContext context = process.getContextManager().getContext(contextName);
 
-        for (IContextParameter contextParam : context.getContextParameterList()) {
-            contextParameterNamesList.add(contextParam.getName());
+            for (IContextParameter contextParam : context.getContextParameterList()) {
+                contextParameterNamesList.add(contextParam.getName());
+            }
+
+            contextParameterNames = contextParameterNamesList.toArray(new String[0]);
+        } else {
+            contextParameterNames = new String[0];
         }
-
-        String[] contextParameterNames = contextParameterNamesList.toArray(new String[0]);
-
         // update table values
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
         Object[] itemsValue = (Object[]) param.getListItemsValue();
