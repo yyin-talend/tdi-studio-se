@@ -187,13 +187,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-
-        if (param.getField() == EParameterFieldType.COLUMN_LIST) {
-            param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
-        } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-            param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
-        } else if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
-            param.setDisplayName(EParameterName.LOOKUP_COLUMN_LIST.getDisplayName());
+        if (param.getDisplayName().startsWith("!!")) {
+            if (param.getField() == EParameterFieldType.COLUMN_LIST) {
+                param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
+            } else if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
+            } else if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                param.setDisplayName(EParameterName.LOOKUP_COLUMN_LIST.getDisplayName());
+            }
         }
 
         // Button refreshBtn;
