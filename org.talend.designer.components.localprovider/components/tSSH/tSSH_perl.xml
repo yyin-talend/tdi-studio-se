@@ -90,6 +90,23 @@
 echo Talend Open Studio'</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="USE_TIMEOUT"
+      FIELD="CHECK"
+      NUM_ROW="100"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TIMEOUT"
+      FIELD="TEXT"
+      NUM_ROW="100"
+      SHOW_IF="USE_TIMEOUT == 'true'"
+    >
+      <DEFAULT>60</DEFAULT>
+    </PARAMETER>
+
   </PARAMETERS>
 
   <CODEGENERATION/>

@@ -23,13 +23,48 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__COMMAND__"
         );
+
+        String useTimeout = ElementParameterParser.getValue(
+            node,
+            "__USE_TIMEOUT__"
+        );
+
+        String timeout = ElementParameterParser.getValue(
+            node,
+            "__TIMEOUT__"
+        );
 %>
 {
-    (
-        $_globals{<%=cid%>}{STDOUT},
-        $_globals{<%=cid%>}{STDERR},
-        $_globals{<%=cid%>}{EXIT_CODE}
-    ) = $ssh_<%=cid%>->cmd(<%=command%>);
+<%
+    if (useTimeout.equals("true")) {
+%>
+    eval {
+        local $SIG{ALRM} = sub { die "alarm\n" };
+        alarm <%=timeout%>;
+
+<%
+    }
+%>
+        (
+            $_globals{<%=cid%>}{STDOUT},
+            $_globals{<%=cid%>}{STDERR},
+            $_globals{<%=cid%>}{EXIT_CODE}
+        ) = $ssh_<%=cid%>->cmd(<%=command%>);
+<%
+    if (useTimeout.equals("true")) {
+%>
+
+        alarm 0;
+    };
+    die if $@ && $@ ne "alarm\n";
+
+    if ($@) {
+        # timed out
+        die "[<%=cid%>] time is running out\n";
+    }
+<%
+    }
+%>
 }
 <%
     }
