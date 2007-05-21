@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -149,6 +150,7 @@ public class ProcessComposite extends Composite {
 
     /**
      * DOC amaumont Comment method "initGraphicComponents".
+     * 
      * @param parent
      */
     private void initGraphicComponents(Composite parent) {
@@ -162,14 +164,14 @@ public class ProcessComposite extends Composite {
 
         layout = new GridLayout();
         sash.setLayout(layout);
-        
+
         leftTabFolder = new CTabFolder(sash, SWT.BORDER);
         leftTabFolder.setSimple(false);
 
         leftTabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         // Group context
-        
+
         CTabItem contextTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
         contextTabItem.setText(Messages.getString("ProcessComposite.contextTab")); //$NON-NLS-1$
         contextComposite = new ProcessContextComposite(leftTabFolder, SWT.NONE);
@@ -178,13 +180,12 @@ public class ProcessComposite extends Composite {
 
         Composite targetExecutionComposite = createTargetExecutionComposite(leftTabFolder);
         targetExecutionComposite.setBackground(leftTabFolder.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        
+
         targetExecutionTabItem = new CTabItem(leftTabFolder, SWT.BORDER);
         targetExecutionTabItem.setText(Messages.getString("ProcessComposite.targetExecutionTab")); //$NON-NLS-1$
-//        targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
+        // targetExecutionTabItem.setToolTipText(Messages.getString("ProcessComposite.targetExecutionTabTooltipAvailable"));
         targetExecutionTabItem.setControl(targetExecutionComposite);
-        
-        
+
         // Group execution
         Group execGroup = new Group(sash, SWT.NONE);
         execGroup.setText(Messages.getString("ProcessComposite.execGroup")); //$NON-NLS-1$
@@ -214,7 +215,8 @@ public class ProcessComposite extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText(Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$
         debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint")); //$NON-NLS-1$
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif") //$NON-NLS-1$
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_debug.gif") //$NON-NLS-1$
                 .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
@@ -236,8 +238,8 @@ public class ProcessComposite extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin
-                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -330,12 +332,13 @@ public class ProcessComposite extends Composite {
 
     /**
      * DOC amaumont Comment method "getTargetExecutionComposite".
-     * @param parent 
+     * 
+     * @param parent
      * @return
      */
     protected Composite createTargetExecutionComposite(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
-        
+
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -346,7 +349,7 @@ public class ProcessComposite extends Composite {
         text.setWordWrap(true);
         text.setEditable(false);
         text.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         return composite;
     }
 
@@ -518,11 +521,9 @@ public class ProcessComposite extends Composite {
         consoleText.setStyleRange(style);
     }
 
-    private void fillConsole(List<IProcessMessage> messages) {
+    private void fillConsole(Collection<IProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
-        int messagesListSize = messages.size();
-        for (int i = 0; i < messagesListSize; i++) {
-            IProcessMessage message = (IProcessMessage) messages.get(i);
+        for (IProcessMessage message : messages) {
             doAppendToConsole(message);
         }
         scrollToEnd();
@@ -567,7 +568,8 @@ public class ProcessComposite extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(),
+                                    Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
                                     Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
@@ -583,8 +585,8 @@ public class ProcessComposite extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
-                        .getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
+                        .getWorkspace().getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -624,29 +626,26 @@ public class ProcessComposite extends Composite {
         return Display.getDefault();
     }
 
-    
     /**
      * Getter for targetExecutionTabItem.
+     * 
      * @return the targetExecutionTabItem
      */
     public CTabItem getTargetExecutionTabItem() {
         return this.targetExecutionTabItem;
     }
 
-    
     /**
      * Getter for leftTabFolder.
+     * 
      * @return the leftTabFolder
      */
     public CTabFolder getLeftTabFolder() {
         return this.leftTabFolder;
     }
 
-    
     protected RunProcessContext getProcessContext() {
         return this.processContext;
     }
 
-    
-    
 }

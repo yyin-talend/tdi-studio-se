@@ -23,6 +23,7 @@ package org.talend.designer.runprocess;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +33,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -110,7 +112,7 @@ public class RunProcessContext {
     private Process ps;
 
     /** Monitor of the running process. */
-    private ProcessMonitor psMonitor;
+    private IProcessMonitor psMonitor;
 
     /** Monitor of the running process. */
     private PerformanceMonitor perfMonitor;
@@ -176,7 +178,7 @@ public class RunProcessContext {
 
     // Ends
 
-    public List<IProcessMessage> getMessages() {
+    public Collection<IProcessMessage> getMessages() {
         return processMessageManager.getMessages();
     }
 
@@ -309,7 +311,7 @@ public class RunProcessContext {
                                                 ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
                                                         monitorWrap, processMessageManager);
                                                 if (ps != null && !monitorWrap.isCanceled()) {
-                                                    psMonitor = new ProcessMonitor(ps);
+                                                    psMonitor = createProcessMonitor(ps);
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
@@ -404,7 +406,8 @@ public class RunProcessContext {
                     final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                     MessageFormat mf = new MessageFormat(endingPattern);
                     String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                    processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, "\n" + byeMsg));
+                    byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg;
+                    processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
                 }
             } finally {
                 killing = false;
@@ -484,25 +487,25 @@ public class RunProcessContext {
      * $Id$
      * 
      */
-    private class ProcessMonitor implements Runnable {
+    protected class ProcessMonitor implements IProcessMonitor {
 
-        private volatile boolean stopThread;
+        volatile boolean stopThread;
 
         /** The monitoring process. */
-        private Process ps;
+        private Process process;
 
         /** Input stream for stdout of the process. */
-        private InputStream outIs;
+        private BufferedReader outIs;
 
         /** Input stream for stderr of the process. */
-        private InputStream errIs;
+        private BufferedReader errIs;
 
         public ProcessMonitor(Process ps) {
             super();
 
-            this.ps = ps;
-            this.outIs = ps.getInputStream();
-            this.errIs = ps.getErrorStream();
+            this.process = ps;
+            this.outIs = new BufferedReader(new InputStreamReader(ps.getInputStream()));
+            this.errIs = new BufferedReader(new InputStreamReader(ps.getErrorStream()));
         }
 
         /**
@@ -510,16 +513,22 @@ public class RunProcessContext {
          */
         public void run() {
             while (!stopThread) {
-                boolean dataPiped = extractMessages();
+                boolean dataPiped = extractMessages(false);
 
                 boolean ended;
                 try {
-                    ps.exitValue();
+                    process.exitValue();
+
+                    // Read the end of the stream after the end of the process
+                    int i = 0;
+                    while (extractMessages(true)) {
+                        System.out.println(i++);
+                        // nothing
+                    }
+                    
                     ended = true;
                     stopThread = true;
 
-                    // Read the end of the stream after the end of the process
-                    extractMessages();
                 } catch (IllegalThreadStateException itse) {
                     ended = false;
                 }
@@ -545,20 +554,21 @@ public class RunProcessContext {
             }
         }
 
-        private boolean extractMessages() {
+        private boolean extractMessages(boolean flush) {
             IProcessMessage messageOut = null;
             IProcessMessage messageErr = null;
             try {
-                messageOut = extractMessage(outIs, MsgType.STD_OUT);
+                messageOut = extractMessage(outIs, MsgType.STD_OUT, flush);
                 if (messageOut != null) {
                     processMessageManager.addMessage(messageOut);
                 }
-                messageErr = extractMessage(errIs, MsgType.STD_ERR);
+                messageErr = extractMessage(errIs, MsgType.STD_ERR, flush);
                 if (messageErr != null) {
                     processMessageManager.addMessage(messageErr);
                 }
             } catch (IOException ioe) {
                 addErrorMessage(ioe);
+                ExceptionHandler.process(ioe);
             }
             return messageOut != null || messageErr != null;
         }
@@ -568,22 +578,37 @@ public class RunProcessContext {
          * 
          * @param is Input stream to be read.
          * @param type Type of message read.
+         * @param flush
          * @return the message extracted or null if no message was present.
          * @throws IOException Extraction failure.
          */
-        private IProcessMessage extractMessage(final InputStream is, MsgType type) throws IOException {
+        private IProcessMessage extractMessage(final BufferedReader is, MsgType type, boolean flush) throws IOException {
+
             IProcessMessage msg;
-            int len = is.available();
-            if (len > 0) {
-                byte[] data = new byte[len];
-                is.read(data);
-                final String dataStr = new String(data);
-                msg = new ProcessMessage(type, dataStr);
+            if (is.ready()) {
+                int sizeBuffer = 1024;
+                int currentSizeContent = 0;
+                StringBuilder sb = new StringBuilder();
+                while (is.ready() && (flush || currentSizeContent < sizeBuffer)) {
+                    String dataStr = is.readLine();
+                    sb.append(dataStr + "\n");
+                    currentSizeContent += dataStr.length();
+                    // byte[] data = new byte[len];
+                    // is.read(data);
+                    // final String dataStr = new String(data);
+                    break;
+                }
+                msg = new ProcessMessage(type, sb.toString());
             } else {
                 msg = null;
             }
             return msg;
         }
+
+        protected Process getProcess() {
+            return this.process;
+        }
+
     }
 
     /**
@@ -815,6 +840,16 @@ public class RunProcessContext {
 
     public void setSelectedTargetExecutionConfig(ITargetExecutionConfig selectedTargetExecutionConfiguration) {
         this.selectedTargetExecutionConfig = selectedTargetExecutionConfiguration;
+    }
+
+    /**
+     * DOC amaumont Comment method "createProcessMonitor".
+     * 
+     * @param process
+     * @return
+     */
+    protected IProcessMonitor createProcessMonitor(Process process) {
+        return new ProcessMonitor(process);
     }
 
 }

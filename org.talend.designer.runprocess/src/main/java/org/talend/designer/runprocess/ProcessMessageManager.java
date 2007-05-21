@@ -23,15 +23,14 @@ package org.talend.designer.runprocess;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
+import org.apache.commons.collections.buffer.BoundedFifoBuffer;
 
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
+ * 
  */
 public class ProcessMessageManager implements IProcessMessageManager {
 
@@ -39,22 +38,23 @@ public class ProcessMessageManager implements IProcessMessageManager {
     private transient PropertyChangeSupport pcsDelegate;
 
     /** Messages associated to the process. */
-    private List<IProcessMessage> messages;
+    private BoundedFifoBuffer messages;
 
     public static final String PROP_MESSAGE_ADD = "RunProcessContext.Message.Added"; //$NON-NLS-1$
-    
-    public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
 
+    public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
+    
+    public static final int LIMIT_MESSAGES = 500;
 
     /**
      * DOC amaumont ProcessMessageManager constructor comment.
      */
     public ProcessMessageManager() {
         super();
-        messages = new ArrayList<IProcessMessage>();
+
+        messages = new BoundedFifoBuffer(LIMIT_MESSAGES);
         pcsDelegate = new PropertyChangeSupport(this);
     }
-
 
     public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
         if (l == null) {
@@ -78,6 +78,9 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     public void addMessage(IProcessMessage message) {
         synchronized (messages) {
+            if (messages.isFull()) {
+                messages.remove();
+            }
             messages.add(message);
             firePropertyChange(PROP_MESSAGE_ADD, null, message);
         }
@@ -92,11 +95,19 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     }
 
-
-    public List<IProcessMessage> getMessages() {
-        return messages;
+    public Collection<IProcessMessage> getMessages() {
+        return (Collection<IProcessMessage>) messages;
     }
 
+    public boolean isLastMessageEndWithCR() {
+        int i = messages.size() - 1;
+        if (i >= 0) {
+            IProcessMessage processMessage = (IProcessMessage) messages.toArray()[i];
+            return processMessage.getContent().endsWith("\n");
+        } else {
+            return false;
+        }
+    }
 
-    
 }
+
