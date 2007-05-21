@@ -27,6 +27,8 @@
     public static String pid = "0";
     public static String rootPid = null;
     public static String fatherPid = null;
+       
+    private static java.util.Properties context_param = new java.util.Properties();
     
     public static String status= "";
     
@@ -63,6 +65,11 @@
 					inContext.close();
 				}
 			}
+			
+			if(!context_param.isEmpty()) {						
+			    context.putAll(context_param);		
+			}
+			
     	} catch (java.io.IOException ie) {
     		System.err.println("Could not load context "+contextStr);
     		ie.printStackTrace();
@@ -147,7 +154,7 @@
 %>
 	}
 	
-	public static void evalParam(String arg) {
+	public static void evalParam(String arg) {	   
 		if (arg.startsWith("--watch")) {
     		watch = true;
     	} else if (arg.startsWith("--stat_port=")) {
@@ -162,6 +169,13 @@
     		fatherPid = arg.substring(13);
     	} else if (arg.startsWith("--root_pid=")) {
     		rootPid = arg.substring(11);
+    	} else if (arg.startsWith("--context_param")) {   		 
+            String keyValue = arg.substring(16);           
+            int index = -1;
+            if (keyValue != null && (index = keyValue.indexOf('=')) > -1) {
+                context_param.put(keyValue.substring(0, index), keyValue.substring(index + 1));
+            }
     	}
+    	
 	}
 }

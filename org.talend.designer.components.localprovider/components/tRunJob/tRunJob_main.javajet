@@ -5,6 +5,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
+    java.util.Map
+    java.util.List
 "
 %>
 
@@ -36,6 +38,7 @@ imports="
 //        currentProjectName = codeGenArgument.getCurrentProjectName();
 //    }
     
+    List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
     process = process.replace("'", "");
@@ -70,7 +73,7 @@ if (System.getenv("OS").startsWith("Windows")) {
    <%
    }
    %>
-   });
+
 } else {
    ps_<%=cid %> = runtime_<%=cid %>.exec(new String[] {
    <%
@@ -80,7 +83,7 @@ if (System.getenv("OS").startsWith("Windows")) {
    <%
    }
    %>
-   });
+
 }
 <%
 } else {
@@ -93,11 +96,22 @@ if (System.getenv("OS").startsWith("Windows")) {
    <%
    }
    %>
-   });
+
 <%
 }
 %>
+<%
+for (int i=0; i<contextParams.size(); i++) {
+    Map<String, String> contextParam = contextParams.get(i);
 
+    String name = contextParam.get("PARAM_NAME_COLUMN");
+    String value = contextParam.get("PARAM_VALUE_COLUMN");
+%>
+   ,"--context_param <%=name %>=<%=value %>"
+<%
+  }
+%>
+   });
 
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
