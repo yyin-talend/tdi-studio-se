@@ -19,7 +19,7 @@
 		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
 %>
 		<%=conn.getName() %>.type = lcm.getType();
-		<%=conn.getName() %>.origin = lcm.getOrigin();
+		<%=conn.getName() %>.origin = (lcm.getOrigin()==null || lcm.getOrigin().length()<1 ? null : lcm.getOrigin());
 		<%=conn.getName() %>.priority = lcm.getPriority();
 		<%=conn.getName() %>.message = lcm.getMessage();
 		<%=conn.getName() %>.code = lcm.getCode();

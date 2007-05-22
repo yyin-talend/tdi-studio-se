@@ -24,7 +24,7 @@
     	<%=conn.getName() %>.project = projectName;
     	<%=conn.getName() %>.job = jobName;
     	<%=conn.getName() %>.context = contextStr;
-		<%=conn.getName() %>.origin = scm.getOrigin();
+		<%=conn.getName() %>.origin = (scm.getOrigin()==null || scm.getOrigin().length()<1 ? null : scm.getOrigin());
 		<%=conn.getName() %>.message = scm.getMessage();
 		<%=conn.getName() %>.duration = scm.getDuration();
 		<%=conn.getName() %>.moment = scm.getMoment();
