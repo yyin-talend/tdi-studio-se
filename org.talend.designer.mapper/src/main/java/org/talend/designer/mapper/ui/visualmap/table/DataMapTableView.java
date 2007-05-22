@@ -357,8 +357,7 @@ public abstract class DataMapTableView extends Composite {
                 getTableViewerCreator().addCellValueModifiedListener(new ITableCellValueModifiedListener() {
 
                     public void cellValueModified(TableCellValueModifiedEvent e) {
-                        getTableViewerCreator().getSelectionHelper().deselectAll();
-                        getTable().forceFocus();
+                        getTableViewerCreator().getTable().deselectAll();
                     }
 
                 });
