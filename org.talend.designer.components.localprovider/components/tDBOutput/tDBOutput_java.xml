@@ -111,8 +111,7 @@
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
+    </PARAMETER>   
 
     <PARAMETER
       NAME="DATA_ACTION"
@@ -127,6 +126,14 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CHECK"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>     
 
     <PARAMETER
       NAME="SCHEMA"
