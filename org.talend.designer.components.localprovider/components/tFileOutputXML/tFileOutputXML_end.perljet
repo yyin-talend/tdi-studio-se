@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     java.util.List
     java.util.Map
+    java.util.HashMap
 "
 %>
 
@@ -30,14 +31,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__GROUP_BY__"
             );
+
+        List<Map<String, String>> mapping =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__MAPPING__"
+            );
+
+        Map<String, String> labelOfColumn = new HashMap<String, String>();
+        for (Map<String, String> mappingColumn : mapping) {
+            String colName = mappingColumn.get("SCHEMA_COLUMN");
+            String label = "'" + colName + "'";
+
+            if (mappingColumn.get("SCHEMA_COLUMN_NAME").equals("false")) {
+              label = mappingColumn.get("LABEL");
+            }
+
+            labelOfColumn.put(colName, label);
+        }
 %>
 
 <%
         if (useDynamicGrouping.equals("true")) {
             for (int i=groupBys.size() - 1; i>=0; i--) {
                 Map<String, String> subgroupBy = groupBys.get(i);
+                String label = labelOfColumn.get(subgroupBy.get("COLUMN"));
 %>
-print {$output_FH_<%=cid %>} '</<%=subgroupBy.get("COLUMN")%>>', "\n";
+print {$output_FH_<%=cid %>} '</', <%=label%>, ">\n";
 <%
             }
         }

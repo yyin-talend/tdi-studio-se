@@ -60,25 +60,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="COLNAME_AS_TAGNAME"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="30"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELD_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="30"
-      SHOW_IF="COLNAME_AS_TAGNAME == 'false'"
-    >
-      <DEFAULT>'field'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="SPLIT"
       FIELD="CHECK"
       REQUIRED="true"
@@ -95,6 +76,19 @@
       SHOW_IF="SPLIT == 'true'"
     >
       <DEFAULT>1000</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="TABLE"
+      NUM_ROW="41"
+      NB_LINES="5"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="AS_ATTRIBUTE" FIELD="CHECK" />
+      	<ITEM NAME="SCHEMA_COLUMN_NAME" FIELD="CHECK" VALUE="true" />
+        <ITEM NAME="LABEL" VALUE="'label'"/>
+      </ITEMS>
     </PARAMETER>
 
     <PARAMETER

@@ -43,16 +43,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ROW_TAG__"
         );
 
-        String colnameAsTagname = ElementParameterParser.getValue(
-            node,
-            "__COLNAME_AS_TAGNAME__"
-        );
-
-        String fieldTag = ElementParameterParser.getValue(
-            node,
-            "__FIELD_TAG__"
-        );
-
         String split = ElementParameterParser.getValue(
             node,
             "__SPLIT__"
@@ -102,8 +92,6 @@ my %desc_<%=cid %> = (
 %>
     ],
     row_tag => <%=rowTag %>,
-    colname_as_tagname => <%=colnameAsTagname %>,
-    field_tag => <%=fieldTag %>,
     split => <%=split %>,
     split_every => <%=splitEvery %>,
 );

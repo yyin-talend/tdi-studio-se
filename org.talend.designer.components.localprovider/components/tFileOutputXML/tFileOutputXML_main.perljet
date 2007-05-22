@@ -6,11 +6,50 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.ArrayList
     java.util.Map
+    java.util.HashMap
+    java.lang.IllegalArgumentException
 "
 %>
 
 <%
+final class SchemaColumn {
+    private String id;
+    private String label;
+
+    public SchemaColumn(String id, String label) {
+        super();
+        if (id==null || label==null) {
+            throw new IllegalArgumentException(
+                "Params should't be null: id=" + id + ", label=" + label
+            );
+        }
+        this.id = id;
+        this.label = label;
+    }
+
+    public SchemaColumn(Map<String, String> mappingColumn) {
+        String colName = mappingColumn.get("SCHEMA_COLUMN");
+        String label = "'" + colName + "'";
+
+        if (mappingColumn.get("SCHEMA_COLUMN_NAME").equals("false")) {
+            label = mappingColumn.get("LABEL");
+        }
+
+        this.id = colName;
+        this.label = label;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+}
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();				
@@ -20,11 +59,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
-
-        String colnameAsTagname = ElementParameterParser.getValue(
-            node,
-            "__COLNAME_AS_TAGNAME__"
-        );
 
         String split = ElementParameterParser.getValue(
             node,
@@ -36,6 +70,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__SPLIT_EVERY__"
         );
 
+        List<Map<String, String>> mapping =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__MAPPING__"
+            );
 
         String useDynamicGrouping = ElementParameterParser.getValue(
             node,
@@ -57,10 +96,46 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ROW_TAG__"
         );
 
-        String fieldTag = ElementParameterParser.getValue(
-            node,
-            "__FIELD_TAG__"
-        );
+        List<SchemaColumn> displayAsAttribute = new ArrayList<SchemaColumn>();
+        List<SchemaColumn> displayAsTag = new ArrayList<SchemaColumn>();
+
+        for (Map<String, String> mappingColumn : mapping) {
+            String colName = mappingColumn.get("SCHEMA_COLUMN");
+            boolean displayColumn = true;
+
+            // The column is displayed only if it's not used in the group by
+            // option
+            for (Map<String, String> groupBy : groupBys) {
+                if (colName.equals(groupBy.get("COLUMN"))) {
+                    displayColumn = false;
+                }
+            }
+
+            if (displayColumn) {
+                if (mappingColumn.get("AS_ATTRIBUTE").equals("true")) {
+                    displayAsAttribute.add(
+                        new SchemaColumn(mappingColumn)
+                    );
+                }
+                else {
+                    displayAsTag.add(
+                        new SchemaColumn(mappingColumn)
+                    );
+                }
+            }
+        }
+
+        Map labelOfColumn = new HashMap();
+        for (Map<String, String> mappingColumn : mapping) {
+            String colName = mappingColumn.get("SCHEMA_COLUMN");
+            String label = "'" + colName + "'";
+
+            if (mappingColumn.get("SCHEMA_COLUMN_NAME").equals("false")) {
+              label = mappingColumn.get("LABEL");
+            }
+
+            labelOfColumn.put(colName, label);
+        }
 %>
 
 @<%=cid %> = map {
@@ -71,38 +146,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 } @<%=cid %>;
 
 <%
-        if (useDynamicGrouping.equals("false")) {
-%>
-print {$output_FH_<%=cid %>} (
-    '<'.<%=rowTag%>.'>'."\n",
-<%
-            for (IMetadataColumn column: metadata.getListColumns()) {
-                boolean displayColumn = true;
-                for (int i=0; i<groupBys.size(); i++) {
-                    Map<String, String> groupBy = groupBys.get(i);
-                    if (column.getLabel().equals(groupBy.get("COLUMN"))) {
-                        displayColumn = false;
-                    }
-                }
-
-                if (displayColumn) {
-                    String fieldname = fieldTag;
-                    if (colnameAsTagname.equals("true")) {
-                        fieldname = "'" + column.getLabel() + "'";
-                    }
-%>
-    '<'.<%=fieldname%>.'>'.$<%=cid%>[<%=cid%>__<%=column.getLabel()%>].'</'.<%=fieldname%>.'>'."\n",
-<%
-                }
-            }
-%>
-    '</'.<%=rowTag%>.'>'."\n"
-)
-    or die "can't write to file ".$output_desc_<%=cid %>{filename}."\n";
-
-<%
-        }
-        else {
+        if (useDynamicGrouping.equals("true")) {
 %>
 if (not defined @current_keys_<%=cid %>) {
     @current_keys_<%=cid %> = (
@@ -121,9 +165,12 @@ if (not defined @current_keys_<%=cid %>) {
                 Map<String, String> groupBy = groupBys.get(i);
 %>
     printf {$output_FH_<%=cid %>} (
-        '<<%=groupBy.get("COLUMN")%> name="%s">'."\n",
+        '<'.'%s %s="%s"'.">\n",
+        <%=labelOfColumn.get(groupBy.get("COLUMN"))%>,
+        <%=groupBy.get("ATTRIBUTE_LABEL")%>,
         $<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>]
     );
+
 <%
             }
 %>
@@ -152,7 +199,10 @@ if (not defined @current_keys_<%=cid %>) {
                 for (int j=groupBys.size() - 1; j>=i; j--) {
                     Map<String, String> subgroupBy = groupBys.get(j);
 %>
-    print {$output_FH_<%=cid %>} '</<%=subgroupBy.get("COLUMN")%>>', "\n";
+    print {$output_FH_<%=cid %>} (
+        '</'.<%=labelOfColumn.get(subgroupBy.get("COLUMN"))%>.'>',
+        "\n"
+    );
 <%
                 }
 %>
@@ -162,7 +212,8 @@ if (not defined @current_keys_<%=cid %>) {
                     Map<String, String> subgroupBy = groupBys.get(j);
 %>
     printf {$output_FH_<%=cid %>} (
-        '<<%=subgroupBy.get("COLUMN")%> %s="%s">'."\n",
+        '<'.'%s %s="%s"'.">\n",
+        <%=labelOfColumn.get(subgroupBy.get("COLUMN"))%>,
         <%=subgroupBy.get("ATTRIBUTE_LABEL")%>,
         $<%=cid%>[<%=cid%>__<%=subgroupBy.get("COLUMN")%>]
     );
@@ -172,45 +223,53 @@ if (not defined @current_keys_<%=cid %>) {
 }
 <%
             }
-%>
-
-print {$output_FH_<%=cid %>} (
-    '<'.<%=rowTag%>.'>'."\n",
-<%
-            for (IMetadataColumn column: metadata.getListColumns()) {
-                boolean displayColumn = true;
-                for (int i=0; i<groupBys.size(); i++) {
-                    Map<String, String> groupBy = groupBys.get(i);
-                    if (column.getLabel().equals(groupBy.get("COLUMN"))) {
-                        displayColumn = false;
-                    }
-                }
-
-                if (displayColumn) {
-                    String fieldname = fieldTag;
-                    if (colnameAsTagname.equals("true")) {
-                        fieldname = "'" + column.getLabel() + "'";
-                    }
-%>
-    '<'.<%=fieldname%>.'>'.$<%=cid%>[<%=cid%>__<%=column.getLabel()%>].'</'.<%=fieldname%>.'>'."\n",
-<%
-                }
-            }
-%>
-    '</'.<%=rowTag%>.'>'."\n"
-);
-
-<%
         } // use dynamic grouping
 %>
 
+print {$output_FH_<%=cid %>} (
+    '<'.<%=rowTag%>."\n",
+<%
+        for (SchemaColumn sc : displayAsAttribute) {
+%>
+    sprintf(
+        '  '.<%=sc.getLabel()%>.'="%s"'."\n",
+        $<%=cid%>[<%=cid%>__<%=sc.getId()%>]
+    ),
+<%                
+        }
+
+        if (displayAsTag.size() == 0) {
+%>
+    '/>'."\n",
+<%
+        }
+        else {
+%>
+    '>'."\n",
+<%
+            for (SchemaColumn sc : displayAsTag) {
+%>
+    sprintf(
+        '  <'.<%=sc.getLabel()%>.'>%s</'.<%=sc.getLabel()%>.'>'."\n",
+        $<%=cid%>[<%=cid%>__<%=sc.getId()%>]
+    ),
+<%
+            }
+%>
+    '</'.<%=rowTag%>.">\n\n",
+<%
+        }
+%>
+)
+    or die "can't write to file ".$output_desc_<%=cid %>{filename}."\n";
+
 $nb_line_<%=cid %>++;
 <%
-            if (stats) {
+        if (stats) {
 %>
 UpdateStat('<%=cid %>', 1);
 <%
-            }
+        }
 %>
 
 <%
