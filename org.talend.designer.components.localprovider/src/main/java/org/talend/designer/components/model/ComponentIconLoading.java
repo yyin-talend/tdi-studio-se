@@ -66,7 +66,7 @@ public class ComponentIconLoading {
 
     public ImageDescriptor getImage24() {
         if (image24 == null) {
-            File file24 = new File(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
+            File file24 = new File(folder, ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else {
