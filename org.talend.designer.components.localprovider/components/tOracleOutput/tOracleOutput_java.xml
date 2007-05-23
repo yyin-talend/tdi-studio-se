@@ -108,6 +108,14 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="CLEAR_TABLE"
+      FIELD="CHECK"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>  
+
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"

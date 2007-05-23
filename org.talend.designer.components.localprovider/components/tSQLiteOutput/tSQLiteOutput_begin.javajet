@@ -31,6 +31,8 @@ imports="org.talend.designer.codegen.config.CodeGeneratorArgument
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
+	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");
+	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	String dbjnilib = ElementParameterParser.getValue(node, "__JNI_LIB__");	
@@ -74,6 +76,17 @@ if(metadatas !=null && metadatas.size()>0){
 %>
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+
+<%
+if(tableAction.equals("true"))
+{
+%>
+java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
+<%	
+}
+%>
+
 <%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
 
 java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;

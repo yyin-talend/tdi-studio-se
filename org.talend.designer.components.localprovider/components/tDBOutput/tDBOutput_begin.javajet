@@ -49,7 +49,7 @@
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
-	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 

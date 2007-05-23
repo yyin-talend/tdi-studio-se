@@ -127,7 +127,7 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="TABLE_ACTION"
+      NAME="CLEAR_TABLE"
       FIELD="CHECK"
       NUM_ROW="6"
     >

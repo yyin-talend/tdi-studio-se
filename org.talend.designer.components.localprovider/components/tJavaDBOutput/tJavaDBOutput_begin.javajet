@@ -43,6 +43,8 @@ imports="
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
+	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");
+	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	String dbRootPath = ElementParameterParser.getValue(node, "__DBPATH__");	
@@ -240,6 +242,16 @@ connectionUtil_<%=cid%>.setUserName(<%=dbuser%>);
 connectionUtil_<%=cid%>.setPassword(<%=dbpwd%>);
 		
 java.sql.Connection conn_<%=cid%> = connectionUtil_<%=cid%>.getConnection();
+
+<%
+if(tableAction.equals("true"))
+{
+%>
+java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
+<%	
+}
+%>
 
 <%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
 

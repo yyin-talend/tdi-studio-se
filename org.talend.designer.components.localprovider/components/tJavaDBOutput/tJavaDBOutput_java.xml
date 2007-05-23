@@ -108,9 +108,18 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER> 
+
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -122,18 +131,17 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="6"
-      REQUIRED="true"
+      NAME="CLEAR_TABLE"
+      FIELD="CHECK"
+      NUM_ROW="7"
     >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>        
 
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -141,7 +149,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -152,7 +160,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="9"
+      NUM_ROW="10"
       NB_LINES="3"
     >
       <ITEMS>
@@ -177,7 +185,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="11"
       REQUIRED="true"
     >
       <DEFAULT>100</DEFAULT>

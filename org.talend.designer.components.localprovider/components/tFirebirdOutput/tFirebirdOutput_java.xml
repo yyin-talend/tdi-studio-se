@@ -107,6 +107,14 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="CLEAR_TABLE"
+      FIELD="CHECK"
+      NUM_ROW="7"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="SCHEMA"
