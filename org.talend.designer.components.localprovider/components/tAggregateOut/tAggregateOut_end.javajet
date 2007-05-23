@@ -30,7 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 //end%>
 int nb_line_<%=cid %> = 0;
-java.util.List<RunBeforeStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<RunBeforeStruct<%=destination %>>();
+java.util.List<ThenRunStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<ThenRunStruct<%=destination %>>();
 //generate result begin
 <%//start
 //
@@ -69,7 +69,7 @@ hash_<%=nextInputColumn %>_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(<%=i
 
 
 //in the deepest begin
-RunBeforeStruct<%=destination %> aggregated_row_<%=cid %> = new RunBeforeStruct<%=destination %>();
+ThenRunStruct<%=destination %> aggregated_row_<%=cid %> = new ThenRunStruct<%=destination %>();
 <%
 			next_column:
 			for(int c = 0; c < sizeColumns; c++){

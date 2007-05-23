@@ -22,7 +22,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 int nb_line_<%= cid %> = 0; 
-for(RunBeforeStruct<%=origin %> row_<%=cid %> : (java.util.List<RunBeforeStruct<%=origin %>>)globalMap.get("<%=origin %>")){
+for(ThenRunStruct<%=origin %> row_<%=cid %> : (java.util.List<ThenRunStruct<%=origin %>>)globalMap.get("<%=origin %>")){
 
 <%
 //begin
