@@ -24,6 +24,7 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.talend.librariesmanager
 Export-Package: org.talend.repository.exception,
+ org.talend.repository.i18n,
  org.talend.repository.model,
  org.talend.repository.preview,
  org.talend.repository.ui.actions,
