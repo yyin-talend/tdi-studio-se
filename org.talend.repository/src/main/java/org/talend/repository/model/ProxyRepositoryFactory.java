@@ -70,8 +70,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
-import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -385,6 +383,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException, BusinessException {
         checkAvailability(objToDelete);
         this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
+        unlock(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
@@ -415,7 +414,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
-
+        unlock(objToRestore);
         // i18n
         // log.debug("Restoration [" + objToRestore + "] by " + getRepositoryContext().getUser() + " to \"/" + path +
         // "\".");
@@ -620,10 +619,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#getTechnicalStatus()
      */
-//    public List<SpagoBiServer> getSpagoBiServer() throws PersistenceException {
-//        return this.repositoryFactoryFromProvider.getSpagoBiServer();
-//    }
-    
+    // public List<SpagoBiServer> getSpagoBiServer() throws PersistenceException {
+    // return this.repositoryFactoryFromProvider.getSpagoBiServer();
+    // }
     /*
      * (non-Javadoc)
      * 
@@ -641,7 +639,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void setTechnicalStatus(List<Status> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setTechnicalStatus(list);
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -650,7 +648,6 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void setSpagoBiServer(List<SpagoBiServer> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setSpagoBiServer(list);
     }
-
 
     public void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setMigrationTasksDone(project, list);
