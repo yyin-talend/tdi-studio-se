@@ -42,6 +42,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.metadata.DeleteTableAction;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -83,6 +84,14 @@ public class DeleteAction extends AContextualAction {
                 try {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         IRepositoryObject objToDelete = node.getObject();
+                        
+                        // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                        if (nodeType.isSubItem()) {
+                            new DeleteTableAction().run();
+                            return;
+                        }
+                        
                         if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
                             if (confirm == null) {
                                 String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
