@@ -40,15 +40,20 @@ public enum EDesignerConnection {
     FLOW_REF(EConnectionType.FLOW_REF, "Lookup", Messages.getString("EDesignerConnection.lookup"), //$NON-NLS-1$ //$NON-NLS-2$
              new Integer(Graphics.LINE_DOT),
              new Color(null, new RGB(230, 100, 0))),
-    RUN_BEFORE(EConnectionType.RUN_BEFORE, "RunBefore", Messages.getString("EDesignerConnection.runBefore"), //$NON-NLS-1$ //$NON-NLS-2$
-               new Integer(Graphics.LINE_SOLID),
-               new Color(null, new RGB(100, 100, 100))),
-    RUN_AFTER(EConnectionType.RUN_AFTER, "RunAfter", Messages.getString("EDesignerConnection.runAfter"), //$NON-NLS-1$ //$NON-NLS-2$
-              new Integer(Graphics.LINE_SOLID),
-              new Color(null, new RGB(100, 100, 100))),
+    /*
+     * RUN_BEFORE(EConnectionType.RUN_BEFORE, "RunBefore", Messages.getString("EDesignerConnection.runBefore"),
+     * //$NON-NLS-1$ //$NON-NLS-2$ new Integer(Graphics.LINE_SOLID), new Color(null, new RGB(100, 100, 100))) ,
+     */
+    THEN_RUN(EConnectionType.THEN_RUN, "ThenRun", Messages.getString("EDesignerConnection.thenRun"), //$NON-NLS-1$ //$NON-NLS-2$
+             new Integer(Graphics.LINE_SOLID),
+             new Color(null, new RGB(100, 100, 100))),
+    /*
+     * RUN_AFTER(EConnectionType.RUN_AFTER, "RunAfter", Messages.getString("EDesignerConnection.runAfter"),
+     * //$NON-NLS-1$ //$NON-NLS-2$ new Integer(Graphics.LINE_SOLID), new Color(null, new RGB(100, 100, 100))),
+     */
     LOOKUP(EConnectionType.LOOKUP, "Lookup", Messages.getString("EDesignerConnection.lookup"), //$NON-NLS-1$ //$NON-NLS-2$
-              new Integer(Graphics.LINE_DASHDOTDOT),
-              new Color(null, new RGB(150, 150, 0))),
+           new Integer(Graphics.LINE_DASHDOTDOT),
+           new Color(null, new RGB(150, 150, 0))),
     RUN_IF_OK(EConnectionType.RUN_IF_OK, "OnOk", Messages.getString("EDesignerConnection.runIfOK"), //$NON-NLS-1$ //$NON-NLS-2$
               new Integer(Graphics.LINE_SOLID),
               new Color(null, new RGB(0, 150, 0))),

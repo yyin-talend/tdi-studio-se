@@ -1932,8 +1932,7 @@ public class Process extends Element implements IProcess {
                 } else {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                             || connec.getLineStyle().equals(EConnectionType.ITERATE)
-                            || connec.getLineStyle().equals(EConnectionType.RUN_BEFORE)
-                            || connec.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                         refLink = isThereLinkWithHash(connec.getTarget());
                     }
                 }

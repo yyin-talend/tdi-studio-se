@@ -235,7 +235,10 @@ public class Connection extends Element implements IConnection {
         } else if (getLineStyle().equals(EConnectionType.LOOKUP)) {
             labelText += " (" + EDesignerConnection.LOOKUP.getLinkName() + ")";
             updateName = true;
-        }
+        }/* else if (getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+            labelText += " (" + "order:" + outputId  + ")";
+            updateName = true;
+        }*/
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {
                 label.setLabelText(labelText);

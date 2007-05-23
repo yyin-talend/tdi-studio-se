@@ -446,6 +446,12 @@
             description="%migrationtask.renametFileZipUnzip.description"
             id="org.talend.repository.migration.renametFileZipUnzip"
             name="%migrationtask.renametFileZipUnzip.title"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceRunBeforeAfterWithThenRunMigrationTask"
+            description="Replace run before and after connection with then run connection."
+            id="org.talend.repository.model.migration.changeRunBeforeAfterToThenRunMigrationTask"
+            name="Replace run before and after connection"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

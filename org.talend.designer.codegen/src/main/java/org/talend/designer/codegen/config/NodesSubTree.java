@@ -83,10 +83,12 @@ public class NodesSubTree {
                 if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                     buildSubTree((INode) connection.getTarget());
                 }
-                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                    afterSubProcesses.add(connection.getTarget().getUniqueName());
-                }
-                if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
+//                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+//                    afterSubProcesses.add(connection.getTarget().getUniqueName());
+//                }
+                if (/*
+                     * connection.getLineStyle().equals(EConnectionType.RUN_BEFORE) ||
+                     */connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
                     beforeSubProcesses.add(connection.getTarget().getUniqueName());
                 }
             }
@@ -184,25 +186,28 @@ public class NodesSubTree {
     public List<String> getBeforeSubProcesses() {
         return this.beforeSubProcesses;
     }
-    
+
     /**
      * Getter for nodes.
+     * 
      * @return the nodes
      */
     public List<INode> getNodes() {
         return this.nodes;
     }
-    
+
     /**
      * Sets the nodes.
+     * 
      * @param nodes the nodes to set
      */
     public void setNodes(List<INode> nodes) {
         this.nodes = nodes;
     }
-    
+
     /**
      * Return true if this subtree contains the node node.
+     * 
      * @param node the node to search
      * @return true if the node exists , false otherwise
      */
@@ -217,6 +222,7 @@ public class NodesSubTree {
 
     /**
      * Return node from uniqueNameNode.
+     * 
      * @param uniqueNameNode
      * @return node if exists, null otherwise
      */
@@ -228,6 +234,5 @@ public class NodesSubTree {
         }
         return null;
     }
-    
 
 }

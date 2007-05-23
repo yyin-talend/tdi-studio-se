@@ -1033,8 +1033,11 @@ public class Node extends Element implements INode {
 
         // Check if there's an output run after / before on a component that is not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if ((getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0)
-                    || (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)) {
+            if (/*
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
+            (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
@@ -1042,8 +1045,10 @@ public class Node extends Element implements INode {
 
         // Check if there's an input run after / before on a component that is not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
-            if ((getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0)
+            if (/*
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */ (getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {

@@ -120,8 +120,7 @@ public class DataProcess {
             dataConnec = new DataConnection();
             dataConnec.setActivate(connection.isActivate());
             dataConnec.setLineStyle(connection.getLineStyle());
-            if ((connection.getLineStyle().equals(EConnectionType.RUN_BEFORE) || connection.getLineStyle().equals(
-                    EConnectionType.RUN_AFTER))
+            if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER))
                     && (connection.getTarget().getMetadataList().size() > 0)) {
                 dataConnec.setMetadataTable(connection.getTarget().getMetadataList().get(0));
             } else {
@@ -179,8 +178,7 @@ public class DataProcess {
 
         // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
         for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)
-                    || connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 AbstractConnection asbractConnect = (AbstractConnection) connection;
                 asbractConnect.setSource(dataNode);
                 outgoingConnections.add(connection);
@@ -193,8 +191,7 @@ public class DataProcess {
 
         // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
         for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (!connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)
-                    && !connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+            if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 AbstractConnection asbractConnect = (AbstractConnection) connection;
                 asbractConnect.setSource(outputNode);
                 outgoingConnections.add(connection);
@@ -240,8 +237,9 @@ public class DataProcess {
                 case FLOW_MAIN:
                     dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
                     break;
-                case RUN_BEFORE:
-                case RUN_AFTER:
+                // case RUN_BEFORE:
+                case THEN_RUN:
+                    // case RUN_AFTER:
                     if (nodeSource.equals(dataNode)) {
                         INode dataStartNode = ((DataNode) nodeSource).getSubProcessStartNode(false);
                         if (dataStartNode != previousNode) {
@@ -440,11 +438,14 @@ public class DataProcess {
                 // create a link before between the two subprocess
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
-                dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                //dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                 dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
                 dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setSource(subDataNodeStartSource);
-                dataConnec.setTarget(subDataNodeStartTarget);
+                //dataConnec.setSource(subDataNodeStartSource);
+                dataConnec.setSource(subDataNodeStartTarget);
+                //dataConnec.setTarget(subDataNodeStartTarget);
+                dataConnec.setTarget(subDataNodeStartSource);
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
                         .getOutgoingConnections();
                 outgoingConnections.add(dataConnec);

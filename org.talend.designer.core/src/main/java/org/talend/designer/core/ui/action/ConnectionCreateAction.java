@@ -108,7 +108,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 return false;
             }
 
-            if (connecType.equals(EConnectionType.RUN_AFTER) || connecType.equals(EConnectionType.RUN_BEFORE)) {
+            if (connecType.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 if (!(Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName()) || (!node.isSubProcessStart())) {
                     return false;
                 }
