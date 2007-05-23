@@ -23,131 +23,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if (metadata!=null) {
 		String filename = ElementParameterParser.getValue(node,"__FILENAME__");
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-   	 	int header = Integer.parseInt(ElementParameterParser.getValue(node, "__HEADER__"));
-    	String limitString = ElementParameterParser.getValue(node, "__LIMIT__");
-    	int limit = limitString.equals("") ? -1 : Integer.parseInt(limitString);
-    	int footer = Integer.parseInt(ElementParameterParser.getValue(node, "__FOOTER__"));
-    	if(footer < 0){
-    		footer = 0;
+    	String header = ElementParameterParser.getValue(node, "__HEADER__");
+    	if(header.equals("")){
+    		header="0";
     	}
-    	int randoms = -1;
-    	if(ElementParameterParser.getValue(node, "__RANDOM__").equals("true")){
-    		randoms = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_RANDOM__"));
+    	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
+		if(limit.equals("")){
+			limit = "-1";
+		}
+    	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
+    	if(footer.equals("")){
+    		footer="0";
+    	}
+    	String random = "-1";
+    	String ran = ElementParameterParser.getValue(node, "__RANDOM__");
+    	if(ran.equals("true")){
+    		random = ElementParameterParser.getValue(node, "__NB_RANDOM__");
+    		if(random.equals("")){
+    			random="0";
+    		}
     	}
     	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
 %>
-com.delimitedparser.DelimitedDataReader delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
-
-delReader_<%=cid %>.skipHeaders(<%=header %>);
-
-<%
-		if(randoms >= 0){
-			if(randoms > limit && limit >= 0){
-				randoms = limit;
-			}
-%>
-long available_count_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
-
-delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
-
-delReader_<%=cid %>.skipHeaders(<%=header %>);
-
-long random_size_<%=cid %> = available_count_<%=cid %> >= <%=randoms %> ? <%=randoms %> : available_count_<%=cid %>;
-
-java.util.Set<Long> ranSet_<%=cid %> =new java.util.TreeSet<Long>();
-
-java.util.Random ran_<%=cid %>=new java.util.Random();
-
-while(ranSet_<%=cid %>.size() < random_size_<%=cid %>){
-
-	ranSet_<%=cid %>.add((long)ran_<%=cid %>.nextInt((int)available_count_<%=cid %>));
-	
-}
-
-java.util.Iterator<Long> ran_iterator_<%=cid %> = ranSet_<%=cid %>.iterator();
-
-boolean ran_flag_<%=cid %> = true;
-
-Long current_ran_<%=cid %> = (long) -1;
-
-<%
-		}else if(footer > 0 && limit < 0){
-%>
-long limit_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
-
-delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
-
-delReader_<%=cid %>.skipHeaders(<%=header %>);
-
-<%
-		}else if(footer == 0 && limit >= 0){
-%>
-long limit_<%=cid %> = <%=limit %>;
-
-<%
-		}else if(footer > 0 && limit >= 0){
-%>
-long temp1_<%=cid %> = delReader_<%=cid %>.getAvailableRowCount(<%=footer %>);
-
-delReader_<%=cid %> = com.delimitedparser.DelimitedDataReaderFactory.createDelimitedDataReader(<%=filename %>, <%=encoding %>, <%=fieldSeparator %>, <%=rowSeparator %>, <%=removeEmptyRowFlag %>);
-
-delReader_<%=cid %>.skipHeaders(<%=header %>);
-
-long limit_<%=cid %> = temp1_<%=cid %> < <%=limit %> ?temp1_<%=cid %> : <%=limit %>;
-
-<%
-		}
-%>
-
-while (<%if((footer > 0 || limit >= 0) && randoms < 0){%>delReader_<%=cid %>.getProcessedRecordCount() < limit_<%=cid %><%}else{%>true<%}%>) {
-
-<%
-	if(randoms >= 0){
-%>
-		if(ran_flag_<%=cid %>){
-		
-			if(ran_iterator_<%=cid %>.hasNext()){
-			
-				current_ran_<%=cid %> = ran_iterator_<%=cid %>.next();
-				
-				ran_flag_<%=cid %> = false;
-				
-			}else{
-			
-				break;
-				
-			}
-			
-		}
-		if(delReader_<%=cid %>.getProcessedRecordCount() -1 != current_ran_<%=cid %>){
-		
-			if(!delReader_<%=cid %>.readRecord()){
-			
-				break;
-			}
-			
-			continue;
-			
-		}else{
-		
-			ran_flag_<%=cid %> = true;
-			
-		}
-		
-<%
-	}else{
-%>
-
-	if(!delReader_<%=cid %>.readRecord()){
-	
-		break;
-	}
-<%
-	}
-%>
-
+org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>);
+while (fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	String firstConnName = "";
@@ -156,59 +57,58 @@ while (<%if((footer > 0 || limit >= 0) && randoms < 0){%>delReader_<%=cid %>.get
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			
-			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%>
-String temp_<%=cid %> = "";
-
-<%	
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%><%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
+				boolean noStringTypeExist = false;
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+					}else{
+						noStringTypeExist = true;
+						break;
+					}
+				}
+				if(noStringTypeExist){%>String temp_<%=cid %> = "";
+				<%
+				}
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 
-					%>
-temp_<%=cid %> = delReader_<%=cid %>.get(<%=valueN%>);
-					
+					%><%
+if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
+<%=conn.getName() %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>);
+<%
+}else{ 
+%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>);
 if(temp_<%=cid %>.length() > 0) {
-
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>
-	<%=conn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>;
-
-<%
 					} else if(javaType == JavaTypesManager.DATE) { 
-%>
-<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
-
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
 					} else {
-%>
-<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
-
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
 					}
-%>					
-} else {
-						
+%>} else {						
 <%
 					String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
 					if(defaultValue == null) {
-%>
-	throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
-
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
 <%
 					} else {
-%>
-<%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue%>;
-
+%><%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue %>;
 <%
 					}
-%>
-}
+%>}
 <%
+}
+%><%
 				}
 			}
 		}
@@ -216,8 +116,8 @@ if(temp_<%=cid %>.length() > 0) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
 				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
-			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
-      					<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {
+			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%
 				 	}
 				}

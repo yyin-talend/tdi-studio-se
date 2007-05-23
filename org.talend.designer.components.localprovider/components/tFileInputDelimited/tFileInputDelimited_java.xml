@@ -146,7 +146,7 @@
     <IMPORTS>
       <IMPORT
         NAME="Delimited_File_Reader"
-        MODULE="file_delimited.jar"
+        MODULE="talend_file_enhanced.jar"
         REQUIRED="true"
       />
     </IMPORTS>
