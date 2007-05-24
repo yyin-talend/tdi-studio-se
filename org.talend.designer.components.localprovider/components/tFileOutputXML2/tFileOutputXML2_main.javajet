@@ -1,0 +1,231 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    org.talend.core.model.process.IConnection
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    	List<Map<String, String>> tree = 
+    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__MAPPING__"
+            );
+         boolean[][] nodeInfo = new boolean[tree.size()][2];//for tag: [][0]noAtt[][1]noChild; for Att: [][0]isLastAtt [][1]tagNoChild
+         int[] nodeDepth = new int[tree.size()];
+         for(int i = 0; i < nodeInfo.length; i++){
+         	for(int j = 0; j < 2; j++){
+         		nodeInfo[i][j] = false;
+         	}
+         }
+         String[] relatedColumn = new String[tree.size()];
+         for(int i = 0; i< nodeDepth.length; i++){
+         	nodeDepth[i] = Integer.parseInt(tree.get(i).get("DEPTH"));
+         }
+         for(int i = 0; i< nodeInfo.length; i++){//for tags
+         	Map<String, String> treeNode = tree.get(i);
+         	if(treeNode.get("ATTRIBUTE") == null || treeNode.get("ATTRIBUTE").equals("false")){//is tag
+         		if(treeNode.get("COLUMN") != null && !treeNode.get("COLUMN").equals("")){
+         			relatedColumn[i] = treeNode.get("COLUMN");
+         		}
+         		Map<String, String> nextTag = null;
+         		int j = i + 1;
+         		do{
+         			if(j == nodeInfo.length){
+         				break;
+         			}
+         			if(tree.get(j).get("ATTRIBUTE")== null  || tree.get(j).get("ATTRIBUTE").equals("false")){
+         				nextTag = tree.get(j);
+         				break;
+         			}
+         			j++;
+         		}while(true);
+         		if(nextTag == null){
+         			if(i + 1 == nodeInfo.length){
+         				nodeInfo[i][0] = true;
+         			}
+         			nodeInfo[i][1] = true;
+         		}else{
+					if(j == i + 1){//no atts
+						nodeInfo[i][0] = true;
+					}
+         			if(nodeDepth[j] <= nodeDepth[i]){
+         				nodeInfo[i][1] = true;
+         			}
+         		}
+         	}
+         }
+         for(int i = 0; i< nodeInfo.length; i++){//for atts
+         	Map<String, String> treeNode = tree.get(i);
+         	if(treeNode.get("ATTRIBUTE") != null && treeNode.get("ATTRIBUTE").equals("true")){//is att
+         		Map<String, String> nextNode = null;
+         		if(tree.size() > i+1){
+         			nextNode = tree.get(i+1);
+         		}
+         		if(nextNode == null){
+         			nodeInfo[i][0] = true;
+         		}else if(nextNode.get("ATTRIBUTE")== null || nextNode.get("ATTRIBUTE").equals("false")){//is tag
+         			nodeInfo[i][0] = true;
+         		}
+         		int j = i - 1;
+         		for(; j >= 0; j--){
+         			Map<String, String>  tag = tree.get(j);
+         			if(tag.get("ATTRIBUTE") == null || tag.get("ATTRIBUTE").equals("false")){//found his tag
+         				nodeInfo[i][1] = nodeInfo[j][1];
+         				nodeDepth[i] = nodeDepth[j];
+         				if(nodeInfo[i][1]){
+         					relatedColumn[i] = relatedColumn[j];
+         				}
+         				break;
+         			}
+         		}
+         	}
+        }
+        List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+        StringBuilder margin = new StringBuilder();
+        for(int i = 1; i < rootTags.size(); i++){
+        	margin.append("  ");
+        }
+%><%
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if(conns!=null && conns.size()>0){
+		IConnection conn = conns.get(0);
+		
+		
+		
+		
+		
+		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		for(int i = 0; i < tree.size(); i++){
+			Map<String, String> treeNode = tree.get(i);
+			if(treeNode.get("ATTRIBUTE")==null || treeNode.get("ATTRIBUTE").equals("false")){//is tag
+				int flag = Integer.MAX_VALUE;
+				int j = i - 1;
+				while(true){
+					if(j < 0){
+						break;
+					}
+					Map<String, String> lastTagNode = tree.get(j);
+					if(lastTagNode.get("ATTRIBUTE")!=null && lastTagNode.get("ATTRIBUTE").equals("true")){//not a tag
+						j--;
+					}else{
+						if(nodeDepth[i] > nodeDepth[j]){
+							break;
+						}
+						if(nodeDepth[i] <= nodeDepth[j] && nodeDepth[j] < flag){
+							if(!nodeInfo[j][1]){//have child, close tag.
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
+out_<%=cid%>.newLine();
+<%
+							}
+							flag = nodeDepth[j];
+							if(nodeDepth[i] == flag){
+								break;
+							}
+						}
+						j--;
+					}
+				}
+				
+				
+				if(nodeInfo[i][0]){//tag have no att
+					if(nodeInfo[i][1]){//tag have no child
+						if( relatedColumn[i]== null){
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>/>");
+out_<%=cid%>.newLine();
+<%
+						}else{
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"</<%=treeNode.get("LABEL") %>>");
+out_<%=cid%>.newLine();
+<%
+						}
+					}else{
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>");
+out_<%=cid%>.newLine();
+<%
+					}
+				}else{
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>");
+<%
+				}
+			}else{//is attribute
+				if(nodeInfo[i][0]){//is tag's last att
+					if(nodeInfo[i][1]){//tag have no child
+						if( relatedColumn[i]== null){
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\"/>");
+out_<%=cid%>.newLine();
+<%
+						}else{
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">"+<%=conn.getName() %>.<%=relatedColumn[i] %>+"</<%=treeNode.get("LABEL") %>>");
+out_<%=cid%>.newLine();
+<%
+						}
+					}else{
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">");
+out_<%=cid%>.newLine();
+<%
+					}
+				}else{
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\"");
+<%
+				}
+			}
+		}
+		int i = nodeInfo.length-1;
+		while(true){
+			if(tree.get(i).get("ATTRIBUTE")==null || tree.get(i).get("ATTRIBUTE").equals("false")){//found the last tag in the tree
+				break;
+			}
+			i--;
+		}
+		int flag = nodeDepth[i];
+		int j = i - 1;
+		while(true){
+			if(j < 0){
+				break;
+			}
+			Map<String, String> lastTagNode = tree.get(j);
+			if(lastTagNode.get("ATTRIBUTE")!=null && lastTagNode.get("ATTRIBUTE").equals("true")){//not a tag
+				j--;
+			}else{
+				if(nodeDepth[j] < flag){
+					if(!nodeInfo[j][1]){//have child, close tag.
+%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
+out_<%=cid%>.newLine();
+<%
+					}
+					flag = nodeDepth[j];
+				}
+				j--;
+			}
+		}
+		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	}
+%>
+
+
+<%
+	}
+}
+%>
