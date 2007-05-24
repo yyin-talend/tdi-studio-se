@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -38,6 +39,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -788,6 +790,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         getRepositoryContext().setProject(project);
         this.repositoryFactoryFromProvider.logOnProject(project);
 
+        emptyTempFolder(project);
+
         // i18n
         // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
         String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
@@ -800,6 +804,21 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
 
         service.executeProjectTasks(project, false);
+    }
+
+    /**
+     * DOC smallet Comment method "emptyTempFolder".
+     * 
+     * @param project
+     * @throws PersistenceException
+     */
+    private void emptyTempFolder(Project project) throws PersistenceException {
+        long start = System.currentTimeMillis();
+        IProject fsProject = ResourceModelUtils.getProject(project);
+        IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
+        int nbResourcesDeleted = ResourceUtils.emptyFolder(folder);
+        long elapsedTime = System.currentTimeMillis() - start;
+        log.trace(Messages.getString("ProxyRepositoryFactory.log.tempFolderEmptied", nbResourcesDeleted, elapsedTime)); //$NON-NLS-1$
     }
 
     /*
