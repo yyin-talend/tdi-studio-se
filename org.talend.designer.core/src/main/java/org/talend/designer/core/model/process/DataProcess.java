@@ -41,11 +41,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
-import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -130,6 +129,7 @@ public class DataProcess {
             dataConnec.setUniqueName(connection.getUniqueName());
             dataConnec.setSource(dataNode);
             dataConnec.setCondition(connection.getCondition());
+            dataConnec.setConnectorName(connection.getConnectorName());
             INode target = buildfromNode((Node) connection.getTarget());
             dataConnec.setTarget(target);
             incomingConnections = (List<IConnection>) target.getIncomingConnections();
@@ -226,14 +226,11 @@ public class DataProcess {
 
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(graphicalNode.isActivate());
-                dataConnec.setLineStyle(curConnec.getConnectionType());
+                dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
+                dataConnec.setConnectorName(curConnec.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
 
-                EDesignerConnection designerConnection = EDesignerConnection.getConnection(curConnec
-                        .getConnectionType());
-                dataConnec.setName(designerConnection.getLinkName());
-
-                switch (curConnec.getConnectionType()) {
+                switch (dataConnec.getLineStyle()) {
                 case FLOW_MAIN:
                     dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
                     break;
@@ -438,13 +435,14 @@ public class DataProcess {
                 // create a link before between the two subprocess
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
-                //dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                // dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
                 dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                 dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
                 dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                //dataConnec.setSource(subDataNodeStartSource);
+                dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+                // dataConnec.setSource(subDataNodeStartSource);
                 dataConnec.setSource(subDataNodeStartTarget);
-                //dataConnec.setTarget(subDataNodeStartTarget);
+                // dataConnec.setTarget(subDataNodeStartTarget);
                 dataConnec.setTarget(subDataNodeStartSource);
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
                         .getOutgoingConnections();

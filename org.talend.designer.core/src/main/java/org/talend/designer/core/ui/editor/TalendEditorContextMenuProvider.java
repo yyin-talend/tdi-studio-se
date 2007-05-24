@@ -35,6 +35,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
@@ -120,21 +121,47 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
             action = new ConnectionCreateAction(part, EConnectionType.FLOW_MAIN);
             ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
-                for (int i = 0; i < menuList.size(); i++) {
-                    action = new ConnectionCreateAction(part, EConnectionType.FLOW_MAIN);
-                    ((ConnectionCreateAction) action).update();
-                    ((ConnectionCreateAction) action).setText(menuList.get(i));
-                    subMenu.add(action);
+            List<INodeConnector> connectors = ((ConnectionCreateAction) action).getConnectors();
+            if (connectors.size() > 1) {
+                for (INodeConnector connector : connectors) {
+                    if (connector.isBuiltIn()) {
+                        MenuManager mainSubMenu = new MenuManager(connector.getMenuName());
+                        subMenu.appendToGroup(connector.getMenuName(), mainSubMenu);
+                        List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
+                        for (int i = 0; i < menuList.size(); i++) {
+                            action = new ConnectionCreateAction(part, connector);
+                            ((ConnectionCreateAction) action).update();
+                            ((ConnectionCreateAction) action).setText(menuList.get(i));
+                            mainSubMenu.add(action);
+                        }
+                    } else {
+                        action = new ConnectionCreateAction(part, connector);
+                        ((ConnectionCreateAction) action).update();
+                        if (action.isEnabled()) {
+                            ((ConnectionCreateAction) action).setText(connector.getMenuName());
+                            subMenu.add(action);
+                        }
+                    }
+                }
+            } else {
+                if (connectors.size() == 1) {
+                    if (action.isEnabled()) {
+                        List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
+                        for (int i = 0; i < menuList.size(); i++) {
+                            action = new ConnectionCreateAction(part, EConnectionType.FLOW_MAIN);
+                            ((ConnectionCreateAction) action).update();
+                            ((ConnectionCreateAction) action).setText(menuList.get(i));
+                            subMenu.add(action);
+                        }
+                    }
                 }
             }
 
-            action = new ConnectionCreateAction(part, EConnectionType.LOOKUP);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            // action = new ConnectionCreateAction(part, EConnectionType.LOOKUP);
+            // ((ConnectionCreateAction) action).update();
+            // if (action.isEnabled()) {
+            // subMenu.add(action);
+            // }
 
             action = new ConnectionCreateAction(part, EConnectionType.ITERATE);
             ((ConnectionCreateAction) action).update();

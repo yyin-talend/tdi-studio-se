@@ -55,15 +55,17 @@ public class ConnectionReconnectCommand extends Command {
 
     private Node oldTarget;
 
-    private EConnectionType oldConnectionType;
+    private String connectorName;
 
-    private EConnectionType newConnectionType;
+    private EConnectionType newLineStyle;
 
     private IMetadataTable oldMetadataTable;
 
     private String oldSourceSchemaType, newSourceSchemaType;
 
     private String newTargetSchemaType;
+    
+    private EConnectionType oldLineStyle;
 
     /**
      * Initialisation of the command with the given connection. This will initialize the source and target before change
@@ -75,9 +77,10 @@ public class ConnectionReconnectCommand extends Command {
         this.connection = connection;
         this.oldSource = connection.getSource();
         this.oldTarget = connection.getTarget();
-        oldConnectionType = connection.getLineStyle();
-        newConnectionType = oldConnectionType;
-        if (oldConnectionType.hasConnectionCategory(IConnectionCategory.DATA)) {
+        connectorName = connection.getConnectorName();
+        oldLineStyle = connection.getLineStyle();
+        newLineStyle = oldLineStyle;
+        if (oldLineStyle.hasConnectionCategory(IConnectionCategory.DATA)) {
             oldMetadataTable = connection.getMetadataTable().clone();
         }
         oldSourceSchemaType = (String) oldSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -129,11 +132,11 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkSourceReconnection() {
-        if (!ConnectionManager.canConnectToSource(oldSource, newSource, oldTarget, oldConnectionType, connection
+        if (!ConnectionManager.canConnectToSource(oldSource, newSource, oldTarget, oldLineStyle, connectorName, connection
                 .getName())) {
             return false;
         }
-        newConnectionType = ConnectionManager.getNewConnectionType();
+        newLineStyle = ConnectionManager.getNewConnectionType();
 
         return true;
     }
@@ -144,11 +147,11 @@ public class ConnectionReconnectCommand extends Command {
      * @return true / false
      */
     private boolean checkTargetReconnection() {
-        if (!ConnectionManager.canConnectToTarget(oldSource, oldTarget, newTarget, oldConnectionType, connection
+        if (!ConnectionManager.canConnectToTarget(oldSource, oldTarget, newTarget, oldLineStyle, connectorName, connection
                 .getName())) {
             return false;
         }
-        newConnectionType = ConnectionManager.getNewConnectionType();
+        newLineStyle = ConnectionManager.getNewConnectionType();
 
         return true;
     }
@@ -160,14 +163,14 @@ public class ConnectionReconnectCommand extends Command {
      */
     public void execute() {
         if (newSource != null) {
-            INodeConnector connector = oldSource.getConnectorFromType(oldConnectionType);
+            INodeConnector connector = oldSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
-            connector = newSource.getConnectorFromType(oldConnectionType);
+            connector = newSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 newSourceSchemaType = (String) newSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
+                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isBuiltIn();
+                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     oldSource.getMetadataList().get(0).setDescription(null);
                     oldSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
@@ -223,10 +226,10 @@ public class ConnectionReconnectCommand extends Command {
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
             newTargetSchemaType = (String) newTarget.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            connection.setLineStyle(newConnectionType);
-            INodeConnector connector = oldTarget.getConnectorFromType(oldConnectionType);
+            connection.setLineStyle(newLineStyle);
+            INodeConnector connector = oldTarget.getConnectorFromType(oldLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
-            connector = newTarget.getConnectorFromType(newConnectionType);
+            connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
             connection.reconnect(oldSource, newTarget);
             connection.updateName();
@@ -245,15 +248,15 @@ public class ConnectionReconnectCommand extends Command {
          * if ((oldSource.getExternalNode() != null) && (oldSource.getExternalNode() != null)) {
          * oldSource.getProcess().removeUniqueConnectionName(oldMetadataTable.getTableName()); }
          */
-        connection.setLineStyle(oldConnectionType);
+        connection.setLineStyle(oldLineStyle);
         if (newSource != null) {
-            INodeConnector connector = oldSource.getConnectorFromType(oldConnectionType);
+            INodeConnector connector = oldSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
-            connector = newSource.getConnectorFromType(oldConnectionType);
+            connector = newSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
+                boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isBuiltIn();
+                boolean builtInOldSource = oldSource.getConnectorFromName(connectorName).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
                     newSource.getMetadataList().get(0).setDescription(null);
                     newSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
@@ -302,9 +305,9 @@ public class ConnectionReconnectCommand extends Command {
                 connection.setMetaName(oldSource.getUniqueName());
             }
         } else if (newTarget != null) {
-            INodeConnector connector = oldTarget.getConnectorFromType(oldConnectionType);
+            INodeConnector connector = oldTarget.getConnectorFromType(oldLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
-            connector = newTarget.getConnectorFromType(newConnectionType);
+            connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             if (newTargetSchemaType != null) {
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), newTargetSchemaType);

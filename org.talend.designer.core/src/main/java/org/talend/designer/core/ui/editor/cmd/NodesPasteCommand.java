@@ -329,16 +329,16 @@ public class NodesPasteCommand extends Command {
                         }
                         metaTableName = meta;
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
-                            .getLineStyle(), metaTableName, newConnectionName);
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(), connection
+                            .getConnectorName(), metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
                     pastedConnection.getConnectionLabel().setOffset(
                             new Point(connection.getConnectionLabel().getOffset()));
-                    INodeConnector connector = pastedSourceNode.getConnectorFromType(pastedConnection.getLineStyle());
+                    INodeConnector connector = pastedConnection.getSourceNodeConnector();
                     connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
-                    connector = pastedTargetNode.getConnectorFromType(pastedConnection.getLineStyle());
+                    connector = pastedConnection.getTargetNodeConnector();
                     connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
                     IExternalNode externalNode = pastedTargetNode.getExternalNode();
                     if (externalNode != null) {

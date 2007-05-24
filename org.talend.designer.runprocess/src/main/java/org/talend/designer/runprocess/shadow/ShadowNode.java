@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
@@ -434,5 +435,19 @@ public abstract class ShadowNode implements INode {
     
     public void setColumnNumber(int columnNumber) {
         this.columnNumber = columnNumber;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getOutgoingConnections(org.talend.core.model.process.EConnectionType)
+     */
+    public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectionType);
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getOutgoingConnections(java.lang.String)
+     */
+    public List<? extends IConnection> getOutgoingConnections(String connectorName) {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectorName);
     }   
 }

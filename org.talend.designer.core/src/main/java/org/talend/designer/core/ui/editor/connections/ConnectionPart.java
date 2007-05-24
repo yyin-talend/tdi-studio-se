@@ -118,7 +118,8 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#createFigure()
      */
     protected IFigure createFigure() {
-        ConnectionFigure connection = new ConnectionFigure(((Connection) getModel()).getLineStyle());
+        ConnectionFigure connection = new ConnectionFigure(((Connection) getModel()).getSourceNodeConnector()
+                .getConnectionProperty(((Connection) getModel()).getLineStyle()));
 
         if (((Connection) getModel()).isActivate()) {
             ((ConnectionFigure) connection).setAlpha(-1);
@@ -136,7 +137,8 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
     public void propertyChange(final PropertyChangeEvent event) {
         String property = event.getPropertyName();
         if (Connection.LINESTYLE_PROP.equals(property)) {
-            ((ConnectionFigure) figure).setConnectionStyle(((Connection) getModel()).getLineStyle());
+            ((ConnectionFigure) figure).setConnectionProperty(((Connection) getModel()).getSourceNodeConnector()
+                    .getConnectionProperty(((Connection) getModel()).getLineStyle()));
             refreshChildren();
         }
         if (Connection.NAME.equals(property)) {

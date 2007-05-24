@@ -40,7 +40,6 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -64,6 +63,8 @@ public class ConnectionCreateAction extends SelectionAction {
 
     private List<Object> listArgs;
 
+    private INodeConnector curNodeConnector;
+
     private static final String NEW_OUTPUT = "*New Output*"; //$NON-NLS-1$
 
     /**
@@ -75,6 +76,13 @@ public class ConnectionCreateAction extends SelectionAction {
     public ConnectionCreateAction(IWorkbenchPart part, EConnectionType connecType) {
         super(part);
         this.connecType = connecType;
+        // setId(ID+connecType.getName());
+    }
+
+    public ConnectionCreateAction(IWorkbenchPart part, INodeConnector nodeConnector) {
+        super(part);
+        this.connecType = nodeConnector.getDefaultConnectionType();
+        this.curNodeConnector = nodeConnector;
         // setId(ID+connecType.getName());
     }
 
@@ -113,21 +121,25 @@ public class ConnectionCreateAction extends SelectionAction {
                     return false;
                 }
             }
+            menuList = new ArrayList<String>();
+            if (curNodeConnector == null) {
+                curNodeConnector = node.getConnectorFromType(connecType);
+            }
 
-            INodeConnector nodeConnector = node.getConnectorFromType(connecType);
-            if (nodeConnector.getMaxLinkOutput() != -1) {
-                if (nodeConnector.getCurLinkNbOutput() >= nodeConnector.getMaxLinkOutput()) {
+            if (curNodeConnector.getMaxLinkOutput() != -1) {
+                if (curNodeConnector.getCurLinkNbOutput() >= curNodeConnector.getMaxLinkOutput()) {
                     return false;
                 }
             }
-            if (nodeConnector.getMaxLinkOutput() == 0) {
+            if (curNodeConnector.getMaxLinkOutput() == 0) {
                 return false;
             }
-            if (!node.getConnectorFromType(connecType).isBuiltIn()) {
-                setText(EDesignerConnection.getConnection(connecType).getMenuName());
+
+            if (!curNodeConnector.isBuiltIn()) {
+                setText(curNodeConnector.getMenuName());
             }
-            menuList = new ArrayList<String>();
-            if (node.getConnectorFromType(connecType).isBuiltIn()) {
+
+            if (curNodeConnector.isBuiltIn()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = ((IMetadataTable) node.getMetadataList().get(i));
                     String name = table.getTableName();
@@ -151,19 +163,77 @@ public class ConnectionCreateAction extends SelectionAction {
                 if (connecType.equals(EConnectionType.TABLE)) {
                     menuName = getNewOutputMenuName();
                 } else {
-                    menuName = EDesignerConnection.getConnection(connecType).getMenuName();
+                    menuName = curNodeConnector.getMenuName();
                 }
                 setText(menuName);
                 menuList.add(menuName);
             }
+
+            // if (!node.getConnectorFromType(connecType).isBuiltIn()) {
+            // setText(EDesignerConnection.getConnection(connecType).getMenuName());
+            // }
+            // menuList = new ArrayList<String>();
+            // if (node.getConnectorFromType(connecType).isBuiltIn()) {
+            // for (int i = 0; i < node.getMetadataList().size(); i++) {
+            // IMetadataTable table = ((IMetadataTable) node.getMetadataList().get(i));
+            // String name = table.getTableName();
+            // if (connecType.equals(EConnectionType.TABLE)) {
+            // name = table.getLabel() + " (" + name + ")";
+            // }
+            // boolean nameUsed = false;
+            // for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+            // if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
+            // nameUsed = true;
+            // }
+            // }
+            // // if the name is not already in the process adds to the list
+            // if (!nameUsed) {
+            // menuList.add(name);
+            // }
+            // }
+            // menuList.add(getNewOutputMenuName());
+            // } else {
+            // String menuName;
+            // if (connecType.equals(EConnectionType.TABLE)) {
+            // menuName = getNewOutputMenuName();
+            // } else {
+            // menuName = EDesignerConnection.getConnection(connecType).getMenuName();
+            // }
+            // setText(menuName);
+            // menuList.add(menuName);
+            // }
 
             return true;
         }
         return false;
     }
 
+    public List<INodeConnector> getConnectors() {
+        List<INodeConnector> list = new ArrayList<INodeConnector>();
+        if (getSelectedObjects().isEmpty()) {
+            return list;
+        }
+        List parts = getSelectedObjects();
+        if (parts.size() == 1) {
+            Object o = parts.get(0);
+            if (!(o instanceof NodePart)) {
+                return list;
+            }
+            nodePart = (NodePart) o;
+            if (!(nodePart.getModel() instanceof Node)) {
+                return list;
+            }
+            Node node = (Node) nodePart.getModel();
+            if (!node.isActivate()) {
+                return list;
+            }
+            return node.getConnectorsFromType(connecType);
+        }
+        return list;
+    }
+
     private String getNewOutputMenuName() {
-        return NEW_OUTPUT + " (" + EDesignerConnection.getConnection(connecType).getMenuName() + ")";
+        return NEW_OUTPUT + " (" + curNodeConnector.getMenuName() + ")";
     }
 
     public List<String> getMenuList() {
@@ -210,7 +280,7 @@ public class ConnectionCreateAction extends SelectionAction {
         }
 
         Node node = (Node) nodePart.getModel();
-        if (node.getConnectorFromType(connecType).isBuiltIn()) {
+        if (curNodeConnector.isBuiltIn()) {
             if (getText().equals(getNewOutputMenuName())) {
                 boolean nameOk = false;
                 while (!nameOk) {
@@ -279,11 +349,10 @@ public class ConnectionCreateAction extends SelectionAction {
             if (connecType.equals(EConnectionType.TABLE)) {
                 connectionName = askForConnectionName(node.getLabel());
             } else {
-                if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)
-                        || connecType.equals(EConnectionType.LOOKUP)) {
+                if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
                 } else {
-                    connectionName = EDesignerConnection.getConnection(connecType).getLinkName();
+                    connectionName = curNodeConnector.getLinkName();
                 }
             }
             if (node.getMetadataList().size() == 0) {
@@ -339,7 +408,7 @@ public class ConnectionCreateAction extends SelectionAction {
             }
 
             public Object getObjectType() {
-                return connecType;
+                return curNodeConnector.getName();
             }
         });
         myConnectTool.performConnectionStartWith(nodePart);

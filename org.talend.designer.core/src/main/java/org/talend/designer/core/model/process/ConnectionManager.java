@@ -27,7 +27,6 @@ import java.util.List;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
-import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -39,7 +38,7 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ConnectionManager {
 
-    private static EConnectionType newConnectionType;
+    private static EConnectionType newlineStyle;
 
     /**
      * 
@@ -99,7 +98,7 @@ public class ConnectionManager {
             }
         }
         boolean targetHasHashLinks = ((Process) target.getProcess()).isThereLinkWithHash(target)
-                | newConnectionType.hasConnectionCategory(IConnectionCategory.USE_HASH);
+                | newlineStyle.hasConnectionCategory(IConnectionCategory.USE_HASH);
         if (connType.hasConnectionCategory(IConnectionCategory.CONDITION)) {
             if (targetHasHashLinks) {
                 return false;
@@ -121,22 +120,31 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    public static boolean canConnectToSource(Node oldSource, Node newSource, Node target, EConnectionType connType,
-            String connectionName) {
-        newConnectionType = connType;
-        if (!canConnect(newSource, target, connType, connectionName)) {
+    public static boolean canConnectToSource(Node oldSource, Node newSource, Node target, EConnectionType lineStyle,
+            String connectorName, String connectionName) {
+        if (newSource.getConnectorFromName(connectorName) == null) {
+            // if the new source don't contain the kind of link, then we can't connect the link.
+            return false;
+        }
+        int maxOutput = newSource.getConnectorFromName(connectorName).getMaxLinkOutput();
+        if (maxOutput != -1 && (newSource.getConnectorFromName(connectorName).getCurLinkNbOutput() >= maxOutput)) {
             return false;
         }
 
-        if (!newConnectionType.equals(EConnectionType.LOOKUP)) {
-            INodeConnector nodeConnectorSource;
-            nodeConnectorSource = newSource.getConnectorFromType(newConnectionType);
-            if (nodeConnectorSource.getMaxLinkOutput() != -1) {
-                if (nodeConnectorSource.getCurLinkNbOutput() >= nodeConnectorSource.getMaxLinkOutput()) {
-                    return false;
-                }
-            }
+        newlineStyle = lineStyle;
+        if (!canConnect(newSource, target, lineStyle, connectionName)) {
+            return false;
         }
+
+        // if (!newConnectionType.equals(EConnectionType.LOOKUP)) {
+        // INodeConnector nodeConnectorSource;
+        // nodeConnectorSource = newSource.getConnectorFromType(newConnectionType);
+        // if (nodeConnectorSource.getMaxLinkOutput() != -1) {
+        // if (nodeConnectorSource.getCurLinkNbOutput() >= nodeConnectorSource.getMaxLinkOutput()) {
+        // return false;
+        // }
+        // }
+        // }
         return true;
     }
 
@@ -150,12 +158,14 @@ public class ConnectionManager {
      * @param connectionName
      * @return
      */
-    public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType connType,
-            String connectionName) {
-        newConnectionType = connType;
+    public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType lineStyle,
+            String connectorName, String connectionName) {
+        newlineStyle = lineStyle;
         // Modify Connection Type depending old and new target.
-        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
-            EConnectionType oldConnectionType = connType;
+        if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            // if the connection type is not the default one, then we don't change automatically.
+            // && newlineStyle.getName().equals(newConnectionType)) {
+            EConnectionType oldConnectionType = newlineStyle;
             if (oldTarget != null) {
 
                 if (oldTarget.getComponent().useMerge() && oldConnectionType.equals(EConnectionType.FLOW_MERGE)) {
@@ -172,28 +182,33 @@ public class ConnectionManager {
                     }
                 }
                 if (nbMain > 0) {
-                    newConnectionType = EConnectionType.FLOW_REF;
+                    newlineStyle = EConnectionType.FLOW_REF;
                 } else {
-                    newConnectionType = EConnectionType.FLOW_MAIN;
+                    newlineStyle = EConnectionType.FLOW_MAIN;
                 }
             } else {
-                newConnectionType = EConnectionType.FLOW_MERGE;
+                newlineStyle = EConnectionType.FLOW_MERGE;
             }
         }
 
-        if (!canConnect(source, newTarget, connType, connectionName)) {
+        int maxInput = newTarget.getConnectorFromType(newlineStyle).getMaxLinkInput();
+        if (maxInput != -1 && (newTarget.getConnectorFromType(newlineStyle).getCurLinkNbInput() >= maxInput)) {
             return false;
         }
 
-        if (!newConnectionType.equals(EConnectionType.LOOKUP)) {
-            INodeConnector nodeConnectorTarget;
-            nodeConnectorTarget = newTarget.getConnectorFromType(newConnectionType);
-            if (nodeConnectorTarget.getMaxLinkInput() != -1) {
-                if (nodeConnectorTarget.getCurLinkNbInput() >= nodeConnectorTarget.getMaxLinkInput()) {
-                    return false;
-                }
-            }
+        if (!canConnect(source, newTarget, lineStyle, connectionName)) {
+            return false;
         }
+
+        // if (!newConnectionType.equals(EConnectionType.LOOKUP)) {
+        // INodeConnector nodeConnectorTarget;
+        // nodeConnectorTarget = newTarget.getConnectorFromType(newConnectionType);
+        // if (nodeConnectorTarget.getMaxLinkInput() != -1) {
+        // if (nodeConnectorTarget.getCurLinkNbInput() >= nodeConnectorTarget.getMaxLinkInput()) {
+        // return false;
+        // }
+        // }
+        // }
 
         return true;
     }
@@ -204,7 +219,7 @@ public class ConnectionManager {
      * @return the newConnectionType
      */
     public static EConnectionType getNewConnectionType() {
-        return newConnectionType;
+        return newlineStyle;
     }
 
     /**

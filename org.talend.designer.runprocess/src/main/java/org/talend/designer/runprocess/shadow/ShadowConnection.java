@@ -165,4 +165,9 @@ public class ShadowConnection implements IConnection {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public String getConnectorName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

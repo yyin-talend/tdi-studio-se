@@ -52,7 +52,7 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
         if (source.isReadOnly()) {
             return null;
         }
-        EConnectionType style = (EConnectionType) request.getNewObjectType();
+        String style = (String) request.getNewObjectType();
         ConnectionCreateCommand cmd = new ConnectionCreateCommand(source, style, (List<Object>) request.getNewObject());
         request.setStartCommand(cmd);
         return cmd;

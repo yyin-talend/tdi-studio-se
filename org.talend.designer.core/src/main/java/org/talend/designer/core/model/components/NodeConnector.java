@@ -21,7 +21,12 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.swt.graphics.Color;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.INodeConnector;
 
 /**
@@ -32,7 +37,7 @@ import org.talend.core.model.process.INodeConnector;
  */
 public class NodeConnector implements INodeConnector {
 
-    private EConnectionType connectionType;
+    private EConnectionType defaultConnectionType;
 
     private int maxLinkOutput = -1;
 
@@ -48,15 +53,21 @@ public class NodeConnector implements INodeConnector {
 
     private boolean builtIn = false;
 
-    private boolean customName;
+    private String name;
+
+    private String menuName;
+
+    private String linkName;
+
+    private Map<EConnectionType, IConnectionProperty> propertyMap = new HashMap<EConnectionType, IConnectionProperty>();
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.designer.core.model.components.INodeConnector#getConnectionType()
      */
-    public EConnectionType getConnectionType() {
-        return this.connectionType;
+    public EConnectionType getDefaultConnectionType() {
+        return this.defaultConnectionType;
     }
 
     /*
@@ -64,8 +75,8 @@ public class NodeConnector implements INodeConnector {
      * 
      * @see org.talend.designer.core.model.components.INodeConnector#setConnectionType(org.talend.core.model.designer.EConnectionType)
      */
-    public void setConnectionType(final EConnectionType connectionType) {
-        this.connectionType = connectionType;
+    public void setDefaultConnectionType(final EConnectionType defaultConnectionType) {
+        this.defaultConnectionType = defaultConnectionType;
     }
 
     /*
@@ -134,11 +145,134 @@ public class NodeConnector implements INodeConnector {
         this.minLinkOutput = minLinkOutput;
     }
 
-    public boolean isCustomName() {
-        return customName;
+    /**
+     * Getter for linkName.
+     * 
+     * @return the linkName
+     */
+    public String getLinkName() {
+        return linkName;
     }
 
-    public void setCustomName(boolean customName) {
-        this.customName = customName;
+    /**
+     * Sets the linkName.
+     * 
+     * @param linkName the linkName to set
+     */
+    public void setLinkName(String linkName) {
+        this.linkName = linkName;
+    }
+
+    /**
+     * Getter for menuName.
+     * 
+     * @return the menuName
+     */
+    public String getMenuName() {
+        return menuName;
+    }
+
+    /**
+     * Sets the menuName.
+     * 
+     * @param menuName the menuName to set
+     */
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    /**
+     * Getter for name.
+     * 
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name.
+     * 
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addConnectionProperty(EConnectionType type, Color color, Integer lineStyle) {
+        propertyMap.put(type, new ConnectionProperty(color, lineStyle));
+    }
+    
+    public IConnectionProperty getConnectionProperty(EConnectionType type) {
+        return propertyMap.get(type);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        if (name.equals(defaultConnectionType.getName())) {
+            return name + ": inputs(" + curLinkNbInput + "/" + maxLinkInput + "), outputs(" + curLinkNbOutput + "/"
+                    + maxLinkOutput + ")";
+        }
+        return name + "(" + defaultConnectionType.getName() + ")" + ": inputs(" + curLinkNbInput + "/" + maxLinkInput
+                + "), outputs(" + curLinkNbOutput + "/" + maxLinkOutput + ")";
+    }
+
+    /**
+     * DOC nrousseau NodeConnector class global comment. Detailled comment
+     * <br/>
+     *
+     */
+    private class ConnectionProperty implements IConnectionProperty {
+
+        private Integer lineStyle;
+
+        private Color color;
+
+        public ConnectionProperty(Color color, Integer lineStyle) {
+            super();
+            this.lineStyle = lineStyle;
+            this.color = color;
+        }
+
+        /**
+         * Getter for color.
+         * 
+         * @return the color
+         */
+        public Color getColor() {
+            return color;
+        }
+
+        /**
+         * Sets the color.
+         * 
+         * @param color the color to set
+         */
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        /**
+         * Getter for lineStyle.
+         * 
+         * @return the lineStyle
+         */
+        public Integer getLineStyle() {
+            return lineStyle;
+        }
+
+        /**
+         * Sets the lineStyle.
+         * 
+         * @param lineStyle the lineStyle to set
+         */
+        public void setLineStyle(Integer lineStyle) {
+            this.lineStyle = lineStyle;
+        }
     }
 }

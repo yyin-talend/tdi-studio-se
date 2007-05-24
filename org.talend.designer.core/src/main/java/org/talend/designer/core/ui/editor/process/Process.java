@@ -322,9 +322,8 @@ public class Process extends Element implements IProcess {
         // file path
         param = new ElementParameter(this);
         param.setName("FILE_PATH"); // File path
-        param
-                .setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
-                        .getName()))));
+        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
+                .getName()))));
         param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -334,7 +333,8 @@ public class Process extends Element implements IProcess {
         // stats file name
         param = new ElementParameter(this);
         param.setName("FILENAME_STATS"); // Stats file name
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
+        param.setValue(addQuotes(preferenceStore
+                .getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -359,7 +359,9 @@ public class Process extends Element implements IProcess {
         // Log file name
         param = new ElementParameter(this);
         param.setName("FILENAME_LOGS");
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType].getName())));
+        param
+                .setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType]
+                        .getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName()); // "Logs File Name"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -411,7 +413,8 @@ public class Process extends Element implements IProcess {
         param.setListItemsValue(new String[] {});
         param.setNumRow(10);
         param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
+        param.setValue(preferenceStore
+                .getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
         addElementParameter(param);
@@ -425,8 +428,8 @@ public class Process extends Element implements IProcess {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         String[] strDisplay = null, strValue = null, strItems = null, strCodes = null;
         if (languageType == 0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", "PostgreSQL",
-                    "IBM DB2", "Sybase", "Ingres" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
+                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
             strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
                     "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
@@ -438,10 +441,10 @@ public class Process extends Element implements IProcess {
                     RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
                     RepositoryToComponentProperty.INGRES };
         } else if (languageType == 1) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL", "IBM DB2",
-                    "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", "tPostgresqlOutput",
-                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
+                    "IBM DB2", "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
+                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
                     RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
@@ -734,7 +737,8 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
+                        .getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -902,7 +906,8 @@ public class Process extends Element implements IProcess {
         ParametersType params = fileFact.createParametersType();
         process.setParameters(params);
 
-        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(), process);
+        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(),
+                process);
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
@@ -1000,10 +1005,11 @@ public class Process extends Element implements IProcess {
             cType.setTarget(connec.getTarget().getUniqueName());
             cType.setLabel(connec.getName());
             cType.setLineStyle(connec.getLineStyleId());
+            cType.setConnectorName(connec.getConnectorName());
             cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
             cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
             cType.setMetaname(connec.getMetaName());
-            int id = connec.getOutputId();
+            int id = connec.getOutputId(connec.getLineStyle());
             if (id >= 0) {
                 cType.setOutputId(id);
             }
@@ -1192,7 +1198,8 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                        .getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
@@ -1262,7 +1269,8 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                .getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1397,8 +1405,8 @@ public class Process extends Element implements IProcess {
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                 Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                        repositoryValue);
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result
+                                                .getParameter(), repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1468,8 +1476,25 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
-                    .getLabel(), cType.getMetaname());
+            String connectorName = cType.getConnectorName();
+            boolean connectionTypeFound = false;
+            if (connectorName != null) {
+                // check if the connector exists and if the line style is correct
+                // (used for automatic component upgrade, to avoid migration each time)
+                if (source.getConnectorFromName(connectorName) != null
+                        && (source.getConnectorFromName(connectorName).getDefaultConnectionType().getId() == lineStyleId)) {
+                    connectionTypeFound = true;
+                }
+            }
+
+            if (connectionTypeFound) {
+                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName,
+                        cType.getMetaname(), cType.getLabel(), cType.getMetaname());
+            } else {
+                EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), cType
+                        .getMetaname(), cType.getLabel(), cType.getMetaname());
+            }
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
@@ -1477,9 +1502,9 @@ public class Process extends Element implements IProcess {
             loadElementParameters(connec, listParamType);
 
             Point offset = new Point(cType.getOffsetLabelX(), cType.getOffsetLabelY());
-            INodeConnector nodeConnectorSource = source.getConnectorFromType(connec.getLineStyle());
+            INodeConnector nodeConnectorSource = connec.getSourceNodeConnector();
             nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
-            INodeConnector nodeConnectorTarget = target.getConnectorFromType(connec.getLineStyle());
+            INodeConnector nodeConnectorTarget = connec.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
             connec.getConnectionLabel().setOffset(offset);
         }
@@ -1493,45 +1518,6 @@ public class Process extends Element implements IProcess {
         defaultContextToLoad = process.getDefaultContext();
 
         contextManager = new JobContextManager(process.getContext(), defaultContextToLoad);
-
-        //        
-        //
-        // List<IContext> listContext = new ArrayList<IContext>();
-        // EList contextTypeList = process.getContext();
-        // ContextType contextType;
-        // IContext context;
-        //
-        // List<IContextParameter> contextParamList;
-        // EList contextTypeParamList;
-        // ContextParameterType contextParamType;
-        // ContextParameter contextParam;
-        //
-        // for (int i = 0; i < contextTypeList.size(); i++) {
-        // contextType = (ContextType) contextTypeList.get(i);
-        // context = new Context(contextType.getName());
-        // context.setConfirmationNeeded(contextType.isConfirmationNeeded());
-        // contextParamList = new ArrayList<IContextParameter>();
-        // contextTypeParamList = contextType.getContextParameter();
-        //
-        // for (int j = 0; j < contextTypeParamList.size(); j++) {
-        // contextParamType = (ContextParameterType) contextTypeParamList.get(j);
-        // contextParam = new ContextParameter();
-        // contextParam.setName(contextParamType.getName());
-        // contextParam.setPrompt(contextParamType.getPrompt());
-        // contextParam.setType(EMetadataType.getTypeByName(contextParamType.getType()));
-        // contextParam.setValue(contextParamType.getValue());
-        // contextParam.setPromptNeeded(contextParamType.isPromptNeeded());
-        //
-        // contextParamList.add(contextParam);
-        // }
-        // context.setContextParameterList(contextParamList);
-        //
-        // if (context.getName().equals(defaultContextToLoad)) {
-        // contextManager.setDefaultContext(context);
-        // }
-        // listContext.add(context);
-        // }
-        // contextManager.setListContext(listContext);
     }
 
     public boolean isReadOnly() {
@@ -2023,7 +2009,8 @@ public class Process extends Element implements IProcess {
     @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }

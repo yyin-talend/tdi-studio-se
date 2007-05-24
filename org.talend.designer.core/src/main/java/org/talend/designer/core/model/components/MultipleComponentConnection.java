@@ -39,10 +39,10 @@ public class MultipleComponentConnection implements IMultipleComponentConnection
 
     IMultipleComponentItem target;
 
-    EConnectionType connectionType;
+    String connectionType;
 
     public MultipleComponentConnection(String cType, String targetName) {
-        connectionType = EConnectionType.getTypeFromName(cType);
+        connectionType = cType;
         nameTarget = targetName;
     }
 
@@ -51,7 +51,7 @@ public class MultipleComponentConnection implements IMultipleComponentConnection
      * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#getConnectionType()
      */
-    public EConnectionType getConnectionType() {
+    public String getConnectionType() {
         return this.connectionType;
     }
 
@@ -60,7 +60,7 @@ public class MultipleComponentConnection implements IMultipleComponentConnection
      * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#setConnectionType(org.talend.core.model.process.EConnectionType)
      */
-    public void setConnectionType(EConnectionType connectionType) {
+    public void setConnectionType(String connectionType) {
         this.connectionType = connectionType;
     }
 

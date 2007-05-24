@@ -36,6 +36,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -57,6 +59,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -991,42 +994,116 @@ public class EmfComponent implements IComponent {
         listConnector = new ArrayList<NodeConnector>();
 
         listConnType = compType.getCONNECTORS().getCONNECTOR();
+        for (int i = 0; i < listConnType.size(); i++) {
+            connType = (CONNECTORType) listConnType.get(i);
+            // EConnectionType currentType = EConnectionType.values()[i];
+            EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
+            if (currentType == null) {
+                continue;
+            }
+            nodeConnector = new NodeConnector();
+            nodeConnector.setDefaultConnectionType(currentType);
+            // set the default values
+            nodeConnector.setLinkName(currentType.getDefaultLinkName());
+            nodeConnector.setMenuName(currentType.getDefaultMenuName());
+            Color color = currentType.getDefaultColor();
+            Integer lineStyle = currentType.getDefaultLineStyle();
+
+            if (connType.isSetMAXINPUT()) {
+                nodeConnector.setMaxLinkInput(connType.getMAXINPUT());
+            }
+            if (connType.isSetMININPUT()) {
+                nodeConnector.setMinLinkInput(connType.getMININPUT());
+            }
+            if (connType.isSetMAXOUTPUT()) {
+                nodeConnector.setMaxLinkOutput(connType.getMAXOUTPUT());
+            }
+            if (connType.isSetMINOUTPUT()) {
+                nodeConnector.setMinLinkOutput(connType.getMINOUTPUT());
+            }
+            if (connType.isSetBUILTIN()) {
+                nodeConnector.setBuiltIn(connType.isBUILTIN());
+            }
+
+            if (connType.getNAME() == null) {
+                nodeConnector.setName(connType.getCTYPE());
+            } else {
+                nodeConnector.setName(connType.getNAME());
+                nodeConnector.setMenuName(getTranslatedValue(connType.getNAME() + ".MENU"));
+                nodeConnector.setLinkName(getTranslatedValue(connType.getNAME() + ".LINK"));
+            }
+
+            if (connType.isSetLINESTYLE()) {
+                lineStyle = new Integer(connType.getLINESTYLE());
+            }
+
+            if (connType.getCOLOR() != null) {
+                String colorCode = connType.getCOLOR();
+                int r = Integer.parseInt(colorCode.substring(0, 2), 16);
+                int g = Integer.parseInt(colorCode.substring(2, 4), 16);
+                int b = Integer.parseInt(colorCode.substring(4, 6), 16);
+                RGB rgb = new RGB(r, g, b);
+
+                color = new Color(null, rgb);
+            }
+            nodeConnector.addConnectionProperty(currentType, color, lineStyle);
+
+            listConnector.add(nodeConnector);
+            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow" (main type), then add the same for the
+                // lookup.
+                currentType = EConnectionType.FLOW_REF;
+
+                if (connType.getCOLOR() == null) {
+                    color = currentType.getDefaultColor();
+                }
+                if (!connType.isSetLINESTYLE()) {
+                    lineStyle = currentType.getDefaultLineStyle();
+                }
+                nodeConnector.addConnectionProperty(currentType, color, lineStyle);
+                currentType = EConnectionType.FLOW_MERGE;
+
+                if (connType.getCOLOR() == null) {
+                    color = currentType.getDefaultColor();
+                }
+                if (!connType.isSetLINESTYLE()) {
+                    lineStyle = currentType.getDefaultLineStyle();
+                }
+                nodeConnector.addConnectionProperty(currentType, color, lineStyle);
+            }
+        }
+
         for (int i = 0; i < EConnectionType.values().length; i++) {
             EConnectionType currentType = EConnectionType.values()[i];
-            nodeConnector = new NodeConnector();
-            nodeConnector.setConnectionType(currentType);
-            boolean found = false;
-            for (int j = 0; j < listConnType.size(); j++) {
-                connType = (CONNECTORType) listConnType.get(j);
-                if (connType.getCTYPE().equals(currentType.getName())) {
-                    found = true;
-                    if (connType.isSetMAXINPUT()) {
-                        nodeConnector.setMaxLinkInput(connType.getMAXINPUT());
-                    }
-                    if (connType.isSetMININPUT()) {
-                        nodeConnector.setMinLinkInput(connType.getMININPUT());
-                    }
-                    if (connType.isSetMAXOUTPUT()) {
-                        nodeConnector.setMaxLinkOutput(connType.getMAXOUTPUT());
-                    }
-                    if (connType.isSetMINOUTPUT()) {
-                        nodeConnector.setMinLinkOutput(connType.getMINOUTPUT());
-                    }
-                    if (currentType == EConnectionType.TABLE) {
-                        nodeConnector.setCustomName(true);
-                    }
-                    if (connType.isSetBUILTIN()) {
-                        nodeConnector.setBuiltIn(connType.isBUILTIN());
-                    }
+
+            if ((currentType == EConnectionType.FLOW_REF) || (currentType == EConnectionType.FLOW_MERGE)) {
+                continue;
+            }
+            boolean exists = false;
+            for (INodeConnector curNodeConn : listConnector) {
+                if (curNodeConn.getDefaultConnectionType().equals(currentType)) {
+                    exists = true;
                 }
             }
-            if (!found) { // if type of link not found, then "deactivate" this link
+            if (!exists) { // will add by default all connectors not defined in the xml files
+                nodeConnector = new NodeConnector();
+                nodeConnector.setDefaultConnectionType(currentType);
+                nodeConnector.setName(currentType.getName());
+                nodeConnector.addConnectionProperty(currentType, currentType.getDefaultColor(), currentType
+                        .getDefaultLineStyle());
+                nodeConnector.setLinkName(currentType.getDefaultLinkName());
+                nodeConnector.setMenuName(currentType.getDefaultMenuName());
                 nodeConnector.setMaxLinkInput(0);
                 nodeConnector.setMinLinkInput(0);
                 nodeConnector.setMaxLinkOutput(0);
                 nodeConnector.setMinLinkOutput(0);
+                if (currentType == EConnectionType.FLOW_MAIN) {
+                    nodeConnector.addConnectionProperty(EConnectionType.FLOW_REF, EConnectionType.FLOW_REF
+                            .getDefaultColor(), EConnectionType.FLOW_REF.getDefaultLineStyle());
+                    nodeConnector.addConnectionProperty(EConnectionType.FLOW_MERGE, EConnectionType.FLOW_MERGE
+                            .getDefaultColor(), EConnectionType.FLOW_MERGE.getDefaultLineStyle());
+                }
+                listConnector.add(nodeConnector);
             }
-            listConnector.add(nodeConnector);
         }
         return listConnector;
     }

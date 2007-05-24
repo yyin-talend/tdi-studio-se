@@ -33,6 +33,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
@@ -348,6 +349,16 @@ public class LogRowNode implements INode {
    }
 
 public IElementParameter getElementParameter(String name) {
+    // TODO Auto-generated method stub
+    return null;
+}
+
+public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
+    // TODO Auto-generated method stub
+    return null;
+}
+
+public List<? extends IConnection> getOutgoingConnections(String connectorName) {
     // TODO Auto-generated method stub
     return null;
 }

@@ -24,7 +24,8 @@ package org.talend.designer.core.ui.editor.connections;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnectionProperty;
+import org.talend.core.model.process.INodeConnector;
 
 /**
  * Figure corresponding the the connection. <br/>
@@ -36,9 +37,9 @@ public class ConnectionFigure extends PolylineConnection {
 
     private int alpha = -1;
 
-    public ConnectionFigure(EConnectionType lineStyle) {
+    public ConnectionFigure(IConnectionProperty connectionProperty) {
         setTargetDecoration(new PolygonDecoration());
-        setConnectionStyle(lineStyle);
+        setConnectionProperty(connectionProperty);
     }
 
     @Override
@@ -57,9 +58,9 @@ public class ConnectionFigure extends PolylineConnection {
         this.alpha = alpha;
     }
 
-    protected void setConnectionStyle(final EConnectionType style) {
-        setLineStyle(EDesignerConnection.getConnection(style).getLineStyle());
-        setForegroundColor(EDesignerConnection.getConnection(style).getColor());
+    protected void setConnectionProperty(IConnectionProperty connectionProperty) {
+        setLineStyle(connectionProperty.getLineStyle());
+        setForegroundColor(connectionProperty.getColor());
     }
 
 }

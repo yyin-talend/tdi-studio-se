@@ -69,7 +69,6 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
@@ -190,8 +189,20 @@ public class Node extends Element implements INode {
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
         IMetadataTable meta = new MetadataTable();
-        if (!getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
-                && !getConnectorFromType(EConnectionType.TABLE).isBuiltIn()) {
+
+        boolean hasMetadata = true;
+
+        for (INodeConnector curConnector : getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+            if (curConnector.isBuiltIn()) {
+                hasMetadata = false;
+            }
+        }
+        for (INodeConnector curConnector : getConnectorsFromType(EConnectionType.TABLE)) {
+            if (curConnector.isBuiltIn()) {
+                hasMetadata = false;
+            }
+        }
+        if (hasMetadata) {
             metadataList.add(meta);
         }
 
@@ -230,8 +241,16 @@ public class Node extends Element implements INode {
         return process;
     }
 
+    /**
+     * 
+     * Note that if there is several connectors of the same type, it will return the first one.
+     * 
+     * @param connType
+     * @return
+     */
     public INodeConnector getConnectorFromType(final EConnectionType connType) {
         INodeConnector nodeConnector = null;
+        List<INodeConnector> listConnectors = new ArrayList<INodeConnector>();
         int nbConn = 0;
 
         EConnectionType testedType;
@@ -243,12 +262,56 @@ public class Node extends Element implements INode {
         }
 
         while ((nodeConnector == null) && (nbConn < listConnector.size())) {
-            if (listConnector.get(nbConn).getConnectionType() == testedType) {
+            if (listConnector.get(nbConn).getDefaultConnectionType() == testedType) {
+                nodeConnector = listConnector.get(nbConn);
+                listConnectors.add(nodeConnector);
+            }
+            nbConn++;
+        }
+        return nodeConnector;
+    }
+
+    /**
+     * 
+     * Note that if there is several connectors the same name, it will return the first one.
+     * 
+     * @param connName
+     * @return
+     */
+    public INodeConnector getConnectorFromName(final String connName) {
+        INodeConnector nodeConnector = null;
+        int nbConn = 0;
+
+        while ((nodeConnector == null) && (nbConn < listConnector.size())) {
+            if (listConnector.get(nbConn).getName().equals(connName)) {
                 nodeConnector = listConnector.get(nbConn);
             }
             nbConn++;
         }
         return nodeConnector;
+    }
+
+    public List<INodeConnector> getConnectorsFromType(final EConnectionType connType) {
+        INodeConnector nodeConnector = null;
+        List<INodeConnector> listConnectors = new ArrayList<INodeConnector>();
+        int nbConn = 0;
+
+        EConnectionType testedType;
+
+        if (connType.hasConnectionCategory(IConnectionCategory.FLOW)) {
+            testedType = EConnectionType.FLOW_MAIN;
+        } else {
+            testedType = connType;
+        }
+
+        while (nbConn < listConnector.size()) {
+            if (listConnector.get(nbConn).getDefaultConnectionType() == testedType) {
+                nodeConnector = listConnector.get(nbConn);
+                listConnectors.add(nodeConnector);
+            }
+            nbConn++;
+        }
+        return listConnectors;
     }
 
     public void setShowHint(final Boolean showHint) {
@@ -504,6 +567,9 @@ public class Node extends Element implements INode {
      */
     public void setPropertyValue(final String id, final Object value) {
         IElementParameter parameter = getElementParameter(id);
+        if (parameter == null) { // in case we try to set a value to a parameter that doesn't exists
+            return;
+        }
         if (id.equals(EParameterName.LABEL.getName())) {
             labelToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, labelToParse);
@@ -543,7 +609,6 @@ public class Node extends Element implements INode {
         }
 
         parameter.setValue(value);
-//        super.setPropertyValue(id, value);
         updateVisibleData();
     }
 
@@ -1048,7 +1113,7 @@ public class Node extends Element implements INode {
             if (/*
                  * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
                  * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */ (getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+                 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
@@ -1057,22 +1122,23 @@ public class Node extends Element implements INode {
             }
         }
 
-        for (EConnectionType type : EConnectionType.values()) {
-            if (!type.hasConnectionCategory(IConnectionCategory.USE_HASH) && type != EConnectionType.FLOW_MERGE) {
+        for (INodeConnector nodeConnector : listConnector) {
+            if (!nodeConnector.getDefaultConnectionType().hasConnectionCategory(IConnectionCategory.USE_HASH)
+                    && nodeConnector.getDefaultConnectionType() != EConnectionType.FLOW_MERGE) {
                 int nbMaxOut;
-                nbMaxOut = getConnectorFromType(type).getMaxLinkOutput();
+                nbMaxOut = nodeConnector.getMaxLinkOutput();
                 int nbMaxIn;
-                nbMaxIn = getConnectorFromType(type).getMaxLinkInput();
+                nbMaxIn = nodeConnector.getMaxLinkInput();
                 int nbMinOut;
-                nbMinOut = getConnectorFromType(type).getMinLinkOutput();
+                nbMinOut = nodeConnector.getMinLinkOutput();
                 int nbMinIn;
-                nbMinIn = getConnectorFromType(type).getMinLinkInput();
+                nbMinIn = nodeConnector.getMinLinkInput();
                 int curLinkOut;
-                curLinkOut = getConnectorFromType(type).getCurLinkNbOutput();
+                curLinkOut = nodeConnector.getCurLinkNbOutput();
                 int curLinkIn;
-                curLinkIn = getConnectorFromType(type).getCurLinkNbInput();
-                String typeName = EDesignerConnection.getConnection(type).getMenuName();
-                if (type == EConnectionType.FLOW_MAIN) {
+                curLinkIn = nodeConnector.getCurLinkNbInput();
+                String typeName = nodeConnector.getMenuName();
+                if (nodeConnector.getDefaultConnectionType() == EConnectionType.FLOW_MAIN) {
                     typeName = "Row";
                 }
 
@@ -1328,5 +1394,13 @@ public class Node extends Element implements INode {
 
     public List<? extends IConnection> getMainOutgoingConnections() {
         return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
+    }
+
+    public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectionType);
+    }
+
+    public List<? extends IConnection> getOutgoingConnections(String connectorName) {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectorName);
     }
 }

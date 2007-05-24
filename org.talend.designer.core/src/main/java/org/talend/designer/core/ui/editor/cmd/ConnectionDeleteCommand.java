@@ -54,13 +54,11 @@ public class ConnectionDeleteCommand extends Command {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
             connection.disconnect();
-            Node prevNode = connection.getSource();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
-            nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorSource = connection.getSourceNodeConnector();
             nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
 
-            Node nextNode = connection.getTarget();
-            nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorTarget = connection.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }
         process.checkStartNodes();
@@ -71,13 +69,11 @@ public class ConnectionDeleteCommand extends Command {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
             connection.reconnect();
-            Node prevNode = (Node) connection.getSource();
             INodeConnector nodeConnectorSource, nodeConnectorTarget;
-            nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorSource = connection.getSourceNodeConnector();
             nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
 
-            Node nextNode = (Node) connection.getTarget();
-            nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorTarget = connection.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
         }
         process.checkStartNodes();
