@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
@@ -47,6 +49,8 @@ import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
  */
 public class TableEntriesManager {
 
+    private static Logger log = Logger.getLogger(TableEntriesManager.class);
+    
     private Map<TableEntryLocation, ITableEntry> tableEntries;
 
     private Map<ITableEntry, TableEntryProperties> dataMapTableEntryToProperties;
@@ -238,13 +242,18 @@ public class TableEntriesManager {
      * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
+        System.out.println(previousColumnName + " -> " + newColumnName);
+        
+//        ExceptionHandler.process(new RuntimeException("test : " + previousColumnName + " -> " + newColumnName));
+//        log.info(previousColumnName + " -> " + newColumnName); //$NON-NLS-1$
+        
         TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(),
                 previousColumnName);
         // TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
-            throw new IllegalStateException(Messages
-                    .getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
+            log.warn(Messages.getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
+            return;
         }
         tableEntries.remove(tableEntryLocationKey);
         tableEntryLocationKey.columnName = newColumnName;

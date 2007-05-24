@@ -393,7 +393,7 @@ public class RunProcessContext {
      * 
      * @return Exit code of the process.
      */
-    public int kill() {
+    public synchronized int kill() {
         int exitCode;
 
         if (!killing && isRunning()) {
@@ -528,6 +528,16 @@ public class RunProcessContext {
                     
                     ended = true;
                     stopThread = true;
+                    try {
+                        ps.getInputStream().close();
+                    } catch (IOException e) {
+                        ExceptionHandler.process(e);
+                    }
+                    try {
+                        ps.getErrorStream().close();
+                    } catch (IOException e) {
+                        ExceptionHandler.process(e);
+                    }
 
                 } catch (IllegalThreadStateException itse) {
                     ended = false;
