@@ -435,15 +435,16 @@ public class DataProcess {
                 // create a link before between the two subprocess
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
-                // dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
-                dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+                dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                //dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                 dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
                 dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
-                // dataConnec.setSource(subDataNodeStartSource);
-                dataConnec.setSource(subDataNodeStartTarget);
-                // dataConnec.setTarget(subDataNodeStartTarget);
-                dataConnec.setTarget(subDataNodeStartSource);
+                //dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+                dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+                dataConnec.setSource(subDataNodeStartSource);
+                //dataConnec.setSource(subDataNodeStartTarget);
+                dataConnec.setTarget(subDataNodeStartTarget);
+                //dataConnec.setTarget(subDataNodeStartSource);
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
                         .getOutgoingConnections();
                 outgoingConnections.add(dataConnec);

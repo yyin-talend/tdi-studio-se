@@ -83,9 +83,9 @@ public class NodesSubTree {
                 if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                     buildSubTree((INode) connection.getTarget());
                 }
-//                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-//                    afterSubProcesses.add(connection.getTarget().getUniqueName());
-//                }
+                if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                    afterSubProcesses.add(connection.getTarget().getUniqueName());
+                }
                 if (/*
                      * connection.getLineStyle().equals(EConnectionType.RUN_BEFORE) ||
                      */connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
