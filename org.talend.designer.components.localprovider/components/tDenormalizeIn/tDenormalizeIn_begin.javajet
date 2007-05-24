@@ -1,0 +1,187 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    java.util.List
+    java.util.Map
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+String rowName = null;
+String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+
+	for (INode pNode : node.getProcess().getNodesOfType("tArray")) {
+		if (!pNode.getUniqueName().equals(origin + "_Array")) continue; 
+		for (IConnection conn : pNode.getIncomingConnections()) {
+			rowName = conn.getName();
+			break;
+		}
+		
+	}
+
+String outRowName = "";
+if ((node.getOutgoingConnections()!=null)&&(node.getOutgoingConnections().size()>0)) {
+	outRowName = node.getOutgoingConnections().get(0).getName();
+} else {
+	outRowName = "defaultRow";
+}
+
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+    
+    List<Map<String, String>> groups = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPS__");
+    String delimiter = ElementParameterParser.getValue(node, "__DELIMITER__");
+    String merge = ElementParameterParser.getValue(node, "__MERGE__");
+%>
+////////////////////////
+<% if (merge.equals("true")) {%>
+    class Util_<%=cid %>
+    {
+        public String merge(String input) {
+            if (input == null) {
+                return null;
+            }
+            String[] strings = input.split(<%=delimiter %>);
+            StringBuffer sb = new StringBuffer();
+            java.util.Set<String> set = new java.util.HashSet<String>(java.util.Arrays.asList(strings));
+            int i = 0;
+            for (String object : set) {
+                i++;
+                sb.append(object);
+                if (i == set.size()) break;
+                sb.append(<%=delimiter %>);
+            }
+            return sb.toString();
+        }
+    } 
+        
+	Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();	
+<%
+  }
+%>
+	
+	
+	java.util.List<<%=rowName %>Struct> row_aref_<%=origin %>_<%=cid %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
+	
+	int nb_line_<%=cid %> = 0;
+
+<%
+  if (groups.size()>0) { //111
+%>
+    
+
+    java.util.Map<Object,<%=rowName %>Struct> map_<%=cid %> = new java.util.HashMap<Object,<%=rowName %>Struct>();
+
+    for (java.util.Iterator<<%=rowName %>Struct> iter_<%=cid %> = row_aref_<%=origin %>_<%=cid %>.iterator(); iter_<%=cid %>.hasNext();) {
+
+        <%=rowName %>Struct row_<%=cid %> = iter_<%=cid %>.next();
+        String key_<%=cid %> = 
+<%
+    	for (int i=0; i < groups.size(); i++) {
+    		Map<String, String> line = groups.get(i);
+    		String colname = line.get("INPUT_COLUMN");
+%>     
+        row_<%=cid %>.<%=colname %> <%=i<(groups.size()-1)?"+":""%>
+<%
+    } 
+%> ;
+        <%=rowName %>Struct element_<%=cid %> = (<%=rowName %>Struct) map_<%=cid %>.get(key_<%=cid %>);
+        if (element_<%=cid %> == null) {
+            map_<%=cid %>.put(key_<%=cid %>, row_<%=cid %>);
+        } else {
+        
+////
+<% 
+    //
+	for (IMetadataColumn column : metadata.getListColumns()) { 
+	
+    	boolean isGroupBy = false;
+    	for (int i=0; i<groups.size(); i++) {
+    		Map<String, String> line = groups.get(i);
+    		String colname = line.get("INPUT_COLUMN");
+        	if (column.getLabel().equals(colname)) { isGroupBy = true; break; }
+    	}
+    	
+    	if (!isGroupBy) {
+%> 
+      element_<%=cid %>.<%=column.getLabel() %> = element_<%=cid %>.<%=column.getLabel() %> + <%=delimiter %> + row_<%=cid %>.<%=column.getLabel() %>;
+<%
+    }
+  }
+%>
+////        
+        }
+    }     
+    
+    java.util.Set set_<%=cid %> = map_<%=cid %>.keySet();
+
+    for (java.util.Iterator iter_<%=cid %> = set_<%=cid %>.iterator(); iter_<%=cid %>.hasNext();) {
+        String key_<%=cid %> = (String) iter_<%=cid %>.next();
+        <%=rowName %>Struct element_<%=cid %> = (<%=rowName %>Struct) map_<%=cid %>.get(key_<%=cid %>);
+        
+////
+<% 
+    //output columns 
+	for (IMetadataColumn column : metadata.getListColumns()) { 
+	
+    	boolean isGroupBy = false;
+    	for (int i=0; i<groups.size(); i++) {
+    		Map<String, String> line = groups.get(i);
+    		String colname = line.get("INPUT_COLUMN");
+        	if (column.getLabel().equals(colname)) { isGroupBy = true; break; }
+    	}
+    	
+    	if ( merge.equals("true") && !isGroupBy) {
+%> 
+     <%=outRowName %>.<%=column.getLabel() %> = util_<%=cid %>.merge(element_<%=cid %>.<%=column.getLabel() %>); 
+<%
+    } else { 
+%>
+	<%=outRowName %>.<%=column.getLabel() %> = element_<%=cid %>.<%=column.getLabel() %>;
+<%    
+  }
+ }
+%>
+////   
+
+        
+<%
+  } else {//111
+%>        
+	for (java.util.Iterator<<%=rowName %>Struct> iter_<%=cid %> = row_aref_<%=origin %>_<%=cid %>.iterator(); iter_<%=cid %>.hasNext();) {	
+		<%=rowName %>Struct element_<%=cid %> = iter_<%=cid %>.next(); 	
+////
+<% 
+    //output columns 
+	for (IMetadataColumn column : metadata.getListColumns()) {
+%> 
+      <%=outRowName %>.<%=column.getLabel() %> = element_<%=cid %>.<%=column.getLabel() %>;
+<%
+  }
+%>
+////		
+
+<%
+  }//111
+%>
+	
+	nb_line_<%=cid %>++;
+////////////////////////
+<%
+    }//2    
+}//1
+%>
