@@ -394,6 +394,7 @@ public abstract class DataMapTableView extends Composite {
                 newTableViewerCreator.setColumnsResizableByDefault(true);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+                newTableViewerCreator.setEnableKeysForCellsEdition(false);
                 // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
                 // AbstractInOutTable);
                 newTableViewerCreator.setFirstColumnMasked(true);

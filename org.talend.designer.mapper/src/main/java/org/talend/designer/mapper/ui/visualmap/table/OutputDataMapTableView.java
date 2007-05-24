@@ -167,6 +167,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                 newTableViewerCreator.setColumnsResizableByDefault(false);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+                newTableViewerCreator.setEnableKeysForCellsEdition(false);
                 // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
                 // AbstractInOutTable);
                 newTableViewerCreator.setFirstColumnMasked(true);
