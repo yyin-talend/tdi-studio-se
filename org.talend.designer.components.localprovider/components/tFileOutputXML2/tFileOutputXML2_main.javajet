@@ -2,11 +2,14 @@
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
     java.util.Map
     org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 "
 %>
 
@@ -31,6 +34,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          	}
          }
          String[] relatedColumn = new String[tree.size()];
+         String[] attributeTagLabel = new String[tree.size()];
          for(int i = 0; i< nodeDepth.length; i++){
          	nodeDepth[i] = Integer.parseInt(tree.get(i).get("DEPTH"));
          }
@@ -83,6 +87,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          		for(; j >= 0; j--){
          			Map<String, String>  tag = tree.get(j);
          			if(tag.get("ATTRIBUTE") == null || tag.get("ATTRIBUTE").equals("false")){//found his tag
+         				attributeTagLabel[i] = tag.get("LABEL");
          				nodeInfo[i][1] = nodeInfo[j][1];
          				nodeDepth[i] = nodeDepth[j];
          				if(nodeInfo[i][1]){
@@ -104,6 +109,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IConnection conn = conns.get(0);
 		
 		
+		for(IMetadataColumn column:metadata.getListColumns()) {
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+%><%=conn.getName() %>.<%=column.getLabel() %> = TalendString.replaceSpecialCharForXML(<%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+			}
+		}
 		
 		
 		
@@ -148,7 +160,8 @@ out_<%=cid%>.newLine();
 out_<%=cid%>.newLine();
 <%
 						}else{
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"</<%=treeNode.get("LABEL") %>>");
+%>
+out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"</<%=treeNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 						}
@@ -169,7 +182,7 @@ out_<%=cid%>.newLine();
 out_<%=cid%>.newLine();
 <%
 						}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">"+<%=conn.getName() %>.<%=relatedColumn[i] %>+"</<%=treeNode.get("LABEL") %>>");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">"+<%=conn.getName() %>.<%=relatedColumn[i] %>+"</<%=attributeTagLabel[i] %>>");
 out_<%=cid%>.newLine();
 <%
 						}
