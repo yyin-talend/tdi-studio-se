@@ -91,7 +91,7 @@ class OperationStruct<%=cid %>{
             				if(column.getLabel().equals(funin[1])){
 //
 //end%>
-	<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
+	<%="list".equals(funin[0])?"String":JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
 <%//start
 //
 								break;

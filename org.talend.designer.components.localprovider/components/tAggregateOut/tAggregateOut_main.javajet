@@ -258,6 +258,17 @@ operation_result_<%=cid %>.<%=funin[1] %>_last = <%=conn.getName() %>.<%=funin[1
 <%//start
 //
 			}
+			if(funin[0].equals("list")){
+//
+//end%>
+operation_result_<%=cid %>.<%=funin[1] %>_list = 
+operation_result_<%=cid %>.<%=funin[1] %>_list == null? 
+String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) 
+: 
+operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>;
+<%//start
+//
+			}
 		}
 //
 //end%>	

@@ -78,6 +78,7 @@
             <ITEM NAME="SUM"    VALUE="sum"/>
             <ITEM NAME="FIRST"    VALUE="first"/>
             <ITEM NAME="LAST"    VALUE="last"/>
+            <ITEM NAME="LIST"    VALUE="list"/>
           </ITEMS>
         </ITEM>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
