@@ -36,9 +36,26 @@
     />
 
     <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tMysqlConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />
+
+    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="3"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>'localhost'</DEFAULT>
@@ -48,6 +65,7 @@
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="3"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>'3306'</DEFAULT>
@@ -57,6 +75,7 @@
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>''</DEFAULT>
@@ -67,6 +86,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       SHOW="false"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="TYPE"
     >
       <DEFAULT>MySQL</DEFAULT>
@@ -76,6 +96,7 @@
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="4"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>''</DEFAULT>
@@ -85,6 +106,7 @@
       NAME="PASS"
       FIELD="TEXT"
       NUM_ROW="4"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>''</DEFAULT>
@@ -127,6 +149,7 @@
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
       NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REQUIRED="true"
     >
       <DEFAULT>100</DEFAULT>

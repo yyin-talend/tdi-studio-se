@@ -1,0 +1,65 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+        String dbport = ElementParameterParser.getValue(node, "__PORT__");
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+        String dbuser = ElementParameterParser.getValue(node, "__USER__");
+        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+%>
+use DBI;
+
+our $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'DBI:mysql:database=%s;host=%s;port=%s',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+    }
+)
+    or die "[<%=cid%>] can't connect to database";
+
+{
+    my $encoding = <%=encoding%>;
+
+    if ($encoding =~ m/^utf-?8$/i) {
+        my $query = 'set names "UTF8"';
+        my $sth = $dbh_<%=cid %>->prepare($query);
+        $sth->execute();
+        $sth->finish();
+    }
+}
+
+<%
+    }
+}
+%>
+
