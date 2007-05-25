@@ -27,6 +27,7 @@ import java.util.List;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -161,6 +162,13 @@ public class ConnectionManager {
     public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType lineStyle,
             String connectorName, String connectionName) {
         newlineStyle = lineStyle;
+        
+        INode processStartNode = source.getProcessStartNode(true);
+        // if the target is the start of the (source) process, then can't connect. 
+        if (processStartNode.equals(newTarget)) {
+            return false;
+        }
+
         // Modify Connection Type depending old and new target.
         if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // if the connection type is not the default one, then we don't change automatically.
