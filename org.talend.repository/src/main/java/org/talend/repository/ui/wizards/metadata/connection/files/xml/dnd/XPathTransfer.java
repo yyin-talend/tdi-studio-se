@@ -74,11 +74,11 @@ public class XPathTransfer extends ByteArrayTransfer {
         return new byte[0];
     }
 
-    protected XmlToSchemaDraggedData getDraggedData() {
+    public XmlToSchemaDraggedData getDraggedData() {
         return draggedData;
     }
 
-    protected void setDraggedData(XmlToSchemaDraggedData draggedData) {
+    public void setDraggedData(XmlToSchemaDraggedData draggedData) {
         this.draggedData = draggedData;
     }
 
