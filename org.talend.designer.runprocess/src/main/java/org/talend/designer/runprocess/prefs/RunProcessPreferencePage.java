@@ -1,0 +1,263 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006-2007 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.runprocess.prefs;
+
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.i18n.Messages;
+
+/**
+ * 
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
+ */
+public class RunProcessPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+    /**
+     * This class exists to provide visibility to the <code>refreshValidState</code> method and to perform more
+     * intelligent clearing of the error message.
+     */
+    protected class ConsoleIntegerFieldEditor extends IntegerFieldEditor {
+
+        public ConsoleIntegerFieldEditor(String name, String labelText, Composite parent) {
+            super(name, labelText, parent);
+        }
+
+        /**
+         * @see org.eclipse.jface.preference.FieldEditor#refreshValidState()
+         */
+        protected void refreshValidState() {
+            super.refreshValidState();
+        }
+
+        /**
+         * Clears the error message from the message line if the error message is the error message from this field
+         * editor.
+         */
+        protected void clearErrorMessage() {
+            if (canClearErrorMessage()) {
+                super.clearErrorMessage();
+            }
+        }
+    }
+
+    // private BooleanFieldEditor2 fWrapEditor = null;
+    private IntegerFieldEditor fClientComPortEditor = null;
+
+    // private BooleanFieldEditor2 fUseBufferSize = null;
+    private ConsoleIntegerFieldEditor fBufferSizeEditor = null;
+
+    private ConsoleIntegerFieldEditor fTabSizeEditor = null;
+
+    private Group clientGroup;
+
+    private StringFieldEditor fClientHostEditor;
+
+    private IntegerFieldEditor fClientStatPortEditor;
+
+    private IntegerFieldEditor fClientTraceEditor;
+
+    private Group remoteServersGroup;
+
+    /**
+     * Create the console page.
+     */
+    public RunProcessPreferencePage() {
+        super(GRID);
+        setDescription(Messages.getString("prefs.configuration.title"));
+        setPreferenceStore(RunProcessPlugin.getDefault().getPreferenceStore());
+    }
+
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return RunProcessPlugin.getDefault().getPreferenceStore();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.PreferencePage#createControl(Composite)
+     */
+    public void createControl(Composite parent) {
+        super.createControl(parent);
+    }
+
+    /**
+     * Create all field editors for this page
+     */
+    public void createFieldEditors() {
+
+        clientGroup = new Group(getFieldEditorParent(), SWT.NONE);
+        clientGroup.setText(Messages.getString("prefs.clientConfiguration"));
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        clientGroup.setLayout(layout);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        clientGroup.setLayoutData(gd);
+
+        ///////////////////////////////////////////////////////////////////////////////
+        // CLIENT_STATS_PORTS
+        
+        Composite compositeStatsPorts = new Composite(clientGroup, SWT.NONE);
+        compositeStatsPorts.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayout = new GridLayout(2, true);
+        compositeStatsPorts.setLayout(gridLayout);
+
+        Composite compositeStatsPort1 = new Composite(compositeStatsPorts, SWT.NONE);
+        compositeStatsPort1.setLayoutData(new GridData(GridData.FILL_BOTH));
+        gridLayout = new GridLayout(2, true);
+        compositeStatsPort1.setLayout(gridLayout);
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND1, Messages
+                .getString("prefs.clientStatsPortBound1"), compositeStatsPort1);
+        addField(fClientStatPortEditor);
+        fClientStatPortEditor.setValidRange(1024, 65535);
+        fClientStatPortEditor.setErrorMessage(Messages.getString("runProcessRemote.clientStatInvalidRange"));
+
+        Composite compositeStatsPort2 = new Composite(compositeStatsPorts, SWT.NONE);
+        compositeStatsPort2.setLayoutData(new GridData(GridData.FILL_BOTH));
+        gridLayout = new GridLayout(2, true);
+        compositeStatsPort2.setLayout(gridLayout);
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, Messages
+                .getString("prefs.clientStatsPortBound2"), compositeStatsPort2);
+        addField(fClientStatPortEditor);
+        fClientStatPortEditor.setValidRange(1024, 65535);
+        fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
+        ///////////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////////
+        // CLIENT_TRACE_PORTS
+        
+        Composite compositeTracePorts = new Composite(clientGroup, SWT.NONE);
+        compositeTracePorts.setLayoutData(new GridData(GridData.FILL_BOTH));
+        gridLayout = new GridLayout(2, true);
+        compositeTracePorts.setLayout(gridLayout);
+        
+        Composite compositeTracePorts1 = new Composite(compositeTracePorts, SWT.NONE);
+        compositeTracePorts1.setLayoutData(new GridData(GridData.FILL_BOTH));
+        gridLayout = new GridLayout(2, true);
+        compositeTracePorts1.setLayout(gridLayout);
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, Messages
+                .getString("prefs.clientTracePortBound1"), compositeTracePorts1);
+        addField(fClientStatPortEditor);
+        fClientStatPortEditor.setValidRange(1024, 65535);
+        fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
+        
+        Composite compositeTracePort2 = new Composite(compositeTracePorts, SWT.NONE);
+        compositeTracePort2.setLayoutData(new GridData(GridData.FILL_BOTH));
+        gridLayout = new GridLayout(2, true);
+        compositeTracePort2.setLayout(gridLayout);
+        fClientStatPortEditor = new IntegerFieldEditor(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, Messages
+                .getString("prefs.clientTracePortBound2"), compositeTracePort2);
+        addField(fClientStatPortEditor);
+        fClientStatPortEditor.setValidRange(1024, 65535);
+        fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
+        ///////////////////////////////////////////////////////////////////////////////
+
+    }
+
+    protected void createSpacer(Composite composite, int columnSpan) {
+        Label label = new Label(composite, SWT.NONE);
+        GridData gd = new GridData();
+        gd.horizontalSpan = columnSpan;
+        label.setLayoutData(gd);
+    }
+
+    /**
+     * @see IWorkbenchPreferencePage#init(IWorkbench)
+     */
+    public void init(IWorkbench workbench) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
+     */
+    public boolean performOk() {
+        boolean ok = super.performOk();
+        // update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
+        // IPreferenceStore store = RunRemoteProcessPlugin.getDefault().getPreferenceStore();
+        // int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
+        // int high = low + 8000;
+        // store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
+        RunProcessPlugin.getDefault().savePluginPreferences();
+        return ok;
+    }
+
+    /**
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
+     */
+    protected void initialize() {
+        super.initialize();
+    }
+
+    /**
+     * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
+     */
+    protected void performDefaults() {
+        super.performDefaults();
+    }
+
+    protected boolean canClearErrorMessage() {
+        if (fClientComPortEditor.isValid() && fBufferSizeEditor.isValid()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+
+        if (event.getProperty().equals(FieldEditor.IS_VALID)) {
+            boolean newValue = ((Boolean) event.getNewValue()).booleanValue();
+            // If the new value is true then we must check all field editors.
+            // If it is false, then the page is invalid in any case.
+            if (newValue) {
+                if (fClientComPortEditor != null && event.getSource() != fClientComPortEditor) {
+                    // fClientComPortEditor.refreshValidState();
+                }
+                checkState();
+            } else {
+                super.propertyChange(event);
+            }
+
+        } else {
+            super.propertyChange(event);
+        }
+    }
+
+}

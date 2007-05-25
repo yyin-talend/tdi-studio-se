@@ -125,6 +125,10 @@ public class RunProcessContext {
 
     private IProcessMessageManager processMessageManager;
 
+    private int statsPort = Processor.NO_STATISTICS;
+
+    private int tracesPort = Processor.NO_TRACES;
+
     /**
      * Constrcuts a new RunProcessContext.
      * 
@@ -285,10 +289,12 @@ public class RunProcessContext {
                         monitorWrap.beginTask(
                                 Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         try {
+                            findNewStatsPort();
                             if (monitorPerf) {
                                 perfMonitor = new PerformanceMonitor();
                                 new Thread(perfMonitor).start();
                             }
+                            findNewTracesPort();
                             if (monitorTrace) {
                                 traceMonitor = new TraceMonitor();
                                 new Thread(traceMonitor).start();
@@ -308,6 +314,7 @@ public class RunProcessContext {
 
                                         public void run() {
                                             try {
+
                                                 ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
                                                         monitorWrap, processMessageManager);
                                                 if (ps != null && !monitorWrap.isCanceled()) {
@@ -462,16 +469,22 @@ public class RunProcessContext {
         processMessageManager.addMessage(processMsg);
     }
 
-    private int getStatisticsPort() {
-        int port = monitorPerf ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForStatistics(this)
+    private void findNewStatsPort() {
+        statsPort = monitorPerf ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForStatistics()
                 : Processor.NO_STATISTICS;
-        return port;
+    }
+
+    private int getStatisticsPort() {
+        return statsPort;
+    }
+
+    private void findNewTracesPort() {
+        tracesPort = monitorTrace ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForTraces()
+                : Processor.NO_TRACES;
     }
 
     private int getTracesPort() {
-        int port = monitorTrace ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForTraces(this)
-                : Processor.NO_TRACES;
-        return port;
+        return tracesPort;
     }
 
     // private int getWatchPort() {
@@ -525,16 +538,16 @@ public class RunProcessContext {
                         System.out.println(i++);
                         // nothing
                     }
-                    
+
                     ended = true;
                     stopThread = true;
                     try {
-                        ps.getInputStream().close();
+                        this.process.getInputStream().close();
                     } catch (IOException e) {
                         ExceptionHandler.process(e);
                     }
                     try {
-                        ps.getErrorStream().close();
+                        this.process.getErrorStream().close();
                     } catch (IOException e) {
                         ExceptionHandler.process(e);
                     }
@@ -639,7 +652,7 @@ public class RunProcessContext {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-            final int acceptTimeout = 5000;
+            final int acceptTimeout = 30000;
 
             // Waiting connection from process
             Socket processSocket = null;
@@ -650,6 +663,7 @@ public class RunProcessContext {
                     serverSock.setSoTimeout(acceptTimeout);
                     processSocket = serverSock.accept();
                 } catch (IOException e) {
+                    ExceptionHandler.process(e);
                     stopThread |= !isRunning();
                 } finally {
                     try {
@@ -735,7 +749,7 @@ public class RunProcessContext {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-            final int acceptTimeout = 5000;
+            final int acceptTimeout = 30000;
 
             // Waiting connection from process
             Socket processSocket = null;
@@ -746,6 +760,7 @@ public class RunProcessContext {
                     serverSock.setSoTimeout(acceptTimeout);
                     processSocket = serverSock.accept();
                 } catch (IOException e) {
+                    ExceptionHandler.process(e);
                     try {
                         if (serverSock != null) {
                             serverSock.close();

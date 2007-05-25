@@ -29,7 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.utils.network.FreePortFinder;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsHelper;
 
 /**
  * Manage all RunProcess contexts. <br/>
@@ -41,16 +43,6 @@ public class RunProcessContextManager {
 
     public static final String PROP_ACTIVE = "RunProcessContextManager.Active"; //$NON-NLS-1$
 
-    // FIXME Mettre cette donn�e en fenetre de pr�f�rences.
-    private static final int DEBUG_PORT_BASE = 3334;
-
-    private static final int DEBUG_PORT_RANGE = 30;
-    
-    // FIXME Mettre cette donn�e en fenetre de pr�f�rences.
-    private static final int TRACE_PORT_BASE = 4334;
-
-    private static final int TRACE_PORT_RANGE = 30;
-    
     private static final int WATCH_PORT_RANGE = 30;
 
     /** Change property listeners. */
@@ -65,11 +57,15 @@ public class RunProcessContextManager {
     /** Allocated ports. */
     private Map<RunProcessContext, Integer> portsByContext;
 
+    private FreePortFinder freePortFinder;
+
     /**
      * Constructs a new RunProcessContextManager.
      */
     public RunProcessContextManager() {
         super();
+
+        freePortFinder = new FreePortFinder();
 
         contexts = new ArrayList<RunProcessContext>();
         portsByContext = new HashMap<RunProcessContext, Integer>();
@@ -129,6 +125,7 @@ public class RunProcessContextManager {
 
     /**
      * DOC amaumont Comment method "getRunProcessContext".
+     * 
      * @param activeProcess
      * @return
      */
@@ -166,43 +163,27 @@ public class RunProcessContextManager {
      * @param context Process monitored.
      * @return A free TCP port, -1 if none is available.
      */
-    public int getPortForStatistics(RunProcessContext context) {
-        int port = -1;
-        for (int i = 0; port == -1 && i < DEBUG_PORT_RANGE; i++) {
-            int p = DEBUG_PORT_BASE + i;
-            boolean alreadyUsed = false;
-            for (Iterator<Integer> j = portsByContext.values().iterator(); !alreadyUsed && j.hasNext();) {
-                alreadyUsed = j.next().intValue() == p;
-            }
-            if (!alreadyUsed) {
-                port = p;
-            }
-        }
-        return port;
+    public int getPortForStatistics() {
+        int clientTraceStatsBound1 = RunProcessPrefsHelper.getInstance().getClientStatsPortBound1();
+        int clientTraceStatsBound2 = RunProcessPrefsHelper.getInstance().getClientStatsPortBound2();
+        
+        return freePortFinder.searchFreePort(clientTraceStatsBound1, clientTraceStatsBound2);
     }
-    
+
     /**
      * Get a free TCP port to grab trace on a process.
      * 
      * @param context Process monitored.
      * @return A free TCP port, -1 if none is available.
      */
-    public int getPortForTraces(RunProcessContext context) {
-        int port = -1;
-        for (int i = 0; port == -1 && i < TRACE_PORT_RANGE; i++) {
-            int p = TRACE_PORT_BASE + i;
-            boolean alreadyUsed = false;
-            for (Iterator<Integer> j = portsByContext.values().iterator(); !alreadyUsed && j.hasNext();) {
-                alreadyUsed = j.next().intValue() == p;
-            }
-            if (!alreadyUsed) {
-                port = p;
-            }
-        }
-        return port;
+    public int getPortForTraces() {
+
+        int clientTracePortBound1 = RunProcessPrefsHelper.getInstance().getClientTracePortBound1();
+        int clientTracePortBound2 = RunProcessPrefsHelper.getInstance().getClientTracePortBound2();
+
+        return freePortFinder.searchFreePort(clientTracePortBound1, clientTracePortBound2);
     }
-    
-    
+
     /**
      * Get a free TCP port to grab watch on a process.
      * 

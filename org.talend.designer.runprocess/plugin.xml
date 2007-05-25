@@ -98,5 +98,17 @@
              tooltip="%runJobAction.toolTip"/>
     </actionSet>
  </extension>
+ <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.talend.designer.runprocess.prefs.RunProcessPreferenceInitializer"/>
+ </extension>
+ <extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.talend.core.prefs"
+          class="org.talend.designer.runprocess.prefs.RunProcessPreferencePage"
+          id="org.talend.designer.runprocess"
+          name="Run/Debug"/>
+ </extension>
 
 </plugin>
