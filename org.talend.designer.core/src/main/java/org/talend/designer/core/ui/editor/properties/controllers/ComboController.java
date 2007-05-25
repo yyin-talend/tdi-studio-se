@@ -138,6 +138,9 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
                             }
                         }
+                        if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
+                            return null;
+                        }
 
                         if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                             this.dynamicTabbedPropertySection.updateRepositoryList();

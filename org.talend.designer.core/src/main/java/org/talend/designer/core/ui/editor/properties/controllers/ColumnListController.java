@@ -118,59 +118,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                 }
                             }
                         }
-                        if (name.equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-                            if (elem instanceof Node) {
-                                if (repositoryTableMap.containsKey(value)) {
-                                    repositoryMetadata = repositoryTableMap.get(value);
-                                } else {
-                                    repositoryMetadata = new MetadataTable();
-                                }
-                                return new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
-                            }
-                        } else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                            if (repositoryConnectionItemMap.containsKey(value)) {
-                                repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
-                            } else {
-                                repositoryConnection = null;
-                            }
-
-                            if (repositoryConnection != null) {
-                                return new ChangeValuesFromRepository(elem, repositoryConnection, name, value);
-                            }
-                        } else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                            String connectionSelected;
-                            connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                    .getName());
-
-                            if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-                                repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
-                                        .get(connectionSelected).getConnection();
-                            } else {
-                                repositoryConnection = null;
-                            }
-
-                            if (repositoryConnection != null) {
-                                return new ChangeValuesFromRepository(elem, repositoryConnection, name, value);
-                            } else {
-                                return new PropertyChangeCommand(elem, name, value);
-                            }
-                        } else if (name.equals(EParameterName.SCHEMA_TYPE.getName())) {
-                            if (elem instanceof Node) {
-                                String schemaSelected;
-                                schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                                        .getName());
-                                if (repositoryTableMap.containsKey(schemaSelected)) {
-                                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                                } else {
-                                    repositoryMetadata = new MetadataTable();
-                                }
-
-                                updateColumnListFlag = true;
-                                return new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
-                            }
-                        } else {
-                            return new PropertyChangeCommand(elem, name, value);
+                        if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
+                            return null;
                         }
+
+                        return new PropertyChangeCommand(elem, name, value);
                     }
                 }
 
