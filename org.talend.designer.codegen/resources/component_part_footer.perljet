@@ -132,14 +132,15 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
 
 <%
     for (IConnection outgoingConn : node.getOutgoingConnections()) {
-        if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
+    	if (outgoingConn.getTarget().isActivate()) {
+	        if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
 %>
 
 <%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
 
 <%
-        }
-        if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+    	    }
+        	if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
 
 if (<%=outgoingConn.getCondition() %>) {
@@ -147,6 +148,7 @@ if (<%=outgoingConn.getCondition() %>) {
 }
 
 <%
+        	}
         }
     }
 }
