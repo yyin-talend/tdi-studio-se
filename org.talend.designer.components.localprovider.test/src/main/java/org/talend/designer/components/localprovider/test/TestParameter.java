@@ -49,6 +49,7 @@ public class TestParameter {
     
     public static final String GENERATE_END="GENERATE END";
     
+    public static final String GENERATE_TEST="test";
     
 
   

@@ -125,7 +125,7 @@ public class TestComponentsAction extends Action {
                     int taskTotal = components.size();
                     for (IComponent component : components) {
                         String templateURI = path + File.separatorChar + component.getName() + File.separatorChar
-                                + TemplateUtil.TEMPLATE_TEST;
+                                + TestParameter.GENERATE_TEST ;
                         File templateFile = new File(templateURI);
                         System.out.println(templateFile + "   " + templateFile.exists());
                         if (templateFile.exists()) {
