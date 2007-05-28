@@ -268,7 +268,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             return;
         }
         try {
-            processor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
+            processor.generateCode(false, false, true);
 
         } catch (ProcessorException pe) {
             MessageBoxExceptionHandler.process(pe);

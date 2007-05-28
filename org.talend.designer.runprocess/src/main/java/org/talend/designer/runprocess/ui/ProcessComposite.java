@@ -562,6 +562,8 @@ public class ProcessComposite extends Composite {
                     IProcessor processor = ProcessorUtilities.getProcessor(processContext.getProcess(), context);
                     monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
+                        // use this function to generate childrens also.
+                        ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true);
                         ILaunchConfiguration config = processor.debug();
                         if (config != null) {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new

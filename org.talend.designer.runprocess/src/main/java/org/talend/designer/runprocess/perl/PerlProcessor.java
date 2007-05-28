@@ -117,9 +117,9 @@ public class PerlProcessor extends Processor {
         this.context = context;
     }
 
-    public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
+    public void generateCode(boolean statistics, boolean trace, boolean perlProperties)
             throws ProcessorException {
-        initPaths(context);
+        super.generateCode(statistics, trace, perlProperties);
         try {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);

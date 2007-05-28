@@ -301,7 +301,7 @@ public class RunProcessContext {
                             }
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
-                            IContext context = getSelectedContext();
+                            final IContext context = getSelectedContext();
                             processor.setContext(context);
                             processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
                             final boolean[] refreshUiAndWait = new boolean[1];
@@ -314,9 +314,9 @@ public class RunProcessContext {
 
                                         public void run() {
                                             try {
-
-                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
-                                                        monitorWrap, processMessageManager);
+                                                ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
+                                                        getTracesPort() != IProcessor.NO_TRACES, true);
+                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam);
                                                 if (ps != null && !monitorWrap.isCanceled()) {
                                                     psMonitor = createProcessMonitor(ps);
                                                     final String startingPattern = Messages

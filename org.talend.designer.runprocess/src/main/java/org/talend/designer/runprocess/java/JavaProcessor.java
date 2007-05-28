@@ -205,9 +205,9 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
      * boolean, boolean)
      */
-    public void generateCode(IContext context, boolean statistics, boolean trace, boolean javaProperties)
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties)
             throws ProcessorException {
-        initPaths(context);
+        super.generateCode(statistics, trace, javaProperties);
         try {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
@@ -261,7 +261,6 @@ public class JavaProcessor extends Processor {
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, getTypeName(), lineNumbers);
             }
-
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
@@ -353,7 +352,7 @@ public class JavaProcessor extends Processor {
                         while (line != null && !lineCodeFound) {
                             if (isCodeLine(line)) {
                                 lineCodeFound = true;
-                                lineNumbers.add(new Integer(lineReader.getLineNumber()));
+                                lineNumbers.add(new Integer(lineReader.getLineNumber() + 1));
                             }
                             line = lineReader.readLine();
                         }
@@ -675,8 +674,7 @@ public class JavaProcessor extends Processor {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
                                 + classPathSeparator);
                     } else {
-                        libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString()
-                                + classPathSeparator);
+                        libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
                     }
                 }
             }

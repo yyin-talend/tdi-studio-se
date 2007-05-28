@@ -126,15 +126,17 @@ public class ProcessDebugDialog extends Dialog {
                     IProcessor processor = ProcessorUtilities.getProcessor(process, context);
                     monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
+                        // use this function to generate childrens also.
+                        ProcessorUtilities.generateCode(process, context, false, false, true);
                         ILaunchConfiguration config = processor.debug();
                         if (config != null) {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages
-                                    .getString("ProcessDebugDialog.debugBtn"), Messages //$NON-NLS-1$
-                                    .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageDialog.openInformation(getShell(),
+                                    Messages.getString("ProcessDebugDialog.debugBtn"), Messages //$NON-NLS-1$
+                                            .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
