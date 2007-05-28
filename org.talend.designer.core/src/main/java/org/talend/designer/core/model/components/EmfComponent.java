@@ -1372,5 +1372,8 @@ public class EmfComponent implements IComponent {
     public boolean useMerge() {
         return compType.getHEADER().isUSEMERGE();
     }
-
+    
+    public Boolean isMultiplyingOutputs() {
+        return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
+    }
 }

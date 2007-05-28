@@ -106,6 +106,7 @@ public class DataProcess {
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
+        dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 

@@ -138,6 +138,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public Boolean hasConditionalOutputs() {
         return null;
     }
+    
+    // no use for virtual component
+    public Boolean isMultiplyingOutputs() {
+        return null;
+    }
 
     // no use for virtual component
     public boolean isDataAutoPropagated() {

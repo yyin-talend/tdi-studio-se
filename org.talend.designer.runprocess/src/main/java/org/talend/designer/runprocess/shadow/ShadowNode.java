@@ -312,6 +312,13 @@ public abstract class ShadowNode implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
+    
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
+     */
+    public Boolean isMultiplyingOutputs() {
+        return component.isMultiplyingOutputs();
+    }
 
     public IExternalNode getExternalNode() {
         return null;

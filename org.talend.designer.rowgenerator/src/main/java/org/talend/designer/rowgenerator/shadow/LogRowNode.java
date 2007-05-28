@@ -250,6 +250,10 @@ public class LogRowNode implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
+    
+    public Boolean isMultiplyingOutputs() {
+        return component.isMultiplyingOutputs();
+    }
 
     /*
      * (non-Java)

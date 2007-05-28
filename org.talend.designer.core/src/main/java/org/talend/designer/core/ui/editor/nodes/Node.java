@@ -762,9 +762,13 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size(); j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
-                    if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle().equals(
-                            EConnectionType.TABLE))) {
+//                    if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+//                            || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle().equals(
+//                            EConnectionType.TABLE))) {
+//                        return false;
+//                    }
+                    // PTODO MHI / Modif à revoir avec NRO
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                         return false;
                     }
                 }
@@ -835,6 +839,10 @@ public class Node extends Element implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
+    
+    public Boolean isMultiplyingOutputs() {
+        return component.isMultiplyingOutputs();
+    }
 
     /**
      * Will return the first item of the subprocess. If "withCondition" is true, if there is links from type RunIf /
@@ -848,9 +856,13 @@ public class Node extends Element implements INode {
      */
     public Node getSubProcessStartNode(boolean withConditions) {
         if (!withConditions) {
-            if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-            // && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
-                    && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
+//            if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
+//            // && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
+//                    && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
+//                return this;
+//            }
+            // PTODO MHI / Modif à revoir avec NRO
+            if ((getCurrentActiveLinksNbInput(IConnectionCategory.MAIN) == 0)) {
                 return this;
             }
         } else {
@@ -1048,6 +1060,17 @@ public class Node extends Element implements INode {
         int nb = 0;
         for (Connection connection : inputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
+                nb++;
+            }
+        }
+        return nb;
+    }
+
+    // PTODO MHIRT: Modif à revoir avec NRO
+    public int getCurrentActiveLinksNbInput(int connCategory) {
+        int nb = 0;
+        for (Connection connection : inputs) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 nb++;
             }
         }
