@@ -474,8 +474,8 @@ public class Node extends Element implements INode {
                 }
             }
             IMetadataTable originTable = metadataList.get(0);
-            if ((customFound && originTable.isReadOnly()) || (outputs.size() == 0)) {
-                IMetadataTable inputTable = connection.getMetadataTable();
+            IMetadataTable inputTable = connection.getMetadataTable();
+            if (((customFound && originTable.isReadOnly()) || (outputs.size() == 0)) && (inputTable.getListColumns().size() != 0)) {
                 // For the auto propagate.
                 MetadataTool.copyTable(inputTable, originTable);
             }
