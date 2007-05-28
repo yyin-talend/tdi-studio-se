@@ -80,12 +80,28 @@ public class LogRowNode implements INode {
         IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
         TextElementParameter param = null;
-        if (UIManager.isJavaProject()) {
+        TextElementParameter param2 = null;
+        TextElementParameter param3 = null;
+        TextElementParameter param4 = null;
+        TextElementParameter param5 = null;
+        TextElementParameter param6 = null;
+        if (UIManager.isJavaProject()) {            
             param = new TextElementParameter("FIELDSEPARATOR", "\"|\"");
-        } else {
+        } else {            
             param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        param2 = new TextElementParameter("TABLE_PRINT", "false");
+        param3 = new TextElementParameter("PRINT_HEADER", "false");
+        param4 = new TextElementParameter("PRINT_UNIQUE_NAME", "false");
+        param5 = new TextElementParameter("PRINT_COLNAMES", "false");
+        param6 = new TextElementParameter("USE_FIXED_LENGTH", "false");
+        
         this.addParameter(param);
+        this.addParameter(param2);
+        this.addParameter(param3);
+        this.addParameter(param4);
+        this.addParameter(param5);
+        this.addParameter(param6);
     }
 
     /*

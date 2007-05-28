@@ -91,7 +91,7 @@ public class RowGenProcess extends Element implements IProcess {
         nodes.add(component);
 
         logRowNode = new LogRowNode(LOGROW, component.getMetadataList().get(0));
-        nodes.add(logRowNode);
+        //nodes.add(logRowNode);
 
         cnx = new ShadowConnection(component, logRowNode);
         initOutCompnoent(component, cnx);
