@@ -851,8 +851,11 @@ public class Process extends Element implements IProcess {
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
-                    if (param.isReadOnly()) {
-                        continue; // if the parameter is read only, don't load it (this will prevent to overwrite the value)
+                    if (param.isReadOnly()
+                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
+                                    .equals(EParameterName.VERSION.getName()))) {
+                        continue; // if the parameter is read only, don't load it (this will prevent to overwrite the
+                                    // value)
                     }
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
                         elemParam.setPropertyValue(pType.getName(), new Boolean(pType.getValue()));
@@ -1080,7 +1083,7 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    private List<String> uploadedNodeNames = null;
+    private List<String> unloadedNodeNames = null;
 
     private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
@@ -1089,13 +1092,13 @@ public class Process extends Element implements IProcess {
         Node nc;
 
         EList listParamType;
-        uploadedNodeNames = new ArrayList<String>();
+        unloadedNodeNames = new ArrayList<String>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
             IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName());
             if (component == null) {
-                uploadedNodeNames.add(nType.getComponentName());
+                unloadedNodeNames.add(nType.getComponentName());
                 continue;
             }
             nc = new Node(component, this);
@@ -1114,7 +1117,7 @@ public class Process extends Element implements IProcess {
             updateAllMappingTypes();
         }
 
-        if (!uploadedNodeNames.isEmpty()) {
+        if (!unloadedNodeNames.isEmpty()) {
             throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
         }
     }
@@ -1140,15 +1143,15 @@ public class Process extends Element implements IProcess {
      * @throws PersistenceException PersistenceException
      */
     public void checkLoadNodes() throws PersistenceException {
-        if (uploadedNodeNames == null || uploadedNodeNames.isEmpty()) {
+        if (unloadedNodeNames == null || unloadedNodeNames.isEmpty()) {
             return;
         }
         String errorMessage = null;
-        if (uploadedNodeNames.size() == 1) {
-            errorMessage = Messages.getString("Process.component.notloaded", uploadedNodeNames.get(0)); //$NON-NLS-1$
+        if (unloadedNodeNames.size() == 1) {
+            errorMessage = Messages.getString("Process.component.notloaded", unloadedNodeNames.get(0)); //$NON-NLS-1$
         } else {
             StringBuilder curentName = new StringBuilder();
-            for (String componentName : uploadedNodeNames) {
+            for (String componentName : unloadedNodeNames) {
                 curentName.append(componentName).append(",");
             }
             curentName.deleteCharAt(curentName.length() - 1);
