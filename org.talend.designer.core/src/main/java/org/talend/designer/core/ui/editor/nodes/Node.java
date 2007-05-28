@@ -474,7 +474,7 @@ public class Node extends Element implements INode {
                 }
             }
             IMetadataTable originTable = metadataList.get(0);
-            IMetadataTable inputTable = connection.getMetadataTable();
+                IMetadataTable inputTable = connection.getMetadataTable();
             if (((customFound && originTable.isReadOnly()) || (outputs.size() == 0)) && (inputTable.getListColumns().size() != 0)) {
                 // For the auto propagate.
                 MetadataTool.copyTable(inputTable, originTable);
@@ -783,9 +783,9 @@ public class Node extends Element implements INode {
                 return metadataList.get(i);
             }
         }
-        if (metadataList.size() > 0) {
-            return metadataList.get(0);
-        }
+//        if (metadataList.size() > 0) {
+//            return metadataList.get(0);
+//        }
         return null;
     }
 
@@ -839,7 +839,7 @@ public class Node extends Element implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
-    
+
     public Boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }

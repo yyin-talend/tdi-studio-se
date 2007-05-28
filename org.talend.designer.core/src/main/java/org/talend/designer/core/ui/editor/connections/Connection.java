@@ -187,7 +187,7 @@ public class Connection extends Element implements IConnection {
                 if (sourceNodeConnector.isBuiltIn()) {
                     IMetadataTable table = getMetadataTable();
                     table.setTableName(name);
-                    // metaName = name;
+                    metaName = name;
                 }
             }
 
