@@ -28,12 +28,16 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
@@ -110,6 +114,10 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
@@ -119,6 +127,9 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
+import org.talend.designer.core.ui.editor.job.deletion.IJobDeletion;
+import org.talend.designer.core.ui.editor.job.deletion.JavaJobDeletion;
+import org.talend.designer.core.ui.editor.job.deletion.PerlJobDeletion;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -137,7 +148,8 @@ import org.talend.repository.model.RepositoryConstants;
  * $Id$
  * 
  */
-public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements ITabbedPropertySheetPageContributor {
+public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements ITabbedPropertySheetPageContributor,
+        IResourceChangeListener {
 
     private boolean savePreviouslyNeeded;
 
@@ -161,6 +173,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private boolean dirtyState = false;
 
+    private IWorkspace workspace;
+
+    private IJobDeletion deletion;
+
+    private IPath srcPath;
+
     public TalendEditor() {
         this(false);
     }
@@ -170,6 +188,24 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         // like the CommandStack
         setEditDomain(new DefaultEditDomain(this));
         this.readOnly = readOnly;
+
+        workspace = ResourcesPlugin.getWorkspace();
+        workspace.addResourceChangeListener(this);
+
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        switch (language) {
+        case PERL:
+            srcPath = new Path(".Perl");
+            deletion = new PerlJobDeletion(this.process);
+            return;
+        case JAVA:
+            srcPath = new Path(".Java/src");
+            deletion = new JavaJobDeletion(this.process);
+            return;
+
+        }
+
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -293,12 +329,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction deleteAction = new GEFDeleteAction(this);
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
-        
+
         IAction setRefAction = new ConnectionSetAsMainRef(this);
         getActionRegistry().registerAction(setRefAction);
         getSelectionActions().add(setRefAction.getId());
-        
-        
+
         viewer.setRootEditPart(root);
 
         PartFactory partFactory = new PartFactory();
@@ -339,14 +374,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         getActionRegistry().registerAction(snapAction);
     }
 
-   
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getActionRegistry()
      */
     public ActionRegistry getActionRegistry() {
-       return super.getActionRegistry();
+        return super.getActionRegistry();
     }
-    
+
     /**
      * Save the outline picture for this editor.
      * 
@@ -761,11 +797,35 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     @Override
     public void dispose() {
         TalendEditorPaletteFactory.saveFamilyState(getPaletteViewerProvider().getEditDomain().getPaletteViewer());
+        workspace.removeResourceChangeListener(this);
+
+        process.closed();
+        deletion.deleteJobs();
+
         super.dispose();
     }
 
     @Override
     protected PaletteViewerProvider createPaletteViewerProvider() {
         return new TalendPaletteViewerProvider(getEditDomain());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+
+        if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
+            return;
+        }
+
+        IResourceDelta rootDelta = event.getDelta().findMember(srcPath);
+        if (rootDelta != null && (rootDelta.getKind() & IResourceDelta.ADDED) == 0) {
+            deletion.setProcess(this.process);
+            deletion.storeResource(rootDelta);
+        }
+
     }
 }

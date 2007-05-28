@@ -177,6 +177,8 @@ public class Process extends Element implements IProcess {
 
     private IProcessor processor;
 
+    private boolean closed;
+
     public Process() {
         contextManager = new JobContextManager();
         createProcessParameters();
@@ -2136,5 +2138,25 @@ public class Process extends Element implements IProcess {
     private String replaceSlash(String str) {
         String tempStr = str.replaceAll("\\\\", "/");
         return tempStr;
+    }
+
+    /**
+     * Called by Talend editor when editor disposed.
+     * 
+     * yzhang Comment method "closed".
+     */
+    public void closed() {
+        closed = true;
+    }
+
+    /**
+     * To see if the job had been closed yet or not.
+     * 
+     * yzhang Comment method "isClosed".
+     * 
+     * @return
+     */
+    public boolean isClosed() {
+        return closed;
     }
 }
