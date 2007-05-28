@@ -127,7 +127,7 @@ public class TestComponentsAction extends Action {
                         String templateURI = path + File.separatorChar + component.getName() + File.separatorChar
                                 + TestParameter.GENERATE_TEST ;
                         File templateFile = new File(templateURI);
-                        System.out.println(templateFile + "   " + templateFile.exists());
+                        //System.out.println(templateFile + "   " + templateFile.exists());
                         if (templateFile.exists()) {
                             File[] fileArray = getFile(templateFile, codeLanguage);
                             generateCode(fileArray, templateURI.replace("\\", "/"));
