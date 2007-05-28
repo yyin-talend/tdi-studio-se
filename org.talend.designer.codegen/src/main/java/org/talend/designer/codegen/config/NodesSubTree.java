@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
 
@@ -55,6 +55,8 @@ public class NodesSubTree {
 
     HashMap<INode, Boolean> visitedNodesEndCode;
 
+    private static final boolean DEBUG = true;
+
     /**
      * Constructor for a NodesSubTree.
      * 
@@ -78,20 +80,34 @@ public class NodesSubTree {
      * @param nodes
      */
     private void buildSubTree(INode node) {
+        if (DEBUG) {
+            System.out.print(node.getUniqueName());
+        }
         for (IConnection connection : node.getOutgoingConnections()) {
             if (connection.getTarget().isActivate()) {
-                if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+                // Old FLOW Check
+                // if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+                // if (DEBUG) {
+                // System.out.print(" -> ");
+                // }
+                // buildSubTree((INode) connection.getTarget());
+                // }
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                    if (DEBUG) {
+                        System.out.print(" -> ");
+                    }
                     buildSubTree((INode) connection.getTarget());
                 }
                 if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
                     afterSubProcesses.add(connection.getTarget().getUniqueName());
                 }
-                if (/*
-                     * connection.getLineStyle().equals(EConnectionType.RUN_BEFORE) ||
-                     */connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
+                if (connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
                     beforeSubProcesses.add(connection.getTarget().getUniqueName());
                 }
             }
+        }
+        if (DEBUG) {
+            System.out.println("");
         }
 
         visitedNodesMainCode.put(node, false);

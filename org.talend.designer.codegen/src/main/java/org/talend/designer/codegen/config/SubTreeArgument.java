@@ -36,6 +36,8 @@ public class SubTreeArgument {
     private IConnection inputSubtreeConnection;
     
     private boolean sourceComponentHasConditionnalOutputs;
+    
+    private boolean isMultiplyingOutputComponents = false;
 
     
     /**
@@ -72,8 +74,20 @@ public class SubTreeArgument {
     public void setSourceComponentHasConditionnalOutputs(boolean sourceComponentHasConditionnalOutputs) {
         this.sourceComponentHasConditionnalOutputs = sourceComponentHasConditionnalOutputs;
     }
-
     
+    /**
+     * Getter for isMultiplyingOutputComponents.
+     * @return the isMultiplyingOutputComponents
+     */
+    public boolean isMultiplyingOutputComponents() {
+        return isMultiplyingOutputComponents;
+    }
     
-    
+    /**
+     * Sets the isMultiplyingOutputComponents.
+     * @param isMultiplyingOutputComponents the isMultiplyingOutputComponents to set
+     */
+    public void setMultiplyingOutputComponents(boolean isMultiplyingOutputComponents) {
+        this.isMultiplyingOutputComponents = isMultiplyingOutputComponents;
+    }    
 }

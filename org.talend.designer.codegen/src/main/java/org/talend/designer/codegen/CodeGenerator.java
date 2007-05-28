@@ -80,7 +80,7 @@ public class CodeGenerator implements ICodeGenerator {
     private String currentProjectName;
 
     private String jobName;
-    
+
     private boolean checkingSyntax = false;
 
     private String contextName;
@@ -176,7 +176,8 @@ public class CodeGenerator implements ICodeGenerator {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN));
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree.getRootNode()));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
+                            .getRootNode()));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END));
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                 }
@@ -372,10 +373,17 @@ public class CodeGenerator implements ICodeGenerator {
             throws CodeGeneratorException {
         StringBuffer code = new StringBuffer();
         if (node != null) {
-            boolean sourceHasConditionnalBranches = node.hasConditionalOutputs() && part == ECodePart.MAIN;
-
             SubTreeArgument subTreeArgument = new SubTreeArgument();
+            
+            // Conditional Outputs
+            boolean sourceHasConditionnalBranches = node.hasConditionalOutputs() && part == ECodePart.MAIN;
             subTreeArgument.setSourceComponentHasConditionnalOutputs(sourceHasConditionnalBranches);
+            
+            // Multiplying Output Rows
+            if (part == ECodePart.MAIN) {
+                subTreeArgument.setMultiplyingOutputComponents(node.isMultiplyingOutputs());
+            }
+
             for (IConnection connection : node.getOutgoingConnections()) {
                 INode targetNode = (INode) connection.getTarget();
                 if ((targetNode != null) && (subProcess != null)) {
@@ -488,9 +496,9 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add(process);
                 headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
-                
+
                 this.checkingSyntax = true;
-                
+
                 try {
                     if (nodeConfigurer != null) {
                         nodeConfigurer.configure(node);
