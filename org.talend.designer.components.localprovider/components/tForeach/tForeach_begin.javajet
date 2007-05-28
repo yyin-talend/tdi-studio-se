@@ -16,11 +16,10 @@ INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
+String cid = node.getUniqueName();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
-
         List<Map<String, String>> values =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
@@ -40,7 +39,7 @@ Object[] values_<%=cid%> = new Object[]{
 };
 
 for(Object tmp_<%=cid%> :values_<%=cid%>) {
-    globalMap.put("<%=cid%>", tmp_<%=cid%>);
+    globalMap.put("<%=cid%>_CURRENT_VALUE", tmp_<%=cid%>);
 <%
     }
 }
