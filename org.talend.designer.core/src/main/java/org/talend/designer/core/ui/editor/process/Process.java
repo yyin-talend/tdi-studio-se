@@ -630,6 +630,7 @@ public class Process extends Element implements IProcess {
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setReadOnly(true);
         addElementParameter(param);
     }
 
@@ -850,6 +851,9 @@ public class Process extends Element implements IProcess {
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
+                    if (param.isReadOnly()) {
+                        continue; // if the parameter is read only, don't load it (this will prevent to overwrite the value)
+                    }
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
                         elemParam.setPropertyValue(pType.getName(), new Boolean(pType.getValue()));
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
