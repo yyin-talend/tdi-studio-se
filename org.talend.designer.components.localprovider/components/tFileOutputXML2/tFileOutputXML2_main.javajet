@@ -112,7 +112,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		for(IMetadataColumn column:metadata.getListColumns()) {
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-%><%=conn.getName() %>.<%=column.getLabel() %> = TalendString.replaceSpecialCharForXML(<%=conn.getName() %>.<%=column.getLabel() %>);
+%>if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+	<%=conn.getName() %>.<%=column.getLabel() %> = TalendString.replaceSpecialCharForXML(<%=conn.getName() %>.<%=column.getLabel() %>);
+}
 <%
 			}
 		}
