@@ -287,9 +287,9 @@ public class RunProcessContext {
                     
                     public void run(final IProgressMonitor monitor) {
 
-                        final EventLoopProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
+                        final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-                        monitorWrap.beginTask(
+                        progressMonitor.beginTask(
                                 Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         try {
                             findNewStatsPort();
@@ -320,9 +320,9 @@ public class RunProcessContext {
                                                 ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                         getTracesPort() != IProcessor.NO_TRACES, true);
                                                 
-                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam);
+                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam, progressMonitor, processMessageManager);
                                                 System.out.println("after run in RunProcessContext...");
-                                                if (ps != null && !monitorWrap.isCanceled()) {
+                                                if (ps != null && !progressMonitor.isCanceled()) {
                                                     psMonitor = createProcessMonitor(ps);
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
@@ -346,14 +346,14 @@ public class RunProcessContext {
                                                     kill();
                                                 }
                                             } finally {
-                                                monitorWrap.done();
+                                                progressMonitor.done();
                                                 refreshUiAndWait[0] = false;
                                             }
                                         }
                                     });
                                 }
                             }).start();
-                            while (refreshUiAndWait[0] && !monitorWrap.isCanceled()) {
+                            while (refreshUiAndWait[0] && !progressMonitor.isCanceled()) {
                                 if (!display.readAndDispatch()) {
                                     display.sleep();
                                 }
@@ -373,7 +373,7 @@ public class RunProcessContext {
                             addErrorMessage(e);
                             kill();
                         } finally {
-                            monitorWrap.done();
+                            progressMonitor.done();
                         }
                     }
                     // };

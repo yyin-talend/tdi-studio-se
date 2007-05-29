@@ -106,36 +106,20 @@ public abstract class Processor implements IProcessor {
         }
     }
 
-    /**
-     * Run the process.
+    /*
+     * (non-Javadoc)
      * 
-     * This method does not allow to cancel initialization of process launching by user (IProgressMonitor) and can't
-     * send messages to console (IProcessMessageManager).
-     * 
-     * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
-     * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
-     * @param context The context to be used.
-     * @param watchPort
-     * @return The running process.
-     * @throws ProcessorException Process failed.
+     * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String)
      */
     public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
         return run(statisticsPort, tracePort, watchParam, null, null);
     }
 
-    /**
+    /*
+     * (non-Javadoc)
      * 
-     * Run the process.
-     * 
-     * This method allows to cancel initialization of process launching by user, by specifying an IProgressMonitor.
-     * 
-     * @param statisticsPort
-     * @param tracePort
-     * @param watchParam
-     * @param monitor progress monitor to cancel initialization of process
-     * @param processMessageManager manager to add messages into console
-     * @return
-     * @throws ProcessorException
+     * @see org.talend.designer.runprocess.IProcessor#run(int, int, java.lang.String,
+     * org.eclipse.core.runtime.IProgressMonitor, org.talend.designer.runprocess.IProcessMessageManager)
      */
     public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
             IProcessMessageManager processMessageManager) throws ProcessorException {
