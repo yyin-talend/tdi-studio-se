@@ -46,6 +46,7 @@ String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
 String maxName = maxNameOrigi.substring(maxNameOrigi.lastIndexOf('.')+1);
 String lookupName = lookupNameOrigi.substring(lookupNameOrigi.lastIndexOf('.')+1);
 String lookupConName = inRefCon.getName();
+String mainConName = inMainCon.getName();
 
 
 String returnClassName = "Object";
@@ -72,16 +73,16 @@ final java.util.Set<<%=lookupConName %>Struct> set_<%=cid %> = ((java.util.Map<<
 
 class Util_<%= cid %> {
 
-    public <%=returnClassName%> getLookup(row1Struct row1) {
+    public <%=returnClassName%> getLookup(<%=mainConName %>Struct row_Main) {
     
             for (java.util.Iterator iter = set_<%=cid %>.iterator(); iter.hasNext();) {
-            row2Struct row2 = (row2Struct) iter.next();
+            <%=lookupConName %>Struct row_Lookup = (<%=lookupConName %>Struct) iter.next();
 
 <% 
    if(mainjavaType == JavaTypesManager.DATE ) {
 %>
-            if (row1.<%=mainName %>.after(row2.<%=minName%>)
-                    && row1.<%=mainName %>.before(row2.<%=maxName%>)) 
+            if (row_Main.<%=mainName %>.after(row_Lookup.<%=minName%>)
+                    && row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>)) 
            
 <%
   } else if(mainjavaType == JavaTypesManager.BYTE || 
@@ -91,14 +92,14 @@ class Util_<%= cid %> {
             mainjavaType == JavaTypesManager.LONG ||
             mainjavaType == JavaTypesManager.INTEGER){
 %> 
-            if ((row1.<%=mainName %> > row2.<%=minName%>)
-                    && (row1.<%=mainName %> < row2.<%=maxName%>)) 
+            if ((row_Main.<%=mainName %> > row_Lookup.<%=minName%>)
+                    && (row_Main.<%=mainName %> < row_Lookup.<%=maxName%>)) 
 <%
   } else {
 %>
-            String main = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row1.<%=mainName %>)).toString()<%}else {%>String.valueOf(row1.<%=mainName %>) <%}%>;
-            String min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row2.<%=minName %>)).toString()<%}else {%>String.valueOf(row2.<%=minName %>) <%}%>;
-            String max =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row2.<%=maxName %>)).toString()<%}else {%>String.valueOf(row2.<%=maxName %>) <%}%>;
+            String main = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Main.<%=mainName %>)).toString()<%}else {%>String.valueOf(row_Main.<%=mainName %>) <%}%>;
+            String min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=minName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=minName %>) <%}%>;
+            String max =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=maxName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=maxName %>) <%}%>;
             
             if ((main.compareTo(min) > -1)
                     && (main.compareTo(max) < 1)) 
@@ -107,7 +108,7 @@ class Util_<%= cid %> {
   }
 %>         
             {
-                return row2.<%=lookupName %>;
+                return row_Lookup.<%=lookupName %>;
             }
         
          }

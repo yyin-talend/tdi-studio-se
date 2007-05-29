@@ -40,7 +40,7 @@
 
     <PARAMETER
       NAME="MAIN_COLUMN"
-      FIELD="COLUMN_LIST"
+      FIELD="PREV_COLUMN_LIST"
       REQUIRED="true"
       NUM_ROW="4"
     >
