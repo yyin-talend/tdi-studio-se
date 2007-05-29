@@ -42,8 +42,10 @@ public class ProcessMessageManager implements IProcessMessageManager {
 
     public static final String PROP_MESSAGE_ADD = "RunProcessContext.Message.Added"; //$NON-NLS-1$
 
+    public static final String PROP_DEBUG_MESSAGE_ADD = "RunProcessContext.DebugMessage.Added";
+
     public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
-    
+
     public static final int LIMIT_MESSAGES = 500;
 
     /**
@@ -109,5 +111,15 @@ public class ProcessMessageManager implements IProcessMessageManager {
         }
     }
 
-}
+    public void addDebugResultToConsole(IProcessMessage debugResultMessage) {
+        synchronized (messages) {
+            if (messages.isFull()) {
+                messages.remove();
+            }
 
+            firePropertyChange(PROP_DEBUG_MESSAGE_ADD, null, debugResultMessage);
+        }
+
+    }
+
+}

@@ -24,19 +24,33 @@ package org.talend.designer.runprocess.ui;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Date;
+import java.util.Map;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.preferences.DebugPreferencePage;
+import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -49,28 +63,26 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
+import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
 import org.talend.designer.runprocess.ProcessMessageManager;
-import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessContext;
@@ -136,6 +148,10 @@ public class ProcessComposite extends Composite {
     private CTabItem targetExecutionTabItem;
 
     private CTabFolder leftTabFolder;
+
+    private IStreamListener streamListener;
+
+    private boolean isAddedStreamListener;
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -327,6 +343,13 @@ public class ProcessComposite extends Composite {
             }
         };
 
+        streamListener = new IStreamListener() {
+
+            public void streamAppended(String text, IStreamMonitor monitor) {
+                IProcessMessage message = new ProcessMessage(ProcessMessage.MsgType.STD_OUT, text);
+                processContext.addDebugResultToConsole(message);
+            }
+        };
         addListeners();
     }
 
@@ -550,10 +573,21 @@ public class ProcessComposite extends Composite {
 
         processContext.kill();
     }
+    
+    boolean debugMode = false;
 
     public void debug() {
-        if (contextComposite.promptConfirmLauch()) {
 
+        final IPreferenceStore preferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
+        final boolean oldValueConsoleOnOut = preferenceStore.getBoolean(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT);
+        final boolean oldValueConsoleOnErr = preferenceStore.getBoolean(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR);
+
+        preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, false);
+
+        preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false);
+
+        if (contextComposite.promptConfirmLauch()) {
+            setRunnable(false);
             final IContext context = contextComposite.getSelectedContext();
 
             IRunnableWithProgress worker = new IRunnableWithProgress() {
@@ -569,6 +603,7 @@ public class ProcessComposite extends Composite {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
+
                         } else {
                             MessageDialog.openInformation(getShell(),
                                     Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
@@ -595,11 +630,121 @@ public class ProcessComposite extends Composite {
                 e.printStackTrace();
             }
         }
+
+        debugMode = true;
+        try {
+            Thread thread = new Thread() {
+
+                @Override
+                public void run() {
+                    while (debugMode) {
+                        final IProcess process = DebugUITools.getCurrentProcess();
+                        if (process != null && process.isTerminated()) {
+                            getDisplay().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    setRunnable(true);
+                                    killBtn.setEnabled(false);
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT,
+                                            oldValueConsoleOnOut);
+
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR,
+                                            oldValueConsoleOnErr);
+
+                                    if (isAddedStreamListener) {
+                                        process.getStreamsProxy().getOutputStreamMonitor().removeListener(
+                                                streamListener);
+                                        isAddedStreamListener = false;
+
+                                        if (processContext.isRunning()) {
+                                            final String endingPattern = Messages
+                                                    .getString("ProcessComposite.endPattern"); //$NON-NLS-1$
+                                            MessageFormat mf = new MessageFormat(endingPattern);
+                                            String byeMsg;
+                                            try {
+                                                byeMsg = "\n"
+                                                        + mf.format(new Object[] {
+                                                                processContext.getProcess().getName(), new Date(),
+                                                                new Integer(process.getExitValue()) });
+                                                processContext.addDebugResultToConsole(new ProcessMessage(
+                                                        MsgType.CORE_OUT, byeMsg));
+                                            } catch (DebugException e) {
+                                                e.printStackTrace();
+                                            }
+                                            processContext.setRunning(false);
+                                        }
+                                    }
+                                    debugMode = false;
+                                }
+                            });
+                        } else {
+                            if (process != null) { // (one at leat) process still running
+                                getDisplay().asyncExec(new Runnable() {
+
+                                    public void run() {
+                                        setRunnable(false);
+                                        killBtn.setEnabled(true);
+                                        processContext.setRunning(true);
+                                        processContext.setDebugProcess(process);
+                                        if (!isAddedStreamListener) {
+                                            process.getStreamsProxy().getOutputStreamMonitor().addListener(
+                                                    streamListener);
+                                            if (clearBeforeExec.getSelection()) {
+                                                processContext.clearMessages();
+                                            }
+                                            if (watchBtn.getSelection()) {
+                                                processContext.switchTime();
+                                            }
+
+                                            ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
+                                            clearPerfAction.setProcess(processContext.getProcess());
+                                            clearPerfAction.run();
+
+                                            ClearTraceAction clearTraceAction = new ClearTraceAction();
+                                            clearTraceAction.setProcess(processContext.getProcess());
+                                            clearTraceAction.run();
+                                            isAddedStreamListener = true;
+
+                                            final String startingPattern = Messages
+                                                    .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
+                                            MessageFormat mf = new MessageFormat(startingPattern);
+                                            String welcomeMsg = mf.format(new Object[] {
+                                                    processContext.getProcess().getName(), new Date() });
+                                            processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
+                                                    welcomeMsg));
+                                        }
+                                    }
+                                });
+                            } else { // no process running
+                                getDisplay().asyncExec(new Runnable() {
+
+                                    public void run() {
+                                        setRunnable(true);
+                                        killBtn.setEnabled(false);
+                                    }
+                                });
+                            }
+                        }
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            thread.start();
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            processContext.addErrorMessage(e);
+            kill();
+        }
     }
 
     private void runProcessContextChanged(final PropertyChangeEvent evt) {
         String propName = evt.getPropertyName();
-        if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)) {
+        if (ProcessMessageManager.PROP_MESSAGE_ADD.equals(propName)
+                || ProcessMessageManager.PROP_DEBUG_MESSAGE_ADD.equals(propName)) {
             appendToConsole((IProcessMessage) evt.getNewValue());
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {

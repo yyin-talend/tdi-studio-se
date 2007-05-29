@@ -40,6 +40,7 @@ import java.util.List;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -128,6 +129,8 @@ public class RunProcessContext {
     private int statsPort = Processor.NO_STATISTICS;
 
     private int tracesPort = Processor.NO_TRACES;
+
+    private org.eclipse.debug.core.model.IProcess debugProcess;
 
     /**
      * Constrcuts a new RunProcessContext.
@@ -242,7 +245,7 @@ public class RunProcessContext {
      * 
      * @param running the running to set
      */
-    private void setRunning(boolean running) {
+    public void setRunning(boolean running) {
         if (this.running != running) {
             this.running = running;
             firePropertyChange(PROP_RUNNING, Boolean.valueOf(!running), Boolean.valueOf(running));
@@ -281,7 +284,7 @@ public class RunProcessContext {
                 progressService.run(false, true, new IRunnableWithProgress() {
 
                     // ProgressDialog progressDialog = new ProgressDialog(shell) {
-
+                    
                     public void run(final IProgressMonitor monitor) {
 
                         final EventLoopProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
@@ -316,7 +319,9 @@ public class RunProcessContext {
                                             try {
                                                 ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                         getTracesPort() != IProcessor.NO_TRACES, true);
+                                                
                                                 ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam);
+                                                System.out.println("after run in RunProcessContext...");
                                                 if (ps != null && !monitorWrap.isCanceled()) {
                                                     psMonitor = createProcessMonitor(ps);
                                                     final String startingPattern = Messages
@@ -382,7 +387,7 @@ public class RunProcessContext {
             }
 
         } else {
-            setRunning(false);
+//            setRunning(false);
         }
     }
 
@@ -406,16 +411,16 @@ public class RunProcessContext {
         if (!killing && isRunning()) {
             killing = true;
             try {
-                boolean showEndMessage = (ps != null);
+//                boolean showEndMessage = (ps != null);
                 exitCode = killProcess();
 
-                if (showEndMessage) {
+//                if (showEndMessage) {
                     final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                     MessageFormat mf = new MessageFormat(endingPattern);
                     String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
                     byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg;
                     processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
-                }
+//                }
             } finally {
                 killing = false;
             }
@@ -441,7 +446,7 @@ public class RunProcessContext {
             psMonitor = null;
         }
         int exitCode = 0;
-        if (ps != null) {
+        if (ps != null) { // running process
             ps.destroy();
             try {
                 exitCode = ps.exitValue();
@@ -451,10 +456,18 @@ public class RunProcessContext {
             }
             ps = null;
         }
+        if (debugProcess != null) {
+            try {
+                debugProcess.terminate();
+            } catch (DebugException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         return exitCode;
     }
 
-    private void addErrorMessage(Exception e) {
+    public void addErrorMessage(Exception e) {
         StringBuffer message = new StringBuffer(STRING_LENGTH);
         message.append(Messages.getString("ProcessComposite.execFailed")); //$NON-NLS-1$
         message.append(e.getMessage());
@@ -875,6 +888,15 @@ public class RunProcessContext {
      */
     protected IProcessMonitor createProcessMonitor(Process process) {
         return new ProcessMonitor(process);
+    }
+
+    public void addDebugResultToConsole(IProcessMessage message) {
+        processMessageManager.addDebugResultToConsole(message);
+        
+    }
+
+    public void setDebugProcess(org.eclipse.debug.core.model.IProcess debugProcess) {
+       this.debugProcess = debugProcess;
     }
 
 }
