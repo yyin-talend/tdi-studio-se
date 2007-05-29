@@ -33,6 +33,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -106,7 +107,10 @@ public abstract class Processor implements IProcessor {
     }
 
     /**
-     * Run the process using a given context.
+     * Run the process.
+     * 
+     * This method does not allow to cancel initialization of process launching by user (IProgressMonitor) and can't
+     * send messages to console (IProcessMessageManager).
      * 
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
@@ -116,7 +120,25 @@ public abstract class Processor implements IProcessor {
      * @throws ProcessorException Process failed.
      */
     public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+        return run(statisticsPort, tracePort, watchParam, null, null);
+    }
 
+    /**
+     * 
+     * Run the process.
+     * 
+     * This method allows to cancel initialization of process launching by user, by specifying an IProgressMonitor.
+     * 
+     * @param statisticsPort
+     * @param tracePort
+     * @param watchParam
+     * @param monitor progress monitor to cancel initialization of process
+     * @param processMessageManager manager to add messages into console
+     * @return
+     * @throws ProcessorException
+     */
+    public Process run(int statisticsPort, int tracePort, String watchParam, IProgressMonitor monitor,
+            IProcessMessageManager processMessageManager) throws ProcessorException {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
