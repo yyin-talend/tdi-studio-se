@@ -1,0 +1,37 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    java.util.List
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+%>
+
+}
+
+# workaround for bug : http://rt.cpan.org/Public/Bug/Display.html?id=22688
+undef $sth_<%=cid %> if defined $sth_<%=cid %> ;
+$dbh_<%=cid %>->disconnect();
+
+$_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid%>;
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0, 2);
+<%
+        }
+    }
+}
+%>

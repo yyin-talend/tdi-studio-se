@@ -1,0 +1,173 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
+
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+
+        String positionsString = new String();
+        String keyPositionsString = new String();
+
+        if ((dataAction.equals("UPDATE"))
+            || (dataAction.equals("UPDATE_OR_INSERT"))
+            || (dataAction.equals("INSERT_OR_UPDATE"))
+            || (dataAction.equals("DELETE"))) {
+            List positions       = new ArrayList();
+            List keyPositions    = new ArrayList();
+            List updatePositions = new ArrayList();
+        
+            int i = 0;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (!column.isKey()) {
+                    updatePositions.add(i);
+                }
+                i++;
+            }
+        
+            i = 0;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (column.isKey()) {
+                    keyPositions.add(i);
+                }
+                i++;
+            }
+            
+            positions.addAll(updatePositions);
+            positions.addAll(keyPositions);
+
+            positionsString  = StringUtils.join(
+                positions.toArray(),
+                ","
+            );
+
+            keyPositionsString = StringUtils.join(
+                keyPositions.toArray(),
+                ","
+            );
+        }
+%>
+
+# keyPositionsString : <%=keyPositionsString%>
+# positionsString    : <%=positionsString%>
+
+my $nb_rows = 0;
+
+<%
+        if (dataAction.equals("UPDATE")) {
+%>
+$nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+    or die "can't execute update query\n";
+
+if ($nb_rows) {
+    $nb_line_updated_<%=cid%>+= $nb_rows;
+}
+<%
+        }
+        else if (dataAction.equals("INSERT")) {
+%>
+
+$isth_<%=cid %>->execute(@<%=cid %>)
+    or die "can't execute insert query\n";
+
+$nb_line_inserted_<%=cid%>++;
+<%
+        }
+        else if (dataAction.equals("INSERT_OR_UPDATE")) {
+%>
+if (not $isth_<%=cid %>->execute(@<%=cid%>)) {
+    $nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+        or die "can't execute update query\n";
+
+    if ($nb_rows) {
+        $nb_line_updated_<%=cid%>+= $nb_rows unless '0E0' eq $nb_rows ;
+    }
+}
+else {
+    $nb_line_inserted_<%=cid%>++;
+}
+<%
+        }
+        else if (dataAction.equals("UPDATE_OR_INSERT")) {
+%>
+if ($nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])) {
+    if ($nb_rows == 0) {
+        $isth_<%=cid %>->execute(@<%=cid%>)
+            or die "can't execute insert query\n";
+
+        $nb_line_inserted_<%=cid%>++;
+    }
+    else {
+        if ($nb_rows) {
+            $nb_line_updated_<%=cid%>+= $nb_rows unless '0E0' eq $nb_rows ;
+        }
+    }
+}
+else {
+     die "can't execute update query\n";
+}
+<%
+        }
+        else if (dataAction.equals("DELETE")) {
+%>
+$nb_rows = $dsth_<%=cid %>->execute(@<%=cid%>[<%=keyPositionsString%>])
+    or die "can't execute delete query\n";
+
+if ($nb_rows) {
+    $nb_line_deleted_<%=cid%>+= $nb_rows;
+}
+<%
+        }
+%>
+
+my $new_nb_line_<%=cid%> =
+    $nb_line_updated_<%=cid %>
+    + $nb_line_inserted_<%=cid %>
+    + $nb_line_deleted_<%=cid %>
+;
+
+<%
+        if (stats) {
+%>
+if ($new_nb_line_<%=cid%> > $nb_line_<%=cid%>) {
+    UpdateStat('<%=cid %>', 1);
+}
+<%
+        }
+%>
+$nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
+
+if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
+    $nb_line_current_commit_<%=cid%> = 0;
+    $dbh_<%=cid %>->commit;
+}
+<%
+    }
+}
+%>

@@ -1,0 +1,115 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+        int nbFields = metadata.getListColumns().size();
+
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        String query = ElementParameterParser.getValue(node, "__QUERY__");
+        String preparedStatement = ElementParameterParser.getValue(node, "__PREPARED_STATEMENT__");
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+        String dieOnError = ElementParameterParser.getValue(
+            node,
+            "__DIE_ON_ERROR__"
+        );
+%>
+
+use DBI;
+
+my %desc_<%=cid %> = (
+    dbname        => <%=dbname %>,
+    encoding      => <%=encoding %>,
+    query         => <%=query %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    	{
+            name    => '`<%=column.getLabel() %>`',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+    }
+%>
+    ],
+);
+
+my $nb_line_<%=cid%> = 0;
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'DBI:SQLite:dbname=%s',
+        <%=dbname %>,
+    ),
+    "",
+    "",
+    {
+        AutoCommit => 0,
+    }
+)
+    or die "can't connect to database";
+
+my $nb_line_current_commit_<%=cid%> = 0;
+
+<%
+if(preparedStatement.equals("true")){
+%>
+    my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+        <%=query %>
+    )
+    <%
+            if (dieOnError.equals("true")) {
+    %>
+        or die '[<%=cid%>] cannot prepare query '.$DBI::errstr;
+    <%
+            }
+    %>
+
+;
+<%
+}
+%>
+
+
+<%
+    }
+}
+%>
+
