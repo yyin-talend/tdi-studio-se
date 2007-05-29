@@ -232,7 +232,7 @@ public class Connection extends Element implements IConnection {
                 } else {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + ")";
                 }
-            }else {
+            } else {
                 if (outputId >= 0) {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
                             + ", order:" + outputId + ")";
@@ -250,6 +250,10 @@ public class Connection extends Element implements IConnection {
             } else {
                 labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + inputId + ")";
             }
+            updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!sourceNodeConnector.getLinkName().equals(name))) {
+            // if "RunIf" got a custom name
+            labelText = sourceNodeConnector.getLinkName() + " (" + name + ")";
             updateName = true;
         } else {
             if (outputId >= 0) {
