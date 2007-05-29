@@ -523,6 +523,18 @@ public class EmfComponent implements IComponent {
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
+            
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.TECHNICAL);
+            newParam.setName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getDisplayName());
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CHECK);
+            newParam.setValue(Boolean.FALSE);
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            newParam.setReadOnly(true);
+            listParam.add(newParam);
         }
         if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);

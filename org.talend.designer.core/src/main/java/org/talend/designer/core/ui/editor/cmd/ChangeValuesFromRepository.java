@@ -37,6 +37,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -126,44 +127,73 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
+        boolean allowAutoSwitch = true;
+        IElementParameter param = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            allowAutoSwitch = (Boolean) param.getValue();
+        }
+        if (!allowAutoSwitch && (elem instanceof Node)) {
+            // force the autoSwitch to true if the schema is empty and if the query is not set.
+            Node node = (Node) elem;
+            boolean isSchemaEmpty = node.getMetadataList().get(0).getListColumns().size() == 0;
+            boolean isQueryEmpty = false;
+            for (IElementParameter curParam : node.getElementParameters()) {
+                if (curParam.getField().equals(EParameterFieldType.MEMO_SQL)) {
+                    String defaultValue = "";
+                    if (curParam.getDefaultValues().size() > 0) {
+                        defaultValue = (String) curParam.getDefaultValues().get(0).getDefaultValue();
+                    }
+                    String paramValue = (String) curParam.getValue();
+                    isQueryEmpty = paramValue.equals("") || paramValue.equals("''") || paramValue.equals("\"\"")
+                            || paramValue.equals(defaultValue);
+                }
+            }
+            if (isSchemaEmpty && isQueryEmpty) {
+                allowAutoSwitch = true;
+            }
+        }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
             elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
-            setOtherProperties();
+            if (allowAutoSwitch) {
+                setOtherProperties();
+            }
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
-            if (elem instanceof Node) {
-                Node node = (Node) elem;
-                boolean metadataInput = false;
-                if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
-                        || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
-                        || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
-                    metadataInput = true;
-                }
-                if (!metadataInput) {
-                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-                    IElementParameter repositorySchemaTypeParameter = elem
-                            .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                    String repositoryTable = getFirstRepositoryTable(value);
-                    repositorySchemaTypeParameter.setValue(repositoryTable);
-                    IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
-                    if (table != null) {
-                        table = table.clone();
-                        table.setTableName(node.getMetadataList().get(0).getTableName());
-                        if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                            cmd.setRepositoryMode(true);
-                            cmd.execute();
+            if (allowAutoSwitch) {
+                if (elem instanceof Node) {
+                    Node node = (Node) elem;
+                    boolean metadataInput = false;
+                    if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+                            || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
+                            || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+                        metadataInput = true;
+                    }
+                    if (!metadataInput) {
+                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+                        IElementParameter repositorySchemaTypeParameter = elem
+                                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                        String repositoryTable = getFirstRepositoryTable(value);
+                        repositorySchemaTypeParameter.setValue(repositoryTable);
+                        IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
+                        if (table != null) {
+                            table = table.clone();
+                            table.setTableName(node.getMetadataList().get(0).getTableName());
+                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
+                                cmd.setRepositoryMode(true);
+                                cmd.execute();
+                            }
                         }
                     }
                 }
-            }
-            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
-            if (queriesmap == null || queriesmap.get(value).isEmpty()) {
-                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
-            }
-            if (tablesmap == null || tablesmap.get(value).isEmpty()) {
-                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
+                if (queriesmap == null || queriesmap.get(value).isEmpty()) {
+                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+                }
+                if (tablesmap == null || tablesmap.get(value).isEmpty()) {
+                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                }
             }
         }
 

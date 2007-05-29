@@ -110,7 +110,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         Set<String> elementsName;
         Control ctrl;
         Connection repositoryConnection = null;
-
+        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         elementsName = hashCurControls.keySet();
         for (String name : elementsName) {
             Object o = hashCurControls.get(name);
@@ -123,9 +123,16 @@ public class ComboController extends AbstractElementPropertySectionController {
                 CCombo combo = (CCombo) e.getSource();
 
                 Object data = ctrl.getData(PARAMETER_NAME);
-                if (data != null && data.equals(combo.getData(PARAMETER_NAME)) && ctrl instanceof CCombo) {
-                    boolean isDisposed = ((CCombo) ctrl).isDisposed();
-                    if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
+                if (!(ctrl instanceof CCombo)) {
+                    continue;
+                }
+                boolean isDisposed = ((CCombo) ctrl).isDisposed();
+                if (isDisposed) {
+                    System.out.println(data + " disposed !!!");
+                    continue;
+                }
+                if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
+                    if (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText())) {
 
                         String value = new String(""); //$NON-NLS-1$
                         for (int i = 0; i < elem.getElementParameters().size(); i++) {
@@ -209,6 +216,9 @@ public class ComboController extends AbstractElementPropertySectionController {
                                             .getRepositoryQueryStoreMap();
                                     if (repositoryQueryStoreMap.containsKey(querySelected)) {
                                         repositoryQuery = repositoryQueryStoreMap.get(querySelected);
+                                    }
+                                    if (switchParam != null) {
+                                        switchParam.setValue(Boolean.FALSE);
                                     }
 
                                     if (repositoryQuery != null) {

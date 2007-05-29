@@ -106,6 +106,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         } else {
             paramName = EParameterName.SCHEMA_TYPE.getName();
         }
+        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+
         String value = new String(""); //$NON-NLS-1$
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
@@ -125,6 +127,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     repositoryMetadata = repositoryTableMap.get(value);
                 } else {
                     repositoryMetadata = new MetadataTable();
+                }
+                if (switchParam != null) {
+                    switchParam.setValue(Boolean.FALSE);
                 }
 
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
@@ -173,6 +178,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         repositoryMetadata = new MetadataTable();
                     }
                 }
+                if (switchParam != null) {
+                    switchParam.setValue(Boolean.FALSE);
+                }
 
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, paramName, value, repositoryMetadata);
@@ -190,6 +198,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
     private Command createButtonCommand(Button button) {
         Button inputButton = button;
+        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+
         if (inputButton.getData(NAME).equals(SCHEMA)) {
 
             Node node;
@@ -272,6 +282,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 }
 
                 if (modified) {
+                    if (switchParam != null) {
+                        switchParam.setValue(Boolean.FALSE);
+                    }
                     Node inputNode = null;
                     if (inputConec != null) {
                         inputNode = inputConec.getSource();
@@ -307,6 +320,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 metaCopy.getListColumns().removeAll(columnsToRemove);
             }
 
+            if (switchParam != null) {
+                switchParam.setValue(Boolean.FALSE);
+            }
 
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }

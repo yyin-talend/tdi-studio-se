@@ -166,6 +166,10 @@ public class Node extends Element implements INode {
         }
         currentStatus = 0;
         init(component);
+        IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
     }
 
     public Node(IComponent component, Process process) {
