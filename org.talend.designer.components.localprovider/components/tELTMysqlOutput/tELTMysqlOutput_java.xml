@@ -99,10 +99,6 @@
   </PARAMETERS>
 
   <CODEGENERATION>
-    <IMPORTS>
-      <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
-      <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="true" />
-    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>

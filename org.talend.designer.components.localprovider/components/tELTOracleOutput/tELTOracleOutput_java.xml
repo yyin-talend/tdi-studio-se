@@ -92,10 +92,6 @@
   </PARAMETERS>
 
   <CODEGENERATION>
-    <IMPORTS>
-      <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
-      <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="true" />
-    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>
