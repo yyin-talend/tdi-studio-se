@@ -110,5 +110,9 @@
           id="org.talend.designer.runprocess"
           name="Run/Debug"/>
  </extension>
+ <extension
+       point="org.eclipse.ui.startup">
+    <startup class="org.talend.designer.runprocess.DeleteAllJobWhenStartUp"/>
+ </extension>
 
 </plugin>
