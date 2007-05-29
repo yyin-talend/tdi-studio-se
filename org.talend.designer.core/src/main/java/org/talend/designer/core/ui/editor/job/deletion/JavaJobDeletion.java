@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.job.deletion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion {
 
-    private static Map<Process, IResource> jobFolders = new HashMap<Process, IResource>();
+    private static Map<Process, IResource> jobFolders = Collections.synchronizedMap(new HashMap<Process, IResource>());
 
     /**
      * yzhang JavaJobDeletion constructor comment.
