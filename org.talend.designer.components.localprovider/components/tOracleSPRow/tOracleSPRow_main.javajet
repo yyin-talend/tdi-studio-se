@@ -1,0 +1,137 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+	java.io.*
+	java.util.*
+	javax.xml.transform.Source
+	javax.xml.transform.stream.StreamSource
+	javax.xml.validation.*
+	org.xml.sax.SAXException
+	org.xml.sax.SAXParseException
+	org.xml.sax.helpers.DefaultHandler
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+"
+class="OracleSPRow"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String dbsp= ElementParameterParser.getValue(node, "__SPNAME__");
+
+	String incomingConnName = null;
+	List<IMetadataColumn> columnList = null;
+	IConnection conn=null;
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if(conns!=null && conns.size()>0){
+		conn = conns.get(0);
+		incomingConnName = conn.getName();
+	}	
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if(metadatas != null && metadatas.size()>0){
+		IMetadataTable metadata = metadatas.get(0);
+		if(metadata != null){
+			columnList = metadata.getListColumns();
+		}
+	}			
+	int sizeColumns=columnList.size();
+
+
+%>
+java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
+<% for (int i = 0; i < sizeColumns; i++){
+	if(i<sizeColumns-1){
+%>?,<%}else{%>?<% }}%> )}");
+
+StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+
+
+	<%
+	
+/////////////////Inner Class Convert///////////////////////	
+class Convert{
+	public String genConvert(String pType){
+	if(pType.equals("id_String")){
+		return "String";
+	}
+	else if(pType.equals("id_Integer")){
+		return "Int";
+	}
+	else if(pType.equals("id_Boolean")){
+		return "Boolean";
+	}
+	else if(pType.equals("id_Byte")){
+		return "Byte";
+	}
+	else if(pType.equals("id_byte[]")){
+		return "Bytes";
+	}
+	else if(pType.equals("id_Date")){
+		return "Date";
+	}
+	else if(pType.equals("id_Date")){
+		return "Date";
+	}
+	else if(pType.equals("id_Double")){
+		return "Double";
+	}
+	else if(pType.equals("id_Float")){
+		return "Float";
+	}
+	else if(pType.equals("id_Long")){
+		return "Long";
+	}
+	else if(pType.equals("id_Object")){
+		return "Object";
+	}
+	else if(pType.equals("id_Short")){
+		return "Short";
+	}
+	else if(pType.equals("id_Integer")){
+		return "Int";
+	}
+	else if(pType.equals("id_Character")){
+		return "String";
+	}
+	return null;
+	}
+}
+	
+	Convert convert=new Convert();	
+    for (int i = 0; i < sizeColumns; i++) {//5  
+  	IMetadataColumn column = columnList.get(i);
+	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());	
+	boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+
+	
+	
+%>   		
+	stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=i+1%>, <%=conn.getName() %>.<%=column.getLabel() %>);																					    			
+<%
+				}//5	
+%> 
+			   try{		    			      
+
+				    stmt<%=cid%>.executeQuery();			    			    
+
+				   }
+				   catch(java.sql.SQLException ex){
+				    System.err.println(ex.getMessage()+"Error on Connecting Database!");
+				   }				   
+				   System.out.println("done");
+
+
+		
+
+
+
