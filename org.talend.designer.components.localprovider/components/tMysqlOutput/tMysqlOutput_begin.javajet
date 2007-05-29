@@ -49,25 +49,28 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 %>
-java.lang.Class.forName("org.gjt.mm.mysql.Driver");
-
-String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-
+java.sql.Connection conn_<%=cid%> = null;
 <%
-List<IMetadataColumn> columnList = null;
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if(metadatas !=null && metadatas.size()>0){
-	IMetadataTable metadata = metadatas.get(0);
-	if(metadata != null){
-		columnList = metadata.getListColumns();
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	if(connection != null && connection.trim().length() != 0)
+	{
+		String conn = "conn_" + connection;;
+		%>
+		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+		<%
 	}
-}
+	else
+	{
+		String javaDbDriver   = "org.gjt.mm.mysql.Driver";
+		%>
+		java.lang.Class.forName("<%=javaDbDriver %>");
+		String url_<%=cid %> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		String dbUser_<%=cid %> = <%=dbuser%>;
+		String dbPwd_<%=cid %> = <%=dbpwd%>;
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		<%
+	}	
 %>
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
 <%
 if(tableAction.equals("true"))
@@ -92,6 +95,16 @@ java.sql.PreparedStatement pstmt_<%=cid %> =null;
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 	
 <%
+}
+
+List<IMetadataColumn> columnList = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas !=null && metadatas.size()>0){
+	IMetadataTable metadata = metadatas.get(0);
+	if(metadata != null){
+		columnList = metadata.getListColumns();
+	}
 }
 
 if(columnList != null && columnList.size()>0){
@@ -338,7 +351,10 @@ int commitEvery_<%=cid%> = <%=commitEvery%>;
 
 int commitCounter_<%=cid%> = 0;
 
-conn_<%=cid%>.setAutoCommit(false);
+if(conn_<%=cid%>.getAutoCommit())
+{
+	conn_<%=cid%>.setAutoCommit(false);
+}
 	<%
 	}
 	%>

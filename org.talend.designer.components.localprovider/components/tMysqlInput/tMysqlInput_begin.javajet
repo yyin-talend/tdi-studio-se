@@ -18,9 +18,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
-    String javaDbDriver   = "org.gjt.mm.mysql.Driver";    
-    
+	        
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -37,14 +35,28 @@ imports="
 		if (metadata!=null) {
 %>
 int nb_line_<%=cid%> = 0;
-java.lang.Class.forName("<%=javaDbDriver %>");
-
-String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+java.sql.Connection conn_<%=cid%> = null;
+<%
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	if(connection != null && connection.trim().length() != 0)
+	{
+		String conn = "conn_" + connection;
+		%>
+		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+		<%
+	}
+	else
+	{
+	    String javaDbDriver   = "org.gjt.mm.mysql.Driver";    
+		%>
+		java.lang.Class.forName("<%=javaDbDriver %>");
+		String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+		String dbUser_<%=cid %> = <%=dbuser%>;
+		String dbPwd_<%=cid %> = <%=dbpwd%>;
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		<%
+	}
+%>
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);

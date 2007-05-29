@@ -24,14 +24,29 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
-java.lang.Class.forName("org.gjt.mm.mysql.Driver");
 
-String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+java.sql.Connection conn_<%=cid%> = null;
+<%
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	if(connection != null && connection.trim().length() != 0)
+	{
+		String conn = "conn_" + connection;;
+		%>
+		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+		<%
+	}
+	else
+	{
+		String javaDbDriver   = "org.gjt.mm.mysql.Driver";
+		%>
+		java.lang.Class.forName("<%=javaDbDriver %>");
+		String url_<%=cid %> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		String dbUser_<%=cid %> = <%=dbuser%>;
+		String dbPwd_<%=cid %> = <%=dbpwd%>;
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		<%
+	}
+%>
 
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 
@@ -44,7 +59,10 @@ int commitEvery_<%=cid%> = <%=commitEvery%>;
 
 int commitCounter_<%=cid%> = 0;
 
-conn_<%=cid%>.setAutoCommit(false);
+if(conn_<%=cid%>.getAutoCommit())
+{
+	conn_<%=cid%>.setAutoCommit(false);
+}
 <%
 }
 %>

@@ -35,6 +35,13 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tMysqlConnection"
+      NUM_ROW="2"
+    />    
 
     <PARAMETER
       NAME="HOST"
