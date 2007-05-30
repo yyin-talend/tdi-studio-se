@@ -1,0 +1,42 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		java.util.Map"
+%>	
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String filename = ElementParameterParser.getValue(node, "__FILENAME__");	
+	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
+	boolean removefile=ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
+	boolean replacefile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
+%>     
+
+use File::Copy ;
+use File::Spec;
+use File::Basename;
+
+
+my $target = File::Spec->catfile(<%=destination%>, basename(<%=filename%>) )  ;
+
+while(1){
+    if( -e $target ){
+        last unless <%=replacefile%> ;
+    }
+<%
+if(removefile){
+%>
+    	move(<%=filename%>, $target);
+<%
+} else {
+%>
+        copy(<%=filename%>, $target);
+<%
+    }
+%>
+    last ;
+}
