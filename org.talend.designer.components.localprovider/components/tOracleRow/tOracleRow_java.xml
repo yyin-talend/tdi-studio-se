@@ -34,6 +34,17 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:ORACLE"
     />
+    
+    <PARAMETER
+      NAME="CONNECTION_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+    >
+      <ITEMS DEFAULT="ORACLE_SID">
+        <ITEM NAME="ORACLE_SID"           VALUE="ORACLE_SID" />
+        <ITEM NAME="ORACLE_SERVICE_NAME"           VALUE="ORACLE_SERVICE_NAME"/>
+      </ITEMS>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="HOST"
