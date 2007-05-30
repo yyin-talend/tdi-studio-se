@@ -188,13 +188,9 @@ public class JavaProcessor extends Processor {
             this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
-            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-            service.createJavaRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
-        } catch (SystemException e) {
-            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
-        }
+        } 
         this.context = context;
     }
 
@@ -214,7 +210,6 @@ public class JavaProcessor extends Processor {
             Project project = repositoryContext.getProject();
 
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-            service.createJavaRoutineSynchronizer().syncAllRoutines();
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
@@ -263,8 +258,6 @@ public class JavaProcessor extends Processor {
             }
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
-        } catch (SystemException e) {
-            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
     }
 

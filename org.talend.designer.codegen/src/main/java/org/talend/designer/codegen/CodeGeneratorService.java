@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
@@ -61,7 +63,9 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return new PerlRoutineSynchronizer();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#createJavaRoutineSynchronizer()
      */
     public IRoutineSynchronizer createJavaRoutineSynchronizer() {
@@ -69,11 +73,29 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return new JavaRoutineSynchronizer();
     }
 
-    /* (non-Javadoc)
+    public IRoutineSynchronizer createRoutineSynchronizer() {
+        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
+        if (lan.equals(ECodeLanguage.PERL)) {
+            return createPerlRoutineSynchronizer();
+        } else if (lan.equals(ECodeLanguage.JAVA)) {
+            return createJavaRoutineSynchronizer();
+        }
+        throw new IllegalArgumentException("invalid language type.");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
      */
     public void initializeTemplates() {
         CodeGeneratorEmittersPoolFactory.initialize();
+        //fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
+        try {
+            createRoutineSynchronizer().syncAllRoutines();
+        } catch (Exception e) {
+           ExceptionHandler.process(e);
+        }
     }
 
 }

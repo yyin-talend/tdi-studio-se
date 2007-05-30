@@ -126,7 +126,6 @@ public class PerlProcessor extends Processor {
             Project repositoryProject = repositoryContext.getProject();
 
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-            service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
                 String perlLib = getLibraryPath();
