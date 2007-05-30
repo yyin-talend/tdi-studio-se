@@ -1,0 +1,87 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    org.talend.commons.utils.StringUtils
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataColumn
+  	org.talend.core.model.process.EConnectionType
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+        String rss= ElementParameterParser.getValue(node,"__RSS__");
+        boolean isDate=ElementParameterParser.getValue(node,"__ARTICLE_DATE__").equals("true");
+        boolean isAmount=ElementParameterParser.getValue(node,"__ARTICLE_AMOUNT__").equals("true");
+        String  dateTime=ElementParameterParser.getValue(node,"__DATE__");
+        String  amount=ElementParameterParser.getValue(node,"__AMOUNT__");
+       	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+%>
+    int nb_line_<%=cid%> = 0;
+    String rssurl<%=cid%>=<%=rss%>;
+    int aMount<%=cid%>=<%=amount%>;
+    java.net.URL url<%=cid%> = new java.net.URL(rssurl<%=cid%>);
+    org.gnu.stealthp.rsslib.RSSHandler hand<%=cid%>= new org.gnu.stealthp.rsslib.RSSHandler();
+    org.gnu.stealthp.rsslib.RSSParser.parseXmlFile(url<%=cid%>, hand<%=cid%>, false);
+    org.gnu.stealthp.rsslib.RSSChannel ch<%=cid%> = hand<%=cid%>.getRSSChannel();
+   	String row<%=cid%>[]=new String [4];
+  	 java.util.LinkedList lst<%=cid%> = hand<%=cid%>.getRSSChannel().getItems();
+  	 int lstSize<%=cid%>=lst<%=cid%>.size();
+  	 if(<%=isAmount%> && aMount<%=cid%><lst<%=cid%>.size() ){
+  	   		lstSize<%=cid%>=aMount<%=cid%>;
+  	   }
+      for (int i = 0; i < lstSize<%=cid%>; i++) {
+          org.gnu.stealthp.rsslib.RSSItem itm<%=cid%> = (org.gnu.stealthp.rsslib.RSSItem) lst<%=cid%>.get(i);
+          row<%=cid%>[0]=itm<%=cid%>.getTitle();
+          row<%=cid%>[1]=itm<%=cid%>.getDescription();
+          row<%=cid%>[2]=itm<%=cid%>.getPubDate();
+          row<%=cid%>[3]=itm<%=cid%>.getLink();
+          if(<%=isDate%>)
+          {
+          	java.util.Date d<%=cid%>=new java.util.Date();
+          	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd   HH:mm:ss");
+          	d<%=cid%>=formatterDate<%=cid%>.parse("<%=dateTime%>");
+          	 java.util.Date pubDate<%=cid%>=new java.util.Date(row<%=cid%>[2]);
+         	 int value<%=cid%>=pubDate<%=cid%>.compareTo(d<%=cid%>);
+         	 if(value<%=cid%><0)
+         	 {
+         	 	continue;
+         	 }
+          	
+          }
+
+<%
+	if(conns!=null){
+    		if (conns.size()>0){
+       		IConnection conn =conns.get(0);
+    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+    			for (int j = 0; j < sizeColumns; j++) {
+    			IMetadataColumn column = columns.get(j);
+    			
+ %>
+ 			
+ 			<%=conn.getName() %>.<%=column.getLabel() %>=row<%=cid%>[<%=j%>];
+ <%
+    				}
+				}
+		
+			}
+		}
+	}
+}
+%>
+
+
+
+
