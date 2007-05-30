@@ -1,0 +1,77 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+String cid = node.getUniqueName();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String command = ElementParameterParser.getValue(
+            node,
+            "__COMMAND__"
+        );
+%>
+			/* Create a session */
+			sess_<%=cid%>.execCommand(<%=command%>);
+			
+			java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
+			java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
+            String line_<%=cid%> = "";
+            StringBuffer stringStdout_<%=cid%> =new StringBuffer();
+            try
+            {
+                if((line_<%=cid%> = brout_<%=cid%>.readLine()) != null)
+                {
+                	stringStdout_<%=cid%>.append(line_<%=cid%>);
+                }
+			    while((line_<%=cid%> = brout_<%=cid%>.readLine()) != null) {
+				    stringStdout_<%=cid%>.append("\n"+line_<%=cid%>);
+			    }
+			}
+			finally
+			{
+				brout_<%=cid%>.close();
+				stdout_<%=cid%>.close();
+			}
+			
+			java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
+            java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
+            String line1_<%=cid%> = "";
+            StringBuffer stringStderr_<%=cid%> =new StringBuffer();
+            try
+            {
+            	if((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null)
+            	{
+            		stringStderr_<%=cid%>.append(line1_<%=cid%>);
+            	}
+			    while((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
+				    stringStderr_<%=cid%>.append("\n"+line1_<%=cid%>);
+			    }
+			}
+			finally
+			{
+				breer_<%=cid%>.close();
+				stderr_<%=cid%>.close();
+			}
+			
+			globalMap.put("<%=cid %>_STDOUT",stringStdout_<%=cid%>.toString());
+			globalMap.put("<%=cid %>_STDERR",stringStderr_<%=cid%>.toString());
+            globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
+            
+            System.out.println (globalMap.get("<%=cid %>_STDOUT"));
+<%
+    }
+}
+%>

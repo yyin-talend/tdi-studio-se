@@ -1,0 +1,114 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+String cid = node.getUniqueName();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+
+        String host = ElementParameterParser.getValue(
+            node,
+            "__HOST__"
+        );
+
+        String port = ElementParameterParser.getValue(
+            node,
+            "__PORT__"
+        );
+
+        String user = ElementParameterParser.getValue(
+            node,
+            "__USER__"
+        );
+
+        String authMethod = ElementParameterParser.getValue(
+            node,
+            "__AUTH_METHOD__"
+        );
+
+        String privatekey = ElementParameterParser.getValue(
+            node,
+            "__PRIVATEKEY__"
+        );
+
+        String password = ElementParameterParser.getValue(
+            node,
+            "__PASSWORD__"
+        );
+        
+        String useTimeout = ElementParameterParser.getValue(
+            node,
+            "__USE_TIMEOUT__"
+        );
+
+        String timeout = ElementParameterParser.getValue(
+            node,
+            "__TIMEOUT__"
+        );
+%>
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
+
+    try
+		{
+		    /* Create a connection instance */
+<%
+        if(port.equals("")){
+%>
+			  ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
+<%
+        } else {
+%>
+			  ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
+<%
+        }
+%>
+              /* Now connect */
+<%
+        if(useTimeout.equals("true")){
+%>
+			  conn_<%=cid%>.connect(null,0,<%=timeout%>*1000);
+<%
+        } else {
+%>
+			  conn_<%=cid%>.connect();
+<%
+        }
+        
+        if (authMethod.equals("PUBLICKEY")) {
+%>
+        java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
+		    String keyfilePass_<%=cid%> = ""; 
+		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, keyfilePass_<%=cid%>);
+			  if (isAuthenticated_<%=cid%> == false)
+				      throw new java.io.IOException("Authentication failed.");
+<%
+        }
+        if (authMethod.equals("PASSWORD")) {
+%>
+        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
+		if (isAuthenticated_<%=cid%> == false)
+			throw new java.io.IOException("Authentication failed.");
+<%
+        }
+%>
+         /* Create a session */
+	     ch.ethz.ssh2.Session sess_<%=cid%> = conn_<%=cid%>.openSession();
+<%
+    }
+}
+%>
