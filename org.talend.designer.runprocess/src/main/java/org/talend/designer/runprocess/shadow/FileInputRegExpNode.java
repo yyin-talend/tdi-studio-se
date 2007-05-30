@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -35,6 +38,15 @@ public class FileInputRegExpNode extends FileInputNode {
     public FileInputRegExpNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow, String encoding) {
         super("tFileInputRegex"); //$NON-NLS-1$
+        if(regex.length() > 1){
+            String reg = regex.substring(1, regex.length()-1);
+            Pattern pattern = Pattern.compile(reg);
+            Matcher matcher = pattern.matcher("");
+            int columnCount = matcher.groupCount();
+            if(columnCount > 0){
+                this.setColumnNumber(columnCount);
+            }
+        }
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
                 "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$
@@ -48,4 +60,5 @@ public class FileInputRegExpNode extends FileInputNode {
             }
         }
     }
+
 }

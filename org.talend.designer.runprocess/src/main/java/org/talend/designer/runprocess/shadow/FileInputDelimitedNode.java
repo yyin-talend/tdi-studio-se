@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.io.IOException;
+
+import org.talend.fileprocess.delimited.DelimitedDataReader;
+import org.talend.fileprocess.delimited.DelimitedDataReaderFactory;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -35,7 +40,24 @@ public class FileInputDelimitedNode extends FileInputNode {
     public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow, String encoding) {
         super("tFileInputDelimited"); //$NON-NLS-1$
-
+        
+        DelimitedDataReader dr = null;
+        try {
+            dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
+                    trimParameter(fieldSep), trimParameter(rowSep), true);
+            dr.skipHeaders(0);
+            int max = dr.getMaxColumnCount(limitRows);
+            if (max > 0) {
+                this.setColumnNumber(max);
+            }
+        } catch (IOException e) {
+//             e.printStackTrace();
+        } finally {
+            if (dr != null) {
+                dr.close();
+            }
+        }
+        
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
                 "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
@@ -48,4 +70,5 @@ public class FileInputDelimitedNode extends FileInputNode {
             }
         }
     }
+
 }

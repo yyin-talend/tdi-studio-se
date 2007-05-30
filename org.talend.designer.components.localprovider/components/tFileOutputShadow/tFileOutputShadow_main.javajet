@@ -3,243 +3,46 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.ElementParameterParser
     java.util.List
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.IMetadataColumn
+    		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 "
 %>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String split = ElementParameterParser.getValue(node, "__SPLIT__");
-String removeNullField = ElementParameterParser.getValue(node, "__REMOVE_NULL_FIELD__");
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-
-    IMetadataTable metadata = metadatas.get(0);
-    String cid = node.getUniqueName();
-
-    if (metadata!=null) {    
-	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");	
-	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-        if (encoding!=null) {
-            if (encoding.equals("")) {
-                encoding = "ISO-8859-15";
-            }
-        }
-        if(split.equals("true")){
-         
-%>
-if(currentRowQtyWithinFile_<%=cid%> >= splitEvery_<%=cid%>){
-<%
+String cid = node.getUniqueName();
 List< ? extends IConnection> conns = node.getIncomingConnections();
 if(conns!=null && conns.size()>0){
-IConnection conn = conns.get(0);
-%>
-   String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
-
-   java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
-
-   int counter_<%=cid%> = 0;
-					
-	while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-		strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
-					
-      	<%		
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals("true")) {
-%>
-if (tok_<%=cid%>.hasMoreTokens()) {
-<%
-				}
-%>
-tkTag = tok_<%=cid%>.nextToken();
-<%
-				if(colnameAsTagname.equals("true")){
-			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
-			<%	
-				}else{
-					if (removeNullField.equals("true")) {
-%>
-		if (tkTag.compareTo("null")!=0) {
+	IConnection conn = conns.get(0);
+	IMetadataTable metadata = conn.getMetadataTable();
+	if (metadata!=null) {
+		for(IMetadataColumn column:metadata.getListColumns()) {
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
+%>if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
+	<%=conn.getName() %>.<%=column.getLabel() %> = TalendString.replaceSpecialCharForXML(<%=conn.getName() %>.<%=column.getLabel() %>);
+}else{
+	<%=conn.getName() %>.<%=column.getLabel() %> = "";
+}
 <%
 			}
-			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
-				<%
-				}
-				if (removeNullField.equals("true")) {
-%>
 		}
-<%
-			}
-				if (removeNullField.equals("true")) {
-				%>
-}
-				<%
-				}				
-			}
-		%>
-		strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
-		nb_line_<%=cid%>++;
-		counter_<%=cid%>++;
-	}
-			
- 	rowCounter_<%=cid%> = 0;
-
-    buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());
-
-		<%
-		  if(split.equals("true")){
-		  %>     
-	currentRowQtyWithinFile_<%=cid%>++;			  
-		  <%
-		  }					
-}
-%>
-	java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
-	java.io.BufferedWriter out_<%=cid%> = null;
-	
-	try{
-	 out_<%=cid%> = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
-	                                
-    for (int i<%=cid %> = rootTag_<%=cid%>.length-1; i<%=cid %> >=0 ; i<%=cid %>--) {
-			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
-   		}
-    	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
-		out_<%=cid%>.flush();
-		out_<%=cid%>.close();
-	
-	}catch(java.io.UnsupportedEncodingException err){
-	err.printStackTrace();
-	}
-    currentRowQtyWithinFile_<%=cid%>=0;
-    splitedFileNo_<%=cid%>++;
-    strBuffer_<%=cid%> = new StringBuffer();
-}
-if(currentRowQtyWithinFile_<%=cid%>==0){
-strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
-	for (int i<%=cid %> = 0; i<%=cid %> < rootTag_<%=cid%>.length; i<%=cid %>++) {
-		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
-    }
-    strBuffer_<%=cid%>.append("\n");
-}
-<%
-	  }
-    List< ? extends IConnection> conns = node.getIncomingConnections();
-		if(conns!=null && conns.size()>0){
-		IConnection conn = conns.get(0);
-		%>
-if (rowCounter_<%=cid%> >= bufferRowQtys_<%=cid%>) {
-
-   String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
-
-   java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
-
-   int counter_<%=cid%> = 0;
-                    		
- 	
- 	
-					
-	while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-		strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
-					
-      	<%		
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if (removeNullField.equals("true")) {
-%>
-if (tok_<%=cid%>.hasMoreTokens()) {
-<%
-				}
-%>
-		tkTag = tok_<%=cid%>.nextToken();
-<%
-				if(colnameAsTagname.equals("true")){
-			%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
-			<%	
-				}else{
-					if (removeNullField.equals("true")) {
-%>
-		if (tkTag.compareTo("null")!=0) {
-<%
-			}
-			%>
-		strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");				
-				<%
-				if (removeNullField.equals("true")) {
-%>
+%>out_<%=cid %>.write("<row>");
+out_<%=cid %>.newLine();
+<%		
+		for(IMetadataColumn column:metadata.getListColumns()) {
+%>out_<%=cid %>.write("<field>"+<%=conn.getName() %>.<%=column.getLabel() %>+"</field>");
+out_<%=cid %>.newLine();
+<%		
 		}
+%>out_<%=cid %>.write("</row>");
+out_<%=cid %>.newLine();
+nb_line_<%=cid %>++;
 <%
-			}
-				}
-				if (removeNullField.equals("true")) {
-				%>
+	}
 }
-				<%
-				}				
-			}
-		%>
-		strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
-		nb_line_<%=cid%>++;
-		counter_<%=cid%>++;
-	}
-			
- 	rowCounter_<%=cid%> = 0;
-
-    buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());
-} 
-
-	if(strBuffer_<%=cid %>.length()>=strBufferSize_<%=cid%>){
-<%
-	if(split.equals("true")){
-%>	
-	java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
-	java.io.BufferedWriter out_<%=cid%> = null;
-	
-	try{
-	
-	 	out_<%=cid%> = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
-	                                
-	}catch(java.io.UnsupportedEncodingException err){
-	
-		err.printStackTrace();
-	}    
-<%
-	}
-%>
-		out_<%=cid %>.write(strBuffer_<%=cid %>.toString());
-		
-		out_<%=cid %>.flush();
-		
-		strBuffer_<%=cid %>.delete(0,strBuffer_<%=cid %>.length());
-		
-	}
-	
-<%  
-	for(IMetadataColumn column:metadata.getListColumns()) {
-%>
-		buffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%> + "\n");
-<%
-	}
-%>
-
-    rowCounter_<%=cid%>++;
-
-		<%
-		  if(split.equals("true")){
-		  %>     
-	currentRowQtyWithinFile_<%=cid%>++;			  
-		  <%
-		  }					
-		}
-    }
-}
-%>
+	%>

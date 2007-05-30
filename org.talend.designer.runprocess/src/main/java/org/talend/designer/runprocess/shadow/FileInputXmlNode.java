@@ -39,7 +39,7 @@ public class FileInputXmlNode extends FileInputNode {
      */
     public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping, Integer loopLimit,
             String encoding) {
-        super("tFileInputXML"); //$NON-NLS-1$
+        super("tFileInputXML", mapping.size()); //$NON-NLS-1$
 
         String limitLoop = "";
         if (loopLimit != null && loopLimit != 0) {
@@ -48,6 +48,7 @@ public class FileInputXmlNode extends FileInputNode {
 
         String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding };
+        System.out.println("Mapping size():" + mapping.size());
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

@@ -21,6 +21,14 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import com.csvreader.CsvReader;
+
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
  * 
@@ -36,6 +44,47 @@ public class FileInputCSVNode extends FileInputNode {
             int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding) {
         super("tFileInputCSV"); //$NON-NLS-1$
 
+        CsvReader cr = null;
+        try {
+            cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
+                    trimParameter(encoding))), trimParameter(fieldSep).charAt(0));
+            if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
+                cr.setRecordDelimiter(trimParameter(rowSep).charAt(0));
+            }
+            cr.setSkipEmptyRecords(true);
+            String en = trimParameter(textEnclosure);
+            if (en.length() > 0) {
+                cr.setTextQualifier(en.charAt(0));
+            } else {
+                cr.setUseTextQualifier(false);
+            }
+            if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) {
+                cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
+            } else {
+                cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+            }
+            int columnCount = 0;
+            for (int i = 0; i < limitRows && cr.readRecord(); i++) {
+                int temp = cr.getColumnCount();
+                if (temp > columnCount) {
+                    columnCount = temp;
+                }
+            }
+            if (columnCount > 0) {
+                this.setColumnNumber(columnCount);
+            }
+        } catch (UnsupportedEncodingException e) {
+            // e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            // e.printStackTrace();
+        } catch (IOException e) {
+            // e.printStackTrace();
+        } finally {
+            if (cr != null) {
+                cr.close();
+            }
+        }
+
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
                 "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
@@ -49,4 +98,5 @@ public class FileInputCSVNode extends FileInputNode {
             }
         }
     }
+
 }

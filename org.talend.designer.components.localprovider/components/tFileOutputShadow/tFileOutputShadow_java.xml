@@ -21,67 +21,6 @@
      <PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="1" REQUIRED="true">
        <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xml"</DEFAULT>
      </PARAMETER>
-
-    <PARAMETER
-      NAME="ROOT_TAGS"
-      FIELD="TABLE"
-      REQUIRED="false"
-      NUM_ROW="2"
-      NB_LINES="3"
-    >
-      <ITEMS>
-        <ITEM NAME="TAG" />
-        
-      </ITEMS>
-     
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="ROW_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="2"
-    >
-      <DEFAULT>"row"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COLNAME_AS_TAGNAME"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="3"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELD_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="3"
-      SHOW_IF="COLNAME_AS_TAGNAME == 'false'"
-    >
-      <DEFAULT>"field"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="SPLIT"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="4"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="SPLIT_EVERY"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="4"
-      SHOW_IF="SPLIT == 'true'"
-    >
-      <DEFAULT>1000</DEFAULT>
-    </PARAMETER>
      
      <PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="5" REQUIRED="true">
        <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -90,16 +29,6 @@
      <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="6">
        <DEFAULT/> 
      </PARAMETER>
-     
-     <PARAMETER
-      NAME="REMOVE_NULL_FIELD"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="7"
-      SHOW_IF="1!=1"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
 
    </PARAMETERS>
 

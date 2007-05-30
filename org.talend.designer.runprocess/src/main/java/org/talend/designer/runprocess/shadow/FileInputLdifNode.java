@@ -21,7 +21,13 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.io.IOException;
 import java.util.List;
+
+import netscape.ldap.util.LDIF;
+import netscape.ldap.util.LDIFAttributeContent;
+import netscape.ldap.util.LDIFContent;
+import netscape.ldap.util.LDIFRecord;
 
 import org.talend.core.model.metadata.IMetadataTable;
 
@@ -41,6 +47,28 @@ public class FileInputLdifNode extends FileInputNode {
     public FileInputLdifNode(String filename, List<IMetadataTable> metadatas, String encoding) {
         super("tFileInputLDIF"); //$NON-NLS-1$
 
+        try {
+            LDIF ldif = new LDIF(trimParameter(filename));
+            int columnCount = 0;
+            LDIFRecord record = ldif.nextRecord();
+            int limit = 50;
+            while (record != null && limit > 0) {
+                LDIFContent content = record.getContent();
+                if (content.getType() == LDIFContent.ATTRIBUTE_CONTENT) {
+                    LDIFAttributeContent attrContent = (LDIFAttributeContent) content;
+                    int length = attrContent.getAttributes().length;
+                    if (length > columnCount) {
+                        columnCount = length;
+                        limit--;
+                    }
+                }
+                record = ldif.nextRecord();
+            }
+            this.setColumnNumber(columnCount);
+        } catch (IOException e) {
+            // e.printStackTrace();
+        }
+        
         String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, encoding };
 

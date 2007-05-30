@@ -2,112 +2,15 @@
 imports="
     org.talend.core.model.process.INode 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.ElementParameterParser
-    java.util.List
-    org.talend.core.model.process.IConnection
-    org.talend.core.model.metadata.IMetadataTable 
-    org.talend.core.model.metadata.IMetadataColumn
 "
 %>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-IMetadataTable metadata=null;
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-     metadata = metadatas.get(0);
-}
-
-String split = ElementParameterParser.getValue(node, "__SPLIT__");
-String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");	
-String removeNullField = ElementParameterParser.getValue(node, "__REMOVE_NULL_FIELD__");
-String fileNameNoExtension =  fileName.substring(0,fileName.indexOf(".xml"));
 String cid = node.getUniqueName();
-
-
-List< ? extends IConnection> conns = node.getIncomingConnections();
-	if(conns!=null && conns.size()>0){
-	IConnection conn = conns.get(0);
 %>	
-String data_<%=cid%> = TalendString.replaceSpecialCharForXML(buffer_<%=cid%>.toString());
-java.util.StringTokenizer tok_<%=cid%> = new java.util.StringTokenizer(data_<%=cid%>, "\n");
-
-int counter_<%=cid%> = 0;
-while (counter_<%=cid%> < rowCounter_<%=cid%>) {
-	strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");					
-<%		
-	for(IMetadataColumn column:metadata.getListColumns()) {
-		if (removeNullField.equals("true")) {
-%>
-		if (tok_<%=cid%>.hasMoreTokens()) {
-<%
-		}
-%>
-		tkTag = tok_<%=cid%>.nextToken();
-<%
-		if(colnameAsTagname.equals("true")){
-%>
-		strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+tkTag+"</<%=column.getLabel()%>>\n");		
-<%	
-		} else {
-			if (removeNullField.equals("true")) {
-%>
-		if (tkTag.compareTo("null")!=0) {
-<%
-			}
-%>
-			strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+tkTag+"</"+fieldTag_<%=cid%>+">\n");
-<%
-			if (removeNullField.equals("true")) {
-%>
-		}
-<%
-			}
-		}
-		if (removeNullField.equals("true")) {
-%>
-		}			
-<%
-		}
-	}
-%>
-	strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
-	nb_line_<%=cid%>++;
-	counter_<%=cid%>++;
-}
-rowCounter_<%=cid%> = 0;
-buffer_<%=cid%>.delete(0, buffer_<%=cid%>.length());    
-   
-<%
-	}
-if(split.equals("true")){
-%>
-   java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameNoExtension%>"+splitedFileNo_<%=cid%>+".xml");
-   java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));                              
-	   
-   for (int i = rootTag_<%=cid%>.length-1; i >=0 ; i--) {
-		strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i]+">");		            
-   	}
-    out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
-	out_<%=cid%>.flush();
-	out_<%=cid%>.close();
-<%
-}
-if (!split.equals("true")) {
-%>
-		for (int i = 0; i < rootTag_<%=cid%>.length; i++) {
-			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i]+">");		            
-   		}
-    	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
-		out_<%=cid%>.flush();
-		out_<%=cid%>.close();	
-
-<%
-}
-%>
+out_<%=cid %>.write("</array>");
+out_<%=cid %>.newLine();
+out_<%=cid %>.close();
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
-
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
  * 
@@ -36,7 +35,7 @@ public abstract class FileInputNode extends ShadowNode {
     public FileInputNode(String nodeType) {
         super(nodeType);
     }
-    
+
     public FileInputNode(String nodeType, int nbColumn) {
         super(nodeType, nbColumn);
     }
@@ -58,5 +57,24 @@ public abstract class FileInputNode extends ShadowNode {
     @Override
     public boolean isSubProcessStart() {
         return true;
+    }
+
+    public String trimParameter(String para) {
+        int length = para.length();
+        String result = para;
+        if (length > 1 && para.startsWith("\"") && para.endsWith("\"")) {
+            result = para.substring(1, length - 1);
+        }
+        if (result.contains("\\")) {
+            result = result.replaceAll("\\\\n", "\n");
+            result = result.replaceAll("\\\\b", "\b");
+            result = result.replaceAll("\\\\f", "\f");
+            result = result.replaceAll("\\\\r", "\r");
+            result = result.replaceAll("\\\\t", "\t");
+            result = result.replaceAll("\\\\\"", "\"");
+            result = result.replaceAll("\\\\\\\\", "\\\\");
+        }
+
+        return result;
     }
 }
