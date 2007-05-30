@@ -28,7 +28,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 
 /**
@@ -81,6 +83,19 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 RuntimeExceptionHandler.process(e);
             }
         }
+
+        // fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
+
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                try {
+                    RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        });
 
     }
 }

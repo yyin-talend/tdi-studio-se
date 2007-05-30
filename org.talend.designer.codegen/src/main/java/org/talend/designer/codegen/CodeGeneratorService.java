@@ -90,12 +90,6 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      */
     public void initializeTemplates() {
         CodeGeneratorEmittersPoolFactory.initialize();
-        //fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
-        try {
-            createRoutineSynchronizer().syncAllRoutines();
-        } catch (Exception e) {
-           ExceptionHandler.process(e);
-        }
     }
 
 }
