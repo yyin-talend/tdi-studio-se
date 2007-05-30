@@ -230,6 +230,10 @@ public class DataProcess {
                 dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
                 dataConnec.setConnectorName(curConnec.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                
+                
+                dataConnec.setName(EConnectionType.getTypeFromName(curConnec
+                        .getConnectionType()).getDefaultLinkName());
 
                 switch (dataConnec.getLineStyle()) {
                 case FLOW_MAIN:
