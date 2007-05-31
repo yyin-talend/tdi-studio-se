@@ -1,0 +1,93 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
+        String xsdfile = ElementParameterParser.getValue(node, "__XSDFILE__");
+
+        Boolean print = new Boolean(
+            ElementParameterParser.getValue(node, "__PRINT__")
+        );
+
+        String validMessage = ElementParameterParser.getValue(
+            node,
+            "__VALID_MESSAGE__"
+        );
+
+        String invalidMessage = ElementParameterParser.getValue(
+            node,
+            "__INVALID_MESSAGE__"
+        );
+
+%>
+
+my @<%=cid %> = ();
+
+# keep all "my" variables local to the block, thus we can use several
+# tFileCompare components in the same process
+{
+    if (not -f <%=xmlfile%>) {
+        die "Cannot read file to validate <%=xmlfile%>\n";
+    }
+    
+   
+    if (not -f <%=xsdfile%>) {
+        die "Cannot read xsd file <%=xsdfile%>\n";
+    }
+
+    my $schema_<%=cid%> = XML::LibXML::Schema->new(location => <%=xsdfile%>);
+
+    eval {
+    	$schema_<%=cid%>->validate( $parser_<%=cid%>->parse_file(<%=xmlfile%>) );
+    };
+
+    my $message ;
+    if ($@) {
+        $message = <%=invalidMessage%> ;
+        $_globals{<%=cid%>}{VALID} = 0;
+
+    }
+    else {
+        $message = <%=validMessage%> ;
+        $_globals{<%=cid%>}{VALID} = 1;
+    }
+<%
+        if (print) {
+%>
+    print $message ;
+<%
+        }
+%>
+    @<%=cid %> = (
+         <%=xmlfile%>,
+         <%=xsdfile%>,
+         getDate('CCYY-MM-DD hh:mm:ss'),
+         $_globals{job_name},
+         '<%=cid %>',
+         $_globals{<%=cid%>}{VALID},
+         $message,
+         $@,
+    );
+} # block end
+
+<%
+    }
+}
+%>
