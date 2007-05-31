@@ -24,6 +24,7 @@ package org.talend.designer.codegen;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -95,7 +96,6 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                 isFirst = false;
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -112,11 +112,16 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initRoutineFolder(javaProject, project);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
-                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
+                    + "/" + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
             if (copyToTemp) {
-                routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+                String routineContent = new String(routineItem.getContent().getInnerContent());
+                routineContent = routineContent.replaceAll("__CLASS_NAME__", routineItem.getProperty().getLabel());
+                File f = file.getLocation().toFile();
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(routineContent.getBytes());
+                fos.close();
             }
             if (!file.exists()) {
                 file.refreshLocal(1, null);
@@ -144,8 +149,8 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     }
 
     private void initModuleFolder(IProject javaProject, Project project) throws CoreException {
-        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
-                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
+                + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
         if (!rep.exists()) {
             rep.create(true, true, null);
         }
@@ -177,8 +182,9 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
-                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
-                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + module.getName());
+                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
+                            + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
+                            + module.getName());
 
                     copyFile(module, file);
                 }
