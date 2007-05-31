@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>tFileInputXML</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputRegex_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputXML_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1188330"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tFileInputXML
+</b></font></h2>
+<a name="wp1188338"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+</b></font></div>
+<div align="left"><img src="images/tFileInputXML.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+tFileInputXML Properties
+</b></font></div>
+<a name="wp1294994"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188349"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Component family
+</font></div>
+</td>
+    <td><a name="wp1188351"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+File 
+</font></div>
+</td>
+    <td><a name="wp1188353"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188355"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Function
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1188357"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+tFileInputDelimited reads a structured file and extracts data row by row.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188361"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Purpose
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1188363"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Opens an XML structured file and reads it row by row to split them up into fields then sends fields as defined in the Schema to the next component, via a Row link.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="9"><a name="wp1188367"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Properties
+</font></div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp1188372"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Property type
+</b></font></div></div>
+</td>
+    <td><a name="wp1188374"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188383"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: No existing property data is to be retrieved
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188392"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188401"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Schema type and Edit Schema
+</b></font></div></div>
+</td>
+    <td><a name="wp1188404"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188408"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1188413"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188420"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1188425"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projets and job flowcharts. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188435"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+File Name
+</b></font></div></div>
+</td>
+    <td><a name="wp1188437"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the file to be processed. <br>Related topic:<a href="Technical_Process-12.html#wp1062174"><i>Variables and aliases</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188447"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Loop XPath query
+</b></font></div></div>
+</td>
+    <td><a name="wp1188449"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Node of the tree, which the loop is based on
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188455"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Mapping column/XPath Query
+</b></font></div></div>
+</td>
+    <td><a name="wp1188461"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Column</b> reflects the schema as defined by the Schema type field<br><b>XPath Query</b>: Enter the fields to be extracted from the structured input.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188466"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1188471"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Limit
+</b></font></div></div>
+</td>
+    <td><a name="wp1188473"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Maximum number of rows to be processed. If Limit = 0, no row is read nor processed.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1188475"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1188480"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Encoding
+</b></font></div></div>
+</td>
+    <td><a name="wp1188482"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1188484"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Limitation
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1188486"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+n/a
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputRegex_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputXML_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

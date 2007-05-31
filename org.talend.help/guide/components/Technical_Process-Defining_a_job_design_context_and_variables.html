@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:21">
+    <title>Defining a job design context and variables</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-ActivatingDisabling_a_job_or_sub-job.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Running_a_job.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1038166"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Defining a job design context and variables
+</b></font></h2>
+<a name="wp1004663"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Depending on the circumstances the job design is being used in, you might want to manage it differently. 
+</font></p>
+<a name="wp1007312"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For instance, there might be various stages of test, you want to perform and validate before a job design is ready to go-live for production use. Therefore, <b>Talend Open Studio</b> offers you to have multiple similar environments to avoid having to fill in all properties for all components again and again. 
+</font></p>
+<a name="wp1007439"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For example, one context can be dedicated to development while another is prepared to production.The only difference between both contexts, being some critical field values and the scale of use.The production context is thus a duplicate of the development context with few changes that make the difference.  
+</font></p>
+<a name="wp1007816"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on any area of the job designer, but the components,  to display the context configuration panel. The <b>Context</b> panel fills the place of the <b>Properties</b> panel at the bottom of workspace.
+</font></p>
+<a name="wp1007829"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Adding or renaming a context
+</b></font></h3>
+<dl><a name="wp1007835"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To change the name of an existing context, click on <b>Rename</b> and enter the new Context name in the dialog box showing up.
+</font></dd>
+<a name="wp1007842"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To add a new context tab, click on <b>Copy</b>. The default context is thus duplicated in a new tab. Enter a name for the newly created context on the dialog box.
+</font></dd>
+</dl><a name="wp1007850"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Context1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1008478"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+When you copy a context, the entire default context legacy is copied over to the new context.You hence only need to edit the relevant fields to customize the context according to the targeted use.
+</font></dd>
+</dl><a name="wp1008497"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Context3.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1008500"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The drop-down list <b>Default Context</b> shows all the contexts you created .
+</font></dd>
+<a name="wp1008430"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can switch Default context by simply selecting the new default context on the list. 
+</font></dd>
+<a name="wp1008418"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that the Default context can never be deleted. There should always be a context to run the job. This context being called Default or any other name.
+</font></dd>
+<a name="wp1008512"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></dd>
+</dl><a name="wp1007880"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Defining the context parameters
+</b></font></h3>
+<dl><a name="wp1007888"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A context is characterized by parameters. These parameters are mostly context-sensitive variables which will be added to the list of variables available for reuse in the component-specific properties through the Ctrl+Space keystrokes.
+</font></dd>
+<a name="wp1007907"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Add a parameter line to the table by clicking on <b>Add</b>, and fill the job&#39;s common data.You can add as many entries as you need. The <b>Script code</b> field points out the corresponding variable created. It follows a script standard such as $_context{YourParameterName}. 
+</font></dd>
+<a name="wp1008022"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check the <b>Ask for confirmation? </b>box, if you want to be prompted for confirmation before running a job. This can be of use at the go-live stage, when the job is ready to switch from Development to Production context, for instance.
+</font></dd>
+<a name="wp1008541"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you also check the prompt checkbox next to the variable entry, you will also be able to modify the variable for a particular job execution.
+</font></dd>
+<a name="wp1008305"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1007984"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Fields
+</b></font></div></div>
+</th>
+    <th><a name="wp1007986"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1008161"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Prompt
+</font></div>
+</td>
+    <td><a name="wp1008164"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check this box, if  you want the variable to be editable in the Confirmation dialog box when running the job.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1007988"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name
+</font></div>
+</td>
+    <td><a name="wp1007990"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Fill in a name for the variable. A context variable is meant to be reused in different component properties, this way it avoids repetition of data typing. 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1007992"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Prompt message
+</font></div>
+</td>
+    <td><a name="wp1007994"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you asked for a confirmation to popup, fill in this field to define the message in the popup window.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1007996"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type
+</font></div>
+</td>
+    <td><a name="wp1007998"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select in the list the type of data entered.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1008097"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Default
+</font></div>
+</td>
+    <td><a name="wp1008100"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Enter the default value for this variable. Through this field you can update the value of the variable and hence update all properties calling this variable. 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1008104"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Comment
+</font></div>
+</td>
+    <td><a name="wp1008107"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This is a free text field. 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1008000"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Script code
+</font></div>
+</td>
+    <td><a name="wp1008002"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This field is read-only. A script code is generated according to the parameter name entered. This is the variable format as it shows on the Ctrl+Space list.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1008569"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that the variable or parameter name should follow some typing rules and should not contain any forbidden characters, such as spaces. 
+</font></dd>
+</dl><a name="wp1062174"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Variables and aliases  
+</b></font></h3>
+<dl><a name="wp1062177"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In any <b>Properties</b> field defining a component, you can use an existing global variable or a context variables. 
+</font></dd>
+<a name="wp1062184"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press <b>Ctrl+Space</b> to display the whole list of global and context variables used in various predefined Perl functions. The context variables are created by the user for a particular context, whereas the global variables are a system variables.
+</font></dd>
+<a name="wp1062189"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The list grows along with new user (aka context) variable creations.
+</font></dd>
+<a name="wp1062196"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-Defining_a_job_design_context_and_variables.html"><i>Defining a job design context and variables</i></a>
+</font></dd>
+</dl><a name="wp1062202"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Short creation of context variables 
+</b></font></h4>
+<dl><dl><a name="wp1062209"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Create quickly your context variables via the <b>F5</b> keystroke:
+</font></dd>
+<ul>
+<a name="wp1062215"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Place your cursor on the relevant field that you want to parameterize in the current context (possibly the default one). </font></li>
+<a name="wp1062223"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F5</b> to display the context parameter dialog box:</font></li>
+</ul>
+</dl></dl><a name="wp1062230"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/VariableF5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<ul>
+<a name="wp1062236"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a <b>Name</b> to this new variable, fill in the <b>Comment</b> zone and choose the <b>Type</b>.</font></li>
+<a name="wp1062242"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a <b>Prompt</b> to be displayed to confirm the use of this variable in the current job execution.</font></li>
+<a name="wp1062358"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Prompt for value</b> box to display the field as editable value. If you filled in a value already in the corresponding properties field, this value is displayed in the <b>Default value</b> field. </font></li>
+<a name="wp1062437"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Finish</b> to validate. Click anywhere on your job&#39;s design workspace, and go to the <b>Properties</b> tab. Notice that the context parameters lists the newly created variable.</font></li>
+</ul>
+</ul>
+</ul>
+<a name="wp1062389"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/VariableF5_contxt.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1062474"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can modify this variable at any time.
+</font></dd>
+</dl></dl><a name="wp1062248"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+StoreSQLQuery
+</b></font></h4>
+<a name="wp1062254"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>StoreSQLQuery</b> is a context specific variable, in the sense that it gets set up by the user and is not provided by the system. This variable is dedicated to debugging mainly.
+</font></p>
+<dl><dl><a name="wp1062258"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+StoreSQLQuery is different from other context variables in the fact that its main purpose is to be used as parameter of a specific global variable, said &quot;Query&quot;. It allows you to dynamically feed the global query variable. 
+</font></dd>
+<a name="wp1062262"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The global variable Query, is available on the proposals list (Ctrl+Space) for couple of DB input components.
+</font></dd>
+<a name="wp1062272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further details on StoreSQLQuery settings, see <a href="Component_intro.html"><i>Components</i></a>.
+</font></dd>
+</dl></dl><a name="wp1082534"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Storing contexts in the Repository
+</b></font></h4>
+<dl><dl><a name="wp1082550"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+We strongly recommend to store centrally all contexts for ease of use in all your jobs within a project. 
+</font></dd>
+<a name="wp1082564"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Right-click on the <b>Contexts</b> entry in the repository and select <b>Create new Context</b> in the list.
+</font></dd>
+</dl></dl><a name="wp1082590"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1082608"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A wizard helps you to define the context parameters, that you&#39;ll be able to select for a Job execution.
+</font></dd>
+</dl></dl><a name="wp1082630"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1082643"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b> to validate. 
+</font></dd>
+<a name="wp1082672"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To apply a context to a job, click on any empty area of your relevant job workspace and in the <b>Context</b> tab, select <b>Repository</b> as <b>Context type</b>. 
+</font></dd>
+</dl></dl><a name="wp1082689"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-Context2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1082703"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then select the relevant <b>Context</b> from the repository. Click on the relevant tab, the selected context&#39;s parameters show as read-only values.
+</font></dd>
+</dl></dl><a name="wp1062275"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Running a job in selected context
+</b></font></h3>
+<dl><a name="wp1008654"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can select the context you want the job design to be executed in. 
+</font></dd>
+</dl><a name="wp1008674"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Context4.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1008677"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on <b>Run Job</b> tab, and in the <b>Context</b> area, select the relevant context among the various ones you created. 
+</font></dd>
+<a name="wp1008624"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you didn&#39;t create any context, only the <b>Default</b> context shows on the list.
+</font></dd>
+<a name="wp1008684"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All the context variables you created for the selected context display, along with their respective value, in a table underneath.  If you checked the <b>Prompt</b> box next to some variables, you will get a dialog box allowing you to change the variable value for this job execution only. 
+</font></dd>
+<a name="wp1008809"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To make a change permanent in a variable value, you need to change it on the context parameter setup panel. Related topic: <a href="Technical_Process-Defining_a_job_design_context_and_variables.html#wp1007880"><i>Defining the context parameters</i></a>
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-ActivatingDisabling_a_job_or_sub-job.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Running_a_job.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

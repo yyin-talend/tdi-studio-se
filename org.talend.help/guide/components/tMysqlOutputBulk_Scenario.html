@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Inserting transformed data in MySQL database</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutputBulk_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1288321"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295411"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Inserting transformed data in MySQL database
+</b></font></h3>
+<dl><a name="wp1288324"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a four-component job which aims at fueling a database with data contained in a file, including transformed data. Two steps are required in this job, first step is to create the file, that will then be used in the second step. The first step includes a tranformation phase of the data included in the file.
+</font></dd>
+</dl><a name="wp1288332"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1288346"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop a <b>tRowGenerator</b>, a <b>tMap</b>, a <b>tMysqlOutputBulk</b> as well as a <b>tMysqlBulkExec</b> component.</font></li>
+<a name="wp1288357"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the main flow using <b>row main</b> links.</font></li>
+<a name="wp1288366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect the start component (<b>tRowgenerator</b> in this example) to the <b>tMysqlBulkExec</b> using a <b>trigger</b> connection, of type <b>Run Before</b>.</font></li>
+<a name="wp1288382"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">A <b>tRowGenerator</b> is used to generate random data. Double-click on the <b>tRowGenerator </b>component to launch the editor.</font></li>
+<a name="wp1288386"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the schema of the rows to be generated and the nature of data to generate. In this example, the <i>clients</i> file to be produced will contain the following columns: <i>ID</i>, <i>First Name</i>, <i>Last Name</i>, <i>Address</i>, <i>City</i> which all are defined as string data but the ID that is of integer type.</font></li>
+</ul>
+</ul>
+<a name="wp1288413"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1288418"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Some schema information don&#39;t necessarily need to be displayed. To hide them away, click on <b>Columns</b> list button next to the toolbar, and uncheck the relevant entries, such as <b>Precision</b> or <b>Parameters</b>.</font></li>
+<a name="wp1288432"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the plus button to add as many columns to your schema definition.</font></li>
+<a name="wp1288436"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the Refresh button to preview the first generated row of your output.</font></li>
+<a name="wp1288443"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tMap</b> component to set the transformation.</font></li>
+<a name="wp1288448"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop all columns from the input table to the output table. </font></li>
+</ul>
+</ul>
+<a name="wp1288455"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1288464"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Apply the transformation on the <i>LastName</i> column by adding uc in front of it.</font></li>
+<a name="wp1288471"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the transformation.</font></li>
+<a name="wp1288478"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMysqlOutputBulk</b> component.</font></li>
+<a name="wp1288484"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the name of the file to be produced in <b>File Name</b> field. If the delimited file information is stored in the <b>Repository</b>, select it in <b>Property type</b> field, to retrieve relevant data. In this use case the file name is <i>clients.txt</i>.</font></li>
+<a name="wp1288501"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is propagated from the <b>tMap</b> component, if you accepted it when prompted. </font></li>
+<a name="wp1288505"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, don&#39;t include the header information as the table should already contain it.</font></li>
+<a name="wp1288509"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The encoding is the default one for this use case.</font></li>
+<a name="wp1288513"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click OK to validate the output.</font></li>
+<a name="wp1288520"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMysqlBulkExec</b> to set the INSERT query to be executed.</font></li>
+<a name="wp1288523"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the database connection details. We recommend you to store this type of information in the <b>Repository</b>, so that you can retrieve them at any time for any job.</font></li>
+</ul>
+</ul>
+<a name="wp1288535"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1288544"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the table to be filled in with the collected data, in the <b>Table </b>field.</font></li>
+<a name="wp1288551"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in the column delimiters in the <b>Field terminated by</b> area.</font></li>
+<a name="wp1288555"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the encoding corresponds to the data encoding.</font></li>
+<a name="wp1288563"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+<a name="wp1288570"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMysqlOB_BE5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1288579"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <i>clients</i> database table is filled with data from the file  including upper-case <i>last name</i> as transformed in the job.
+</font></dd>
+<a name="wp1288583"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For simple Insert operations that don&#39;t include any transformation, the use of <b>tMysqlOutputBulkExec</b> allows to spare a step in the process hence to gain some performance. 
+</font></dd>
+<a name="wp1288596"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="tMysqlOutputBulkExec_Prop.html#wp1288610"><i>tMysqlOutputBulkExec properties</i></a>
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutputBulk_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>tELTMysqlMap</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tELTMysqlInput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlMap_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1293236"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tELTMysqlMap
+</b></font></h2>
+<a name="wp1292492"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tELTMySQLMap.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All three ELT MySQL components are closely related together in regard to their operating condition. These components should be used to handle MySQL DB schemas to generate Insert statements including clauses, which are to be executed to the DB output table defined.
+</font></div>
+<a name="wp1222541"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tELTMysqlMap properties
+</b></font></h3>
+<a name="wp1294741"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224212"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ Component family
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1224215"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224222"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Function
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1224225"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Helps to graphically build the SQL statement using the table provided as input.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224232"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Purpose
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1224255"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Uses the tables provided as input, to feed the parameter in the built statement. The statement can include  inner or outer joins to be implemented between tables or between one table and its aliases.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224263"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Properties
+</font></div>
+</td>
+    <td><a name="wp1224270"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Property type
+</b></font></div></div>
+</td>
+    <td><a name="wp1224273"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224277"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224280"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224287"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: No existing property data is to be retrieved
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224291"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224294"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224301"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224319"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224326"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Host
+</b></font></div></div>
+</td>
+    <td><a name="wp1224329"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database server IP address
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224333"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224340"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Port
+</b></font></div></div>
+</td>
+    <td><a name="wp1224343"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Listening port number of DB server.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224347"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224354"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Database
+</b></font></div></div>
+</td>
+    <td><a name="wp1224357"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224361"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224368"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Username and Password
+</b></font></div></div>
+</td>
+    <td><a name="wp1224375"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+DB user authentication data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224511"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224518"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Encoding
+</b></font></div></div>
+</td>
+    <td><a name="wp1224521"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224706"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224964"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Preview
+</b></font></div></div>
+</td>
+    <td><a name="wp1224967"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The preview is  an instant shot of the Mapper data. It becomes available when Mapper properties have been filled in with data. The preview synchronization takes effect only after saving changes.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1224950"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1224970"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Map editor
+</b></font></div></div>
+</td>
+    <td><a name="wp1224973"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The ELT Map editor allows you to define the output schema as well as build graphically the SQL statement to be executed.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1224605"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Usage
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1224608"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tELTMysqlMap</b> is used along with a <b>tELTMysqlInput</b> and <b>tELTMysqlOutput</b>. Note that the Output link to be used with these components has to reflect faithfully the name of the tables. 
+</font></div>
+<a name="wp1225186"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that the ELT components do not handle actual data flow but only schema information.
+</font></p>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1224618"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Connecting ELT components
+</b></font></h4>
+<dl><dl><a name="wp1225146"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The ELT components do not handle any data as such but table schema information that will be used to build the SQL query to execute.
+</font></dd>
+<a name="wp1225319"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Therefore the only connection required to connect these components together is a simple link. 
+</font></dd>
+<a name="wp1225358"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The output name you give to this link when creating it should always be the exact name of the table to be accessed as this parameter will be used in the SQL statement generated.  
+</font></p>
+<a name="wp1228385"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-05.html#wp1078496"><i>Link connection</i></a>
+</font></dd>
+</dl></dl><a name="wp1231175"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Mapping and joining tables
+</b></font></h4>
+<dl><dl><a name="wp1231178"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the ELT Mapper, you can select specific columns from input schemas and include them in the output schema. 
+</font></dd>
+<ul>
+<a name="wp1231184"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As you would do it in the regular Mapper editor, simply drag &amp; drop the content from the input schema towards the output table defined.</font></li>
+<a name="wp1231188"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the Ctrl and Shift keys for multiple selection of contiguous or non contiguous table columns.</font></li>
+</ul>
+<a name="wp1231195"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can implement explicit joins to retrieve various data from different tables. 
+</font></dd>
+<ul>
+<a name="wp1231204"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Join</b> drop-down list and select the relevant explicit join. </font></li>
+<a name="wp1231218"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Possible joins include: <b>Inner Join</b>, <b>Left Outer Join</b>, <b>Right Outer Join</b> or <b>Full Outer Join</b> and <b>Cross Join</b>.</font></li>
+<a name="wp1231231"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">By default the <b>Inner Join</b> is selected.</font></li>
+</ul>
+<a name="wp1231239"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also create <b>Alias</b> tables to retrieve various data from the same table.
+</font></dd>
+<ul>
+<a name="wp1231248"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Input area, click on the plus (<b>+</b>) button to create an Alias. </font></li>
+<a name="wp1231252"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the table to base the alias on.</font></li>
+<a name="wp1231258"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in a new name for the alias table, preferrably not the same as the main table.</font></li>
+</ul>
+</dl></dl><a name="wp1231264"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Adding where clauses
+</b></font></h4>
+<dl><dl><a name="wp1231270"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also restrict the Select statement based on a Where clause. Click on the <b>Add filter row</b> button at the top of the output table and type in the relevant restriction to be applied.
+</font></dd>
+<a name="wp1231274"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Make sure that all input components are linked correctly to the ELT Map component to be able to implement all inclusions, joins and clauses.
+</font></dd>
+</dl></dl><a name="wp1231282"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Generating the SQL statement
+</b></font></h4>
+<dl><dl><a name="wp1231285"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The mapping of elements from the input schemas to the output schemas create instantly the corresponding Select statement.
+</font></dd>
+</dl></dl><a name="wp1231293"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ELTMap_SelectQuery.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1231298"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The clause are also included automatically.
+</font></dd>
+</dl></dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tELTMysqlInput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlMap_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

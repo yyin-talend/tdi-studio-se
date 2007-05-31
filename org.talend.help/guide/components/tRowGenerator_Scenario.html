@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Generating random java data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tRowGenerator_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tRunJob_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1189736"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295888"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Generating random java data
+</b></font></h3>
+<dl><a name="wp1289130"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario creates a two-component job made in Java, generating 50 rows structured as follows: a randomly picked-up ID in a 1-to-3 range, a random ascii First Name and Last Name generation and a random date taken in a defined range.
+</font></dd>
+</dl><a name="wp1189747"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tRowGenerator1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189758"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tRowGenerator</b> and a <b>tLogRow</b> component from the Palette to the workspace.</font></li>
+<a name="wp1189768"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tRowGenerator</b> component and select <i>Row &gt; Main</i>. Drag this main row link onto the <b>tLogRow</b> component and release when the plug symbol displays.</font></li>
+<a name="wp1189779"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the <b>tRowGenerator</b> component to open the Editor.</font></li>
+<a name="wp1189794"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the fields to be generated.</font></li>
+</ul>
+</ul>
+<a name="wp1189801"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tRowGenerator2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189816"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The random ID column is of integer type, the First and Last names are of string type and the Date is of date type.</font></li>
+<a name="wp1221929"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Function</b> list, select the relevant function or set on the three dots for custom function. </font></li>
+<a name="wp1222098"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Function parameters</b> tab, define the Values to be randomly picked up.</font></li>
+</ul>
+</ul>
+<a name="wp1222105"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tRowGenerator3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<a name="wp1222114"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><i>First_Name</i> and <i>Last_Name</i> columns are to be generated using the getAsciiRandomString function that is predefined in the system routines. By default the length defined is 6 character-long. But you can change it if need be.</font></li>
+<ul>
+<a name="wp1222236"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <i>Date</i> column calls the also predefined getRandomDate function. You can edit the parameter values in the <b>Function parameters</b> tab.</font></li>
+<a name="wp1262392"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Number of Rows</b> to be generated to 50.</font></li>
+<a name="wp1262396"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click OK to validate the setting.</font></li>
+<a name="wp1262399"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the tLogRow component to view the properties. The default setting is retained for this job.</font></li>
+<a name="wp1262408"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+<a name="wp1222369"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tRowGenerator4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1222395"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The 50 rows are generated following the setting defined in the <b>tRowGenerator</b> editor and the output is displayed in the <b>Run Job</b> console.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tRowGenerator_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tRunJob_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
+    <title>Defining the Start component</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-06.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-08.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1014821"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Defining the Start component
+</b></font></h2>
+<a name="wp1010702"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Start</b> component is the trigger of a job. There can be several Start components per job design if there are several flows running in parallel. But for one flow and its <i>connected</i> subflows, only one component can be the Start component.
+</font></p>
+<a name="wp1010705"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click and drop a component onto the workspace, all possible start components take a distinctive bright green background colour. Notice that most of the components, can be <b>Start</b> components. 
+</font></p>
+<a name="wp1011019"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Only components which don&#39;t make sense to trigger a flow, will not be proposed as Start components, such as tMap component for example. 
+</font></p>
+<a name="wp1010724"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Start_comp.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1011114"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To distinguish which component is to be the <b>Start</b> component of your job, identify the main flow and the secondary flows of your job 
+</font></p>
+<ul>
+<a name="wp1011052"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The main flow should be the one connecting a component to the next component using a Row type link. The Start component is then automatically set on the first component of the main flow (icon with green background).</font></li>
+<a name="wp1011096"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The secondary flows are also connected using a Row-type link which is then called Lookup row on the workspace to distinguish it from the main flow. This Lookup flow is used to enrich the main flow with more data.</font></li>
+</ul>
+<a name="wp1010778"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Be aware that you can change the Start component hence the main flow by changing a main Row into a Lookup Row, simply through a right-click on the row to be changed. 
+</font></p>
+<a name="wp1011206"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topics:
+</font></p>
+<ul>
+<a name="wp1011220"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><a href="Technical_Process-05.html"><i>Connecting components together</i></a></font></li>
+<a name="wp1037112"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><a href="Technical_Process-11.html"><i>Activating/Disabling a job or sub-job</i></a></font></li>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-06.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-08.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

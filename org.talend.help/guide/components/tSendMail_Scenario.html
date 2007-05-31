@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Email on error</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSendMail_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSleep_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1053357"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295937"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Email on error
+</b></font></h3>
+<dl><a name="wp1289156"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario creates a three-component job which sends an email to defined recipients when an error occurs.
+</font></dd>
+</dl><a name="wp1019079"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSendMail.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1099130"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components from your palette to the workspace: <b>tFileInputDelimited</b>, <b>tFileOutputXML</b>, <b>tSendMail</b>.</font></li>
+<a name="wp1019092"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define <b>tFileInputdelimited</b> properties. Related topic: <a href="tFileInputDelimited_Prop.html#wp1030983"><i>tFileInputDelimited properties</i></a>.</font></li>
+<a name="wp1019509"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputDelimited</b> component and select <i>Row &gt; Main</i>. Then drag it onto the <b>tFileOutputXML</b> component and release when the plug symbol shows up.</font></li>
+<a name="wp1019534"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define tFileOutputXML properties. </font></li>
+<a name="wp1019587"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag a <b>Run on Error</b> link from <b>tFileDelimited</b> to <b>tSendMail</b> component.</font></li>
+<a name="wp1019624"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>tSendMail</b> component properties:</font></li>
+</ul>
+</ul>
+<a name="wp1019635"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSendMail1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1019744"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the recipient and sender email addresses, as well as the email subject.</font></li>
+<a name="wp1019756"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a message containing the error code produced using the corresponding global variable. Access the list of variables by pressing <b>Ctrl+Space</b>.</font></li>
+<a name="wp1100330"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add attachments and extra header information if any. Type in the SMTP information.</font></li>
+</ul>
+</ul>
+<a name="wp1053467"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSendMail2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1100349"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In this scenario, the file containing data to be transferred to XML output cannot be found. <b>tSendmail</b> runs on this error and sends an notification email the defined recipient.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSendMail_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSleep_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

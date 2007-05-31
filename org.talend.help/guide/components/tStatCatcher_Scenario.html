@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Displaying job stats log</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tStatCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSybaseInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1189394"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1296003"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Displaying job stats log
+</b></font></h3>
+<dl><a name="wp1289195"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a four-component job, aiming at displaying on the Run Job console the statistics log fetched from the file generation through the tStatCatcher component.
+</font></dd>
+</dl><a name="wp1189405"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tStatcatch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189416"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the required components: <b>tRowGenerator</b>, <b>tFileOutputDelimited</b>, <b>tStatCatcher</b> and <b>tLogRow</b></font></li>
+<a name="wp1189432"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Properties</b> panel of <b>tRowGenerator</b>, define the data to be generated. For this job, the schema is composed of three columns: <i>ID_Owners</i>, <i>Name_Customer</i> and <i>ID_Insurance</i>, generated using Perl script.</font></li>
+</ul>
+</ul>
+<a name="wp1189441"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tStatcatch2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189447"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> The number of rows can be restricted to 100.</font></li>
+<a name="wp1189455"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Main</b> tab of the Properties view. </font></li>
+</ul>
+</ul>
+<a name="wp1189462"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tStatcatch3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189471"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And check the <b>tStatCatcher Statistics</b> box to enable the statistics fetching operation.</font></li>
+<a name="wp1189477"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then, define the output component&#39;s properties. In the <b>tFileOutputDelimited</b> Properties panel, browse to the output file or enter a name for the output file to be created. Define the delimiters, such as semi-colon, and the encoding. </font></li>
+<a name="wp1189484"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>Edit schema</b> and make sure the schema is recollected from the input schema. If need be, click on <b>Sync Columns</b>.</font></li>
+<a name="wp1189499"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click on the <b>Main</b> tab of the <b>Properties</b> view, and check here as well the <b>tStatCatcher Statistics</b> box to enable the processing data gathering.</font></li>
+<a name="wp1189507"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the secondary job, double-click on the <b>tStatCatcher</b> component. Note that the Properties are provided for information only as the schema representing the processing data to be gathered and aggregated in statistics, is defined and read-only.</font></li>
+</ul>
+</ul>
+<a name="wp1189516"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tStatcatch4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189525"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define then the <b>tLogRow</b> to set the delimiter to be displayed on the console.</font></li>
+<a name="wp1189530"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Eventually, press <b>F6</b> to run the job and display the job result.</font></li>
+</ul>
+</ul>
+<a name="wp1189537"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tStatcatch5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1189540"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The log shows the Begin and End information for the job itself and for each of the component used in the job.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tStatCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSybaseInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

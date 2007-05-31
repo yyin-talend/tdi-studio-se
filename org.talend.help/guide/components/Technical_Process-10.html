@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
+    <title>Mapping data flows in a job</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-09.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-11.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1038087"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Mapping data flows in a job
+</b></font></h2>
+<a name="wp1042429"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For the time being, the way to handle multiple input and output flows including transformations and data re-routing is to use the tMap component. The following section gives details about the usage principles of this component, for further information or scenarii and use cases<a href="tMap_Prop.html">, see&#160;<i>tMap.</i></a>
+</font></p>
+<a name="wp1063180"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tMap operation overview
+</b></font></h3>
+<dl><a name="wp1042433"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+tMap allows the following types of operations:
+</font></dd>
+<ul>
+<a name="wp1042439"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">data multiplexing and demultiplexing</font></li>
+<a name="wp1042443"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">data transformation on any type of fields</font></li>
+<a name="wp1042447"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">fields concatenation and interchange</font></li>
+<a name="wp1042451"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">field filtering using constraints</font></li>
+<a name="wp1042456"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">data rejecting</font></li>
+</ul>
+<a name="wp1042459"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+As all these operations of transformation and/or routing are carried out by tMap, this component cannot be a Start or End component in the job design.
+</font></dd>
+</dl><a name="wp1042467"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Mapper2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1042473"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tMap</b> uses incoming connections to pre-fill input schemas with data in the Mapper. Therefore, you cannot create new input schemas straight in the Mapper. Instead, you need to implement as many <b>Row</b> connections incoming to tMap component as required, in order to create as many input schemas as needed.
+</font></p>
+<dl><a name="wp1042480"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The same way, create as many output row connections as required. However, you can fill in the output with content straight from the Mapper through a convenient graphical editor. 
+</font></dd>
+<a name="wp1042490"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that there can be only one <b>Main</b> incoming rows. All other incoming rows are of <b>Lookup</b> type. Related topic: <a href="Technical_Process-05.html#wp1013380"><i>Row connection</i></a>
+</font></dd>
+<a name="wp1042497"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Lookup rows are incoming connections from secondary (or reference) flows of data. These reference data might depend directly or indirectly on the primary flow. This dependency relationship is translated with an graphical mapping and the creation of an expression key.  
+</font></dd>
+<a name="wp1042501"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Although the mapper requires the connections to be implemented in order to define Input and Output flows, you also need to create the actual mapping in order for the Preview to be available in the Properties panel of the workspace.
+</font></dd>
+</dl><a name="wp1042509"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Mapping_Preview.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1042512"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Double-click the tMap icon or click on the Map editor three-dot button to open the Mapping editor in a new window.
+</font></dd>
+</dl><a name="wp1071066"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Mapper
+</b></font></h3>
+<a name="wp1042526"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tMap</b> is an advanced component which requires more information than other components. Therefore, the <b>Mapper</b> is the most appropriate tool allowing you to define all parameters needed to map, transform and route your data flows using a graphical interface.
+</font></p>
+<a name="wp1042557"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Mapper_general.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1042560"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For all tables and the Mapper window, you can minimize and restore the window using the window icon.
+</font></dd>
+<a name="wp1042565"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Mapper is made of several panels: 
+</font></dd>
+<ul>
+<a name="wp1042570"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Input panel is the top left panel on the window. It offers a graphical representation of all (main and lookup) incoming data flows. The data are gathered in various columns of input tables. Note that the table name reflects the main or lookup row from the job design on the workspace.</font></li>
+<a name="wp1042575"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Variable panel is the central panel on the Mapper window. It allows the centralization of redundant information through the mapping to variable and allows you to carry out transformation.</font></li>
+<a name="wp1042579"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Output panel is the top right panel on the window. It allows mapping data and fields from Input tables and Variables to the appropriate Output rows.</font></li>
+<a name="wp1042583"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Both bottom panels are the Input and Output schemas description. Schema editor tab offers a schema view of all columns of input and output tables in selection in their respective panel. </font></li>
+<a name="wp1055755"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Expression editor is the edition tool for all expression keys of Input/Output data, variable expressions or filtering conditions.</font></li>
+</ul>
+<a name="wp1055760"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The name of Input/Output tables in the mapping editor reflects the name of the incoming and outgoing rows.
+</font></dd>
+</dl><a name="wp1055768"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/tmap_Moveup.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1055775"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Input setting 
+</b></font></h4>
+<dl><dl><a name="wp1055779"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The order of the Input tables is essential. 
+</font></dd>
+<a name="wp1055782"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The top table reflects the Main flow data connection, and for this reason, is given priority to be read and processed through the tmap component.
+</font></dd>
+<a name="wp1055786"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Therefore you cannot move up or down the Main input table, in order to ensure that no Join link can be lost.
+</font></dd>
+<a name="wp1055790"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Although you can use the up and down arrows to interchange Lookup tables order, be aware that the Join links between two lookup tables may then be lost.
+</font></dd>
+<a name="wp1055798"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-10.html#wp1058587"><i>Joining input tables</i></a>.
+</font></dd>
+</dl></dl><a name="wp1055804"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Filling in tables
+</b></font></h4>
+<dl><dl><dl><a name="wp1055807"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To fill in input tables, you need to define first schemas of all input components connected to the tMap component. 
+</font></dd>
+<a name="wp1055811"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The  main Row connection content incoming from the main flow component is reflected in the first table of the Mapper&#39;s Input zone. 
+</font></dd>
+<a name="wp1055815"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Lookup connection content fills in all other (said &quot;lookup&quot;) tables. If you haven&#39;t define the schema of an input component yet , the matching input table in the Mapper will display empty.
+</font></dd>
+<a name="wp1058955"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The key field is also retrieved from the schema defined in the Input component.
+</font></dd>
+<a name="wp1058958"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can use variables to reuse content defined in the Variable zone or use global or context variables. Press <b>Ctrl+Space</b> to access the list of variables, combining global, context and mapping variables. The list of variables changes according to the context and grows along new variable creation. Only valid mappable variables in the context show on the var proposal list.
+</font></dd>
+</dl></dl></dl><a name="wp1058991"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InputCtrlSpace.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1058973"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Appended to the Variable list, a metadata box provides information about the selected column.
+</font></dd>
+<a name="wp1055848"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-10.html#wp1056018"><i>Mapping variables</i></a>
+</font></dd>
+</dl></dl></dl><a name="wp1058587"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Joining input tables
+</b></font></h4>
+<dl><dl><dl><a name="wp1058593"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Given that Main and Lookup data can be bound together upon the <i>expression keys</i>, the order of table does fully make sense.
+</font></dd>
+<a name="wp1058607"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Indeed, <b>Joins</b> let you select data from a table depending upon data from another table.
+</font></dd>
+<a name="wp1055879"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Simply drag and drop column names from one table to a subordinate one, to create a <b>Join</b> relationship between the two tables. You can this way retrieve and process data from multiple inputs.
+</font></dd>
+<a name="wp1055886"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can create direct joins between the main table and lookup tables. But you can also create indirect joins from the main table to a lookup table, via another lookup table. This requires a direct join between one of the Lookup table to the main one. 
+</font></dd>
+<a name="wp1055891"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The join displays graphically as a violet link.
+</font></dd>
+<a name="wp1055895"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that you cannot create a Join from a subordinate table towards a table higher in the zone.
+</font></dd>
+<a name="wp1055902"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Expression key</b> field which is filled in with the dragged and dropped data  is editable in the input schema or in the<b> Schema editor</b> panel, whereas the column name can only be changed from the <b>Schema editor</b> panel.
+</font></dd>
+<a name="wp1055907"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can either insert the dragged data into a new entry or replace the existing entries or else concatenate all selected data into one cell. 
+</font></dd>
+</dl></dl></dl><a name="wp1055915"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/tmap_MinimizeTable.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1055918"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further information about possible types of drag &amp; drops, see <a href="Technical_Process-10.html#wp1056156"><i>Output setting</i></a>.
+</font></dd>
+<a name="wp1055925"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can use the top right icons to minimize or restore the table size in the Input zone. 
+</font></dd>
+<a name="wp1055930"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that the Join links binding two tables are still visible.
+</font></dd>
+<a name="wp1055933"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Creating a join automatically assigns a key onto the joined field name. 
+</font></dd>
+<a name="wp1055937"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+When, removing a join between two tables, a pop-up window prompts you to remove the key from the join target field being unjoined.
+</font></dd>
+<a name="wp1055973"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	If you decide to keep the key on the target field, without the expression key field being filled in, be aware that code execution might encounter issues.
+</font></p>
+<a name="wp1055977"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The key symbol displays on the input schema itself but also on the <b>Schema editor</b> panel, which lets you uncheck the box to disable the Key feature if need be.
+</font></dd>
+</dl></dl></dl><a name="wp1055986"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InputProp.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1055994"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-10.html#wp1082221"><i>Schema editor</i></a>
+</font></dd>
+</dl></dl></dl><a name="wp1056000"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Inner joins
+</b></font></h4>
+<dl><dl><dl><a name="wp1058730"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Inner join is a normal Join upon a table defined as Inner Join table. This particular Join distinguishes itself from other joins by the way the rejection is performed. If the data of the table defined as Inner Join table cannot be retrieved, in other words, the Inner Join cannot be established for any reason, then the requested data will be rejected to the Output table defined as Inner Join Reject table.
+</font></dd>
+<a name="wp1058785"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Basically create a join between the main input table and a secondary (lookup) table, and click on <b>Inner Join</b>, to define this lookup table as Inner Join table.
+</font></dd>
+</dl></dl></dl><a name="wp1059121"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InnerJoin.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1059124"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Make sure the Inner Join table (as any Join table) has a Key field defined. Instead, some execution errors might occur.
+</font></p>
+<dl><dl><dl><a name="wp1059083"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the Output area, click on the Inner Join Reject button to define the Inner Join reject output.  
+</font></dd>
+<a name="wp1059075"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	An Inner Join table should always be coupled to an Inner Join Reject table
+</font></p>
+</dl></dl></dl><a name="wp1059157"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InnerJoin2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1059438"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-10.html#wp1059387"><i>Inner Join Rejection</i></a>
+</font></dd>
+</dl></dl></dl><a name="wp1058722"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Removing Input entries from table
+</b></font></h4>
+<dl><dl><dl><a name="wp1056003"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To remove Input entries, click on the red cross sign on the Schema Editor of the selected table. Press Ctrl or Shift and click on fields for multiple selection to be removed.
+</font></dd>
+<a name="wp1056007"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that if you remove Input entries from the Mapper schema, this removal also occurs in your component schema definition.
+</font></p>
+</dl></dl></dl><a name="wp1056018"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Mapping variables  
+</b></font></h4>
+<dl><dl><a name="wp1056021"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Variable table regroups all mapping variables which are used numerous times in various places. 
+</font></dd>
+<a name="wp1056025"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also use the Expression field of the Var table to carry out any transformation you want to, using Perl code or Java Code.
+</font></dd>
+<a name="wp1056030"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Variables help you save processing time and avoid you to retype many times the same data.
+</font></dd>
+</dl></dl><a name="wp1056037"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_Var1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1056041"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There are various possibilities to create variables:
+</font></dd>
+<ul>
+<a name="wp1056046"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in freely your variables in Perl. Enter the strings between quotes or concatenate functions using a dot as coded in Perl.</font></li>
+<a name="wp1056051"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add new lines using the plus sign and remove lines using the red cross sign. And press Ctrl+Space to retrieve existing global and context variables.</font></li>
+<a name="wp1056057"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop one or more Input entries to the Var table.</font></li>
+</ul>
+</dl></dl><a name="wp1056064"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_Var2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1056068"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select an entry on the Input zone or press Shift key to select multiple entries of one Input table. 
+</font></dd>
+<a name="wp1056071"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press Ctrl to select either non-appended entries in the same input table or entries from various tables. When selecting entries in the second table, notice that the first selection displays in grey. Hold the Ctrl key down to drag all entries together. A tooltip shows you how many entries are in selection.
+</font></dd>
+<a name="wp1056083"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then various types of drag and drops are possible depending on the action you want to carry out.
+</font></dd>
+<a name="wp1056113"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1056088"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+How to...
+</b></font></div></div>
+</th>
+    <th><a name="wp1056090"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Associated actions
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1056092"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Insert all selected entries as separated variables.
+</font></div>
+</td>
+    <td><a name="wp1056095"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Simply drag &amp; drop to the Var table. Arrows show you where the new Var entry can be inserted. Each Input is inserted in a separate cell.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056097"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Concatenate all selected input entries together with an existing Var entry
+</font></div>
+</td>
+    <td><a name="wp1056100"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; drop onto the Var entry which gets highlighted. All entries gets concatenated into one cell. Add the required operators using Perl/Java operations signs. The dot concatenates string variables.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056102"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Overwrite a Var entry with selected concatenated Input entries
+</font></div>
+</td>
+    <td><a name="wp1056104"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; drop onto the relevant Var entry which gets highlighted  then press Ctrl and release. All selected entries are concatenated and overwrite the highlighted Var.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056107"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Concatenate selected input entries with highlighted Var entries and create new Var lines if needed
+</font></div>
+</td>
+    <td><a name="wp1056109"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; drop onto an existing Var then press Shift when browsing over the chosen Var entries. First entries get concatenated with the highlighted Var entries. And if necessary new lines get created to hold remaining entries.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+</dl></dl><a name="wp1056119"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Accessing global or context variables
+</b></font></h4>
+<dl><dl><dl><a name="wp1056127"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press <b>Ctrl+Space</b> to access the global and context variable list. 
+</font></dd>
+<a name="wp1056130"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Appended to the Variable list, a metadata list provides information about the selected column.
+</font></dd>
+</dl></dl></dl><a name="wp1056138"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Removing variables
+</b></font></h4>
+<dl><dl><dl><a name="wp1056141"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To remove a selected Var entry, click on the red cross sign. This removes the whole line as well as the link. 
+</font></dd>
+<a name="wp1056148"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press Ctrl or Shift and click on fields for multiple selection then click the red cross sign.
+</font></dd>
+</dl></dl></dl><a name="wp1056156"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Output setting 
+</b></font></h4>
+<dl><dl><a name="wp1056159"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the workspace, the creation of a Row connection from the tMap component to the output components adds Output schema tables to the Mapper window.
+</font></dd>
+<a name="wp1056163"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also add an Output schema in your Mapper, using the plus sign from the tool bar of the Output zone.
+</font></dd>
+<a name="wp1071365"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Unlike the Input zone, the order of output schema tables does not make such a difference, as there is no subordination relationship between outputs (of Join type).
+</font></dd>
+<a name="wp1071369"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Once all connections, hence output schema tables, are created, you can select and organize the output data via drag &amp; drops.
+</font></dd>
+<a name="wp1071377"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can drag and drop one or several entries from the Input zone straight to the relevant output table.
+</font></dd>
+<a name="wp1056187"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press Ctrl or Shift, and click on entries to carry out multiple selection.
+</font></dd>
+<a name="wp1056190"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Or you can drag expressions from the Var zone and drop them to fill in the output schemas with the appropriate reusable data.
+</font></dd>
+<a name="wp1056194"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that if you make any change to the Input column in the Schema Editor, a dialog prompts you to decide to propagate the changes throughout all Input/Variable/Output table entries, where concerned. 
+</font></dd>
+<a name="wp1056229"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1056201"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Action
+</b></font></div></div>
+</th>
+    <th><a name="wp1056204"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Result
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1056206"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; Drop onto existing expressions
+</font></div>
+</td>
+    <td><a name="wp1056209"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Concatenates the selected expression with the existing expressions.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056211"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; Drop to insertion line
+</font></div>
+</td>
+    <td><a name="wp1056213"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Inserts a or several new entries at start or end of table or between two existing lines.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056215"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; Drop + Ctrl
+</font></div>
+</td>
+    <td><a name="wp1056217"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Replaces highlighted expression with selected expression.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056220"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; Drop + Shift
+</font></div>
+</td>
+    <td><a name="wp1056222"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Adds to all highlighted expressions the selected fields. Inserts new lines if needed.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1056225"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag &amp; Drop + Ctrl + Shift
+</font></div>
+</td>
+    <td><a name="wp1056227"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Replaces all highlighted expressions with selected fields. Inserts new lines if needed.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1056233"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can add filters and rejection to customize your outputs.
+</font></dd>
+</dl></dl><a name="wp1056239"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Filters
+</b></font></h4>
+<dl><dl><dl><a name="wp1056243"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Filters allow you to make a selection among the input fields, and send only the selected fields to various outputs. 
+</font></dd>
+<a name="wp1056247"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click the plus button at the top of the table to add a filter line.
+</font></dd>
+</dl></dl></dl><a name="wp1056254"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_OutputFilter.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1056258"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can enter freely your filter statements using Perl operators and function. 
+</font></dd>
+<a name="wp1056261"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drag and drop expressions from the Input zone or from the Var zone to the Filter row entry of the relevant Output table.
+</font></dd>
+</dl></dl></dl><a name="wp1056269"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_OutputConstraint2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1056272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+An orange link is then created. Add the required Perl/Java operator to finalize your filter formula. 
+</font></dd>
+<a name="wp1056277"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can create various filters on different lines. The AND operator is the logical conjunction of all stated filters.  
+</font></dd>
+</dl></dl></dl><a name="wp1056285"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Rejections
+</b></font></h4>
+<dl><dl><dl><a name="wp1056289"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Reject options define the nature of an output table.
+</font></dd>
+<a name="wp1056292"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+It groups data which do not satisfy one or more filters defined in the regular output tables. Note that as regular output tables, are meant all non-reject tables.
+</font></dd>
+<a name="wp1056296"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This way, data rejected from other output tables, are gathered in one or more dedicated tables, allowing you to spot any error or unpredicted case. 
+</font></dd>
+<a name="wp1056300"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Reject principle concatenates all non Reject tables filters and defines them as an ELSE statement.
+</font></dd>
+<a name="wp1056304"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Create a dedicated table and click the Output reject button to define it as Else part of the regular tables.
+</font></dd>
+</dl></dl></dl><a name="wp1059356"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_OutputReject.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1059359"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can define several Reject tables, to offer multiple refined outputs. To differenciate various Reject outputs, add filter lines, by clicking on the plus arrow button. 
+</font></dd>
+<a name="wp1056320"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Once a table is defined as Reject, the verification process will be first enforced on regular tables before taking in consideration possible constraints of the Reject tables.
+</font></dd>
+<a name="wp1059379"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that data are not exclusively processed to one output. Although a data satisfied one constraint, hence is routed to the corresponding output, this data still gets checked against the other constraints and can be routed to other outputs.
+</font></dd>
+</dl></dl></dl><a name="wp1059387"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Inner Join Rejection
+</b></font></h4>
+<dl><dl><dl><a name="wp1059392"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Inner Join is a Lookup Join. The Inner Join Reject table is a particular type of Rejection output. It gathers rejected data from the main row table after an Inner Join could not be established. 
+</font></dd>
+<a name="wp1059405"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To define an Output flow as container for rejected Inner Join data, create a new output component on your job that you connect to the Mapper. Then in the Mapper, click on the Inner Join Reject button to define this particular Output table as Inner Join Reject table.
+</font></dd>
+</dl></dl></dl><a name="wp1059498"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InnerJoin2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1059397"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Removing Output entries
+</b></font></h4>
+<dl><dl><dl><a name="wp1082182"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To remove Output entries, click on the cross sign on the Schema Editor of the selected table.
+</font></dd>
+</dl></dl></dl><a name="wp1082189"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Expression editor
+</b></font></h4>
+<dl><dl><a name="wp1082192"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All expressions (Input, Var or Output) and constraint statements can be viewed and edited from the Expression editor. This editor provides visual comfort to write any functions or transformation in a handy dedicated window. 
+</font></dd>
+<a name="wp1082197"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the expression to be edited. Click on Expression editor. 
+</font></dd>
+</dl></dl><a name="wp1082204"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_ExprEditor.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1082207"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Enter the Perl code  or Java code according to your needs. The corresponding table expression is synchronized.
+</font></dd>
+<a name="wp1082213"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Refer to the relevant Perl or Java documentation for more information regarding functions and operations.
+</font></p>
+</dl></dl><a name="wp1082221"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Schema editor  
+</b></font></h4>
+<dl><dl><a name="wp1082225"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Schema Editor details all fields of the selected table.
+</font></dd>
+</dl></dl><a name="wp1082232"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/tmap_InputSchema.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1082236"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Use the tool bar below the schema table, to add, move or remove columns from the schema. 
+</font></dd>
+<a name="wp1082240"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also load a schema from the Repository or export it into a file.
+</font></dd>
+<a name="wp1082281"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1082245"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Metadata
+</b></font></div></div>
+</th>
+    <th><a name="wp1082247"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1082249"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Column
+</font></div>
+</td>
+    <td><a name="wp1082251"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Column name as defined on the Mapper schemas and on the Input or Output component schemas
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082253"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Key
+</font></div>
+</td>
+    <td><a name="wp1082255"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Key shows if the expression key data should be used to retrieve data through the Join link. If unchecked, the Join relation  is disabled.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082257"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type
+</font></div>
+</td>
+    <td><a name="wp1082259"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type of data. String or Integer. 
+</font></div>
+<a name="wp1082386"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	This column should always be defined in Java version.
+</font></p>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082261"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Length
+</font></div>
+</td>
+    <td><a name="wp1082263"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+-1 shows that no length value has been defined in the schema.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082265"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Precision
+</font></div>
+</td>
+    <td><a name="wp1082267"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+precises the length value if any is defined. 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082269"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Nullable
+</font></div>
+</td>
+    <td><a name="wp1082271"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Uncheck this box if the field value should not be null
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082273"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Default
+</font></div>
+</td>
+    <td><a name="wp1082275"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Shows any default value that may be defined for this field.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1082277"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Comment
+</font></div>
+</td>
+    <td><a name="wp1082279"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Free text field. Enter any useful comment.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1082284"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that Input metadata and Output metadata are independent from each other. You can for instance change the label of a column on the Output side without the column label of the Input schema being changed.
+</font></p>
+<a name="wp1082288"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+However, any change made to the metadata are immediately reflected in the corresponding schema on the tMap relevant (Input or Output) zone, but also on the schema defined for the component itself on the workspace.
+</font></dd>
+<a name="wp1082292"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A Red colored background shows that an invalid character has been entered. Most special characters are prohibited in order for the job to be able to interpret and use the text entered in the code. Authorized characters include lower-case, upper-case, figures except as start character.
+</font></dd>
+<a name="wp1082300"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Browse the mouse over the red field, a tooltip displays the error message.
+</font></dd>
+</dl></dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-09.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-11.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

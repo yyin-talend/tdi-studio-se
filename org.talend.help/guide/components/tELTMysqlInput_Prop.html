@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>tELTMysqlInput</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tDie_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1293523"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tELTMysqlInput
+</b></font></h2>
+<a name="wp1293111"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tELTMySQLInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All three ELT MySQL components are closely related together in regard to their operating condition. These components should be used to handle MySQL DB schemas to generate Insert statements including clauses, which are to be executed to the DB output table defined.
+</font></div>
+<a name="wp1293919"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tELTMysqlInput properties
+</b></font></h3>
+<a name="wp1294716"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293924"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ Component family
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1293926"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293930"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Function
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1293932"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Provides the table schema to be used for the SQL statement to execute.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293936"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Purpose
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1293938"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Allows to add as many Input tables as required for the most complicated Insert statement.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293942"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Properties
+</font></div>
+</td>
+    <td><a name="wp1293949"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Schema type and Edit Schema
+</b></font></div></div>
+</td>
+    <td><a name="wp1293952"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the nature and number of fields to be processed.  The schema is either built-in or remotely stored in the Repository.  The Schema  defined is then passed on to the ELT Mapper to be included to the Insert SQL statement.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293954"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1293956"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1293961"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1293966"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1293968"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1293973"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1293978"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Usage
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1293986"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tELTMysqlInput</b> is to be used along with the <b>tELTMysqlMap</b>. Note that the Output link to be used with these components has to reflect faithfully the name of the table 
+</font></div>
+<a name="wp1293989"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that the ELT components do not handle actual data flow but only schema information.
+</font></p>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tDie_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

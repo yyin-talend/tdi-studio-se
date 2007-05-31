@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:30">
+    <title>Scenario 1: Simple mapping</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMap_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMap_Scenario2.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1190029"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 1: Simple mapping
+</b></font></h3>
+<dl><a name="wp1287847"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The job described below aims at reading data from a csv file stored in the Repository, looking up at a reference file also stored remotely, then extracting data from these two files based on defined filters to an output file or a reject file.
+</font></dd>
+<ul>
+<a name="wp1190044"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>File</b> in the Palette of components, select  <b>tFileInputCSV</b> and drop it on the design area. Rename the Label to <i>Cars</i>, either by double-clicking on the label in the workspace or via the <b>View</b> tab of the Properties panel.</font></li>
+<a name="wp1190058"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Repeat this operation, and rename this second input component: <i>Owners</i>. </font></li>
+<a name="wp1190067"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>Processing</b> in the Palette of components, select <b>tMap</b> and drop it on the design area. </font></li>
+<a name="wp1190071"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the two Input components to the mapping component and customize the row connection labels.</font></li>
+</ul>
+</dl><a name="wp1190080"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190085"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Cars and Owners delimited files metadata are defined in the Metadata area of the repository. You can hence use their Repository reference in the Properties panel.</font></li>
+<a name="wp1190094"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on <i>Cars</i>, to set the Properties panel.</font></li>
+</ul>
+</ul>
+<a name="wp1190101"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190115"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <i>Repository</i> to retrieve <b>Property type</b> as well as <b>Schema type</b>. The rest of the fields gets automatically filled in appropriately when you select the relevant Metadata entry on the list.</font></li>
+<a name="wp1190119"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the Owners component and repeat the setting operation. Select the corresponding Metadata entry.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1190126"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further information regarding Metadata creation in the Repository, see <a href="Technical_Process-Defining_Metadata_items.html"><i>Defining Metadata items</i></a> on <a href="Technical_Process-Defining_Metadata_items.html"> </a>.
+</font></dd>
+<ul>
+<a name="wp1190139"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMap</b> component to open the Mapper. Notice that the Input area is already filled with the Input component metadata tables and that the top table is the Main flow table. </font></li>
+<a name="wp1190144"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice also that the respective row connection labels display on the top bar of the tables.</font></li>
+<a name="wp1190147"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create a Join between the two tables on the ID_Owner field by simply dragging the top table ID_Owner field to the lookup input table. </font></li>
+</ul>
+</dl><a name="wp1190156"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190162"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define this link as an Inner Join by checking the box.</font></li>
+<a name="wp1190170"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Plus</b> button on the Output area of the Mapper to add three Output tables</font></li>
+</ul>
+</ul>
+<a name="wp1190177"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop Input content to fill in the first output schema. For more information regarding data mapping<a href="Technical_Process-Mapping_data_flows_in_a_job.html">, see&#160;<i>Mapping data flows in a job.</i></a></font></li>
+<a name="wp1190189"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the plus arrow button to add a filter row. In the Insured table, will be gathered cars and owners data which include an Insurance ID.  </font></li>
+</ul>
+</ul>
+<a name="wp1190198"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190203"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Therefore drag the ID_Insurance field to the Filter condition area and enter the formula used meaning `not undefined&#39;: <i>$Owners_data[ID_Insurance] ne &#39;&#39;</i> </font></li>
+<a name="wp1190210"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Reject_NoInsur table is a standard reject output flow containing all data that do not satisfy the required filter condition. Click the orange arrow to set the table as Reject Output.</font></li>
+</ul>
+</ul>
+<a name="wp1190219"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190224"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The third and last table gathers the schema entries  whose Inner Join could not be established. One Owners_ID  from the Car database does not match any Owner_ID from the Owner file.</font></li>
+<a name="wp1190229"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the violet arrow button to set the last table as the Inner Join Reject output flow. </font></li>
+<a name="wp1190233"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click OK to validate and come back to the design area.</font></li>
+<a name="wp1190239"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add three <b>tFileOutputDelimited</b> components to the workspace and right-click on the tMap to connect the Mapper with all three output components, using the relevant Row connection. </font></li>
+<a name="wp1190245"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Relabel the three output components accordingly.</font></li>
+</ul>
+</ul>
+<a name="wp1190252"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-8.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190257"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on each of them, one after the other, in order to define their respective output filepath. If you want a new file to be created, browse to the destination output folder, and type in  a file name including the extension.</font></li>
+<a name="wp1190264"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Include header</b> box to reuse the column labels from the schema as header row in the output file.</font></li>
+</ul>
+</ul>
+<a name="wp1190273"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-10.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190282"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Run the Job using the F6 keystroke or via the <b>Run Job</b> panel.</font></li>
+<a name="wp1190287"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Output files have been created if need be.</font></li>
+</ul>
+</ul>
+<a name="wp1190295"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-1-9.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMap_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMap_Scenario2.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

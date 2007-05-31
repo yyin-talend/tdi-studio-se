@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>tSortRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSleep_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSortRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1209305"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tSortRow
+</b></font></h2>
+<a name="wp1189009"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+</b></font></div>
+<div align="left"><img src="images/tSortRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+tSortRow properties
+</b></font></div>
+<a name="wp1295967"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189020"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ Component family
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1189022"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Processing
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1189026"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Function
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1189028"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Sorts  input data based on one or several columns, by sort type and order
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189032"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Purpose
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1189034"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Helps creating metrics and classification table. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td colspan="1" rowspan="7"><a name="wp1189038"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Properties
+</font></div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp1189043"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Schema type and Edit Schema
+</b></font></div></div>
+</td>
+    <td><a name="wp1189048"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br>Click Edit Schema to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br>Click Sync columns to retrieve the schema from the previous component connected in the job.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189057"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1189069"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projets and job flowcharts. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189079"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Criteria
+</b></font></div></div>
+</td>
+    <td><a name="wp1189081"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click + to add as many lines as required for the sort to be complete. By default the first column defined in your schema is selected.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1189085"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1189090"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Schema column</b>: Select the column label from your schema, which the sort will be based on. Note that the order is essential as it determines the sorting priority.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189094"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1189099"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Sort type</b>: Numerical and Alphabetical order are proposed. More sorting types to come.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1189103"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1189108"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Order</b>: Ascending or descending order.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1189110"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Usage
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1189112"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component handles flow of data therefore it requires input and  output, hence is defined as an intermediary step. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1189116"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Limitation
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1189118"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+n/a
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSleep_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSortRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario 1: Resetting a DB auto-increment</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tDBSQLRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDie_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1191643"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1294681"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 1: Resetting a DB auto-increment
+</b></font></h3>
+<dl><a name="wp1287540"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a single component job which aims at reinitializing the DB auto-increment to 1. This job has no output and is generally to be used before running a script.
+</font></dd>
+</dl><a name="wp1191746"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tDBSQLRow1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1191763"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop a <b>tDBSQLRow</b> component from the Palette to the Job designer.</font></li>
+<a name="wp1192043"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Properties</b> panel, fill in the DB connection properties.</font></li>
+</ul>
+</ul>
+<a name="wp1192050"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tDBSQLRow2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1192055"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The general connection information to the database is stored in the Repository. The <b>Database Driver</b> is  a generic ODBC driver.</font></li>
+<a name="wp1192066"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema type</b> is built-in for this job and describes the Talend database structure. The schema doesn&#39;t really matter for this particular instance of job as the action is made on the table auto-increment and not on data.</font></li>
+<a name="wp1192072"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Query type</b> is also built-in. Click on the three dot button to launch the SQLbuilder editor, or else type in directly in the Query area: <br> Alter table &lt;TableName&gt; auto_increment = 1 </font></li>
+<a name="wp1196789"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click <b>OK</b> to validate the <b>Properties</b>. Then press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1196809"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The database autoincrement is reset to 1. 
+</font></dd>
+<a name="wp1208266"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topics: <a href="tMysqlRow_Prop.html#wp1197844"><i>tMysqlRow properties</i></a>.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tDBSQLRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDie_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

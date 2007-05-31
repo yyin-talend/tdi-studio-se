@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Sorting entries</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSortRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tStatCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1189130"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295980"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Sorting entries
+</b></font></h3>
+<dl><a name="wp1289181"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a three-component job. A tRowGenerator is used to create random entries  which are directly sent to a tSortRow to be ordered following a defined value entry. In this scenario, we suppose the input flow contains names of salespersons along with their respective sales and their years of presence in the company. The result of the sorting operation is displayed on the Run job console.
+</font></dd>
+</dl><a name="wp1189141"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSortRow1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189152"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the three components required for this use case: <b>tRowGenerator</b>, <b>tSortRow</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1189166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect them together using <b>Row</b> <b>main</b> links.</font></li>
+<a name="wp1189172"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tRowGenerator</b> editor, define the values to be randomly used in the Sort component. For more information regarding the use of this particular component<a href="tRowGenerator_Prop.html#wp1189598">, see&#160;<i>tRowGenerator properties.</i></a></font></li>
+</ul>
+</ul>
+<a name="wp1189184"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSortRow2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189189"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, we want to rank each salesperson according to its Sales value and to its number of years in the company.</font></li>
+<a name="wp1189196"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on tSortRow to display the <b>Properties</b> tab panel. Set the sort priority on the Sales value and as secondary criteria, set the number of years in the company. </font></li>
+</ul>
+</ul>
+<a name="wp1189209"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSortRow3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1189214"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the plus button to add the number of rows required. Set the type of sorting, in this case, both criteria being integer, the sort is numerical. At last, given that the output wanted is a rank classification, set the order as descending.</font></li>
+<a name="wp1189218"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure you connected this flow to the output component, tLogRow, to display the result in the Job console.</font></li>
+<a name="wp1189228"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press F6 to run the Job or go to the <b>Run Job </b>panel and click <b>Run</b>.The ranking is based first on the Sales value and second on the number of years of experience.</font></li>
+</ul>
+</ul>
+<a name="wp1189239"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSortRow4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSortRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tStatCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

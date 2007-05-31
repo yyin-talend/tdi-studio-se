@@ -1,0 +1,605 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:21">
+    <title>Defining Metadata items</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-Defining_the_Start_component.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Creating_queries_using_SQLBuilder.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1037119"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Defining Metadata items
+</b></font></h2>
+<a name="wp1037125"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Talend Open Studio</b> is a metadata-driven solution, and can therefore help you ensure the whole job consistency and quality, through a centralized metadata warehouse. 
+</font></p>
+<a name="wp1074391"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Use the Repository to store, in the Metadata area, the recurrent information on files used to build your job and retrieve them easily from the Properties panel of any component. These metadata generally include: DB connections, File path and schemas. 
+</font></p>
+<a name="wp1037130"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Follow two main steps to setup schemas either from a DB or a File-type connection. 
+</font></p>
+<a name="wp1037133"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+First step is to setup a connection to the File or to the DB. Then second step is to define the schema based on DB table or File metadata. 
+</font></p>
+<a name="wp1037141"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Repository-schema.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1037144"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This procedure differs slightly depending on the type of connection chosen. Below are the respective procedures to setup various connections and define multiple schemas.
+</font></p>
+<a name="wp1037148"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that in any case, the connection to a file or DB serves only the purpose of copying the metadata,  the schema will be based on, to your Repository (likely on your filesystem).
+</font></p>
+<a name="wp1037153"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on Metadata in the Repository to expand the folder tree.
+</font></p>
+<a name="wp1037156"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Each of the connection nodes will gather the various connections you setup. 
+</font></p>
+<a name="wp1037163"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a DB schema
+</b></font></h3>
+<dl><a name="wp1037166"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For DB table based schemas, the creation procedure is in two separate but closely related operations. First Right-click on <b>Db Connections</b> and select <b>Create connection</b> on the pop-up menu.
+</font></dd>
+</dl><a name="wp1037181"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1037187"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A connection wizard opens up. Fill in the generic Schema properties such as Schema <b>Name</b> and <b>Description</b>. The <b>Status</b> field is a customized field you can define in <i>Window &gt; Preferences</i>. 
+</font></dd>
+</dl></dl><a name="wp1037204"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-SchemaProp.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037212"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> when completed, the second step requires you to fill in DB connection data. 
+</font></dd>
+</dl></dl><a name="wp1037218"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: connection
+</b></font></h4>
+<dl><dl><a name="wp1037222"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the type of Database you want to connect to and some fields will be greyed out or enabled according to the DB connection detail requirements.
+</font></dd>
+</dl></dl><a name="wp1037229"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-SchemaPropDBconnect.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037236"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Fill in the connection details and, check your connection by clicking on <b>Check</b>. 
+</font></dd>
+<a name="wp1037239"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Fill in if need be, the database properties information. That&#39;s all for the first operation on DB connection setup, click <b>Finish</b> to validate.
+</font></dd>
+<a name="wp1080077"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The newly created DB connection is now available in the Repository and displays four folders including <b>Queries</b> for SQL queries you save and <b>Table schemas</b> that will gathers all schema linked to this DB connection.
+</font></dd>
+</dl></dl><a name="wp1037249"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-DBconnect_RetrieveSch.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1080098"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Now right-click on the newly created connection, and select <b>Retrieve schema </b>on the pop-up menu.
+</font></dd>
+</dl></dl><a name="wp1037257"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: table upload
+</b></font></h4>
+<dl><dl><a name="wp1037260"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A new wizard opens up on the first step window. The List offers all tables present on the DB connection. It can be any type of DBs. 
+</font></dd>
+<a name="wp1037264"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select one or more tables on the list, to load them on your Repository filesystem.You will base your repository schemas on these tables. 
+</font></dd>
+<a name="wp1037272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If no schema is visible on the list, click <b>Check connection</b>, to verify the DB connection status. 
+</font></dd>
+<a name="wp1037277"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b>. On the new window, four setting panels help you define the schemas to create.
+</font></dd>
+</dl></dl><a name="wp1037283"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1037286"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+By default, the schema displayed on the Schema panel is based on the first table selected in the list of schemas loaded (left panel). You can change the name of the schema and according to your needs, you can also customize the schema structure in the schema panel. 
+</font></dd>
+<a name="wp1037290"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Indeed, the tool bar allows you add, remove or move column in your schema. And, you can load an xml schema or export the current schema as xml. 
+</font></dd>
+<a name="wp1037294"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To retrieve a schema based on one of the loaded table schemas, select the DB table schema name in the drop-down list and click on <b>Retrieve schema</b>. Note that the retrieved schema then overwrites any current schema and doesn&#39;t retain any custom edits.
+</font></dd>
+<a name="wp1037304"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b> to complete the DB schemas creation. All created schemas display under the relevant DB connection node. 
+</font></dd>
+</dl></dl><a name="wp1037313"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a File Delimited schema
+</b></font></h3>
+<dl><a name="wp1037316"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+File delimited metadata can be used for both InputFileDelimited and InputFileCSV design components as both csv and delimited files are based on the same structure.
+</font></dd>
+<a name="wp1037320"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+WARNING-The File schema creation is very similar for all types of File connections: Delimited, Positional, Regex, Xml, or Ldif.
+</font></p>
+<a name="wp1037328"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the Repository, right-click on File Delimited tree node, and select <b>Create file delimited</b> on the pop-up menu.
+</font></dd>
+</dl><a name="wp1037336"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-FileDelmtd.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1037339"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Unlike the DB connection wizard, the Delimited File wizard gathers both file connection and schema definition in a four-step procedure.
+</font></dd>
+</dl><a name="wp1037346"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1037356"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the first step, fill in the schema generic information, such as Schema <b>Name</b> and <b>Description</b>.
+</font></dd>
+<a name="wp1037364"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further information, see <a href="Technical_Process-Defining_Metadata_items.html#wp1037181"><i>Step 1: general properties</i></a>.
+</font></dd>
+</dl></dl><a name="wp1037370"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: file upload
+</b></font></h4>
+<dl><dl><a name="wp1037383"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Define the <b>Server</b> IP address where the file is stored. And click <b>Browse...</b> to set the <b>File path</b>.
+</font></dd>
+</dl></dl><a name="wp1037390"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-DltdschemaStep2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037396"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the OS <b>Format</b> the file was created in. This information is used to prefill subsequent step fields. If the list doesn&#39;t include the appropriate format, ignore it.
+</font></dd>
+<a name="wp1037403"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>File viewer</b> gives an instant picture of the file loaded. It allows you to check the file consistency, the presence of header and more generally the file structure.
+</font></dd>
+<a name="wp1037412"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> to Step3.
+</font></dd>
+</dl></dl><a name="wp1037418"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1037421"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In this view, you can refine your data description and file settings. Click on the squares below, to zoom in and get more information. 
+</font></dd>
+</dl></dl><a name="wp1037441"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-SchemaDlmtdBig.jpg" height="711" width="808" usemap="#Repo-SchemaDlmtdBig_jpg" border="0" hspace="0" vspace="0">
+<map name="Repo-SchemaDlmtdBig_jpg">
+<area href="Technical_Process-Defining_Metadata_items.html#wp1037459" shape="rect" coords="28,121,450,365">
+<area href="Technical_Process-Defining_Metadata_items.html#wp1037489" shape="rect" coords="456,121,778,364">
+<area href="Technical_Process-Defining_Metadata_items.html#wp1037507" shape="rect" coords="29,372,778,616">
+</map>
+</div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037448"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Set the <b>Encoding</b>, as well as Field and Row separators in the Delimited File Settings. 
+</font></dd>
+</dl></dl><a name="wp1037455"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/repo-schemadlmtdSmall1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037459"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Depending on your file type (csv or delimited), you can also set the Escape and Enclosure characters to be used.
+</font></dd>
+<a name="wp1037463"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If the file preview shows a header message, you can exclude the header from the parsing. Set the number of header rows to be skipped. Also, if you know that the file contains footer information, set the number of footer lines to be ignored.
+</font></dd>
+</dl></dl><a name="wp1037471"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/repo-schemadlmtdsmall2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037478"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Limit of rows</b> allows you to restrict the extend of the file being parsed.
+</font></dd>
+<a name="wp1037482"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the File Preview panel, you can view the new settings impact.
+</font></dd>
+<a name="wp1037489"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check the <b>Set heading row as column names</b> box to transform the first parsed row as labels for schema columns. Note that the number of header rows to be skipped is then incremented of&#160;1.
+</font></dd>
+</dl></dl><a name="wp1037497"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/repo-schemadlmtdsmall3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037507"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Refresh</b> on the preview panel for the settings to take effect and view the result on the viewer.
+</font></dd>
+</dl></dl><a name="wp1037515"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: final schema
+</b></font></h4>
+<dl><dl><a name="wp1037518"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The last step shows the Delimited File schema generated. You can customize the schema using the toolbar underneath the table.
+</font></dd>
+</dl></dl><a name="wp1037526"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-DltdschemaStep4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037532"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If the Delimited file which the schema is based on is changed, use the <b>Guess</b> button to generate again the schema. Note that if you customized the schema, the Guess feature doesn&#39;t retain these changes.
+</font></dd>
+<a name="wp1037536"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click Finish. The new schema displays on the Repository, under the relevant File Delimited connection node.
+</font></dd>
+</dl></dl><a name="wp1037545"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a File Positional schema
+</b></font></h3>
+<dl><a name="wp1037551"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the Repository, right-click on File Delimited tree node, and select <b>Create file positional</b> on the pop-up menu. 
+</font></dd>
+</dl><a name="wp1037559"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-FilePos.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1037562"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Proceed the same way as for the file delimited connection. Right-click on Metadata on the Repository and select <b>Create file positional</b>.
+</font></dd>
+</dl><a name="wp1037573"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1037584"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ Fill in the schema generic information, such as Schema <b>Name</b> and <b>Description</b>.
+</font></dd>
+</dl></dl><a name="wp1037590"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: connection and file upload
+</b></font></h4>
+<dl><dl><a name="wp1037593"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then define the positional file connection settings, by filling in the Server IP address and the File path fields. 
+</font></dd>
+<a name="wp1037597"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Like for Delimited File schema creation, the format is requested for prefill purpose of next step fields. If the file creation OS format is not offered in the list, ignore this field.
+</font></dd>
+</dl></dl><a name="wp1037605"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/repo-posschemastep2a.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037609"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The file viewer shows a file preview and allows you to place your position markers. 
+</font></dd>
+</dl></dl><a name="wp1037616"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/repo-posschemastep2a.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037619"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on the file preview and set the marker against the ruler. The orange arrow helps you refine the position.
+</font></dd>
+<a name="wp1037626"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Field length</b> lists a series of figures separated by commas, these are the number of characters between markers. The asterisk symbol means all remaining characters on the row, from the preceding marker position.
+</font></dd>
+<a name="wp1037633"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Marker Position</b> shows the exact position of the marker on the ruler. You can change it to refine the position. 
+</font></dd>
+<a name="wp1037638"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can add as many markers as needed. To remove a marker, drag it towards the ruler. 
+</font></dd>
+<a name="wp1037646"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> to continue.
+</font></dd>
+</dl></dl><a name="wp1037652"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: schema refining
+</b></font></h4>
+<dl><dl><a name="wp1037655"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The next step opens the schema setting window. As for the Delimited File schema, you can refine the schema definition by precising the field and row separators, the header message number of lines and else...
+</font></dd>
+<a name="wp1037659"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+At this stage, the preview shows the file delimited upon the markers&#39; position. If the file contains column labels, check the box <b>Set heading row as column names</b>. 
+</font></dd>
+</dl></dl><a name="wp1037670"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: final schema
+</b></font></h4>
+<dl><dl><a name="wp1037673"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Step 4 shows the final generated schema. Note that any characters which could be misinterpreted by the program are replaced by neutral characters, like underscores replace asterisks. 
+</font></dd>
+<a name="wp1037678"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can add a customized name (by default, metadata) and make edits to it using the tool bar. 
+</font></dd>
+<a name="wp1037684"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also retrieve or update the Positional File schema by clicking on <b>Guess</b>. Note however that any edits to the schema might be lost after &quot;guessing&quot; the file-based schema.
+</font></dd>
+</dl></dl><a name="wp1037693"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a File Regex schema
+</b></font></h3>
+<dl><a name="wp1037697"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Regex file schemas are used for files containing  redundant information, such as log files.
+</font></dd>
+</dl><a name="wp1037704"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-FileRegex.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1037707"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Proceed the same way as for the file delimited or positional connection. Right-click on Metadata on the Repository and select <b>Create file regex</b>.
+</font></dd>
+</dl><a name="wp1037718"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1037729"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ Fill in the schema generic information, such as Schema <b>Name</b> and <b>Description</b>.
+</font></dd>
+</dl></dl><a name="wp1037735"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: file upload
+</b></font></h4>
+<dl><dl><a name="wp1037738"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then define the Regex file connection settings, by filling in the Server IP address and the File path fields. 
+</font></dd>
+</dl></dl><a name="wp1037746"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-RegexSchemaStep2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037749"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Like for Delimited File schema creation, the format is requested for prefill purpose of next step fields. If the file creation OS format is not offered in the list, ignore this field.
+</font></dd>
+<a name="wp1037756"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The file viewer gives an instant picture of the loaded file. Click <b>Next</b> to define the schema structure.
+</font></dd>
+</dl></dl><a name="wp1037764"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1037767"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This step opens the schema setting window. As for the other File schemas, you can refine the schema definition by precising the field and row separators, the header message number of lines and else...
+</font></dd>
+<a name="wp1037775"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the <b>Regular Expression settings</b> panel, enter the regular expression to be used to delimit the file. 
+</font></dd>
+</dl></dl><a name="wp1037783"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-RegexSchemaStep3a.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037792"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then click <b>Refresh preview</b> to take into account the changes. The button changes to <b>Wait</b> until the preview is refreshed.
+</font></dd>
+</dl></dl><a name="wp1037800"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-RegexSchemaStep3b.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037805"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click next when setting is complete. The last step generates the Regex File schema.
+</font></dd>
+</dl></dl><a name="wp1037811"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: final schema
+</b></font></h4>
+<dl><dl><a name="wp1037815"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can add a customized name (by default, metadata) and make edits to it using the tool bar. 
+</font></dd>
+<a name="wp1037821"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also retrieve or update the Regex File schema by clicking on <b>Guess</b>. Note however that any edits to the schema might be lost after guessing the file based schema.
+</font></dd>
+<a name="wp1037828"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File regex connection node.
+</font></dd>
+</dl></dl><a name="wp1037837"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a FileLDIF schema
+</b></font></h3>
+<dl><a name="wp1037840"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+LDIF files are directory files described by attributes. FileLDIF metadata centralize these LDIF type files and their attribute description.
+</font></dd>
+</dl><a name="wp1037848"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-FileLDIF.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1037851"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Proceed the same way as for other file connections. Right-click on Metadata on the Repository and select <b>Create file Ldif</b>.
+</font></dd>
+<a name="wp1039070"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Make sure that you installed the relevant Perl module as described in the Installation guide. For more info, check out <a href="http://talendforge.org/wiki/doku.php">http://talendforge.org/wiki/doku.php</a>
+</font></p>
+</dl><a name="wp1039078"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1037867"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the first step, fill in the schema generic information, such as Schema name and description.
+</font></dd>
+</dl></dl><a name="wp1037873"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: file upload
+</b></font></h4>
+<dl><dl><a name="wp1037877"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then define the Ldif file connection settings, by filling in the <b>File path</b> field.
+</font></dd>
+</dl></dl><a name="wp1037884"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LdifStep2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1037887"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The connection functionality to a remote server is not in operation yet for LDIF file collection. 
+</font></p>
+<dl><dl><a name="wp1037893"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The File viewer provides a preview of the file&#39;s first 50 rows. 
+</font></dd>
+</dl></dl><a name="wp1037899"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1037902"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The list of attributes of the description file displays on the top of the panel. Select the attributes you want to extract from the LDIF description file, by checking the relevant boxes.
+</font></dd>
+</dl></dl><a name="wp1037910"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LdifStep3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1037917"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Refresh Preview</b> to include the selected attributes into the file preview. 
+</font></dd>
+<a name="wp1037920"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	DN is omitted in the list of attributes as this key attribute is automatically included in the file preview hence in the generated schema.  
+</font></p>
+</dl></dl><a name="wp1037928"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: final schema 
+</b></font></h4>
+<dl><dl><a name="wp1037931"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The schema generated shows the columns of the description file. You can customize it upon your needs and reload the original schema using the <b>Guess</b> button. 
+</font></dd>
+<a name="wp1037941"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File LDif connection node. 
+</font></dd>
+</dl></dl><a name="wp1037950"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a FileXML schema
+</b></font></h3>
+<dl><a name="wp1037956"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Centralize your XPath query statements over a defined XML file and gather the values fetched from it.
+</font></dd>
+<a name="wp1039272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Proceed the same way as for other file connections. Right-click on Metadata on the Repository and select <b>Create file XML</b>.
+</font></dd>
+</dl><a name="wp1039282"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1039194"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the first step, fill in the schema generic information, such as Schema name and description. Click <b>Next</b> when you&#39;re complete.
+</font></dd>
+</dl></dl><a name="wp1039424"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: file upload
+</b></font></h4>
+<dl><dl><a name="wp1039469"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Browse to the XML File to upload and fill in the <b>Encoding</b> if the system didn&#39;t detect it automatically. 
+</font></dd>
+<a name="wp1039498"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The file preview shows the XML node tree structure. 
+</font></dd>
+</dl></dl><a name="wp1039506"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1039565"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> to the following step.
+</font></dd>
+</dl></dl><a name="wp1039526"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1039537"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Set the parameters to be taken into account for the schema definition.
+</font></dd>
+</dl></dl><a name="wp1039616"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1039673"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The schema definition window is divided into four panels:
+</font></dd>
+<ul>
+<a name="wp1039877"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Source Schema</b>: Tree view of the uploaded XML file structure</font></li>
+<a name="wp1039901"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Target Schema</b>: Extraction and iteration information</font></li>
+<a name="wp1039948"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Preview</b>: Target schema preview </font></li>
+<a name="wp1039960"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>File viewer</b>: Raw data viewer</font></li>
+</ul>
+<a name="wp1040295"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the <b>Xpath loop expression</b> field, enter the absolute xpath expression leading to the structure node which the iteration should apply on. You can type in the entire expression or press Ctrl+Space to get the autocompletion list.
+</font></dd>
+</dl></dl><a name="wp1040252"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep3-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1040528"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Or else, drag and drop the node from the source structure towards the target schema Xpath field. 
+</font></dd>
+<a name="wp1040705"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The <b>Xpath loop expression</b> field is compulsory.
+</font></p>
+<a name="wp1040910"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also define a <b>Loop limit</b> to restrict the iteration to a number of nodes. A green link is then created.
+</font></dd>
+<a name="wp1040534"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then define the fields to extract. Simply drag and drop the relevant node to the <b>Relative or absolute XPath expression</b> field.
+</font></dd>
+</dl></dl><a name="wp1040670"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep3-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1040872"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Use the plus sign to add rows to the table and select as many fields to extract, as you need.  Press the Ctrl or the Shift keys for multiple selection of grouped or ungrouped nodes, and drag &amp; drop them to the table.
+</font></dd>
+</dl></dl><a name="wp1040953"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep3-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1040961"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the <b>Tag name </b>field, give a name the column header that will display on the schema preview (bottom left panel).
+</font></dd>
+<a name="wp1041082"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The selected link is blue, and all other links are grey. You can prioritize the order of fields to extract using the up and down arrows.
+</font></dd>
+<a name="wp1041089"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Refresh preview</b> to display the schema preview. The fields will then be displayed in the schema preview in the order given (top field on the left).
+</font></dd>
+</dl></dl><a name="wp1041095"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-XMLStep3-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1041100"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: final schema
+</b></font></h4>
+<dl><dl><a name="wp1041186"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The schema generated shows the selected columns of the XML file. You can customize it upon your needs or reload the original schema using the <b>Guess</b> button. 
+</font></dd>
+<a name="wp1041199"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File XML connection node. 
+</font></dd>
+</dl></dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-Defining_the_Start_component.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Creating_queries_using_SQLBuilder.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

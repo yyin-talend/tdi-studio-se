@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Inserting data in MySQL database</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutputBulkExec_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1288781"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295428"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Inserting data in MySQL database
+</b></font></h3>
+<dl><a name="wp1288784"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a two-component job which carries out the same operation as the one described for <a href="tMysqlOutputBulk_Prop.html#wp1287973"><i>tMysqlOutputBulk properties</i></a> and <a href="tMysqlBulkExec_Prop.html#wp1292554"><i>tMysqlBulkExec properties</i></a>, although no transformation of data is performed.
+</font></dd>
+</dl><a name="wp1288795"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_case_tMysqlOBE1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1288807"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tRowGenerator</b> and a <b>tMysqlOutputBulkExec </b>component.</font></li>
+<a name="wp1288812"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The tRowGenerator  is to be set the same way as in the <a href="tMysqlOutputBulk_Scenario.html#wp1295411"><i>Scenario: Inserting transformed data in MySQL database</i></a>. The schema is made of four columns including: <i>ID</i>, <i>First Name</i>, <i>Last Name</i>, <i>Address</i> and <i>City</i>.</font></li>
+<a name="wp1288832"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the DB connection if needed, the best practices being to store the connection details in the Metadata repository.</font></li>
+<a name="wp1288840"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then fill in the table to be filled in with the generated data in the <b>Table</b> field.</font></li>
+<a name="wp1288848"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And the name of the file to be loaded in <b>File Name</b> field.</font></li>
+</ul>
+</ul>
+<a name="wp1288855"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_case_tMysqlOBE2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1288859"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then press F6 to execute the job.
+</font></dd>
+<a name="wp1288864"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The result should be pretty much the same as in <a href="tMysqlOutputBulk_Scenario.html#wp1295411"><i>Scenario: Inserting transformed data in MySQL database</i></a>, but the data might differ as these are regenerated randomly everytime the job is run.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutputBulkExec_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

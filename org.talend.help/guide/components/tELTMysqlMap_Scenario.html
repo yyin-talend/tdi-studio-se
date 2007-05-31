@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario1: Aggregating table columns and filtering</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tELTMysqlMap_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1226111"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1294755"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario1: Aggregating table columns and filtering
+</b></font></h3>
+<dl><a name="wp1287557"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a job gathering together several Input DB table schemas and implementing a clause to filter the resulting output using an SQL statement.
+</font></dd>
+</dl><a name="wp1226140"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1226157"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tELTMysqlIntput</b>, <b>tELTMysqlMap</b>, <b>tELTMysqlOutput</b>.</font></li>
+<a name="wp1226170"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Three input components are required for this job.</font></li>
+<a name="wp1226179"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> Connect the three ELT input components to the ELT mapper using links named following strictly the actual DB table names: <i>owners</i>, <i>cars</i> and <i>resellers</i>.</font></li>
+<a name="wp1226246"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the ELT mapper to the ELT Output component using another link that you call  <i>results</i>.</font></li>
+<a name="wp1226269"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">All three Input schemas are stored in the <b>Metadata</b> area of the <b>Repository</b>. They can therefore be easily retrieved.</font></li>
+</ul>
+</ul>
+<a name="wp1226288"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1226330"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the ELT mapper component to define the Database connection details.</font></li>
+<a name="wp1226345"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The Database connection details are stored in the Repository again</font></li>
+</ul>
+</ul>
+<a name="wp1226353"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1226377"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The default encoding for Mysql database is retained.</font></li>
+<a name="wp1226389"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Launch the ELT Map editor to set up the join between Input tables</font></li>
+<a name="wp1226516"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop the <i>ID_Owner</i> column from the <i>Owners</i> table to the corresponding column of the <i>cars</i> table. </font></li>
+<a name="wp1226687"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>INNER JOIN</b> in the <i>Cars</i> table join list, and check <b>Explicit Join</b>, in front of the <i>ID_Owners</i>.</font></li>
+<a name="wp1226703"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag the <i>ID_Resellers</i> column from the <i>Cars</i> table to the <i>Resellers</i> table to set up the second join. Select here again <b>INNER JOIN</b> in the list of the Resellers table and check the <b>Explicit Join</b> box of the relevant column. </font></li>
+<a name="wp1226834"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the columns to be aggregated into the output. </font></li>
+<a name="wp1226879"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select all columns from the <i>Cars</i> and <i>Owners</i> table and only the <i>Reseller_Name</i> and <i>City</i> columns from the <i>Resellers</i> table.</font></li>
+<a name="wp1226897"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop them to the <i>Results</i> output table.</font></li>
+<a name="wp1226925"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The mapping displays in yellow and the joins display in dark violet.</font></li>
+<a name="wp1227067"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Generated SQL Select query</b> tab to display the corresponding SQL Statement.</font></li>
+</ul>
+</ul>
+<a name="wp1226939"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1226972"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then implement a filter on the output table.</font></li>
+<a name="wp1227111"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Add filter row</b> button of the output table.</font></li>
+</ul>
+</ul>
+<a name="wp1227133"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1227156"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Restrict the Select using a Where clause such as: resellers.City =&#39;West Coast City&#39;</font></li>
+<a name="wp1227191"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">See the reflected where clause on the Generated SQL Select query tab.</font></li>
+</ul>
+</ul>
+<a name="wp1227209"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1227258"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to save the ELT Map setting.</font></li>
+<a name="wp1227270"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the ELT Output in the Properties Panel of the tELTMysqlOutput component. </font></li>
+<a name="wp1227320"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Action on table</b> is <b>Drop and create table</b> for this use case and the only action available on data in MySQL is <b>Insert</b>.</font></li>
+<a name="wp1227346"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is to be synchronised with the tELTMysqlMap component as it aggregates several source schemas.</font></li>
+</ul>
+</ul>
+<a name="wp1227371"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap1-7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1227388"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All selected data are inserted in the <i>results</i> table as specified in the SQL statement defined respecting the clause.
+</font></dd>
+</dl><a name="wp1231941"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 2: ELT using Alias table
+</b></font></h3>
+<dl><a name="wp1294770"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a job that uses an Alias table. The <i>employees</i> table contains all employees details as well as the ID of their respective manager, which are also considered  as employees and hence included in the <i>employees</i> table. The dept table contains location and department information about the employees.
+</font></dd>
+</dl><a name="wp1232441"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1232460"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop <b>tELTMysqlInput</b> components to retrieve respectively the <i>employees</i> and <i>dept</i> table schemas.</font></li>
+<a name="wp1232501"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, both schemas are stored in the Repository and can therefore be easily retrieved.</font></li>
+</ul>
+</ul>
+<a name="wp1232509"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1232530"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the tELTMysqlMap and define the Mysql database connection details. </font></li>
+<a name="wp1232546"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Here again the connection information is  stored in the Repository&#39;s Metadata.</font></li>
+</ul>
+</ul>
+<a name="wp1232559"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1232580"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the button to launch the ELT Map editor.</font></li>
+<a name="wp1232589"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First make sure the correct input table is positioned at the top of the Input area, as the Joins are highly dependent on this position.</font></li>
+<a name="wp1232608"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the <i>employees</i> table should be on top.</font></li>
+</ul>
+</ul>
+<a name="wp1232654"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1232743"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <i>DeptNo</i> column from the <i>employees</i> table to the <i>dept</i> table to set up the <b>join</b> between both input tables.</font></li>
+<a name="wp1232790"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Explicit Join</b> box and define the join as an <b>Inner Join</b>.</font></li>
+<a name="wp1232746"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then create the <b>Alias</b> table based on the <i>employees</i> table</font></li>
+</ul>
+</ul>
+<a name="wp1232811"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1232899"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Name it <i>Managers</i> and click OK to display it as a new Input table in the ELT mapper.</font></li>
+<a name="wp1232909"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> Drag &amp; drop the <i>ID</i> column from the <i>employees</i> table to the <i>ID_Manager</i> column of the newly added <i>Managers</i> table.</font></li>
+<a name="wp1233128"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Explicit Join</b> box and define it as <b>Left Outer Join</b>, in order for results to be output eventhough they contain a <b>Null</b> value.</font></li>
+</ul>
+</ul>
+<a name="wp1233170"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1233210"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the content of both Input tables, <i>employees</i> and <i>dept</i>, as well as the <i>Name</i> column from the <i>Manager</i> table to the Output table.</font></li>
+<a name="wp1233295"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Generated SQL Select query</b> tab to display the query to be executed.</font></li>
+</ul>
+</ul>
+<a name="wp1233328"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1233356"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click on the Output component and define the <b>Action on data</b> on <b>Insert</b>.</font></li>
+<a name="wp1233411"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the schema is synchronized with the Output table from the ELT mapper before running the job through <b>F6</b> or via the toolbar.</font></li>
+</ul>
+</ul>
+<a name="wp1233479"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tELTMysqlMap2-7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1233499"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <i>Department</i> information as well as the <i>Employees</i> entries are coupled in the output, and the <i>Manager Name</i> could be retrieved via the explicit join.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tELTMysqlMap_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tELTMysqlOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

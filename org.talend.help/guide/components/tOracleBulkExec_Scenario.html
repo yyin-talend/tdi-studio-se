@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Truncating and inserting file data into Oracle DB</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tOracleBulkExec_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1261594"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295524"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Truncating and inserting file data into Oracle DB
+</b></font></h3>
+<dl><a name="wp1289040"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes how to truncate the content of an Oracle DB and load an input file content. The related job is composed of three components that respectively creates the content, output this content into a file to be loaded onto the Oracle database after the DB table has been truncated.
+</font></dd>
+</dl><a name="wp1261605"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tOracleBulkExec1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1261616"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tOracleInput</b>, <b>tFileOutputDelimited</b>, <b>tOracleBulkExec</b></font></li>
+<a name="wp1261633"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tOracleInput</b> with the <b>tFileOutputDelimited</b> using a <b>row main</b> link. </font></li>
+<a name="wp1261640"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect the tOracleInput to the tOracleBulkExec using a <b>Run Before </b>trigger  link.</font></li>
+<a name="wp1261643"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the Oracle connection details. We recommend you to store the DB connection details in the Metadata repository in order to retrieve them easily at any time in any job.</font></li>
+</ul>
+</ul>
+<a name="wp1261652"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tOracleBulkExec2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1261660"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the schema, if it isn&#39;t stored either in the <b>Repository</b>. In this example, the schema is as follows: <i>ID_Contract</i>, <i>ID_Client</i>, <i>Contract_type</i>, <i>Contract_Value</i>.</font></li>
+<a name="wp1261680"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the default encoding to <i>AL32UTF8</i> encoding type.</font></li>
+<a name="wp1261689"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>tFileOutputDelimited</b> component parameters, including output <b>File Name</b>, <b>Row separator</b> and <b>Fields delimiter</b>.</font></li>
+<a name="wp1261703"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set also the <b>encoding</b> to the Oracle encoding type as above.</font></li>
+<a name="wp1261711"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tOracleBulkExec</b> to define the DB feeding properties.</font></li>
+</ul>
+</ul>
+<a name="wp1261718"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tOracleBulkExec3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1261724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in the DB connection details if they are not available from the Repository. </font></li>
+<a name="wp1261730"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in the name of the <b>Table</b> to be fed and the Action on data to be carried out, in this use case: <b>insert</b>. </font></li>
+<a name="wp1261741"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>encoding</b> as in preceding steps.</font></li>
+<a name="wp1261752"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this scenario, the log <b>output</b> is to be displayed in the <b>console</b>.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1261761"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press <b>F6</b> to run the job. The log output displays in the <b>Run Job</b> tab and the table is fed with the parameter file data. 
+</font></dd>
+<a name="wp1261771"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="tMysqlOutputBulkExec_Scenario.html#wp1295428"><i>Scenario: Inserting data in MySQL database</i></a>
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tOracleBulkExec_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

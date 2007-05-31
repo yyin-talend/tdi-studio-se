@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Regex to Positional file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputRegex_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputXML_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1186697"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1294984"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Regex to Positional file
+</b></font></h3>
+<dl><a name="wp1287650"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario creates a two-component job, reading data from an Input file using regular expression and outputting delimited data into an XML file.
+</font></dd>
+</dl><a name="wp1186708"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputRegex1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1186717"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputRegex</b> component from the Palette to the design workspace.</font></li>
+<a name="wp1186724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileOutputPositional</b> component the same way.</font></li>
+<a name="wp1186733"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputRegex</b> component and select <i>Row &gt; Main</i>. Drag this main row link onto the <b>tFileOutputPositional</b> component and release when the plug symbol displays.</font></li>
+<a name="wp1186745"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputRegex</b> again so the properties tab shows up, and define the properties:</font></li>
+</ul>
+</ul>
+<a name="wp1186752"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputRegex.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1186758"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The job is built-in for this scenario. Hence, the Properties are set for this station only. </font></li>
+<a name="wp1186765"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in a path to the file in <b>File Name</b> field. This field is mandatory.</font></li>
+<a name="wp1186772"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row separator</b> identifying the end of a row. </font></li>
+<a name="wp1186778"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>Regular expression</b> in order to delimit fields of a row, which are to be passed on to the next component. You can type in a regular expression using Perl code, and on mutiple lines if needed. </font></li>
+<a name="wp1186783"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this expression, make sure you include all subpatterns matching the fields to be extracted.</font></li>
+<a name="wp1186787"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, ignore the header, footer and limit fields.  </font></li>
+<a name="wp1186799"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select a local (<b>Built-in</b>) <b>Schema type</b> to define the data to pass on to the <b>tFileOutputPositional</b> component. </font></li>
+<a name="wp1186807"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can load or create the schema through the <b>Edit Schema</b> function. </font></li>
+<a name="wp1186812"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the second component properties:</font></li>
+</ul>
+</ul>
+<a name="wp1186819"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputRegex2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1186825"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the Positional file output path. </font></li>
+<a name="wp1186831"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the <b>Encoding</b> standard, the output file is encoded in. Note that, for the time being, the encoding consistency verification is not supported.</font></li>
+<a name="wp1186841"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Schema type</b>. Click on <b>Sync columns</b> to automatically synchronize the schema with the Input file schema.</font></li>
+<a name="wp1186853"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now go to the <b>Run Job</b> tab, and click on <b>Run</b> to execute the job.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1186859"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The file is read row by row and split up into fields based on the <b>Regular Expression</b> definition. You can open it using any standard file editor. 
+</font></dd>
+</dl><a name="wp1186869"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputRegex3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputRegex_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputXML_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

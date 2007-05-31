@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
+    <title>Connecting components together</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-04.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-06.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1014921"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Connecting components together
+</b></font></h2>
+<a name="wp1011910"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There are various types of connections which define either the data to be processed, the data output, or else the job logical sequence. 
+</font></p>
+<a name="wp1013818"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Plug_mouse.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1013827"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On your workspace, when dragging the link away from your source component towards the destination component, a graphical plug indicates if the destination component is valid or not. The black crossed circle only disappears once you reached a valid target component.
+</font></p>
+<a name="wp1013831"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Connection types
+</b></font></h3>
+<dl><a name="wp1015271"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Only the connections authorized for the selected component are listed on the right-click pop-up menu. 
+</font></dd>
+</dl><a name="wp1015275"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/ConnectTrigger_Popup.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1015280"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The types of connections proposed are different for each component according to its nature and role within the job, if the connection is meant to transfer data (from a defined schema) or if no data is handled.
+</font></dd>
+<a name="wp1015284"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The types of connections available depend also if the data come from one or multiple input files and get transferred towards one or multiple outputs.
+</font></dd>
+<a name="wp1015255"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select a component on the workspace, and right-click to display the pop-up menu. All links available for the selected component display.
+</font></dd>
+</dl><a name="wp1013380"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Row connection
+</b></font></h4>
+<dl><dl><a name="wp1012356"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Row</b> connection handles actual data transfer. The Row links can be <b>main</b>, <b>lookup</b> or <b>output</b> according to the nature of the flow processed.
+</font></dd>
+</dl></dl><a name="wp1012363"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Main row
+</b></font></h4>
+<dl><dl><dl><a name="wp1012369"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Main</b> row is the most commonly used connection. It passes on data flows from one component to the other, iterating on each row and reading input data according to the component properties setting (schema).
+</font></dd>
+<a name="wp1012373"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Data transferred through main rows are characterized by a schema definition which describes the data structure in the input file.
+</font></dd>
+<a name="wp1012384"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that you cannot connect two Input components together using a <b>main Row</b> connection.
+</font></p>
+<a name="wp1012542"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note also that only <i>one</i>  incoming Row connection is possible per component. You will not be able to link twice the same target component using a main Row connection.
+</font></p>
+</dl></dl></dl><a name="wp1013774"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Row_Forbidden.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1013777"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To be able to use multiple Row connections, see <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+</font></dd>
+</dl></dl></dl><a name="wp1012396"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Lookup row
+</b></font></h4>
+<dl><dl><dl><a name="wp1012405"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Lookup</b> row is a Row connecting a sub-flow component to a main flow component. This connection is used only in the case of multiple input flows.
+</font></dd>
+</dl></dl></dl><a name="wp1013574"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ConnectChangeMain.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><dl><a name="wp1013582"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A <b>Lookup</b> row can be changed into a main row at any time (and in reverse, a main row can be changed to a lookup row). To do so, right-click on the row to be changed, and on the pop-up menu, click on <b>Set this connection as Main</b>.
+</font></dd>
+<a name="wp1012557"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+</font></dd>
+</dl></dl></dl><a name="wp1012787"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Output row
+</b></font></h4>
+<dl><dl><dl><a name="wp1012795"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Output</b> row is a Row connecting a component to the final output component. As the job output can be multiple, you get prompted to give a name for each output row created. 
+</font></dd>
+<a name="wp1013870"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that the system remembers also deleted output link names (and properties if they were defined) to avoid you to fill in again name and property data in case you want to reuse them.
+</font></p>
+<a name="wp1012847"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+</font></dd>
+</dl></dl></dl><a name="wp1012432"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Iterate connection
+</b></font></h4>
+<dl><dl><a name="wp1012974"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Iterate</b> connection can be used to loop on files contained in a directory, on rows contained in a file or on DB entries.
+</font></dd>
+<a name="wp1012997"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A component can be the target of only one <b>Iterate</b> link.  The <b>Iterate</b> link is mainly to be connected to the Start component of a flow (either main or secondary). 
+</font></dd>
+<a name="wp1013063"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Some components are meant to be connected through an iterate link with the next component, such as tFilelist component.
+</font></dd>
+<a name="wp1016248"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that the <b>Iterate</b> link name is read-only unlike the other connections.
+</font></dd>
+</dl></dl><a name="wp1012765"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Trigger connections
+</b></font></h4>
+<dl><dl><a name="wp1013102"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The trigger connections define the processing sequence. No data is handled through trigger connections.
+</font></dd>
+<a name="wp1013146"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The connection in use will create a dependency between jobs or sub-jobs which therefore will trigger one after the other according to the trigger nature.
+</font></dd>
+<a name="wp1013132"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There are two kinds of triggers: chronological triggers and contextual triggers.
+</font></dd>
+<a name="wp1013217"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Run Before</b> and <b>Run After</b> are chronological triggers, in the sense, that the target component runs before or after the source component execution ended. Both connections are to be used only with Start components. 
+</font></p>
+<a name="wp1084975"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-07.html"><i>Defining the Start component</i></a>.
+</font></dd>
+<a name="wp1013551"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Run if</b>, <b>Run if OK</b> and <b>Run if Error</b> are contextual triggers. They can be used with any source component but are to be connected to Start component of a main or secondary job flow.
+</font></p>
+<ul>
+<a name="wp1013712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if OK</b> will only trigger the target component once the execution of the source component is complete. Its main use could be to trigger notification sub-jobs for example. </font></li>
+<a name="wp1013724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if Error</b> will trigger the sub-job or component as soon as an error is encountered in the primary job.</font></li>
+<a name="wp1014200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if </b>triggers a sub-job or component in case the condition defined is met.</font></li>
+</ul>
+</dl></dl><a name="wp1078496"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Link connection
+</b></font></h4>
+<dl><dl><a name="wp1078511"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Link</b> connection can only be used with ELT components. The Links transfer table schema information to the ELT mapper component in order to be used in specific DB query statements.
+</font></dd>
+<a name="wp1078674"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topics: <a href="Component_intro.html"><i>Components</i></a>
+</font></dd>
+<a name="wp1078749"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Link</b> connection therefore does not handle actual data but only the metadata regarding the table to be queried on.
+</font></dd>
+<a name="wp1078757"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+When right-clicking on the ELT component to be connected, select <b>Link &gt; New Output</b>. 
+</font></dd>
+<a name="wp1078763"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+WARNING-Be aware that the name you provide to the link MUST reflect the actual table name.
+</font></p>
+<a name="wp1078828"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In fact, the link name will be used in the SQL statement generated through the ETL Mapper, therefore the same name should never be used twice. 
+</font></dd>
+</dl></dl><a name="wp1078769"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Multiple Input/Output job
+</b></font></h3>
+<dl><a name="wp1065158"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For the time being, if you need to handle data through multiple input points and/or multiple outputs  and integrate a transformation in one flow, you want to use the <b>tMap</b> component, which is dedicated to this use.
+</font></dd>
+<a name="wp1065170"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further information regarding data mapping <a href="Technical_Process-10.html">, see&#160;<i>Mapping data flows in a job.</i></a>
+</font></dd>
+<a name="wp1065176"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For properties regarding the tMap component as well as use case scenarios, see <a href="tMap_Prop.html"><i>tMap</i></a>.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-04.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-06.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Job execution in a loop</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFor_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFTP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1207861"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295105"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Job execution in a loop
+</b></font></h3>
+<dl><a name="wp1287717"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a job composed of a parent job and a child job. The parent job implements a loop which executes n times a child job, with a pause between each execution.
+</font></dd>
+</dl><a name="wp1208473"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFor1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1208496"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the parent job, click and drop a <b>tFor</b>, a <b>tRunJob</b> and a <b>tSleep</b> component onto the workspace.</font></li>
+<a name="wp1208539"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFor</b> to the <b>tRunJob</b> using an <b>Iterate</b> connection.</font></li>
+<a name="wp1208551"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the <b>tRunJob</b> to a <b>tSleep</b> component using a <b>Row</b> connection.</font></li>
+<a name="wp1208589"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the child job, click and drop the following components: <b>tPOP</b>, <b>tFileInputMail</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1208626"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Properties</b> panel of the <b>tFor</b> component, type in the instance number to start from (<i>1</i>), the instance number to finish with (<i>5</i>) and the step (<i>1</i>)</font></li>
+<a name="wp1208678"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Properties</b> panel of the <b>tRunJob</b> component, select the child job in the list of stored jobs offered. In this example: <i>popinputmail</i></font></li>
+<a name="wp1208743"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the context if relevant. In this use case, the context is <i>default</i> with no variables stored.</font></li>
+<a name="wp1208770"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tSleep</b> <b>Properties</b> panel, type in the time-off value in second. In this example: <i>3 seconds</i></font></li>
+<a name="wp1208914"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then in the child job, define the connection parameters to the pop server, on the <b>Properties</b> panel. </font></li>
+<a name="wp1208933"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileInputMail</b> <b>Properties</b> panel, select a global variable as <b>File Name</b>, to collect the current file in the directory defined in the <b>tPOP</b> component. Press <b>Ctrl+Space bar</b> to access the variable list. In this example, the variable to be used is: $_globals{tPOP_1}{CURRENT_FILEPATH} </font></li>
+<a name="wp1209024"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Schema</b>, for it to include the mail element to be processed, such as <i>author</i>, <i>topic</i>, <i>delivery date</i> and <i>number of lines</i>.</font></li>
+<a name="wp1209067"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Mail Parts</b> table, type in the corresponding <b>Mail part</b> for each column defined in the schema. ex: <i>author</i> comes from the <i>From</i> part of the email file.</font></li>
+<a name="wp1209173"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the <b>tFileInputMail</b> to a <b>tLogRow</b> to check out the execution result on the <b>Run Job</b> view.</font></li>
+<a name="wp1209232"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFor_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFTP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

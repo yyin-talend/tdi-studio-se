@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:30">
+    <title>Scenario1: warning &amp; log on entries</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tLogCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario2.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1205078"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario1: warning &amp; log on entries
+</b></font></h3>
+<dl><a name="wp1294091"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In this basic scenario made of three components, a <b>tRowGenerator</b> creates random entries (id to be incremented). The input hits a <b>tWarn</b> component which triggers the <b>tLogCatcher</b> subjob. This subjob fetches the warning message as well as standard predefined information and passes them on to the <b>tLogRow</b> for a quick display of the log data.
+</font></dd>
+</dl><a name="wp1205101"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tCatch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1205118"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tRowGenerator</b>, a <b>tWarn</b>, a <b>tLogCatcher</b> and a <b>tLogRow</b> from the Palette, on your workspace</font></li>
+<a name="wp1205129"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tRowGenerator</b> to the <b>tWarn</b> component.</font></li>
+<a name="wp1205139"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect separately the <b>tLogCatcher</b> to the <b>tLogRow</b>.</font></li>
+<a name="wp1205148"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tRowGenerator</b> editor, set the random entries creation using a basic Perl function: </font></li>
+</ul>
+</ul>
+<a name="wp1205157"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tCatch2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1236843"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tWarn</b> Properties panel, set your warning message, the code the priority level. In this case, the message is &quot;this is a warning&#39;.</font></li>
+<a name="wp1205173"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this scenario, we will concatenate a Perl function to the message above, in order to collect the first value from the input table.</font></li>
+</ul>
+</ul>
+<a name="wp1205182"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tCatch3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1205193"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tLogCatcher</b> properties panel, check the <b>tWarn</b> box in order for the message from the latter to be collected by the subjob.</font></li>
+<a name="wp1205200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Edit Schema </b>to view the schema used as log output. Notice that the log is comprehensive.</font></li>
+</ul>
+</ul>
+<a name="wp1205209"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tCatch4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1205214"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press <b>F6</b> to execute the job. Notice that the Log produced is exhaustive.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tLogCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario2.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

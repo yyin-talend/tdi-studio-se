@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: Adding new column and altering data </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlOutputBulk_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1202747"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1295392"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Adding new column and altering data 
+</b></font></h3>
+<dl><a name="wp1288987"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario is a three-component job aiming at creating random data using a <b>tRowGenerator</b>, duplicating a column to be altered using the <b>tMap</b> component, eventually altering the data to be inserted based on a SQL expression, as well as inserting a new column in the DB, using the <b>tDBOutput</b> component.
+</font></dd>
+</dl><a name="wp1202969"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1202983"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <b>tRowGenerator</b>, <b>tMap</b> and <b>tMySQLOutput</b> components onto the designer.</font></li>
+<a name="wp1203134"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tRowGenerator</b> to the <b>tMap</b>.</font></li>
+<a name="wp1202987"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the tRowGenerator component properties. Create a two-column  schema: <b>Name</b> and <b>Random_date</b></font></li>
+<a name="wp1202991"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Name</b> column does pick up randomly names from a list specified. In this use case, le list includes <i>FabriceB</i>, <i>PierrickL</i>, <i>GabrielM</i> and <i>ElisaS</i>. </font></li>
+<a name="wp1203079"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then, double-click on the <b>tMap</b> component to duplicate the random_date column and adapt the schema in order to alter the data in the output component. </font></li>
+<a name="wp1203113"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Mapper, create an output link to the <b>tMysqlOutput</b> component. Add one more column (based on the input schema) and name it <i>random_date_1</i> to distinguish it from the other <i>random_date</i> column.</font></li>
+<a name="wp1203166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <i>random_date</i> content from the input area to the output area.</font></li>
+<a name="wp1203249"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMysqlOutput</b> component to set its parameters.</font></li>
+<a name="wp1203285"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First fill in the DB connection details, either through the Repository or manually in case of Built-in information.  </font></li>
+<a name="wp1203320"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the table to be altered, in this example: <i>Feature516</i>. </font></li>
+<a name="wp1203343"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No <b>Action on table </b>is to be carried out, the <b>Action on data</b> is <i>Insert</i>. </font></li>
+<a name="wp1203411"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Additional Columns</b> area, set the alteration to be performed on columns and the specific insertion of a new <i>moment</i> column onto the database.</font></li>
+<a name="wp1203434"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <i>One_month_later</i> column is a replacement column for the <i>random_date_1</i> column. Also, the data it-self gets altered using an SQL expression, which adds one month to the randomly picked-up date of the <i>random_date_1</i> column. ex: 2007-08-12 becomes 2007-09-12</font></li>
+<a name="wp1203454"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Therefore, in <b>Name</b> field goes the new column label (<i>One_Month_Later</i>) and in <b>SQL expression</b> field, type in the relevant addition script to be performed: &#39;adddate(?, interval 1 month)&#39; then as <b>Position</b>, select <b>Replace</b>, and the <b>Reference column</b> is <i>Random_date_1</i>. </font></li>
+<a name="wp1206029"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Note that for this job we duplicated the <i>random_date_1</i> column in the DB table before replacing one instance of it with the <i>One_Month_Later</i> column. The aim of this workaround was to be able to view upfront the modification performed.</font></li>
+<a name="wp1203683"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The second entry is the new column, <i>moment</i>, to be inserted into the database table. As <b>SQL expression</b>, type in the moment function: <i>now()</i> and in the <b>Position</b> field, select <b>Before</b>, the <b>Reference column</b> is name in this example.</font></li>
+<a name="wp1203750"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Once the Output setting is complete, press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1203789"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Two new columns were added or altered onto the DB table: <i>One_Month_Later</i> and <i>Moment</i>.
+</font></dd>
+<a name="wp1203821"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="tDBOutput_Prop.html#wp1184946"><i>tDBOutput properties</i></a>
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlOutputBulk_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

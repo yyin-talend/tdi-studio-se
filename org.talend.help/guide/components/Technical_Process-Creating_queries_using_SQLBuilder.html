@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:21">
+    <title>Creating queries using SQLBuilder</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-Defining_Metadata_items.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Mapping_data_flows_in_a_job.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1040548"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Creating queries using SQLBuilder
+</b></font></h2>
+<a name="wp1037965"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+SQLBuilder helps you build your SQL queries and monitor the changes between DB tables and metadata tables. This editor is available in all DBInput and DBSQLRow components (specific or generic).
+</font></p>
+<a name="wp1037969"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can build a query using SQLbuilder whether your database table schema is stored in the repository or built-in directly in the job component.
+</font></p>
+<a name="wp1037974"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Fill in the DB connection details and select the appropriate repository entry if you defined it. 
+</font></p>
+<a name="wp1037980"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Remove the default query statement  in the <b>Query</b> field of the component <b>Properties</b> panel. Then click on the three-dot button to open the SQL Builder.
+</font></p>
+<a name="wp1037988"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/SQLBuilder1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1037996"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The SQL Builder editor is made of the following panels:
+</font></p>
+<ul>
+<a name="wp1038002"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Database structure</font></li>
+<a name="wp1038006"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Query editor made of editor and designer tabs</font></li>
+<a name="wp1038010"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Query execution view</font></li>
+<a name="wp1038015"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Schema view</font></li>
+</ul>
+<a name="wp1038018"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Database structure shows the tables for which a schema was defined either in the repository database entry or in your built-in connection.
+</font></p>
+<a name="wp1038023"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The schema view, in the bottom right corner of the editor, shows the column description.
+</font></p>
+<a name="wp1038029"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Database structure comparison
+</b></font></h3>
+<dl><a name="wp1038032"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the database structure panel, are shown all the tables stored in the DB connection metadata entry (Repository) or in case of built-in schema, the tables of the database itself.
+</font></dd>
+<a name="wp1038036"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	the connection to the database, in case of built-in schema or in case of refreshing operation of a repository schema, might take quite some time. 
+</font></p>
+<a name="wp1038040"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click the refresh icon to display the differences found between the DB metadata tables and the actual DB tables. 
+</font></dd>
+</dl><a name="wp1038048"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/SQLBuilder_dbstruct.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1038054"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Diff</b> icons point out that the table contains differences or gaps. Develop the table node to show the exact column containing the differences. 
+</font></dd>
+<a name="wp1038058"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The red highlight shows that the content of the column contains differences or that the column is missing from the actual database table.
+</font></dd>
+<a name="wp1038064"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The blue highlight shows that the column is missing from the table stored in the repository metadata.
+</font></dd>
+</dl><a name="wp1038070"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Building a query
+</b></font></h3>
+<dl><a name="wp1038074"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Query editor is a multiple-tab system allowing you to write or graphically design as many queries as you want. 
+</font></dd>
+<a name="wp1038419"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To create a new query, right-click on the table or on the table column and select <b>Generate Select Statement</b> on the pop-up list.
+</font></dd>
+<a name="wp1077579"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on the empty tab showing by default and type in your SQL query or press <b>Ctrl+Space </b>to access the autocompletion list. The tooltip bubble shows the whole path to the table or table section you want to search in.  
+</font></dd>
+</dl><a name="wp1038352"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/SQLBuilder_query.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1038360"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Alternatively the graphical query <b>designer</b> allows you to handle tables easily and have real-time generation of  the corresponding query in the <b>edit</b> tab.
+</font></dd>
+<a name="wp1077675"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on <b>Designer</b> tab to switch from manual <b>Edit</b> mode to graphical mode.
+</font></dd>
+<a name="wp1077616"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	You may get a message while switching from one view to the other, as some SQL statements cannot be interpreted graphically.
+</font></p>
+<a name="wp1077722"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you selected a table, all columns are selected by default. Uncheck the box facing the relevant columns to exclude them from the selection. 
+</font></dd>
+<a name="wp1077806"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Add more tables in a simple right-click. On the <b>designer</b> tab, right-click and select <b>Add tables</b> in the pop-up list then select the relevant table to be added.
+</font></dd>
+<a name="wp1078166"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If joins between these tables already exist, these joins are automatically set up graphically in the editor.
+</font></dd>
+<a name="wp1077755"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can also very easily create a join between tables. Right-click on the first table columns to be linked and select <b>Equal</b> on the pop-up list, to join it with the relevant field of the second table. 
+</font></dd>
+</dl><a name="wp1077860"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/SQLBuilder_query2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1077896"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The SQL statement corresponding to your graphical handlings is also displayed on the viewer part of the editor or click on the <b>edit </b>tab to switch back to manual <b>Edit</b> mode. 
+</font></dd>
+<a name="wp1077736"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	In <b>Designer</b> mode, you cannot include graphically filter criteria.These need to be added in <b>Edit</b> mode.
+</font></p>
+<a name="wp1078178"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Once your query is complete, execute it by clicking on the running man button.
+</font></dd>
+<a name="wp1038472"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The toolbar above the query editor allows you to access quickly usual commands such as: execute, open, save and clear.
+</font></dd>
+<a name="wp1038460"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the Query results view, are displayed the results of the active tab&#39;s query. 
+</font></dd>
+<a name="wp1038495"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The status bar at the bottom of this panel provides information about execution time and number of rows retrieved.
+</font></dd>
+</dl><a name="wp1077270"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Storing a query in the Repository
+</b></font></h3>
+<dl><a name="wp1077283"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To be able to retrieve and reuse queries, we recommend you to store them in the <b>Repository</b>.
+</font></dd>
+<a name="wp1078084"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the SQL Builder editor, click on <b>Save</b> (floppy disk icon on the tool bar) to bind the query with the DB connection and schema in case these are also stored in the <b>Repository</b>.
+</font></dd>
+<a name="wp1078133"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The query can then be accessed from the <b>Database structure</b> view, on the left-hand side of the editor.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-Defining_Metadata_items.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-Mapping_data_flows_in_a_job.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

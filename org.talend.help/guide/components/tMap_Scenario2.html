@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 15:59:30">
+    <title>Scenario 2: Advanced mapping</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMap_Scenario1.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMap_Scenario3.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1190301"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 2: Advanced mapping
+</b></font></h3>
+<dl><a name="wp1287855"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario, based on scenario 1, adds one input file containing Resellers details and extra fields in the main Output table. Two filters on Inner Joins are added to gather specific rejections.
+</font></dd>
+<ul>
+<a name="wp1190316"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>File</b> in the Palette of Components, and drop a <b>tFileInputCSV</b> component on the workspace. </font></li>
+<a name="wp1190322"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect it to the Mapper and put a label on the component and the connection.</font></li>
+</ul>
+</dl><a name="wp1190329"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190335"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the Resellers component, to define the Reseller input properties. </font></li>
+<a name="wp1190338"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Browse to the Resellers.csv file. Edit the schema and add the columns as needed to match the file structure.</font></li>
+</ul>
+</ul>
+<a name="wp1190347"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190352"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You could also create a metadata entry for this file description and select Repository as properties and schema type. For further information<a href="Technical_Process-Defining_Metadata_items.html#wp1037313">, see&#160;<i>Setting up a File Delimited schema.</i></a></font></li>
+<a name="wp1190359"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> Double-click on the tMap component and notice that the schema is added on the Input area.</font></li>
+</ul>
+</ul>
+<a name="wp1190368"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190373"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create a join between the main input flow and the resellers input. Check the Inner Join box to define that an Inner Join Reject output is to be created.</font></li>
+<a name="wp1190379"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop the fields from the Resellers table to the main Output table.</font></li>
+</ul>
+</ul>
+<a name="wp1190386"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1190389"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	When two inner joins are defined, you either need to define two different inner join reject tables to differenciate both rejections or if there is only one Inner Join reject output, both Inner Join rejections will be stored in the same output.  
+</font></p>
+<ul>
+<ul>
+<a name="wp1190396"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the output area, click on the plus button to add a new output table.</font></li>
+<a name="wp1190400"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a name to this new Output connection: Reject_ResellerID</font></li>
+<a name="wp1190403"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the Inner Join reject button to define this new output table as Inner Join  Reject output.</font></li>
+<a name="wp1190410"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop two fields from the main input flow (<i>Cars</i>) to the new reject output table. In this case, if the Inner Join cannot be established, these data (<i>ID_Cars</i> &amp; <i>ID_resellers</i>) will be gathered in the output file and will help identify the bottleneck.</font></li>
+</ul>
+</ul>
+<a name="wp1190425"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190430"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now apply filters on the two Inner Join reject outputs, in order for to distinguish both types of rejection.</font></li>
+<a name="wp1190437"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the first Inner Join output table (<i>Reject_OwnerID</i>), click the plus arrow button to add a filter line and fill it in with the following formula to gather only OwnerID-related rejection: <i>not defined $Owners_data[ID_Owner]</i> </font></li>
+<a name="wp1190447"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the second Inner Join output table (<i>Reject_ResellerID</i>), repeat the same operation using the following formula: <i>not defined $Resellers_data[ID_Reseller]</i> </font></li>
+</ul>
+</ul>
+<a name="wp1190459"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190465"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click OK to validate and close the Mapper editor. </font></li>
+<a name="wp1190477"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tMap</b> component, click on <b>Row</b> and select <i>Reject_ResellerID</i> in the list.</font></li>
+<a name="wp1190481"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the main row from the Mapper to the Reseller Inner Rejection output component</font></li>
+</ul>
+</ul>
+<a name="wp1190490"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190495"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this scenario, remove from the Resellers.csv the rows corresponding to Reseller ID 5 and 8.</font></li>
+<a name="wp1190501"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then run the job through a F6 key stroke or from the Run Job panel. </font></li>
+</ul>
+</ul>
+<a name="wp1190508"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap2-2-8.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1190514"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The four output files are all created in the defined folder (Outputs).</font></li>
+<a name="wp1190520"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice in the Inner Join reject output file, <i>NoResellerID.csv</i>, that the ID_Owners field values matching the Reseller ID 5 and 8 were rejected from the cars file to this file.</font></li>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMap_Scenario1.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMap_Scenario3.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

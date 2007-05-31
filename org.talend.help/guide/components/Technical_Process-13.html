@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
+    <title>Running a job</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-12.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-14.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp501913"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Running a job
+</b></font></h2>
+<a name="wp1002209"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can execute a job in several ways. This mainly depends on the purpose of your job execution and on your user level. 
+</font></p>
+<a name="wp1008841"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you are an advanced Perl/Java user and want to execute your project step by step to check and possibly modify it on the run, see <a href="Technical_Process-13.html#wp1013995"><i>Running in debug mode</i></a>. 
+</font></p>
+<a name="wp1008862"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you don&#39;t have advanced Perl knowledge and want to execute  and monitor your job in normal mode, see <a href="Technical_Process-13.html#wp1004393"><i>Running in normal mode</i></a>.
+</font></p>
+<a name="wp1004393"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Running in normal mode
+</b></font></h3>
+<dl><a name="wp1009337"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Make sure you saved your job before running it in order for all properties to be taken into account.
+</font></dd>
+<ul>
+<a name="wp1009463"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Run Job </b>tab to access the panel. </font></li>
+<a name="wp1009611"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Context</b> zone, select the right context for the job to be executed in. You can also check the variable values</font></li>
+</ul>
+<a name="wp1009492"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you haven&#39;t defined any particular execution context, the context parameter table is empty and the context is the default one. Related topic: <a href="Technical_Process-12.html"><i>Defining a job design context and variables</i></a>
+</font></dd>
+<ul>
+<a name="wp1009328"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>Run</b> to start the execution.</font></li>
+<a name="wp1009661"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the same panel, the log displays the progress of the execution. The log includes any error message as well as start and end messages. It also shows the job output in case of tLogRow component is used in the job design. </font></li>
+</ul>
+<a name="wp1009804"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Before running again a job, you might want to remove the log content from the execution panel. Check the <b>Clear before run</b> box, for the log to be cleared each time you execute again a job.
+</font></dd>
+<a name="wp1009830"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If for any reason, you want to stop the job in progress, simply click on <b>Kill</b> button. You&#39;ll need to click the <b>Run</b> button again, to start again the job.
+</font></dd>
+<a name="wp1009863"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Talend Open Studio</b> offers various informative features, such as statistics and traces, facilitating the job monitoring and debugging work.
+</font></dd>
+</dl><a name="wp1009964"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Displaying Statistics
+</b></font></h4>
+<dl><dl><a name="wp1009970"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Statistics</b> feature displays each component performance rate, underneath the component icon on the design workspace. 
+</font></dd>
+</dl></dl><a name="wp1010901"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Stats.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1010904"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+It shows the number of rows processed and the processing time in row per second, allowing you to spot straight away any bottleneck in the data processing flow.
+</font></dd>
+<a name="wp1009974"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note: Exception is made for external components which cannot offer this feature if their design doesn&#39;t include it. 
+</font></dd>
+<a name="wp1010880"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check the <b>Statistics</b> box to activate the stats feature and click again to disable it.
+</font></dd>
+<a name="wp1010089"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Stats calculation only starts along with the job execution launchs, and stops at the end of it.
+</font></dd>
+<a name="wp1010098"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Clear</b> to remove the calculated stats displayed. Check the Clear before Run box to reset the Stats feature before each execution.
+</font></dd>
+<a name="wp1010136"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The statistics thread slows down sensibly the time performance of a job execution as the job must send these stats data to the Designer in order to be displayed.
+</font></p>
+</dl></dl><a name="wp1009756"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Displaying Traces
+</b></font></h4>
+<dl><dl><a name="wp1009764"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The tracking feature is relatively basic in <b>Talend Open Studio</b> for the time being. But it should be enhanced in a near future.
+</font></dd>
+<a name="wp1010372"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+It provides a row by row view of the component behaviour and displays the dynamic result next to the row link. 
+</font></dd>
+</dl></dl><a name="wp1010496"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Traces.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1010914"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This feature allows you to monitor all components of a job, without  switching to Debug mode, hence without requiring advanced Perl/Java  knowledge. 
+</font></dd>
+<a name="wp1010515"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Traces function displays the content of processed rows in a table. 
+</font></dd>
+<a name="wp1010309"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	 Exception is made for external components which cannot offer this feature if their design doesn&#39;t include it. 
+</font></p>
+<a name="wp1010313"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on <b>Traces</b> button to activate the tracking feature and click again to disable it.
+</font></dd>
+<a name="wp1010231"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The trace only launches along with the job launches, and stops at the end of it.
+</font></dd>
+<a name="wp1010241"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on <b>Clear </b>to remove the tracking data displayed. 
+</font></dd>
+<a name="wp1010469"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that the table is limited horizontally, however mouse over the table to display the whole data table. On the other hand, the table does not have any vertical limitation. This might become an issue for very long data tables.
+</font></p>
+</dl></dl><a name="wp1013995"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Running in debug mode
+</b></font></h3>
+<dl><a name="wp1013999"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note that to run a job in Debug mode, you need the EPIC module to be installed.
+</font></dd>
+<a name="wp1014003"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Before running your job in Debug mode, add breakpoints to the major steps of your job flow.  
+</font></dd>
+</dl><a name="wp1014010"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Add_breakpoint.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1014013"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This will allow you to get the job to automatically stop at each breakpoint. This way components and their respective variables can be verified individually and debugged if required.
+</font></dd>
+<a name="wp1014017"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To add breakpoints to a component, right-click on it on the Job Design workspace, and select <b>Add breakpoint</b> on the popup menu.
+</font></dd>
+<a name="wp1014025"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A pause icon displays next to the component where the break is added. 
+</font></dd>
+<a name="wp1014036"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To switch to debug mode, click on the <b>Debug </b>button on the  <b>Run Job</b> panel. <b>Talend Open Studio</b>&#39;s window gets reorganised for debugging.  
+</font></dd>
+<a name="wp1014041"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can then run the job step by step  and check each breakpoint component for the expected behaviour and variable values.
+</font></dd>
+<a name="wp1014051"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To switch back to Talend Open Studio designer mode, click on <b>Window</b>, then <b>Perspective</b> and select <b>Talend Open Studio</b>. 
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="Technical_Process-12.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="Technical_Process-14.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

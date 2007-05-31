@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <title>Scenario: From Positional to XML file</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputPositional_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputRegex_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1052401"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1294961"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: From Positional to XML file
+</b></font></h3>
+<dl><a name="wp1287636"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario creates a two-component job, which aims at reading data of an Input file and outputting selected data (according to the data position) into an XML file.
+</font></dd>
+</dl><a name="wp1011073"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputPos1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1079408"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputPositional</b> component from the Palette to the design workspace. The file contains raw data, in this case, contract nr, customer references and insurance numbers.</font></li>
+<a name="wp1011081"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileOutputXML</b> component. This file is meant to receive the references in a structured way.</font></li>
+<a name="wp1011090"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputPositional</b> component and select <i>Row &gt; Main</i>. Then drag it onto the <b>tFileOutputXML</b> component and release when the plug symbol shows up.</font></li>
+<a name="wp1011102"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputPositional</b> component again, and define its properties.</font></li>
+<a name="wp1079486"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The job properties are built-in for this scenario. As opposed to the Repository, this means that the <b>Property type</b> is set for this station only.</font></li>
+</ul>
+</ul>
+<a name="wp1011310"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputPositional1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1011492"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in a path to the file in the <b>File Name</b> field. This field is mandatory.</font></li>
+<a name="wp1079479"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row separator</b> identifying the end of a row, by default, a carriage return.</font></li>
+<a name="wp1011534"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>Pattern</b> to delimit fields in a row. The pattern is a series of length values corresponding to the values of your input files. The values should be entered between quotes, and separated by a comma. Make sure the values you enter match the schema defined.</font></li>
+<a name="wp1011405"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, the header, footer and limit fields are not set. But depending on the input file structure, you may need to define them.</font></li>
+<a name="wp1011425"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select a <b>Schema type</b> to define the data to pass on to the <b>tFileOutputXML</b> component. </font></li>
+<a name="wp1011441"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can load and/or edit the schema via the <b>Edit Schema</b> function. For this schema, define three columns, respectively <i>Contracts</i>, <i>CustomerRef</i> and <i>InsuranceNr</i> matching the three value lengths defined.</font></li>
+</ul>
+</ul>
+<a name="wp1079566"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputPos2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1079574"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the second component properties:</font></li>
+<a name="wp1079690"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the XML output file path. </font></li>
+</ul>
+</ul>
+<a name="wp1079587"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputPos3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1079645"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a root tag (or more), to wrap the XML structure output, in this case `ContractsList&#39;.</font></li>
+<a name="wp1079745"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the row tag that will wrap each line data, in this case `ContractRef&#39;.</font></li>
+<a name="wp1079754"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the box <b>Column name as tag name</b> to reuse the column label from the input schema as tag label. By default, `field&#39; is used for each column value data.</font></li>
+<a name="wp1079726"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the <b>Encoding</b> standard, the input file is encoded in. Note that, for the time being, the encoding consistency verification is not supported.</font></li>
+<a name="wp1079661"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Schema type</b>. If the row connection is already implemented, the schema is automatically synchronized with the Input file schema. Else, click on <b>Sync columns</b>.</font></li>
+<a name="wp1079673"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Go to the <b>Run Job</b> tab, and click on <b>Run</b> to execute the job.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1079676"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The file is read row by row and split up into fields based on the length values defined in the <b>Pattern</b> field. You can open it using any standard XML editor.
+</font></dd>
+</dl><a name="wp1052692"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tFileInputPos4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileInputPositional_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileInputRegex_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>
