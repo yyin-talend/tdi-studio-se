@@ -36,19 +36,13 @@ int nb_line_<%=cid%> = 0;
 
 
 String sDBDriver<%=cid%>="oracle.jdbc.driver.OracleDriver";
-//String sConnStr<%=cid%> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
-String sConnStr<%=cid%>="jdbc:oracle:thin:@192.168.0.112:1521:Talend";
+String sConnStr<%=cid%> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
 java.sql.ResultSet rs<%=cid%> = null;
 java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(sConnStr<%=cid%>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
-
-//**//Output ResultSet
-//rs<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
-//java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
-//int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
 
 
 
