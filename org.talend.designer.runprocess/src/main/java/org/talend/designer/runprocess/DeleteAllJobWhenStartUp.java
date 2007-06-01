@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.core.CorePlugin;
 
 /**
  * Delete all the perl and java jobs when T.O.S start up.
@@ -96,6 +97,5 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 }
             }
         });
-
     }
 }

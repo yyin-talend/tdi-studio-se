@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.java.JavaProcessor;
@@ -149,6 +150,15 @@ public class DefaultRunProcessService implements IRunProcessService {
      */
     public void setDelegateService(IRunProcessService delegateService) {
         throw new UnsupportedOperationException("This method should'nt be called here, use it on RunProcessService class.");
+    }
+
+    public void updateLibraries() throws CoreException {
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            JavaProcessor.updateClasspath();
+        default:
+            // nothing
+        }
     }
 
 }

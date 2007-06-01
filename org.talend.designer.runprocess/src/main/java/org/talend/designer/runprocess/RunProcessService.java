@@ -139,4 +139,8 @@ public class RunProcessService implements IRunProcessService {
         }
     }
 
+    public void updateLibraries() throws CoreException {
+        delegateService.updateLibraries();
+    }
+
 }

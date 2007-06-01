@@ -64,6 +64,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -119,6 +120,8 @@ public class JavaProcessor extends Processor {
 
     private ISyntaxCheckableEditor checkableEditor;
 
+    private static IProject rootProject;
+
     /**
      * Set current status.
      * 
@@ -158,6 +161,12 @@ public class JavaProcessor extends Processor {
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
+        
+        try {
+            updateClasspath();
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
@@ -190,7 +199,7 @@ public class JavaProcessor extends Processor {
 
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
-        } 
+        }
         this.context = context;
     }
 
@@ -201,8 +210,7 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
      * boolean, boolean)
      */
-    public void generateCode(boolean statistics, boolean trace, boolean javaProperties)
-            throws ProcessorException {
+    public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         try {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -420,13 +428,26 @@ public class JavaProcessor extends Processor {
      * @throws CoreException
      */
     public static IProject getProcessorProject() throws CoreException {
+        if (rootProject != null) {
+            return rootProject;
+        }
+        return initializeProject();
 
+    }
+    
+    private static IProject initializeProject() throws CoreException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
 
-        initJavaProject(prj);
-        javaProject = JavaCore.create(prj);
+        initJavaProject(rootProject);
+        javaProject = JavaCore.create(rootProject);
+        return rootProject;
+    }
 
+    public static void updateClasspath() throws CoreException {
+        if (rootProject == null || javaProject == null) {
+            initializeProject();
+        }
         IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
                 "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
         IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
@@ -457,10 +478,7 @@ public class JavaProcessor extends Processor {
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
 
-        CorePlugin.getDefault().getLibrariesService().checkLibraries();
-
-        return prj;
-
+        // CorePlugin.getDefault().getLibrariesService().checkLibraries();
     }
 
     /**
