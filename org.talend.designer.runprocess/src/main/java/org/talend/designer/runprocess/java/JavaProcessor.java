@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Priority;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -265,6 +266,9 @@ public class JavaProcessor extends Processor {
                 setBreakpoints(codeFile, getTypeName(), lineNumbers);
             }
         } catch (CoreException e1) {
+            if (e1.getStatus() != null && e1.getStatus().getException() != null) {
+                ExceptionHandler.process(e1.getStatus().getException());
+            }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         }
     }

@@ -52,6 +52,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -117,8 +118,7 @@ public class PerlProcessor extends Processor {
         this.context = context;
     }
 
-    public void generateCode(boolean statistics, boolean trace, boolean perlProperties)
-            throws ProcessorException {
+    public void generateCode(boolean statistics, boolean trace, boolean perlProperties) throws ProcessorException {
         super.generateCode(statistics, trace, perlProperties);
         try {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -171,6 +171,9 @@ public class PerlProcessor extends Processor {
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {
+            if (e1.getStatus() != null && e1.getStatus().getException() != null) {
+                ExceptionHandler.process(e1.getStatus().getException());
+            }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
