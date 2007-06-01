@@ -27,9 +27,10 @@ imports="
 
 java.sql.Connection conn_<%=cid%> = null;
 <%
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	if(connection != null && connection.trim().length() != 0)
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(useExistingConn.equals("true"))
 	{
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;;
 		%>
 		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
@@ -45,7 +46,7 @@ java.sql.Connection conn_<%=cid%> = null;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 		<%
-	}
+	}	
 %>
 
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);

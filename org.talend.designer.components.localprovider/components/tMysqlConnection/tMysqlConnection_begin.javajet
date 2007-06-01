@@ -2,30 +2,22 @@
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
-    org.talend.core.model.metadata.IMetadataTable 
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    java.util.List
 " 
 %>
 
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
 	
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
-		String javaDbDriver   = "org.gjt.mm.mysql.Driver";
-        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-        String dbport = ElementParameterParser.getValue(node, "__PORT__");
-        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-        String dbuser = ElementParameterParser.getValue(node, "__USER__");
-        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
-        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    String cid = node.getUniqueName();
+	String javaDbDriver   = "org.gjt.mm.mysql.Driver";
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 
@@ -40,8 +32,3 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
-
-<%
-    }
-}
-%>

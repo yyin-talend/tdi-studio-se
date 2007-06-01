@@ -37,9 +37,10 @@ imports="
 int nb_line_<%=cid%> = 0;
 java.sql.Connection conn_<%=cid%> = null;
 <%
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	if(connection != null && connection.trim().length() != 0)
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(useExistingConn.equals("true"))
 	{
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
 		%>
 		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");

@@ -37,12 +37,21 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tMysqlConnection"
       NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
 
     <PARAMETER
@@ -50,6 +59,8 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -59,6 +70,8 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
@@ -69,6 +82,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -89,6 +103,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -99,6 +114,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
