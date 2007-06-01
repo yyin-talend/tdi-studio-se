@@ -117,16 +117,6 @@ $_globals{system_pid} = $$;
 $_globals{project_name} = '<%=codeGenArgument.getCurrentProjectName() %>';
 $_globals{start} = [gettimeofday];
 
-<%
-    for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
-%>
-<%=statCatcher.getUniqueName()%>_subprocess(
-    message_type => 'begin',
-);
-
-<%
-    }
-%>
 if (defined $opt{context}) {
     my $context_filename =
         $_globals{project_name}
@@ -153,7 +143,20 @@ use constant null   => undef;
 
 <% // Constants for RUN IF Error links %>
 $SIG{__DIE__} = \&global_die_catcher;
-$current_component=undef;
+$current_component = undef;
+
+<%
+    for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
+%>
+<%=statCatcher.getUniqueName()%>_subprocess(
+    message_type => 'begin',
+);
+
+<%
+    }
+%>
+
+$current_component = undef;
 
 sub global_die_catcher {
     our $_globals;
