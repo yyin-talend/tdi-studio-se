@@ -24,11 +24,12 @@
 	
 	// component id
 	String cid = node.getUniqueName();
+	to = to.replace(";",",");
 %>
 	String smtpHost_<%=cid %> = <%=smtpHost %>;
 	String smtpPort_<%=cid %> = "<%=smtpPort %>";
 	String from_<%=cid %> = <%=from %>;
-    String to_<%=cid %> = <%=to %>.replace(";",",");
+    String to_<%=cid %> = <%=to %>;
     String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc %>;
     String subject_<%=cid %> = <%=subject %>;
     String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
