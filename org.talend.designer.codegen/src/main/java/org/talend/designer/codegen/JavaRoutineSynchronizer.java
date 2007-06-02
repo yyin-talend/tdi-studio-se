@@ -58,9 +58,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
-
-    private static boolean isFirst = true;
-
+    
     /*
      * (non-Javadoc)
      * 
@@ -91,9 +89,8 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                 fileName = fileName.substring(1);
             }
             File f = new File(systemModuleURL.getPath());
-            if (f.isDirectory() && isFirst) {
+            if (f.isDirectory()) {
                 syncModule(f.listFiles());
-                isFirst = false;
             }
         } catch (IOException e) {
             e.printStackTrace();
