@@ -379,6 +379,13 @@
       <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.MappingTypeControllerGenerator"
             mapping="MAPPING_TYPE"
-            name="Mapping Type"/>             
+            name="Mapping Type"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColorControllerGenerator"
+            mapping="COLOR"
+            name="Color"/>
+      <generator
+            class="org.talend.designer.core.ControllerGenerator2"
+            mapping="CONNECTION_LIST"/>             
    </extension>
 </plugin>

@@ -90,6 +90,8 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class EmfComponent implements IComponent {
 
+    private static final String DEFAULT_COLOR = "255;255;255";
+
     private File file;
 
     private static final long serialVersionUID = 1L;
@@ -523,7 +525,7 @@ public class EmfComponent implements IComponent {
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
-            
+
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.TECHNICAL);
             newParam.setName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
@@ -677,6 +679,9 @@ public class EmfComponent implements IComponent {
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
             switch (type) {
+            case COLOR:
+                param.setValue(DEFAULT_COLOR);
+                break;
             case CHECK:
                 param.setValue(new Boolean(false));
                 break;
@@ -924,6 +929,9 @@ public class EmfComponent implements IComponent {
                     break;
                 case CHECK:
                     newParam.setValue(new Boolean(item.getVALUE()));
+                    break;
+                case COLOR:
+                    newParam.setValue(DEFAULT_COLOR);
                     break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);
@@ -1384,7 +1392,7 @@ public class EmfComponent implements IComponent {
     public boolean useMerge() {
         return compType.getHEADER().isUSEMERGE();
     }
-    
+
     public Boolean isMultiplyingOutputs() {
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }

@@ -24,10 +24,14 @@ package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
@@ -36,9 +40,11 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 
 /**
@@ -132,6 +138,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         // final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
         for (int i = 0; i < titles.length; i++) {
+            final int curCol = i;
             if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement()
                     .getElementParameters())) {
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
@@ -150,14 +157,10 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     ((CCombo) cellEditor.getControl())
-                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam
-                                    .isReadOnly()));
+                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorValue) {
-                            // System.out.println("getColumnText() cellEditorValue=" + cellEditorValue + "
-                            // returnedValue=" + cellEditorValue);
-
                             return (String) cellEditorValue;
                         }
 
@@ -174,9 +177,6 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             } else {
                                 returnedValue = null;
                             }
-                            // System.out.println("getOriginalTypedValue() cellEditorTypedValue=" + cellEditorTypedValue
-                            // + " returnedValue="
-                            // + returnedValue);
                             return returnedValue;
                         };
 
@@ -192,11 +192,52 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     }
                                 }
                             }
-                            // System.out.println("getCellEditorTypedValue() originalTypedValue=" + originalTypedValue +
-                            // " returnedValue="
-                            // + returnedValue);
                             return returnedValue;
                         };
+                    });
+                    break;
+                case COLOR:
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
+                            && (!tmpParam.isReadOnly()));
+                    // column.setDisplayedValue("");
+
+                    column.setLabelProvider(null);
+                    column.setCellEditor(new ColorCellEditor(table) {
+
+                        @Override
+                        protected void doSetValue(Object value) {
+                            if (value instanceof String) {
+                                super.doSetValue(TalendTextUtils.stringToRGB((String) value));
+                            } else {
+                                super.doSetValue(value);
+                            }
+                        }
+                        @Override
+                        protected void updateContents(Object value) {
+                            if (value != null) {
+                                if (value instanceof String) {
+                                    super.updateContents(TalendTextUtils.stringToRGB((String) value));
+                                } else {
+                                    super.updateContents(value);
+                                }
+                            }
+                        }
+
+                    });
+                    column.setColorProvider(new IColumnColorProvider() {
+
+                        public Color getBackgroundColor(Object bean) {
+                            Object value = ((Map<String, Object>) bean).get(items[curCol]);
+                            if (value == null || (!(value instanceof String))) {
+                                return Display.getCurrent().getSystemColor(SWT.COLOR_WHITE); //$NON-NLS-1$
+                            }
+                            return new Color(null, TalendTextUtils.stringToRGB((String) value));
+                        }
+
+                        public Color getForegroundColor(Object bean) {
+                            return null;
+                        }
+
                     });
                     break;
                 case CHECK:
@@ -216,7 +257,6 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         column.setCellEditor(textCellEditor);
                     }
                 }
-                final int curCol = i;
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
 
                     public Object get(B bean) {
@@ -257,6 +297,11 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     return new Boolean((String) value);
                                 }
                                 return value;
+                            case COLOR:
+                                if (value instanceof String) {
+                                    return TalendTextUtils.stringToRGB((String) value);
+                                }
+                                return value; // already RGB
                             default: // TEXT
                                 return (String) value;
                             }
@@ -288,6 +333,12 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     finalValue = itemValues[new Integer(index)];
                                 }
                             }
+                            break;
+                        case COLOR:
+                            if (value instanceof RGB) {
+                                RGB rgb = (RGB) value;
+                                finalValue = rgb.red + ";" + rgb.green + ";" + rgb.blue;
+                            }
                         default:
                         }
                         ((Map<String, Object>) bean).put(items[curCol], finalValue);
@@ -304,5 +355,4 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     public PropertiesTableEditorModel getModel() {
         return (PropertiesTableEditorModel) getExtendedTableModel();
     }
-
 }

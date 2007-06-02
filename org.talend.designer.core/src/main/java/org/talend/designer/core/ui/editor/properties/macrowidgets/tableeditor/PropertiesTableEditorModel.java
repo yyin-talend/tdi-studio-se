@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -96,6 +95,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                     .getDefaultClosedListValue())));
             break;
+        case COLOR:
         case CHECK:
             line.put(items[0], tmpParam.getValue());
             break;
@@ -118,7 +118,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                 line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                         .getDefaultClosedListValue())));
                 break;
-            default: // TEXT or CHECK (means String or Boolean)
+            default: // TEXT or CHECK or COLOR (means String or Boolean)
                 line.put(items[i], tmpParam.getValue());
             }
         }
