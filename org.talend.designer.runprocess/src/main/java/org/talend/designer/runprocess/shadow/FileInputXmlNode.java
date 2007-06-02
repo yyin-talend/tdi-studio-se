@@ -48,7 +48,6 @@ public class FileInputXmlNode extends FileInputNode {
 
         String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding };
-        System.out.println("Mapping size():" + mapping.size());
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
