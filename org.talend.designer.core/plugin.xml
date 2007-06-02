@@ -317,6 +317,10 @@
             mapping="COLUMN_LIST"
             name="Column List"/>
       <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ConnectionListGenerator"
+            mapping="CONNECTION_LIST"
+            name="Connection List"/>
+      <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColumnListGenerator"
             mapping="PREV_COLUMN_LIST"
             name="Pre Column List"/>

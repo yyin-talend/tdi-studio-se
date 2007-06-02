@@ -912,6 +912,7 @@ public class EmfComponent implements IComponent {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
                 newParam = new ElementParameter(node);
                 newParam.setName(item.getNAME());
+                newParam.setFilter(item.getFILTER());
                 newParam.setDisplayName(""); //$NON-NLS-1$
                 newParam.setField(currentField);
                 if (item.isSetREADONLY()) {
@@ -920,6 +921,8 @@ public class EmfComponent implements IComponent {
                 switch (currentField) {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
+                case COMPONENT_LIST:
+                case CONNECTION_LIST:
                 case LOOKUP_COLUMN_LIST:
                 case PREV_COLUMN_LIST:
                 case CONTEXT_PARAM_NAME_LIST:

@@ -23,8 +23,11 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -42,9 +45,11 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -151,8 +156,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
-                + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -195,6 +199,58 @@ public class TableController extends AbstractElementPropertySectionController {
     private void updateTableValues(IElementParameter param) {
         dynamicTabbedPropertySection.updateColumnList(null);
         updateContextList(param);
+        updateConnectionList(param);
+    }
+
+    private void updateConnectionList(IElementParameter param) {
+        // update table values
+        TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
+        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        if (tableViewerCreator != null) {
+            List colList = tableViewerCreator.getColumns();
+            for (int j = 0; j < itemsValue.length; j++) {
+                if (itemsValue[j] instanceof IElementParameter) {
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                    if (tmpParam.getField() == EParameterFieldType.CONNECTION_LIST) {
+                        String[] contextParameterNames = null;
+                        contextParameterNames = ConnectionListController.getAllConnectionNames(this, tmpParam.getFilter());
+                        tmpParam.setListItemsDisplayCodeName(contextParameterNames);
+                        tmpParam.setListItemsDisplayName(contextParameterNames);
+                        tmpParam.setListItemsValue(contextParameterNames);
+                        // if (contextParameterNames.length > 0) {
+                        // tmpParam.setDefaultClosedListValue(contextParameterNames[0]);
+                        // } else {
+                        // tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
+                        // }
+                        // j + 1 because first column is masked
+                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+
+                        CCombo combo = (CCombo) column.getCellEditor().getControl();
+                        String[] oldItems = combo.getItems();
+                        combo.setItems(contextParameterNames);
+
+                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                        String[] items = param.getListItemsDisplayCodeName();
+
+                        for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
+                            Map<String, Object> currentLine = paramValues.get(currentIndex);
+                            Object o = currentLine.get(items[j]);
+                            if (o instanceof Integer) {
+                                Integer nb = (Integer) o;
+                                if ((nb >= oldItems.length) || (nb == -1)) {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                                            .getDefaultClosedListValue()));
+                                    currentLine.put(items[j], nb);
+                                } else {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList(oldItems[nb]));
+                                    currentLine.put(items[j], nb);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void updateContextList(IElementParameter param) {
@@ -208,8 +264,8 @@ public class TableController extends AbstractElementPropertySectionController {
             return;
         }
 
-            processName = processName.replaceAll("'", "");
-            contextName = contextName.replaceAll("'", "");
+        processName = processName.replaceAll("'", "");
+        contextName = contextName.replaceAll("'", "");
 
         ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
         Process process = null;

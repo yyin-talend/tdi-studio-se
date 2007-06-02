@@ -71,6 +71,7 @@ public enum EParameterName {
     PROCESS_TYPE_CONTEXT(Messages.getString("EParameterName.context")), //$NON-NLS-1$
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
     COLUMN_LIST(Messages.getString("EParameterName.columnList")), //$NON-NLS-1$
+    CONNECTION_LIST(Messages.getString("EParameterName.connectionList")), //$NON-NLS-1$
     PREV_COLUMN_LIST(Messages.getString("EParameterName.prevColumnList")), //$NON-NLS-1$
     LOOKUP_COLUMN_LIST(Messages.getString("EParameterName.lookupColumnList")), //$NON-NLS-1$
     TSTATCATCHER_STATS(Messages.getString("EParameterName.tStatCatcherStats")), //$NON-NLS-1$

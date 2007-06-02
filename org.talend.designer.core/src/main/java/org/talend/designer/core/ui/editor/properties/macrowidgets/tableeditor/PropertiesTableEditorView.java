@@ -153,6 +153,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case CLOSED_LIST:
                 case LOOKUP_COLUMN_LIST:
                 case COLUMN_LIST:
+                case CONNECTION_LIST:
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
@@ -269,7 +270,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             switch (tmpParam.getField()) {
                             case CONTEXT_PARAM_NAME_LIST:
                             case CLOSED_LIST:
+                            case COMPONENT_LIST:
                             case COLUMN_LIST:
+                            case CONNECTION_LIST:
                             case LOOKUP_COLUMN_LIST:
                             case PREV_COLUMN_LIST:
                                 String[] namesSet = tmpParam.getListItemsDisplayName();
@@ -316,6 +319,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         case CONTEXT_PARAM_NAME_LIST:
                         case CLOSED_LIST:
                         case COLUMN_LIST:
+                        case COMPONENT_LIST:
+                        case CONNECTION_LIST:
                         case LOOKUP_COLUMN_LIST:
                         case PREV_COLUMN_LIST:
                             if (value instanceof String) {
