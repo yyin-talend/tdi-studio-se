@@ -113,6 +113,32 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
+     */
+    public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
+        ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS,
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
+                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
+                ERepositoryObjectType.METADATA_FILE_LDIF };
+
+        List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
+        for (int i = 0; i < types.length; i++) {
+            RootContainer<String, IRepositoryObject> container = getObjectFromFolder(types[i], true);
+            List<IRepositoryObject> repositoryObjects = container.getAbsoluteMembers().objects();
+            for (IRepositoryObject object : repositoryObjects) {
+                if (object.getProperty().getItem().getState().isDeleted()) {
+                    deletedItems.add(object);
+                }
+            }
+        }
+        return deletedItems;
+    }
+
     /**
      * DOC smallet Comment method "convert".
      * 
@@ -127,15 +153,16 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
+            throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
-                ERepositoryObjectType.CONTEXT };
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -143,7 +170,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType)
+            throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
@@ -176,19 +204,21 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
-            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
-
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
             throws PersistenceException;
 
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
+
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
+            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException, BusinessException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE
+                .getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());

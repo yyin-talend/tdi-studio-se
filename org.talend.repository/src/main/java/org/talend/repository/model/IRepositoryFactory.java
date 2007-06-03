@@ -24,6 +24,7 @@ package org.talend.repository.model;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.team.core.ITeamStatus;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -180,7 +181,7 @@ public interface IRepositoryFactory {
     List<Status> getTechnicalStatus() throws PersistenceException;
 
     List<Status> getDocumentationStatus() throws PersistenceException;
-    
+
     // TODO SML Remove this method
     List<SpagoBiServer> getSpagoBiServer() throws PersistenceException;
 
@@ -189,7 +190,7 @@ public interface IRepositoryFactory {
     void setDocumentationStatus(List<Status> list) throws PersistenceException;
 
     void setSpagoBiServer(List<SpagoBiServer> list) throws PersistenceException;
-    
+
     void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException;
 
     public String isServerValid() throws BusinessException;
@@ -232,6 +233,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
 
+    public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException;
+
     /**
      * gather all the metadata connections (file / db / etc ...).
      */
@@ -246,5 +249,7 @@ public interface IRepositoryFactory {
     List<ContextItem> getContextItem() throws PersistenceException;
 
     public List<org.talend.core.model.properties.Project> getReferencedProjects();
+
+    public Boolean hasChildren(Object parent);
 
 }
