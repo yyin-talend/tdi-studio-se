@@ -48,7 +48,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
           if(<%=isDate%>)
           {
           	java.util.Date d<%=cid%>=new java.util.Date();
-          	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd   HH:mm:ss");
+          	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
           	d<%=cid%>=formatterDate<%=cid%>.parse("<%=dateTime%>");
           	 java.util.Date pubDate<%=cid%>=new java.util.Date(row<%=cid%>[2]);
          	 int value<%=cid%>=pubDate<%=cid%>.compareTo(d<%=cid%>);

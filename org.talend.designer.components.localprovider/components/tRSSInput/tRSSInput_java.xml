@@ -48,7 +48,7 @@
       NUM_ROW="2"
       REQUIRED="true"
     >
-    <DEFAULT>"http://rss.sina.com.cn/sports/global/italy.xml"</DEFAULT>
+    <DEFAULT>"http://feeds.feedburner.com/Talend"</DEFAULT>
     </PARAMETER>
     
      <PARAMETER
@@ -66,7 +66,7 @@
       NUM_ROW="3"
       SHOW_IF="ARTICLE_DATE == 'true'"
     >
-    <DEFAULT>2007-5-30   08:12:12</DEFAULT>
+    <DEFAULT>2007-05-30 08:12:12</DEFAULT>
     </PARAMETER>
     
      <PARAMETER
