@@ -70,7 +70,7 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
             IResourceDelta rd = childDeltas[i];
 
             if ((rd.getKind() == IResourceDelta.ADDED) && rd.getResource().getType() == IResource.FOLDER
-                    && process.getLabel().equals(rd.getResource().getName())) {
+                    && process.getLabel().equalsIgnoreCase(rd.getResource().getName())) {
                 String[] jobName = containRunJob(this.process);
                 if (jobName != null) {
                     for (int j = 0; j < jobName.length; j++) {

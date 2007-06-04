@@ -114,6 +114,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -189,11 +190,16 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         setEditDomain(new DefaultEditDomain(this));
         this.readOnly = readOnly;
 
-        workspace = ResourcesPlugin.getWorkspace();
-        workspace.addResourceChangeListener(this);
-
         ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+
+        try {
+            workspace = CorePlugin.getDefault().getRunProcessService().getProject(language).getWorkspace();
+        } catch (CoreException e) {
+            RuntimeExceptionHandler.process(e);
+        }
+        workspace.addResourceChangeListener(this);
+
         switch (language) {
         case PERL:
             srcPath = new Path(".Perl");
@@ -822,7 +828,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         }
 
         IResourceDelta rootDelta = event.getDelta().findMember(srcPath);
-        if (rootDelta != null && (rootDelta.getKind() & IResourceDelta.ADDED) == 0) {
+        if (rootDelta != null && ((rootDelta.getKind() & IResourceDelta.ADDED) == 0)) {
             deletion.setProcess(this.process);
             deletion.storeResource(rootDelta);
         }
