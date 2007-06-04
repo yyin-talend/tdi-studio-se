@@ -32,13 +32,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -48,7 +45,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
@@ -79,14 +75,11 @@ public class RunProcessContext {
 
     public static final String TRACE_MONITOR = "RunProcessContext.MonitorTrace"; //$NON-NLS-1$
 
-    // Added by ftang
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
 
     private static final String WATCH_PARAM = "--watch"; //$NON-NLS-1$
 
     private boolean watchAllowed;
-
-    // Ends
 
     /** Change property listeners. */
     private transient PropertyChangeSupport pcsDelegate;
@@ -177,13 +170,10 @@ public class RunProcessContext {
         processMessageManager.clearMessages();
     }
 
-    // Added by ftang
     public void switchTime() {
         // TODO should do something here.
         firePropertyChange(PROR_SWITCH_TIME, "true", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    // Ends
 
     public Collection<IProcessMessage> getMessages() {
         return processMessageManager.getMessages();
@@ -284,7 +274,7 @@ public class RunProcessContext {
                 progressService.run(false, true, new IRunnableWithProgress() {
 
                     // ProgressDialog progressDialog = new ProgressDialog(shell) {
-                    
+
                     public void run(final IProgressMonitor monitor) {
 
                         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
@@ -317,11 +307,12 @@ public class RunProcessContext {
 
                                         public void run() {
                                             try {
-                                                ProcessorUtilities.generateCode(process, context, getStatisticsPort() != IProcessor.NO_STATISTICS,
+                                                ProcessorUtilities.generateCode(process, context,
+                                                        getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                         getTracesPort() != IProcessor.NO_TRACES, true);
-                                                
-                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam, progressMonitor, processMessageManager);
-                                                System.out.println("after run in RunProcessContext...");
+
+                                                ps = processor.run(getStatisticsPort(), getTracesPort(), watchParam,
+                                                        progressMonitor, processMessageManager);
                                                 if (ps != null && !progressMonitor.isCanceled()) {
                                                     psMonitor = createProcessMonitor(ps);
                                                     final String startingPattern = Messages
@@ -387,7 +378,7 @@ public class RunProcessContext {
             }
 
         } else {
-//            setRunning(false);
+            // setRunning(false);
         }
     }
 
@@ -411,16 +402,16 @@ public class RunProcessContext {
         if (!killing && isRunning()) {
             killing = true;
             try {
-//                boolean showEndMessage = (ps != null);
+                // boolean showEndMessage = (ps != null);
                 exitCode = killProcess();
 
-//                if (showEndMessage) {
-                    final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
-                    MessageFormat mf = new MessageFormat(endingPattern);
-                    String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                    byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg;
-                    processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
-//                }
+                // if (showEndMessage) {
+                final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
+                MessageFormat mf = new MessageFormat(endingPattern);
+                String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
+                byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg;
+                processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
+                // }
             } finally {
                 killing = false;
             }
@@ -546,12 +537,6 @@ public class RunProcessContext {
                     process.exitValue();
 
                     // Read the end of the stream after the end of the process
-                    int i = 0;
-                    while (extractMessages(true)) {
-                        System.out.println(i++);
-                        // nothing
-                    }
-
                     ended = true;
                     stopThread = true;
                     try {
@@ -892,11 +877,11 @@ public class RunProcessContext {
 
     public void addDebugResultToConsole(IProcessMessage message) {
         processMessageManager.addDebugResultToConsole(message);
-        
+
     }
 
     public void setDebugProcess(org.eclipse.debug.core.model.IProcess debugProcess) {
-       this.debugProcess = debugProcess;
+        this.debugProcess = debugProcess;
     }
 
 }
