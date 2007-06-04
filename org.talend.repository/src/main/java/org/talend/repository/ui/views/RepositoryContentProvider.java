@@ -115,50 +115,57 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public Object[] getChildren(Object parent) {
-        try {
-            if (parent == businessProcessNode) {
-                convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS,
-                        recBinNode);
-            } else if (parent == processNode) {
-                convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
-            } else if (parent == snippetsNode || parent == routineNode) {
-                convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
-            } else if (parent == contextNode) {
-                convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
-            } else if (parent == docNode) {
-                convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
-            } else if (parent == metadataConNode) {
-                convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
-                        recBinNode);
-            } else if (parent == metadataFileNode) {
-                convert(factory.getMetadataFileDelimited(), metadataFileNode,
-                        ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
-            } else if (parent == metadataFilePositionalNode) {
-                convert(factory.getMetadataFilePositional(), metadataFilePositionalNode,
-                        ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
-            } else if (parent == metadataFileRegexpNode) {
-                convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode,
-                        ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
-            } else if (parent == metadataFileXmlNode) {
-                convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
-                        recBinNode);
-            } else if (parent == metadataFileLdifNode) {
-                convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
-                        recBinNode);
-            } else if (parent == recBinNode) {
-                List<IRepositoryObject> objects = factory.getRecycleBinItems();
-                for (IRepositoryObject object : objects) {
-                    RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
-                    node.setProperties(EProperties.CONTENT_TYPE, object.getType());
-                    node.setProperties(EProperties.LABEL, object.getLabel());
-                    recBinNode.getChildren().add(node);
-                    node.setParent(recBinNode);
+        RepositoryNode repositoryNode = ((RepositoryNode) parent);
+
+        if (!repositoryNode.isInitialized()) {
+            try {
+                if (parent == businessProcessNode) {
+                    convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS,
+                            recBinNode);
+                } else if (parent == processNode) {
+                    convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+                } else if (parent == routineNode) {
+                    convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
+                } else if (parent == contextNode) {
+                    convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
+                } else if (parent == docNode) {
+                    convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
+                } else if (parent == metadataConNode) {
+                    convert(factory.getMetadataConnection(), metadataConNode,
+                            ERepositoryObjectType.METADATA_CONNECTIONS, recBinNode);
+                } else if (parent == metadataFileNode) {
+                    convert(factory.getMetadataFileDelimited(), metadataFileNode,
+                            ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
+                } else if (parent == metadataFilePositionalNode) {
+                    convert(factory.getMetadataFilePositional(), metadataFilePositionalNode,
+                            ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
+                } else if (parent == metadataFileRegexpNode) {
+                    convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode,
+                            ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
+                } else if (parent == metadataFileXmlNode) {
+                    convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
+                            recBinNode);
+                } else if (parent == metadataFileLdifNode) {
+                    convert(factory.getMetadataFileLdif(), metadataFileLdifNode,
+                            ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+                } else if (parent == recBinNode) {
+                    List<IRepositoryObject> objects = factory.getRecycleBinItems();
+                    for (IRepositoryObject object : objects) {
+                        RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
+                        node.setProperties(EProperties.CONTENT_TYPE, object.getType());
+                        node.setProperties(EProperties.LABEL, object.getLabel());
+                        recBinNode.getChildren().add(node);
+                        node.setParent(recBinNode);
+                    }
                 }
+
+                repositoryNode.setInitialized(true);
+            } catch (PersistenceException e) {
+                RuntimeExceptionHandler.process(e);
             }
-        } catch (PersistenceException e) {
-            RuntimeExceptionHandler.process(e);
-        }
-        return ((RepositoryNode) parent).getChildren().toArray();
+        }        
+        
+        return repositoryNode.getChildren().toArray();
     }
 
     public boolean hasChildren(Object parent) {
@@ -166,7 +173,14 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         if (boolean1 != null) {
             return boolean1;
         } else {
-            // return getChildren(parent).length > 0;
+            if (parent instanceof RepositoryNode) {
+                RepositoryNode repositoryNode = (RepositoryNode) parent;
+                if (repositoryNode.isInitialized()) {
+                    return repositoryNode.getChildren().size() > 0;
+                } else {
+                    return getChildren(parent).length > 0;
+                }
+            }
             return true;
         }
     }
