@@ -166,7 +166,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         if (boolean1 != null) {
             return boolean1;
         } else {
-            return getChildren(parent).length > 0;
+            // return getChildren(parent).length > 0;
+            return true;
         }
     }
 
