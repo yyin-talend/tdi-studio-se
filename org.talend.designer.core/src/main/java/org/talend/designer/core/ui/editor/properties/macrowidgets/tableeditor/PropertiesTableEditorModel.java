@@ -90,6 +90,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         case CONTEXT_PARAM_NAME_LIST:
         case CLOSED_LIST:
         case COLUMN_LIST:
+        case COMPONENT_LIST:
         case CONNECTION_LIST:
         case LOOKUP_COLUMN_LIST:
         case PREV_COLUMN_LIST:

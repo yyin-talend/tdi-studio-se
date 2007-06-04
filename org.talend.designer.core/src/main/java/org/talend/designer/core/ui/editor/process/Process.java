@@ -30,10 +30,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
@@ -324,8 +326,9 @@ public class Process extends Element implements IProcess {
         // file path
         param = new ElementParameter(this);
         param.setName("FILE_PATH"); // File path
-        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
-                .getName()))));
+        param
+                .setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
+                        .getName()))));
         param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -335,8 +338,7 @@ public class Process extends Element implements IProcess {
         // stats file name
         param = new ElementParameter(this);
         param.setName("FILENAME_STATS"); // Stats file name
-        param.setValue(addQuotes(preferenceStore
-                .getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -361,9 +363,7 @@ public class Process extends Element implements IProcess {
         // Log file name
         param = new ElementParameter(this);
         param.setName("FILENAME_LOGS");
-        param
-                .setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType]
-                        .getName())));
+        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName()); // "Logs File Name"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -415,8 +415,7 @@ public class Process extends Element implements IProcess {
         param.setListItemsValue(new String[] {});
         param.setNumRow(10);
         param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setValue(preferenceStore
-                .getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
+        param.setValue(preferenceStore.getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
         addElementParameter(param);
@@ -430,8 +429,8 @@ public class Process extends Element implements IProcess {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         String[] strDisplay = null, strValue = null, strItems = null, strCodes = null;
         if (languageType == 0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", "PostgreSQL",
+                    "IBM DB2", "Sybase", "Ingres" };
             strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
                     "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
@@ -443,10 +442,10 @@ public class Process extends Element implements IProcess {
                     RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
                     RepositoryToComponentProperty.INGRES };
         } else if (languageType == 1) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
-                    "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
-                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL", "IBM DB2",
+                    "Sybase", "Ingres" };
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", "tPostgresqlOutput",
+                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
                     RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
@@ -740,8 +739,7 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -854,10 +852,10 @@ public class Process extends Element implements IProcess {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
                     if (param.isReadOnly()
-                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
-                                    .equals(EParameterName.VERSION.getName()))) {
+                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
+                                    EParameterName.VERSION.getName()))) {
                         continue; // if the parameter is read only, don't load it (this will prevent to overwrite the
-                                    // value)
+                        // value)
                     }
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
                         elemParam.setPropertyValue(pType.getName(), new Boolean(pType.getValue()));
@@ -915,8 +913,7 @@ public class Process extends Element implements IProcess {
         ParametersType params = fileFact.createParametersType();
         process.setParameters(params);
 
-        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(),
-                process);
+        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(), process);
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
@@ -1207,8 +1204,7 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                        .getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
@@ -1278,8 +1274,7 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                .getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1414,8 +1409,8 @@ public class Process extends Element implements IProcess {
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                 Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result
-                                                .getParameter(), repositoryValue);
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1497,12 +1492,12 @@ public class Process extends Element implements IProcess {
             }
 
             if (connectionTypeFound) {
-                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName,
-                        cType.getMetaname(), cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, cType
+                        .getMetaname(), cType.getLabel(), cType.getMetaname());
             } else {
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), cType
-                        .getMetaname(), cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), cType.getMetaname(),
+                        cType.getLabel(), cType.getMetaname());
             }
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
@@ -2018,8 +2013,7 @@ public class Process extends Element implements IProcess {
     @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
@@ -2064,6 +2058,41 @@ public class Process extends Element implements IProcess {
             }
         }
         return matchingNodes;
+    }
+
+    /**
+     * Comment method "getAllConnections".
+     * 
+     * @param filter only return the filter matched connections
+     * @return
+     */
+    public IConnection[] getAllConnections(String filter) {
+        List<? extends INode> nodes = getGraphicalNodes();
+        Set<IConnection> conns = new HashSet<IConnection>();
+
+        for (INode node : nodes) {
+            if (node.isActivate()) {
+                conns.addAll(node.getIncomingConnections());
+                conns.addAll(node.getOutgoingConnections());
+            }
+        }
+
+        if (filter != null) {
+            // construct filter array
+            String[] f = filter.split("\\|");
+            List<String> filterArray = new ArrayList<String>(f.length);
+            for (int i = 0; i < f.length; i++) {
+                filterArray.add(f[i].trim());
+            }
+
+            for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
+                IConnection con = iter.next();
+                if (!filterArray.contains(con.getLineStyle().toString())) {
+                    iter.remove();
+                }
+            }
+        }
+        return conns.toArray(new IConnection[conns.size()]);
     }
 
     public Project getProject() {

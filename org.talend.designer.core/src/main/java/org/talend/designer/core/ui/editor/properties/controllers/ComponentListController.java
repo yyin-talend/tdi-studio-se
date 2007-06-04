@@ -44,6 +44,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
@@ -166,13 +167,13 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
         // **********************
         hashCurControls.put(param.getName(), combo);
-        updateComponentList(param);
+        updateComponentList(elem, param);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
-    private void updateComponentList(IElementParameter param) {
+    public static void updateComponentList(Element elem, IElementParameter param) {
         if (elem instanceof Node) {
             List<INode> nodeList = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
 
@@ -201,7 +202,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        updateComponentList(param);
+        updateComponentList(elem, param);
 
         String[] curComponentNameList = param.getListItemsDisplayName();
         String[] curComponentValueList = (String[]) param.getListItemsValue();

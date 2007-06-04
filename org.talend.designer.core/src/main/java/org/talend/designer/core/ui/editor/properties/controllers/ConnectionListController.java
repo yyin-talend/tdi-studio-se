@@ -47,6 +47,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -191,7 +192,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         this.dynamicTabbedPropertySection.updateColumnList(null);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        refresh(param, true);
+        updateComponentList(elem, param, param.getFilter());
         return cLayout;
     }
 
@@ -217,47 +218,50 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        updateComponentList(elem, param, param.getFilter());
+
+        String[] curComponentNameList = param.getListItemsDisplayName();
+        String[] curComponentValueList = (String[]) param.getListItemsValue();
+
         Object value = param.getValue();
+        boolean listContainValue = false;
+        int numValue = 0;
+        for (int i = 0; i < curComponentValueList.length && !listContainValue; i++) {
+            if (curComponentValueList[i].equals(value)) {
+                listContainValue = true;
+                numValue = i;
+            }
+        }
+
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
-        combo.setItems(getAllConnectionNames(this, param.getFilter()));
-        if (value != null) {
-            combo.setText(value.toString());
+
+        combo.setItems(curComponentNameList);
+        if (!listContainValue) {
+            if (curComponentNameList.length > 0) {
+                elem.setPropertyValue(param.getName(), curComponentNameList[0]);
+                combo.setText(curComponentNameList[0]);
+            }
+        } else {
+            combo.setText(curComponentNameList[numValue]);
         }
     }
 
-    public static String[] getAllConnectionNames(AbstractElementPropertySectionController controller, String filter) {
-        List<? extends INode> nodes = controller.part.getTalendEditor().getProcess().getGraphicalNodes();
-        Set<IConnection> conns = new HashSet<IConnection>();
+    public static void updateComponentList(Element elem, IElementParameter param, String filter) {
+        if (elem instanceof Node) {
+            IConnection[] connections = ((Node) elem).getProcess().getAllConnections(filter);
 
-        for (INode node : nodes) {
-            conns.addAll(node.getIncomingConnections());
-            conns.addAll(node.getOutgoingConnections());
-        }
-
-        if (filter != null) {
-            // construct filter array
-            String[] f = filter.split("\\|");
-            List<String> filterArray = new ArrayList<String>(f.length);
-            for (int i = 0; i < f.length; i++) {
-                filterArray.add(f[i].trim());
+            String[] connectionNames = new String[connections.length];
+            for (int i = 0; i < connectionNames.length; i++) {
+                connectionNames[i] = connections[i].getUniqueName();
             }
 
-            for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
-                IConnection con = iter.next();
-                if (!filterArray.contains(con.getLineStyle().toString())) {
-                    iter.remove();
-                }
-            }
-        }
+            Arrays.sort(connectionNames);
 
-        String[] names = new String[conns.size()];
-        int index = 0;
-        for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
-            IConnection element = iter.next();
-            names[index++] = element.getUniqueName();
-        }
+            String[] componentNameList = connectionNames;
+            String[] componentValueList = connectionNames;
 
-        Arrays.sort(names);
-        return names;
+            param.setListItemsDisplayName(componentNameList);
+            param.setListItemsValue(componentValueList);
+        }
     }
 }

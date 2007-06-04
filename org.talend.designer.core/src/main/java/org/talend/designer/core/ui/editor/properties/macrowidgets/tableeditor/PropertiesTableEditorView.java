@@ -154,6 +154,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case LOOKUP_COLUMN_LIST:
                 case COLUMN_LIST:
                 case CONNECTION_LIST:
+                case COMPONENT_LIST:
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
