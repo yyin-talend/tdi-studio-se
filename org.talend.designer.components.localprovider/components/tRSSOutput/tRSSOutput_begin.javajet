@@ -1,0 +1,68 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    org.talend.commons.utils.StringUtils
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataColumn
+  	org.talend.core.model.process.EConnectionType
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+        String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+      	String title= ElementParameterParser.getValue(node,"__TITLE__");
+      	String description= ElementParameterParser.getValue(node,"__DESCRIPTION__");
+      	String pubdate= ElementParameterParser.getValue(node,"__PUBDATE__");
+      	String link= ElementParameterParser.getValue(node,"__LINK__");
+        boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+        
+%>
+	int nb_line_<%=cid%> = 0;
+	java.io.File file<%=cid%>=new java.io.File(<%=filename%>);
+	org.dom4j.Document document<%=cid%> =null;
+	org.dom4j.Element channelElement<%=cid%> =null;
+	org.dom4j.Element titleHElement<%=cid%>=null;
+	org.dom4j.Element descriptionHElement<%=cid%>=null;
+	org.dom4j.Element pubdateHElement<%=cid%>=null;
+	org.dom4j.Element linkHElement<%=cid%>=null;
+	
+	if(<%=isAppend%> && file<%=cid%>.exists())
+		{
+
+		org.dom4j.io.SAXReader saxReader<%=cid%> = new org.dom4j.io.SAXReader();
+        document<%=cid%> = saxReader<%=cid%> .read(new java.io.File(<%=filename%>));
+
+
+		}else
+		{
+
+		 document<%=cid%> = org.dom4j.DocumentHelper.createDocument();
+		 org.dom4j.Element rssElement<%=cid%> = document<%=cid%>.addElement("rss");
+		 rssElement<%=cid%>.addAttribute("version","2.0");
+		 channelElement<%=cid%> = rssElement<%=cid%>.addElement("channel");
+		 titleHElement<%=cid%>=channelElement<%=cid%>.addElement("title");
+		 titleHElement<%=cid%>.setText(<%=title%>);
+		 descriptionHElement<%=cid%>=channelElement<%=cid%>.addElement("description");
+		 descriptionHElement<%=cid%>.setText(<%=description%>);
+		 pubdateHElement<%=cid%>=channelElement<%=cid%>.addElement("pubdate");
+		 pubdateHElement<%=cid%>.setText(<%=pubdate%>);
+		 linkHElement<%=cid%>=channelElement<%=cid%>.addElement("link");
+		 linkHElement<%=cid%>.setText(<%=link%>);
+		 
+	 }
+<%	
+			
+ 		}
+	}
+%>

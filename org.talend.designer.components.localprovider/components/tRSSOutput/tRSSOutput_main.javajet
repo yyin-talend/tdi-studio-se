@@ -1,0 +1,82 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.io.File
+    java.util.ArrayList
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    String cid = node.getUniqueName();
+    String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+	String title= ElementParameterParser.getValue(node,"__TITLE__");
+  	String description= ElementParameterParser.getValue(node,"__DESCRIPTION__");
+  	String pubdate= ElementParameterParser.getValue(node,"__PUBDATE__");
+  	String link= ElementParameterParser.getValue(node,"__LINK__");
+    File file=new File(filename);
+    boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+    List< ? extends IConnection> conns = node.getIncomingConnections();
+  %>  
+ <%    	
+    	if(conns!=null){
+    		if (conns.size()>0){
+       		IConnection conn =conns.get(0);
+    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+	%>	
+			
+			if(<%=isAppend%> && file<%=cid%>.exists())
+			{
+				java.util.List list<%=cid%>= document<%=cid%>.selectNodes("/rss/channel" );
+        		channelElement<%=cid%>=(org.dom4j.Element)list<%=cid%>.get(0);
+        		list<%=cid%>= document<%=cid%>.selectNodes("/rss/channel/title" );
+        		titleHElement<%=cid%>=(org.dom4j.Element)list<%=cid%>.get(0);
+        		titleHElement<%=cid%>.setText(<%=title%>);
+        		list<%=cid%>= document<%=cid%>.selectNodes("/rss/channel/description" );
+        		descriptionHElement<%=cid%>=(org.dom4j.Element)list<%=cid%>.get(0);
+        		descriptionHElement<%=cid%>.setText(<%=description%>);
+        		list<%=cid%>= document<%=cid%>.selectNodes("/rss/channel/pubdate" );
+        		pubdateHElement<%=cid%>=(org.dom4j.Element)list<%=cid%>.get(0);
+        		pubdateHElement<%=cid%>.setText(<%=pubdate%>);
+        		list<%=cid%>= document<%=cid%>.selectNodes("/rss/channel/link" );
+        		linkHElement<%=cid%>=(org.dom4j.Element)list<%=cid%>.get(0);
+        		linkHElement<%=cid%>.setText(<%=link%>);
+        		
+        	}
+  		 	org.dom4j.Element itemElement = channelElement<%=cid%>.addElement("item");
+
+  <%  			
+    			for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
+    			String coluLabel=column.getLabel();
+    			coluLabel=coluLabel.toLowerCase();
+ %>
+ 				
+ 				org.dom4j.Element <%=coluLabel%>Element=itemElement.addElement("<%=coluLabel%>");
+ 				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %>);
+<%					
+					}
+				}
+			}
+		 }
+%>		 
+		 nb_line_<%=cid%>++;
+<%		 	
+		}
+	}
+%>
