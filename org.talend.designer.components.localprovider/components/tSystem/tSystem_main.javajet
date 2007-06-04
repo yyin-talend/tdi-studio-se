@@ -68,7 +68,11 @@ Thread error = new Thread() {
 <%
 	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
 %>
-					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
+						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					} else {
+						globalMap.put("<%=cid %>_OUTPUT", line);
+					}
 <%
 	}
 %>
