@@ -21,11 +21,15 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -52,6 +56,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -528,8 +533,24 @@ public class LoginComposite extends Composite {
                 .getRepositoryId()));
 
         boolean initialized = false;
+        
         try {
-            repositoryFactory.initialize();
+            try {
+                IRunnableWithProgress op = new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            ProxyRepositoryFactory.getInstance().initialize();
+                        } catch (PersistenceException e) {
+                            throw new InvocationTargetException(e);
+                        }
+                    }
+                };
+                new ProgressMonitorDialog(getShell()).run(true, false, op);
+             } catch (InvocationTargetException e) {
+                throw (PersistenceException) e.getTargetException();
+             } catch (InterruptedException e) {
+             }
+            
             initialized = true;
         } catch (PersistenceException e) {
             projects = new Project[0];

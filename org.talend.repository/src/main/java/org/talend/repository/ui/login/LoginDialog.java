@@ -21,8 +21,13 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -39,6 +44,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -178,14 +184,36 @@ public class LoginDialog extends TitleAreaDialog {
      * 
      * @param project
      */
-    protected void logIn(Project project) {
+    protected void logIn(final Project project) {
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(loginComposite.getConnection().getName());
         prefManipulator.setLastProject(project.getLabel());
 
         try {
-            ProxyRepositoryFactory.getInstance().logOnProject(project);
+            try {
+                IRunnableWithProgress op = new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            ProxyRepositoryFactory.getInstance().logOnProject(project);
+                        } catch (PersistenceException e) {
+                            throw new InvocationTargetException(e);
+                        } catch (LoginException e) {
+                            throw new InvocationTargetException(e);
+                        }
+                    }
+                };
+                new ProgressMonitorDialog(getShell()).run(true, false, op);
+             } catch (InvocationTargetException e) {
+                if (e.getTargetException() instanceof PersistenceException) {
+                    throw (PersistenceException) e.getTargetException();
+                }
+                if (e.getTargetException() instanceof LoginException) {
+                    throw (LoginException) e.getTargetException();
+                }
+             } catch (InterruptedException e) {
+                 //
+             }
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return;

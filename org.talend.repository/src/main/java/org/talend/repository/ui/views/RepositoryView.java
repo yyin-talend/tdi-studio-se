@@ -21,16 +21,22 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -57,6 +63,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.TextActionHandler;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
@@ -178,6 +185,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     IContextActivation ca;
+
+	private ArrayList<Long> times  = new ArrayList<Long>();
 
     private TreeItem getObject(Tree tree, Object objectToFind) {
         for (TreeItem item : tree.getItems()) {
@@ -355,8 +364,27 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
+    	long time1 = new Date().getTime();
+        
         try {
-            ProxyRepositoryFactory.getInstance().initialize();
+            
+            try {
+                IRunnableWithProgress op = new IRunnableWithProgress() {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            ProxyRepositoryFactory.getInstance().initialize();
+                        } catch (PersistenceException e) {
+                            throw new InvocationTargetException(e);
+                        }
+                    }
+                };
+                new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(true, false, op);
+             } catch (InvocationTargetException e) {
+                throw (PersistenceException) e.getTargetException();
+             } catch (InterruptedException e) {
+                 //
+             }
+            
             root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
             viewer.refresh();
             // unsetting the selection will prevent the propertyView from displaying dirty data
@@ -364,6 +392,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         } catch (PersistenceException exception) {
             MessageBoxExceptionHandler.process(exception);
         }
+        
+        long timedelta = new Date().getTime() - time1;
+        
+        times.add(timedelta);
+        long total = 0;
+        for (Long time : times) {
+			total += time;
+		}
+        long avg = total / times.size();
+        
+        //for debug purpose
+        //System.out.println("refresh in : " + timedelta + " avg : " + avg);
     }
 
     public void refresh(Object object) {
