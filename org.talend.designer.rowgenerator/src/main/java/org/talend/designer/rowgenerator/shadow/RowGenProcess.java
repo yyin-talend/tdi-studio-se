@@ -79,11 +79,11 @@ public class RowGenProcess extends Element implements IProcess {
     private boolean initDone = false;
 
     private ShadowConnection cnx;
-    
+
     private LogRowNode logRowNode;
-    
+
     private RowGeneratorComponent component;
-    
+
     public RowGenProcess(RowGeneratorComponent component) {
         // NRO save the language in the process and load/test it.
         this.component = component;
@@ -91,21 +91,22 @@ public class RowGenProcess extends Element implements IProcess {
         nodes.add(component);
 
         logRowNode = new LogRowNode(LOGROW, component.getMetadataList().get(0));
-        //nodes.add(logRowNode);
+        // nodes.add(logRowNode);
 
         cnx = new ShadowConnection(component, logRowNode);
         initOutCompnoent(component, cnx);
         logRowNode.setInCnx(cnx);
-        
+
         component.setProcess(this);
         logRowNode.setProcess(this);
         createProcessParameters();
         setFlags(component);
-        
+
     }
 
     /**
-     *  qzhang Comment method "setFlags".
+     * qzhang Comment method "setFlags".
+     * 
      * @param component
      */
     private void setFlags(RowGeneratorComponent component) {
@@ -141,7 +142,7 @@ public class RowGenProcess extends Element implements IProcess {
         // }
         // if (outgoingConnections == null || outgoingConnections.size() == 0 || !hasLogRow) {
         ooutput = component.getOutgoingConnections();
-        
+
         List<IConnection> cnxs = new ArrayList<IConnection>();
         cnxs.add(cnx);
         component.setOutgoingConnections(cnxs);
@@ -150,6 +151,7 @@ public class RowGenProcess extends Element implements IProcess {
     }
 
     private List<? extends IConnection> ooutput;
+
     public RowGenProcess(Property property, RowGeneratorComponent component) {
         this(component);
         this.property = property;
@@ -564,6 +566,15 @@ public class RowGenProcess extends Element implements IProcess {
     }
 
     /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getAllConnections(java.lang.String)
+     */
+    public IConnection[] getAllConnections(String filter) {
+        return new IConnection[0];
+    }
+
+    /*
      * (non-Java)
      * 
      * @see org.talend.core.model.process.Element#getElementName()
@@ -572,6 +583,7 @@ public class RowGenProcess extends Element implements IProcess {
     public String getElementName() {
         return name;
     }
+
     public void reconnection() {
         component.getOutgoingConnections().remove(cnx);
         component.setOutgoingConnections(ooutput);
@@ -584,6 +596,6 @@ public class RowGenProcess extends Element implements IProcess {
 
     public void setProcessor(IProcessor processor) {
         // TODO Auto-generated method stub
-        
+
     }
 }
