@@ -480,6 +480,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                     new BufferedReader(
                         new InputStreamReader(new FileInputStream(fileField.getText()),
                                 guessedCharset.displayName()));
+                
+                previewRows.append("\n");
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     // replace Tabulation by a CaretChar
