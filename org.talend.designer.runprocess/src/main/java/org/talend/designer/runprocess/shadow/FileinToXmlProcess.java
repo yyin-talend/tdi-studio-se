@@ -24,13 +24,16 @@ package org.talend.designer.runprocess.shadow;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
@@ -502,8 +505,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
-        if ((inNode != null) && (inNode.getComponentName() != null)
-                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -524,11 +526,29 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
 
     public void setProcessor(IProcessor processor) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public IElementParameter getElementParameter(String name) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getAllConnections(java.lang.String)
+     */
+    public IConnection[] getAllConnections(String filter) {
+        Set<IConnection> matchingNodes = new HashSet<IConnection>();
+        if ((inNode != null) && (inNode.getComponentName() != null)) {
+            matchingNodes.addAll(inNode.getIncomingConnections());
+            matchingNodes.addAll(inNode.getOutgoingConnections());
+        }
+        if ((outNode != null) && (outNode.getComponentName() != null)) {
+            matchingNodes.addAll(outNode.getIncomingConnections());
+            matchingNodes.addAll(outNode.getOutgoingConnections());
+        }
+        return matchingNodes.toArray(new IConnection[matchingNodes.size()]);
     }
 }
