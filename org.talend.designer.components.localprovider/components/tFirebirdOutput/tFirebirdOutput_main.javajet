@@ -471,33 +471,32 @@ nb_line_update_<%=cid%> ++;
 			}
 		}
 	%>
-	try{
 	
-		pstmtUpdate_<%=cid %>.executeUpdate();
-	
-		nb_line_update_<%=cid%> ++;
-		
-	}catch(Exception e){
-		
-		<%
-		int counter = 1;
-		
-		for(Column column:colStruct){
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			//typeToGenerate = operation.generateType(typeToGenerate);
-			
-			operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,1);
-			
-        	counter++;
+		int updateCount_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
+		if(updateCount_<%=cid%> == 0)
+		{
+    		<%
+    		int counter = 1;
+    		
+    		for(Column column:colStruct){
+    			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+    			
+    			//typeToGenerate = operation.generateType(typeToGenerate);
+    			
+    			operation.generateSetStmt(typeToGenerate,column,counter,incomingConnName,cid,1);
+    			
+            	counter++;
+    		}
+    		%>
+        	pstmtInsert_<%=cid %>.executeUpdate();
+        	
+        	nb_line_inserted_<%=cid%>++;    					
 		}
-	%>
-
-	pstmtInsert_<%=cid %>.executeUpdate();
+		else
+		{
+			nb_line_update_<%=cid%> ++;		
+		}
 	
-	nb_line_inserted_<%=cid%>++;
-	}
-
 <%
 	
 	}else if (dataAction.equals("DELETE")){

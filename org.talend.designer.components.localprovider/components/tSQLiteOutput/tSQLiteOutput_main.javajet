@@ -471,14 +471,10 @@ nb_line_update_<%=cid%> ++;
 			}
 		}
 	%>
-	try{
 	
-		pstmtUpdate_<%=cid %>.executeUpdate();
-	
-		nb_line_update_<%=cid%> ++;
-		
-	}catch(Exception e){
-		
+	int updateCount_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
+	if(updateCount_<%=cid%> == 0)
+	{
 		<%
 		int counter = 1;
 		
@@ -491,11 +487,14 @@ nb_line_update_<%=cid%> ++;
 			
         	counter++;
 		}
-	%>
-
-	pstmtInsert_<%=cid %>.executeUpdate();
-	
-	nb_line_inserted_<%=cid%>++;
+		%>
+    	pstmtInsert_<%=cid %>.executeUpdate();
+    	
+    	nb_line_inserted_<%=cid%>++;    				
+	}
+	else
+	{
+		nb_line_update_<%=cid%> ++;		
 	}
 
 <%
