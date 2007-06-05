@@ -1,0 +1,46 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.ElementParameterParser
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.EConnectionType
+		
+	"
+	class="HashOutputMain"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+    List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+            IMetadataTable metadataTable = connection.getMetadataTable();
+            
+%>
+<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();
+<%
+			
+            List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+            for (IMetadataColumn column : listColumns) {
+                String columnName = column.getLabel();
+%>
+<%=connectionName%>_HashRow.<%=columnName%> = <%=connectionName%>.<%=columnName%>;
+<%
+            }
+
+%>
+tHash_<%=cid %>.put(<%=connectionName%>_HashRow, <%=connectionName%>_HashRow);
+
+<%
+		}
+	}
+
+%>

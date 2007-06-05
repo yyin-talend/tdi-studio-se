@@ -1,0 +1,43 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.ElementParameterParser
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="HashOutputBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean clearData = ElementParameterParser.getValue(node, "__CLEAR_DATA__").equals("true");
+	String comName=ElementParameterParser.getValue(node, "__COMPNAME__");
+	String cid = node.getUniqueName();
+    List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+
+%>
+            java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct> tHash_<%=cid%> = new java.util.HashMap<<%=connectionName%>Struct, <%=connectionName%>Struct>();
+            if(<%=clearData%>)
+            {
+               if(globalMap.get("tHash_<%=cid %>") != null){
+                   tHash_<%=cid%>=(java.util.Map<<%=connectionName%>Struct, <%=connectionName%>Struct>)globalMap.get("tHash_<%=cid %>");
+                   if(!tHash_<%=cid%>.isEmpty()){
+                     tHash_<%=cid%>.clear();
+                   }
+               }
+            }
+           
+            globalMap.put("tHash_<%=cid %>", tHash_<%=cid %>);
+
+<%
+		}
+	}
+
+%>
