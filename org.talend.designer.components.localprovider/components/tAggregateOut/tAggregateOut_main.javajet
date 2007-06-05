@@ -27,8 +27,60 @@ for (IConnection conn : conns) {
 		List<IMetadataColumn> columns = inMetadata.getListColumns();
 		int sizeOperations = operations.size();
 		int sizeGroupbys = groupbys.size();
-				
+		String lastInputColumn = null;
+		if(sizeGroupbys>0){
+			lastInputColumn = groupbys.get(sizeGroupbys-1).get("INPUT_COLUMN");
+		}
+		
+		
 		//pretreatment opreations before aggregating
+		
+		//modify06-05 begin
+String[] groupby_type = new String[sizeGroupbys];
+for(int i = 0; i < sizeGroupbys; i++){
+	String columnname = groupbys.get(i).get("INPUT_COLUMN");
+	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    	for (IConnection conne : incomingConnections) {
+			if ((conne.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conne.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+        		IMetadataTable inMetadatat = conne.getMetadataTable();
+       			for (IMetadataColumn column: inMetadatat.getListColumns()) {
+            		if(column.getLabel().equals(columnname)){
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.BOOLEAN){
+							groupby_type[i] = "Boolean";
+						}else if(javaType == JavaTypesManager.BYTE){
+							groupby_type[i] = "Byte";
+						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+							groupby_type[i] = "byte[]";
+						}else if(javaType == JavaTypesManager.CHARACTER){
+							groupby_type[i] = "Character";
+						}else if(javaType == JavaTypesManager.DATE){
+							groupby_type[i] = "java.util.Date";
+						}else if(javaType == JavaTypesManager.DOUBLE){
+							groupby_type[i] = "Double";
+						}else if(javaType == JavaTypesManager.FLOAT){
+							groupby_type[i] = "Float";
+						}else if(javaType == JavaTypesManager.INTEGER){
+							groupby_type[i] = "Integer";
+						}else if(javaType == JavaTypesManager.LONG){
+							groupby_type[i] = "Long";
+						}else if(javaType == JavaTypesManager.SHORT){
+							groupby_type[i] = "Short";
+						}else if(javaType == JavaTypesManager.STRING){
+							groupby_type[i] = "String";
+						}else if(javaType == JavaTypesManager.OBJECT){
+							groupby_type[i] = "Object";
+						}
+						break;
+            		}
+				}
+			}
+		}
+  	}
+}
+//modify06-05 end
+		
 		List<String[]> funinOperations = new java.util.ArrayList<String[]>();
 		next:
 		for(int i=0; i<sizeOperations; i++){
@@ -75,7 +127,7 @@ for (IConnection conn : conns) {
 			if(i==0){
 //
 //end%>
-String key_<%=cid %> = null;
+//String key_<%=cid %> = null;
 <%//start
 //
 			}
@@ -84,9 +136,9 @@ String key_<%=cid %> = null;
 			}
 			if(i < sizeGroupbys-1){
 %>
-key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
-if(hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
-	hash_<%=nextInputColumn  %>_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(key_<%=cid %>);                    
+//key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=conn.getName() %>.<%=inputColumn %>)){
+	hash_<%=nextInputColumn  %>_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(<%=conn.getName() %>.<%=inputColumn %>);                    
 }else{
 	hash_<%=nextInputColumn  %>_<%=cid %> = new <%
 //start
@@ -96,20 +148,20 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
 							if(sizeOps == 0){
 //
 //end
-%>java.util.<%if(j == i+1){%>Hash<%}%>Set<String <%
+%>java.util.<%if(j == i+1){%>Hash<%}%>Set<<%=groupby_type[j] %> <%
 //start
 //
 							}else{
 //
 //end
-%>java.util.<%if(j == i+1){%>Hash<%}%>Map<String, OperationStruct<%=cid %><%
+%>java.util.<%if(j == i+1){%>Hash<%}%>Map<<%=groupby_type[j] %>, OperationStruct<%=cid %><%
 //start
 //
 							}
 						}else{
 //
 //end
-%>java.util.<%if(j == i+1){%>Hash<%}%>Map<String,<%
+%>java.util.<%if(j == i+1){%>Hash<%}%>Map<<%=groupby_type[j] %>,<%
 //start
 //
 						}
@@ -124,7 +176,7 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
 //
 //end
 %>();
-	hash_<%=inputColumn %>_<%=cid %>.put(key_<%=cid %>,hash_<%=nextInputColumn %>_<%=cid %>);
+	hash_<%=inputColumn %>_<%=cid %>.put(<%=conn.getName() %>.<%=inputColumn %>,hash_<%=nextInputColumn %>_<%=cid %>);
 }
 <%//start
 //
@@ -133,15 +185,15 @@ if(hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
 					if(sizeOps > 0 ){
 //
 //end%>
-key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
-if(hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
-	operation_result_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(key_<%=cid %>);                    
+//key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+if(hash_<%=inputColumn %>_<%=cid %>.containsKey(<%=conn.getName() %>.<%=inputColumn %>)){
+	operation_result_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(<%=conn.getName() %>.<%=inputColumn %>);                    
 }else{
 	operation_result_<%=cid %> = new OperationStruct<%=cid %>();
 <%//start
 //
 					}else{%>
-key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+//key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
 <%
 					}
 				}
@@ -173,12 +225,12 @@ operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.
 		if(sizeGroupbys > 0){
 			if(sizeOps>0){
 %>
-	hash_<%=tInputColumn %>_<%=cid %>.put(key_<%=cid %>, operation_result_<%=cid %>);
+	hash_<%=tInputColumn %>_<%=cid %>.put(<%=conn.getName() %>.<%=lastInputColumn %>, operation_result_<%=cid %>);
 }
 <%
 			}else{
 %>
-	hash_<%=tInputColumn %>_<%=cid %>.add(key_<%=cid %>);		
+	hash_<%=tInputColumn %>_<%=cid %>.add(<%=conn.getName() %>.<%=lastInputColumn %>);		
 <%
 			}
 		}else if(sizeOps > 0){%>

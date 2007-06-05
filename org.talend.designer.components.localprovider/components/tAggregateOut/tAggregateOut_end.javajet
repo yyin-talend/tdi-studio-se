@@ -26,6 +26,53 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
 		int sizeOperations = operations.size();
 		int sizeGroupbys = groupbys.size();
+		
+//modify06-05 begin
+String[] groupby_type = new String[sizeGroupbys];
+for(int i = 0; i < sizeGroupbys; i++){
+	String columnname = groupbys.get(i).get("INPUT_COLUMN");
+	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    	for (IConnection conn : incomingConnections) {
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+        		IMetadataTable inMetadata = conn.getMetadataTable();
+       			for (IMetadataColumn column: inMetadata.getListColumns()) {
+            		if(column.getLabel().equals(columnname)){
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.BOOLEAN){
+							groupby_type[i] = "Boolean";
+						}else if(javaType == JavaTypesManager.BYTE){
+							groupby_type[i] = "Byte";
+						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+							groupby_type[i] = "byte[]";
+						}else if(javaType == JavaTypesManager.CHARACTER){
+							groupby_type[i] = "Character";
+						}else if(javaType == JavaTypesManager.DATE){
+							groupby_type[i] = "java.util.Date";
+						}else if(javaType == JavaTypesManager.DOUBLE){
+							groupby_type[i] = "Double";
+						}else if(javaType == JavaTypesManager.FLOAT){
+							groupby_type[i] = "Float";
+						}else if(javaType == JavaTypesManager.INTEGER){
+							groupby_type[i] = "Integer";
+						}else if(javaType == JavaTypesManager.LONG){
+							groupby_type[i] = "Long";
+						}else if(javaType == JavaTypesManager.SHORT){
+							groupby_type[i] = "Short";
+						}else if(javaType == JavaTypesManager.STRING){
+							groupby_type[i] = "String";
+						}else if(javaType == JavaTypesManager.OBJECT){
+							groupby_type[i] = "Object";
+						}
+						break;
+            		}
+				}
+			}
+		}
+  	}
+}
+//modify06-05 end
+		
 		String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 //
 //end%>
@@ -47,9 +94,9 @@ java.util.List<ThenRunStruct<%=destination %>> result_list_<%=cid %> = new java.
 				}
 				//gen loops begin begin
 %>
-java.util.Iterator<String> <%=inputColumn%>_iterator_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.<%if((i != sizeGroupbys - 1) || sizeOperations >0 ){%>keySet().<%}%>iterator();
+java.util.Iterator<<%=groupby_type[i] %>> <%=inputColumn%>_iterator_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.<%if((i != sizeGroupbys - 1) || sizeOperations >0 ){%>keySet().<%}%>iterator();
 while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
-	String <%=inputColumn %>_<%=outputColumn %> = <%=inputColumn%>_iterator_<%=cid %>.next();
+	<%=groupby_type[i] %> <%=inputColumn %>_<%=outputColumn %> = <%=inputColumn%>_iterator_<%=cid %>.next();
 <%
 				if(i == sizeGroupbys - 1){
 					if(sizeOperations > 0){
@@ -92,7 +139,7 @@ ThenRunStruct<%=destination %> aggregated_row_<%=cid %> = new ThenRunStruct<%=de
 								if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
             						IMetadataTable inMetadata = conn.getMetadataTable();
             						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
-            							if(inColumn.getLabel().equals(columnName)){
+            							if(inColumn.getLabel().equals(inputColumn)){
             								sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
             								break loop;
             							}
@@ -100,26 +147,24 @@ ThenRunStruct<%=destination %> aggregated_row_<%=cid %> = new ThenRunStruct<%=de
             					}
             				}
         				}
-%>
+        				if(sameType){
+        				
+%>aggregated_row_<%=cid %>.<%=outputColumn %> = <%=inputColumn %>_<%=outputColumn %>;
+<%  					}else{
+%>String s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %> = String.valueOf(<%=inputColumn %>_<%=outputColumn %>);
 aggregated_row_<%=cid %>.<%=outputColumn %> = <%
-								/** begin **/
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-								/** end **/
-								%><%=inputColumn %>_<%=outputColumn %><%
-								/** begin **/
-							} else if(javaType == JavaTypesManager.DATE) { 
-								if(sameType){
-								/** end **/
-								%>new Date(<%=inputColumn %>_<%=outputColumn %>)<%}else{%>ParserUtils.parseTo_Date(<%=inputColumn %>_<%=outputColumn %>, <%= patternValue %>)<%}
-								/** begin **/
+								%>s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %><%
+							}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+								%>s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %>.getBytes()<%
+							} else if(javaType == JavaTypesManager.DATE) {
+								%>s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %>.equals("null") ? null : ParserUtils.parseTo_Date(s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %>, <%= patternValue %>)<%
 							} else {
-								/** end **/
-								%>ParserUtils.parseTo_<%= typeToGenerate %>(<%=inputColumn %>_<%=outputColumn %>)<%
-								/** begin **/
+								%>ParserUtils.parseTo_<%= typeToGenerate %>(s_<%=inputColumn %>_<%=outputColumn %>_<%=cid %>)<%
 							}
-								/** end **/
 						%>;
 <%
+						}
 						continue next_column;
 					}
 				}
@@ -185,7 +230,11 @@ if(temps<%=outOperation %>.length() > 0) {
 aggregated_row_<%=cid %>.<%=outOperation %> = temps<%=outOperation %>;
 <%
 								/** begin **/
-							} else if(javaType == JavaTypesManager.DATE) { 
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%>
+aggregated_row_<%=cid %>.<%=outOperation %> = temps<%=outOperation %>.getBytes();
+<%
+							} else if(javaType == JavaTypesManager.DATE) {
 								/** end **/
 								%>
 aggregated_row_<%=cid %>.<%=outOperation %> = ParserUtils.parseTo_Date(temps<%=outOperation %>, <%= patternValue %>);

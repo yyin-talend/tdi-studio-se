@@ -8,6 +8,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.Map
 "
@@ -110,6 +111,52 @@ class OperationStruct<%=cid %>{
 //
 }
 int groupbySize = groupbys.size();
+//modify06-04 begin
+String[] groupby_type = new String[groupbySize];
+for(int i = 0; i < groupbySize; i++){
+	String columnname = groupbys.get(i).get("INPUT_COLUMN");
+	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    	for (IConnection conn : incomingConnections) {
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+        		IMetadataTable inMetadata = conn.getMetadataTable();
+       			for (IMetadataColumn column: inMetadata.getListColumns()) {
+            		if(column.getLabel().equals(columnname)){
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						if(javaType == JavaTypesManager.BOOLEAN){
+							groupby_type[i] = "Boolean";
+						}else if(javaType == JavaTypesManager.BYTE){
+							groupby_type[i] = "Byte";
+						}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+							groupby_type[i] = "byte[]";
+						}else if(javaType == JavaTypesManager.CHARACTER){
+							groupby_type[i] = "Character";
+						}else if(javaType == JavaTypesManager.DATE){
+							groupby_type[i] = "java.util.Date";
+						}else if(javaType == JavaTypesManager.DOUBLE){
+							groupby_type[i] = "Double";
+						}else if(javaType == JavaTypesManager.FLOAT){
+							groupby_type[i] = "Float";
+						}else if(javaType == JavaTypesManager.INTEGER){
+							groupby_type[i] = "Integer";
+						}else if(javaType == JavaTypesManager.LONG){
+							groupby_type[i] = "Long";
+						}else if(javaType == JavaTypesManager.SHORT){
+							groupby_type[i] = "Short";
+						}else if(javaType == JavaTypesManager.STRING){
+							groupby_type[i] = "String";
+						}else if(javaType == JavaTypesManager.OBJECT){
+							groupby_type[i] = "Object";
+						}
+						break;
+            		}
+				}
+			}
+		}
+  	}
+}
+//modify06-04 end
+
 for(int ii = 0; ii < groupbySize; ii++){
 	String input = groupbys.get(ii).get("INPUT_COLUMN");
 	for(int i = ii; i < groupbySize; i++){
@@ -117,20 +164,20 @@ for(int ii = 0; ii < groupbySize; ii++){
 			if(sizeOps == 0){
 //
 //end
-%>java.util.Set<String <%
+%>java.util.Set<<%=groupby_type[i] %> <%
 //start
 //
 			}else{
 //
 //end
-%>java.util.Map<String, OperationStruct<%=cid %><%
+%>java.util.Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
 //start
 //
 			}
 		}else{
 //
 //end
-%>java.util.Map<String,<%
+%>java.util.Map<<%=groupby_type[i] %>,<%
 //start
 //
 		}
@@ -160,7 +207,7 @@ for(int ii = 0; ii < groupbySize; ii++){
 					if(i == 0){
 %>Hash<%
 					}
-%>Set<String<%
+%>Set<<%=groupby_type[i] %><%
 //start
 //
 				}else{
@@ -170,7 +217,7 @@ for(int ii = 0; ii < groupbySize; ii++){
 					if(i == 0){
 %>Hash<%
 					}
-%>Map<String, OperationStruct<%=cid %><%
+%>Map<<%=groupby_type[i] %>, OperationStruct<%=cid %><%
 //start
 //
 				}
@@ -181,7 +228,7 @@ for(int ii = 0; ii < groupbySize; ii++){
 				if(i == 0){
 %>Hash<%
 				}
-%>Map<String,<%
+%>Map<<%=groupby_type[i] %>,<%
 //start
 //
 			}
