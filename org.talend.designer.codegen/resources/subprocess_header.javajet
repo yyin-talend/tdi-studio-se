@@ -122,7 +122,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		final <%=conn.getName() %>Struct other = (<%=conn.getName() %>Struct) obj;
+		final <%=conn.getName() %>Struct<%=templateOrigin %> other = (<%=conn.getName() %>Struct<%=templateOrigin %>) obj;
 		<%	
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
