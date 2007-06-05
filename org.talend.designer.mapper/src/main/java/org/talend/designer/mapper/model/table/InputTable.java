@@ -45,6 +45,8 @@ public class InputTable extends AbstractInOutTable {
      */
     private boolean innerJoin; // else outer join
 
+    private String expressionFilter;
+
     /**
      * DOC amaumont InputTable constructor comment.
      * 
@@ -68,6 +70,7 @@ public class InputTable extends AbstractInOutTable {
         super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
             this.innerJoin = externalMapperTable.isInnerJoin();
+            this.expressionFilter = externalMapperTable.getExpressionFilter();
         }
     }
 
@@ -139,6 +142,14 @@ public class InputTable extends AbstractInOutTable {
             }
         }
         return hasReadOnlyMetadataColumns;
+    }
+
+    public String getExpressionFilter() {
+        return this.expressionFilter;
+    }
+
+    public void setExpressionFilter(String notExactlyRelation) {
+        this.expressionFilter = notExactlyRelation;
     }
 
 }

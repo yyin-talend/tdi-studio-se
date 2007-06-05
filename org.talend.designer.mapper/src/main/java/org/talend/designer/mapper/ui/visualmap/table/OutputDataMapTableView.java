@@ -71,6 +71,15 @@ public class OutputDataMapTableView extends DataMapTableView {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
+     */
+    @Override
+    protected void createContent() {
+        createTableForColumns();
+    }
+
+
     @Override
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);

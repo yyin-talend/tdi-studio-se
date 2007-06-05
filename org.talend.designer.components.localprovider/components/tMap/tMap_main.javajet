@@ -147,6 +147,14 @@
                         sb.append(cr
                                 + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
                                         indent, checkingSyntax));
+
+					         sb.append("\n" + gm.indent(indent) + tableName + "HashKey.hashCodeDirty = true;"); //$NON-NLS-1$ //$NON-NLS-2$
+					         String className = tableName + "Struct"; //$NON-NLS-1$
+					         sb.append("\n" + gm.indent(indent) + className + " " + tableName + "FromHash = (" + className + ") tHash_" + tableName + ".get( " + tableName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+	                        + "HashKey );"); //$NON-NLS-1$
+					         sb.append("\n"); //$NON-NLS-1$
+
+
                         validLookupTables.add(externalTable);
                         sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
                                 + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName

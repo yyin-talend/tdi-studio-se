@@ -33,6 +33,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -68,6 +69,7 @@ public class LogRowNode implements INode {
     private IProcess process;
 
     private IMetadataTable metadataTable;
+
     /**
      * qzhang LogRowNode constructor comment.
      */
@@ -85,9 +87,9 @@ public class LogRowNode implements INode {
         TextElementParameter param4 = null;
         TextElementParameter param5 = null;
         TextElementParameter param6 = null;
-        if (UIManager.isJavaProject()) {            
+        if (UIManager.isJavaProject()) {
             param = new TextElementParameter("FIELDSEPARATOR", "\"|\"");
-        } else {            
+        } else {
             param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         param2 = new TextElementParameter("TABLE_PRINT", "false");
@@ -95,7 +97,7 @@ public class LogRowNode implements INode {
         param4 = new TextElementParameter("PRINT_UNIQUE_NAME", "false");
         param5 = new TextElementParameter("PRINT_COLNAMES", "false");
         param6 = new TextElementParameter("USE_FIXED_LENGTH", "false");
-        
+
         this.addParameter(param);
         this.addParameter(param2);
         this.addParameter(param3);
@@ -110,7 +112,8 @@ public class LogRowNode implements INode {
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
+                : new IConnection[0]);
     }
 
     /*
@@ -137,7 +140,8 @@ public class LogRowNode implements INode {
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
+                : new IConnection[0]);
     }
 
     /*
@@ -250,7 +254,7 @@ public class LogRowNode implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
-    
+
     public Boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }
@@ -341,12 +345,13 @@ public class LogRowNode implements INode {
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#getLocation()
      */
-    public Point getLocation()
-    {
+    public Point getLocation() {
         return null;
     }
 
@@ -354,32 +359,38 @@ public class LogRowNode implements INode {
         // TODO Auto-generated method stub
         return null;
     }
-    
-        public boolean isThereLinkWithHash() {
+
+    public boolean isThereLinkWithHash() {
         // TODO Auto-generated method stub
         return false;
     }
 
-   public List<? extends IConnection> getOutgoingSortedConnections() {
-         return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
-   }
-   
-   public List<? extends IConnection> getMainOutgoingConnections() {
-       return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
-   }
+    public List<? extends IConnection> getOutgoingSortedConnections() {
+        return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
+    }
 
-public IElementParameter getElementParameter(String name) {
-    // TODO Auto-generated method stub
-    return null;
-}
+    public List<? extends IConnection> getMainOutgoingConnections() {
+        return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
+    }
 
-public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
-    // TODO Auto-generated method stub
-    return null;
-}
+    public IElementParameter getElementParameter(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-public List<? extends IConnection> getOutgoingConnections(String connectorName) {
-    // TODO Auto-generated method stub
-    return null;
-}
+    public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<? extends IConnection> getOutgoingConnections(String connectorName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<BlockCode> getBlocksCodeToClose() {
+        return null;
+    }
+
+    
 }

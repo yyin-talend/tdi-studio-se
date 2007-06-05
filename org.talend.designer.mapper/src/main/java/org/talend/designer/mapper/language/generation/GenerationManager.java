@@ -21,12 +21,14 @@
 // ============================================================================
 package org.talend.designer.mapper.language.generation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
+import org.talend.core.model.process.BlockCode;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
@@ -45,6 +47,8 @@ public class GenerationManager {
     private HashMap<String, ExternalMapperTable> nameToVarsTable;
 
     protected ILanguage language;
+
+    private List<BlockCode> clocksCodeToClose;
 
     /**
      * DOC amaumont GenerationManager constructor comment.
@@ -139,6 +143,30 @@ public class GenerationManager {
             }
         }
         return !oneConstraintIsNotEmpty;
+    }
+
+    /**
+     * DOC amaumont Comment method "getBlocksCodeToClose".
+     */
+    public List<BlockCode> getBlocksCodeToClose() {
+        return clocksCodeToClose;
+    }
+
+    /**
+     * DOC amaumont Comment method "getBlocksCodeToClose".
+     */
+    public List<BlockCode> setBlocksCodeToClose(BlockCode blockCode) {
+        return clocksCodeToClose;
+    }
+
+    /**
+     * DOC amaumont Comment method "getBlocksCodeToClose".
+     */
+    public void addBlocksCodeToClose(BlockCode blockCode) {
+        if (clocksCodeToClose == null) {
+            clocksCodeToClose = new ArrayList<BlockCode>();
+        }
+        clocksCodeToClose.add(blockCode);
     }
 
 }

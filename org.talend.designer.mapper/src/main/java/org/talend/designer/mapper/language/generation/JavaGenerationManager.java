@@ -70,12 +70,6 @@ public class JavaGenerationManager extends GenerationManager {
                 sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key)); //$NON-NLS-1$
             }
         }
-        sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;"); //$NON-NLS-1$ //$NON-NLS-2$
-        String className = name + "Struct"; //$NON-NLS-1$
-        sb
-                .append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                        + "HashKey );"); //$NON-NLS-1$
-        sb.append("\n"); //$NON-NLS-1$
         return sb.toString();
     }
 

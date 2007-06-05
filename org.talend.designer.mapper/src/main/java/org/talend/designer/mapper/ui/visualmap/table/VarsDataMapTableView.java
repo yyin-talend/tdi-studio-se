@@ -82,6 +82,15 @@ public class VarsDataMapTableView extends DataMapTableView {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
+     */
+    @Override
+    protected void createContent() {
+        createTableForColumns();
+    }
+
+
     @Override
     protected void addListeners() {
         super.addListeners();

@@ -56,6 +56,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      */
     private boolean rejectInnerJoin;
 
+    private String expressionFilter;
+    
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
      */
@@ -147,6 +149,18 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      */
     public void setInnerJoin(boolean innerJoin) {
         this.innerJoin = innerJoin;
+    }
+
+    
+    
+    
+    public String getExpressionFilter() {
+        return this.expressionFilter;
+    }
+
+    
+    public void setExpressionFilter(String expressionFilter) {
+        this.expressionFilter = expressionFilter;
     }
 
     /*

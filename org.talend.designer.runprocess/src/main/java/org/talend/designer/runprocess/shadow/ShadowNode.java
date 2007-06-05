@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -318,6 +319,12 @@ public abstract class ShadowNode implements INode {
      */
     public Boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
+    }
+
+    
+    
+    public List<BlockCode> getBlocksCodeToClose() {
+        return null;
     }
 
     public IExternalNode getExternalNode() {

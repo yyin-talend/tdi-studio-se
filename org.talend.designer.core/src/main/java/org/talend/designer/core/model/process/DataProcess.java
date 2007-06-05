@@ -58,6 +58,8 @@ public class DataProcess {
 
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
+    private static final String ADVANCED_HASH_COMPONENT_NAME = "tAdvancedHash"; //$NON-NLS-1$
+
     private static Map<INode, INode> buildCheckMap = null;
 
     private static List<Node> checkRefList = null;
@@ -230,10 +232,8 @@ public class DataProcess {
                 dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
                 dataConnec.setConnectorName(curConnec.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
-                
-                
-                dataConnec.setName(EConnectionType.getTypeFromName(curConnec
-                        .getConnectionType()).getDefaultLinkName());
+
+                dataConnec.setName(EConnectionType.getTypeFromName(curConnec.getConnectionType()).getDefaultLinkName());
 
                 switch (dataConnec.getLineStyle()) {
                 case FLOW_MAIN:
@@ -441,15 +441,15 @@ public class DataProcess {
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
-                //dataConnec.setLineStyle(EConnectionType.THEN_RUN);
+                // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
                 dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
                 dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
-                //dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
+                // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
                 dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
                 dataConnec.setSource(subDataNodeStartSource);
-                //dataConnec.setSource(subDataNodeStartTarget);
+                // dataConnec.setSource(subDataNodeStartTarget);
                 dataConnec.setTarget(subDataNodeStartTarget);
-                //dataConnec.setTarget(subDataNodeStartSource);
+                // dataConnec.setTarget(subDataNodeStartSource);
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
                         .getOutgoingConnections();
                 outgoingConnections.add(dataConnec);
@@ -459,8 +459,15 @@ public class DataProcess {
 
                 // add a new hash node
                 // (to replace by a Node maybe that will take the informations of an IComponent)
-                String uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
-                IComponent component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+                String uniqueName = null;
+                IComponent component = null;
+                if (connection.getTarget().getUniqueName().startsWith("tAdvancedMap")) {
+                    uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
+                    component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
+                } else {
+                    uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
+                    component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+                }
                 if (component == null) {
                     continue;
                 }

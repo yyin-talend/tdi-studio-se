@@ -50,6 +50,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -846,6 +847,10 @@ public class Node extends Element implements INode {
 
     public Boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
+    }
+
+    public List<BlockCode> getBlocksCodeToClose() {
+        return null;
     }
 
     /**

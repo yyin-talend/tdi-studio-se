@@ -42,6 +42,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
 import org.talend.designer.codegen.config.EInternalTemplate;
 import org.talend.designer.codegen.config.JetBean;
@@ -392,6 +393,12 @@ public class CodeGenerator implements ICodeGenerator {
                     code.append(generateComponentsCode(subProcess, targetNode, part));
                     code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                 }
+            }
+            
+            if (part == ECodePart.MAIN && node.getBlocksCodeToClose() != null) {
+                CloseBlocksCodeArgument closeBlocksArgument = new CloseBlocksCodeArgument();
+                closeBlocksArgument.setBlocksCodeToClose(node.getBlocksCodeToClose());
+                code.append(generateTypedComponentCode(EInternalTemplate.CLOSE_BLOCKS_CODE, closeBlocksArgument));
             }
         }
         return code;

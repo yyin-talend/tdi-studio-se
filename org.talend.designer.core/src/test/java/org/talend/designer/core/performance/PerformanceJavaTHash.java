@@ -22,15 +22,19 @@
 package org.talend.designer.core.performance;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.collections.bag.HashBag;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.talend.commons.ui.swt.tableviewer.sort.MultipleColumnsBeanComparator;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -49,7 +53,7 @@ public class PerformanceJavaTHash {
 
     private ArrayList<String> strings;
 
-    private static final int TOTAL_ROWS = 4000000;
+    private static final int TOTAL_ROWS = 2000000;
 
     // private static final int TOTAL_ROWS = 10;
 
@@ -78,28 +82,6 @@ public class PerformanceJavaTHash {
 
         if (rowsLookup == null) {
 
-            ArrayList<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
-
-            MetadataColumn intKey = new MetadataColumn();
-            intKey.setLabel("intKey");
-            intKey.setKey(true);
-            columns.add(intKey);
-
-            MetadataColumn integerKey = new MetadataColumn();
-            integerKey.setLabel("integerKey");
-            integerKey.setKey(true);
-            columns.add(integerKey);
-
-            MetadataColumn stringKey = new MetadataColumn();
-            stringKey.setLabel("stringKey");
-            stringKey.setKey(true);
-            columns.add(stringKey);
-
-            MetadataColumn name = new MetadataColumn();
-            name.setLabel("name");
-            name.setKey(false);
-            columns.add(name);
-
             ArrayList<RowStruct> localRowsLookup = new ArrayList<RowStruct>();
 
             integers = new ArrayList<Integer>();
@@ -118,41 +100,45 @@ public class PerformanceJavaTHash {
     @Test
     public void testWithIntegerKeys() {
 
-        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
-        LoadReadExecutorWithoutMultiKey executorWithout = new LoadReadExecutorWithoutMultiKey(ITERATIONS_FOR_QUICK);
+        // TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
+        // LoadReadExecutorWithoutMultiKey executorWithout = new LoadReadExecutorWithoutMultiKey(ITERATIONS_FOR_QUICK);
+        //
+        // {
+        // for (int i = 0; i < 10; i++) {
+        // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashMap" + i);
+        // executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashMap(ITERATIONS_FOR_QUICK));
+        // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashMap" + i);
+        // }
+        //
+        // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashedMap");
+        // executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashedMap(ITERATIONS_FOR_QUICK));
+        // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashedMap");
+        //
+        // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
+        // executorWithout.executeWithIntegerAndMapAndMultiThreading(new FastHashMap(ITERATIONS_FOR_QUICK));
+        // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
+        //
+        // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with TreeMap");
+        // executorWithout.executeWithIntegerAndMapAndMultiThreading(new TreeMap());
+        // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with TreeMap");
+        //
+        // System.out.println("executeWithIntegerAndFastHashMap");
+        // executorWithout.executeWithIntegerAndFastHashMap();
+        //
+        // System.out.println("executeWithIntegerAndHashMap");
+        // executorWithout.executeWithIntegerAndHashMap();
+        //
+        // System.out.println("executeWithIntegerAndHashedMap");
+        // executorWithout.executeWithIntegerAndHashedMap();
+        // }
+        // TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
 
-        {
-            for (int i = 0; i < 10; i++) {
-                TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashMap" + i);
-                executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashMap(ITERATIONS_FOR_QUICK));
-                TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashMap" + i);
-            }
-
-            TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashedMap");
-            executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashedMap(ITERATIONS_FOR_QUICK));
-            TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashedMap");
-
-            TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
-            executorWithout.executeWithIntegerAndMapAndMultiThreading(new FastHashMap(ITERATIONS_FOR_QUICK));
-            TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
-
-            System.out.println("executeWithIntegerAndFastHashMap");
-            executorWithout.executeWithIntegerAndFastHashMap();
-
-            System.out.println("executeWithIntegerAndHashMap");
-            executorWithout.executeWithIntegerAndHashMap();
-
-            System.out.println("executeWithIntegerAndHashedMap");
-            executorWithout.executeWithIntegerAndHashedMap();
-        }
-        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
-
-        
         TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
-        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(ITERATIONS_FOR_QUICK);
+        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(
+                ITERATIONS_FOR_QUICK);
 
         {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 5; i++) {
                 System.out.println("executeWithIntegerAndHashMap " + i);
                 executorEqualsHashCode.executeWithIntegerAndHashMap();
             }
@@ -160,6 +146,22 @@ public class PerformanceJavaTHash {
         }
         TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
 
+        System.gc();
+
+        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap");
+        LoadReadExecutorWithEqualsHashCodeTreeMap executorEqualsHashCodeTreeMap = new LoadReadExecutorWithEqualsHashCodeTreeMap(
+                ITERATIONS_FOR_QUICK);
+
+        {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("executeWithIntegerAndTreeMap  " + i);
+                executorEqualsHashCodeTreeMap.executeWithIntegerAndTreeMap();
+            }
+
+        }
+        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode TreeMap");
+
+        System.gc();
 
         TimeMeasure.begin("testWithIntegerKeys executeWithMultiKey");
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
@@ -399,7 +401,8 @@ public class PerformanceJavaTHash {
     public void testWithStringStringKeys() {
 
         TimeMeasure.begin("testWithStringStringKeys LoadReadExecutorWithEqualsHashCode");
-        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(ITERATIONS_FOR_QUICK);
+        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(
+                ITERATIONS_FOR_QUICK);
 
         {
             for (int i = 0; i < 10; i++) {
@@ -479,8 +482,8 @@ public class PerformanceJavaTHash {
         System.out.println("\nWithMultiKey :");
         executor.executeWithMultiKey();
 
-//        System.out.println("\nWith reuse :");
-//        executor.executeWithReuse();
+        // System.out.println("\nWith reuse :");
+        // executor.executeWithReuse();
 
     }
 
@@ -525,41 +528,41 @@ public class PerformanceJavaTHash {
             this.nIterations = nIterations;
         }
 
-//        public void executeWithReuse() {
-//            ReusableMultiKeyMap tHash = new ReusableMultiKeyMap();
-//
-//            TimeMeasure.measureActive = true;
-//
-//            int lstSize = nIterations;
-//            TimeMeasure.begin("loading");
-//            for (int i = 0; i < lstSize; i++) {
-//                RowStruct row = (RowStruct) rowsLookup.get(i);
-//
-//                ReusableMultiKey multiKey = new ReusableMultiKey(getKeysFromRow(row));
-//
-//                tHash.put(multiKey, row);
-//            }
-//            TimeMeasure.end("loading");
-//
-//            TimeMeasure.begin("reading");
-//            int nRowsFound = 0;
-//            ReusableMultiKey multiKey = new ReusableMultiKey();
-//            for (int i = 0; i < lstSize; i++) {
-//
-//                multiKey.setKeys(getKeysFromIndex(i));
-//
-//                RowStruct row = (RowStruct) tHash.get(multiKey);
-//                if (row != null) {
-//                    nRowsFound++;
-//                }
-//                // System.out.println(row.name);
-//            }
-//            TimeMeasure.end("reading");
-//            tHash.clear();
-//
-//            System.out.println("nRowsFound=" + nRowsFound);
-//
-//        }
+        // public void executeWithReuse() {
+        // ReusableMultiKeyMap tHash = new ReusableMultiKeyMap();
+        //
+        // TimeMeasure.measureActive = true;
+        //
+        // int lstSize = nIterations;
+        // TimeMeasure.begin("loading");
+        // for (int i = 0; i < lstSize; i++) {
+        // RowStruct row = (RowStruct) rowsLookup.get(i);
+        //
+        // ReusableMultiKey multiKey = new ReusableMultiKey(getKeysFromRow(row));
+        //
+        // tHash.put(multiKey, row);
+        // }
+        // TimeMeasure.end("loading");
+        //
+        // TimeMeasure.begin("reading");
+        // int nRowsFound = 0;
+        // ReusableMultiKey multiKey = new ReusableMultiKey();
+        // for (int i = 0; i < lstSize; i++) {
+        //
+        // multiKey.setKeys(getKeysFromIndex(i));
+        //
+        // RowStruct row = (RowStruct) tHash.get(multiKey);
+        // if (row != null) {
+        // nRowsFound++;
+        // }
+        // // System.out.println(row.name);
+        // }
+        // TimeMeasure.end("reading");
+        // tHash.clear();
+        //
+        // System.out.println("nRowsFound=" + nRowsFound);
+        //
+        // }
 
         public void executeWithMultiKey() {
             MultiKeyMap tHash = new MultiKeyMap();
@@ -755,7 +758,8 @@ public class PerformanceJavaTHash {
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
 
-                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey || !RowStruct.stringKey2IsKey) {
+                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey
+                        || !RowStruct.stringKey2IsKey) {
                     RowStruct.integerKeyIsKey = false;
                     RowStruct.intKeyIsKey = false;
                     RowStruct.stringKeyIsKey = true;
@@ -776,7 +780,8 @@ public class PerformanceJavaTHash {
 
             for (int i = 0; i < lstSize; i++) {
 
-                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey || !RowStruct.stringKey2IsKey) {
+                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey
+                        || !RowStruct.stringKey2IsKey) {
                     RowStruct.integerKeyIsKey = false;
                     RowStruct.intKeyIsKey = false;
                     RowStruct.stringKeyIsKey = true;
@@ -809,12 +814,10 @@ public class PerformanceJavaTHash {
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
 
-            if (!RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || RowStruct.stringKeyIsKey || RowStruct.stringKey2IsKey) {
-                RowStruct.integerKeyIsKey = true;
-                RowStruct.intKeyIsKey = false;
-                RowStruct.stringKeyIsKey = false;
-                RowStruct.stringKey2IsKey = false;
-            }
+            RowStruct.integerKeyIsKey = true;
+            RowStruct.intKeyIsKey = false;
+            RowStruct.stringKeyIsKey = false;
+            RowStruct.stringKey2IsKey = false;
 
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
@@ -833,14 +836,12 @@ public class PerformanceJavaTHash {
             ArrayList<Integer> localIntegers = integers;
             ArrayList<String> localStrings = strings;
 
-            for (int i = 0; i < lstSize; i++) {
+            RowStruct.integerKeyIsKey = true;
+            RowStruct.intKeyIsKey = false;
+            RowStruct.stringKeyIsKey = false;
+            RowStruct.stringKey2IsKey = false;
 
-                if (!RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || RowStruct.stringKeyIsKey || RowStruct.stringKey2IsKey) {
-                    RowStruct.integerKeyIsKey = true;
-                    RowStruct.intKeyIsKey = false;
-                    RowStruct.stringKeyIsKey = false;
-                    RowStruct.stringKey2IsKey = false;
-                }
+            for (int i = 0; i < lstSize; i++) {
 
                 rowStructKey.hashCodeDirty = true;
                 rowStructKey.integerKey = localIntegers.get(i);
@@ -849,7 +850,7 @@ public class PerformanceJavaTHash {
                 RowStruct row = (RowStruct) tHash.get(rowStructKey);
                 if (row != null) {
                     nRowsFound++;
-//                    System.out.println(row.name);
+                    // System.out.println(row.name);
                 }
             }
             TimeMeasure.end("reading");
@@ -950,6 +951,240 @@ public class PerformanceJavaTHash {
 
         }
 
+    }
+
+    /**
+     * 
+     * DOC amaumont PerformanceJavaTHash class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private class LoadReadExecutorWithEqualsHashCodeTreeMap {
+
+        private int nIterations;
+
+        /**
+         * DOC amaumont LoadReadExecutor constructor comment.
+         */
+        public LoadReadExecutorWithEqualsHashCodeTreeMap(int nIterations) {
+            super();
+            this.nIterations = nIterations;
+        }
+
+        /**
+         * DOC amaumont Comment method "executeWithStringStringAndHashMap".
+         */
+        public void executeWithStringStringAndTreeMap() {
+            int lstSize = nIterations;
+            Map<RowStruct, RowStruct> tHash = new TreeMap<RowStruct, RowStruct>();
+
+            TimeMeasure.measureActive = true;
+
+            ArrayList<RowStruct> localRowsLookup = rowsLookup;
+
+            TimeMeasure.begin("loading");
+            for (int i = 0; i < lstSize; i++) {
+                RowStruct row = (RowStruct) localRowsLookup.get(i);
+
+                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey
+                        || !RowStruct.stringKey2IsKey) {
+                    RowStruct.integerKeyIsKey = false;
+                    RowStruct.intKeyIsKey = false;
+                    RowStruct.stringKeyIsKey = true;
+                    RowStruct.stringKey2IsKey = true;
+                }
+                tHash.put(row, row);
+                // TimeMeasure.step("loading", "end of loop block");
+            }
+            TimeMeasure.end("loading");
+
+            TimeMeasure.begin("reading");
+            int nRowsFound = 0;
+
+            RowStruct rowStructKey = new RowStruct();
+
+            ArrayList<Integer> localIntegers = integers;
+            ArrayList<String> localStrings = strings;
+
+            for (int i = 0; i < lstSize; i++) {
+
+                if (RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || !RowStruct.stringKeyIsKey
+                        || !RowStruct.stringKey2IsKey) {
+                    RowStruct.integerKeyIsKey = false;
+                    RowStruct.intKeyIsKey = false;
+                    RowStruct.stringKeyIsKey = true;
+                    RowStruct.stringKey2IsKey = true;
+                }
+
+                rowStructKey.hashCodeDirty = true;
+                rowStructKey.stringKey = localStrings.get(i);
+                rowStructKey.stringKey2 = rowStructKey.stringKey;
+                // rowStructKey.intKey = i;
+                // rowStructKey.stringKey = localStrings.get(i);
+                RowStruct row = (RowStruct) tHash.get(rowStructKey);
+                if (row != null) {
+                    nRowsFound++;
+                    // System.out.println(row.name);
+                }
+            }
+            TimeMeasure.end("reading");
+            tHash.clear();
+
+            System.out.println("nRowsFound=" + nRowsFound);
+
+        }
+
+        public void executeWithIntegerAndTreeMap() {
+            int lstSize = nIterations;
+            Map<RowStruct, RowStruct> tHash = new TreeMap<RowStruct, RowStruct>();
+
+            TimeMeasure.measureActive = true;
+
+            ArrayList<RowStruct> localRowsLookup = rowsLookup;
+
+            if (!RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || RowStruct.stringKeyIsKey
+                    || RowStruct.stringKey2IsKey) {
+                RowStruct.integerKeyIsKey = true;
+                RowStruct.intKeyIsKey = false;
+                RowStruct.stringKeyIsKey = false;
+                RowStruct.stringKey2IsKey = false;
+            }
+
+            TimeMeasure.begin("loading");
+            for (int i = 0; i < lstSize; i++) {
+                RowStruct row = (RowStruct) localRowsLookup.get(i);
+
+                tHash.put(row, row);
+                // TimeMeasure.step("loading", "end of loop block");
+            }
+            TimeMeasure.end("loading");
+
+            TimeMeasure.begin("reading");
+            int nRowsFound = 0;
+
+            RowStruct rowStructKey = new RowStruct();
+
+            ArrayList<Integer> localIntegers = integers;
+            ArrayList<String> localStrings = strings;
+
+            for (int i = 0; i < lstSize; i++) {
+
+                if (!RowStruct.integerKeyIsKey || RowStruct.intKeyIsKey || RowStruct.stringKeyIsKey
+                        || RowStruct.stringKey2IsKey) {
+                    RowStruct.integerKeyIsKey = true;
+                    RowStruct.intKeyIsKey = false;
+                    RowStruct.stringKeyIsKey = false;
+                    RowStruct.stringKey2IsKey = false;
+                }
+
+                rowStructKey.hashCodeDirty = true;
+                rowStructKey.integerKey = localIntegers.get(i);
+                // rowStructKey.intKey = i;
+                // rowStructKey.stringKey = localStrings.get(i);
+                RowStruct row = (RowStruct) tHash.get(rowStructKey);
+                if (row != null) {
+                    nRowsFound++;
+                    // System.out.println(row.name);
+                }
+            }
+            TimeMeasure.end("reading");
+            tHash.clear();
+
+            System.out.println("nRowsFound=" + nRowsFound);
+
+        }
+
+        public void executeWithIntegerAndMapAndMultiThreading(Map tHash) {
+
+            /**
+             * 
+             * DOC amaumont PerformanceJavaTHash.LoadReadExecutorWithoutMultiKey class global comment. Detailled comment
+             * <br/>
+             * 
+             * $Id$
+             * 
+             */
+            class PutThread extends Thread {
+
+                private int length;
+
+                private int start;
+
+                private ArrayList rows;
+
+                private Map map;
+
+                private boolean ended;
+
+                /**
+                 * DOC amaumont PutThread constructor comment.
+                 * 
+                 * @param localRowsLookup
+                 * @param i
+                 * @param j
+                 */
+                public PutThread(Map map, ArrayList rows, int start, int length) {
+                    this.map = map;
+                    this.rows = rows;
+                    this.start = start;
+                    this.length = length;
+                }
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Thread#run()
+                 */
+                @Override
+                public void run() {
+
+                    ArrayList localRows = this.rows;
+                    int start = this.start;
+                    int length = this.length;
+                    Map map = this.map;
+
+                    for (int i = start; i < length; i++) {
+                        RowStruct row = (RowStruct) localRows.get(i);
+                        map.put(row.integerKey, row);
+                    }
+                }
+
+            }
+            ;
+
+            ArrayList<RowStruct> localRowsLookup = rowsLookup;
+            ArrayList<Integer> localIntegers = integers;
+
+            int lstSize = nIterations;
+            PutThread putThread1 = new PutThread(tHash, localRowsLookup, 0, nIterations / 2);
+            PutThread putThread2 = new PutThread(tHash, localRowsLookup, nIterations / 2, nIterations);
+            TimeMeasure.begin("loading");
+
+            putThread1.start();
+            putThread2.start();
+
+            while (putThread1.isAlive() || putThread2.isAlive())
+                ;
+
+            TimeMeasure.end("loading");
+
+            TimeMeasure.begin("reading");
+            int nRowsFound = 0;
+            for (int i = 0; i < lstSize; i++) {
+
+                RowStruct row = (RowStruct) tHash.get(localIntegers.get(i));
+                if (row != null) {
+                    nRowsFound++;
+                }
+                // System.out.println(row.name);
+            }
+            TimeMeasure.end("reading");
+            tHash.clear();
+
+            System.out.println("nRowsFound=" + nRowsFound);
+
+        }
 
     }
 
@@ -1015,7 +1250,6 @@ public class PerformanceJavaTHash {
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
@@ -1050,7 +1284,6 @@ public class PerformanceJavaTHash {
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
                 RowStruct row = (RowStruct) localRowsLookup.get(i);
@@ -1084,7 +1317,6 @@ public class PerformanceJavaTHash {
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
-
 
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
@@ -1277,34 +1509,43 @@ public class PerformanceJavaTHash {
 
     /**
      * 
-     * DOC amaumont PerformanceJavaTHash class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont PerformanceJavaTHash class global comment. Detailled comment <br/>
+     * 
      * $Id$
-     *
+     * 
      */
-    public static class RowStruct {
+    public static class RowStruct implements Comparable {
 
         private static final int DEFAULT_HASHCODE = 1;
 
         private static final int PRIME = 31;
-        
+
         public static boolean intKeyIsKey;
+
         public static boolean integerKeyIsKey;
+
         public static boolean stringKeyIsKey;
+
         public static boolean stringKey2IsKey;
+
         public static boolean nameIsKey;
 
+        public static boolean ignoreCase = false;
+
+        public static int ascendingInt = 1;
+
         private int hashCode = DEFAULT_HASHCODE;
-        
+
         public boolean hashCodeDirty = true;
 
-        
-        
         public int intKey;
+
         public Integer integerKey;
+
         public String stringKey;
+
         public String stringKey2;
+
         public String name;
 
         /**
@@ -1394,6 +1635,45 @@ public class PerformanceJavaTHash {
                     return false;
             }
             return true;
+        }
+
+        private int checkNullsAndCompare(Object object1, Object object2) {
+            int returnValue = 0;
+            if (object1 instanceof String && object2 instanceof String) {
+                returnValue = compareStrings((String) object1, (String) object2);
+            } else if (object1 instanceof Comparable && object2 instanceof Comparable) {
+                returnValue = ((Comparable) object1).compareTo(object2);
+            } else if (object1 != null && object2 != null) {
+                // si les objets sont diff�rents de null on les compare avec le
+                // toString
+                returnValue = compareStrings(object1.toString(), object2.toString());
+            } else if (object1 == null && object2 != null) {
+                returnValue = 1; // un des deux objet est null, on inverse le tri
+            } else if (object1 != null && object2 == null) {
+                returnValue = -1; // un des deux objet est null
+            } else {
+                // les deux objet sont null
+                returnValue = 0;
+            }
+
+            return ascendingInt * returnValue;
+        }
+
+        private int compareStrings(String string1, String string2) {
+            if (ignoreCase) {
+                return string1.compareToIgnoreCase(string2);
+            } else {
+                return string1.compareTo(string2);
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Comparable#compareTo(java.lang.Object)
+         */
+        public int compareTo(Object o) {
+            return checkNullsAndCompare(this.integerKey, ((RowStruct) o).integerKey);
         }
 
     }

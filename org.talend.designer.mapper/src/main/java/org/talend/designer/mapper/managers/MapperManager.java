@@ -54,6 +54,7 @@ import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -637,12 +638,13 @@ public class MapperManager {
             if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
                 return true;
             }
-        } else if (entrySource instanceof InputColumnTableEntry && entryTarget instanceof InputColumnTableEntry
-                && entrySource.getParent() != entryTarget.getParent()) {
+        } else if (entrySource instanceof InputColumnTableEntry
+                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry)) {
             List<InputTable> inputTables = getInputTables();
             int indexTableSource = inputTables.indexOf(entrySource.getParent());
             int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
-            if (indexTableSource < indexTableTarget) {
+            if (indexTableSource < indexTableTarget || entryTarget instanceof ExpressionFilterEntry
+                    && indexTableSource <= indexTableTarget) {
                 return true;
             }
         } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
@@ -846,6 +848,14 @@ public class MapperManager {
 
     public boolean componentIsReadOnly() {
         return getComponent().isReadOnly() || getComponent().getProcess().isReadOnly();
+    }
+
+    /**
+     * DOC amaumont Comment method "isAdvancedMap".
+     * @return
+     */
+    public boolean isAdvancedMap() {
+        return getComponent().getClass().getName().endsWith("AdvancedMapperComponent");
     }
 
 }

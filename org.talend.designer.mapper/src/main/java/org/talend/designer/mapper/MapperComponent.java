@@ -28,8 +28,10 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +48,7 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
+import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -53,6 +56,8 @@ import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 import org.talend.designer.mapper.utils.problems.ProblemsAnalyser;
@@ -63,13 +68,15 @@ import org.talend.designer.mapper.utils.problems.ProblemsAnalyser;
  * $Id$
  * 
  */
-public class MapperComponent extends AbstractExternalNode {
+public class MapperComponent extends AbstractExternalNode implements IHashableInputConnections {
 
     private MapperMain mapperMain;
 
     private List<IMetadataTable> metadataListOut;
 
     private ExternalMapperData externalData;
+
+    private GenerationManager generationManager;
 
     /**
      * DOC amaumont MapperComponent constructor comment.
@@ -451,7 +458,9 @@ public class MapperComponent extends AbstractExternalNode {
         return this.mapperMain;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
      */
     public IComponentDocumentation getComponentDocumentation(String componentLabel, String tempFolderPath) {
@@ -460,8 +469,39 @@ public class MapperComponent extends AbstractExternalNode {
         componentDocumentation.setTempFolderPath(tempFolderPath);
         componentDocumentation.setExternalData(this.externalData);
         componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
-        
+
         return componentDocumentation;
+    }
+
+    public GenerationManager getGenerationManager() {
+        if (this.generationManager == null) {
+            this.generationManager = GenerationManagerFactory.getInstance().getGenerationManager(
+                    LanguageProvider.getCurrentLanguage());
+        }
+        return this.generationManager;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IHashableInputConnections#getHashableColumns(java.lang.String)
+     */
+    public Set<String> getHashableColumns(String connectionName) {
+        ExternalMapperData externalData = (ExternalMapperData) getExternalData();
+        List<ExternalMapperTable> inputTables = externalData.getInputTables();
+        Set<String> hashableColumns = new HashSet<String>();
+        for (ExternalMapperTable inputTable : inputTables) {
+            if (inputTable.getName().equals(connectionName)) {
+                List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
+                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                    if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
+                        hashableColumns.add(entry.getName());
+                    }
+                }
+                break;
+            }
+        }
+        return hashableColumns;
     }
 
 }

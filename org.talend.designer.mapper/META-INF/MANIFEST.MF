@@ -24,4 +24,5 @@ Export-Package: org.talend.designer.mapper,
  org.talend.designer.mapper.model.metadata,
  org.talend.designer.mapper.model.table,
  org.talend.designer.mapper.model.tableentry,
- org.talend.designer.mapper.utils
+ org.talend.designer.mapper.utils,
+ org.talend.designer.mapper.utils.problems

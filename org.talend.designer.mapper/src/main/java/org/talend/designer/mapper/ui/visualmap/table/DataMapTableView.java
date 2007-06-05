@@ -73,6 +73,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
+import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
@@ -102,6 +103,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -313,7 +315,7 @@ public abstract class DataMapTableView extends Composite {
 
         initTableFilters();
 
-        createTableForColumns();
+        createContent();
 
         if (!mapperManager.componentIsReadOnly()) {
             new DragNDrop(mapperManager, tableForEntries, true, true);
@@ -324,6 +326,11 @@ public abstract class DataMapTableView extends Composite {
         footerComposite.setLayoutData(footerGridData);
 
     }
+
+    /**
+     * DOC amaumont Comment method "createContent".
+     */
+    protected abstract void createContent();
 
     /**
      * DOC amaumont Comment method "addToolItemSeparator".
@@ -337,7 +344,7 @@ public abstract class DataMapTableView extends Composite {
     /**
      * DOC amaumont Comment method "createTableForColumns".
      */
-    private void createTableForColumns() {
+    protected void createTableForColumns() {
         this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(abstractDataMapTable
                 .getTableColumnsEntriesModel(), centerComposite) {
 
@@ -413,10 +420,10 @@ public abstract class DataMapTableView extends Composite {
                      * @return
                      */
                     private Image getColumnImageExecute(Object element, int columnIndex) {
+                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) newTableViewerCreator.getColumns()
+                                .get(columnIndex);
                         if (getDataMapTable() instanceof AbstractInOutTable) {
                             AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
-                            TableViewerCreatorColumn column = (TableViewerCreatorColumn) newTableViewerCreator
-                                    .getColumns().get(columnIndex);
                             if (column.getId().equals(ID_NAME_COLUMN)) {
                                 if (entry.getMetadataColumn().isKey()) {
                                     return imageKey;
@@ -424,6 +431,9 @@ public abstract class DataMapTableView extends Composite {
                                     return imageEmpty;
                                 }
                             }
+                        }
+                        if (column.getImageProvider() != null) {
+                            return column.getImageProvider().getImage(element);
                         }
                         return null;
                     }
@@ -1346,12 +1356,7 @@ public abstract class DataMapTableView extends Composite {
     protected void initExpressionProposals(final TextCellEditorWithProposal textCellEditor, Zone[] zones,
             final TableViewerCreator tableViewerCreator, ITableEntry currentModifiedEntry) {
         if (this.expressionProposalProvider == null) {
-            IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
-            if (!MapperMain.isStandAloneMode()) {
-                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
-                        .getComponent().getProcess()) };
-            }
-            this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
+            this.expressionProposalProvider = createExpressionProposalProvider();
         }
         this.expressionProposalProvider.init(abstractDataMapTable, zones, currentModifiedEntry);
         textCellEditor.setContentProposalProvider(this.expressionProposalProvider);
@@ -1363,6 +1368,18 @@ public abstract class DataMapTableView extends Composite {
         ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
         expressionProposalStyledText.setContentProposalProvider(this.expressionProposalProvider);
         // System.out.println("init expression proposal:"+this.expressionProposal);
+    }
+
+    /**
+     * DOC amaumont Comment method "initExpressionProposalProvider".
+     */
+    protected ExpressionProposalProvider createExpressionProposalProvider() {
+        IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
+        if (!MapperMain.isStandAloneMode()) {
+            contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
+                    .getComponent().getProcess()) };
+        }
+        return new ExpressionProposalProvider(mapperManager, contentProposalProviders);
     }
 
     protected TextCellEditor createExpressionCellEditor(final TableViewerCreator tableViewerCreator,
@@ -1726,6 +1743,14 @@ public abstract class DataMapTableView extends Composite {
      */
     public AbstractExtendedTableViewer<FilterTableEntry> getExtendedTableViewerForFilters() {
         return this.extendedTableViewerForFilters;
+    }
+
+    protected Composite getCenterComposite() {
+        return this.centerComposite;
+    }
+
+    protected ExpressionProposalProvider getExpressionProposalProvider() {
+        return this.expressionProposalProvider;
     }
 
 }

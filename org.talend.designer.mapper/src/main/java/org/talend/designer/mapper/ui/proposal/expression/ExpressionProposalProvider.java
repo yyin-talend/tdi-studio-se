@@ -32,6 +32,7 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -81,9 +82,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 tables.addAll(mapperManager.getVarsTables());
             }
         }
-        if (!(currentTable instanceof VarsTable)) {
-            tables.remove(currentTable);
-        }
+//        if (!(currentTable instanceof VarsTable) && !(currentEntry instanceof ExpressionFilterEntry)) {
+//            tables.remove(currentTable);
+//        }
         this.currentModifiedEntry = currentEntry;
     }
 
@@ -97,9 +98,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
         TableEntryLocation sourceEntryLocation = new TableEntryLocation();
 
-        // Proposals based on process context
         for (AbstractDataMapTable table : this.tables) {
-            // proposals.add(new TableContentProposal(table, this.currentLanguage));
             List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
             for (IColumnEntry entrySource : dataMapTableEntries) {
                 sourceEntryLocation.tableName = entrySource.getParentName();

@@ -270,6 +270,7 @@ public class ExternalDataConverter {
      */
     private void fillExternalTable(InputTable table, ExternalMapperTable externalMapperTable) {
         externalMapperTable.setInnerJoin(table.isInnerJoin());
+        externalMapperTable.setExpressionFilter(table.getExpressionFilter());
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }

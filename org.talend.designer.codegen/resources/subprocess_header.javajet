@@ -5,6 +5,7 @@
 		org.talend.core.model.process.INode
 		java.util.List
 		java.util.HashSet
+		java.util.Set
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable 
@@ -13,6 +14,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IHashableInputConnections
 	" 
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -41,15 +43,23 @@
 					if (!hSet.contains(conn.getName())) {
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
-						boolean hasAtLeastOneKey = false;
-						if (metadata!=null) { 
-							for (IMetadataColumn column: metadata.getListColumns()) {
-								if (column.isKey()) {
-									hasAtLeastOneKey = true;
-									break;
+						
+						Set<String> hHashableColumns = null;
+						if(conn.getTarget() instanceof IHashableInputConnections) {
+							IHashableInputConnections target = (IHashableInputConnections) conn.getTarget();
+							hHashableColumns = target.getHashableColumns(conn.getName());
+						} else {
+							hHashableColumns = new HashSet<String>();
+							if (metadata!=null) { 
+								for (IMetadataColumn column: metadata.getListColumns()) {
+									if (column.isKey()) {
+										hHashableColumns.add(column.getLabel());
+										break;
+									}
 								}
 							}
 						}
+						boolean hasAtLeastOneKey = hHashableColumns.size() > 0;
 						
 %>
 
@@ -87,7 +97,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 	<%
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (column.isKey()) {
+				if (hHashableColumns.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 	%>
 				result = prime * result + (int) this.<%=column.getLabel() %>;
@@ -116,7 +126,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 		<%	
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (column.isKey()) {
+				if (hHashableColumns.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 				%>
 					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
