@@ -54,7 +54,6 @@
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
 										hHashableColumns.add(column.getLabel());
-										break;
 									}
 								}
 							}
