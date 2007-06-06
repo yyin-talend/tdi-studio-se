@@ -227,12 +227,12 @@ if (not defined @current_keys_<%=cid %>) {
 %>
 
 print {$output_FH_<%=cid %>} (
-    '<'.<%=rowTag%>."\n",
+    '<'.<%=rowTag%>,
 <%
         for (SchemaColumn sc : displayAsAttribute) {
 %>
     sprintf(
-        '  '.<%=sc.getLabel()%>.'="%s"'."\n",
+        ' '.<%=sc.getLabel()%>.'="%s"',
         $<%=cid%>[<%=cid%>__<%=sc.getId()%>]
     ),
 <%                
