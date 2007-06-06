@@ -6,7 +6,7 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
@@ -100,7 +100,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 			IConnection conn = conns.get(0); //the first connection
 			firstConnName = conn.getName();			
-			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {//3
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//3
 
 				%>
 
@@ -152,7 +152,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn2 = conns.get(i);
-				if ((conn2.getName().compareTo(firstConnName)!=0)&&((conn2.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn2.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+				if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
 			    	for (IMetadataColumn column: metadata.getListColumns()) {%>
       			<%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
 				 <%

@@ -4,7 +4,7 @@
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
@@ -37,7 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
-		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 %>
 				StringBuilder sb_<%=cid %> = new StringBuilder();
 <%

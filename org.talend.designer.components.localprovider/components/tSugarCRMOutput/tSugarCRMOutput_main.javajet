@@ -6,7 +6,7 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
-    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {//4
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//4
 %>
 ///////////////////////		
 						

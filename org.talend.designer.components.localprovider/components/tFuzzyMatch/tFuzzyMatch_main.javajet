@@ -2,6 +2,7 @@
 imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable 
@@ -72,7 +73,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			
-			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 				List<IMetadataColumn> listColumns = inMainCon.getMetadataTable().getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -293,7 +294,7 @@ nb_line_<%=cid%>++;
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
 <%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%

@@ -4,7 +4,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
-	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.process.IConnectionCategory
 	java.io.*
 	javax.xml.transform.Source
 	javax.xml.transform.stream.StreamSource
@@ -98,7 +98,7 @@ if (print) {
 }
 
 for (IConnection conn : node.getOutgoingConnections()) {
-	if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 %>
 		<%=conn.getName() %>.dtdfile = <%=dtdfile %>;
 		<%=conn.getName() %>.xmlfile = <%=xmlfile %>;	

@@ -3,8 +3,8 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
-    org.talend.core.model.process.IConnection
-    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection    
+    org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
@@ -34,7 +34,7 @@ for(int i = 0; i < sizeGroupbys; i++){
 	List<? extends IConnection> incomingConnections = node.getIncomingConnections();
     if (incomingConnections != null && !incomingConnections.isEmpty()) {
     	for (IConnection conn : incomingConnections) {
-			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
         		IMetadataTable inMetadata = conn.getMetadataTable();
        			for (IMetadataColumn column: inMetadata.getListColumns()) {
             		if(column.getLabel().equals(columnname)){
@@ -136,7 +136,7 @@ ThenRunStruct<%=destination %> aggregated_row_<%=cid %> = new ThenRunStruct<%=de
         				if (incomingConnections != null && !incomingConnections.isEmpty()) {
         					loop:
         					for (IConnection conn : incomingConnections) {
-								if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
             						IMetadataTable inMetadata = conn.getMetadataTable();
             						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
             							if(inColumn.getLabel().equals(inputColumn)){
@@ -181,7 +181,7 @@ aggregated_row_<%=cid %>.<%=outputColumn %> = <%
         				if (incomingConnections != null && !incomingConnections.isEmpty()) {
         					loop:
         					for (IConnection conn : incomingConnections) {
-								if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+								if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
             						IMetadataTable inMetadata = conn.getMetadataTable();
             						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
             							if(inColumn.getLabel().equals(inOperation)){

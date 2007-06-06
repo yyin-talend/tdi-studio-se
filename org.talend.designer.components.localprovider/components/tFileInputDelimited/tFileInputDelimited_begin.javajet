@@ -5,7 +5,7 @@
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn 
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.IConnectionCategory
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
 		org.talend.core.model.metadata.types.JavaTypesManager
@@ -57,7 +57,7 @@ while (fid_<%=cid %>.nextRecord()) {
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			
-			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%><%	
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {%><%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
 				boolean noStringTypeExist = false;
@@ -115,7 +115,7 @@ if(temp_<%=cid %>.length() > 0) {
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {
 			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%

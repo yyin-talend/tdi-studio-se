@@ -5,7 +5,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnectionCategory
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.io.File
@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if(conns!=null){
     		if (conns.size()>0){
        		IConnection conn =conns.get(0);
-    		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
 	%>	
