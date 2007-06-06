@@ -174,9 +174,12 @@
                           
                      <% 
                      }
+
+
                      sb = new StringBuilder();
                      %>
                           
+								  boolean forceLoop<%= tableName %> = false;
                           int size<%= tableName %>ListFromLookup = 0;
                           <%
                           if(aKeysValues.length > 0) { // 1
@@ -199,16 +202,16 @@
 	  								  
 	  									  }
 	  								  
-	  									} 
-	  									<%
-	  									if(externalTable.isInnerJoin()) {
-	  									%>
-		  									else {
+	  									} else {
+		  									<%
+		  									if(externalTable.isInnerJoin()) {
+		  									%>
 		  									  <%= rejectedInnerJoin %> = true;
-		  									}
-	  									<%
+		  									<%
+	  										}
+	  										%>
+	  										forceLoop<%= tableName %> = true;
 	  									}
-	  									%>
 	  								
 									  size<%= tableName %>ListFromLookup = <%= tableName %>ListFromLookup != null ? <%= tableName %>ListFromLookup.size() : 0;
                     		  	 <%
@@ -218,20 +221,28 @@
                     		  	 
                     		  	 	Object[] <%= tableName %>Array = tHash_Lookup_<%= tableName %>.getResultArray();
 									   size<%= tableName %>ListFromLookup = <%= tableName %>Array.length;
-
+									   
+									   if(<%= tableName %>Array.length == 0) {
+		  									<%
+		  									if(externalTable.isInnerJoin()) {
+		  									%>
+		  									  <%= rejectedInnerJoin %> = true;
+		  									<%
+	  										}
+	  										%>
+	  										forceLoop<%= tableName %> = true;
+										}
                     		  	 <%
                     		  	 } // 2
                     		  	 %>
 									 
-									  boolean stop<%= tableName %>LoopForRejectInnerJoin = false;
-									 
-                    		  	  for(int i<%= tableName %> = 0; i<%= tableName %> < size<%= tableName %>ListFromLookup || <%= rejectedInnerJoin %> && !stop<%= tableName %>LoopForRejectInnerJoin ;i<%= tableName %>++) { 
+                    		  	  for(int i<%= tableName %> = 0; i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
 
 										<%
 										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
 									  	%>
                     		  	    
-                    		  	    stop<%= tableName %>LoopForRejectInnerJoin = true;
+  										forceLoop<%= tableName %> = false;
                     		  	    
                     		  	 
                     		  	    <%= tableName %>Struct <%= tableName %>FromLookup = null;
@@ -247,17 +258,22 @@
                     		  	    <%
 		                          if(aKeysValues.length > 0) { // 10
 		                          %>
-      	              		   	   <%= tableName %>FromLookup = <%= tableName %>ListFromLookup.get(i<%= tableName %>);
+			  									if(<%= tableName %>ListFromLookup != null) {
+	      	              		   	   <%= tableName %>FromLookup = <%= tableName %>ListFromLookup.get(i<%= tableName %>);
+		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
+	      	              		   	}
       	              		   	<%
       	              		   	} // 10
       	              		   	else { // 11
       	              		   	%>
-      	              		   		<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
+      	              		   		if(i<%= tableName %> < <%= tableName %>Array.length) {
+      	              		   			<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
+		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
+      	              		   		}
       	              		   	<%
       	              		   	} // 11
                     		  	    	%>
                     		  	    
-                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
                     		  	    
                     		  	  	   <%if(externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().startsWith("<")) { // 12 %>
                     		  	  		
