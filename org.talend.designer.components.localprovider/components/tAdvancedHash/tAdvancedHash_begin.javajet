@@ -1,0 +1,71 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IHashableInputConnections
+		java.util.HashSet
+		java.util.Set
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+
+
+    List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+    List<IConnection> outConnections = (List<IConnection>) node.getOutgoingConnections();
+    
+    List<INode> graphicalNodes = (List<INode>) node.getProcess().getGraphicalNodes();
+    
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+			INode nodeSource = connection.getSource();
+
+			INode validTarget = null;
+			INode currentTarget = null;
+	
+			// searching the target graphic node of current tHash because no generation nodes are connected at outputs
+		    for(INode graphcalNode : graphicalNodes) {
+		    	if(graphcalNode.getUniqueName().equals(nodeSource.getUniqueName())) {
+		    		List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
+		    		for(IConnection outGraphicalConnection : outGraphicalConnections) {
+		    			if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
+		    				currentTarget = outGraphicalConnection.getTarget();
+		    			}
+		    		}
+		    	}
+		    }
+
+			
+
+			if(!(currentTarget instanceof IHashableInputConnections)) {
+				currentTarget = currentTarget.getExternalNode();
+			}
+			if(currentTarget instanceof IHashableInputConnections) {
+				validTarget = currentTarget;
+			}
+
+				System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
+
+			if(validTarget != null) {
+					IHashableInputConnections target = (IHashableInputConnections) validTarget;
+					Set<String> hHashableColumns = hHashableColumns = target.getHashableColumns(connection.getName());
+					boolean hasAtLeastOneKey = hHashableColumns.size() > 0;
+			   %>
+	   			org.talend.designer.mapper.advanced.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = new org.talend.designer.mapper.advanced.AdvancedLookup<<%=connectionName%>Struct>(<%=hasAtLeastOneKey%>);
+   	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
+				<%
+			} else { 
+				System.out.println(connectionName + " ######## Valid target not found" );
+			}
+		}
+	}
+
+%>
+            

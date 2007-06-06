@@ -1,0 +1,67 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+my %desc_<%=metadata.getTableName() %> = (
+    schema        => [
+    <%
+                for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+                },
+        <%
+                }
+    %>
+    ]
+);
+
+my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
+
+our %<%=metadata.getTableName() %> = ();
+
+my @key_positions_<%=metadata.getTableName() %> = ();
+my $column_number = 0;
+foreach my $column_href (@{$desc_<%=metadata.getTableName() %>{schema} }) {
+    if ($column_href->{key}) {
+        push @key_pos_<%=metadata.getTableName() %>, $column_number;
+    }
+    $column_number++;
+}
+
+my $keys_string_<%=metadata.getTableName() %> = join(
+    '',
+    '$<%=metadata.getTableName() %>',
+    join(
+        '',
+         map {'{ $<%=metadata.getTableName() %>['.$_.'] }'} @key_pos_<%=metadata.getTableName() %>
+    )
+);
+
+<%
+		}
+	}
+%>

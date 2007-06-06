@@ -1,0 +1,145 @@
+<%@ jet 
+	imports="
+	java.util.ArrayList
+	java.util.List
+	java.util.HashMap
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+
+	org.talend.designer.mapper.MapperMain
+	org.talend.designer.mapper.MapperComponent
+	org.talend.designer.mapper.external.data.ExternalMapperData 
+	org.talend.designer.mapper.external.data.ExternalMapperTable
+	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+	org.talend.designer.mapper.language.ILanguage
+	org.talend.designer.mapper.language.generation.GenerationManagerFactory
+	org.talend.designer.mapper.language.generation.PerlGenerationManager
+	org.talend.designer.mapper.language.LanguageProvider
+	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	" 
+%>
+
+<%
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ExternalMapperData data;
+        List<IConnection> inputConnections = null;
+        if (node != null) {
+            data = (ExternalMapperData) node.getExternalData();
+            inputConnections = (List<IConnection>) node.getIncomingConnections();
+        } else {
+            MapperMain.setStandAloneMode(true);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
+                    false);
+            inputConnections = testGenerator.getInputConnectionsList();
+            data = (ExternalMapperData) testGenerator.getExternalData();
+        }
+
+        List<ExternalMapperTable> inputTables = data.getInputTables();
+        List<ExternalMapperTable> varsTables = data.getVarsTables();
+        List<ExternalMapperTable> outputTables = data.getOutputTables();
+
+        String cr = "\n";
+
+        int indent = 1;
+
+        ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
+
+        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(
+                currentLanguage);
+
+        StringBuilder sb = new StringBuilder();
+
+        gm.setInputTables(inputTables);
+        gm.setVarsTables(varsTables);
+
+        // constants
+
+        String useConstantPerlCode = "use constant ";
+        
+        List<ExternalMapperTable> inputsTablesList = new ArrayList<ExternalMapperTable>(inputTables);
+
+        HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : inputConnections) {
+            hNameToConnection.put(connection.getName(), connection);
+        }
+        HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
+        for (ExternalMapperTable externalTable : inputsTablesList) {
+
+            String tableName = externalTable.getName();
+            sb.append(cr);
+
+            IConnection connection = hNameToConnection.get(tableName);
+
+            if (connection != null) {
+
+                hExternalInputTableEntries.clear();
+                List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
+                if (metadataTableEntries == null) {
+                    continue;
+                }
+                for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
+                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
+                }
+
+                IMetadataTable metadataTable = connection.getMetadataTable();
+
+                List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+
+                int lstSize = listColumns.size();
+                for (int i = 0; i < lstSize; i++) {
+                    IMetadataColumn column = (IMetadataColumn) listColumns.get(i);
+                    String columnName = column.getLabel();
+                    ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                    if (externalInputTableEntry != null) {
+                        sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + columnName + " => " + i
+                                + ";");
+                    }
+                }
+            }
+
+        }
+
+        List<ExternalMapperTable> varsAndOutputsTablesList = new ArrayList<ExternalMapperTable>(varsTables);
+        varsAndOutputsTablesList.addAll(outputTables);
+        for (ExternalMapperTable table : varsAndOutputsTablesList) {
+            List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = table.getName();
+            sb.append(cr);
+            int lstSize = tableEntries.size();
+            for (int i = 0; i < lstSize; i++) {
+                ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
+                sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + tableEntry.getName() + " => "
+                        + i + ";");
+            }
+        }
+
+        // column names
+        for (ExternalMapperTable table : outputTables) {
+            List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            String tableName = table.getName();
+            sb.append(cr + cr + gm.indent(indent) + "my @colnames_" + tableName + " = (");
+            int lstSize = tableEntries.size();
+            indent++;
+            for (int i = 0; i < lstSize; i++) {
+                ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
+                sb.append(cr + gm.indent(indent) + "'" + tableEntry.getName() + "',");
+            }
+            indent--;
+            sb.append(cr + gm.indent(indent) + ");");
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%>
+<%= sb.toString()%>

@@ -40,11 +40,11 @@ public class AdvancedLookup<V> {
 
     private List<V> list = new ArrayList<V>();
 
-    private V[] arrayValues;
+    private Object[] arrayValues;
 
-    private boolean hasHashKeys;
+    private boolean useHashKeys;
 
-    private boolean arrayIsIncomplete;
+    private boolean arrayIsDirty = true;
 
     private List<V> listResult;
 
@@ -53,10 +53,10 @@ public class AdvancedLookup<V> {
     /**
      * DOC amaumont AdvancedLookup constructor comment.
      */
-    public AdvancedLookup(boolean hasHashKeys) {
+    public AdvancedLookup(boolean useHashKeys) {
         super();
-        this.hasHashKeys = hasHashKeys;
-        if (hasHashKeys) {
+        this.useHashKeys = useHashKeys;
+        if (useHashKeys) {
             mapOfCol = new MapOfLazyCollections(new HashMap()) {
 
                 @Override
@@ -68,13 +68,16 @@ public class AdvancedLookup<V> {
         }
     }
 
-    public V[] getResultArray() {
-        if (this.hasHashKeys) {
-            return (V[]) listResult.toArray();
+    public Object[] getResultArray() {
+        if (this.useHashKeys) {
+            return listResult.toArray();
         } else {
-            if (arrayIsIncomplete) {
-                arrayValues = (V[]) listResult.toArray();
-                arrayIsIncomplete = false;
+            if (listResult == null) {
+                listResult = list;
+            }
+            if (arrayIsDirty) {
+                arrayValues = listResult.toArray();
+                arrayIsDirty = false;
             }
             return arrayValues;
         }
@@ -89,7 +92,7 @@ public class AdvancedLookup<V> {
     }
 
     public void get(V key) {
-        if (this.hasHashKeys && key != null) {
+        if (this.useHashKeys && key != null) {
             Object v = mapOfCol.get(key);
             if (v instanceof List) {
                 listResult = (List) v;
@@ -114,8 +117,8 @@ public class AdvancedLookup<V> {
 
     public Object put(V value) {
         if (value != null) {
-            if (this.hasHashKeys) {
-                arrayIsIncomplete = true;
+            if (this.useHashKeys) {
+                arrayIsDirty = true;
                 return mapOfCol.put(value, value);
             } else {
                 list.add(value);
@@ -133,10 +136,20 @@ public class AdvancedLookup<V> {
 
     /**
      * DOC amaumont Comment method "hasResult".
+     * 
      * @return
      */
     public boolean hasResult() {
         return resultIsObject() || resultIsList();
     }
-    
+
+    /**
+     * Getter for hasHashKeys.
+     * 
+     * @return the hasHashKeys
+     */
+    public boolean isUseHashKeys() {
+        return this.useHashKeys;
+    }
+
 }
