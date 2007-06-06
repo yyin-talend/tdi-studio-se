@@ -45,7 +45,16 @@
         <ITEM NAME="JCCJDBC"     VALUE="JCCJDBC"/>
         <ITEM NAME="DERBYCLIENT"     VALUE="DERBYCLIENT"/>
       </ITEMS>
-    </PARAMETER>     
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION_FLAG"
+      FIELD="CHECK"
+      NUM_ROW="2"
+      NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>          
 
     <PARAMETER
       NAME="HOST"

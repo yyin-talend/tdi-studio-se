@@ -49,18 +49,7 @@
         <ITEM NAME="DERBYCLIENT"     VALUE="DERBYCLIENT"/>
       </ITEMS>
     </PARAMETER>
-    
-    <PARAMETER 
-    	NAME="HOST"
-    	FIELD="TEXT"
-    	NUM_ROW="3"
-    	REPOSITORY_VALUE="SERVER_NAME"
-    	REQUIRED="true"
-    	NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
-    >
-    	<DEFAULT>"localhost"</DEFAULT>
-    </PARAMETER>
-    
+       
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
@@ -72,9 +61,29 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="CONNECTION_FLAG"
+      FIELD="CHECK"
+      NUM_ROW="2"
+      NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+
+    <PARAMETER 
+    	NAME="HOST"
+    	FIELD="TEXT"
+    	NUM_ROW="4"
+    	REPOSITORY_VALUE="SERVER_NAME"
+    	REQUIRED="true"
+    	NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+    >
+    	<DEFAULT>"localhost"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       NOT_SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
@@ -85,7 +94,7 @@
     <PARAMETER
       NAME="DB"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -94,26 +103,16 @@
     <PARAMETER
       NAME="DBPATH"
       FIELD="DIRECTORY"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
- 
-    <PARAMETER
-      NAME="TYPE"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      SHOW="false"
-      REPOSITORY_VALUE="TYPE"
-    >
-      <DEFAULT>FireBird</DEFAULT>
-    </PARAMETER>
-    
+     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -122,7 +121,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>
@@ -131,7 +130,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -139,7 +138,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -147,7 +146,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
@@ -156,7 +155,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>

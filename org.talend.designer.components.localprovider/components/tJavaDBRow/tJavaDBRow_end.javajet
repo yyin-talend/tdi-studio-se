@@ -13,7 +13,9 @@ imports="
 	
 	String cid = node.getUniqueName();
 	
-	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");		
+	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
+	
+	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");		
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
@@ -54,8 +56,11 @@ if(frameworkType.equals("EMBEDED"))
 }
 else
 {
-%>
-	connectionUtil_<%=cid%>.getNetworkServer().shutdown();
-<%
+	if(connectionFlag.equals("false"))
+	{
+	%>
+	serverControl_<%=cid%>.shutdown();
+	<%
+	}
 }
 %>

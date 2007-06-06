@@ -15,7 +15,9 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
-	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");	
+	String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
+	
+	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");	
 	
 	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
 	
@@ -74,9 +76,12 @@ if(frameworkType.equals("EMBEDED"))
 }
 else
 {
-%>
-	connectionUtil_<%=cid%>.getNetworkServer().shutdown();
-<%
+	if(connectionFlag.equals("false"))
+	{
+	%>
+	serverControl_<%=cid%>.shutdown();
+	<%
+	}
 }
 %>
 

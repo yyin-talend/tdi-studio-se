@@ -38,188 +38,86 @@ imports="
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
 
-class NetworkServerUtil{
-	private int port;
-	private org.apache.derby.drda.NetworkServerControl serverControl;
-	private java.io.PrintWriter printWriter;
-	public NetworkServerUtil(int port, java.io.PrintWriter printWriter)
-	{
-		this.port = port;
-		this.printWriter = printWriter;
-		try
-		{
-			serverControl = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName("localhost"),port);
-			//printWriter.println("Derby Network Server created");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-    /**
-     * trace utility of server
-     */
-    public void trace(boolean onoff) 
-    {
-        try 
-        {
-        	serverControl.trace(onoff);
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
-    }
-	/**
-	 * Try to test for a connection
-	 * Throws exception if unable to get a connection
-	 */
-	public void testForConnection() throws Exception
-	{
-		serverControl.ping();
-	}
-    /**
-     * Shutdown the NetworkServer
-     */
-    public void shutdown()
-    {
-    	try
-    	{
-    		serverControl.shutdown();
-    	}
-    	catch(Exception e)
-    	{
-    		e.printStackTrace();
-    	}
-    }
-	/**
-	 * Start Derby Network server
-	 * 
-	 */
-	public void start()
-	{
-		try
-		{
-			serverControl.start(printWriter);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}                              	                 
-}
-class ConnectionUtil
+String jdbcDriver_<%=cid%> = null;
+String url_<%=cid%> = null;
+<%
+if(frameworkType.equals("EMBEDED"))
 {
-	private final String EMBEDDED_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-	private final String JCCJDBC_DRIVER = "com.ibm.db2.jcc.DB2Driver";
-	private final String DERBYCLIENT_DRIVER = "org.apache.derby.jdbc.ClientDriver"; 
-	private NetworkServerUtil networkServer;
-	private String host;
-	private int port;
-	private String dbName;
-	private String dbRootPath;
-	private String frameworkType;
-	private String jdbcDriver;
-	private String url;
-	private java.sql.Connection conn;
-	private String userName;
-	private String password;
-	public ConnectionUtil(NetworkServerUtil networkServer, String frameworkType, String host, int port, String dbName, String dbRootPath)
+	%>
+	jdbcDriver_<%=cid%> = "org.apache.derby.jdbc.EmbeddedDriver";
+	url_<%=cid%> = "jdbc:derby:" + <%=dbname%>;
+	//set the root path of the database
+	System.setProperty("derby.system.home",<%=dbRootPath%>);
+	<%
+}
+else
+{
+	if(frameworkType.equals("JCCJDBC"))
 	{
-		this.networkServer = networkServer;
-		this.frameworkType = frameworkType;
-		this.host = host;
-		this.port = port;
-		this.dbName = dbName;
-		this.dbRootPath = dbRootPath;
+		%>
+		jdbcDriver_<%=cid%> = "com.ibm.db2.jcc.DB2Driver";
+		url_<%=cid%> = "jdbc:derby:net://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		<%
 	}
-	public NetworkServerUtil getNetworkServer()
+	else
 	{
-		return this.networkServer;
+		%>
+		jdbcDriver_<%=cid%> = "org.apache.derby.jdbc.ClientDriver";
+		url_<%=cid%> = "jdbc:derby://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+		<%
 	}
-	public void setUserName(String userName)
+	%>
+	<%
+	String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");
+	if(connectionFlag.equals("false"))
 	{
-		this.userName = userName;
-	}
-	public void setPassword(String password)
-	{
-		this.password = password;
-	}
-	public String getFrameworkType()
-	{
-		return this.frameworkType;
-	}
-	private void createServer() throws Exception
-	{
-		networkServer.start();
-		//do we know if server is ready to accept connections
-		boolean knowIfServerUp = false;
-		int numTimes = 5;
-		// Test to see if server is ready for connections, for 15 seconds.
-	    while(!knowIfServerUp && (numTimes >0)) {
-			try {
-				// testing for connection to see if the network server is up and running
-				// if server is not ready yet, this method will throw an exception
-				numTimes--;
-				networkServer.testForConnection();
-				knowIfServerUp = true;
-			}
-			catch(Exception e) {
-				System.out.println("Unable to obtain a connection to network server, trying again after 3000 ms.");
-				Thread.currentThread().sleep(3000);
-			}
-		}
-		if(!knowIfServerUp) {
-			System.out.println("Exiting, since unable to connect to Derby Network Server.");
-			System.out.println("Please try to increase the amount of time to keep trying to connect to the Server.");
-			System.exit(1);
-		}
-		System.out.println("Derby Network Server started.");										 
-	}
-	
-	public java.sql.Connection getConnection() throws Exception
-	{
-		if(frameworkType.equals("EMBEDED"))
-		{
-			jdbcDriver = EMBEDDED_DRIVER;
-			url = "jdbc:derby:" + dbName;
-			//set the root path of the database
-			System.setProperty("derby.system.home",dbRootPath);
-		}
-		else if(frameworkType.equals("JCCJDBC"))
-		{
-			jdbcDriver = JCCJDBC_DRIVER;
-			url = "jdbc:derby:net://" + host + ":" + port + "/" + dbName;
-			this.createServer();
-		}
-		else
-		{
-			jdbcDriver = DERBYCLIENT_DRIVER;
-			url = "jdbc:derby://" + host + ":" + port + "/" + dbName;
-			this.createServer();				
-		}
-		Class.forName(jdbcDriver).newInstance();
-		java.util.Properties properties = new java.util.Properties();
-		properties.put("user",userName);
-		properties.put("password",password);
-		conn = java.sql.DriverManager.getConnection(url,properties);
-		return conn;					
+	%>
+    	org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
+    	serverControl_<%=cid%> = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName(<%=dbhost%>),Integer.parseInt(<%=dbport%>));
+    	//start server
+    	serverControl_<%=cid%>.start(new java.io.PrintWriter(System.out,true));
+    	boolean isServerUp_<%=cid%> = false;
+    	int timeOut_<%=cid%> = 5;
+    	while(!isServerUp_<%=cid%> && timeOut_<%=cid%> > 0)
+    	{
+    		try
+    		{
+    			timeOut_<%=cid%>--;
+    			/*
+    			* testing for connection to see if the network server is up and running.
+    			* if server is not ready yet, this method will throw an exception.		
+    			*/
+    			serverControl_<%=cid%>.ping();
+    			isServerUp_<%=cid%> = true;
+    		}
+    		catch(Exception e) {
+    			//Unable to obtain a connection to network server, trying again after 3000 ms.
+    			Thread.currentThread().sleep(3000);
+    		}    				
+    	}
+    	if(!isServerUp_<%=cid%>)
+    	{
+    		/*
+    		 * can not obtain a connection to network server.
+    		 */ 	 
+    		System.exit(1);	
+    	}
+    	//derby network server started.
+	<%
 	}
 }
+%>
+Class.forName(jdbcDriver_<%=cid%>).newInstance();
+
+java.util.Properties properties_<%=cid%> = new java.util.Properties();
+
+properties_<%=cid%>.put("user",<%=dbuser%>);
+
+properties_<%=cid%>.put("password",<%=dbpwd%>);
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,properties_<%=cid%>);
 
 int nb_line_<%=cid%> = 0;
-
-java.io.PrintWriter printWriter_<%=cid%> = new java.io.PrintWriter(System.out,true);
-
-NetworkServerUtil networkServer_<%=cid%> = new NetworkServerUtil(Integer.parseInt(<%=dbport%>),printWriter_<%=cid%>);
-
-ConnectionUtil connectionUtil_<%=cid%> = new ConnectionUtil(networkServer_<%=cid%>,"<%=frameworkType%>",<%=dbhost%>,Integer.parseInt(<%=dbport%>),<%=dbname%>,<%=dbRootPath%>);
-	
-connectionUtil_<%=cid%>.setUserName(<%=dbuser%>);
-
-connectionUtil_<%=cid%>.setPassword(<%=dbpwd%>);
-		
-java.sql.Connection conn_<%=cid%> = connectionUtil_<%=cid%>.getConnection();
 
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 
