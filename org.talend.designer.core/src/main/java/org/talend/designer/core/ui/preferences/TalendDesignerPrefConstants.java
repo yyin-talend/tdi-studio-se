@@ -43,4 +43,7 @@ public class TalendDesignerPrefConstants {
     
     /** Path used for components for the default file directory. */
     public static final String COMP_DEFAULT_FILE_DIR = "compFileDir"; //$NON-NLS-1$
+    
+    /** Property code check. */
+    public static final String PROPERTY_CODE_CHECK = "propertyCodeCheck"; //$NON-NLS-1$    
 }

@@ -50,6 +50,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
+        store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, true);
     }
 
 }

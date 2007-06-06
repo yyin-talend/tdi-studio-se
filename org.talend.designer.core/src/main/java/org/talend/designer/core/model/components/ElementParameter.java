@@ -24,12 +24,15 @@ package org.talend.designer.core.model.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * Each parameter of the components are read and written in this class. <br/>
@@ -424,6 +427,14 @@ public class ElementParameter implements IElementParameter {
      * @return the noCheck
      */
     public boolean isNoCheck() {
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        
+        if (!preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
+            // if the check has been completely disabled then no check.
+            // if not disabled in the preferences, then it will depends on the next conditions.
+            return true; 
+        }
+
         if (!(parent instanceof INode)) {
             return true;
         }

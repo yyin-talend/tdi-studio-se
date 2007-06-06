@@ -71,11 +71,6 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY,
                 Messages.getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
 
-        System.out.println(DesignerPlugin.getDefault().getPreferenceStore().getBoolean(
-                TalendDesignerPrefConstants.DEFAULT_HINT_USED));
-        System.out.println(DesignerPlugin.getDefault().getPreferenceStore().getBoolean(
-                TalendDesignerPrefConstants.DEFAULT_DISPLAY));
-
         addField(labelField);
         addField(hintField);
         addField(showHint);
@@ -84,6 +79,9 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
                 Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
         addField(compDefaultFileDir);
+
+        addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK,
+                Messages.getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
     }
 

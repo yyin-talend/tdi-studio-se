@@ -356,8 +356,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
 
-            boolean isReadonly = elementParameter.isReadOnly();
-            if (isReadonly) {
+            if (elementParameter.isReadOnly() || elementParameter.isNoCheck()) {
                 return;
             }
 
