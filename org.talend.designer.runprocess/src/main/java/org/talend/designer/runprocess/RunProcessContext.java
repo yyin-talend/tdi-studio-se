@@ -536,6 +536,9 @@ public class RunProcessContext {
                 try {
                     process.exitValue();
 
+					// flush remaining messages
+                    while(extractMessages(true));
+                    
                     // Read the end of the stream after the end of the process
                     ended = true;
                     stopThread = true;
