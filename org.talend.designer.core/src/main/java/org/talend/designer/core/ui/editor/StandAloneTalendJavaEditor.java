@@ -128,9 +128,8 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         super.doSave(monitor);
 
         try {
-            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+            ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
-            item.setContent(byteArray);
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             repFactory.save(item);
