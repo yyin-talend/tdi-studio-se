@@ -106,6 +106,8 @@ public class DataProcess {
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+        dataNode.setThereLinkWithMerge(graphicalNode.isThereLinkWithMerge());
+        dataNode.setLinkedMergeInfo(graphicalNode.getLinkedMergeInfo());
         // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());

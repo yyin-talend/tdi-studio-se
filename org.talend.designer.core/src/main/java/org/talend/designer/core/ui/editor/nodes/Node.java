@@ -1495,4 +1495,13 @@ public class Node extends Element implements INode {
         }
         return false;
     }
+
+    public boolean isThereLinkWithMerge() {
+        // the merge order start from 1
+        return process.getMergelinkOrder(this) >= 1;
+    }
+
+    public Map<INode, Integer> getLinkedMergeInfo() {
+        return process.getLinkedMergeInfo(this);
+    }
 }

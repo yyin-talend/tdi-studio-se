@@ -1934,6 +1934,35 @@ public class Process extends Element implements IProcess {
 
         return -1;
     }
+    
+    /**
+     * just like the getMergelinkOrder(), there will return more info
+     * the key is the Merge node, and value is inputId.
+     * if don't link with merge, it will return null.
+     * Notice: make sure there only link with one merge node. It can't support to link with more merge node.
+     * @param node
+     * @return
+     */
+    public Map<INode, Integer> getLinkedMergeInfo(final INode node)
+    {
+
+        List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+        for (int i = 0; i < outgoingConnections.size(); i++) {
+            IConnection connec = outgoingConnections.get(i);
+            if (connec.isActivate()) {
+
+                if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
+                    Map<INode, Integer> map = new HashMap<INode, Integer>();
+                    map.put(connec.getTarget(), connec.getInputId());
+                    return map;
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
+                    return getLinkedMergeInfo(connec.getTarget());
+                }
+            }
+        }
+
+        return null;
+    }
 
     /**
      * This function check if in this subprocess there should be a start or not depends on the ref links. If in this

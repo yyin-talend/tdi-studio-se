@@ -24,8 +24,8 @@ package org.talend.designer.rowgenerator.shadow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -34,13 +34,9 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractNode;
-import org.talend.core.model.process.BlockCode;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -319,5 +315,15 @@ public class LogRowNode extends AbstractNode {
 
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
+    }
+    
+    public boolean isThereLinkWithMerge() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    public Map<INode, Integer> getLinkedMergeInfo() {
+        //TODO Auto-generated method stub
+        return null;
     }
 }
