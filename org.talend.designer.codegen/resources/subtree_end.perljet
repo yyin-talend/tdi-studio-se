@@ -11,6 +11,11 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
 IConnection connection = subTreeArgument.getInputSubtreeConnection();
+if (subTreeArgument.isMultiplyingOutputComponents()) {
+%>
+	} # End loop when IS_MULTIPLYING_OUTPUTS="true"  
+<%
+	}
 
 if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
 %>
