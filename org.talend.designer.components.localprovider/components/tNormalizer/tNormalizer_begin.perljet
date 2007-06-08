@@ -1,0 +1,58 @@
+<%@ jet 
+imports="
+
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    String cid = metadata.getTableName();
+    String colname = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
+
+    int icolsplit = 0 ;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( colname.equals( column.getLabel() ) ){
+            break ;
+        }
+        icolsplit++;
+    }
+
+%>
+
+my $icolsplit_<%=cid%> = <%=icolsplit%> ;
+
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+    
+}
+%>
