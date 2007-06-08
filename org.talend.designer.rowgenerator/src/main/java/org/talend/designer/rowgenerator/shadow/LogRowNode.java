@@ -33,6 +33,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -52,7 +53,7 @@ import org.talend.designer.rowgenerator.managers.UIManager;
  * $Id: LogRowNode.java,v 1.4 2007/02/02 07:59:31 pub Exp $
  * 
  */
-public class LogRowNode implements INode {
+public class LogRowNode extends AbstractNode {
 
     private String componentName;
 
@@ -201,16 +202,6 @@ public class LogRowNode implements INode {
     /*
      * (non-Java)
      * 
-     * @see org.talend.core.model.process.INode#setPerformanceData(java.lang.String)
-     */
-    public void setPerformanceData(String perfData) {
-        // do nothings
-
-    }
-
-    /*
-     * (non-Java)
-     * 
      * @see org.talend.core.model.process.IElement#getElementParameters()
      */
     public List<? extends IElementParameter> getElementParameters() {
@@ -259,15 +250,6 @@ public class LogRowNode implements INode {
         return component.isMultiplyingOutputs();
     }
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.model.process.INode#getReturns()
-     */
-    public List<? extends INodeReturn> getReturns() {
-        return new ArrayList<INodeReturn>();
-    }
-
     /**
      * Getter for process.
      * 
@@ -304,9 +286,6 @@ public class LogRowNode implements INode {
         return false;
     }
 
-    public void setReadOnly(boolean readOnly) {
-    }
-
     /*
      * (non-Java)
      * 
@@ -326,10 +305,6 @@ public class LogRowNode implements INode {
 
     }
 
-    public INode getSubProcessStartNode(boolean withConditions) {
-        return null;
-    }
-
     public IConnection getInCnx() {
         return this.inCnx;
     }
@@ -345,52 +320,4 @@ public class LogRowNode implements INode {
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#getLocation()
-     */
-    public Point getLocation() {
-        return null;
-    }
-
-    public IExternalNode getExternalNode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public boolean isThereLinkWithHash() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public List<? extends IConnection> getOutgoingSortedConnections() {
-        return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
-    }
-
-    public List<? extends IConnection> getMainOutgoingConnections() {
-        return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
-    }
-
-    public IElementParameter getElementParameter(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<? extends IConnection> getOutgoingConnections(String connectorName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<BlockCode> getBlocksCodeToClose() {
-        return null;
-    }
-
-    
 }
