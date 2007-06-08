@@ -24,20 +24,27 @@ package org.talend.repository.ui.actions.importproject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
@@ -49,8 +56,12 @@ import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
+import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.repository.i18n.Messages;
+import org.talend.resources.ResourcesPlugin;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -65,6 +76,8 @@ public class ImportProjectsUtilities {
     public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
 
     public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
+
+    private static final String XML_FILE_PATH = "resources/demoprojects.xml"; //$NON-NLS-1$
 
     public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -90,7 +103,8 @@ public class ImportProjectsUtilities {
 
         IResource file2 = containers.findMember(IProjectDescription.DESCRIPTION_FILE_NAME);
         try {
-            FilesUtils.replaceInFile("<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            FilesUtils.replaceInFile(
+                    "<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             IResource file3 = containers.findMember(OLD_TALEND_PROJECT_FILE_NAME);
             if (file3 == null || !file3.exists()) {
@@ -111,15 +125,15 @@ public class ImportProjectsUtilities {
         afterImportAs(newName, technicalName);
     }
 
-    public static void importArchiveProject(Shell shell, String technicalName, String sourcePath, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException, TarException, IOException {
+    public static void importArchiveProject(Shell shell, String technicalName, String sourcePath,
+            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
 
         IImportStructureProvider provider;
         Object source;
 
         if (ArchiveFileManipulations.isZipFile(sourcePath)) {
-            ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(sourcePath),
-                    shell);
+            ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(
+                    sourcePath), shell);
             source = zipProvider.getRoot();
             boolean ok = true;
             for (Object o : zipProvider.getChildren(source)) {
@@ -136,8 +150,8 @@ public class ImportProjectsUtilities {
 
             provider = zipProvider;
         } else if (ArchiveFileManipulations.isTarFile(sourcePath)) {
-            TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(sourcePath),
-                    shell);
+            TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(
+                    sourcePath), shell);
             source = tarProvider.getRoot();
             provider = tarProvider;
         } else {
@@ -155,7 +169,8 @@ public class ImportProjectsUtilities {
         ArrayList fileSystemObjects = new ArrayList();
         ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider, source);
 
-        ImportOperation operation = new ImportOperation(path, source, provider, new MyOverwriteQuery(), fileSystemObjects);
+        ImportOperation operation = new ImportOperation(path, source, provider, new MyOverwriteQuery(),
+                fileSystemObjects);
         operation.setContext(shell);
         operation.setOverwriteResources(overwriteResources);
         operation.setCreateContainerStructure(createContainerStructure);
@@ -244,14 +259,16 @@ public class ImportProjectsUtilities {
      * @param monitor The monitor to report to
      * @return boolean <code>true</code> if the operation was completed.
      */
-    public static boolean collectProjectFilesFromProvider(Collection files, IImportStructureProvider provider, Object entry,
-            int level, IProgressMonitor monitor, String searchFileName) {
+    public static boolean collectProjectFilesFromProvider(Collection files, IImportStructureProvider provider,
+            Object entry, int level, IProgressMonitor monitor, String searchFileName) {
 
         if (monitor != null && monitor.isCanceled()) {
             return false;
         }
         if (monitor != null) {
-            monitor.subTask(Messages.getString("ImportProjectsUtilities.task.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
+            monitor
+                    .subTask(Messages
+                            .getString("ImportProjectsUtilities.task.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
         }
         List children = provider.getChildren(entry);
         if (children == null) {
@@ -291,5 +308,56 @@ public class ImportProjectsUtilities {
             return pathString;
         }
 
+    }
+
+    /**
+     * Gets all demo projects information.
+     * 
+     * @return a list of <code>DemoProjectBean</code>
+     */
+    public static List<DemoProjectBean> getAllDemoProjects() {
+
+        SAXReader reader = new SAXReader();
+        Document doc = null;
+        List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
+        DemoProjectBean demoProject = null;
+
+        try {
+            doc = reader.read(new File(getXMLFilePath()));
+        } catch (DocumentException e) {
+            ExceptionHandler.process(e);
+            return null;
+        }
+
+        Element demoProjectsInfo = doc.getRootElement();
+
+        for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) {
+            Element demoProjectElement = (Element) i.next();
+            demoProject = new DemoProjectBean();
+            demoProject.setProjectName(demoProjectElement.attributeValue("name"));
+            String language = demoProjectElement.attributeValue("language");
+            demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
+            demoProject.setArchiveFilePath(demoProjectElement.attributeValue("archiveFilePath"));
+            demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath"));
+            demoProjectList.add(demoProject);
+        }
+        return demoProjectList;
+    }
+
+    /**
+     * Gets the path of demo projects xml file.
+     * 
+     * @return String
+     */
+    private static String getXMLFilePath() {
+        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
+        URL url = null;
+        try {
+            url = FileLocator.resolve(bundle.getEntry(XML_FILE_PATH));
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+        String xmlFilePath = new Path(url.getFile()).toOSString();
+        return xmlFilePath;
     }
 }
