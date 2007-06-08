@@ -343,13 +343,19 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                     .getActiveEditor();
-            if (externalNode != null && (part instanceof MultiPageTalendEditor) && !node.isReadOnly()) {
-                if (externalNode.open(getViewer().getControl().getDisplay()) == SWT.OK) {
-                    Command cmd = new ExternalNodeChangeCommand(node, externalNode);
-                    CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
-                    cmdStack.execute(cmd);
-                } else {
-                    externalNode.setExternalData(node.getExternalData());
+            if (externalNode != null && (part instanceof MultiPageTalendEditor)) {
+                int returnValue = externalNode.open(getViewer().getControl()
+                        .getDisplay());
+                if (!node.isReadOnly()) {
+                    if (returnValue == SWT.OK) {
+                        Command cmd = new ExternalNodeChangeCommand(node,
+                                externalNode);
+                        CommandStack cmdStack = (CommandStack) part
+                                .getAdapter(CommandStack.class);
+                        cmdStack.execute(cmd);
+                    } else {
+                        externalNode.setExternalData(node.getExternalData());
+                    }
                 }
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
