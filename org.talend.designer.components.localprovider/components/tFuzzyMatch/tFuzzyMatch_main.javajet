@@ -73,7 +73,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				List<IMetadataColumn> listColumns = inMainCon.getMetadataTable().getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -294,7 +294,7 @@ nb_line_<%=cid%>++;
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
 <%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%

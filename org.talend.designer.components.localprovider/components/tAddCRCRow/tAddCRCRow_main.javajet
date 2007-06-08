@@ -80,7 +80,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            List<IMetadataColumn> columnsout = metadata.getListColumns();
 			 for(int i=0;i<connsout.size();i++) {
 			 	IConnection connout = connsout.get(i);
-			 if(connout.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))
+			 if(connout.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
 			 	{
 			 	int columnSize=columnsout.size()-1;
     			for (int j = 0; j < columnSize; j++) {

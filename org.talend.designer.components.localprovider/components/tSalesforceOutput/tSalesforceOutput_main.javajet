@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {//3
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//4
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
 %>
 ///////////////////////		
 

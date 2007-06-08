@@ -151,7 +151,7 @@ imports="
              	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
              	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
              	
-             	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)){
+             	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
              	%> 	
              		if(colQtyInRs_<%=cid%><<%=currentColNo%>){
              		
@@ -226,7 +226,7 @@ imports="
              	if(conns.size()>1){
              		for(int connNO = 1; connNO < conns.size(); connNO++){
              		  IConnection conn2 = conns.get(connNO);
-             		  if((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))){
+             		  if((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))){
              		  	for(IMetadataColumn column:columnList){
              		  %>
              		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=firstConnName%>.<%=column.getLabel()%>;

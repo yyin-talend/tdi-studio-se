@@ -16,7 +16,7 @@
 	for (StatCatcherUtils.StatCatcherMessage scm : <%=cid %>.getMessages()) {
 <%
 	for (IConnection conn : node.getOutgoingConnections()) {
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 		<%=conn.getName() %>.pid = pid;
 		<%=conn.getName() %>.root_pid = rootPid;

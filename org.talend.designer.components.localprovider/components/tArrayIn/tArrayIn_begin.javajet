@@ -35,7 +35,7 @@ for(ThenRunStruct<%=origin %> row_<%=cid %> : (java.util.List<ThenRunStruct<%=or
 				firstConnName = conn.getName();
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int size = listColumns.size();
-				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 					for (int i=0; i<size; i++) {
 						IMetadataColumn column = listColumns.get(i);
 //
@@ -50,7 +50,7 @@ for(ThenRunStruct<%=origin %> row_<%=cid %> : (java.util.List<ThenRunStruct<%=or
 			if (conns.size()>1) {
 				for (int i=1;i<conns.size();i++) {
 					IConnection connection = conns.get(i);
-					if ((connection.getName().compareTo(firstConnName)!=0)&&(connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
+					if ((connection.getName().compareTo(firstConnName)!=0)&&(connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 			    		for (IMetadataColumn column: metadata.getListColumns()) {
 //
 //end%>

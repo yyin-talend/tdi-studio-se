@@ -67,7 +67,7 @@ class <%=cid %>Randomizer {
 		List< ? extends IConnection> conns = node.getOutgoingConnections();
 		for (int i=0;i<conns.size();i++) {
 			IConnection conn = conns.get(i);
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				for (IMetadataColumn column: metadata.getListColumns()) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = rand<%=cid%>.getRandom<%=column.getLabel() %>();

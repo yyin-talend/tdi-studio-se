@@ -53,7 +53,7 @@ if (print) {
 }
 
 for (IConnection conn : node.getOutgoingConnections()) {
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 		<%=conn.getName() %>.file = <%=file %>;
 		<%=conn.getName() %>.file_ref = <%=fileRef %>;	

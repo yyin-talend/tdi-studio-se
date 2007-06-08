@@ -16,7 +16,7 @@
 	for (LogCatcherUtils.LogCatcherMessage lcm : <%=cid %>.getMessages()) {
 <%
 	for (IConnection conn : node.getOutgoingConnections()) {
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 		<%=conn.getName() %>.type = lcm.getType();
 		<%=conn.getName() %>.origin = (lcm.getOrigin()==null || lcm.getOrigin().length()<1 ? null : lcm.getOrigin());

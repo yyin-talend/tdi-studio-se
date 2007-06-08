@@ -118,7 +118,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 			IConnection conn = conns.get(0); //the first connection
 			firstConnName = conn.getName();			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {//3
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
 
 				%>
 
@@ -170,7 +170,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn2 = conns.get(i);
-				if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN))) {
+				if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 			    	for (IMetadataColumn column: metadata.getListColumns()) {%>
       			<%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
 				 <%

@@ -26,7 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {    		
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {    		
 %>    		
 <%		
     			List<IMetadataColumn> columns = metadata.getListColumns();

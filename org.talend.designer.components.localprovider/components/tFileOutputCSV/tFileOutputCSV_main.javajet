@@ -64,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if(conns!=null){
     		if (conns.size()>0){
        		IConnection conn =conns.get(0);
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
   %>  	
