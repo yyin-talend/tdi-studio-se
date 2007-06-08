@@ -25,22 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.eclipse.draw2d.geometry.Point;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
-import org.talend.core.model.process.BlockCode;
+import org.talend.core.model.process.AbstractConnection;
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalNode;
-import org.talend.core.model.process.INode;
-import org.talend.core.model.process.INodeReturn;
-import org.talend.core.model.process.IProcess;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -981,7 +975,7 @@ public class MapperDataTestGenerator {
             Connection connection = new Connection();
             connection.setName(table.getTableName());
             connection.setMetadataTable(table);
-            connection.setConnectionType((i == indexMain) ? EConnectionType.FLOW_MAIN : EConnectionType.FLOW_REF);
+            connection.setLineStyle((i == indexMain) ? EConnectionType.FLOW_MAIN : EConnectionType.FLOW_REF);
             inputConnectionList.add(connection);
             i++;
         }
@@ -1026,7 +1020,7 @@ public class MapperDataTestGenerator {
 
         Connection connection = new Connection();
         connection.setName("book");
-        connection.setConnectionType(EConnectionType.FLOW_MAIN);
+        connection.setLineStyle(EConnectionType.FLOW_MAIN);
 
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName("book2");
@@ -1084,7 +1078,7 @@ public class MapperDataTestGenerator {
 
         connection = new Connection();
         connection.setName("page");
-        connection.setConnectionType(EConnectionType.FLOW_REF);
+        connection.setLineStyle(EConnectionType.FLOW_REF);
 
         metadataTable = new MetadataTable();
         metadataTable.setTableName("page2");
@@ -1116,7 +1110,7 @@ public class MapperDataTestGenerator {
 
         connection = new Connection();
         connection.setName("userInput");
-        connection.setConnectionType(EConnectionType.FLOW_REF);
+        connection.setLineStyle(EConnectionType.FLOW_REF);
 
         metadataTable = new MetadataTable();
         metadataTable.setTableName("user_input50");
@@ -1159,7 +1153,7 @@ public class MapperDataTestGenerator {
 
         Connection connection = new Connection();
         connection.setName("newBook");
-        connection.setConnectionType(EConnectionType.FLOW_MAIN);
+        connection.setLineStyle(EConnectionType.FLOW_MAIN);
 
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName("newBook");
@@ -1201,7 +1195,7 @@ public class MapperDataTestGenerator {
 
         connection = new Connection();
         connection.setName("user");
-        connection.setConnectionType(EConnectionType.FLOW_REF);
+        connection.setLineStyle(EConnectionType.FLOW_REF);
 
         metadataTable = new MetadataTable();
         metadataTable.setTableName("user");
@@ -1240,7 +1234,7 @@ public class MapperDataTestGenerator {
 
         connection = new Connection();
         connection.setName("newPageRejected");
-        connection.setConnectionType(EConnectionType.FLOW_REF);
+        connection.setLineStyle(EConnectionType.FLOW_REF);
 
         metadataTable = new MetadataTable();
         metadataTable.setTableName("newPageRejected");
@@ -1433,109 +1427,7 @@ public class MapperDataTestGenerator {
      * $Id$
      * 
      */
-    class Connection implements IConnection {
-
-        String name;
-
-        private IMetadataTable metadataTable;
-
-        private EConnectionType connectionType;
-
-        public EConnectionType getLineStyle() {
-            return connectionType;
-        }
-
-        public IMetadataTable getMetadataTable() {
-            return this.metadataTable;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public INode getSource() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public INode getTarget() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public boolean isActivate() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setMetadataTable(IMetadataTable metadataTable) {
-            this.metadataTable = metadataTable;
-        }
-
-        public void setConnectionType(EConnectionType connectionType) {
-            this.connectionType = connectionType;
-        }
-
-        public String getCondition() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.IElement#getElementParameters()
-         */
-        public List<? extends IElementParameter> getElementParameters() {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
-         */
-        public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
-         */
-        public void setTraceData(String traceData) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public boolean isReadOnly() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void setReadOnly(boolean readOnly) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public String getUniqueName() {
-            return name;
-        }
-
-        public IElementParameter getElementParameter(String name) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public String getConnectorName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-    };
+    class Connection extends AbstractConnection {};
 
     /**
      * 
@@ -1544,279 +1436,17 @@ public class MapperDataTestGenerator {
      * $Id$
      * 
      */
-    class Node implements INode {
+    class Node extends AbstractNode {
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getComponentName()
-         */
-        public String getComponentName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getElementParameters()
-         */
-        public List<? extends IElementParameter> getElementParameters() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getGeneratedCode()
-         */
-        public String getGeneratedCode() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getIncomingConnections()
-         */
-        public List<? extends IConnection> getIncomingConnections() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getMetadataList()
-         */
-        public List<IMetadataTable> getMetadataList() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getOutgoingConnections()
-         */
-        public List<? extends IConnection> getOutgoingConnections() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getPluginFullName()
-         */
-        public String getPluginFullName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getUniqueName()
-         */
-        public String getUniqueName() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#isActivate()
-         */
-        public boolean isActivate() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#isStart()
-         */
-        public boolean isStart() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#isSubProcessStart()
-         */
-        public boolean isSubProcessStart() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#setElementParameters(java.util.List)
-         */
-        public void setElementParameters(List<? extends IElementParameter> parameters) {
-            // TODO Auto-generated method stub
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#setPerformanceData(java.lang.String)
-         */
-        public void setPerformanceData(String perfData) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setTraceData(String traceData) {
-            // TODO Auto-generated method stub
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getReturns()
-         */
-        public List<? extends INodeReturn> getReturns() {
-            return new ArrayList<INodeReturn>();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#getProcess()
-         */
-        public IProcess getProcess() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#setProcess(org.talend.core.model.process.IProcess)
-         */
-        public void setProcess(IProcess process) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public IComponent getComponent() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
-         * java.lang.String)
-         */
         public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
             // TODO Auto-generated method stub
+            
         }
 
         public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
             // TODO Auto-generated method stub
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#setComponent(org.talend.core.model.components.IComponent)
-         */
-        public void setComponent(IComponent component) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public boolean isReadOnly() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void setReadOnly(boolean readOnly) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public INode getSubProcessStartNode(boolean withConditions) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#hasConditionalOutputs()
-         */
-        public Boolean hasConditionalOutputs() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-        
-        /* (non-Javadoc)
-         * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
-         */
-        public Boolean isMultiplyingOutputs() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public Point getLocation() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public IExternalNode getExternalNode() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-        
-                public boolean isThereLinkWithHash() {
-            return false;
-        }
-        
-        public List<? extends IConnection> getOutgoingSortedConnections() {
-              return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
-        }
-        
-        public List<? extends IConnection> getMainOutgoingConnections() {
-            return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
-        }
-
-        public IElementParameter getElementParameter(String name) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public List<? extends IConnection> getOutgoingConnections(String connectorName) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        /* (non-Javadoc)
-         * @see org.talend.core.model.process.INode#getBlockCodesToClose()
-         */
-        public List<BlockCode> getBlocksCodeToClose() {
-            return null;
-        }
-
-    }
+            
+        }}
 
     public ArrayList<IConnection> getInputConnectionsList() {
         return this.inputConnectionList;
