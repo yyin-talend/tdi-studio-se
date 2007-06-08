@@ -24,8 +24,8 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 
@@ -35,7 +35,7 @@ import org.talend.core.model.process.INode;
  * $Id$
  * 
  */
-public class ShadowConnection implements IConnection {
+public class ShadowConnection extends AbstractConnection {
 
     private INode source;
 
@@ -113,61 +113,7 @@ public class ShadowConnection implements IConnection {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#getCondition()
-     */
-    public String getCondition() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElement#getElementParameters()
-     */
-    public List<? extends IElementParameter> getElementParameters() {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
-     */
-    public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
-     */
-    public void setTraceData(String traceData) {
-    }
-
-    public boolean isReadOnly() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public void setReadOnly(boolean readOnly) {
-        // TODO Auto-generated method stub
-
-    }
-
     public String getUniqueName() {
         return getName();
-    }
-
-    public IElementParameter getElementParameter(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getConnectorName() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

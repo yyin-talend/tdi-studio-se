@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -55,7 +56,7 @@ import org.talend.designer.runprocess.RunProcessPlugin;
  * $Id$
  * 
  */
-public abstract class ShadowNode implements INode {
+public abstract class ShadowNode extends AbstractNode {
 
     private String componentName;
 
@@ -247,15 +248,6 @@ public abstract class ShadowNode implements INode {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#setPerformanceData(java.lang.String)
-     */
-    public void setPerformanceData(String perfData) {
-        // Do nothing
-    }
-
     /**
      * Getter for inCnx.
      * 
@@ -321,16 +313,6 @@ public abstract class ShadowNode implements INode {
         return component.isMultiplyingOutputs();
     }
 
-    
-    
-    public List<BlockCode> getBlocksCodeToClose() {
-        return null;
-    }
-
-    public IExternalNode getExternalNode() {
-        return null;
-    }
-
     public boolean isExternalNode() {
         return false;
     }
@@ -384,9 +366,6 @@ public abstract class ShadowNode implements INode {
         return false;
     }
 
-    public void setReadOnly(boolean readOnly) {
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -405,43 +384,6 @@ public abstract class ShadowNode implements INode {
         this.component = component;
 
     }
-
-    public INode getSubProcessStartNode(boolean withConditions) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getLocation()
-     */
-    public Point getLocation()
-    {
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#isThereLinkWithHash()
-     */
-    public boolean isThereLinkWithHash() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
-    public List<? extends IConnection> getOutgoingSortedConnections() {
-        return getOutgoingConnections();
-    }
-    
-    public List<? extends IConnection> getMainOutgoingConnections() {
-        return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IElement#getElementParameter(java.lang.String)
-     */
-    public IElementParameter getElementParameter(String name) {
-        // TODO Auto-generated method stub
-        return null;
-    }
     
     public int getColumnNumber() {
         return columnNumber;
@@ -450,18 +392,4 @@ public abstract class ShadowNode implements INode {
     public void setColumnNumber(int columnNumber) {
         this.columnNumber = columnNumber;
     }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getOutgoingConnections(org.talend.core.model.process.EConnectionType)
-     */
-    public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
-        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectionType);
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.INode#getOutgoingConnections(java.lang.String)
-     */
-    public List<? extends IConnection> getOutgoingConnections(String connectorName) {
-        return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectorName);
-    }   
 }
