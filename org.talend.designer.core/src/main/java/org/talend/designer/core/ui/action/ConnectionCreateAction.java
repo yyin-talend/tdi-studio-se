@@ -144,7 +144,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     IMetadataTable table = ((IMetadataTable) node.getMetadataList().get(i));
                     String name = table.getTableName();
                     if (connecType.equals(EConnectionType.TABLE)) {
-                        name = table.getLabel() + " (" + name + ")";
+                        name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     boolean nameUsed = false;
                     for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
@@ -233,7 +233,7 @@ public class ConnectionCreateAction extends SelectionAction {
     }
 
     private String getNewOutputMenuName() {
-        return NEW_OUTPUT + " (" + curNodeConnector.getMenuName() + ")";
+        return NEW_OUTPUT + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public List<String> getMenuList() {
@@ -250,7 +250,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return id.getValue();
     }
@@ -286,7 +286,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 while (!nameOk) {
 
                     connectionName = askForConnectionName(node.getLabel());
-                    if (connectionName.equals("")) {
+                    if (connectionName.equals("")) { //$NON-NLS-1$
                         return;
                     }
                     if (connecType.equals(EConnectionType.TABLE)
@@ -324,7 +324,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 // int tableId = -1;
                 if (connecType.equals(EConnectionType.TABLE)) {
                     int end = getText().length() - 1;
-                    int start = getText().lastIndexOf("(") + 1;
+                    int start = getText().lastIndexOf("(") + 1; //$NON-NLS-1$
                     tableName = getText().substring(start, end);
                     // table = Integer.parseInt(stringId);
                     // tableName = getText().substring(0, start - 2);

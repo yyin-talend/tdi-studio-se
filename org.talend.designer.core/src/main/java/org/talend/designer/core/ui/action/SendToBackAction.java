@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.action;
 
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.SendToBackCommand;
 
 /**
@@ -30,7 +31,7 @@ public class SendToBackAction extends ZorderAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.SendToBackAction"; //$NON-NLS-1$
 
-    private static final String TEXT = "Send to back";
+    private static final String TEXT = Messages.getString("SendToBackAction.sendToBack"); //$NON-NLS-1$
 
     public SendToBackAction(IWorkbenchPart part) {
         super(part);

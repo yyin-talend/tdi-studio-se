@@ -150,7 +150,7 @@ public class ActiveProcessTracker implements IPartListener {
             if (currentProcess == process) {
                 Problems.setTitle(""); //$NON-NLS-1$
                 Problems.clearAll();
-                Contexts.setTitle("");
+                Contexts.setTitle(""); //$NON-NLS-1$
                 Contexts.clearAll();
             }
         }

@@ -88,7 +88,7 @@ public class NodesCopyAction extends SelectionAction {
         IWorkbenchPart part = getWorkbenchPart();
         if (part instanceof TalendEditor) {
             TalendEditor talendEditor = (TalendEditor) part;
-            IAction action=  talendEditor.getActionRegistry().getAction(ActionFactory.PASTE.getId() );
+            IAction action = talendEditor.getActionRegistry().getAction(ActionFactory.PASTE.getId());
             action.setEnabled(true);
         }
     }

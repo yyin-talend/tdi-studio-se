@@ -461,7 +461,7 @@ public class DataProcess {
                 // (to replace by a Node maybe that will take the informations of an IComponent)
                 String uniqueName = null;
                 IComponent component = null;
-                if (connection.getTarget().getUniqueName().startsWith("tAdvancedMap")) {
+                if (connection.getTarget().getUniqueName().startsWith("tAdvancedMap")) { //$NON-NLS-1$
                     uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
                 } else {
@@ -549,13 +549,13 @@ public class DataProcess {
             }
         }
 
-        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
-        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
-        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue();
+        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue(); //$NON-NLS-1$
+        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue(); //$NON-NLS-1$
+        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue(); //$NON-NLS-1$
 
         if (dbFlag || file || console) {
             // will add the Stats & Logs managements
-            Boolean realTimeStats = (Boolean) process.getElementParameter("CATCH_REALTIME_STATS").getValue();
+            Boolean realTimeStats = (Boolean) process.getElementParameter("CATCH_REALTIME_STATS").getValue(); //$NON-NLS-1$
 
             if (!realTimeStats) {
                 for (INode node : dataNodeList) {

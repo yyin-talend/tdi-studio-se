@@ -44,14 +44,14 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
         }
         this.useFile = useFile;
         this.useConsole = useConsole;
-        this.componentId = "LOGS";
-        this.subComponent = "tLogCatcher";
+        this.componentId = "LOGS"; //$NON-NLS-1$
+        this.subComponent = "tLogCatcher"; //$NON-NLS-1$
 
         loadMultipleComponentManager();
     }
 
     public String getVersion() {
-        return "0.1";
+        return "0.1"; //$NON-NLS-1$
     }
     
     /* (non-Javadoc)
@@ -62,19 +62,19 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
         List<IElementParameter> paramList = (List<IElementParameter>) super.createElementParameters(node);
         
         IElementParameter newParam = new ElementParameter(node);
-        newParam.setName("CATCH_RUNTIME_ERRORS");
+        newParam.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
         
         newParam = new ElementParameter(node);
-        newParam.setName("CATCH_USER_ERRORS");
+        newParam.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
         
         newParam = new ElementParameter(node);
-        newParam.setName("CATCH_USER_WARNING");
+        newParam.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.FALSE);
         paramList.add(newParam);
@@ -90,9 +90,9 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     protected void createMultipleComponentsParameters() {
         super.createMultipleComponentsParameters();
         
-        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION");
-        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE");
-        multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE");
-        multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN");
+        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION"); //$NON-NLS-1$ //$NON-NLS-2$
+        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE"); //$NON-NLS-1$ //$NON-NLS-2$
+        multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE"); //$NON-NLS-1$ //$NON-NLS-2$
+        multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

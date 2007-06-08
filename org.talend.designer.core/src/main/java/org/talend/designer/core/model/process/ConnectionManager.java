@@ -247,7 +247,7 @@ public class ConnectionManager {
                 canRename = false;
             }
         } else if (connType.equals(EConnectionType.TABLE)) {
-            if (connectionName.equals("")) {
+            if (connectionName.equals("")) { //$NON-NLS-1$
                 canRename = false;
             } else {
                 List<? extends IConnection> cons = target.getIncomingConnections();

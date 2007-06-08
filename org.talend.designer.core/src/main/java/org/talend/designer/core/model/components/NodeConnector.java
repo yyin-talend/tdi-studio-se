@@ -215,11 +215,11 @@ public class NodeConnector implements INodeConnector {
     @Override
     public String toString() {
         if (name.equals(defaultConnectionType.getName())) {
-            return name + ": inputs(" + curLinkNbInput + "/" + maxLinkInput + "), outputs(" + curLinkNbOutput + "/"
-                    + maxLinkOutput + ")";
+            return name + ": inputs(" + curLinkNbInput + "/" + maxLinkInput + "), outputs(" + curLinkNbOutput + "/" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + maxLinkOutput + ")"; //$NON-NLS-1$
         }
-        return name + "(" + defaultConnectionType.getName() + ")" + ": inputs(" + curLinkNbInput + "/" + maxLinkInput
-                + "), outputs(" + curLinkNbOutput + "/" + maxLinkOutput + ")";
+        return name + "(" + defaultConnectionType.getName() + ")" + ": inputs(" + curLinkNbInput + "/" + maxLinkInput //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "), outputs(" + curLinkNbOutput + "/" + maxLinkOutput + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

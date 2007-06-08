@@ -38,7 +38,7 @@ public class NodeReturn implements INodeReturn {
 
     private String displayName;
 
-    private String type = "String";
+    private String type = "String"; //$NON-NLS-1$
 
     private String availability;
 
@@ -73,15 +73,15 @@ public class NodeReturn implements INodeReturn {
         case PERL:
             return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         case JAVA:
-            if ((type.compareTo("String") == 0) || (type.compareTo("Integer") == 0)) {
-                type = "id_" + type;
+            if ((type.compareTo("String") == 0) || (type.compareTo("Integer") == 0)) { //$NON-NLS-1$ //$NON-NLS-2$
+                type = "id_" + type; //$NON-NLS-1$
             }
             try {
                 type = JavaTypesManager.getTypeToGenerate(type, true);
             } catch (Exception e) {
-                type = "String";
+                type = "String"; //$NON-NLS-1$
             }
-            return "((" + type + ")globalMap.get(\"__UNIQUE_NAME___" + name + "\"))";
+            return "((" + type + ")globalMap.get(\"__UNIQUE_NAME___" + name + "\"))"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         default:
             return "$_globals{__UNIQUE_NAME__}{" + varName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }

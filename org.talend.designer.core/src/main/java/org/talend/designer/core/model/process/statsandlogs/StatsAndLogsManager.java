@@ -40,65 +40,65 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class StatsAndLogsManager {
 
-    private static final String LOG_UNIQUE_NAME = "talendLogs";
+    private static final String LOG_UNIQUE_NAME = "talendLogs"; //$NON-NLS-1$
 
-    private static final String STAT_UNIQUE_NAME = "talendStats";
+    private static final String STAT_UNIQUE_NAME = "talendStats"; //$NON-NLS-1$
 
     public static List<DataNode> getStatsAndLogsNodes(Process process) {
         List<DataNode> nodeList = new ArrayList<DataNode>();
 
         String dbOutput = null;
 
-        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue();
+        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue(); //$NON-NLS-1$
         if (!dbFlag) {
             dbOutput = null;
         } else {
-            dbOutput = (String) process.getElementParameter("DB_TYPE").getValue();
+            dbOutput = (String) process.getElementParameter("DB_TYPE").getValue(); //$NON-NLS-1$
         }
-        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue();
+        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue(); //$NON-NLS-1$
 
-        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue();
+        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue(); //$NON-NLS-1$
 
         if (!file && !dbFlag && !console) {
             return nodeList;
         }
 
-        String basePath = (String) process.getElementParameter("FILE_PATH").getValue();
+        String basePath = (String) process.getElementParameter("FILE_PATH").getValue(); //$NON-NLS-1$
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            basePath = basePath.replace("\\", "/") + ". '/' .";
+            basePath = basePath.replace("\\", "/") + ". '/' ."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            basePath = basePath.replace("\\", "/") + "+ \"/\" +";
+            basePath = basePath.replace("\\", "/") + "+ \"/\" +"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         DataNode logsNode = createLogsNode(file, console, dbOutput);
-        logsNode.getElementParameter("FILENAME").setValue(
-                basePath + process.getElementParameter("FILENAME_LOGS").getValue());
-        logsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
-        logsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue());
-        logsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue());
-        logsNode.getElementParameter("DBNAME").setValue(process.getElementParameter("DBNAME").getValue());
-        logsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue());
-        logsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue());
-        logsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_LOGS").getValue());
-        logsNode.getElementParameter("CATCH_RUNTIME_ERRORS").setValue(
-                process.getElementParameter("CATCH_RUNTIME_ERRORS").getValue());
-        logsNode.getElementParameter("CATCH_USER_ERRORS").setValue(
-                process.getElementParameter("CATCH_USER_ERRORS").getValue());
-        logsNode.getElementParameter("CATCH_USER_WARNING").setValue(
-                process.getElementParameter("CATCH_USER_WARNING").getValue());
+        logsNode.getElementParameter("FILENAME").setValue( //$NON-NLS-1$
+                basePath + process.getElementParameter("FILENAME_LOGS").getValue()); //$NON-NLS-1$
+        logsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("DBNAME").setValue(process.getElementParameter("DBNAME").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_LOGS").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        logsNode.getElementParameter("CATCH_RUNTIME_ERRORS").setValue( //$NON-NLS-1$
+                process.getElementParameter("CATCH_RUNTIME_ERRORS").getValue()); //$NON-NLS-1$
+        logsNode.getElementParameter("CATCH_USER_ERRORS").setValue( //$NON-NLS-1$
+                process.getElementParameter("CATCH_USER_ERRORS").getValue()); //$NON-NLS-1$
+        logsNode.getElementParameter("CATCH_USER_WARNING").setValue( //$NON-NLS-1$
+                process.getElementParameter("CATCH_USER_WARNING").getValue()); //$NON-NLS-1$
 
         logsNode.setProcess(process);
         nodeList.add(logsNode);
 
         DataNode statsNode = createStatsNode(file, console, dbOutput);
-        statsNode.getElementParameter("FILENAME").setValue(
-                basePath + process.getElementParameter("FILENAME_STATS").getValue());
-        statsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue());
-        statsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue());
-        statsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue());
-        statsNode.getElementParameter("DBNAME").setValue(process.getElementParameter("DBNAME").getValue());
-        statsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue());
-        statsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue());
-        statsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_STATS").getValue());
+        statsNode.getElementParameter("FILENAME").setValue( //$NON-NLS-1$
+                basePath + process.getElementParameter("FILENAME_STATS").getValue()); //$NON-NLS-1$
+        statsNode.getElementParameter("HOST").setValue(process.getElementParameter("HOST").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("PORT").setValue(process.getElementParameter("PORT").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("SCHEMA_DB").setValue(process.getElementParameter("SCHEMA_DB").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("DBNAME").setValue(process.getElementParameter("DBNAME").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("USER").setValue(process.getElementParameter("USER").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("PASS").setValue(process.getElementParameter("PASS").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        statsNode.getElementParameter("TABLE").setValue(process.getElementParameter("TABLE_STATS").getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 
         statsNode.setProcess(process);
         nodeList.add(statsNode);
@@ -115,8 +115,8 @@ public class StatsAndLogsManager {
         logsNode.getMetadataList().clear();
 
         // load the tLogCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tLogCatcher");
-        DataNode tmpNode = new DataNode(tmpComponent, "tmp");
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tLogCatcher"); //$NON-NLS-1$
+        DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);
@@ -143,8 +143,8 @@ public class StatsAndLogsManager {
         statsNode.getMetadataList().clear();
 
         // load the tLogCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tStatCatcher");
-        DataNode tmpNode = new DataNode(tmpComponent, "tmp");
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tStatCatcher"); //$NON-NLS-1$
+        DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
             IElementParameter currentParam = tmpNode.getElementParameters().get(k);

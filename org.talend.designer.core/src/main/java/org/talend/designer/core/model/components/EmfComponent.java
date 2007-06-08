@@ -90,7 +90,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class EmfComponent implements IComponent {
 
-    private static final String DEFAULT_COLOR = "255;255;255";
+    private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
 
     private File file;
 
@@ -610,10 +610,10 @@ public class EmfComponent implements IComponent {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
             newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
-            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                 newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
             } else {
-                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
+                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             }
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
@@ -692,12 +692,12 @@ public class EmfComponent implements IComponent {
                 initializeTableFromXml(xmlParam, param);
                 break;
             case MAPPING_TYPE:
-                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                     param.setDisplayName(EParameterName.MAPPING_TYPE.getDisplayName());
                 }
                 break;
             case PROCESS_TYPE:
-                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) {
+                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                     param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
                 }
                 param.setValue(""); // TODO to change ? //$NON-NLS-1$
@@ -1052,8 +1052,8 @@ public class EmfComponent implements IComponent {
                 nodeConnector.setName(connType.getCTYPE());
             } else {
                 nodeConnector.setName(connType.getNAME());
-                nodeConnector.setMenuName(getTranslatedValue(connType.getNAME() + ".MENU"));
-                nodeConnector.setLinkName(getTranslatedValue(connType.getNAME() + ".LINK"));
+                nodeConnector.setMenuName(getTranslatedValue(connType.getNAME() + ".MENU")); //$NON-NLS-1$
+                nodeConnector.setLinkName(getTranslatedValue(connType.getNAME() + ".LINK")); //$NON-NLS-1$
             }
 
             if (connType.isSetLINESTYLE()) {
@@ -1072,7 +1072,7 @@ public class EmfComponent implements IComponent {
             nodeConnector.addConnectionProperty(currentType, color, lineStyle);
 
             listConnector.add(nodeConnector);
-            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow" (main type), then add the same for the
+            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow" (main type), then add the same for the //$NON-NLS-1$
                 // lookup.
                 currentType = EConnectionType.FLOW_REF;
 
@@ -1355,7 +1355,7 @@ public class EmfComponent implements IComponent {
     private void checkAvailableCodeParts() {
         codePartList = new ArrayList<ECodePart>();
         File dirFile = new File(file.getParent());
-        final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet";
+        final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
@@ -1367,8 +1367,8 @@ public class EmfComponent implements IComponent {
 
         for (int i = 0; i < jetFiles.length; i++) {
             String name = jetFiles[i];
-            name = jetFiles[i].replace(getName() + "_", "");
-            name = name.replace(extension, "");
+            name = jetFiles[i].replace(getName() + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            name = name.replace(extension, ""); //$NON-NLS-1$
             ECodePart part = ECodePart.getCodePartByName(name);
             if (part != null) {
                 codePartList.add(part);
@@ -1380,7 +1380,7 @@ public class EmfComponent implements IComponent {
         return codePartList;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List<String> getPluginDependencies() {
         List<String> pluginDependencyList = new ArrayList<String>();
         if (this.compType.getPLUGINDEPENDENCIES() != null) {

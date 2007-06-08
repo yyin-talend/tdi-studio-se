@@ -30,6 +30,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -84,14 +86,16 @@ public class NodesPasteCommand extends Command {
         return newName;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
     public boolean canExecute() {
         return !process.isReadOnly();
     }
-    
+
     private void orderNodeParts(List<NodePart> nodeParts) {
         this.nodeParts = new ArrayList<NodePart>();
 
@@ -329,8 +333,8 @@ public class NodesPasteCommand extends Command {
                         }
                         metaTableName = meta;
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(), connection
-                            .getConnectorName(), metaTableName, newConnectionName);
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
+                            .getLineStyle(), connection.getConnectorName(), metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
@@ -343,6 +347,35 @@ public class NodesPasteCommand extends Command {
                     IExternalNode externalNode = pastedTargetNode.getExternalNode();
                     if (externalNode != null) {
                         externalNode.renameInputConnection(connection.getName(), newConnectionName);
+                    }
+                }
+            }
+        }
+
+        // check if the new components use the old components name.
+        boolean useOldComponentsName = false;
+        for (NodeContainer nodeContainer : nodeContainerList) {
+            Node currentNode = nodeContainer.getNode();
+            for (String oldName : oldNameTonewNameMap.keySet()) {
+                if ((!oldName.equals(oldNameTonewNameMap.get(oldName))) && currentNode.useData(oldName)) {
+                    useOldComponentsName = true;
+                    break;
+                }
+            }
+            if (useOldComponentsName) {
+                break;
+            }
+        }
+        if (useOldComponentsName) {
+            MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.YES
+                    | SWT.NO | SWT.ICON_WARNING);
+            msgBox
+                    .setMessage("Components variable are used in the copied elements, do you want to rename them automatically?");
+            if (msgBox.open() == SWT.YES) {
+                for (NodeContainer nodeContainer : nodeContainerList) {
+                    Node currentNode = nodeContainer.getNode();
+                    for (String oldName : oldNameTonewNameMap.keySet()) {
+                        currentNode.renameData(oldName, oldNameTonewNameMap.get(oldName));
                     }
                 }
             }

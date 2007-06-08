@@ -77,7 +77,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
     // no use for virtual component
     public String getFamily() {
-        return "Virtual";
+        return "Virtual"; //$NON-NLS-1$
     }
 
     // no use for virtual component
@@ -192,130 +192,130 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     protected void addDbParameters(List<IElementParameter> elemParamList, INode node) {
         // parameters for db output.
         IElementParameter newParam = new ElementParameter(node);
-        newParam.setName("HOST");
+        newParam.setName("HOST"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("SERVER");
+        newParam.setName("SERVER"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("DSN");
+        newParam.setName("DSN"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("PORT");
+        newParam.setName("PORT"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("DBNAME");
+        newParam.setName("DBNAME"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("SCHEMA_DB");
+        newParam.setName("SCHEMA_DB"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("USER");
+        newParam.setName("USER"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("PASS");
+        newParam.setName("PASS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("TABLE");
+        newParam.setName("TABLE"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("TABLE_ACTION");
+        newParam.setName("TABLE_ACTION"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue("CREATE_IF_NOT_EXISTS");
+        newParam.setValue("CREATE_IF_NOT_EXISTS"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("DATA_ACTION");
+        newParam.setName("DATA_ACTION"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue("INSERT");
+        newParam.setValue("INSERT"); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("COMMIT_EVERY");
+        newParam.setName("COMMIT_EVERY"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue("100");
+        newParam.setValue("100"); //$NON-NLS-1$
         elemParamList.add(newParam);
     }
 
     protected void addFileOutputParameters(List<IElementParameter> elemParamList, INode node) {
         // parameters for file output.
         IElementParameter newParam = new ElementParameter(node);
-        newParam.setName("FILENAME");
+        newParam.setName("FILENAME"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("ROWSEPARATOR");
+        newParam.setName("ROWSEPARATOR"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue(TalendTextUtils.addQuotes("\\n", TalendTextUtils.QUOTATION_MARK));
+        newParam.setValue(TalendTextUtils.addQuotes("\\n", TalendTextUtils.QUOTATION_MARK)); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("FIELDSEPARATOR");
+        newParam.setName("FIELDSEPARATOR"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue(TalendTextUtils.addQuotes(";"));
+        newParam.setValue(TalendTextUtils.addQuotes(";")); //$NON-NLS-1$
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("APPEND");
+        newParam.setName("APPEND"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.CHECK);
         newParam.setValue(Boolean.TRUE);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("INCLUDEHEADER");
+        newParam.setName("INCLUDEHEADER"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.CHECK);
         newParam.setValue(Boolean.FALSE);
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("ENCODING");
+        newParam.setName("ENCODING"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
-        newParam.setValue(TalendTextUtils.addQuotes("ISO-8859-15"));
+        newParam.setValue(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
         elemParamList.add(newParam);
     }
 
     protected void loadMultipleComponentManager() {
         String lastComponent= null;
         if (useConsole) {
-            lastComponent = "CONSOLE";
+            lastComponent = "CONSOLE"; //$NON-NLS-1$
         } else if(useDb) {
-            lastComponent = "DB";
+            lastComponent = "DB"; //$NON-NLS-1$
         }else{
-            lastComponent = "FILE";
+            lastComponent = "FILE"; //$NON-NLS-1$
         }
         // create base items
         multipleComponentManager = new MultipleComponentManager(componentId, lastComponent);
         IMultipleComponentItem currentItem = multipleComponentManager.addItem(componentId, subComponent);
         if (useFile) {
-            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "FILE"));
-            currentItem = multipleComponentManager.addItem("FILE", "tFileOutputDelimited");
+            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "FILE")); //$NON-NLS-1$ //$NON-NLS-2$
+            currentItem = multipleComponentManager.addItem("FILE", "tFileOutputDelimited"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (useDb) {
-            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "DB"));
-            currentItem = multipleComponentManager.addItem("DB", dbComponent);
+            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "DB")); //$NON-NLS-1$ //$NON-NLS-2$
+            currentItem = multipleComponentManager.addItem("DB", dbComponent); //$NON-NLS-1$
         }
         if (useConsole) {
-            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "CONSOLE"));
-            currentItem = multipleComponentManager.addItem("CONSOLE", "tLogRow");
+            currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "CONSOLE")); //$NON-NLS-1$ //$NON-NLS-2$
+            currentItem = multipleComponentManager.addItem("CONSOLE", "tLogRow"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         createMultipleComponentsParameters();
@@ -325,27 +325,27 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     protected void createMultipleComponentsParameters() {
         // create parameters
         if (useFile) {
-            multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME");
-            multipleComponentManager.addParam("self.ROWSEPARATOR", "FILE.ROWSEPARATOR");
-            multipleComponentManager.addParam("self.FIELDSEPARATOR", "FILE.FIELDSEPARATOR");
-            multipleComponentManager.addParam("self.APPEND", "FILE.APPEND");
-            multipleComponentManager.addParam("self.INCLUDEHEADER", "FILE.INCLUDEHEADER");
-            multipleComponentManager.addParam("self.ENCODING", "FILE.ENCODING");
+            multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.ROWSEPARATOR", "FILE.ROWSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.FIELDSEPARATOR", "FILE.FIELDSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.APPEND", "FILE.APPEND"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.INCLUDEHEADER", "FILE.INCLUDEHEADER"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.ENCODING", "FILE.ENCODING"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (useDb) {
-            multipleComponentManager.addParam("self.HOST", "DB.HOST");
-            multipleComponentManager.addParam("self.HOST", "DB.SERVER");
-            multipleComponentManager.addParam("self.HOST", "DB.DSN");
-            multipleComponentManager.addParam("self.PORT", "DB.PORT");
-            multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME");
-            multipleComponentManager.addParam("self.USER", "DB.USER");
-            multipleComponentManager.addParam("self.PASS", "DB.PASS");
-            multipleComponentManager.addParam("self.TABLE", "DB.TABLE");
-            multipleComponentManager.addParam("self.TABLE_ACTION", "DB.TABLE_ACTION");
-            multipleComponentManager.addParam("self.DATA_ACTION", "DB.DATA_ACTION");
-            multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY");
-            multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB");
+            multipleComponentManager.addParam("self.HOST", "DB.HOST"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.HOST", "DB.SERVER"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.TABLE_ACTION", "DB.TABLE_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.DATA_ACTION", "DB.DATA_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }

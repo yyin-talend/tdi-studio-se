@@ -36,13 +36,13 @@ public class JobStatsComponent extends AbstractStatsLogsComponent {
         }
         this.useFile = useFile;
         this.useConsole = useConsole;
-        this.componentId = "STATS";
-        this.subComponent = "tStatCatcher";
+        this.componentId = "STATS"; //$NON-NLS-1$
+        this.subComponent = "tStatCatcher"; //$NON-NLS-1$
 
         loadMultipleComponentManager();
     }
 
     public String getVersion() {
-        return "0.1";
+        return "0.1"; //$NON-NLS-1$
     }
 }
