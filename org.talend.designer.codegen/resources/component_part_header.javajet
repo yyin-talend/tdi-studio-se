@@ -6,9 +6,10 @@
 		org.talend.core.model.process.IConnection 
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.process.EConnectionType 
-                org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		java.util.Iterator
 	"
 	class="ComponentPartHeader" 
 %>
@@ -40,6 +41,31 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 <%
 			}
 		}
+	}
+	if(codePart.equals(ECodePart.MAIN)) {
+	    if ((node.getProcess().getNodesOfType("tMetter").size() > 0))
+	    {
+	        List<IConnection> connections = (List<IConnection>)node.getMainOutgoingConnections();
+	        if(connections.size()>0)
+	        {
+	        	Iterator it_conn = (Iterator)connections.iterator();
+	        	while(it_conn.hasNext())
+	        	{
+	        	    IConnection temp_conn = (IConnection)it_conn.next();
+	        	    String name_conn = temp_conn.getUniqueName();
+%>
+   if(connectionsCountMap.get("<%=name_conn%>_count") == null)
+   {
+       connectionsCountMap.put("<%=name_conn%>_count",new Integer(1));
+   }
+   else
+   {
+       connectionsCountMap.put("<%=name_conn%>_count",new Integer( connectionsCountMap.get("<%=name_conn%>_count").intValue()+1));
+   }
+<%
+				}
+	        }
+	    }
 	}
 %>
 currentComponent="<%=node.getUniqueName() %>";

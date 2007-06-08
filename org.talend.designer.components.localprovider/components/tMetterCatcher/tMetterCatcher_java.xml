@@ -1,0 +1,62 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.1"
+    STATUS="BETA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070602A"
+    STARTABLE="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="1"
+      READONLY="true"
+    >
+      <TABLE>
+        <COLUMN NAME="moment" TYPE="id_Date" PATTERN='"yyyy-MM-dd HH:mm:ss"'/>
+        <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="father_pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="root_pid" TYPE="id_String" LENGTH="20"/>
+        <COLUMN NAME="system_pid" TYPE="id_Long"/>
+        <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="job_repository_id" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="job_version" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="label" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="count" TYPE="id_Integer"/>
+        <COLUMN NAME="reference" TYPE="id_Integer"/>
+        <COLUMN NAME="thresholds" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+    </PARAMETER>
+   </PARAMETERS>
+
+   <CODEGENERATION/>
+
+   <RETURNS/>
+
+</COMPONENT>

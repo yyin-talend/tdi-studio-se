@@ -100,6 +100,19 @@ private static RunTrace runTrace = new RunTrace();
 	}
 %>
 
+<%
+	for (INode metterCatcher : process.getNodesOfType("tMetterCatcher")) {
+%>
+	MetterCatcherUtils <%=metterCatcher.getUniqueName() %> = new MetterCatcherUtils("<%=process.getId() %>", "<%=process.getVersion() %>"); 
+<%
+	}
+    if(process.getNodesOfType("tMetter").size() >0 )
+    {
+%>
+private static final java.util.Map<String, Integer> connectionsCountMap = new java.util.HashMap<String, Integer>();
+<%
+	}
+%>
 private class TalendException extends Exception {
 	private Exception e = null;
 	private <%=process.getName() %> c = null;

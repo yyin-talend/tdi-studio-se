@@ -1,0 +1,79 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.EConnectionType 
+		java.util.List
+		java.util.Map
+		java.lang.StringBuffer
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String label = (String)ElementParameterParser.getObjectValue(
+                node,"__METTERLABEL__");
+                
+        Boolean absolute = (Boolean)ElementParameterParser.getObjectValue(
+                node,"__ABSOLUTE__");  
+        
+        String reference = (String)ElementParameterParser.getObjectValue(
+                      node,"__CONNECTIONS__");  
+
+        List<Map<String, String>> shreshlods =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,"__THRESHLODS__");  
+                
+        StringBuffer shreshlods_str = new StringBuffer();
+        if(shreshlods.size() > 0)
+        {
+            for(Map<String, String> map : shreshlods)  
+            {
+                if(shreshlods_str.length() > 0)
+                {
+                	shreshlods_str.append("#");
+                }
+       		      shreshlods_str.append(map.get("LABEL") + ";")
+       		                    .append(map.get("BOTTOM")+ ";")
+       		                    .append(map.get("TOP")+ ";")
+       		                    .append(map.get("COLOR"));
+            } 
+        } 
+%>
+    Integer reference_<%=cid%> = new Integer(0);  
+<%
+        if(absolute.equals(Boolean.FALSE))
+        {
+%>
+     if(!connectionsCountMap.containsKey("<%=reference%>_count"))
+     {
+     	throw new TalendException(this, new java.lang.Exception("cannot get the <%=reference%>_count value"));
+     }
+     else
+     {
+        reference_<%=cid%>= (Integer)connectionsCountMap.get("<%=reference%>_count");
+     }           
+<%       
+        }
+	      if (node.getProcess().getNodesOfType("tMetterCatcher").size() > 0) {
+			  List<INode> metterCatchers = (List<INode>)node.getProcess().getNodesOfType("tMetterCatcher");
+			  for (INode metterCatcher : metterCatchers) {
+%>
+	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), reference_<%=cid%>, "<%=shreshlods_str%>", "<%=cid%>");
+	<%=metterCatcher.getUniqueName() %>Process();
+<%      
+				}
+			}
+		}
+	}
+%>
