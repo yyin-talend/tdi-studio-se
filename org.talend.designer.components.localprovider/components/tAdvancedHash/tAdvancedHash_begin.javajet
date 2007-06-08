@@ -58,7 +58,7 @@
 					Set<String> hHashableColumns = hHashableColumns = target.getHashableColumns(connection.getName());
 					boolean hasAtLeastOneKey = hHashableColumns.size() > 0;
 			   %>
-	   			org.talend.designer.mapper.advanced.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = new org.talend.designer.mapper.advanced.AdvancedLookup<<%=connectionName%>Struct>(<%=hasAtLeastOneKey%>);
+	   			org.talend.designer.components.commons.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = org.talend.designer.components.commons.AdvancedLookup.<<%=connectionName%>Struct>getHashedMultiRowsLookup();
    	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
 				<%
 			} else { 

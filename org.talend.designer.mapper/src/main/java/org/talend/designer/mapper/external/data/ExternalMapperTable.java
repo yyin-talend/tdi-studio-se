@@ -45,6 +45,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private String name;
 
     private boolean minimized;
+    
+    private String tableSizeState;
 
     /**
      * Used only for outputs.
@@ -57,6 +59,10 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private boolean rejectInnerJoin;
 
     private String expressionFilter;
+ 
+    private String multipleMatchingMode;
+    
+    private boolean uniqueMatch;
     
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
@@ -161,6 +167,62 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     
     public void setExpressionFilter(String expressionFilter) {
         this.expressionFilter = expressionFilter;
+    }
+
+    
+    /**
+     * Getter for lookupType.
+     * @return the lookupType
+     */
+    public String getMultipleMatchingMode() {
+        return this.multipleMatchingMode;
+    }
+
+    
+    /**
+     * Sets the lookupType.
+     * @param lookupType the lookupType to set
+     */
+    public void setMultipleMatchingMode(String lookupType) {
+        this.multipleMatchingMode = lookupType;
+    }
+
+    
+    
+    
+    /**
+     * Getter for tableSizeState.
+     * @return the tableSizeState
+     */
+    public String getTableSizeState() {
+        return this.tableSizeState;
+    }
+
+    
+    /**
+     * Sets the tableSizeState.
+     * @param tableSizeState the tableSizeState to set
+     */
+    public void setTableSizeState(String tableSizeState) {
+        this.tableSizeState = tableSizeState;
+    }
+
+    
+    /**
+     * Getter for uniqueLookup.
+     * @return the uniqueLookup
+     */
+    public boolean isUniqueMatch() {
+        return this.uniqueMatch;
+    }
+
+    
+    /**
+     * Sets the uniqueLookup.
+     * @param uniqueLookup the uniqueLookup to set
+     */
+    public void setUniqueMatch(boolean uniqueLookup) {
+        this.uniqueMatch = uniqueLookup;
     }
 
     /*

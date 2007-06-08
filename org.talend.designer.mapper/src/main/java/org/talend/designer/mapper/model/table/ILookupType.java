@@ -19,39 +19,19 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.mapper.advanced;
+package org.talend.designer.mapper.model.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.talend.core.model.process.BlockCode;
-import org.talend.core.model.process.IHashableInputConnections;
-import org.talend.designer.mapper.MapperComponent;
+import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id: MapperComponent.java 3351 2007-05-04 12:14:00Z plegall $
+ * $Id$
  * 
  */
-public class AdvancedMapperComponent extends MapperComponent implements IHashableInputConnections {
+public interface ILookupType {
 
-    /**
-     * DOC amaumont MapperComponent constructor comment.
-     */
-    public AdvancedMapperComponent() {
-        super();
-    }
+    public String getLabel();
 
-    @Override
-    public List<BlockCode> getBlocksCodeToClose() {
-//        ArrayList<BlockCode> list = new ArrayList<BlockCode>();
-//        for (int i = 0; i < 2; i++) {
-//            list.add(new BlockCode("lookup " + (i + 1) + " tAdvancedMap"));
-//        }
-//        return list;
-        
-        return getGenerationManager().getBlocksCodeToClose();
-    }
-
+    public MULTIPLE_MATCHING_MODE getMultipleMatchingMode();
 }

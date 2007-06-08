@@ -68,7 +68,7 @@ import org.talend.designer.mapper.utils.problems.ProblemsAnalyser;
  * $Id$
  * 
  */
-public class MapperComponent extends AbstractExternalNode implements IHashableInputConnections {
+public class MapperComponent extends AbstractExternalNode {
 
     private MapperMain mapperMain;
 

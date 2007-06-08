@@ -321,7 +321,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override
-    public boolean toolbarNeededToBeRightStyle() {
+    public boolean toolbarNeedToHaveRightStyle() {
         return false;
     }
 
@@ -453,6 +453,14 @@ public class VarsDataMapTableView extends DataMapTableView {
         });
         // /////////////////////////////////////////////////////////////////
 
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
+     */
+    @Override
+    public boolean hasDropDownToolBarItem() {
+        return false;
     }
 
 }

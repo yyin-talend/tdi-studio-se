@@ -45,8 +45,12 @@ public class InputTable extends AbstractInOutTable {
      */
     private boolean innerJoin; // else outer join
 
+    private boolean uniqueMatch; // else outer join
+    
     private String expressionFilter;
 
+    private ILookupType multipleMatchingMode;
+    
     /**
      * DOC amaumont InputTable constructor comment.
      * 
@@ -71,6 +75,8 @@ public class InputTable extends AbstractInOutTable {
         if (externalMapperTable != null) {
             this.innerJoin = externalMapperTable.isInnerJoin();
             this.expressionFilter = externalMapperTable.getExpressionFilter();
+            this.multipleMatchingMode = TMAP_MULTIPLE_MATCHING_MODE.parse(externalMapperTable.getMultipleMatchingMode());
+            this.uniqueMatch = externalMapperTable.isUniqueMatch();
         }
     }
 
@@ -152,4 +158,45 @@ public class InputTable extends AbstractInOutTable {
         this.expressionFilter = notExactlyRelation;
     }
 
+    
+    /**
+     * Getter for lookupType.
+     * @return the lookupType
+     */
+    public ILookupType getMultipleMatchingMode() {
+        if (this.multipleMatchingMode == null) {
+            this.multipleMatchingMode = TMAP_MULTIPLE_MATCHING_MODE.LAST_MATCH;
+        }
+        return this.multipleMatchingMode;
+    }
+
+    
+    /**
+     * Sets the lookupType.
+     * @param lookupType the lookupType to set
+     */
+    public void setMultipleMatchingMode(ILookupType lookupType) {
+        this.multipleMatchingMode = lookupType;
+    }
+
+    
+    /**
+     * Getter for unique.
+     * @return the unique
+     */
+    public boolean isUniqueMatch() {
+        return this.uniqueMatch;
+    }
+
+    
+    /**
+     * Sets the unique.
+     * @param unique the unique to set
+     */
+    public void setUniqueMatch(boolean unique) {
+        this.uniqueMatch = unique;
+    }
+
+    
+    
 }

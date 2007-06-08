@@ -79,6 +79,7 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
+import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -1014,7 +1015,7 @@ public class UIManager {
         boolean isInputEntry = currentModifiedITableEntry instanceof InputColumnTableEntry;
 
         ECodeLanguage codeLanguage = LanguageProvider.getCurrentLanguage().getCodeLanguage();
-        
+
         for (int i = 0; i < tableEntriesLocationsSources.length; i++) {
             TableEntryLocation location = tableEntriesLocationsSources[i];
 
@@ -1025,9 +1026,8 @@ public class UIManager {
                                     .checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
 
             if (!alreadyProcessed.contains(location)
-                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry) 
-                    && (codeLanguage == ECodeLanguage.JAVA || codeLanguage == ECodeLanguage.PERL && dontRemoveLink)
-            ) {
+                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
+                    && (codeLanguage == ECodeLanguage.JAVA || codeLanguage == ECodeLanguage.PERL && dontRemoveLink)) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
                 if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)
@@ -1056,7 +1056,116 @@ public class UIManager {
         }
         mapperManager.orderLinks();
 
+        if (!mapperManager.isAdvancedMap()) {
+            if (dataMapTableView.getZone() == Zone.INPUTS) {
+                if (linkHasBeenAdded || linkHasBeenRemoved) {
+                    checkTargetInputKey(currentModifiedITableEntry, checkInputKeyAutomatically,
+                            inputExpressionAppliedOrCanceled);
+                }
+                if (inputExpressionAppliedOrCanceled) {
+                    openChangeKeysDialog((InputDataMapTableView) dataMapTableView);
+                }
+            }
+        }
+
         return new ParseExpressionResult(linkHasBeenAdded, linkHasBeenRemoved);
+    }
+
+    /**
+     * DOC amaumont Comment method "removeInvalidKeys".
+     * 
+     * @param newSelectedDataMapTableView
+     */
+    private void removeInvalidInputKeys(InputDataMapTableView inputDataMapTableView) {
+        List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
+        for (IColumnEntry entry : targetTableEntries) {
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+            if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
+                inputEntry.getMetadataColumn().setKey(false);
+            }
+        }
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "hasInvalidInputKeys".
+     * 
+     * @param newSelectedDataMapTableView
+     * @return
+     */
+    private boolean hasInvalidInputExpressionKeys(InputDataMapTableView inputDataMapTableView) {
+
+        if (inputDataMapTableView.getTableViewerCreatorForColumns() == null) {
+            return false;
+        }
+
+        List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
+        for (IColumnEntry entry : targetTableEntries) {
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+            if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "checkTargetInputKey".
+     * 
+     * @param currentModifiedTableEntry
+     * @param inputDataMapTableView
+     * @param checkInputKeyAutomatically
+     * @param appliedOrCanceled TODO
+     */
+    private void checkTargetInputKey(ITableEntry currentModifiedTableEntry, boolean checkInputKeyAutomatically,
+            boolean appliedOrCanceled) {
+        // check key
+        if (checkInputKeyAutomatically && currentModifiedTableEntry instanceof InputColumnTableEntry) {
+
+            IMetadataColumn metadataColumn = ((InputColumnTableEntry) currentModifiedTableEntry).getMetadataColumn();
+            if (!metadataColumn.isKey()) {
+                metadataColumn.setKey(true);
+                refreshInOutTableAndMetaTable((AbstractInOutTableEntry) currentModifiedTableEntry);
+            }
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "refreshInOutTableAndMetaTable".
+     * 
+     * @param currentModifiedTableEntry can be null
+     */
+    private void refreshInOutTableAndMetaTable(AbstractInOutTableEntry currentModifiedTableEntry) {
+        DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedTableEntry);
+        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable())
+                .getMetadataTable();
+        dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentModifiedTableEntry);
+        MetadataTableEditorView metadataEditorView = getMetadataEditorView(dataMapTableView.getZone());
+        if (metadataEditorView != null && metadataEditorView.getMetadataTableEditor() != null
+                && metadataEditorView.getMetadataTableEditor().getMetadataTable() == metadataTableTarget) {
+            metadataEditorView.getTableViewerCreator().getTableViewer().refresh(
+                    currentModifiedTableEntry.getMetadataColumn());
+            metadataEditorView.getTableViewerCreator().refreshTableEditorControls();
+        }
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "refreshInOutTableAndMetaTable".
+     * 
+     * @param dataMapTableView
+     */
+    private void refreshInOutTableAndMetaTable(DataMapTableView dataMapTableView) {
+        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable())
+                .getMetadataTable();
+        dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh();
+        MetadataTableEditorView metadataEditorView = getMetadataEditorView(dataMapTableView.getZone());
+        if (metadataEditorView != null && metadataEditorView.getMetadataTableEditor() != null
+                && metadataEditorView.getMetadataTableEditor().getMetadataTable() == metadataTableTarget) {
+            metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
+            metadataEditorView.getTableViewerCreator().refreshTableEditorControls();
+        }
     }
 
     /**
@@ -1230,6 +1339,33 @@ public class UIManager {
             return id.getValue();
         }
         return null;
+    }
+
+    /**
+     * DOC amaumont Comment method "openAddNewOutputDialog".
+     * 
+     * @param inputDataMapTableView
+     */
+    private void openChangeKeysDialog(final InputDataMapTableView inputDataMapTableView) {
+
+        new AsynchronousThreading(50, false, inputDataMapTableView.getDisplay(), new Runnable() {
+
+            public void run() {
+
+                if (hasInvalidInputExpressionKeys(inputDataMapTableView)) {
+                    if (MessageDialog
+                            .openConfirm(inputDataMapTableView.getShell(),
+                                    Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
+                                    Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
+                                            + "'")) { //$NON-NLS-1$
+                        removeInvalidInputKeys(inputDataMapTableView);
+                    }
+                    refreshInOutTableAndMetaTable(inputDataMapTableView);
+                }
+
+            }
+        }).start();
+
     }
 
     /**

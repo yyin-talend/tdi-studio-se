@@ -62,7 +62,7 @@
             String className = tableName + "Struct";
 %>
 
-org.talend.designer.mapper.advanced.AdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.mapper.advanced.AdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+org.talend.designer.components.commons.AdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
 <%=className%> <%=tableName%>HashKey = new <%=className%>();
 <%=className%> <%=tableName%>Default = new <%=className%>();
 <%

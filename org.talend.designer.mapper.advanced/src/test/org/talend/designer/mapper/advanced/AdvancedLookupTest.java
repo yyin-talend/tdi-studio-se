@@ -27,6 +27,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.designer.components.commons.AdvancedLookup;
+import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -40,8 +42,8 @@ public class AdvancedLookupTest {
 
     private ArrayList<String> strings;
 
-    // private static final int TOTAL_ROWS = 2000000;
-    private static final int TOTAL_ROWS = 30;
+     private static final int TOTAL_ROWS = 2000000;
+//    private static final int TOTAL_ROWS = 30;
 
     // private static final int TOTAL_ROWS = 20000;
 
@@ -71,11 +73,11 @@ public class AdvancedLookupTest {
     }
 
     /**
-     * Test method for {@link org.talend.designer.mapper.advanced.AdvancedLookup#get(java.lang.Object)}.
+     * Test method for {@link org.talend.designer.components.commons.AdvancedLookup#get(java.lang.Object)}.
      */
     @Test
     public void testGetPut() {
-        AdvancedLookup<RowStruct3> lookup = new AdvancedLookup<RowStruct3>(true);
+        AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
 
         RowStruct3.startRangeIsKey = true;
         RowStruct3.endRangeIsKey = true;
@@ -105,7 +107,7 @@ public class AdvancedLookupTest {
 
     /**
      * Test method for
-     * {@link org.talend.designer.mapper.advanced.AdvancedLookup#put(java.lang.Object, java.lang.Object)}.
+     * {@link org.talend.designer.components.commons.AdvancedLookup#put(java.lang.Object, java.lang.Object)}.
      */
     @Test
     public void testPerfomance() {
@@ -176,7 +178,7 @@ public class AdvancedLookupTest {
         public void executeWithTwoIntegersHashKeys() {
 
             int lstSize = nIterations;
-            AdvancedLookup lookup = new AdvancedLookup(true);
+            AdvancedLookup lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
 
             TimeMeasure.measureActive = true;
 
@@ -229,7 +231,7 @@ public class AdvancedLookupTest {
         public void executeWithOneStringHashKeyAndRange() {
 
             int lstSize = nIterations;
-            AdvancedLookup<RowStruct3> lookup = new AdvancedLookup<RowStruct3>(true);
+            AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
 
             TimeMeasure.measureActive = true;
 

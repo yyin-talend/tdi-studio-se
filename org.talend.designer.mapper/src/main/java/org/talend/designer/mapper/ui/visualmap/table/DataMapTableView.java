@@ -129,6 +129,8 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public abstract class DataMapTableView extends Composite {
 
+    private Point realToolbarSize = new Point(0,0);
+
     private Table tableForEntries;
 
     private final ResizeHelper resizeHelper = new ResizeHelper();
@@ -250,7 +252,7 @@ public abstract class DataMapTableView extends Composite {
 
         headerComposite = new Composite(this, SWT.NONE);
         GridData headerGridData = new GridData(GridData.FILL_HORIZONTAL);
-        headerGridData.heightHint = HEADER_HEIGHT;
+        headerGridData.heightHint = getHeaderHeight();
         headerComposite.setLayoutData(headerGridData);
         GridLayout headerLayout = new GridLayout();
 
@@ -270,28 +272,46 @@ public abstract class DataMapTableView extends Composite {
         nameLabel.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
         nameLabel.setText(abstractDataMapTable.getName());
         nameLabel.setToolTipText(abstractDataMapTable.getName());
-        nameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+        GridData dataNameLabel = new GridData(GridData.FILL_HORIZONTAL);
+        dataNameLabel.minimumWidth = 50;
+        nameLabel.setLayoutData(dataNameLabel);
+//        nameLabel.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_RED));
 
-        int rightStyle = toolbarNeededToBeRightStyle() ? SWT.RIGHT : SWT.NONE;
-        toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle);
+        int rightStyle = toolbarNeedToHaveRightStyle() ? SWT.RIGHT : SWT.NONE;
+        toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle | SWT.NONE);
+//        toolBarActions.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
         if (addToolItems()) {
             addToolItemSeparator();
         }
+        
+        Point realToolbarSize = getRealToolbarSize();
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
-
+        realToolbarSize.x += 45;
+        
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gridData.grabExcessHorizontalSpace = true;
-        gridData.widthHint = sizeToolBar.x;
-        if (toolbarNeededToBeRightStyle() && WindowSystem.isWIN32()) {
+        Rectangle trim = toolBarActions.computeTrim(0, 0, 0, 0);
+        System.out.println(getDataMapTable().getName());
+        System.out.println("sizeToolBar:" + sizeToolBar);
+        
+        GridData gridData = new GridData();
+        
+//        gridData.grabExcessHorizontalSpace = true;
+//        gridData.horizontalAlignment = SWT.END;
+        gridData.heightHint = sizeToolBar.y;
+        if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
+            if(realToolbarSize != null) {
+                gridData.widthHint = realToolbarSize.x;
+                System.out.println("realToolbarSize:" + realToolbarSize);
+            }
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
-            gridData.widthHint -= 48;
+//            gridData.widthHint -= 48;
         }
         if (WindowSystem.isGTK()) {
             gridData.heightHint = 26;
         }
+//        gridData.widthHint = 50;
         toolBarActions.setLayoutData(gridData);
 
         headerLayout.numColumns = headerComposite.getChildren().length;
@@ -1477,6 +1497,7 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
+                checkChangementsAfterEntryModifiedOrAdded();
                 if (WindowSystem.isGTK()) {
 
                     new AsynchronousThreading(50, false, expressionTextEditor.getDisplay(), new Runnable() {
@@ -1711,7 +1732,10 @@ public abstract class DataMapTableView extends Composite {
         }
     }
 
-    public abstract boolean toolbarNeededToBeRightStyle();
+    public abstract boolean toolbarNeedToHaveRightStyle();
+
+    public abstract boolean hasDropDownToolBarItem();
+
 
     /**
      * DOC amaumont Comment method "parseExpression".
@@ -1753,4 +1777,16 @@ public abstract class DataMapTableView extends Composite {
         return this.expressionProposalProvider;
     }
 
+    public int getHeaderHeight() {
+        return HEADER_HEIGHT + (hasDropDownToolBarItem() ? 8 : 0);
+    }
+
+    public void checkChangementsAfterEntryModifiedOrAdded() {
+        
+    }
+    
+    public Point getRealToolbarSize() {
+        return realToolbarSize;
+    }
+    
 }

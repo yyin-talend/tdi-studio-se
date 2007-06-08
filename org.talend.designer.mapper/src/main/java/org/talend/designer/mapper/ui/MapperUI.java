@@ -535,6 +535,7 @@ public class MapperUI {
             dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
             if (mapperManager.isAdvancedMap()) {
                 dataMapTableView.configureExpressionFilter();
+                dataMapTableView.checkChangementsAfterEntryModifiedOrAdded();
             }
             // dataMapTableView.fillMinimumSize(false);
         }

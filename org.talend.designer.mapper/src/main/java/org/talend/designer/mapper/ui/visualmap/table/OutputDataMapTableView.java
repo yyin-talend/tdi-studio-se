@@ -331,12 +331,20 @@ public class OutputDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override
-    public boolean toolbarNeededToBeRightStyle() {
+    public boolean toolbarNeedToHaveRightStyle() {
         return false;
     }
 
     public OutputTable getOutputTable() {
         return (OutputTable) abstractDataMapTable;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
+     */
+    @Override
+    public boolean hasDropDownToolBarItem() {
+        return false;
     }
 
 }

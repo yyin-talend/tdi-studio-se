@@ -470,6 +470,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
 
         uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, targetTableIsFiltersTable, true);
+        dataMapTableViewTarget.checkChangementsAfterEntryModifiedOrAdded();
         tableViewerCreatorTarget.getTable().setFocus();
 
         uiManager.setDragging(false);

@@ -487,7 +487,8 @@
 
                     } // for entries
 
-                    if (connectionExists) {
+                    if (connectionExists && (!currentIsReject && !currentIsRejectInnerJoin && (validLookupTables.size() > 0 || lookupTables.size() == 0) || currentIsReject || currentIsRejectInnerJoin
+                        && atLeastOneInputTableWithInnerJoin)) {
                         sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");
                     }
 
