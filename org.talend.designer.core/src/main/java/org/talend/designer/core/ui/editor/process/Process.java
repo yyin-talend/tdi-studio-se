@@ -1953,6 +1953,7 @@ public class Process extends Element implements IProcess {
                     refLink = true;
                 } else {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)
                             || connec.getLineStyle().equals(EConnectionType.ITERATE)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                         refLink = isThereLinkWithHash(connec.getTarget());

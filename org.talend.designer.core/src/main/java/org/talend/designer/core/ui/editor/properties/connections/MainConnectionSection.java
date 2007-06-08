@@ -47,6 +47,7 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Main Section of the property for the connections. <br/>
@@ -222,6 +223,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         connectionList.set(order - 1, connection);
         connection.updateAllId();
         updateCurrentOrder();
+        ((Process)connection.getSource().getProcess()).checkStartNodes();
     }
 
     private void connectionOrderDown(List<IConnection> connectionList, Connection connection) {
@@ -235,6 +237,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         connectionList.set(order + 1, connection);
         connection.updateAllId();
         updateCurrentOrder();
+        ((Process)connection.getSource().getProcess()).checkStartNodes();
     }
 
     private void updateCurrentOrder() {
