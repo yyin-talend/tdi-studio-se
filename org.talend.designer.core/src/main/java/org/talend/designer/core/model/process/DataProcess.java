@@ -133,6 +133,7 @@ public class DataProcess {
             dataConnec.setSource(dataNode);
             dataConnec.setCondition(connection.getCondition());
             dataConnec.setConnectorName(connection.getConnectorName());
+            dataConnec.setInputId(connection.getInputId());
             INode target = buildfromNode((Node) connection.getTarget());
             dataConnec.setTarget(target);
             incomingConnections = (List<IConnection>) target.getIncomingConnections();
