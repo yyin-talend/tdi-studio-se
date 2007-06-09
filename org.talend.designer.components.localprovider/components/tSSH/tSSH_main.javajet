@@ -22,6 +22,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__COMMAND__"
         );
+        
+        String commandSeparator = ElementParameterParser.getValue(
+            node,
+            "__COMMANDSEPARATOR__"
+        );
+        
+        command = command.replace(";", commandSeparator);
+        
 %>
 			/* Create a session */
 			sess_<%=cid%>.execCommand(<%=command%>);
@@ -30,47 +38,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));
             String line_<%=cid%> = "";
             StringBuffer stringStdout_<%=cid%> =new StringBuffer();
-            try
+
+            if((line_<%=cid%> = brout_<%=cid%>.readLine()) != null)
             {
-                if((line_<%=cid%> = brout_<%=cid%>.readLine()) != null)
-                {
-                	stringStdout_<%=cid%>.append(line_<%=cid%>);
-                }
-			    while((line_<%=cid%> = brout_<%=cid%>.readLine()) != null) {
-				    stringStdout_<%=cid%>.append("\n"+line_<%=cid%>);
-			    }
+                stringStdout_<%=cid%>.append(line_<%=cid%>);
+            }
+			while((line_<%=cid%> = brout_<%=cid%>.readLine()) != null) {
+				stringStdout_<%=cid%>.append("\n"+line_<%=cid%>);
 			}
-			finally
-			{
-				brout_<%=cid%>.close();
-				stdout_<%=cid%>.close();
-			}
+			
+		    brout_<%=cid%>.close();
+			stdout_<%=cid%>.close();
 			
 			java.io.InputStream stderr_<%=cid%> = sess_<%=cid%>.getStderr();
             java.io.BufferedReader breer_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stderr_<%=cid%>));
             String line1_<%=cid%> = "";
             StringBuffer stringStderr_<%=cid%> =new StringBuffer();
-            try
+
+            if((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null)
             {
-            	if((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null)
-            	{
-            		stringStderr_<%=cid%>.append(line1_<%=cid%>);
-            	}
-			    while((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
-				    stringStderr_<%=cid%>.append("\n"+line1_<%=cid%>);
-			    }
+            	stringStderr_<%=cid%>.append(line1_<%=cid%>);
+            }
+			while((line1_<%=cid%> = breer_<%=cid%>.readLine()) != null) {
+				stringStderr_<%=cid%>.append("\n"+line1_<%=cid%>);
 			}
-			finally
-			{
-				breer_<%=cid%>.close();
-				stderr_<%=cid%>.close();
-			}
+
+			breer_<%=cid%>.close();
+			stderr_<%=cid%>.close();
 			
 			globalMap.put("<%=cid %>_STDOUT",stringStdout_<%=cid%>.toString());
 			globalMap.put("<%=cid %>_STDERR",stringStderr_<%=cid%>.toString());
             globalMap.put("<%=cid %>_EXIT_CODE",sess_<%=cid%>.getExitStatus());
-            
-            System.out.println (globalMap.get("<%=cid %>_STDOUT"));
 <%
     }
 }

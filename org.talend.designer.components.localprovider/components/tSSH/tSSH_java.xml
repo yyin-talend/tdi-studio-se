@@ -80,18 +80,26 @@
       <DEFAULT>"/.ssh/id_dsa"</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="COMMANDSEPARATOR"
+      FIELD="TEXT"
+      NUM_ROW="90"
+    >
+      <DEFAULT>;</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="COMMAND"
       FIELD="MEMO"
-      NUM_ROW="90"
+      NUM_ROW="110"
     >
-      <DEFAULT>"uname -a echo Talend Open Studio"</DEFAULT>
+      <DEFAULT>"uname -a; echo Talend Open Studio"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="USE_TIMEOUT"
       FIELD="CHECK"
-      NUM_ROW="100"
+      NUM_ROW="120"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
