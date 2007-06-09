@@ -662,13 +662,6 @@ public class JavaProcessor extends Processor {
             command = "java"; //$NON-NLS-1$
         }
 
-        // init lib path
-
-        Set<String> listModulesReallyNeeded = new HashSet<String>();
-        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-        }
-
         String classPathSeparator;
         if (targetPlatform == null) {
             classPathSeparator = JavaUtils.JAVA_CLASSPATH_SEPARATOR;
@@ -684,7 +677,7 @@ public class JavaProcessor extends Processor {
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && listModulesReallyNeeded.contains(externalLib.getName())) {
+                if (externalLib.isFile() && process.getNeededLibraries(false).contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
                                 + classPathSeparator);

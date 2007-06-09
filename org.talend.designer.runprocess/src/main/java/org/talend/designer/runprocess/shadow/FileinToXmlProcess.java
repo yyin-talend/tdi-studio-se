@@ -551,4 +551,9 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         }
         return matchingNodes.toArray(new IConnection[matchingNodes.size()]);
     }
+
+    public Set<String> getNeededLibraries(boolean withChildrens) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
