@@ -108,6 +108,9 @@ public final class ImportDemoProjectAction extends Action {
                         String archiveFilePath = new Path(url.getFile()).toOSString();
 
                         ImportProjectsUtilities.importArchiveProject(shell, techName, archiveFilePath, monitorWrap);
+
+                        lastImportedName = techName;
+
                     } catch (IOException e) {
                         throw new InvocationTargetException(e);
                     } catch (TarException e) {

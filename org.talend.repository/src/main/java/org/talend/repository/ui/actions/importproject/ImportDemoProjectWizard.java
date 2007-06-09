@@ -52,7 +52,6 @@ public class ImportDemoProjectWizard extends Wizard implements IImportWizard {
 
     public void init(IWorkbench workbench, IStructuredSelection selection) {
 
-        setWindowTitle("title in wizard");// Messages.getString("ImportDemoProjectWizard.importDemoProject"));
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }

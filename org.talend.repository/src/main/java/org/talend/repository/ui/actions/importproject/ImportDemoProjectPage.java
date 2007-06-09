@@ -33,8 +33,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.pde.internal.ui.elements.ListContentProvider;
-import org.eclipse.pde.internal.ui.wizards.ListUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.SashForm;
@@ -91,9 +89,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         container.setLayout(layout);
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // createAbove(container, 1);
         Label label = new Label(container, SWT.NONE);
-        label.setText(Messages.getString("ImportDemoProjectPage.avaiableProjectsPrompt"));
+        label.setText(Messages.getString("ImportDemoProjectPage.availableProjectsPrompt"));
         GridData gd = new GridData();
         label.setLayoutData(gd);
 
@@ -103,9 +100,6 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         sashForm.setLayoutData(gd);
 
         wizardSelectionViewer = new TableViewer(sashForm, SWT.BORDER);
-        wizardSelectionViewer.setContentProvider(new ListContentProvider());
-        wizardSelectionViewer.setLabelProvider(ListUtil.TABLE_LABEL_PROVIDER);
-        wizardSelectionViewer.setSorter(ListUtil.NAME_SORTER);
         createDescriptionIn(sashForm);
         initializeViewer();
         wizardSelectionViewer.addSelectionChangedListener(this);
