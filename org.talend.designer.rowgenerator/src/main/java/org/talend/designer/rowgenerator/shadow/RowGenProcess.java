@@ -24,6 +24,7 @@ package org.talend.designer.rowgenerator.shadow;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
@@ -597,5 +598,10 @@ public class RowGenProcess extends Element implements IProcess {
     public void setProcessor(IProcessor processor) {
         // TODO Auto-generated method stub
 
+    }
+
+    public Set<String> getNeededLibraries(boolean withChildrens) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
