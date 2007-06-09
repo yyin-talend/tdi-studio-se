@@ -63,6 +63,10 @@ public class ConnectionManager {
         if (source.sameProcessAs(target, false)) {
             return false;
         }
+        int nbMerge = countNbMerge(source, target);
+        if (nbMerge > 1) {
+            return false;
+        }
 
         // Check existing connections to avoid to have more than one link
         // no matter the type of the connection and the direction
@@ -109,6 +113,40 @@ public class ConnectionManager {
             return false;
         }
         return true;
+    }
+
+    private static int countNbMergeOutgoing(INode source, int nb) {
+        int curNb = nb;
+
+        for (IConnection curConnec : source.getOutgoingConnections()) {
+            if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                curNb++;
+            } else if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                // if main, then test the next component to check if there is a merge
+                curNb += countNbMergeOutgoing(curConnec.getTarget(), curNb);
+            }
+        }
+        return curNb;
+    }
+
+    private static int countNbMergeIncoming(INode source, int nb) {
+        int curNb = nb;
+        if (source.getComponent().useMerge()) {
+            // if the component use merge even if there is no connection, then add one merge.
+            curNb++;
+        }
+        for (IConnection curConnec : source.getIncomingConnections()) {
+            if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                // if main, then test the next component to check if there is a merge
+                curNb += countNbMergeIncoming(curConnec.getSource(), curNb);
+            }
+        }
+        return curNb;
+    }
+
+    private static int countNbMerge(Node source, Node target) {
+        return countNbMergeOutgoing(source, 0) + countNbMergeIncoming(source, 0) + countNbMergeOutgoing(target, 0)
+                + countNbMergeIncoming(target, 0);
     }
 
     /**
@@ -162,9 +200,9 @@ public class ConnectionManager {
     public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType lineStyle,
             String connectorName, String connectionName) {
         newlineStyle = lineStyle;
-        
+
         INode processStartNode = source.getProcessStartNode(true);
-        // if the target is the start of the (source) process, then can't connect. 
+        // if the target is the start of the (source) process, then can't connect.
         if (processStartNode.equals(newTarget)) {
             return false;
         }

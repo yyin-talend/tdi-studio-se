@@ -1504,4 +1504,8 @@ public class Node extends Element implements INode {
     public Map<INode, Integer> getLinkedMergeInfo() {
         return process.getLinkedMergeInfo(this);
     }
+
+    public List<? extends IConnection> getIncomingConnections(EConnectionType connectionType) {
+        return org.talend.core.model.utils.NodeUtil.getIncomingConnections(this, connectionType);
+    }
 }
