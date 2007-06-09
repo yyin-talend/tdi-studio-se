@@ -67,6 +67,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -92,6 +93,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -122,6 +124,7 @@ import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -1926,7 +1929,8 @@ public class Process extends Element implements IProcess {
 
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
                     return connec.getInputId();
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
+                        && connec.getTarget() != null) {
                     return getMergelinkOrder(connec.getTarget());
                 }
             }
@@ -1934,17 +1938,16 @@ public class Process extends Element implements IProcess {
 
         return -1;
     }
-    
+
     /**
-     * just like the getMergelinkOrder(), there will return more info
-     * the key is the Merge node, and value is inputId.
-     * if don't link with merge, it will return null.
-     * Notice: make sure there only link with one merge node. It can't support to link with more merge node.
+     * just like the getMergelinkOrder(), there will return more info the key is the Merge node, and value is inputId.
+     * if don't link with merge, it will return null. Notice: make sure there only link with one merge node. It can't
+     * support to link with more merge node.
+     * 
      * @param node
      * @return
      */
-    public Map<INode, Integer> getLinkedMergeInfo(final INode node)
-    {
+    public Map<INode, Integer> getLinkedMergeInfo(final INode node) {
 
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
         for (int i = 0; i < outgoingConnections.size(); i++) {
@@ -1955,7 +1958,8 @@ public class Process extends Element implements IProcess {
                     Map<INode, Integer> map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());
                     return map;
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
+                        && connec.getTarget() != null) {
                     return getLinkedMergeInfo(connec.getTarget());
                 }
             }
@@ -2250,5 +2254,35 @@ public class Process extends Element implements IProcess {
      */
     public boolean isClosed() {
         return closed;
+    }
+
+    public Set<String> getNeededLibraries(boolean withChildrens) {
+        Set<String> neededLibraries = new HashSet<String>();
+        List<? extends INode> nodeList = getGeneratingNodes();
+        for (INode node : nodeList) {
+            List<ModuleNeeded> moduleList = node.getComponent().getModulesNeeded();
+            for (ModuleNeeded needed : moduleList) {
+                neededLibraries.add(needed.getModuleName());
+            }
+        }
+        if (withChildrens) {
+            Set<String> childrensList = new HashSet<String>(); // in case the same children is used several time
+            ProcessItem processItem = (ProcessItem) this.property.getItem();
+            if (processItem.getProcess().getRequired() != null) {
+                EList jobList = processItem.getProcess().getRequired().getJob();
+                for (int j = 0; j < jobList.size(); j++) {
+                    JobType jType = (JobType) jobList.get(j);
+                    if (!childrensList.contains(jType.getName())) {
+                        // check if we already have the libraries of this job
+                        childrensList.add(jType.getName());
+                        ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
+                        Process child = new Process(childItem.getProperty());
+                        child.loadXmlFile(childItem.getProcess());
+                        neededLibraries.addAll(child.getNeededLibraries(true));
+                    }
+                }
+            }
+        }
+        return neededLibraries;
     }
 }
