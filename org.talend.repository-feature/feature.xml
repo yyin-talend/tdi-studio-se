@@ -35,6 +35,7 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.jakarta_log4j" version="1.2.8" match="equivalent"/>
+      <import plugin="org.eclipse.pde.ui"/>
    </requires>
 
    <plugin
