@@ -8,7 +8,7 @@
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
-    STARTABLE="true"
+    STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
   >
@@ -87,28 +87,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
 
-    <PARAMETER
-      NAME="DATA_ACTION"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="6"
-    >
-      <ITEMS DEFAULT="INSERT">
-        <ITEM NAME="INSERT"           VALUE="INSERT" />
-        <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
-        <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
-        <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
-        <ITEM NAME="DELETE"           VALUE="DELETE"/>
-      </ITEMS>
-    </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA"
@@ -116,15 +95,6 @@
       NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
