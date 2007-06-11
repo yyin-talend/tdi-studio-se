@@ -167,6 +167,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         List<Element> elements;
         elements = new ArrayList<Element>();
         elements.add(((Connection) getModel()).getConnectionLabel());
+        elements.add(((Connection) getModel()).getPerformance());
         if (((Connection) getModel()).getConnectionTrace() != null) {
             elements.add(((Connection) getModel()).getConnectionTrace());
         }

@@ -34,6 +34,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IPerformance;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -44,7 +45,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  * $Id$
  * 
  */
-public class Connection extends Element implements IConnection {
+public class Connection extends Element implements IConnection, IPerformance {
 
     public static final String NAME = "name"; //$NON-NLS-1$
 
@@ -79,6 +80,8 @@ public class Connection extends Element implements IConnection {
 
     private String connectorName;
 
+    private ConnectionPerformance performance;
+
     // used only for copy / paste (will generate the name) && connection creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName) {
@@ -102,6 +105,8 @@ public class Connection extends Element implements IConnection {
 
     private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName) {
+        performance = new ConnectionPerformance(this);
+
         sourceNodeConnector = source.getConnectorFromName(connectorName);
         this.connectorName = connectorName;
         this.lineStyle = lineStyle;
@@ -614,5 +619,24 @@ public class Connection extends Element implements IConnection {
         sourceNodeConnector = source.getConnectorFromName(connectorName);
         updateName();
         firePropertyChange(LINESTYLE_PROP, null, connectorName);
+    }
+
+    /**
+     * Getter for performance.
+     * 
+     * @return the performance
+     */
+    public ConnectionPerformance getPerformance() {
+        return this.performance;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IPerformance#setPerformanceData(java.lang.String)
+     */
+    public void setPerformanceData(String pefData) {
+        performance.setLabel(pefData);
+
     }
 }

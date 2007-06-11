@@ -27,6 +27,8 @@ import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.connections.ConnectionPerformance;
+import org.talend.designer.core.ui.editor.connections.ConnectionPerformanceEditPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionTrace;
 import org.talend.designer.core.ui.editor.connections.ConnectionTraceEditPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -66,6 +68,8 @@ public class PartFactory implements EditPartFactory {
             part = new ConnectionPart();
         } else if (model instanceof ConnectionLabel) {
             part = new ConnLabelEditPart();
+        } else if (model instanceof ConnectionPerformance) {
+            part = new ConnectionPerformanceEditPart();
         } else if (model instanceof ConnectionTrace) {
             part = new ConnectionTraceEditPart();
         } else if (model instanceof NodeLabel) {

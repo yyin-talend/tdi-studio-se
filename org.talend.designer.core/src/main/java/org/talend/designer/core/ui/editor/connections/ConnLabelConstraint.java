@@ -27,6 +27,7 @@ import org.eclipse.draw2d.Locator;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 
 /**
  * Object that will define the position ofthe differents label for a connection. <br/>
@@ -44,6 +45,8 @@ public class ConnLabelConstraint implements Locator {
 
     PolylineConnection connFigure;
 
+    Dimension minimum;
+
     /**
      * Sets the items that will be use to set the position of the label.
      * 
@@ -57,6 +60,16 @@ public class ConnLabelConstraint implements Locator {
         this.position = position;
         this.offset = offset;
         this.connFigure = connFigure;
+
+    }
+
+    public ConnLabelConstraint(Dimension minimum, String position, Point offset, PolylineConnection connFigure) {
+        this.text = text;
+        this.position = position;
+        this.offset = offset;
+        this.connFigure = connFigure;
+        this.minimum = minimum;
+
     }
 
     /*
@@ -65,7 +78,10 @@ public class ConnLabelConstraint implements Locator {
      * @see org.eclipse.draw2d.Locator#relocate(org.eclipse.draw2d.IFigure)
      */
     public void relocate(IFigure figure) {
-        Dimension minimum = FigureUtilities.getTextExtents(text, figure.getFont());
+        if (!(figure instanceof SimpleHtmlFigure)) {
+            this.minimum = FigureUtilities.getTextExtents(text, figure.getFont());
+        }
+
         figure.setSize(minimum);
         Point location;
         if (position.equals("start")) { //$NON-NLS-1$
