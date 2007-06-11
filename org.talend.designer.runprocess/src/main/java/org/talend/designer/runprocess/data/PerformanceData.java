@@ -48,7 +48,7 @@ public final class PerformanceData implements IPerformanceData {
         this.data = data;
     }
 
-    public String getNodeId() {
+    public String getConnectionId() {
         int sepIndex = data.indexOf(FIELD_SEP);
         return sepIndex != -1 ? data.substring(0, sepIndex) : null;
     }

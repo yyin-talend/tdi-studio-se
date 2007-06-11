@@ -48,6 +48,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
@@ -536,9 +537,10 @@ public class RunProcessContext {
                 try {
                     process.exitValue();
 
-					// flush remaining messages
-                    while(extractMessages(true));
-                    
+                    // flush remaining messages
+                    while (extractMessages(true))
+                        ;
+
                     // Read the end of the stream after the end of the process
                     ended = true;
                     stopThread = true;
@@ -684,14 +686,17 @@ public class RunProcessContext {
                             stopThread = true;
                         } else {
                             PerformanceData perfData = new PerformanceData(data);
-                            String nodeId = perfData.getNodeId();
-                            final INode node = findNode(nodeId);
-                            if (node != null) {
+                            String connectionId = perfData.getConnectionId();
+                            final IConnection conn = findConnection(connectionId);
+                            if (conn != null && conn instanceof IPerformance) {
+                                final IPerformance performance = (IPerformance) conn;
                                 Display.getDefault().asyncExec(new Runnable() {
 
                                     public void run() {
                                         if (data != null) {
-                                            node.setPerformanceData(data);
+
+                                            performance.setPerformanceData(data);
+
                                         }
                                     }
                                 });
@@ -726,6 +731,17 @@ public class RunProcessContext {
                 }
             }
             return node;
+        }
+
+        private IConnection findConnection(final String connectionId) {
+            IConnection conn = null;
+            IConnection[] conns = process.getAllConnections(null);
+            for (int i = 0; i < conns.length; i++) {
+                if (connectionId.equals(conns[i].getUniqueName())) {
+                    conn = conns[i];
+                }
+            }
+            return conn;
         }
     }
 

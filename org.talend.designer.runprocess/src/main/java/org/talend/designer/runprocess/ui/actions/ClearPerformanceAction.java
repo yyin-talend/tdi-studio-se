@@ -24,7 +24,9 @@ package org.talend.designer.runprocess.ui.actions;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IPerformance;
 import org.talend.core.model.process.IProcess;
 
 /**
@@ -54,9 +56,11 @@ public class ClearPerformanceAction extends Action {
      */
     @Override
     public void run() {
-        List< ? extends INode> nodes = process.getGraphicalNodes();
-        for (INode node : nodes) {
-            node.setPerformanceData(null);
+        IConnection[] conns = process.getAllConnections(null);
+        for (int i = 0; i < conns.length; i++) {
+            if (conns[i] instanceof IPerformance) {
+                ((IPerformance) conns[i]).setPerformanceData("");
+            }
         }
     }
 
