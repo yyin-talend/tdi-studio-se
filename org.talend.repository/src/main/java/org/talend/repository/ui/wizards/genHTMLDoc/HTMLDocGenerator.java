@@ -99,6 +99,10 @@ public class HTMLDocGenerator {
      */
     public void generateHTMLFile(ExportFileResource resource) {
         try {
+
+            // Store all pictures' path.
+            List<URL> picList = new ArrayList<URL>(5);
+
             String jobName = resource.getProcess().getProperty().getLabel();
 
             String tempFolderPath = checkTempDirIsExists(resource);
@@ -120,15 +124,21 @@ public class HTMLDocGenerator {
             FileCopyUtils.copy(logoFilePath, picFolderPath + File.separatorChar
                     + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
 
+            picList.add(new File(picFolderPath + File.separatorChar + IHTMLDocConstants.TALEND_LOGO_FILE_NAME).toURL());
+
             Set keySet = picFilePathMap.keySet();
             for (Object key : keySet) {
                 String value = (String) picFilePathMap.get(key);
                 FileCopyUtils.copy(value, picFolderPath + File.separatorChar + key);
+                picList.add(new File(picFolderPath + File.separatorChar + key).toURL());
             }
 
             List<URL> resultFiles = parseXML2HTML(tempFolderPath, jobName, xslFilePath);
 
             addResources(resource, resultFiles);
+
+            resource.addResources(IHTMLDocConstants.PIC_FOLDER_NAME, picList);
+
         } catch (Exception e) {
             e.printStackTrace();
             ExceptionHandler.process(e);
@@ -190,9 +200,8 @@ public class HTMLDocGenerator {
 
         File[] files = tmpFolder.listFiles();
         for (int i = 0; i < files.length; i++) {
-            // Checks if current file is html file, xml file and Pictures folder which need be exported,
-            // otherwise ignore it.
-            if (!(files[i].isDirectory() && !files[i].toString().endsWith(IHTMLDocConstants.PIC_FOLDER_NAME))) {
+            // Checks if current file is html file or xml file, otherwise ignore it.
+            if (!(files[i].isDirectory())) {
                 list.add(files[i].toURL());
             }
         }
