@@ -452,6 +452,12 @@
             description="Replace run before and after connection with then run connection."
             id="org.talend.repository.model.migration.changeRunBeforeAfterToThenRunMigrationTask"
             name="Replace run before and after connection"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RemoveSpaceInJobNameMigrationTask"
+            description="Rename jobs if they contain any space character (for migration of version 1.0 or 1.1)"
+            id="org.talend.repository.model.migration.RemoveSpaceInJobNameMigrationTask"
+            name="Rename jobs with spaces"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
