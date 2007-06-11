@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
@@ -82,6 +83,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.editor.IUIRefresher;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -94,7 +96,8 @@ import org.talend.repository.ui.views.IRepositoryView;
  * $Id$
  * 
  */
-public class MultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener, ISelectionListener {
+public class MultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener, ISelectionListener,
+        IUIRefresher {
 
     private AdapterImpl dirtyListener = new AdapterImpl() {
 
@@ -168,18 +171,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         }
 
         try {
-            IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                    processor.getCodeProject().getFullPath().append(processor.getCodePath()));
-            if (!codeFile.exists()) {
-                // Create empty one
-                try {
-                    codeFile.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
-                } catch (CoreException e) {
-                    // Do nothing.
-                }
-            }
-
-            int index = addPage(codeEditor, new FileEditorInput(codeFile));
+            int index = addPage(codeEditor, createFileEditorInput());
 
             // init Syntax Validation.
             if (getCurrentLang() == ECodeLanguage.PERL) {
@@ -537,4 +529,32 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         return (TalendJavaEditor) this.codeEditor;
     }
 
+    private FileEditorInput createFileEditorInput() {
+        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                processor.getCodeProject().getFullPath().append(processor.getCodePath()));
+        if (!codeFile.exists()) {
+            // Create empty one
+            try {
+                codeFile.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
+            } catch (CoreException e) {
+                // Do nothing.
+            }
+        }
+        return new FileEditorInput(codeFile);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.editor.INameRefresher#refreshName()
+     */
+    public void refreshName() {
+        try {
+            setName();
+            processor.initPath();
+            codeEditor.setInput(createFileEditorInput());
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+        }
+    }
 }
