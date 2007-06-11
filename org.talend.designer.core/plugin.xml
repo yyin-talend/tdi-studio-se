@@ -204,7 +204,7 @@
                   <view
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.contexts.ContextsView"
-                        icon="icons/context_icon.gif"
+                        icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
                         id="org.talend.designer.core.ui.views.ContextsView"
                         name="%contexts"/>
    </extension>
