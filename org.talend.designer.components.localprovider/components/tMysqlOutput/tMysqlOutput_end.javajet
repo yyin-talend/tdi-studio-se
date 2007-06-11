@@ -28,7 +28,13 @@ if(pstmtUpdate_<%=cid%> != null){
 
 	pstmtUpdate_<%=cid %>.close();
 	
-}else if(pstmt_<%=cid %> != null) {
+} 
+if(pstmtInsert_<%=cid %> != null){
+
+	pstmtInsert_<%=cid %>.close();
+	
+}
+if(pstmt_<%=cid %> != null) {
 
 	pstmt_<%=cid %>.close();
 	

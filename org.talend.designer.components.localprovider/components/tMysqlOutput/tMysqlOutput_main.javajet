@@ -372,62 +372,71 @@ nb_line_inserted_<%=cid%>++;
 	%>
 pstmt_<%=cid %>.executeUpdate();
 nb_line_update_<%=cid%> ++;
-	<%
+<%
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 %>
 
 <%
-		int counterInsert = 1;
-			for(Column columnInsert:colStruct){
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
-			
-			operation.generateSetStmt(typeToGenerate,columnInsert,counterInsert,incomingConnName,cid,1);
-			
-        	counterInsert++;
-		}
-	%>
-	
-	try{
-
-		pstmtInsert_<%=cid %>.executeUpdate();
-	
-		nb_line_inserted_<%=cid%>++;
-	
-	}catch(Exception e){
-	
-		<%
-		int counterCol = 1;
-		for(Column column:colStruct){
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			
-			if(!column.getColumn().isKey()){
-				
-				operation.generateSetStmt(typeToGenerate,column,counterCol,incomingConnName,cid,2);
-				
-        		counterCol++;
+		int columnIndex = 1;
+		for(Column column:colStruct)
+		{
+			if(column.getColumn().isKey())
+			{
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+				operation.generateSetStmt(typeToGenerate,column,columnIndex,incomingConnName,cid,0);
+				columnIndex++;				
 			}
 		}
+%>
 
-		for(Column column:colStruct){
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-			
-			if(column.getColumn().isKey()){
-			
-				operation.generateSetStmt(typeToGenerate,column,counterCol,incomingConnName,cid,2);
-				
-        		counterCol++;
+		java.sql.ResultSet rs_<%=cid%> = pstmt_<%=cid %>.executeQuery();
+		int checkCount_<%=cid%> = -1;
+		while(rs_<%=cid%>.next())
+		{
+			checkCount_<%=cid%> = rs_<%=cid%>.getInt(1);
+		}
+		if(checkCount_<%=cid%> > 0)
+		{
+			<%
+			int counterCol = 1;
+			for(Column column:colStruct)
+			{
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+				if(!column.getColumn().isKey())
+				{
+					operation.generateSetStmt(typeToGenerate,column,counterCol,incomingConnName,cid,2);
+					counterCol++;
+				}
 			}
+			for(Column column:colStruct)
+			{
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+				if(column.getColumn().isKey())
+				{
+					operation.generateSetStmt(typeToGenerate,column,counterCol,incomingConnName,cid,2);					
+	        		counterCol++;
+				}
+			}
+			%>
+			pstmtUpdate_<%=cid %>.executeUpdate();
+			nb_line_update_<%=cid%> ++;
+		}
+		else
+		{
+			<%
+			int counterInsert = 1;
+			for(Column columnInsert:colStruct)
+			{
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
+				operation.generateSetStmt(typeToGenerate,columnInsert,counterInsert,incomingConnName,cid,1);
+				counterInsert++;
+			}
+			%>
+			pstmtInsert_<%=cid %>.executeUpdate();
+			nb_line_inserted_<%=cid%>++;
 		}
 
-	%>
-	pstmtUpdate_<%=cid %>.executeUpdate();
-	
-	nb_line_update_<%=cid%> ++;
-	
-	}
-
-	<%
+<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 %>
 

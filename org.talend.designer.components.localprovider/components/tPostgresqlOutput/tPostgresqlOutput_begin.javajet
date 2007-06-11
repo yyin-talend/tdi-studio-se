@@ -308,6 +308,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=dbschema%>+"\""+
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + <%=dbschema%> + "\".\"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");	
 
 pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=dbschema%>+"\""+".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
