@@ -22,16 +22,23 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.internal.compiler.ast.NameReference;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.editor.IUIRefresher;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -66,7 +73,43 @@ public class EditPropertiesAction extends AContextualAction {
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
             refresh(node);
+            // refresh the corresponding editor's name
+            IEditorPart part = getCorrespondingEditor(node);
+            if (part != null && part instanceof IUIRefresher) {
+                ((IUIRefresher) part).refreshName();
+            }
         }
+    }
+
+    /**
+     * Find the editor that is related to the node.
+     * 
+     * @param node
+     * @return
+     */
+    private IEditorPart getCorrespondingEditor(RepositoryNode node) {
+        Object o = getActivePage().getInput();
+        IEditorReference[] eidtors = getActivePage().getEditorReferences();
+
+        for (int i = 0; i < eidtors.length; i++) {
+            try {
+                IEditorInput input = eidtors[i].getEditorInput();
+                if (!(input instanceof RepositoryEditorInput)) {
+                    continue;
+                }
+
+                RepositoryEditorInput repositoryInput = (RepositoryEditorInput) input;
+                if (repositoryInput.getItem().equals(node.getObject().getProperty().getItem())) {
+
+                    IPath path = repositoryInput.getFile().getLocation();
+
+                    return eidtors[i].getEditor(false);
+                }
+            } catch (PartInitException e) {
+                continue;
+            }
+        }
+        return null;
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
