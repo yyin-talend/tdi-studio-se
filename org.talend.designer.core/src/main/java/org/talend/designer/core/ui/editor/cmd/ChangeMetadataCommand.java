@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -37,11 +38,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -87,8 +89,8 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
-            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
+            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
@@ -184,6 +186,7 @@ public class ChangeMetadataCommand extends Command {
         return getPropagate(null);
     }
 
+    @SuppressWarnings("unchecked")
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
@@ -194,12 +197,31 @@ public class ChangeMetadataCommand extends Command {
             return;
         }
         ISection[] sections = currentTab.getSections();
+        final List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldTable, newTable);
         for (int i = 0; i < sections.length; i++) {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
                 DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
                 if (currentSection.getElement().equals(node)) {
-                    currentSection.updateColumnList(MetadataTool.getColumnNameChanged(oldTable, newTable));
+                    currentSection.updateColumnList(columnNameChanged);
                     currentSection.refresh();
+                }
+            }
+        }
+        if (inputNode != null) {
+            List<IElementParameter> eps = (List<IElementParameter>) inputNode.getElementParameters();
+            if (eps != null) {
+                boolean end = false;
+                for (int i = 0; i < eps.size() && !end; i++) {
+                    IElementParameter parameter = eps.get(i);
+                    if (parameter.getField() == EParameterFieldType.TABLE) {
+                        end = true;
+                        if (parameter != null) {
+                            List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
+                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                                MetadataTool.updateColumnList(columnNameChanged, inputNode);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -236,7 +258,8 @@ public class ChangeMetadataCommand extends Command {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).isExternalNode() && getPropagate() && targetNode.getMetadataList().size() > 0) {
+                            if (!((Node) targetNode).isExternalNode() && getPropagate()
+                                    && targetNode.getMetadataList().size() > 0) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     IMetadataTable toCopy = newOutputMetadata.clone();
                                     IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
