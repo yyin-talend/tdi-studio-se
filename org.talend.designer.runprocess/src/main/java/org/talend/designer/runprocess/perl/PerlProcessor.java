@@ -107,6 +107,11 @@ public class PerlProcessor extends Processor {
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("PerlProcessor.notFoundedPerlProject")); //$NON-NLS-1$
         }
+        initCodePath(context);
+        this.context = context;
+    }
+
+    private void initCodePath(IContext context) throws ProcessorException {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
@@ -115,7 +120,10 @@ public class PerlProcessor extends Processor {
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + ".pl"); //$NON-NLS-1$
         contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + ".pl"); //$NON-NLS-1$ //$NON-NLS-2$
-        this.context = context;
+    }
+
+    public void initPath() throws ProcessorException {
+        initCodePath(context);
     }
 
     public void generateCode(boolean statistics, boolean trace, boolean perlProperties) throws ProcessorException {
@@ -132,8 +140,8 @@ public class PerlProcessor extends Processor {
                 String currentPerlProject = repositoryProject.getTechnicalLabel();
                 String codeLocation = getCodeLocation();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
-                        codeLocation, currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, codeLocation,
+                        currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -316,8 +324,7 @@ public class PerlProcessor extends Processor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry
-                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -460,8 +467,8 @@ public class PerlProcessor extends Processor {
      * @return
      * @throws ProcessorException
      */
-    private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath,
-            String perlInterpreterLibOption, String perlModuleDirectoryOption) throws ProcessorException {
+    private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath, String perlInterpreterLibOption,
+            String perlModuleDirectoryOption) throws ProcessorException {
         assert (absCodePath != null);
         String[] cmd = new String[] { setStringPath(perlInterpreter) };
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
@@ -517,8 +524,8 @@ public class PerlProcessor extends Processor {
         perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + setStringPath(perlLib) : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
         IPath absCodePath = Path.fromOSString(getCodeLocation()).append(this.getCodePath());
-        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption,
-                perlModuleDirectoryOption);
+        String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
         return cmd;
     }
+
 }

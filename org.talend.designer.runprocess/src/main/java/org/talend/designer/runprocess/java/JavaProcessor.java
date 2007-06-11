@@ -162,12 +162,21 @@ public class JavaProcessor extends Processor {
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
-        
+
         try {
             updateClasspath();
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+        initCodePath(context);
+        this.context = context;
+    }
+
+    public void initPath() throws ProcessorException {
+        initCodePath(context);
+    }
+
+    public void initCodePath(IContext context) throws ProcessorException {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
@@ -201,7 +210,6 @@ public class JavaProcessor extends Processor {
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
-        this.context = context;
     }
 
     /*
@@ -225,8 +233,8 @@ public class JavaProcessor extends Processor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
-                        javaContext, currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
+                        currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -438,7 +446,7 @@ public class JavaProcessor extends Processor {
         return initializeProject();
 
     }
-    
+
     private static IProject initializeProject() throws CoreException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         rootProject = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
@@ -452,10 +460,8 @@ public class JavaProcessor extends Processor {
         if (rootProject == null || javaProject == null) {
             initializeProject();
         }
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
-                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -475,8 +481,7 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
-                .size()]);
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
@@ -560,8 +565,7 @@ public class JavaProcessor extends Processor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
-            throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
@@ -679,8 +683,7 @@ public class JavaProcessor extends Processor {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && process.getNeededLibraries(false).contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
-                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
-                                + classPathSeparator);
+                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
                     }
@@ -698,8 +701,7 @@ public class JavaProcessor extends Processor {
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath)
-                    .toOSString();
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString();
         }
 
         // init class name
