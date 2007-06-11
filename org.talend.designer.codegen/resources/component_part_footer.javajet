@@ -11,6 +11,8 @@
   org.talend.core.model.process.IExternalNode
   org.talend.designer.codegen.config.CodeGeneratorArgument
   java.util.List
+  java.util.Set
+  java.util.HashSet
  "
   class="ComponentPartFooter"     
 %>
@@ -20,19 +22,27 @@ INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
+Set<IConnection> connSet =  new HashSet<IConnection>();
+connSet.addAll(node.getIncomingConnections());
+connSet.addAll(node.getOutgoingConnections());
 %>
 
 <%
- if ((codePart.equals(ECodePart.MAIN))&&(stat)) {
+if((codePart.equals(ECodePart.MAIN))&&(stat)&&connSet.size()>0){
+  for(IConnection con:connSet){
 %>
- runStat.updateStat("<%=node.getUniqueName() %>",1, 1); 
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1); 
 <%
- }
- if ((codePart.equals(ECodePart.END))&&(stat)) {
+  }
+}
+ 
+if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
+  for(IConnection con:connSet){
 %>
- runStat.updateStat("<%=node.getUniqueName() %>",2, 0); 
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",2, 0); 
 <%
- }
+  }
+}
 
  if (codePart.equals(ECodePart.MAIN)) {
   for (IConnection conn : node.getOutgoingConnections()) {

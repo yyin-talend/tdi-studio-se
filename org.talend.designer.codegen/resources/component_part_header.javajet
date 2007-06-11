@@ -8,7 +8,9 @@
 		org.talend.core.model.process.EConnectionType 
         org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
+  		java.util.List
+ 		 java.util.Set
+  		java.util.HashSet
 		java.util.Iterator
 	"
 	class="ComponentPartHeader" 
@@ -19,6 +21,9 @@
 	ECodePart codePart = codeGenArgument.getCodePart();
 	boolean trace = codeGenArgument.isTrace();
 	boolean stat = codeGenArgument.isStatistics();
+	Set<IConnection> connSet =  new HashSet<IConnection>();
+	connSet.addAll(node.getIncomingConnections());
+	connSet.addAll(node.getOutgoingConnections());
 %>
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -70,11 +75,11 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 %>
 currentComponent="<%=node.getUniqueName() %>";
 <%
-  	
-  	if ((codePart.equals(ECodePart.BEGIN))&&(stat)) {
+	if ((codePart.equals(ECodePart.BEGIN))&&(stat)&&connSet.size()>0) {
+		for(IConnection con:connSet){
 %>
-	runStat.updateStat("<%=node.getUniqueName() %>",0, 0); 
-<%
+	runStat.updateStatOnConnection("<%=con.getUniqueName() %>",0, 0); 
+<%		}
 	}
 %>
 
