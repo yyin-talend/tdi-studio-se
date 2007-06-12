@@ -53,6 +53,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
@@ -298,6 +299,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ExportFileResource resource = process[i];
             IProcess iProcess = designerService.getProcessFromProcessItem(resource.getProcess());
             listModulesReallyNeeded.addAll(iProcess.getNeededLibraries(true));
+        }
+
+        for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+            listModulesReallyNeeded.add(moduleNeeded.getModuleName());
         }
 
         for (int i = 0; i < files.length; i++) {
