@@ -40,6 +40,8 @@ for (IConnection conn : connsIn) {//3
 
 String minNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MIN__");
 String maxNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MAX__");
+boolean minBounds = ElementParameterParser.getValue(node, "__LOOKUP_MIN_BOUNDS__").equals("true");
+boolean maxBounds = ElementParameterParser.getValue(node, "__LOOKUP_MAX_BOUNDS__").equals("true");
 String lookupNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
 String mainName = ElementParameterParser.getValue(node, "__MAIN_COLUMN__");
 String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
@@ -81,8 +83,8 @@ class Util_<%= cid %> {
 <% 
    if(mainjavaType == JavaTypesManager.DATE ) {
 %>
-            if (row_Main.<%=mainName %>.after(row_Lookup.<%=minName%>)
-                    && row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>)) 
+            if ((row_Main.<%=mainName %>.after(row_Lookup.<%=minName%>)<% if (minBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=minName%>) <% } %>)
+                    && (row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>)<% if (maxBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=maxName%>) <% } %>)) 
            
 <%
   } else if(mainjavaType == JavaTypesManager.BYTE || 
@@ -92,8 +94,8 @@ class Util_<%= cid %> {
             mainjavaType == JavaTypesManager.LONG ||
             mainjavaType == JavaTypesManager.INTEGER){
 %> 
-            if ((row_Main.<%=mainName %> > row_Lookup.<%=minName%>)
-                    && (row_Main.<%=mainName %> < row_Lookup.<%=maxName%>)) 
+            if ((row_Main.<%=mainName %> ><%=minBounds? "=":"" %> row_Lookup.<%=minName%>)
+                    && (row_Main.<%=mainName %> <<%=maxBounds? "=":"" %> row_Lookup.<%=maxName%>)) 
 <%
   } else {
 %>
@@ -101,8 +103,8 @@ class Util_<%= cid %> {
             String min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=minName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=minName %>) <%}%>;
             String max =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=maxName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=maxName %>) <%}%>;
             
-            if ((main.compareTo(min) > -1)
-                    && (main.compareTo(max) < 1)) 
+            if ((main.compareTo(min) ><%=minBounds? "=":"" %> 0)
+                    && (main.compareTo(max) <<%=maxBounds? "=":"" %> 0)) 
 
 <%
   }

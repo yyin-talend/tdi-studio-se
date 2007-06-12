@@ -50,23 +50,41 @@
       NAME="LOOKUP_MIN"
       FIELD="LOOKUP_COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="5"
     >
+    </PARAMETER>
+   
+    <PARAMETER
+      NAME="LOOKUP_MIN_BOUNDS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
    
     <PARAMETER
       NAME="LOOKUP_MAX"
       FIELD="LOOKUP_COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="6"
     >
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="LOOKUP_MAX_BOUNDS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="LOOKUP_COLUMN"
       FIELD="LOOKUP_COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="4"
     >
     </PARAMETER>
 
