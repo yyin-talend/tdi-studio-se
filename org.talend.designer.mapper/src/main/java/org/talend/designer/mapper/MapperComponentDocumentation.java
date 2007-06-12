@@ -228,6 +228,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
         tableElement.addAttribute("isRejectInnerJoin", String.valueOf(table.isRejectInnerJoin()));
         tableElement.addAttribute("isInnerJoin", String.valueOf(table.isInnerJoin()));
         tableElement.addAttribute("expressionFilter", String.valueOf(table.getExpressionFilter()));
+        tableElement.addAttribute("activateExpressionFilter", String.valueOf(table.isActivateExpressionFilter()));
     }
 
     /**

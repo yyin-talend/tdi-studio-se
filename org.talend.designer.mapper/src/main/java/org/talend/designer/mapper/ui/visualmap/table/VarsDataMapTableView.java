@@ -463,4 +463,22 @@ public class VarsDataMapTableView extends DataMapTableView {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getValidZonesForExpressionFilterField()
+     */
+    @Override
+    protected Zone[] getValidZonesForExpressionFilterField() {
+        throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
+     */
+    @Override
+    public void loaded() {
+        
+    }
+
+    
+    
 }

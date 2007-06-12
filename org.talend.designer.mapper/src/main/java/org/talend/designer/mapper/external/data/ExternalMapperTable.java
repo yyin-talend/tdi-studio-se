@@ -59,10 +59,10 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private boolean rejectInnerJoin;
 
     private String expressionFilter;
- 
-    private String multipleMatchingMode;
     
-    private boolean uniqueMatch;
+    private boolean activateExpressionFilter;
+ 
+    private String matchingMode;
     
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
@@ -168,23 +168,38 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     public void setExpressionFilter(String expressionFilter) {
         this.expressionFilter = expressionFilter;
     }
-
     
+    /**
+     * Getter for activateExpressionFilter.
+     * @return the activateExpressionFilter
+     */
+    public boolean isActivateExpressionFilter() {
+        return this.activateExpressionFilter;
+    }
+    
+    /**
+     * Sets the activateExpressionFilter.
+     * @param activateExpressionFilter the activateExpressionFilter to set
+     */
+    public void setActivateExpressionFilter(boolean activateExpressionFilter) {
+        this.activateExpressionFilter = activateExpressionFilter;
+    }
+
     /**
      * Getter for lookupType.
      * @return the lookupType
      */
-    public String getMultipleMatchingMode() {
-        return this.multipleMatchingMode;
+    public String getMatchingMode() {
+        return this.matchingMode;
     }
 
     
     /**
      * Sets the lookupType.
-     * @param lookupType the lookupType to set
+     * @param matchingMode the lookupType to set
      */
-    public void setMultipleMatchingMode(String lookupType) {
-        this.multipleMatchingMode = lookupType;
+    public void setMatchingMode(String matchingMode) {
+        this.matchingMode = matchingMode;
     }
 
     
@@ -205,24 +220,6 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      */
     public void setTableSizeState(String tableSizeState) {
         this.tableSizeState = tableSizeState;
-    }
-
-    
-    /**
-     * Getter for uniqueLookup.
-     * @return the uniqueLookup
-     */
-    public boolean isUniqueMatch() {
-        return this.uniqueMatch;
-    }
-
-    
-    /**
-     * Sets the uniqueLookup.
-     * @param uniqueLookup the uniqueLookup to set
-     */
-    public void setUniqueMatch(boolean uniqueLookup) {
-        this.uniqueMatch = uniqueLookup;
     }
 
     /*

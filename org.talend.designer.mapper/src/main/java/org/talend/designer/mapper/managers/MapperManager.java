@@ -639,7 +639,8 @@ public class MapperManager {
                 return true;
             }
         } else if (entrySource instanceof InputColumnTableEntry
-                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry)) {
+                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry
+                        && entryTarget.getParent() instanceof InputTable)) {
             List<InputTable> inputTables = getInputTables();
             int indexTableSource = inputTables.indexOf(entrySource.getParent());
             int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
@@ -648,7 +649,8 @@ public class MapperManager {
                 return true;
             }
         } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
-                || entryTarget instanceof FilterTableEntry) {
+                || entryTarget instanceof FilterTableEntry || entryTarget instanceof ExpressionFilterEntry
+                && entryTarget.getParent() instanceof OutputTable) {
             if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
                 return true;
             }
@@ -852,10 +854,28 @@ public class MapperManager {
 
     /**
      * DOC amaumont Comment method "isAdvancedMap".
+     * 
      * @return
      */
     public boolean isAdvancedMap() {
         return getComponent().getClass().getName().endsWith("AdvancedMapperComponent");
+    }
+
+    /**
+     * DOC amaumont Comment method "isTableHasAtLeastOneHashKey".
+     * 
+     * @param inputTable
+     */
+    public boolean isTableHasAtLeastOneHashKey(InputTable inputTable) {
+        boolean atLeastOneHashKey = false;
+        List<IColumnEntry> columnEntries = inputTable.getColumnEntries();
+        for (IColumnEntry entry : columnEntries) {
+            if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
+                atLeastOneHashKey = true;
+                break;
+            }
+        }
+        return atLeastOneHashKey;
     }
 
 }

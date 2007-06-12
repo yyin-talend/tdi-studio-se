@@ -166,7 +166,7 @@ public class GenerationManager {
         if (clocksCodeToClose == null) {
             clocksCodeToClose = new ArrayList<BlockCode>();
         }
-        clocksCodeToClose.add(blockCode);
+        clocksCodeToClose.add(0, blockCode);
     }
 
 }

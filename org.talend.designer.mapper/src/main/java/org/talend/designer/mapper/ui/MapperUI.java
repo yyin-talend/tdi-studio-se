@@ -533,10 +533,7 @@ public class MapperUI {
             boolean tableIsMinimized = inputTable.isMinimized();
             dataMapTableView.minimizeTable(tableIsMinimized);
             dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
-            if (mapperManager.isAdvancedMap()) {
-                dataMapTableView.configureExpressionFilter();
-                dataMapTableView.checkChangementsAfterEntryModifiedOrAdded();
-            }
+            dataMapTableView.loaded();
             // dataMapTableView.fillMinimumSize(false);
         }
         inputTablesZoneView.setSize(inputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -667,6 +664,7 @@ public class MapperUI {
 
             OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
                     abstractDataMapTable, outputTablesZoneView);
+            dataMapTableView.loaded();
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));

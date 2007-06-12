@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.internal.dialogs.DialogUtil;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
@@ -609,18 +610,26 @@ public class UIManager {
      * @param ok
      */
     public void closeMapper(int response) {
-        setMapperResponse(response);
-        Composite parent = mapperUI.getMapperUIParent();
-        saveCurrentUIProperties();
 
-        if (response == SWT.OK) {
-            createVisualMapImage();
+        boolean save = true;
+        if (response == SWT.OK && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
+            save = MessageDialog.openConfirm(getMapperContainer().getShell(), "Errors exist",
+                    "Are you sure to save data in tMap although errors");
         }
+        if (save) {
+            setMapperResponse(response);
+            Composite parent = mapperUI.getMapperUIParent();
+            saveCurrentUIProperties();
 
-        mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
+            if (response == SWT.OK) {
+                createVisualMapImage();
+            }
 
-        if (parent instanceof Shell) {
-            ((Shell) parent).close();
+            mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
+
+            if (parent instanceof Shell) {
+                ((Shell) parent).close();
+            }
         }
     }
 

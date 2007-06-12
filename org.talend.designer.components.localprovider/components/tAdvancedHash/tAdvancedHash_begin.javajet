@@ -7,6 +7,8 @@
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IMatchingMode
 		java.util.HashSet
 		java.util.Set
 	"
@@ -51,18 +53,34 @@
 				validTarget = currentTarget;
 			}
 
-				System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
+			// System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
 
 			if(validTarget != null) {
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
-					Set<String> hHashableColumns = hHashableColumns = target.getHashableColumns(connection.getName());
-					boolean hasAtLeastOneKey = hHashableColumns.size() > 0;
+					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
+					Set<String> hHashableColumns = null;
+					IMatchingMode matchingMode = null;
+					if(hashConfiguration == null) {
+						hHashableColumns = new HashSet(0);
+					} else {
+						hHashableColumns = hashConfiguration.getHashableColumns();
+						matchingMode = hashConfiguration.getMatchingMode();
+					}
+					
 			   %>
-	   			org.talend.designer.components.commons.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = org.talend.designer.components.commons.AdvancedLookup.<<%=connectionName%>Struct>getHashedMultiRowsLookup();
+			   	<%if( matchingMode != null) { %>
+			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum = 
+			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingMode.toString() %>;
+			   	<% } else {%>
+			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum = null;
+			   	<% } %>
+	   			org.talend.designer.components.commons.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   				org.talend.designer.components.commons.AdvancedLookup.
+	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum);
    	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
 				<%
 			} else { 
-				System.out.println(connectionName + " ######## Valid target not found" );
+				// System.out.println(connectionName + " ######## Valid target not found" );
 			}
 		}
 	}

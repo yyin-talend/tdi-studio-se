@@ -45,6 +45,8 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
+import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -70,6 +72,10 @@ public class ProblemsManager {
     private IAloneProcessNodeConfigurer nodeConfigurer;
 
     private CheckProblemForEntryLimiter checkProblemForEntryLimiter;
+
+    private Boolean hasProblems;
+
+    private boolean refreshTableEntries;
 
     /**
      * DOC amaumont ProblemsManager constructor comment.
@@ -199,12 +205,15 @@ public class ProblemsManager {
         return codeChecker.checkProblemsForExpression(expression);
     }
 
+
     /**
-     * DOC amaumont Comment method "checkProblemsForAllEntries".
      * 
-     * @param forceRefreshData TODO
+     * DOC amaumont Comment method "checkProblemsForAllEntriesOfAllTables".
+     * @param forceRefreshData
+     * @return true if has errors
      */
-    public void checkProblemsForAllEntriesOfAllTables(boolean forceRefreshData) {
+    public boolean checkProblemsForAllEntriesOfAllTables(boolean forceRefreshData) {
+        hasProblems = Boolean.FALSE;
         List<DataMapTableView> tablesView = mapperManager.getUiManager().getInputsTablesView();
         tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
         tablesView.addAll(mapperManager.getUiManager().getOutputsTablesView());
@@ -215,42 +224,89 @@ public class ProblemsManager {
         for (DataMapTableView view : tablesView) {
             checkProblemsForAllEntries(view, false);
         }
+        boolean returnedValue = hasProblems;
+        hasProblems = null;
+        return returnedValue;
     }
 
     /**
-     * DOC amaumont Comment method "processAllExpressions".
      * 
-     * @param forceRefreshData TODO
+     * DOC amaumont Comment method "checkProblemsForAllEntries".
+     * @param dataMapTableView
+     * @param forceRefreshData
+     * @return true if has errors
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
+    public boolean checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
             mapperManager.getComponent().refreshMapperConnectorData();
             checkProblems();
         }
+
+        boolean hasProblemsWasNull = false;
+        if (hasProblems == null) {
+            hasProblems = Boolean.FALSE;
+            hasProblemsWasNull = true;
+        }
+
+        if (dataMapTableView.getDataMapTable() instanceof AbstractInOutTable) {
+            AbstractInOutTable table = (AbstractInOutTable) dataMapTableView.getDataMapTable();
+            if (table.isActivateExpressionFilter()) {
+                checkProblemsForTableEntry(table.getExpressionFilter(), false);
+            }
+        }
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
-        if (checkProblemsForAllEntries(columnsEntriesList)) {
+        checkProblemsForAllEntries(columnsEntriesList);
+        if (refreshTableEntries) {
             dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(true);
         }
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
-            if (checkProblemsForAllEntries(constraintEntriesList)) {
+            checkProblemsForAllEntries(constraintEntriesList);
+            if (refreshTableEntries) {
                 dataMapTableView.getTableViewerCreatorForFilters().getTableViewer().refresh(true);
             }
         }
+        boolean returnedValue = hasProblems;
+        if (hasProblemsWasNull) {
+            hasProblems = null;
+        }
+        return returnedValue;
     }
 
+    /**
+     * 
+     * DOC amaumont Comment method "checkProblemsForAllEntries".
+     * 
+     * @param entriesList
+     * @return true if has errors
+     */
     private boolean checkProblemsForAllEntries(List<? extends ITableEntry> entriesList) {
-        boolean errorsHasChanged = false;
+        boolean stateErrorsHasChanged = false;
+        refreshTableEntries = false;
+        boolean hasProblemsWasNull = false;
+        if (hasProblems == null) {
+            hasProblems = Boolean.FALSE;
+            hasProblemsWasNull = true;
+        }
+
         for (ITableEntry entry : entriesList) {
             boolean haveProblemsBefore = entry.getProblems() != null;
             mapperManager.getProblemsManager().checkProblemsForTableEntry(entry, false);
             boolean haveProblemsAfter = entry.getProblems() != null;
+            if (haveProblemsAfter) {
+                hasProblems = Boolean.TRUE;
+            }
             if (haveProblemsBefore != haveProblemsAfter) {
-                errorsHasChanged = true;
+                stateErrorsHasChanged = true;
             }
         }
-        return errorsHasChanged;
+        refreshTableEntries = stateErrorsHasChanged;
+        boolean returnedValue = hasProblems;
+        if (hasProblemsWasNull) {
+            hasProblems = null;
+        }
+        return returnedValue;
     }
 
     public void checkProblemsForTableEntryWithDelayLimiter(ITableEntry tableEntry) {
@@ -267,7 +323,15 @@ public class ProblemsManager {
 
     }
 
-    public void checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
+    /**
+     * 
+     * DOC amaumont Comment method "checkProblemsForTableEntry".
+     * 
+     * @param tableEntry
+     * @param forceRefreshData
+     * @return true if at least one problem has been detected
+     */
+    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
 
         if (forceRefreshData) {
             mapperManager.getComponent().refreshMapperConnectorData();
@@ -285,7 +349,7 @@ public class ProblemsManager {
             } else if (codeLanguage == ECodeLanguage.JAVA) {
                 PROBLEM_KEY_FIELD problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN;
                 String entryName = tableEntry.getName();
-                if (tableEntry instanceof FilterTableEntry) {
+                if (tableEntry instanceof FilterTableEntry || tableEntry instanceof ExpressionFilterEntry) {
                     problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER;
                     entryName = null;
                 }
@@ -306,14 +370,18 @@ public class ProblemsManager {
                 problems = null;
             }
 
-            tableEntry.setProblems(problems);
+        }
+        tableEntry.setProblems(problems);
 
-            TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
-            if (tableViewerCreator != null) {
-                tableViewerCreator.getTableViewer().refresh(tableEntry, true);
-            }
+        TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
+        if (tableViewerCreator != null) {
+            tableViewerCreator.getTableViewer().refresh(tableEntry, true);
         }
 
+        if (problems != null) {
+            hasProblems = problems != null;
+        }
+        return problems != null;
     }
 
     /**

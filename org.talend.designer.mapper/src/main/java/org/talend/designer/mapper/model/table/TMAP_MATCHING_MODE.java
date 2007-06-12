@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_MODE;
+import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 
 /**
  * 
@@ -30,14 +30,16 @@ import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_M
  * $Id$
  * 
  */
-public enum TMAP_MULTIPLE_MATCHING_MODE implements ILookupType {
-    FIRST_MATCH(MULTIPLE_MATCHING_MODE.FIRST_MATCH, "First match"),
-    LAST_MATCH(MULTIPLE_MATCHING_MODE.LAST_MATCH, "Last match"),
-    ALL_MATCHES(MULTIPLE_MATCHING_MODE.ALL_MATCHES, "All matches"), ;
+public enum TMAP_MATCHING_MODE implements ILookupType {
+    ALL_ROWS(MATCHING_MODE.ALL_ROWS, "All rows"),
+    UNIQUE_MATCH(MATCHING_MODE.UNIQUE_MATCH, "Unique match"),
+    FIRST_MATCH(MATCHING_MODE.FIRST_MATCH, "First match"),
+    LAST_MATCH(MATCHING_MODE.LAST_MATCH, "Last match"),
+    ALL_MATCHES(MATCHING_MODE.ALL_MATCHES, "All matches"), ;
 
     private String label;
 
-    private MULTIPLE_MATCHING_MODE multipleMatchingMode;
+    private MATCHING_MODE multipleMatchingMode;
 
     /**
      * 
@@ -45,7 +47,7 @@ public enum TMAP_MULTIPLE_MATCHING_MODE implements ILookupType {
      * 
      * @param label
      */
-    TMAP_MULTIPLE_MATCHING_MODE(MULTIPLE_MATCHING_MODE multipleMatchingMode, String label) {
+    TMAP_MATCHING_MODE(MATCHING_MODE multipleMatchingMode, String label) {
         this.label = label;
         this.multipleMatchingMode = multipleMatchingMode;
     }
@@ -64,14 +66,14 @@ public enum TMAP_MULTIPLE_MATCHING_MODE implements ILookupType {
      * 
      * @return the multipleMatchingMode
      */
-    public MULTIPLE_MATCHING_MODE getMultipleMatchingMode() {
+    public MATCHING_MODE getMultipleMatchingMode() {
         return this.multipleMatchingMode;
     }
 
     public static ILookupType parse(String matchingMode) {
-        TMAP_MULTIPLE_MATCHING_MODE multipleMatchingMode = null;
-        TMAP_MULTIPLE_MATCHING_MODE[] tmapMultipleMatchingModes = values();
-        for (TMAP_MULTIPLE_MATCHING_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
+        TMAP_MATCHING_MODE multipleMatchingMode = null;
+        TMAP_MATCHING_MODE[] tmapMultipleMatchingModes = values();
+        for (TMAP_MATCHING_MODE tmapMultipleMatchingMode : tmapMultipleMatchingModes) {
             if (tmapMultipleMatchingMode.toString().equals(matchingMode)) {
                 multipleMatchingMode = tmapMultipleMatchingMode;
                 break;

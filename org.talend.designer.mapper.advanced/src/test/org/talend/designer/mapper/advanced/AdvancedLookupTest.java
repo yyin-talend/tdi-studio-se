@@ -28,11 +28,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.designer.components.commons.AdvancedLookup;
-import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_MODE;
+import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
+ 
  */
 public class AdvancedLookupTest {
 
@@ -69,7 +70,7 @@ public class AdvancedLookupTest {
      */
     @Before
     public void init() {
-
+        
     }
 
     /**
@@ -77,7 +78,7 @@ public class AdvancedLookupTest {
      */
     @Test
     public void testGetPut() {
-        AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
+        AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getLookup(MATCHING_MODE.ALL_MATCHES);
 
         RowStruct3.startRangeIsKey = true;
         RowStruct3.endRangeIsKey = true;
@@ -88,15 +89,16 @@ public class AdvancedLookupTest {
             lookup.put(new RowStruct3(i + 10, i + 10, String.valueOf(i + 10), String.valueOf(i + 10), "name C"
                     + String.valueOf(i + 10)));
         }
-
-        lookup.get(new RowStruct3(1, 1 + 4, "test1", "test1", "name x"));
+        
+        lookup.get(new RowStruct3(1, 1 + 4, null, null, null));
         if (lookup.resultIsList()) {
             System.out.println("List: " + lookup.getResultList());
         } else if (lookup.resultIsObject()) {
             System.out.println("Object: " + lookup.getResultObject());
+            
         }
 
-        lookup.get(new RowStruct3(11, 11, "test1", "test1", "name x"));
+        lookup.get(new RowStruct3(11, 11, null, null, null));
         if (lookup.resultIsList()) {
             System.out.println("List: " + lookup.getResultList());
         } else if (lookup.resultIsObject()) {
@@ -178,7 +180,7 @@ public class AdvancedLookupTest {
         public void executeWithTwoIntegersHashKeys() {
 
             int lstSize = nIterations;
-            AdvancedLookup lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
+            AdvancedLookup lookup = AdvancedLookup.<RowStruct3>getLookup(MATCHING_MODE.ALL_MATCHES);
 
             TimeMeasure.measureActive = true;
 
@@ -231,7 +233,7 @@ public class AdvancedLookupTest {
         public void executeWithOneStringHashKeyAndRange() {
 
             int lstSize = nIterations;
-            AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getHashedMultiRowsLookup();
+            AdvancedLookup<RowStruct3> lookup = AdvancedLookup.<RowStruct3>getLookup(MATCHING_MODE.ALL_MATCHES);
 
             TimeMeasure.measureActive = true;
 

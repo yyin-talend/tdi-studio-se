@@ -58,6 +58,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -87,6 +88,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEven
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
+import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -121,6 +123,8 @@ import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvi
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
+import com.sybase.jdbc3.utils.CheckPureConverter;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
@@ -129,7 +133,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public abstract class DataMapTableView extends Composite {
 
-    private Point realToolbarSize = new Point(0,0);
+    private Point realToolbarSize = new Point(0, 0);
 
     private Table tableForEntries;
 
@@ -209,6 +213,16 @@ public abstract class DataMapTableView extends Composite {
 
     protected GridData tableForConstraintsGridData;
 
+    private ExpressionProposalProvider expressionProposalProviderForExpressionFilter;
+
+    private StyledText expressionFilterText;
+
+    public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>";
+
+    private static final String EXPRESSION_FILTER_ENTRY = "EXPRESSION_FILTER_ENTRY";
+
+    private String previousTextForExpressionFilter;
+
     /**
      * 
      * Call finalizeInitialization(...) after instanciate this class.
@@ -273,45 +287,46 @@ public abstract class DataMapTableView extends Composite {
         nameLabel.setText(abstractDataMapTable.getName());
         nameLabel.setToolTipText(abstractDataMapTable.getName());
         GridData dataNameLabel = new GridData(GridData.FILL_HORIZONTAL);
-        dataNameLabel.minimumWidth = 50;
+        dataNameLabel.minimumWidth = nameLabel.getText().length() * 8;
+
         nameLabel.setLayoutData(dataNameLabel);
-//        nameLabel.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_RED));
+        // nameLabel.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_RED));
 
         int rightStyle = toolbarNeedToHaveRightStyle() ? SWT.RIGHT : SWT.NONE;
         toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle | SWT.NONE);
-//        toolBarActions.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+        // toolBarActions.setBackground(nameLabel.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
         if (addToolItems()) {
             addToolItemSeparator();
         }
-        
+
         Point realToolbarSize = getRealToolbarSize();
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
         realToolbarSize.x += 45;
-        
+
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         Rectangle trim = toolBarActions.computeTrim(0, 0, 0, 0);
         System.out.println(getDataMapTable().getName());
         System.out.println("sizeToolBar:" + sizeToolBar);
-        
+
         GridData gridData = new GridData();
-        
-//        gridData.grabExcessHorizontalSpace = true;
-//        gridData.horizontalAlignment = SWT.END;
+
+        // gridData.grabExcessHorizontalSpace = true;
+        // gridData.horizontalAlignment = SWT.END;
         gridData.heightHint = sizeToolBar.y;
         if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
-            if(realToolbarSize != null) {
+            if (realToolbarSize != null) {
                 gridData.widthHint = realToolbarSize.x;
                 System.out.println("realToolbarSize:" + realToolbarSize);
             }
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
-//            gridData.widthHint -= 48;
+            // gridData.widthHint -= 48;
         }
         if (WindowSystem.isGTK()) {
             gridData.heightHint = 26;
         }
-//        gridData.widthHint = 50;
+        // gridData.widthHint = 50;
         toolBarActions.setLayoutData(gridData);
 
         headerLayout.numColumns = headerComposite.getChildren().length;
@@ -333,7 +348,12 @@ public abstract class DataMapTableView extends Composite {
         centerLayout.verticalSpacing = spacingCenterLayout;
         centerComposite.setLayout(centerLayout);
 
-        initTableFilters();
+        if (mapperManager.isAdvancedMap() && this instanceof OutputDataMapTableView) {
+            createExpressionFilter();
+            initTableFilters();
+        } else {
+            initTableFilters();
+        }
 
         createContent();
 
@@ -601,11 +621,7 @@ public abstract class DataMapTableView extends Composite {
                     String toolTip = null;
                     if (tableEntry.getProblems() != null) {
                         List<Problem> problems = tableEntry.getProblems();
-                        toolTip = ""; //$NON-NLS-1$
-                        for (Problem problem : problems) {
-                            String description = problem.getDescription().replaceAll("[\r\n\t]", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                            toolTip += description + "\n"; //$NON-NLS-1$
-                        }
+                        toolTip = createErrorContentForTooltip(problems);
                     }
 
                     String tableToolTip = table.getToolTipText();
@@ -976,41 +992,49 @@ public abstract class DataMapTableView extends Composite {
 
     protected void createFiltersToolItems() {
 
-        ToolItem addFilterButton = new ToolItem(toolBarActions, SWT.PUSH);
-        addFilterButton.setEnabled(!mapperManager.componentIsReadOnly());
-        addFilterButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.addFilterRow")); //$NON-NLS-1$
-        addFilterButton.setImage(ImageProviderMapper.getImage(ImageInfo.ADD_FILTER_ICON));
+        if (mapperManager.isAdvancedMap()) {
 
-        // /////////////////////////////////////////////////////////////////
-        if (addFilterButton != null) {
+            createActivateFilterCheck();
 
-            addFilterButton.addSelectionListener(new SelectionListener() {
+        } else {
 
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
+            ToolItem addFilterButton = new ToolItem(toolBarActions, SWT.PUSH);
+            addFilterButton.setEnabled(!mapperManager.componentIsReadOnly());
+            addFilterButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.addFilterRow")); //$NON-NLS-1$
+            addFilterButton.setImage(ImageProviderMapper.getImage(ImageInfo.ADD_FILTER_ICON));
 
-                public void widgetSelected(SelectionEvent e) {
+            // /////////////////////////////////////////////////////////////////
+            if (addFilterButton != null) {
 
-                    Table tableConstraints = tableViewerCreatorForFilters.getTable();
-                    int index = tableConstraints.getItemCount();
-                    int[] selection = tableViewerCreatorForFilters.getTable().getSelectionIndices();
-                    if (selection.length > 0) {
-                        index = selection[selection.length - 1] + 1;
+                addFilterButton.addSelectionListener(new SelectionListener() {
+
+                    public void widgetDefaultSelected(SelectionEvent e) {
                     }
-                    mapperManager.addNewFilterEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index); //$NON-NLS-1$
-                    updateGridDataHeightForTableConstraints();
-                    DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, true), true,
-                            true);
-                    tableViewerCreatorForFilters.getTableViewer().refresh();
-                    mapperManager.getUiManager().refreshBackground(true, false);
-                    showTableConstraints(true);
-                    changeMinimizeState(false);
-                    tableViewerCreatorForFilters.layout();
-                }
 
-            });
+                    public void widgetSelected(SelectionEvent e) {
+
+                        Table tableConstraints = tableViewerCreatorForFilters.getTable();
+                        int index = tableConstraints.getItemCount();
+                        int[] selection = tableViewerCreatorForFilters.getTable().getSelectionIndices();
+                        if (selection.length > 0) {
+                            index = selection[selection.length - 1] + 1;
+                        }
+                        mapperManager
+                                .addNewFilterEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index); //$NON-NLS-1$
+                        updateGridDataHeightForTableConstraints();
+                        DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, true),
+                                true, true);
+                        tableViewerCreatorForFilters.getTableViewer().refresh();
+                        mapperManager.getUiManager().refreshBackground(true, false);
+                        showTableConstraints(true);
+                        changeMinimizeState(false);
+                        tableViewerCreatorForFilters.layout();
+                    }
+
+                });
+            }
+            // /////////////////////////////////////////////////////////////////
         }
-        // /////////////////////////////////////////////////////////////////
 
         final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
         rejectFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
@@ -1111,6 +1135,60 @@ public abstract class DataMapTableView extends Composite {
 
     }
 
+    /**
+     * DOC amaumont Comment method "createActivateFilterCheck".
+     */
+    protected void createActivateFilterCheck() {
+        AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+        final ToolItem activateFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
+        activateFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
+        activateFilterCheck.setSelection(table.isActivateExpressionFilter());
+        activateFilterCheck.setToolTipText(Messages
+                .getString("DataMapTableView.buttonTooltip.activateExpressionFilter")); //$NON-NLS-1$
+        activateFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
+
+        // /////////////////////////////////////////////////////////////////
+        if (activateFilterCheck != null) {
+
+            activateFilterCheck.addSelectionListener(new SelectionListener() {
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+
+                    GridData gridData = (GridData) expressionFilterText.getLayoutData();
+
+                    if (activateFilterCheck.getSelection()) {
+                        expressionFilterText.setVisible(true);
+                        gridData.exclude = false;
+                        table.setActivateExpressionFilter(true);
+                    } else {
+                        expressionFilterText.setVisible(false);
+                        gridData.exclude = true;
+                        table.setActivateExpressionFilter(false);
+                    }
+                    // updateGridDataHeightForTableConstraints();
+                    DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true,
+                            true);
+                    DataMapTableView.this.layout();
+                    mapperManager.getUiManager().refreshBackground(true, false);
+                    new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
+
+                        public void run() {
+                            checkProblemsForExpressionFilter(table, true);
+                        }
+                        
+                    }).start();
+                    // changeMinimizeState(false);
+                }
+
+            });
+        }
+        // /////////////////////////////////////////////////////////////////
+    }
+
     protected void createToolItems() {
 
     }
@@ -1120,10 +1198,10 @@ public abstract class DataMapTableView extends Composite {
         if (minimize) {
             // System.out.println("store height before minimize"+size.y);
             this.heightForRestore = size.y - 4;
-            changeSize(new Point(size.x, MINIMUM_HEIGHT), true, true);
+            changeSize(new Point(size.x, getHeaderHeight()), true, true);
             changeMinimizeState(true);
         } else {
-            if (heightForRestore != MINIMUM_HEIGHT && heightForRestore > 0) {
+            if (heightForRestore != getHeaderHeight() && heightForRestore > 0) {
                 size.y = heightForRestore;
             } else {
                 size = DataMapTableView.this.getPreferredSize(false, true, false);
@@ -1497,7 +1575,7 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
-                checkChangementsAfterEntryModifiedOrAdded();
+                checkChangementsAfterEntryModifiedOrAdded(false);
                 if (WindowSystem.isGTK()) {
 
                     new AsynchronousThreading(50, false, expressionTextEditor.getDisplay(), new Runnable() {
@@ -1736,7 +1814,6 @@ public abstract class DataMapTableView extends Composite {
 
     public abstract boolean hasDropDownToolBarItem();
 
-
     /**
      * DOC amaumont Comment method "parseExpression".
      * 
@@ -1781,12 +1858,178 @@ public abstract class DataMapTableView extends Composite {
         return HEADER_HEIGHT + (hasDropDownToolBarItem() ? 8 : 0);
     }
 
-    public void checkChangementsAfterEntryModifiedOrAdded() {
-        
+    public void checkChangementsAfterEntryModifiedOrAdded(boolean forceEvaluation) {
+
     }
-    
+
     public Point getRealToolbarSize() {
         return realToolbarSize;
     }
-    
+
+    /**
+     * DOC amaumont Comment method "createExpressionFilter".
+     */
+    protected void createExpressionFilter() {
+        if (mapperManager.isAdvancedMap() && getDataMapTable() instanceof AbstractInOutTable) {
+
+            final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+
+            // expressionFilterText = new Text(scrolledComposite, SWT.MULTI | SWT.WRAP | SWT.BORDER);
+            expressionFilterText = new StyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
+                    | SWT.V_SCROLL);
+            GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+            gridData.minimumHeight = 10;
+            // gridData.grabExcessVerticalSpace = true;
+            gridData.heightHint = 30;
+            expressionFilterText.setLayoutData(gridData);
+
+            expressionFilterText.setVisible(table.isActivateExpressionFilter());
+            gridData.exclude = !table.isActivateExpressionFilter();
+
+            final String defaultText = DEFAULT_EXPRESSION_FILTER;
+            String expressionFilter = table.getExpressionFilter().getExpression();
+            if (expressionFilter != null && !"".equals(expressionFilter.trim())) {
+                expressionFilterText.setText(expressionFilter);
+            } else {
+                expressionFilterText.setText(defaultText);
+            }
+            expressionFilterText.addFocusListener(new FocusListener() {
+
+                public void focusGained(FocusEvent e) {
+                    Control text = (Control) e.getSource();
+                    ;
+                    if (defaultText.equals(ControlUtils.getText(text))) {
+                        ControlUtils.setText(text, "");
+                    }
+                    table.getExpressionFilter().setExpression(ControlUtils.getText(text));
+                }
+
+                public void focusLost(FocusEvent e) {
+                    Control text = (Control) e.getSource();
+                    if ("".equals(ControlUtils.getText(text).trim())) {
+                        ControlUtils.setText(text, defaultText);
+                    }
+                    table.getExpressionFilter().setExpression(ControlUtils.getText(text));
+                }
+
+            });
+
+            expressionFilterText.addFocusListener(new FocusListener() {
+
+                public void focusGained(FocusEvent e) {
+                    expressionFilterText.setBackground(null);
+                    expressionFilterText.setForeground(null);
+                    StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
+                            .getStyledTextHandler();
+                    styledTextHandler.setCurrentEntry(table.getExpressionFilter());
+                    previousTextForExpressionFilter = table.getExpressionFilter().getExpression() == null ? "" : table.getExpressionFilter().getExpression(); //$NON-NLS-1$
+                    styledTextHandler.getStyledText().setText(previousTextForExpressionFilter);
+                    expressionFilterText.setToolTipText(null);
+                }
+
+                public void focusLost(FocusEvent e) {
+                    table.getExpressionFilter().setExpression(expressionFilterText.getText());
+                    checkProblemsForExpressionFilter(table, false);
+                }
+
+            });
+
+            Listener showTooltipErrorListener = new Listener() {
+
+                public void handleEvent(Event event) {
+
+                    switch (event.type) {
+                    case SWT.MouseMove:
+                        if (table.getExpressionFilter().getProblems() != null && !expressionFilterText.isFocusControl()) {
+                            String tooltip = createErrorContentForTooltip(table.getExpressionFilter().getProblems());
+                            expressionFilterText.setToolTipText(tooltip);
+                        } else {
+                            expressionFilterText.setToolTipText(null);
+                        }
+
+                        break;
+                    default:
+                    }
+                }
+
+            };
+            expressionFilterText.addListener(SWT.MouseMove, showTooltipErrorListener);
+
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "checkProblemsForExpressionFilter".
+     * 
+     * @param table
+     * @param forceRecompile TODO
+     */
+    protected void checkProblemsForExpressionFilter(final AbstractInOutTable table, boolean forceRecompile) {
+        List<Problem> problems = null;
+        if (table.isActivateExpressionFilter()) {
+            String nextText = expressionFilterText.getText();
+            if (forceRecompile || nextText != null && previousTextForExpressionFilter != null
+                    && !nextText.trim().equals(previousTextForExpressionFilter.trim())) {
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(table.getExpressionFilter(), true);
+            } else {
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(table.getExpressionFilter(), false);
+            }
+            problems = table.getExpressionFilter().getProblems();
+        } else {
+            table.getExpressionFilter().setProblems(null);
+        }
+        if (problems != null) {
+            expressionFilterText.setBackground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
+            expressionFilterText.setForeground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
+        } else {
+            expressionFilterText.setBackground(null);
+            expressionFilterText.setForeground(null);
+        }
+
+    }
+
+    /**
+     * DOC amaumont Comment method "registerProposalForExpressionFilter".
+     */
+    public void configureExpressionFilter() {
+        if (mapperManager.isAdvancedMap() && getDataMapTable() instanceof AbstractInOutTable) {
+            AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+            if (this.expressionProposalProviderForExpressionFilter == null) {
+                this.expressionProposalProviderForExpressionFilter = createExpressionProposalProvider();
+            }
+            expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
+                    .getExpressionFilter());
+            table.getExpressionFilter().setName(EXPRESSION_FILTER_ENTRY);
+            ProposalUtils.getCommonProposal(expressionFilterText, expressionProposalProviderForExpressionFilter);
+            checkProblemsForExpressionFilter(table, false);
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "getValidZonesForExpressionFilterField".
+     * 
+     * @return
+     */
+    protected abstract Zone[] getValidZonesForExpressionFilterField();
+
+    /**
+     * DOC amaumont Comment method "createErrorContentForTooltip".
+     * 
+     * @param problems
+     * @return
+     */
+    private String createErrorContentForTooltip(List<Problem> problems) {
+        String toolTip;
+        toolTip = ""; //$NON-NLS-1$
+        for (Problem problem : problems) {
+            String description = problem.getDescription().replaceAll("[\r\n\t]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            toolTip += description + "\n"; //$NON-NLS-1$
+        }
+        return toolTip;
+    }
+
+    public abstract void loaded();
+
 }

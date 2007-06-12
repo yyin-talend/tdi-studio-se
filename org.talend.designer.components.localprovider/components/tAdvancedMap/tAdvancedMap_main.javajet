@@ -117,12 +117,21 @@
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
             
-			  	  	   if(externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().startsWith("<")) { %>
-		                    		  	  		
-		   	  		  if(!(<%= externalTable.getExpressionFilter()%>)) {
-		      	  			continue;
-		    	  	  	  }
-			 	  	   <%
+			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
+
+		                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+   	                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
+					  	  	 %>
+		              
+			   	  		  if(
+ 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+ 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+	  	  		  				) {
+		      	  				continue;
+		    		  	  	   }
+		    	  	  	  
+				 	  	   <%
 			 	  	   }
                   continue;
                   
@@ -275,9 +284,23 @@
                     		  	    	%>
                     		  	    
                     		  	    
-                    		  	  	   <%if(externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().startsWith("<")) { // 12 %>
+                    		  	  	   <%
+                    		  	  	   if(
+                    		  	  	   		externalTable.isActivateExpressionFilter() 
+                    		  	  	   		&& externalTable.getExpressionFilter() != null 
+                    		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
+                    		  	  	   ) { // 12 
+                    		  	  	   		
+							                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+			   		                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
+                    		  	  	   %>
                     		  	  		
-                    		  	  		  if(!(<%= externalTable.getExpressionFilter()%>)) {
+                    		  	  		
+							   	  		  if(
+					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+						  	  		  			) {
                     		  	  		  
   		                    		  	    	<%= tableName %> = <%= tableName %>Default;
   		                    		  	    	<%= tableName %>FromLookup = null;
@@ -300,10 +323,9 @@
                     		  	    } // 13
 	  									<%
 	  									}
-
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
-        } // for (IConnection connection : connections) {
+        } // for (ExternalMapperTable externalTable : inputTables) {
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
         sb.append(cr);
@@ -413,8 +435,8 @@
         boolean closeTestInnerJoinConditionsBracket = false;
 
         Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
-        for (IConnection connection : outputConnections) {
-            nameToOutputConnection.put(connection.getName(), connection);
+        for (IConnection outputConnection : outputConnections) {
+            nameToOutputConnection.put(outputConnection.getName(), outputConnection);
         }
 
         int lstSizeOutputs = outputTablesSortedByReject.size();
@@ -430,7 +452,8 @@
             }
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
-            boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
+            boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable) 
+            	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
                     allNotRejectTablesHaveFilter = false;
@@ -493,10 +516,11 @@
             boolean currentIsRejectInnerJoin = outputTable.isRejectInnerJoin();
 
             boolean hasFilters = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
+            boolean hasExpressionFilter = outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
 
             boolean rejectValueHasJustChanged = lastValueReject != (currentIsReject || currentIsRejectInnerJoin);
 
-            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters;
+            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters || hasExpressionFilter;
 
             if (rejectValueHasJustChanged) {
 
@@ -533,7 +557,7 @@
                 } else {
                     sb.append(cr + cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
                 }
-                if (hasFilters || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+                if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
 
                     String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
@@ -548,7 +572,7 @@
                     if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin
                             && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = rejected + " || " + rejectedInnerJoin;
-                        if (hasFilters) {
+                        if (hasFilters || hasExpressionFilter) {
                             rejectedTests = "(" + rejectedTests + ")";
                         }
                     } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
@@ -556,8 +580,13 @@
                     } else if (currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = rejectedInnerJoin;
                     }
-                    if (hasFilters) {
-                        String filtersConditions = gm.buildConditions(filters, expressionParser);
+                    if (hasFilters || hasExpressionFilter) {
+                        String filtersConditions = null;
+                        if(hasFilters) {
+	                        filtersConditions = gm.buildConditions(filters, expressionParser);
+	                     } else {
+	                     	filtersConditions = outputTable.getExpressionFilter();
+	                     }
                         if (rejectedTests == null) {
                             ifConditions += filtersConditions;
                         } else {

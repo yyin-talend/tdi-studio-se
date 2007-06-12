@@ -15,6 +15,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
 	" 
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -45,12 +46,14 @@
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
 						
-						Set<String> hHashableColumns = null;
+						Set<String> hHashableColumns = new HashSet<String>();
 						if(conn.getTarget() instanceof IHashableInputConnections) {
 							IHashableInputConnections target = (IHashableInputConnections) conn.getTarget();
-							hHashableColumns = target.getHashableColumns(conn.getName());
+							IHashConfiguration hashConfiguration = target.getHashConfiguration(conn.getName());
+							if(hashConfiguration != null) {
+								hHashableColumns = hashConfiguration.getHashableColumns();
+							}
 						} else {
-							hHashableColumns = new HashSet<String>();
 							if (metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
@@ -185,8 +188,8 @@ public void <%=subTree.getName() %>Process() throws TalendException {
     for (INode startNode : sortedMergeBranchStarts) {
        List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();
        if ((rootConns!=null)&&(rootConns.size()>0)) {
-%>
-		  <%=createPrivateClassInstance(startNode, rootConns.get(0).getName(), false)%>
+%>		  
+		<%=createPrivateClassInstance(startNode, rootConns.get(0).getName(), false)%>
 <%
       }
     }

@@ -32,6 +32,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -45,6 +46,10 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     private IOConnection connection;
 
+    private ExpressionFilterEntry expressionFilterEntry;
+
+    private boolean activateExpressionFilter;
+    
     /**
      * 
      * DOC amaumont AbstractInOutTable constructor comment.
@@ -72,6 +77,11 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
+        expressionFilterEntry = new ExpressionFilterEntry(this); 
+        if (externalMapperTable != null) {
+            this.expressionFilterEntry.setExpression(externalMapperTable.getExpressionFilter());
+            this.activateExpressionFilter = externalMapperTable.isActivateExpressionFilter();
+        }
         List<IMetadataColumn> columns = this.metadataTable.getListColumns();
         Map<String, ExternalMapperTableEntry> nameToPerTabEntry = new HashMap<String, ExternalMapperTableEntry>();
         if (externalMapperTable != null && externalMapperTable.getMetadataTableEntries() != null) {
@@ -109,4 +119,32 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         return this.connection;
     }
 
+    
+    /**
+     * Getter for expressionFilter.
+     * @return the expressionFilter
+     */
+    public ExpressionFilterEntry getExpressionFilter() {
+        return this.expressionFilterEntry;
+    }
+
+    /**
+     * Getter for activateExpressionFilter.
+     * @return the activateExpressionFilter
+     */
+    public boolean isActivateExpressionFilter() {
+        return this.activateExpressionFilter;
+    }
+
+    
+    /**
+     * Sets the activateExpressionFilter.
+     * @param activateExpressionFilter the activateExpressionFilter to set
+     */
+    public void setActivateExpressionFilter(boolean activateExpressionFilter) {
+        this.activateExpressionFilter = activateExpressionFilter;
+    }
+
+    
+    
 }

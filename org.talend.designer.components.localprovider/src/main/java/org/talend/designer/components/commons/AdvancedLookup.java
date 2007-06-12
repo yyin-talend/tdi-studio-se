@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.list.GrowthList;
-import org.talend.commons.utils.data.map.MapOfLazyCollections;
+import org.talend.commons.utils.data.map.MultiLazyValuesMap;
+import org.talend.core.model.process.IMatchingMode;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -37,7 +38,7 @@ import org.talend.commons.utils.data.map.MapOfLazyCollections;
  */
 public class AdvancedLookup<V> {
 
-    private MapOfLazyCollections mapOfCol;
+    private MultiLazyValuesMap mapOfCol;
 
     private Map<V, V> uniqueHash;
 
@@ -49,19 +50,15 @@ public class AdvancedLookup<V> {
 
     private Object[] arrayValues;
 
-    private boolean useHashKeys;
-
     private boolean arrayIsDirty = true;
 
     private List<V> listResult;
 
     private V objectResult;
 
-    private boolean uniqueMatch;
-
     private boolean keepAllValues;
 
-    private MULTIPLE_MATCHING_MODE multipleMatchingMode;
+    private MATCHING_MODE matchingMode;
 
     private static final int ZERO = 0;
 
@@ -72,10 +69,25 @@ public class AdvancedLookup<V> {
      * DOC amaumont AdvancedLookup class global comment. Detailled comment <br/>
      * 
      */
-    public enum MULTIPLE_MATCHING_MODE {
+    public enum MATCHING_MODE implements IMatchingMode {
+        ALL_ROWS,
+        ALL_MATCHES,
         FIRST_MATCH,
         LAST_MATCH,
-        ALL_MATCHES,
+        UNIQUE_MATCH, ;
+
+        public static MATCHING_MODE parse(String matchingMode) {
+            MATCHING_MODE multipleMatchingModeResult = null;
+            MATCHING_MODE[] multipleMatchingModes = values();
+            for (MATCHING_MODE multipleMatchingMode : multipleMatchingModes) {
+                if (multipleMatchingMode.toString().equals(matchingMode)) {
+                    multipleMatchingModeResult = multipleMatchingMode;
+                    break;
+                }
+            }
+            return multipleMatchingModeResult;
+        }
+
     }
 
     /**
@@ -84,28 +96,26 @@ public class AdvancedLookup<V> {
      * 
      * @param useHashKeys use <code>equals()</code> and <code>hashCode()</code> methods by storing objects in hash
      * maps
-     * @param multipleMatchingMode to optimize storing and searching, and to specify which matching mode should used
+     * @param matchingMode to optimize storing and searching, and to specify which matching mode should used
      * @param uniqueMatch keep in the lookup only the last put object, but store the current number of same values for
      * each key
      * @param keepAllValues keep all identical values (with same key values) in each list of each key
      * @param countValuesForEachKey force internal count of values
      */
-    public AdvancedLookup(boolean useHashKeys, boolean uniqueMatch, MULTIPLE_MATCHING_MODE multipleMatchingMode,
-            boolean keepAllValues, boolean countValuesForEachKey) {
+    public AdvancedLookup(MATCHING_MODE matchingMode, boolean keepAllValues,
+            boolean countValuesForEachKey) {
         super();
-        this.useHashKeys = useHashKeys;
-        this.uniqueMatch = uniqueMatch;
         this.keepAllValues = keepAllValues;
         this.countValuesForEachKey = countValuesForEachKey;
-        this.multipleMatchingMode = multipleMatchingMode;
-        if (useHashKeys) {
-            if (uniqueMatch && !keepAllValues) {
+        this.matchingMode = matchingMode == null ? MATCHING_MODE.UNIQUE_MATCH : matchingMode;
+        if (matchingMode != MATCHING_MODE.ALL_ROWS) {
+            if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
                 uniqueHash = new HashMap<V, V>();
             }
             if (countValuesForEachKey) {
                 counterHash = new HashMap<V, Integer>();
             }
-            mapOfCol = new MapOfLazyCollections(new HashMap()) {
+            mapOfCol = new MultiLazyValuesMap(new HashMap()) {
 
                 @Override
                 public Collection instanciateNewCollection() {
@@ -116,26 +126,12 @@ public class AdvancedLookup<V> {
         }
     }
 
-    public static <V> AdvancedLookup<V> getHashedMultiRowsLookup() {
-        return new AdvancedLookup<V>(true, false, MULTIPLE_MATCHING_MODE.ALL_MATCHES, false, false);
-    }
-
-    public static <V> AdvancedLookup<V> getHashedMultiRowsLookup(MULTIPLE_MATCHING_MODE multipleMatchingMode) {
-        return new AdvancedLookup<V>(true, false, multipleMatchingMode, false, false);
-    }
-    
-    public static <V> AdvancedLookup<V> getUnhashedMultiRowsLookup() {
-        return new AdvancedLookup<V>(false, false, null, false, false);
-    }
-
-    public static <V> AdvancedLookup<V> getUniqueRowLookup() {
-        return new AdvancedLookup<V>(true, true, null, false, false);
+    public static <V> AdvancedLookup<V> getLookup(MATCHING_MODE matchingMode) {
+        return new AdvancedLookup<V>(matchingMode, false, false);
     }
 
     public Object[] getResultArray() {
-        if (this.useHashKeys) {
-            return listResult.toArray();
-        } else {
+        if (matchingMode == MATCHING_MODE.ALL_ROWS) {
             if (listResult == null) {
                 listResult = list;
             }
@@ -144,6 +140,8 @@ public class AdvancedLookup<V> {
                 arrayIsDirty = false;
             }
             return arrayValues;
+        } else {
+            return listResult.toArray();
         }
     }
 
@@ -156,20 +154,20 @@ public class AdvancedLookup<V> {
     }
 
     public void get(V key) {
-        if (uniqueMatch) {
+        if (matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
             listResult = null;
             objectResult = uniqueHash.get(key);
         } else {
-            if (this.useHashKeys && key != null) {
+            if (matchingMode != MATCHING_MODE.ALL_ROWS && key != null) {
                 Object v = mapOfCol.get(key);
                 if (v instanceof List) {
                     List<V> localList = (List<V>) v;
-                    if (multipleMatchingMode == MULTIPLE_MATCHING_MODE.ALL_MATCHES) {
+                    if (matchingMode == MATCHING_MODE.ALL_MATCHES) {
                         listResult = localList;
                         objectResult = null;
-                    } else if (multipleMatchingMode == MULTIPLE_MATCHING_MODE.FIRST_MATCH) {
+                    } else if (matchingMode == MATCHING_MODE.FIRST_MATCH) {
                         objectResult = localList.get(ZERO);
-                    } else if (multipleMatchingMode == MULTIPLE_MATCHING_MODE.LAST_MATCH) {
+                    } else if (matchingMode == MATCHING_MODE.LAST_MATCH) {
                         listResult = null;
                         objectResult = localList.get(localList.size() - ONE);
                     }
@@ -194,19 +192,19 @@ public class AdvancedLookup<V> {
 
     public V put(V value) {
         if (value != null) {
-            if (uniqueMatch && !keepAllValues) {
+            if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
                 V previousValue = uniqueHash.put(value, value);
                 incrementCountValues(value, previousValue);
                 return previousValue;
             } else {
-                if (this.useHashKeys) {
+                if (matchingMode == MATCHING_MODE.ALL_ROWS) {
+                    list.add(value);
+                    return null;
+                } else {
                     arrayIsDirty = true;
                     V previousValue = (V) mapOfCol.put(value, value);
                     incrementCountValues(value, previousValue);
                     return previousValue;
-                } else {
-                    list.add(value);
-                    return null;
                 }
             }
         }
@@ -265,7 +263,7 @@ public class AdvancedLookup<V> {
      * @return the hasHashKeys
      */
     public boolean isUseHashKeys() {
-        return this.useHashKeys;
+        return matchingMode != MATCHING_MODE.ALL_ROWS;
     }
 
     /**
@@ -292,7 +290,7 @@ public class AdvancedLookup<V> {
      * @return the uniqueMatch
      */
     public boolean isUniqueMatch() {
-        return this.uniqueMatch;
+        return matchingMode == MATCHING_MODE.UNIQUE_MATCH;
     }
 
     public int getCount(V key) {
@@ -303,14 +301,14 @@ public class AdvancedLookup<V> {
             } else {
                 return count;
             }
-        } else if (uniqueMatch && !keepAllValues) {
+        } else if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
             if (uniqueHash.get(key) != null) {
                 return ONE;
             } else {
                 return ZERO;
             }
 
-        } else if (useHashKeys) {
+        } else if (matchingMode != MATCHING_MODE.ALL_ROWS) {
             Object v = mapOfCol.get(key);
             if (v instanceof List) {
                 List<V> localList = (List<V>) v;

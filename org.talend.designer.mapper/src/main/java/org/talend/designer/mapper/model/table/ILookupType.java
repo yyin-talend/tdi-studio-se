@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.designer.components.commons.AdvancedLookup.MULTIPLE_MATCHING_MODE;
+import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -33,5 +33,5 @@ public interface ILookupType {
 
     public String getLabel();
 
-    public MULTIPLE_MATCHING_MODE getMultipleMatchingMode();
+    public MATCHING_MODE getMultipleMatchingMode();
 }

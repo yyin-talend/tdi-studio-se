@@ -347,4 +347,24 @@ public class OutputDataMapTableView extends DataMapTableView {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getValidZonesForExpressionFilterField()
+     */
+    @Override
+    protected Zone[] getValidZonesForExpressionFilterField() {
+        return new Zone[] { Zone.INPUTS };
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
+     */
+    @Override
+    public void loaded() {
+        configureExpressionFilter();
+        checkChangementsAfterEntryModifiedOrAdded(false);
+    }
+
+    
 }

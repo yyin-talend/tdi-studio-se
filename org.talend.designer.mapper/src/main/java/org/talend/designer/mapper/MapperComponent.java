@@ -48,7 +48,7 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
-import org.talend.core.model.process.IHashableInputConnections;
+import org.talend.core.model.process.IHashConfiguration;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -479,29 +479,6 @@ public class MapperComponent extends AbstractExternalNode {
                     LanguageProvider.getCurrentLanguage());
         }
         return this.generationManager;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IHashableInputConnections#getHashableColumns(java.lang.String)
-     */
-    public Set<String> getHashableColumns(String connectionName) {
-        ExternalMapperData externalData = (ExternalMapperData) getExternalData();
-        List<ExternalMapperTable> inputTables = externalData.getInputTables();
-        Set<String> hashableColumns = new HashSet<String>();
-        for (ExternalMapperTable inputTable : inputTables) {
-            if (inputTable.getName().equals(connectionName)) {
-                List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
-                for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
-                        hashableColumns.add(entry.getName());
-                    }
-                }
-                break;
-            }
-        }
-        return hashableColumns;
     }
 
 }
