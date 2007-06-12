@@ -23,7 +23,6 @@ ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
 boolean stat = codeGenArgument.isStatistics();
 Set<IConnection> connSet =  new HashSet<IConnection>();
-connSet.addAll(node.getIncomingConnections());
 connSet.addAll(node.getOutgoingConnections());
 %>
 
