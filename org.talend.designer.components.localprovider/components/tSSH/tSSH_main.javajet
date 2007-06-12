@@ -5,6 +5,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+	java.util.Map
+	java.lang.StringBuffer
 "
 %>
 
@@ -18,21 +20,32 @@ String cid = node.getUniqueName();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String command = ElementParameterParser.getValue(
-            node,
-            "__COMMAND__"
-        );
         
-        String commandSeparator = ElementParameterParser.getValue(
+       	String commandSeparator = ElementParameterParser.getValue(
             node,
             "__COMMANDSEPARATOR__"
         );
+        commandSeparator = commandSeparator.replace("\"", "");
         
-        command = command.replace(";", commandSeparator);
-        
+        StringBuffer command = new StringBuffer();
+        List<Map<String, String>> commands =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,"__COMMANDS__");
+                
+        if(commands.size() > 0)
+        {
+            for(Map<String, String> map : commands)  
+            {
+                if(command.length() > 0)
+                {
+                	command.append(commandSeparator);
+                }
+       		    command.append(map.get("COMMAND"));
+            } 
+        }            
 %>
 			/* Create a session */
-			sess_<%=cid%>.execCommand(<%=command%>);
+			sess_<%=cid%>.execCommand("<%=command%>");
 			
 			java.io.InputStream stdout_<%=cid%> = sess_<%=cid%>.getStdout();
 			java.io.BufferedReader brout_<%=cid%>= new java.io.BufferedReader(new java.io.InputStreamReader(stdout_<%=cid%>));

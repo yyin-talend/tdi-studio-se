@@ -85,15 +85,13 @@
       FIELD="TEXT"
       NUM_ROW="90"
     >
-      <DEFAULT>;</DEFAULT>
+      <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="COMMAND"
-      FIELD="MEMO"
-      NUM_ROW="110"
-    >
-      <DEFAULT>"uname -a; echo Talend Open Studio"</DEFAULT>
+	<PARAMETER NAME="COMMANDS" FIELD="TABLE" NUM_ROW="110" NB_LINES="5" >
+      <ITEMS>
+        <ITEM NAME="COMMAND" VALUE="echo Talend Open Studio"/>
+      </ITEMS>
     </PARAMETER>
 
     <PARAMETER
