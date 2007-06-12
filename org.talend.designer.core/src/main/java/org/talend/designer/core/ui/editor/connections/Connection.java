@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -30,9 +31,11 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IPerformance;
 import org.talend.designer.core.model.components.EParameterName;
@@ -83,8 +86,7 @@ public class Connection extends Element implements IConnection, IPerformance {
     private ConnectionPerformance performance;
 
     // used only for copy / paste (will generate the name) && connection creation
-    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
-            String linkName) {
+    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
@@ -103,8 +105,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
-    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
-            String linkName) {
+    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
         performance = new ConnectionPerformance(this);
 
         sourceNodeConnector = source.getConnectorFromName(connectorName);
@@ -242,16 +243,14 @@ public class Connection extends Element implements IConnection, IPerformance {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
                             + ", order:" + outputId + ")";
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
-                            + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")";
                 }
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
             int inputId = getInputId();
             if (outputId >= 0) {
-                labelText += " (Output order:" + outputId + ", " + sourceNodeConnector.getLinkName() + " order:"
-                        + inputId + ")";
+                labelText += " (Output order:" + outputId + ", " + sourceNodeConnector.getLinkName() + " order:" + inputId + ")";
             } else {
                 labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + inputId + ")";
             }
@@ -638,5 +637,25 @@ public class Connection extends Element implements IConnection, IPerformance {
     public void setPerformanceData(String pefData) {
         performance.setLabel(pefData);
 
+    }
+
+    public boolean isUseByMetter() {
+        INode sourceNode = this.getSource();
+        List<INode> metterNodes = (List<INode>) sourceNode.getProcess().getNodesOfType("tMetter");
+        if (metterNodes.size() > 0) {
+
+            Iterator<INode> it = (Iterator<INode>) metterNodes.iterator();
+            while (it.hasNext()) {
+                INode node = it.next();
+
+                Boolean absolute = (Boolean) node.getElementParameter("ABSOLUTE").getValue();
+                String reference = (String) node.getElementParameter("CONNECTIONS").getValue();
+                
+                if (absolute.equals(Boolean.FALSE) && reference.equals(this.getUniqueName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
