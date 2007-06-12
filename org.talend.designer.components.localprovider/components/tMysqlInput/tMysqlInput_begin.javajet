@@ -51,7 +51,7 @@ java.sql.Connection conn_<%=cid%> = null;
 	    String javaDbDriver   = "org.gjt.mm.mysql.Driver";    
 		%>
 		java.lang.Class.forName("<%=javaDbDriver %>");
-		String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
+		String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%> + "?noDatetimeStringSync=true";
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;
 		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
@@ -138,8 +138,11 @@ if(conns != null && conns.size()>0){
 			  <%
 			  }else if(typeToGenerate.equals("Timestamp")){
 			 %>
-			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
-			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			 if(rs_<%=cid %>.getString(<%=currentColNo%>) != null){
+			 	String dateString_<%=cid%> = rs_<%=cid%>.getString(<%=currentColNo%>);
+			 	String pattern_<%=cid%> = "<%=column.getPattern()%>";
+			 	java.util.Date tmpDate_<%=cid%> = new java.text.SimpleDateFormat(pattern_<%=cid%>).parse(dateString_<%=cid%>);
+			 	<%=firstConnName%>.<%=column.getLabel()%> = tmpDate_<%=cid%>;
 			 }else{
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
