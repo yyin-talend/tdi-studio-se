@@ -46,10 +46,13 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -81,6 +84,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.IUIRefresher;
@@ -555,6 +559,14 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             FileEditorInput input = createFileEditorInput();
             this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);
+
+            IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (activeWorkbenchWindow != null) {
+                if (activeWorkbenchWindow.getActivePage().isPartVisible(this)) {
+                    new ActiveProcessTracker().partBroughtToTop(this);
+                    DesignerPlugin.getDefault().getRunProcessService().refreshView();
+                }
+            }
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
         }
