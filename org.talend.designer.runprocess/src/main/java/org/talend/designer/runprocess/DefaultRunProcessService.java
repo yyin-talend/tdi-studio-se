@@ -34,16 +34,16 @@ import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
-
+import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40Z nrousseau $
- *
+ * 
  */
 public class DefaultRunProcessService implements IRunProcessService {
+
     /*
      * (non-Javadoc)
      * 
@@ -75,15 +75,15 @@ public class DefaultRunProcessService implements IRunProcessService {
      * (non-Javadoc)
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#exec(java.lang.StringBuffer, java.lang.StringBuffer,
-     * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String,
-     * int, int, java.lang.String)
+     * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String, int, int,
+     * java.lang.String)
      */
     public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
-            String perlInterpreterLibOption, String perlModuleDirectoryOption,
-            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+            String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
 
-        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
-                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
+                statOption, traceOption, codeOptions);
 
     }
 
@@ -145,7 +145,9 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
@@ -161,4 +163,10 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
     }
 
+    public void refreshView() {
+        ProcessView view = ProcessView.findProcessView();
+        if (view != null) {
+            view.refresh();
+        }
+    }
 }

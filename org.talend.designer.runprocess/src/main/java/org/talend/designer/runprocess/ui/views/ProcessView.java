@@ -65,7 +65,7 @@ import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
  */
 public class ProcessView extends ViewPart {
 
-    public static final String ID = RunProcessPlugin.PLUGIN_ID + ".ui.view.processview"; //$NON-NLS-1$
+    public static final String ID = RunProcessPlugin.PLUGIN_ID + ".ui.views.processview"; //$NON-NLS-1$
 
     private static Logger log = Logger.getLogger(ProcessView.class);
 
@@ -81,6 +81,16 @@ public class ProcessView extends ViewPart {
 
     private IProcessViewHelper processViewHelper;
 
+    public static ProcessView findProcessView() {
+        try {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+            return (ProcessView) page.findView(ID);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * Constructs a new ProcessView.
      */
@@ -89,8 +99,7 @@ public class ProcessView extends ViewPart {
         IExtensionPointLimiter extensionPointLimiter = new ExtensionPointLimiterImpl(
                 "org.talend.designer.runprocess.runprocess_view_helper", "runprocess_view_helper"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        IProcessViewHelper processViewHelperPrm = ExtensionImplementationProvider.getSingleInstance(extensionPointLimiter,
-                null);
+        IProcessViewHelper processViewHelperPrm = ExtensionImplementationProvider.getSingleInstance(extensionPointLimiter, null);
         if (processViewHelperPrm == null) {
             processViewHelperPrm = new DefaultProcessViewHelper();
         }
@@ -160,16 +169,16 @@ public class ProcessView extends ViewPart {
 
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
-                        .getAdapter(IContextService.class);
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
-                            .getAdapter(IContextService.class);
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -204,8 +213,7 @@ public class ProcessView extends ViewPart {
     @Override
     public void dispose() {
         if (contextManagerListener != null) {
-            RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(
-                    contextManagerListener);
+            RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(contextManagerListener);
             contextManagerListener = null;
         }
         super.dispose();
@@ -230,8 +238,7 @@ public class ProcessView extends ViewPart {
     }
 
     public void refresh() {
-        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager()
-                .getActiveContext();
+        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
         // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
         processComposite.setProcessContext(activeContext);
 
