@@ -155,7 +155,7 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
     private Image[] getFullImagePath(String languageName) {
         String relatedImagePath = null;
         if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("java").getName())) {
-            relatedImagePath = "icons/java.gif";
+            relatedImagePath = "icons/java.png";
         } else if (languageName.equalsIgnoreCase(ECodeLanguage.getCodeLanguage("perl").getName())) {
             relatedImagePath = "icons/perl.gif";
         } else {
