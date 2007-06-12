@@ -552,7 +552,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         try {
             setName();
             processor.initPath();
-            codeEditor.setInput(createFileEditorInput());
+            FileEditorInput input = createFileEditorInput();
+            this.codeEditor.getDocumentProvider().connect(input);
+            codeEditor.setInput(input);
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
         }
