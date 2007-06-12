@@ -676,12 +676,27 @@ public class JavaProcessor extends Processor {
                 classPathSeparator = ":";
             }
         }
+        
+                
+        Set<String> neededLibraries = process.getNeededLibraries(false);
+        
+        if (neededLibraries == null) {
+            neededLibraries = new HashSet<String>();
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                neededLibraries.add(moduleNeeded.getModuleName());
+            }
+
+        } else { // this will avoid to add all libraries, only the needed libraries will be added
+            for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
+                neededLibraries.add(moduleNeeded.getModuleName());
+            }
+        }
 
         StringBuffer libPath = new StringBuffer();
         File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
         if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
-                if (externalLib.isFile() && process.getNeededLibraries(false).contains(externalLib.getName())) {
+                if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
                         libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
                     } else {
