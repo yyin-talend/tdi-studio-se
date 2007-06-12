@@ -23,6 +23,7 @@ package org.talend.designer.codegen.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.process.INode;
 
@@ -61,7 +62,21 @@ public class NodesTree {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
             if (((node.isSubProcessStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
-                subTrees.add(new NodesSubTree(node));
+
+                // need to unite the merge branches to one subStree
+                if (node.isThereLinkWithMerge()) {
+
+                    Map<INode, Integer> mergeInfo = node.getLinkedMergeInfo();
+                    if (mergeInfo != null && mergeInfo.values().toArray()[0].equals(1)) {
+                        // add the first merge branch
+                        subTrees.add(new NodesSubTree(node, nodes));
+                    }
+
+                } else {
+
+                    subTrees.add(new NodesSubTree(node, nodes));
+                }
+
             }
         }
     }

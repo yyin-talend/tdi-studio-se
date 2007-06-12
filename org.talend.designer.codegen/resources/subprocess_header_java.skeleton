@@ -4,7 +4,7 @@ public class CLASS
         String toReturn = "";
         // declare root structs (all main outgoing connections)
         for (IConnection conn : n.getOutgoingConnections()) {
-            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                 if ((force)||(n.isSubProcessStart() || !(n.getComponent().isDataAutoPropagated()))) {
                     // new Instance
                     toReturn += conn.getName() + "Struct " + conn.getName() + " = new " + conn.getName()
@@ -14,7 +14,9 @@ public class CLASS
                     // copy
                     toReturn += parentLastRoot + "Struct " + conn.getName() + " = " + parentLastRoot + ";\n";
                 }
-                toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, false);
+                if(!conn.getTarget().getComponent().useMerge()) {
+                   toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, false);
+                }
             } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
             	toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, true);
             }

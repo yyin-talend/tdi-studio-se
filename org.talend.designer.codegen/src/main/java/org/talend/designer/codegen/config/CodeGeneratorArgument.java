@@ -36,9 +36,9 @@ public class CodeGeneratorArgument {
     private boolean statistics;
 
     private boolean trace;
-    
+
     private boolean checkingSyntax = false;
-    
+
     String interpreterPath;
 
     String libPath;
@@ -46,12 +46,14 @@ public class CodeGeneratorArgument {
     String runtimeFilePath;
 
     String currentProjectName;
-    
+
     String jobName;
-    
+
     String contextName;
 
     private ECodePart codePart;
+
+    String incomingName;
 
     /**
      * Constructor.
@@ -130,60 +132,68 @@ public class CodeGeneratorArgument {
     public void setTrace(boolean trace) {
         this.trace = trace;
     }
-    
+
     public String getCurrentProjectName() {
         return this.currentProjectName;
     }
-    
+
     public void setCurrentProjectName(String currentProjectName) {
         this.currentProjectName = currentProjectName;
     }
-    
+
     public String getInterpreterPath() {
         return this.interpreterPath;
     }
-    
+
     public void setInterpreterPath(String interpreterPath) {
         this.interpreterPath = interpreterPath;
     }
-    
+
     public String getLibPath() {
         return this.libPath;
     }
-    
+
     public void setLibPath(String libPath) {
         this.libPath = libPath;
     }
-    
+
     public String getRuntimeFilePath() {
         return this.runtimeFilePath;
     }
-    
+
     public void setRuntimeFilePath(String projectContext) {
         this.runtimeFilePath = projectContext;
     }
-    
+
     public String getContextName() {
         return this.contextName;
     }
-    
+
     public void setContextName(String contextName) {
         this.contextName = contextName;
     }
-    
+
     public String getJobName() {
         return this.jobName;
     }
-    
+
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
-    
+
     public boolean isCheckingSyntax() {
         return checkingSyntax;
     }
-    
+
     public void setCheckingSyntax(boolean checkingSyntax) {
         this.checkingSyntax = checkingSyntax;
+    }
+
+    public void setIncomingName(String incomingName) {
+        this.incomingName = incomingName;
+    }
+
+    public String getIncomingName() {
+        return incomingName;
     }
 }

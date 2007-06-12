@@ -106,8 +106,8 @@ public class DataProcess {
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-        dataNode.setThereLinkWithMerge(graphicalNode.isThereLinkWithMerge());
-        dataNode.setLinkedMergeInfo(graphicalNode.getLinkedMergeInfo());
+        // dataNode.setThereLinkWithMerge(graphicalNode.isThereLinkWithMerge());
+        // dataNode.setLinkedMergeInfo(graphicalNode.getLinkedMergeInfo());
         // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
@@ -266,6 +266,19 @@ public class DataProcess {
                         outgoingConnections.removeAll(connectionsToRemoveFromList);
                         outgoingConnections = (List<IConnection>) nodeTarget.getOutgoingConnections();
                         outgoingConnections.addAll(connectionsToRemoveFromList);
+
+                        // notice: here deal with the case, if the tSortRow is in the second branch of the merge node.
+                        if (graphicalNode.isThereLinkWithMerge()) {
+                            Map<INode, Integer> linkedMergeInfo = graphicalNode.getLinkedMergeInfo();
+                            if (linkedMergeInfo.get(linkedMergeInfo.keySet().toArray()[0]) > 1) {
+                                dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
+                                dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
+                                dataConnec.setName(EConnectionType.RUN_AFTER.getDefaultLinkName());
+                                AbstractNode tmp = nodeSource;
+                                nodeSource = nodeTarget;
+                                nodeTarget = tmp;
+                            }
+                        }
 
                     }
 
@@ -577,6 +590,16 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
+
+        // calculate the merge info for every node
+        for (INode node : dataNodeList) {
+            int mergeOrder = process.getMergelinkOrder(node);
+            if (mergeOrder >= 1) {
+                ((AbstractNode) node).setThereLinkWithMerge(true);
+                ((AbstractNode) node).setLinkedMergeInfo(process.getLinkedMergeInfo(node));
+            }
+        }
+
     }
 
     public static List<INode> getNodeList() {

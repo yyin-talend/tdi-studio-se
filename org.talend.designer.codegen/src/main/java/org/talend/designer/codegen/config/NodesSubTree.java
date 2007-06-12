@@ -22,8 +22,11 @@
 package org.talend.designer.codegen.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -49,29 +52,72 @@ public class NodesSubTree {
 
     List<INode> nodes;
 
-    HashMap<INode, Boolean> visitedNodesBeginCode;
+    HashMap<INode, Integer> visitedNodesBeginCode;
 
-    HashMap<INode, Boolean> visitedNodesMainCode;
+    HashMap<INode, Integer> visitedNodesMainCode;
 
-    HashMap<INode, Boolean> visitedNodesEndCode;
+    HashMap<INode, Integer> visitedNodesEndCode;
 
     private static final boolean DEBUG = true;
+
+    boolean isMergeSubTree = false;
+
+    List<INode> mergeBranchStarts;
+
+    INode mergeNode;
 
     /**
      * Constructor for a NodesSubTree.
      * 
      * @param NodesSubTree Root Node
      */
-    public NodesSubTree(INode node) {
+    public NodesSubTree(INode node, List<? extends INode> nodes) {
         this.rootNode = node;
         this.name = node.getUniqueName();
         this.nodes = new ArrayList<INode>();
         afterSubProcesses = new ArrayList<String>();
         beforeSubProcesses = new ArrayList<String>();
-        this.visitedNodesMainCode = new HashMap<INode, Boolean>();
-        this.visitedNodesBeginCode = new HashMap<INode, Boolean>();
-        this.visitedNodesEndCode = new HashMap<INode, Boolean>();
-        buildSubTree(node);
+        this.visitedNodesMainCode = new HashMap<INode, Integer>();
+        this.visitedNodesBeginCode = new HashMap<INode, Integer>();
+        this.visitedNodesEndCode = new HashMap<INode, Integer>();
+        this.isMergeSubTree = node.isThereLinkWithMerge();
+
+        buildSubTree(node, false);
+
+        if (isMergeSubTree) {
+
+            this.mergeBranchStarts = new ArrayList<INode>();
+            mergeBranchStarts.add(node);
+
+            Map<INode, Integer> mergeInfo = rootNode.getLinkedMergeInfo();
+            mergeNode = (INode) (mergeInfo.keySet().toArray(new INode[1])[0]);
+
+            uniteMergeSubTree(nodes);
+        }
+
+    }
+
+    /**
+     * unite all the relative merge nodes to this subTree
+     * 
+     * @param node
+     */
+    public void uniteMergeSubTree(List<? extends INode> nodes) {
+
+        for (INode node : nodes) {
+
+            // if the first merge branch
+            if (node == rootNode) {
+                continue;
+            }
+
+            // if the node link with the same merge node
+            if (node.isActivate() && node.isSubProcessStart() && node.getLinkedMergeInfo() != null
+                    && node.getLinkedMergeInfo().get(mergeNode) != null) {
+                mergeBranchStarts.add(node);
+                buildSubTree(node, true);
+            }
+        }
     }
 
     /**
@@ -79,7 +125,7 @@ public class NodesSubTree {
      * 
      * @param nodes
      */
-    private void buildSubTree(INode node) {
+    private void buildSubTree(INode node, boolean breakWhenMerge) {
         if (DEBUG) {
             System.out.print(node.getUniqueName());
         }
@@ -92,11 +138,15 @@ public class NodesSubTree {
                 // }
                 // buildSubTree((INode) connection.getTarget());
                 // }
+                if (breakWhenMerge && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
+                    continue;
+                }
+
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                     if (DEBUG) {
                         System.out.print(" -> ");
                     }
-                    buildSubTree((INode) connection.getTarget());
+                    buildSubTree((INode) connection.getTarget(), breakWhenMerge);
                 }
                 if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
                     afterSubProcesses.add(connection.getTarget().getUniqueName());
@@ -110,9 +160,9 @@ public class NodesSubTree {
             System.out.println("");
         }
 
-        visitedNodesMainCode.put(node, false);
-        visitedNodesBeginCode.put(node, false);
-        visitedNodesEndCode.put(node, false);
+        visitedNodesMainCode.put(node, 0);
+        visitedNodesBeginCode.put(node, 0);
+        visitedNodesEndCode.put(node, 0);
         nodes.add(node);
     }
 
@@ -123,14 +173,29 @@ public class NodesSubTree {
      * @return
      */
     public Boolean isMarkedNode(INode node, ECodePart part) {
-        Boolean result = false;
+        Boolean result = null;
         switch (part) {
         case MAIN:
-            return visitedNodesMainCode.get(node);
+            Integer countMain = visitedNodesMainCode.get(node);
+            if (countMain == null) {
+                return null;
+            } else {
+                return false;
+            }
         case BEGIN:
-            return visitedNodesBeginCode.get(node);
+            Integer countBegin = visitedNodesBeginCode.get(node);
+            if (countBegin == null) {
+                return null;
+            } else {
+                return false;
+            }
         case END:
-            return visitedNodesEndCode.get(node);
+            Integer countEnd = visitedNodesEndCode.get(node);
+            if (countEnd == null) {
+                return null;
+            } else {
+                return false;
+            }
         default:
             return result;
         }
@@ -145,13 +210,13 @@ public class NodesSubTree {
     public void markNode(INode node, ECodePart part) {
         switch (part) {
         case MAIN:
-            visitedNodesMainCode.put(node, true);
+            visitedNodesMainCode.put(node, visitedNodesMainCode.get(node) + 1);
             break;
         case BEGIN:
-            visitedNodesBeginCode.put(node, true);
+            visitedNodesBeginCode.put(node, visitedNodesBeginCode.get(node) + 1);
             break;
         case END:
-            visitedNodesEndCode.put(node, true);
+            visitedNodesEndCode.put(node, visitedNodesEndCode.get(node) + 1);
             break;
         default:
             // do nothing
@@ -251,4 +316,36 @@ public class NodesSubTree {
         return null;
     }
 
+    /**
+     * sort method, make sure the first one is the real start of the merge job
+     * 
+     * @return
+     */
+    public List<INode> getSortedMergeBranchStarts() {
+
+        if (mergeBranchStarts != null) {
+
+            Collections.sort(mergeBranchStarts, new Comparator<INode>() {
+
+                public int compare(INode node1, INode node2) {
+                    if (node1.getLinkedMergeInfo().get(mergeNode) > node2.getLinkedMergeInfo().get(mergeNode)) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+
+                }
+            });
+        }
+
+        return mergeBranchStarts;
+    }
+
+    public boolean isMergeSubTree() {
+        return this.isMergeSubTree;
+    }
+
+    public INode getMergeNode() {
+        return this.mergeNode;
+    }
 }
