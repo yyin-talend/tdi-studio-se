@@ -56,17 +56,13 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 	        	while(it_conn.hasNext())
 	        	{
 	        	    IConnection temp_conn = (IConnection)it_conn.next();
-	        	    String name_conn = temp_conn.getUniqueName();
+	        	    if(temp_conn.isUseByMetter())
+	        	    {
+	        	    	String name_conn = temp_conn.getUniqueName();
 %>
-   if(connectionsCountMap.get("<%=name_conn%>_count") == null)
-   {
-       connectionsCountMap.put("<%=name_conn%>_count",new Integer(1));
-   }
-   else
-   {
-       connectionsCountMap.put("<%=name_conn%>_count",new Integer( connectionsCountMap.get("<%=name_conn%>_count").intValue()+1));
-   }
+   MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
 <%
+					}
 				}
 	        }
 	    }
