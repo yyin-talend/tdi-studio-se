@@ -174,5 +174,9 @@ public class ShadowConnection implements IConnection {
     public int getInputId() {
         return -1;
     }
-
+    
+    public boolean isUseByMetter()
+    {
+        return false;
+    }
 }
