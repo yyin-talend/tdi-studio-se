@@ -21,9 +21,9 @@
 		<%=conn.getName() %>.pid = pid;
 		<%=conn.getName() %>.root_pid = rootPid;
 		<%=conn.getName() %>.father_pid = fatherPid;	
-    <%=conn.getName() %>.project = projectName;
-    <%=conn.getName() %>.job = jobName;
-    <%=conn.getName() %>.context = contextStr;
+        <%=conn.getName() %>.project = projectName;
+        <%=conn.getName() %>.job = jobName;
+        <%=conn.getName() %>.context = contextStr;
 		<%=conn.getName() %>.origin = (mcm.getOrigin()==null || mcm.getOrigin().length()<1 ? null : mcm.getOrigin());
 		<%=conn.getName() %>.moment = mcm.getMoment();
 		<%=conn.getName() %>.job_version = mcm.getJobVersion();

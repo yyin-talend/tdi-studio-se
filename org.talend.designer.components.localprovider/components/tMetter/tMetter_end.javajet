@@ -21,9 +21,27 @@
     if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String label = (String)ElementParameterParser.getObjectValue(
+        Boolean useRowLabel = (Boolean)ElementParameterParser.getObjectValue(
+                node,"__USEROWLABEL__"); 
+        
+        String label = "";
+        if(useRowLabel.equals(Boolean.TRUE))
+        {
+        	List<IConnection> connList = (List<IConnection>)node.getIncomingConnections();
+        	if(connList.size()>0)
+        	{
+        		IConnection conn = (IConnection)connList.get(0);
+        		label = "\""+conn.getUniqueName()+"\"";
+        	}
+        	else
+        	{
+        		label = "\"No input Connection\"";
+        	}
+        }else{
+			label = (String)ElementParameterParser.getObjectValue(
                 node,"__METTERLABEL__");
-                
+        } 
+               
         Boolean absolute = (Boolean)ElementParameterParser.getObjectValue(
                 node,"__ABSOLUTE__");  
         
@@ -43,34 +61,33 @@
                 {
                 	shreshlods_str.append("#");
                 }
-       		      shreshlods_str.append(map.get("LABEL") + ";")
-       		                    .append(map.get("BOTTOM")+ ";")
-       		                    .append(map.get("TOP")+ ";")
-       		                    .append(map.get("COLOR"));
+       		      shreshlods_str.append(map.get("LABEL") + "|")
+       		                    .append(map.get("BOTTOM")+ "|")
+       		                    .append(map.get("TOP")+ "|")
+       		                    .append(map.get("COLOR").replace(";","|"));
             } 
         } 
 %>
-    Integer reference_<%=cid%> = new Integer(0);  
+    Integer reference_<%=cid%> = null;  
 <%
         if(absolute.equals(Boolean.FALSE))
         {
 %>
-     if(!connectionsCountMap.containsKey("<%=reference%>_count"))
+	 reference_<%=cid%>= (Integer)MetterCatcherUtils.getConnLinesCount("<%=reference%>_count");
+     if(reference_<%=cid%> == null)
      {
      	throw new TalendException(this, new java.lang.Exception("cannot get the <%=reference%>_count value"));
-     }
-     else
-     {
-        reference_<%=cid%>= (Integer)connectionsCountMap.get("<%=reference%>_count");
      }           
 <%       
         }
 	      if (node.getProcess().getNodesOfType("tMetterCatcher").size() > 0) {
+	      
 			  List<INode> metterCatchers = (List<INode>)node.getProcess().getNodesOfType("tMetterCatcher");
 			  for (INode metterCatcher : metterCatchers) {
 %>
 	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), reference_<%=cid%>, "<%=shreshlods_str%>", "<%=cid%>");
 	<%=metterCatcher.getUniqueName() %>Process();
+	System.out.println("-->do add message");
 <%      
 				}
 			}
