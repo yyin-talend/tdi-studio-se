@@ -105,7 +105,7 @@
     <PARAMETER
       NAME="TIMEOUT"
       FIELD="TEXT"
-      NUM_ROW="100"
+      NUM_ROW="130"
       SHOW_IF="USE_TIMEOUT == 'true'"
     >
       <DEFAULT>60</DEFAULT>

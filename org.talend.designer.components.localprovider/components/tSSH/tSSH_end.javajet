@@ -23,11 +23,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 			/* Close the connection */
 			conn_<%=cid%>.close();
-		}
-		catch (java.io.IOException e)
-		{
-			e.printStackTrace();
-		}
 <%
     }
 }

@@ -87,7 +87,6 @@
 %>
 	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), reference_<%=cid%>, "<%=shreshlods_str%>", "<%=cid%>");
 	<%=metterCatcher.getUniqueName() %>Process();
-	System.out.println("-->do add message");
 <%      
 				}
 			}
