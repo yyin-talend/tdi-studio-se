@@ -1173,13 +1173,18 @@ public abstract class DataMapTableView extends Composite {
                     DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true,
                             true);
                     DataMapTableView.this.layout();
+
+                    // to correct bug of CR when content is multiline
+                    if (expressionFilterText.getText() != null) {
+                        expressionFilterText.setText(expressionFilterText.getText());
+                    }
                     mapperManager.getUiManager().refreshBackground(true, false);
                     new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
 
                         public void run() {
                             checkProblemsForExpressionFilter(table, true);
                         }
-                        
+
                     }).start();
                     // changeMinimizeState(false);
                 }
@@ -1883,9 +1888,6 @@ public abstract class DataMapTableView extends Composite {
             gridData.heightHint = 30;
             expressionFilterText.setLayoutData(gridData);
 
-            expressionFilterText.setVisible(table.isActivateExpressionFilter());
-            gridData.exclude = !table.isActivateExpressionFilter();
-
             final String defaultText = DEFAULT_EXPRESSION_FILTER;
             String expressionFilter = table.getExpressionFilter().getExpression();
             if (expressionFilter != null && !"".equals(expressionFilter.trim())) {
@@ -1893,30 +1895,19 @@ public abstract class DataMapTableView extends Composite {
             } else {
                 expressionFilterText.setText(defaultText);
             }
+
+            expressionFilterText.setVisible(table.isActivateExpressionFilter());
+            gridData.exclude = !table.isActivateExpressionFilter();
+
             expressionFilterText.addFocusListener(new FocusListener() {
 
                 public void focusGained(FocusEvent e) {
                     Control text = (Control) e.getSource();
-                    ;
                     if (defaultText.equals(ControlUtils.getText(text))) {
                         ControlUtils.setText(text, "");
                     }
                     table.getExpressionFilter().setExpression(ControlUtils.getText(text));
-                }
 
-                public void focusLost(FocusEvent e) {
-                    Control text = (Control) e.getSource();
-                    if ("".equals(ControlUtils.getText(text).trim())) {
-                        ControlUtils.setText(text, defaultText);
-                    }
-                    table.getExpressionFilter().setExpression(ControlUtils.getText(text));
-                }
-
-            });
-
-            expressionFilterText.addFocusListener(new FocusListener() {
-
-                public void focusGained(FocusEvent e) {
                     expressionFilterText.setBackground(null);
                     expressionFilterText.setForeground(null);
                     StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
@@ -1928,8 +1919,21 @@ public abstract class DataMapTableView extends Composite {
                 }
 
                 public void focusLost(FocusEvent e) {
-                    table.getExpressionFilter().setExpression(expressionFilterText.getText());
-                    checkProblemsForExpressionFilter(table, false);
+                    Control text = (Control) e.getSource();
+                    if ("".equals(ControlUtils.getText(text).trim())) {
+                        ControlUtils.setText(text, defaultText);
+                    }
+                    String currentContent = ControlUtils.getText(text);
+                    if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
+                        table.getExpressionFilter().setExpression(null);
+                    } else {
+                        table.getExpressionFilter().setExpression(currentContent);
+                    }
+                    if (!previousTextForExpressionFilter.trim().equals(currentContent.trim())) {
+                        checkProblemsForExpressionFilter(table, true);
+                    } else {
+                        checkProblemsForExpressionFilter(table, false);
+                    }
                 }
 
             });
@@ -1966,7 +1970,7 @@ public abstract class DataMapTableView extends Composite {
      */
     protected void checkProblemsForExpressionFilter(final AbstractInOutTable table, boolean forceRecompile) {
         List<Problem> problems = null;
-        if (table.isActivateExpressionFilter()) {
+        if (table.isActivateExpressionFilter() && !DEFAULT_EXPRESSION_FILTER.equals(expressionFilterText.getText())) {
             String nextText = expressionFilterText.getText();
             if (forceRecompile || nextText != null && previousTextForExpressionFilter != null
                     && !nextText.trim().equals(previousTextForExpressionFilter.trim())) {
