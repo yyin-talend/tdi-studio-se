@@ -77,6 +77,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
+import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -185,8 +186,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     IContextActivation ca;
-
-	private ArrayList<Long> times  = new ArrayList<Long>();
 
     private TreeItem getObject(Tree tree, Object objectToFind) {
         for (TreeItem item : tree.getItems()) {
@@ -364,10 +363,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
-    	long time1 = new Date().getTime();
+        Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
+        timer.start();
         
         try {
-            
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -393,17 +392,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             MessageBoxExceptionHandler.process(exception);
         }
         
-        long timedelta = new Date().getTime() - time1;
-        
-        times.add(timedelta);
-        long total = 0;
-        for (Long time : times) {
-			total += time;
-		}
-        long avg = total / times.size();
-        
-        //for debug purpose
-        //System.out.println("refresh in : " + timedelta + " avg : " + avg);
+        timer.stop();
+//        timer.print();
     }
 
     public void refresh(Object object) {
