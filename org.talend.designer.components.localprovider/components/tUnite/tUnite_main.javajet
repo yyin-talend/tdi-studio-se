@@ -31,7 +31,10 @@ imports="
     	List< ? extends IConnection> incomingConns = node.getIncomingConnections();
     	
     	//Notice here: only for the code viewer, because when click the tUnite component, it doesn't know which is the right input connection. 
-    	if (incomingName == null) incomingName = incomingConns.get(0).getName();
+    	if (incomingName == null && incomingConns.size() > 0) 
+    	{ 
+    	   incomingName = incomingConns.get(0).getName(); 
+    	}
     	
     	IConnection incomingConn = null;
     	INode preNode = null;
