@@ -45,6 +45,10 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -340,10 +344,48 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         previewGroup.setLayout(new GridLayout());
 
+        Composite preivewButtonPart = new Composite(previewGroup, SWT.NONE);
+        preivewButtonPart.setLayout(new GridLayout(3, false));
+        preivewButtonPart.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
         // Preview Button
-        previewButton = new Button(previewGroup, SWT.NONE);
+        previewButton = new Button(preivewButtonPart, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+
+        Label limitLabel = new Label(preivewButtonPart, SWT.RIGHT);
+        limitLabel.setText(Messages.getString("XmlFileStep2Form.limitOfRow")); //$NON-NLS-1$
+        GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
+        limitLabel.setLayoutData(labelGd);
+
+        final Text limitText = new Text(preivewButtonPart, SWT.BORDER | SWT.RIGHT);
+        GridData textGd = new GridData(30, SWT.DEFAULT);
+        limitText.setLayoutData(textGd);
+        limitText.setText(String.valueOf(XmlArray.getRowLimit()));
+        limitText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String limitValue = limitText.getText();
+                if (!limitValue.matches("\\d+")) {
+                    XmlArray.setRowLimit(10);
+                }
+                int limit = Integer.valueOf(limitValue);
+                XmlArray.setRowLimit(limit);
+            }
+
+        });
+
+        limitText.addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            public void focusLost(FocusEvent e) {
+                limitText.setText(String.valueOf(XmlArray.getRowLimit()));
+            }
+
+        });
 
         previewInformationLabel = new Label(previewGroup, SWT.NONE);
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));

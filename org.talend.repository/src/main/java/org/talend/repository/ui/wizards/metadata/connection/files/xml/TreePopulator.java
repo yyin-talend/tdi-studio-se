@@ -50,6 +50,8 @@ public class TreePopulator {
 
     private String filePath;
 
+    private static int limit;
+
     /**
      * DOC amaumont TreePopulator constructor comment.
      * 
@@ -65,11 +67,11 @@ public class TreePopulator {
      * 
      */
     public void populateTree(String filePath, ATreeNode treeNode) {
-            availableXmlTree.removeAll();
+        availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) { //$NON-NLS-1$
             try {
-                treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, 0);
+                treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, limit);
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             } catch (OdaException e) {
@@ -106,7 +108,7 @@ public class TreePopulator {
                 } else {
                     treeItem = new TreeItem((TreeItem) tree, 0);
                 }
-                
+
                 ATreeNode treeNode = (ATreeNode) node[i];
                 treeItem.setData(treeNode);
                 int type = treeNode.getType();
@@ -151,10 +153,33 @@ public class TreePopulator {
     public String getFilePath() {
         return this.filePath;
     }
-    
+
     public static int getMaximumRowsToPreview() {
-        return CorePlugin.getDefault().getPreferenceStore().getInt(
-                ITalendCorePrefConstants.PREVIEW_LIMIT);
+        return CorePlugin.getDefault().getPreferenceStore().getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
+    }
+
+    /**
+     * Sets the limit.
+     * 
+     * @param limit the limit to set
+     */
+    public void setLimit(String str) {
+        if (!str.matches("\\d+")) {
+            limit = 0;
+        } else {
+            if ((limit = Integer.valueOf(str)) < 0) {
+                limit = 0;
+            }
+        }
+    }
+
+    /**
+     * Getter for limit.
+     * 
+     * @return the limit
+     */
+    public static int getLimit() {
+        return limit;
     }
 
 }

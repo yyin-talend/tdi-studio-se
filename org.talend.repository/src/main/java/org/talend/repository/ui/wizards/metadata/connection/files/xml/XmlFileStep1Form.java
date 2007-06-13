@@ -36,15 +36,19 @@ import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -173,6 +177,11 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#addFields()
+     */
     protected void addFields() {
 
         // Group File Location
@@ -209,6 +218,40 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         encodingCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
                 .getString("FileStep2.encodingTip"), encodingData, 1, true, SWT.NONE); //$NON-NLS-1$
+
+        Composite limitation = new Composite(compositeFileLocation, SWT.NONE);
+        limitation.setLayout(new GridLayout(2, false));
+
+        Label labelLimitation = new Label(limitation, SWT.LEFT);
+        labelLimitation.setText(Messages.getString("XmlFileStep1Form.limitation")); //$NON-NLS-1$
+        final Text commonNodesLimitation = new Text(limitation, SWT.BORDER);
+        GridData gd = new GridData(18, 12);
+        commonNodesLimitation.setLayoutData(gd);
+        commonNodesLimitation.setText(String.valueOf(TreePopulator.getLimit()));
+
+        commonNodesLimitation.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                
+                treePopulator.setLimit(commonNodesLimitation.getText());
+                treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                checkFieldsValue();
+
+            }
+
+        });
+
+        commonNodesLimitation.addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            public void focusLost(FocusEvent e) {
+                commonNodesLimitation.setText(String.valueOf(TreePopulator.getLimit()));
+            }
+
+        });
 
         // field XmaskPattern
         // fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
@@ -270,14 +313,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
 
                 BufferedReader in = null;
-                
+
                 try {
                     File file = new File(getConnection().getXmlFilePath());
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                     String str;
-                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
-                            .getXmlFilePath()), guessedCharset.displayName()));
+                    in = new BufferedReader(new InputStreamReader(
+                            new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) { //$NON-NLS-1$
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$"; //$NON-NLS-1$
@@ -304,7 +347,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                         if (in != null) {
                             in.close();
                         }
-                    } catch (Exception ex2) { }
+                    } catch (Exception ex2) {
+                    }
                 }
                 getConnection().setEncoding(encoding);
                 if (encoding != null && !("").equals(encoding)) { //$NON-NLS-1$
@@ -361,20 +405,28 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             } else {
                 encodingCombo.select(0);
             }
-            
+
             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
                 ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
                 try {
                     ELibraryInstallStatus status = moduleService.getLibraryStatus("XML::LibXML"); //$NON-NLS-1$
                     if (status != ELibraryInstallStatus.INSTALLED) { //$NON-NLS-1$
-                        new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        new ErrorDialogWidthDetailArea(
+                                getShell(),
+                                PID,
+                                Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
-                        log.error(Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        log
+                                .error(Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     }
                 } catch (BusinessException e) {
-                    new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd"), e //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            .getMessage());
-                    log.error(Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    new ErrorDialogWidthDetailArea(
+                            getShell(),
+                            PID,
+                            Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd"), e //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                    .getMessage());
+                    log
+                            .error(Messages.getString("FileStep.moduleFailure") + " XML::LibXML " + Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
         }
