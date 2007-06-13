@@ -560,6 +560,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             setName();
             processor.initPath();
             processor.setProcessorStates(IProcessor.STATES_EDIT);
+
+            FileEditorInput oldInput = (FileEditorInput) codeEditor.getEditorInput();
+            // delete package and java file.
+            oldInput.getFile().getParent().delete(true, null);
             FileEditorInput input = createFileEditorInput();
             // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);
@@ -571,6 +575,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     DesignerPlugin.getDefault().getRunProcessService().refreshView();
                 }
             }
+
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
         }
