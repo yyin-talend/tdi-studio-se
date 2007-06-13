@@ -30,6 +30,7 @@
 	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.process.BlockCode
 	" 
 %>
 <%
@@ -76,8 +77,7 @@
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(
-                currentLanguage);
+        JavaGenerationManager gm = (JavaGenerationManager) node.getGenerationManager();
 
         StringBuilder sb = new StringBuilder();
 
@@ -101,6 +101,12 @@
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
         Set<ExternalMapperTable> validLookupTables = new HashSet<ExternalMapperTable>();
 
+		  int closeBracketCounter = 0;
+		%>
+		  boolean <%= rejectedInnerJoin %> = false;
+            				    								  
+		<%
+
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
@@ -110,7 +116,25 @@
             }
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
-                continue;
+            
+			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
+
+		                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+   	                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
+					  	  	 %>
+		              
+			   	  		  if(
+ 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+ 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+	  	  		  				) {
+		      	  				continue;
+		    		  	  	   }
+		    	  	  	  
+				 	  	   <%
+			 	  	   }
+                  continue;
+                  
             } else if (connectionType == EConnectionType.FLOW_REF) {
 
                 IMetadataTable metadataTable = connection.getMetadataTable();
@@ -135,7 +159,7 @@
                         ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
                         if (externalInputTableEntry != null) {
                             String expressionKey = externalInputTableEntry.getExpression();
-                            if (expressionKey != null && !"".equals(expressionKey.trim()) && (column.isKey() || checkingSyntax)) {
+                            if (expressionKey != null && !"".equals(expressionKey.trim())) {
                                 keysNames.add(columnName);
                                 keysValues.add(expressionKey);
                             }
@@ -143,30 +167,165 @@
                     }
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
+    		           
+    		           String className = tableName + "Struct";
+
+                    validLookupTables.add(externalTable);
+                    
                     if (aKeysValues.length > 0 || checkingSyntax) {
                         sb.append(cr
                                 + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
                                         indent, checkingSyntax));
+                        
+                        %>
+                        
+                        	<%= sb.toString()%>
+                          
+                     <% 
+                     }
 
-					         sb.append("\n" + gm.indent(indent) + tableName + "HashKey.hashCodeDirty = true;"); //$NON-NLS-1$ //$NON-NLS-2$
-					         String className = tableName + "Struct"; //$NON-NLS-1$
-					         sb.append("\n" + gm.indent(indent) + className + " " + tableName + "FromHash = (" + className + ") tHash_" + tableName + ".get( " + tableName //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-	                        + "HashKey );"); //$NON-NLS-1$
-					         sb.append("\n"); //$NON-NLS-1$
 
+                     sb = new StringBuilder();
+                     %>
+                          
+								  boolean forceLoop<%= tableName %> = false;
+                          int size<%= tableName %>ListFromLookup = 0;
+                          <%
+                          if(aKeysValues.length > 0) { // 1
+                          %>
+                          
+	                          <%=tableName%>HashKey.hashCodeDirty = true;
+	  								  tHash_Lookup_<%= tableName %>.get( <%= tableName %>HashKey );
+  								  
+	  								  java.util.List<<%= className %>> <%= tableName %>ListFromLookup = null;
 
-                        validLookupTables.add(externalTable);
-                        sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName
-                                + "FromHash == null )" + " ? " + tableName + "Default" + " : " + tableName
-                                + "FromHash;");
-                    } else {
-                        sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName
-                                + "Default;");
-                    }
+	  								  if(tHash_Lookup_<%= tableName %>.hasResult()) {
+  								  
+		  								  if(tHash_Lookup_<%= tableName %>.resultIsObject()) {
+	  								  
+	  									  		<%= tableName %>ListFromLookup = java.util.Arrays.asList((<%= tableName %>Struct) tHash_Lookup_<%= tableName %>.getResultObject());
+	  								  
+	  									  } else {
 
+												<%= tableName %>ListFromLookup = (java.util.List<<%= className %>>) tHash_Lookup_<%= tableName %>.getResultList();
+	  								  
+	  									  }
+	  								  
+	  									} else {
+		  									<%
+		  									if(externalTable.isInnerJoin()) {
+		  									%>
+		  									  <%= rejectedInnerJoin %> = true;
+		  									<%
+	  										}
+	  										%>
+	  										forceLoop<%= tableName %> = true;
+	  									}
+	  								
+									  size<%= tableName %>ListFromLookup = <%= tableName %>ListFromLookup != null ? <%= tableName %>ListFromLookup.size() : 0;
+                    		  	 <%
+                    		  	 } // 1 
+                    		  	 else { // 2
+                    		  	 %>
+                    		  	 
+                    		  	 	Object[] <%= tableName %>Array = tHash_Lookup_<%= tableName %>.getResultArray();
+									   size<%= tableName %>ListFromLookup = <%= tableName %>Array.length;
+									   
+									   if(<%= tableName %>Array.length == 0) {
+		  									<%
+		  									if(externalTable.isInnerJoin()) {
+		  									%>
+		  									  <%= rejectedInnerJoin %> = true;
+		  									<%
+	  										}
+	  										%>
+	  										forceLoop<%= tableName %> = true;
+										}
+                    		  	 <%
+                    		  	 } // 2
+                    		  	 %>
+									 
+                    		  	  for(int i<%= tableName %> = 0; i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
+
+										<%
+										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
+									  	%>
+                    		  	    
+  										forceLoop<%= tableName %> = false;
+                    		  	    
+                    		  	 
+                    		  	    <%= tableName %>Struct <%= tableName %>FromLookup = null;
+		                         <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
+
+	  									<%
+	  									if(externalTable.isInnerJoin()) {
+	  									%>
+                    		  	    if(!<%= rejectedInnerJoin %>) { // 13
+	  									<%
+	  									}
+	  									%>
+                    		  	    <%
+		                          if(aKeysValues.length > 0) { // 10
+		                          %>
+			  									if(<%= tableName %>ListFromLookup != null) {
+	      	              		   	   <%= tableName %>FromLookup = <%= tableName %>ListFromLookup.get(i<%= tableName %>);
+		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
+	      	              		   	}
+      	              		   	<%
+      	              		   	} // 10
+      	              		   	else { // 11
+      	              		   	%>
+      	              		   		if(i<%= tableName %> < <%= tableName %>Array.length) {
+      	              		   			<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
+		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
+      	              		   		}
+      	              		   	<%
+      	              		   	} // 11
+                    		  	    	%>
+                    		  	    
+                    		  	    
+                    		  	  	   <%
+                    		  	  	   if(
+                    		  	  	   		externalTable.isActivateExpressionFilter() 
+                    		  	  	   		&& externalTable.getExpressionFilter() != null 
+                    		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
+                    		  	  	   ) { // 12 
+                    		  	  	   		
+							                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+			   		                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
+                    		  	  	   %>
+                    		  	  		
+                    		  	  		
+							   	  		  if(
+					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+						  	  		  			) {
+                    		  	  		  
+  		                    		  	    	<%= tableName %> = <%= tableName %>Default;
+  		                    		  	    	<%= tableName %>FromLookup = null;
+                    		  	  		  		
+	  												<%
+				  									if(externalTable.isInnerJoin()) {
+				  									%>
+         	            		  	  			<%= rejectedInnerJoin %> = true;
+													<%
+				  									}
+				  									%>
+     	               		  	  	  }
+                    		  	  		  
+	                    		  	   <%
+	                    		  	   } // 12
+	                    		  	%>	
+	  									<%
+	  									if(externalTable.isInnerJoin()) {
+	  									%>
+                    		  	    } // 13
+	  									<%
+	  									}
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
-        } // for (IConnection connection : connections) {
+        } // for (ExternalMapperTable externalTable : inputTables) {
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
         sb.append(cr);
@@ -276,8 +435,8 @@
         boolean closeTestInnerJoinConditionsBracket = false;
 
         Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
-        for (IConnection connection : outputConnections) {
-            nameToOutputConnection.put(connection.getName(), connection);
+        for (IConnection outputConnection : outputConnections) {
+            nameToOutputConnection.put(outputConnection.getName(), outputConnection);
         }
 
         int lstSizeOutputs = outputTablesSortedByReject.size();
@@ -293,7 +452,8 @@
             }
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
-            boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
+            boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable) 
+            	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
                     allNotRejectTablesHaveFilter = false;
@@ -316,10 +476,6 @@
             // write rejected = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = true;");
         }
-        if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
-            // write rejectedInnerJoin = false;
-            sb.append(cr + gm.indent(indent) + "boolean " + rejectedInnerJoin + " = true;");
-        }
 
         // write conditions for inner join reject
         if (validLookupTables.size() > 0 && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
@@ -332,15 +488,13 @@
                     } else {
                         and = " &&";
                     }
-                    sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
+                    sb.append(and + " " + validLookupTable.getName() + "FromLookup != null");
                 }
             }
+            sb.append(" && !" + rejectedInnerJoin);
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
             indent++;
-            if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
-                sb.append(cr + gm.indent(indent) + rejectedInnerJoin + " = false;");
-            }
 
         }
 
@@ -362,10 +516,11 @@
             boolean currentIsRejectInnerJoin = outputTable.isRejectInnerJoin();
 
             boolean hasFilters = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
+            boolean hasExpressionFilter = outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
 
             boolean rejectValueHasJustChanged = lastValueReject != (currentIsReject || currentIsRejectInnerJoin);
 
-            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters;
+            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters || hasExpressionFilter;
 
             if (rejectValueHasJustChanged) {
 
@@ -402,7 +557,7 @@
                 } else {
                     sb.append(cr + cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
                 }
-                if (hasFilters || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+                if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
 
                     String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
@@ -417,7 +572,7 @@
                     if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin
                             && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = rejected + " || " + rejectedInnerJoin;
-                        if (hasFilters) {
+                        if (hasFilters || hasExpressionFilter) {
                             rejectedTests = "(" + rejectedTests + ")";
                         }
                     } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
@@ -425,8 +580,13 @@
                     } else if (currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = rejectedInnerJoin;
                     }
-                    if (hasFilters) {
-                        String filtersConditions = gm.buildConditions(filters, expressionParser);
+                    if (hasFilters || hasExpressionFilter) {
+                        String filtersConditions = null;
+                        if(hasFilters) {
+	                        filtersConditions = gm.buildConditions(filters, expressionParser);
+	                     } else {
+	                     	filtersConditions = outputTable.getExpressionFilter();
+	                     }
                         if (rejectedTests == null) {
                             ifConditions += filtersConditions;
                         } else {
@@ -487,8 +647,7 @@
 
                     } // for entries
 
-                    if (connectionExists && (!currentIsReject && !currentIsRejectInnerJoin && (validLookupTables.size() > 0 || lookupTables.size() == 0) || currentIsReject || currentIsRejectInnerJoin
-                        && atLeastOneInputTableWithInnerJoin)) {
+                    if (connectionExists) {
                         sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");
                     }
 

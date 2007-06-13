@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
@@ -33,10 +35,14 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.language.ILanguage;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
+import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -68,12 +74,25 @@ public class OutputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable
                     .getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
-                for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
-                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
-                            .getExpression());
-                    // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
-                    addFilterEntry(filterTableEntry);
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+                    for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
+                        FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
+                                .getExpression());
+                        // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
+                        addFilterEntry(filterTableEntry);
+                    }
+                } else if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+                    JavaGenerationManager javaGenerationManager = new JavaGenerationManager(currentLanguage);
+                    DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
+                    String expressionFilter = javaGenerationManager.buildConditions(externalConstraintTableEntries,
+                            expressionParser);
+                    if (!expressionFilter.trim().equals("")) {
+                        this.getExpressionFilter().setExpression(expressionFilter);
+                        this.setActivateExpressionFilter(true);
+                    }
                 }
+
             }
         }
     }

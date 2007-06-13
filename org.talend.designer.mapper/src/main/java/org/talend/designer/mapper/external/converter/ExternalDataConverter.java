@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.mapper.external.connection.IOConnection;
@@ -314,14 +316,20 @@ public class ExternalDataConverter {
                         && table.getExpressionFilter().getExpression().equals(
                                 InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table.getExpressionFilter()
                         .getExpression());
-        ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
-        for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
-            ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
-            externalMapperTableEntry.setExpression(constraintTableEntry.getExpression());
-            externalMapperTableEntry.setName(constraintTableEntry.getName());
-            constraintTableEntries.add(externalMapperTableEntry);
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
+            for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
+                ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
+                externalMapperTableEntry.setExpression(constraintTableEntry.getExpression());
+                externalMapperTableEntry.setName(constraintTableEntry.getName());
+                constraintTableEntries.add(externalMapperTableEntry);
+            }
+            externalMapperTable.setConstraintTableEntries(constraintTableEntries);
+        
+        } else if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+            externalMapperTable.setConstraintTableEntries(null);
         }
-        externalMapperTable.setConstraintTableEntries(constraintTableEntries);
+
         outputTables.add(externalMapperTable);
     }
 

@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -477,9 +479,17 @@ public class DataProcess {
                 // (to replace by a Node maybe that will take the informations of an IComponent)
                 String uniqueName = null;
                 IComponent component = null;
-                if (connection.getTarget().getUniqueName().startsWith("tAdvancedMap")) { //$NON-NLS-1$
+
+                // ///////////////////////////////////////////////////////////////////////////
+                // ///////////////////////////////////////////////////////////////////////////
+                // temporary solution (13 jun 2007)
+//                IExternalNode externalNode = connection.getTarget().getExternalNode();
+//                if (externalNode != null
+//                        && externalNode.getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) { //$NON-NLS-1$
+                if(connection.getTarget().getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
+                    // ///////////////////////////////////////////////////////////////////////////
                 } else {
                     uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);

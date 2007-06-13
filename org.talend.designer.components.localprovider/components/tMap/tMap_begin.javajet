@@ -18,6 +18,7 @@
 	org.talend.designer.mapper.language.LanguageProvider
 	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
 	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.process.IConnection
 	" 
 %>
 
@@ -37,18 +38,31 @@
 %>
 // ###############################
 // # Lookup's keys initialization<%
+
+        List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+
+        HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : inputConnections) {
+            hNameToConnection.put(connection.getName(), connection);
+        }
+
         List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
         int lstSizeInputs = inputTablesList.size();
         for (int i = 1; i < lstSizeInputs; i++) {
             ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+            String tableName = inputTable.getName();
+            IConnection connection = hNameToConnection.get(tableName);
+            if (connection == null) {
+                continue;
+            }
             List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
             if (tableEntries == null) {
                 continue;
             }
-            String tableName = inputTable.getName();
             String className = tableName + "Struct";
 %>
-java.util.Map tHash_<%=tableName%> = (java.util.Map) globalMap.get( "tHash_<%=tableName%>" );
+
+org.talend.designer.components.commons.AdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
 <%=className%> <%=tableName%>HashKey = new <%=className%>();
 <%=className%> <%=tableName%>Default = new <%=className%>();
 <%

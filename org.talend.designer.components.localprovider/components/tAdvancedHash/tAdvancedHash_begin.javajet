@@ -67,13 +67,20 @@
 						matchingMode = hashConfiguration.getMatchingMode();
 					}
 					
+					String matchingModeStr = null;
+					if(matchingMode == null) {
+						if(hHashableColumns.size() > 0) {
+							matchingModeStr = "ALL_ROWS";
+						} else {
+							matchingModeStr = "UNIQUE_MATCH";
+						}
+					} else {
+						matchingModeStr = matchingMode.toString();
+					}
+					
 			   %>
-			   	<%if( matchingMode != null) { %>
 			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum = 
-			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingMode.toString() %>;
-			   	<% } else {%>
-			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum = null;
-			   	<% } %>
+			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
 	   			org.talend.designer.components.commons.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   				org.talend.designer.components.commons.AdvancedLookup.
 	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum);

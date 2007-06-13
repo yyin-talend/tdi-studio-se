@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -858,7 +860,8 @@ public class MapperManager {
      * @return
      */
     public boolean isAdvancedMap() {
-        return getComponent().getClass().getName().endsWith("AdvancedMapperComponent");
+//        return getComponent().getClass().getName().endsWith("AdvancedMapperComponent");
+        return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA;
     }
 
     /**
