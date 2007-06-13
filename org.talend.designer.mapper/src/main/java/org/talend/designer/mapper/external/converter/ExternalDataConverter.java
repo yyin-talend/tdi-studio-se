@@ -272,10 +272,16 @@ public class ExternalDataConverter {
     private void fillExternalTable(InputTable table, ExternalMapperTable externalMapperTable) {
         externalMapperTable.setInnerJoin(table.isInnerJoin());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
-        externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null && table.getExpressionFilter().getExpression() != null
-                && table.getExpressionFilter().getExpression().equals(InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table
-                .getExpressionFilter().getExpression());
-        externalMapperTable.setMatchingMode(table.getMatchingMode().toString());
+        String expressionFilter = null;
+        if (table.getExpressionFilter() != null && table.getExpressionFilter().getExpression() != null) {
+            expressionFilter = table.getExpressionFilter().getExpression();
+        }
+        externalMapperTable.setExpressionFilter(expressionFilter);
+        String matchingMode = null;
+        if (table.getMatchingMode() != null) {
+            matchingMode = table.getMatchingMode().toString();
+        }
+        externalMapperTable.setMatchingMode(matchingMode);
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }
@@ -302,9 +308,12 @@ public class ExternalDataConverter {
         externalMapperTable.setReject(table.isReject());
         externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
-        externalMapperTable.setExpressionFilter(table.getExpressionFilter() != null && table.getExpressionFilter().getExpression() != null
-                && table.getExpressionFilter().getExpression().equals(InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table
-                .getExpressionFilter().getExpression());
+        externalMapperTable
+                .setExpressionFilter(table.getExpressionFilter() != null
+                        && table.getExpressionFilter().getExpression() != null
+                        && table.getExpressionFilter().getExpression().equals(
+                                InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table.getExpressionFilter()
+                        .getExpression());
         ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
         for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
             ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
