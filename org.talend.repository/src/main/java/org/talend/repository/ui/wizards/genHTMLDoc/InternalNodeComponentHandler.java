@@ -30,7 +30,6 @@ import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.EParameterName;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
@@ -157,13 +156,13 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
                     value = elemparameter.getValue().toString().toLowerCase()
                             + ": "
                             + getRepositoryValueForPropertyType(copyElementParameterList,
-                                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                                    "REPOSITORY_PROPERTY_TYPE");
                 } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
                     value = elemparameter.getValue().toString().toLowerCase()
                             + ": "
                             + getRepositoryValueForSchemaType(copyElementParameterList,
-                                    EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                                    "REPOSITORY_SCHEMA_TYPE");
                 }
 
                 else if (elemparameter.getName().equals(EParameterFieldType.QUERYSTORE_TYPE.getName())
@@ -171,7 +170,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
                     value = elemparameter.getValue().toString().toLowerCase()
                             + ": "
                             + getRepositoryValueForQueryStoreType(copyElementParameterList,
-                                    EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                                    "REPOSITORY_QUERYSTORE_TYPE");
                 }
                 // } else if (type.getName().equals("TYPE")) {
                 // int index = type.getIndexOfItemFromList(type.getDisplayName());
