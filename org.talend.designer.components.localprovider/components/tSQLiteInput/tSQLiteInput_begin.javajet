@@ -26,45 +26,24 @@ imports="
 	String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 		   dbquery = dbquery.replaceAll("\n"," ");
 		   dbquery = dbquery.replaceAll("\r"," ");
-		   
-	String dbjnilib = ElementParameterParser.getValue(node, "__JNI_LIB__");	
-    
+		      
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
-// Reset the "sys_paths" field of the ClassLoader to null.
-Class clazz_<%=cid%> = ClassLoader.class;
-java.lang.reflect.Field field_<%=cid%> = clazz_<%=cid%>.getDeclaredField("sys_paths");
-boolean accessible_<%=cid%> = field_<%=cid%>.isAccessible();
-if (!accessible_<%=cid%>)
-	field_<%=cid%>.setAccessible(true);
-	Object original_<%=cid%> = field_<%=cid%>.get(clazz_<%=cid%>);
-// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed
-// value.
-	field_<%=cid%>.set(clazz_<%=cid%>, null);
-try {
-// Change the value and load the library.
-	System.setProperty("java.library.path", <%=dbjnilib%>);
-	System.loadLibrary("sqlitejdbc");
-} finally {
-// Revert back the changes.
-	field_<%=cid%>.set(clazz_<%=cid%>, original_<%=cid%>);
-	field_<%=cid%>.setAccessible(accessible_<%=cid%>);
-}
 
 int nb_line_<%=cid%> = 0;
 java.lang.Class.forName("<%=javaDbDriver %>");
 
-String url_<%=cid %> = "jdbc:sqlite:"+<%= dbname%>;
+String url_<%=cid %> = "jdbc:sqlite:" + "/" + <%= dbname%>.toLowerCase();
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
-java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
-java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
-int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
+java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid%>.executeQuery(<%=dbquery%>);
+java.sql.ResultSetMetaData rsmd_<%=cid%> = rs_<%=cid %>.getMetaData();
+int colQtyInRs_<%=cid%> = rsmd_<%=cid%>.getColumnCount();
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 
