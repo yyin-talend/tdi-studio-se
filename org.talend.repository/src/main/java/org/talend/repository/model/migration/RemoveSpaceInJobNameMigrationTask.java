@@ -51,7 +51,8 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractMigrationTask imp
     public boolean execute(Project project) {
 
         try {
-            return renameJobs();
+            renameJobs();
+            return true;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return false;
