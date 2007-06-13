@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -134,4 +135,13 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#deleteRelatedJobs(org.eclipse.core.resources.IFile)
+     */
+    public void deleteRelatedJobs(IFile file) throws CoreException {
+        // get the parent package first , then delete it. Because the package contains the job and context scripts.
+        file.getParent().delete(true, null);
+    }
 }

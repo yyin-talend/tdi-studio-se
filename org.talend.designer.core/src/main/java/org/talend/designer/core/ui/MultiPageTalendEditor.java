@@ -24,6 +24,7 @@ package org.talend.designer.core.ui;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -563,7 +564,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             FileEditorInput oldInput = (FileEditorInput) codeEditor.getEditorInput();
             // delete package and java file.
-            oldInput.getFile().getParent().delete(true, null);
+            designerEditor.getDeletion().deleteRelatedJobs(oldInput.getFile());
             FileEditorInput input = createFileEditorInput();
             // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);

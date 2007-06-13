@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -144,7 +145,19 @@ public class PerlJobDeletion extends AbstractJobDeletion implements IJobDeletion
      */
     public void setProcess(Process pro) {
         this.process = pro;
-
     }
 
+    public void deleteRelatedJobs(IFile file) throws CoreException {
+        // find the context scripts related to the job file fisrt, then remove them all.
+        IResource[] resources = file.getParent().members();
+        String jobFileName = file.getName().replaceAll("." + file.getFileExtension(), "");
+
+        for (int i = 0; i < resources.length; i++) {
+            IResource resource = resources[i];
+            if (resource.getName().matches(jobFileName + "_(.)+\\.pl")) {
+                resource.delete(true, null);
+            }
+        }
+        file.delete(true, null);
+    }
 }

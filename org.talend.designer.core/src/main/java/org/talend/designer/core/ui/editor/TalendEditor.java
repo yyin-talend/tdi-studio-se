@@ -834,4 +834,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         }
 
     }
+
+    
+    /**
+     * Getter for deletion.
+     * @return the deletion
+     */
+    public IJobDeletion getDeletion() {
+        return this.deletion;
+    }
+    
 }

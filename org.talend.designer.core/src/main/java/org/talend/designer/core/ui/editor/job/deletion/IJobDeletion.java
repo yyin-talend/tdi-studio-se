@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.job.deletion;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -37,5 +39,12 @@ public interface IJobDeletion {
     public void deleteJobs();
 
     public void setProcess(Process pro);
+
+    /**
+     * Delete all the related scripts files to job file, including folders and context files.
+     * 
+     * @param file the Job scripts. In java project, it's .java file, and in perl project, it's .pl file.
+     */
+    public void deleteRelatedJobs(IFile file) throws CoreException;
 
 }
