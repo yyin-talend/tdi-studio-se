@@ -36,6 +36,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * This class is used for generating new query when "Guess Query" button is selected. <br/>
@@ -106,7 +107,13 @@ public class QueryGuessCommand extends Command {
                 node.setPropertyValue(param.getName(), newQuery);
                 param.setRepositoryValueUsed(true);
             }
+            
         }
+        
+        if (this.node instanceof Node) {
+            ((Node) this.node).checkAndRefreshNode();
+        }
+        
         refreshPropertyView();
         // Ends
     }
