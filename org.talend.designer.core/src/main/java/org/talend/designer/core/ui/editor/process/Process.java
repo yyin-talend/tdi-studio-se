@@ -72,8 +72,7 @@ import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -733,36 +732,6 @@ public class Process extends Element implements IProcess {
         return false;
     }
 
-    public static IMetadataTable getMetadataFromRepository(String metaRepositoryName) {
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        List<ConnectionItem> metadataConnectionsItem = null;
-        List<String> repositoryList = new ArrayList<String>();
-        IMetadataTable metaToReturn = null;
-        try {
-            metadataConnectionsItem = factory.getMetadataConnectionsItem();
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-        if (metadataConnectionsItem != null) {
-            for (ConnectionItem connectionItem : metadataConnectionsItem) {
-                org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
-                for (Object tableObj : connection.getTables()) {
-                    MetadataTable table = (MetadataTable) tableObj;
-                    if (!factory.isDeleted(table)) {
-                        String name = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-                        if (name.equals(metaRepositoryName)) {
-                            metaToReturn = ConvertionHelper.convert(table);
-                        }
-                        repositoryList.add(name);
-                    }
-                }
-            }
-        }
-        return metaToReturn;
-    }
-
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
@@ -1215,7 +1184,7 @@ public class Process extends Element implements IProcess {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
                 String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
                         .getName());
-                IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
+                IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
 
@@ -1345,7 +1314,6 @@ public class Process extends Element implements IProcess {
 
                     result.setResult(MetadataUpdateCheckResult.RepositoryType.property,
                             MetadataUpdateCheckResult.ResultType.delete, null);
-
                     modified = true;
                 }
 

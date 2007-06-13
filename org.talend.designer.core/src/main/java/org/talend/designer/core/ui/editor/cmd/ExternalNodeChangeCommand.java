@@ -38,6 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
@@ -116,7 +117,7 @@ public class ExternalNodeChangeCommand extends Command {
                 if (schemaType.equals(EmfComponent.REPOSITORY)) {
                     String metaRepositoryName = (String) connection.getSource().getPropertyValue(
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                    IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
+                    IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
                         connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     } else {
