@@ -53,8 +53,10 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -93,7 +95,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -261,20 +262,20 @@ public class Process extends Element implements IProcess {
      */
     private String addQuotes(String str) {
         // function?
-        if (str.contains("(") && str.contains(")")) {
+        if (str.contains("(") && str.contains(")")) { //$NON-NLS-1$ //$NON-NLS-2$
             return str;
         }
 
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
             // if the user already added quotes (anywhere) then don't add.
-            if (str.contains("\"")) {
+            if (str.contains("\"")) { //$NON-NLS-1$
                 return str;
             }
             break;
         default: // PERL
             // if the user already added quotes (anywhere) then don't add.
-            if (str.contains("'")) {
+            if (str.contains("'")) { //$NON-NLS-1$
                 return str;
             }
         }
@@ -308,7 +309,7 @@ public class Process extends Element implements IProcess {
 
         // on console
         param = new ElementParameter(this);
-        param.setName("ON_CONSOLE_FLAG");
+        param.setName("ON_CONSOLE_FLAG"); //$NON-NLS-1$
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.ON_CONSOLE_FLAG.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
@@ -318,7 +319,7 @@ public class Process extends Element implements IProcess {
 
         // on files
         param = new ElementParameter(this);
-        param.setName("ON_FILE_FLAG"); // On files
+        param.setName("ON_FILE_FLAG"); // On files //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getDisplayName());
         param.setField(EParameterFieldType.CHECK);
@@ -328,7 +329,7 @@ public class Process extends Element implements IProcess {
 
         // file path
         param = new ElementParameter(this);
-        param.setName("FILE_PATH"); // File path
+        param.setName("FILE_PATH"); // File path //$NON-NLS-1$
         param.setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
                 .getName()))));
         param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
@@ -339,7 +340,7 @@ public class Process extends Element implements IProcess {
 
         // stats file name
         param = new ElementParameter(this);
-        param.setName("FILENAME_STATS"); // Stats file name
+        param.setName("FILENAME_STATS"); // Stats file name //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore
                 .getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName());
@@ -365,7 +366,7 @@ public class Process extends Element implements IProcess {
         // addElementParameter(param);
         // Log file name
         param = new ElementParameter(this);
-        param.setName("FILENAME_LOGS");
+        param.setName("FILENAME_LOGS"); //$NON-NLS-1$
         param
                 .setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType]
                         .getName())));
@@ -391,7 +392,7 @@ public class Process extends Element implements IProcess {
         // addElementParameter(param);
         // on database
         param = new ElementParameter(this);
-        param.setName("ON_DATABASE_FLAG");
+        param.setName("ON_DATABASE_FLAG"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName()); // On Database
         param.setField(EParameterFieldType.CHECK);
@@ -401,7 +402,7 @@ public class Process extends Element implements IProcess {
 
         param = new ElementParameter(this);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setName("PROPERTY_TYPE");
+        param.setName("PROPERTY_TYPE"); //$NON-NLS-1$
         param.setDisplayName(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName());
         param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
         param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
@@ -409,7 +410,7 @@ public class Process extends Element implements IProcess {
         param.setValue(preferenceStore.getString(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName()));
         param.setNumRow(10);
         param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setRepositoryValue("DATABASE");
+        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -428,36 +429,36 @@ public class Process extends Element implements IProcess {
 
         // dbType
         param = new ElementParameter(this);
-        param.setName("DB_TYPE");
+        param.setName("DB_TYPE"); //$NON-NLS-1$
         param.setValue(preferenceStore.getString(StatsAndLogsConstants.DB_TYPE[languageType].getName()));
         param.setDisplayName(EParameterName.PERL_DB_TYPE.getDisplayName()); // "DB Type");
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         String[] strDisplay = null, strValue = null, strItems = null, strCodes = null;
         if (languageType == 0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
-                    "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.ORACLE,
                     RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
                     RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
             strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.ODBC, "OCLE", RepositoryToComponentProperty.POSTGRESQL,
+                    RepositoryToComponentProperty.ODBC, "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
                     RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
                     RepositoryToComponentProperty.INGRES };
         } else if (languageType == 1) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL",
-                    "IBM DB2", "Sybase", "Ingres" };
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput",
-                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                    "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
                     RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
                     RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
                     RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
             strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.SQL_SERVER, "OCLE", RepositoryToComponentProperty.POSTGRESQL,
+                    RepositoryToComponentProperty.SQL_SERVER, "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
                     RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
                     RepositoryToComponentProperty.INGRES };
         } else {
@@ -472,84 +473,84 @@ public class Process extends Element implements IProcess {
         param.setListRepositoryItems(strItems);
         param.setListItemsDisplayCodeName(strCodes);
         param.setNumRow(11);
-        param.setRepositoryValue("TYPE");
+        param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
         addElementParameter(param);
 
         // host
         param = new ElementParameter(this);
-        param.setName("HOST");
+        param.setName("HOST"); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.HOST[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.HOST[languageType].getDisplayName()); // Host
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(11);
-        param.setRepositoryValue("SERVER_NAME");
+        param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         addElementParameter(param);
 
         // port
         param = new ElementParameter(this);
-        param.setName("PORT");
+        param.setName("PORT"); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PORT[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.PORT[languageType].getDisplayName()); // Port
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(11);
-        param.setRepositoryValue("PORT");
+        param.setRepositoryValue("PORT"); //$NON-NLS-1$
         addElementParameter(param);
 
         // dbName
         param = new ElementParameter(this);
-        param.setName("DBNAME");// DBNAME
+        param.setName("DBNAME");// DBNAME //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.DBNAME[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.DBNAME[languageType].getDisplayName()); // "DB Name"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(12);
-        param.setRepositoryValue("SID");
+        param.setRepositoryValue("SID"); //$NON-NLS-1$
         addElementParameter(param);
 
         // schema
         param = new ElementParameter(this);
-        param.setName("SCHEMA_DB"); // SCHEMA_DB
+        param.setName("SCHEMA_DB"); // SCHEMA_DB //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.SCHEMA_DB[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.SCHEMA_DB[languageType].getDisplayName());// "Schema"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(12);
-        String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')";
+        String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         param.setShowIf(showIfStr);
 
-        param.setRepositoryValue("SCHEMA");
+        param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         addElementParameter(param);
 
         // username
         param = new ElementParameter(this);
-        param.setName("USER");
+        param.setName("USER"); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.USER[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.USER[languageType].getDisplayName()); // User
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(13);
         param.setRequired(true);
-        param.setRepositoryValue("USERNAME");
+        param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
         addElementParameter(param);
 
         // password
         param = new ElementParameter(this);
-        param.setName("PASS"); // Pass
+        param.setName("PASS"); // Pass //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PASS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.PASS[languageType].getDisplayName()); // "Password"
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(13);
         param.setRequired(true);
-        param.setRepositoryValue("PASSWORD");
+        param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
         addElementParameter(param);
 
         // Stats table
         param = new ElementParameter(this);
-        param.setName("TABLE_STATS"); // "TABLE_STATS"
+        param.setName("TABLE_STATS"); // "TABLE_STATS" //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_STATS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.TABLE_STATS[languageType].getDisplayName());// "Stats Table");
         param.setField(EParameterFieldType.TEXT);
@@ -567,7 +568,7 @@ public class Process extends Element implements IProcess {
          */
         // Log table
         param = new ElementParameter(this);
-        param.setName("TABLE_LOGS");
+        param.setName("TABLE_LOGS"); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_LOGS[languageType].getName())));
         param.setDisplayName(StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName()); // "Log Table");
         param.setField(EParameterFieldType.TEXT);
@@ -577,7 +578,7 @@ public class Process extends Element implements IProcess {
 
         // Catch runtime errors
         param = new ElementParameter(this);
-        param.setName("CATCH_RUNTIME_ERRORS");
+        param.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType].getDisplayName());// "Catch
         // runtime
@@ -589,7 +590,7 @@ public class Process extends Element implements IProcess {
 
         // Catch user errors
         param = new ElementParameter(this);
-        param.setName("CATCH_USER_ERRORS");
+        param.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getDisplayName());// "Catch user
         // errors");
@@ -600,7 +601,7 @@ public class Process extends Element implements IProcess {
 
         // Catch user warning
         param = new ElementParameter(this);
-        param.setName("CATCH_USER_WARNING");
+        param.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getDisplayName());// "Catch user
         // warning");
@@ -611,7 +612,7 @@ public class Process extends Element implements IProcess {
 
         // Catch realtime statistics
         param = new ElementParameter(this);
-        param.setName("CATCH_REALTIME_STATS");
+        param.setName("CATCH_REALTIME_STATS"); //$NON-NLS-1$
         param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType].getName()));
         param.setDisplayName(StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType].getDisplayName()); // "Catch
         // realtime
@@ -950,7 +951,7 @@ public class Process extends Element implements IProcess {
 
         HashMap options = new HashMap(2);
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
-        options.put(XMLResource.OPTION_XML_VERSION, "1.1");
+        options.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
         res.save(options);
         return process;
     }
@@ -1159,7 +1160,7 @@ public class Process extends Element implements IProcess {
         } else {
             StringBuilder curentName = new StringBuilder();
             for (String componentName : unloadedNodeNames) {
-                curentName.append(componentName).append(",");
+                curentName.append(componentName).append(","); //$NON-NLS-1$
             }
             curentName.deleteCharAt(curentName.length() - 1);
 
@@ -1485,6 +1486,8 @@ public class Process extends Element implements IProcess {
         Connection connec;
         Node source, target;
 
+        List<String> connectionsProblems = new ArrayList<String>();
+
         for (int i = 0; i < connecList.size(); i++) {
             cType = (ConnectionType) connecList.get(i);
             source = (Node) nodesHashtable.get(cType.getSource());
@@ -1501,13 +1504,28 @@ public class Process extends Element implements IProcess {
                 }
             }
 
+            // fix to correct the bug of the metaname after renaming the output of a tMap
+            String metaname = cType.getMetaname();
+            if (source.getMetadataTable(metaname) == null) {
+                metaname = cType.getLabel(); // the label should be the
+                // original name of the metadata
+                if (source.getMetadataTable(metaname) == null) {
+                    // this problem should never appear, just in case.
+                    if (source.getMetadataList().size() > 0) {
+                        metaname = source.getMetadataList().get(0).getTableName();
+                    }
+                    connectionsProblems.add(cType.getLabel());
+                }
+            }
+            // end of fix
+
             if (connectionTypeFound) {
                 connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName,
-                        cType.getMetaname(), cType.getLabel(), cType.getMetaname());
+                        metaname, cType.getLabel(), cType.getMetaname());
             } else {
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), cType
-                        .getMetaname(), cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
+                        cType.getLabel(), cType.getMetaname());
             }
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
@@ -1521,6 +1539,19 @@ public class Process extends Element implements IProcess {
             INodeConnector nodeConnectorTarget = connec.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
             connec.getConnectionLabel().setOffset(offset);
+        }
+
+        if (connectionsProblems.size() > 0) {
+            MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
+            mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
+            String message = Messages.getString("Process.errorLoadingConnectionMessage"); //$NON-NLS-1$
+            for (int i = 0; i < connectionsProblems.size(); i++) {
+                message += connectionsProblems.get(i);
+                if (i < (connectionsProblems.size() - 1)) {
+                    message += ","; //$NON-NLS-1$
+                }
+            }
+            mb.setMessage(message);
         }
     }
 
@@ -2146,7 +2177,7 @@ public class Process extends Element implements IProcess {
 
         if (filter != null) {
             // construct filter array
-            String[] f = filter.split("\\|");
+            String[] f = filter.split("\\|"); //$NON-NLS-1$
             List<String> filterArray = new ArrayList<String>(f.length);
             for (int i = 0; i < f.length; i++) {
                 filterArray.add(f[i].trim());
@@ -2232,7 +2263,7 @@ public class Process extends Element implements IProcess {
      * @param str
      */
     private String replaceSlash(String str) {
-        String tempStr = str.replaceAll("\\\\", "/");
+        String tempStr = str.replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
         return tempStr;
     }
 
