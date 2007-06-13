@@ -534,8 +534,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     }
 
     private FileEditorInput createFileEditorInput() {
+
+        IPath codePath = processor.getCodePath();
+
         IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                processor.getCodeProject().getFullPath().append(processor.getCodePath()));
+                processor.getCodeProject().getFullPath().append(codePath));
         if (!codeFile.exists()) {
             // Create empty one
             try {
@@ -556,8 +559,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         try {
             setName();
             processor.initPath();
+            processor.setProcessorStates(IProcessor.STATES_EDIT);
             FileEditorInput input = createFileEditorInput();
-            this.codeEditor.getDocumentProvider().connect(input);
+            // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);
 
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
