@@ -71,6 +71,13 @@ public class InputTable extends AbstractInOutTable {
         if (externalMapperTable != null) {
             this.innerJoin = externalMapperTable.isInnerJoin();
             this.matchingMode = TMAP_MATCHING_MODE.parse(externalMapperTable.getMatchingMode());
+            if (matchingMode == null) {
+                if (mapperManager.isTableHasAtLeastOneHashKey(this)) {
+                    matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
+                } else {
+                    matchingMode = TMAP_MATCHING_MODE.ALL_ROWS;
+                }
+            }
         }
     }
 

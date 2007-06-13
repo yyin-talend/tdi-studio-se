@@ -425,12 +425,12 @@ public class InputDataMapTableView extends DataMapTableView {
 
     public void refreshLabelForLookupTypeDropDown() {
         ILookupType matchingMode = getInputTable().getMatchingMode();
-        String text = getInputTable().getMatchingMode().getLabel();
-        dropDownItem.setText(text);
-        dropDownItem.setToolTipText(text);
         if (matchingMode != TMAP_MATCHING_MODE.ALL_ROWS) {
             previousMultipleModeSelected = matchingMode;
         }
+        String text = matchingMode.getLabel();
+        dropDownItem.setText(text);
+        dropDownItem.setToolTipText(text);
 
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         GridData gridData = (GridData) toolBarActions.getLayoutData();
