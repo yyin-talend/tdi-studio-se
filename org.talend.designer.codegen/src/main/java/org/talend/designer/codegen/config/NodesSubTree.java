@@ -58,7 +58,7 @@ public class NodesSubTree {
 
     HashMap<INode, Integer> visitedNodesEndCode;
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     boolean isMergeSubTree = false;
 
