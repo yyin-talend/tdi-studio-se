@@ -32,7 +32,7 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
-      REPOSITORY_VALUE="DATABASE:Informix"
+      REPOSITORY_VALUE="DATABASE:INFORMIX"
     />
 
     <PARAMETER
