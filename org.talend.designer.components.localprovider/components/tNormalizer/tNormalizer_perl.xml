@@ -34,7 +34,7 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       READONLY="true"
-      NUM_ROW="1"
+      NUM_ROW="10"
     >
     </PARAMETER>
 
@@ -43,14 +43,14 @@
       NAME="NORMALIZE_COLUMN"
       FIELD="COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
     </PARAMETER>
 
     <PARAMETER
       NAME="ITEMSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="30"
     >
       <DEFAULT>','</DEFAULT>
     </PARAMETER>
@@ -59,6 +59,7 @@
   <CODEGENERATION/>
 
   <RETURNS>
-    <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+    <RETURN NAME="NB_LINE_INPUT" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+    <RETURN NAME="NB_LINE_OUTPUT" TYPE="INTEGER" AVAILABILITY="AFTER"/>
   </RETURNS>
 </COMPONENT>
