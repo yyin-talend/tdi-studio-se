@@ -66,8 +66,8 @@
         }
 
         String cr = "\n";
-        String rejected = "rejected";
-        String rejectedInnerJoin = "rejectedInnerJoin";
+        String rejected = "rejected_" + uniqueNameComponent;
+        String rejectedInnerJoin = "rejectedInnerJoin_" + uniqueNameComponent;
 
         List<ExternalMapperTable> inputTables = data.getInputTables();
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -241,29 +241,20 @@
 	  										%>
 	  										forceLoop<%= tableName %> = true;
 										}
+		                      	boolean hasAtLeastOneValidLookup_<%= tableName %> = false;
                     		  	 <%
                     		  	 } // 2
                     		  	 %>
-									 
+
                     		  	  for(int i<%= tableName %> = 0; i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
 
 										<%
 										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
 									  	%>
                     		  	    
-  										forceLoop<%= tableName %> = false;
-                    		  	    
-                    		  	 
                     		  	    <%= tableName %>Struct <%= tableName %>FromLookup = null;
 		                         <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
 
-	  									<%
-	  									if(externalTable.isInnerJoin()) {
-	  									%>
-                    		  	    if(!<%= rejectedInnerJoin %>) { // 13
-	  									<%
-	  									}
-	  									%>
                     		  	    <%
 		                          if(aKeysValues.length > 0) { // 10
 		                          %>
@@ -275,13 +266,15 @@
       	              		   	} // 10
       	              		   	else { // 11
       	              		   	%>
-      	              		   		if(i<%= tableName %> < <%= tableName %>Array.length) {
+      	              		   		if(!forceLoop<%= tableName %> && i<%= tableName %> < <%= tableName %>Array.length) {
       	              		   			<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
 		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
       	              		   		}
       	              		   	<%
       	              		   	} // 11
                     		  	    	%>
+                    		  	    
+                    		  			forceLoop<%= tableName %> = false;
                     		  	    
                     		  	    
                     		  	  	   <%
@@ -300,29 +293,55 @@
 					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
 					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
 					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
-						  	  		  			) {
+						  	  		  			) { //16
                     		  	  		  
-  		                    		  	    	<%= tableName %> = <%= tableName %>Default;
   		                    		  	    	<%= tableName %>FromLookup = null;
                     		  	  		  		
 	  												<%
-				  									if(externalTable.isInnerJoin()) {
+				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
 				  									%>
          	            		  	  			<%= rejectedInnerJoin %> = true;
 													<%
+				  									} else if(aKeysValues.length == 0){
+					  									if(externalTable.isInnerJoin()) {
+					  									%>
+				                    		  	   	if(i<%= tableName %> == size<%= tableName %>ListFromLookup - 1 && !hasAtLeastOneValidLookup_<%= tableName %>) 
+				                    		  	   	{ // 15
+			     	  	            		  	  			<%= rejectedInnerJoin %> = true;
+				                    		  	   	} //15
+															<%
+					  									} 
 				  									}
 				  									%>
+     	               		  	  	  } // 16
+     	               		  	  	  <%
+    	               		  	  	  if(aKeysValues.length == 0){
+     	               		  	  	  %>
+			                    		  	 if(<%= tableName %>FromLookup == null && !<%= rejectedInnerJoin %>) 
+			                    		  	 { // 17
+				  										continue;
+				                    		 } // 17
+				                    		 <%
+			  									 if(externalTable.isInnerJoin()) {
+					  							 %>
+					  								// 17
+				                    		 	else if(!<%= rejectedInnerJoin %>)
+				                    		 	{ // 18
+					                    	   	hasAtLeastOneValidLookup_<%= tableName %> = true;
+					                    		} // 18
+				                    		 <%
+				                    		 }
+				                    		 %>	
+     	               		  	  	  <%
      	               		  	  	  }
+     	               		  	  	  %>
+     	               		  	  	  
                     		  	  		  
 	                    		  	   <%
 	                    		  	   } // 12
+	                    		  	   
 	                    		  	%>	
 	  									<%
-	  									if(externalTable.isInnerJoin()) {
-	  									%>
-                    		  	    } // 13
-	  									<%
-	  									}
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
         } // for (ExternalMapperTable externalTable : inputTables) {
@@ -671,9 +690,13 @@
 
         sb.append(cr + gm.indent(indent) + "// ###############################");
 
+        
         sb.append(cr);
         indent--;
         sb.append(cr + gm.indent(indent) + "} // end of Var scope");
+        
+        sb.append(cr + cr + gm.indent(indent) + rejectedInnerJoin + " = false;");
+        
         sb.append(cr);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
