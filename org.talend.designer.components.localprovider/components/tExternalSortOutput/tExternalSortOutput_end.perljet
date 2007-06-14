@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser 
     java.util.List
 " 
 %>
@@ -17,9 +18,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = metadata.getTableName();
+
+        String addEof = ElementParameterParser.getValue(
+            node,
+            "__ADD_EOF__"
+        );
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+%>
+close($sort_<%=cid%>);
+
+<%
+        if (addEof.equals("true")) {
+%>
+open(my $sorted_file_fh_<%=cid%>, '>>'.<%=filename%>);
+print $sorted_file_fh_<%=cid%> "EOF\n";
+close($sorted_file_fh_<%=cid%>);
+<%
+        }
 %>
 
-close($sort_<%=cid%>);
 
 <%
         if (stats) {

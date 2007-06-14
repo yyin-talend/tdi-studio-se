@@ -98,6 +98,14 @@
       <DEFAULT></DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="ADD_EOF"
+      FIELD="CHECK"
+      NUM_ROW="70"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
   </PARAMETERS>
 
   <CODEGENERATION/>
