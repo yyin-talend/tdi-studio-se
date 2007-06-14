@@ -628,7 +628,7 @@ public class CodeGenerator implements ICodeGenerator {
                             nodeConfigurer.configure(subTreeNode);
                         }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        if (subTreeNode != null) {
+                        if (subTreeNode != null && (lightProcess.getSubTrees().size() > 0)) {
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
                                     lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.BEGIN, null));
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
