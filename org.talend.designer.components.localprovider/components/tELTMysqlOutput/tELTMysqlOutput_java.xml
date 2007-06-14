@@ -99,6 +99,9 @@
   </PARAMETERS>
 
   <CODEGENERATION>
+    <IMPORTS>
+    	<IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>

@@ -92,6 +92,9 @@
   </PARAMETERS>
 
   <CODEGENERATION>
+    <IMPORTS>
+		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
    
   <RETURNS>
