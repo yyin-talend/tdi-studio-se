@@ -1,0 +1,52 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+String gpgbin     = ElementParameterParser.getValue(node, "__GPGBIN__");
+String secretKey  = ElementParameterParser.getValue(node, "__SECRET_KEY__");
+String passphrase = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+String input = ElementParameterParser.getValue(node, "__INPUT_FILE__");
+String output = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
+
+%>
+use Crypt::GPG;
+use File::Basename;
+
+{
+    my $input_filename = <%=input%>;
+    my $output_filename = <%=output%>;
+    
+    my $gpg = new Crypt::GPG;
+
+    $gpg->gpgbin(<%=gpgbin%>);
+    $gpg->secretkey(<%=secretKey%>);
+    $gpg->passphrase(<%=passphrase%>)
+        or die '[<%=cid%>] wrong passphrase';
+
+    open(my $enc_fh, '<'.$input_filename)
+        or die '[<%=cid%>] cannot open encrypted file "'.$input_filename.'"';
+    my @lines = <$enc_fh>;
+    close($enc_fh);
+    my $encrypted_data = join('', @lines);
+    
+    my ($plaintext) = $gpg->verify([$encrypted_data])
+      or die '[<%=cid%>] decryption failed';
+    
+    open(my $decrypted_fh, '>'.$output_filename)
+        or die '[<%=cid%>] cannot open output file "'.$output_filename.'"';
+    print {$decrypted_fh} $plaintext;
+    close($decrypted_fh);
+    
+    $_globals{<%=cid%>}{FILE} = basename $output_filename;
+    $_globals{<%=cid%>}{FILEPATH} = $output_filename;
+}
