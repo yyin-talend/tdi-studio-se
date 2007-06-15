@@ -511,7 +511,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         for (IMetadataTable table : tableList) {
             String tableName = table.getTableName();
             for (IConnection connection : tmpList) {
-                if (connection.getMetadataTable().getTableName().equals(tableName)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                        && connection.getMetadataTable().getTableName().equals(tableName)) {
                     connectionList.add(connection);
                 }
             }
