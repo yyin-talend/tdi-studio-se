@@ -53,7 +53,7 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -219,7 +219,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
                 uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection),
-                        true, false);
+                        false, false);
             }
 
         });
@@ -291,7 +291,7 @@ public class OutputDataMapTableView extends DataMapTableView {
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
                 ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
                         extendedTableViewerForFilters.getExtendedTableModel());
-                mapperManager.removeTableEntry((ITableEntry) bean);
+                mapperManager.removeTableEntry((IDataMapTableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();
                 List list = tableViewerCreatorForFilters.getInputList();

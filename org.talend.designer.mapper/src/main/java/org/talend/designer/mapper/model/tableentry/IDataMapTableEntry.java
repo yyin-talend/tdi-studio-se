@@ -32,7 +32,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public interface ITableEntry {
+public interface IDataMapTableEntry {
 
     public String getName();
 
@@ -50,4 +50,17 @@ public interface ITableEntry {
 
     public void setProblems(List<Problem> errorMessage);
 
+    /**
+     * Return true if this entry is displayed in a SWT Table.
+     * @return true if this entry is displayed in a SWT Table.
+     */
+    public boolean isTableEntry(); 
+
+    /**
+     * 
+     * Return true if this entry represents a column.
+     * @return true if this entry represents a column.
+     */
+    public boolean isColumnEntry(); 
+    
 }

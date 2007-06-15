@@ -32,7 +32,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public abstract class TableEntry implements ITableEntry {
+public abstract class DataMapTableEntry implements IDataMapTableEntry {
 
     private String expression;
 
@@ -42,13 +42,13 @@ public abstract class TableEntry implements ITableEntry {
 
     private List<Problem> problems;
 
-    public TableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
+    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.expression = expression;
     }
 
-    public TableEntry(AbstractDataMapTable abstractDataMapTable) {
+    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable) {
         this(abstractDataMapTable, null);
     }
 
@@ -58,7 +58,7 @@ public abstract class TableEntry implements ITableEntry {
      * @param abstractDataMapTable
      * @param name, can't be null
      */
-    public TableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.name = name;
@@ -108,4 +108,5 @@ public abstract class TableEntry implements ITableEntry {
         this.problems = problems;
     }
 
+    
 }

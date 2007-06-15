@@ -41,6 +41,21 @@ public abstract class AbstractDataMapTable {
 
     protected boolean minimized;
 
+    /**
+     * 
+     * DOC amaumont AbstractDataMapTable class global comment. Detailled comment
+     * <br/>
+     *
+     */
+    public enum SIZE_STATE {
+        MINIMIZED,
+        INTERMEDIATE,
+        MAXIMIZED,
+        ;
+    }
+    
+    private SIZE_STATE sizeState = SIZE_STATE.INTERMEDIATE;
+    
     private String name;
 
     private ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
@@ -155,4 +170,24 @@ public abstract class AbstractDataMapTable {
         this.readOnly = readOnly;
     }
 
+    
+    /**
+     * Getter for sizeState.
+     * @return the sizeState
+     */
+    public SIZE_STATE getSizeState() {
+        return this.sizeState;
+    }
+
+    
+    /**
+     * Sets the sizeState.
+     * @param sizeState the sizeState to set
+     */
+    public void setSizeState(SIZE_STATE sizeState) {
+        this.sizeState = sizeState;
+    }
+
+    
+    
 }

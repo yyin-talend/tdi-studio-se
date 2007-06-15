@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
@@ -62,11 +62,11 @@ public class LinkManager {
 
     private int currentNumberLinks = 0;
 
-    private Map<ITableEntry, Set<ITableEntry>> targetToSources = new HashMap<ITableEntry, Set<ITableEntry>>();
+    private Map<IDataMapTableEntry, Set<IDataMapTableEntry>> targetToSources = new HashMap<IDataMapTableEntry, Set<IDataMapTableEntry>>();
 
-    private Map<ITableEntry, Set<IMapperLink>> sourceTableEntryToLinks = new HashMap<ITableEntry, Set<IMapperLink>>();
+    private Map<IDataMapTableEntry, Set<IMapperLink>> sourceTableEntryToLinks = new HashMap<IDataMapTableEntry, Set<IMapperLink>>();
 
-    private Map<ITableEntry, Set<IMapperLink>> targetTableEntryToLinks = new HashMap<ITableEntry, Set<IMapperLink>>();
+    private Map<IDataMapTableEntry, Set<IMapperLink>> targetTableEntryToLinks = new HashMap<IDataMapTableEntry, Set<IMapperLink>>();
 
     // levels
 
@@ -91,10 +91,10 @@ public class LinkManager {
         // System.out.println(currentNumberLinks + " links");
 
         links.add(link);
-        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
-        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
+        IDataMapTableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
+        IDataMapTableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
 
-        Set<ITableEntry> sourcesDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        Set<IDataMapTableEntry> sourcesDataMapTableEntries = getSourcesCollection(targetITableEntry);
         sourcesDataMapTableEntries.add(sourceITableEntry);
 
         Set<IMapperLink> graphicalLinksFromTarget = getGraphicalLinksFromTarget(targetITableEntry);
@@ -115,7 +115,7 @@ public class LinkManager {
     private void registerLevelForNewLink(IMapperLink link, Set<IMapperLink> graphicalLinksFromTarget) {
         boolean hasAlreadyInputTarget = false;
         boolean hasAlreadyVarTarget = false;
-        ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
+        IDataMapTableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
         boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
 
         if (hasSameZone) {
@@ -136,8 +136,8 @@ public class LinkManager {
                 List<IMapperLink> linksFromLevelsList = leveledLinks.get(indexOfLeveledLink);
                 if (linksFromLevelsList != null && linksFromLevelsList.size() > 0) {
                     IMapperLink linkFromLevelsList = linksFromLevelsList.get(0);
-                    ITableEntry sourceTableEntry = linkFromLevelsList.getPointLinkDescriptor1().getTableEntry();
-                    ITableEntry targetTableEntry = linkFromLevelsList.getPointLinkDescriptor2().getTableEntry();
+                    IDataMapTableEntry sourceTableEntry = linkFromLevelsList.getPointLinkDescriptor1().getTableEntry();
+                    IDataMapTableEntry targetTableEntry = linkFromLevelsList.getPointLinkDescriptor2().getTableEntry();
                     if (targetEntry == targetTableEntry) {
 
                         if (sourceTableEntry instanceof InputColumnTableEntry
@@ -200,9 +200,9 @@ public class LinkManager {
         currentNumberLinks--;
 
         links.remove(link);
-        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
-        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
-        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        IDataMapTableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
+        IDataMapTableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
+        Set<IDataMapTableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
         targetDataMapTableEntries.remove(sourceITableEntry);
         Set<IMapperLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
         sourceGraphicalLinks.remove(link);
@@ -219,7 +219,7 @@ public class LinkManager {
      * @param sourceGraphicalLinks
      */
     private void unregisterLevelForRemovedLink(IMapperLink link, Set<IMapperLink> sourceGraphicalLinks) {
-        ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
+        IDataMapTableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
         boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
 
         if (hasSameZone) {
@@ -269,7 +269,7 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    private Set<IMapperLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
+    private Set<IMapperLink> getGraphicalLinksFromTarget(IDataMapTableEntry dataMapTableEntry) {
         Set<IMapperLink> graphicalLinks = targetTableEntryToLinks.get(dataMapTableEntry);
         if (graphicalLinks == null) {
             graphicalLinks = new HashSet<IMapperLink>();
@@ -284,7 +284,7 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    public Set<IMapperLink> getLinksFromTarget(ITableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getLinksFromTarget(IDataMapTableEntry dataMapTableEntry) {
         return new HashSet<IMapperLink>(getGraphicalLinksFromTarget(dataMapTableEntry));
     }
 
@@ -294,7 +294,7 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    private Set<IMapperLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
+    private Set<IMapperLink> getGraphicalLinksFromSource(IDataMapTableEntry dataMapTableEntry) {
         Set<IMapperLink> graphicalLinks = sourceTableEntryToLinks.get(dataMapTableEntry);
         if (graphicalLinks == null) {
             graphicalLinks = new HashSet<IMapperLink>();
@@ -303,7 +303,7 @@ public class LinkManager {
         return graphicalLinks;
     }
 
-    public Set<IMapperLink> getLinksFromSource(ITableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getLinksFromSource(IDataMapTableEntry dataMapTableEntry) {
         return new HashSet<IMapperLink>(getGraphicalLinksFromSource(dataMapTableEntry));
     }
 
@@ -313,10 +313,10 @@ public class LinkManager {
      * @param targetITableEntry
      * @return
      */
-    private Set<ITableEntry> getSourcesCollection(ITableEntry targetITableEntry) {
-        Set<ITableEntry> targetDataMapTableEntries = targetToSources.get(targetITableEntry);
+    private Set<IDataMapTableEntry> getSourcesCollection(IDataMapTableEntry targetITableEntry) {
+        Set<IDataMapTableEntry> targetDataMapTableEntries = targetToSources.get(targetITableEntry);
         if (targetDataMapTableEntries == null) {
-            targetDataMapTableEntries = new HashSet<ITableEntry>();
+            targetDataMapTableEntries = new HashSet<IDataMapTableEntry>();
             targetToSources.put(targetITableEntry, targetDataMapTableEntries);
         }
         return targetDataMapTableEntries;
@@ -345,7 +345,7 @@ public class LinkManager {
      * 
      * @param dataMapTableEntry
      */
-    public Set<ITableEntry> getSourcesForTarget(ITableEntry dataMapTableEntry) {
+    public Set<IDataMapTableEntry> getSourcesForTarget(IDataMapTableEntry dataMapTableEntry) {
         return Collections.unmodifiableSet(getSourcesCollection(dataMapTableEntry));
 
     }

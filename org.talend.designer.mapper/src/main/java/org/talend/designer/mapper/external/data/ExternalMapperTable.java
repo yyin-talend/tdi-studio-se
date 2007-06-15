@@ -46,7 +46,7 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     private boolean minimized;
     
-    private String tableSizeState;
+    private String sizeState;
 
     /**
      * Used only for outputs.
@@ -209,8 +209,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      * Getter for tableSizeState.
      * @return the tableSizeState
      */
-    public String getTableSizeState() {
-        return this.tableSizeState;
+    public String getSizeState() {
+        return this.sizeState;
     }
 
     
@@ -218,8 +218,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
      * Sets the tableSizeState.
      * @param tableSizeState the tableSizeState to set
      */
-    public void setTableSizeState(String tableSizeState) {
-        this.tableSizeState = tableSizeState;
+    public void setSizeState(String tableSizeState) {
+        this.sizeState = tableSizeState;
     }
 
     /*

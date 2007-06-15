@@ -33,7 +33,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
 /**
@@ -103,7 +103,7 @@ public class VarsTable extends AbstractDataMapTable {
      */
     public boolean checkValidColumnName(String connectionName) {
 
-        for (ITableEntry entry : dataMapTableEntries) {
+        for (IDataMapTableEntry entry : dataMapTableEntries) {
             if (entry.getName().equals(connectionName)) {
                 return false;
             }

@@ -29,10 +29,26 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public class FilterTableEntry extends TableEntry {
+public class FilterTableEntry extends DataMapTableEntry {
 
     public FilterTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
         super(abstractDataMapTable, name, expression);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
+     */
+    public boolean isTableEntry() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
+     */
+    public boolean isColumnEntry() {
+        return false;
+    }
+
+    
+    
 }

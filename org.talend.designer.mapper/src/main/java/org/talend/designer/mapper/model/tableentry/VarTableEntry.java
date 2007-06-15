@@ -29,7 +29,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public class VarTableEntry extends TableEntry implements IColumnEntry {
+public class VarTableEntry extends DataMapTableEntry implements IColumnEntry {
 
     private String type;
 
@@ -80,4 +80,19 @@ public class VarTableEntry extends TableEntry implements IColumnEntry {
         this.nullable = nullable;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
+     */
+    public boolean isTableEntry() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
+     */
+    public boolean isColumnEntry() {
+        return true;
+    }
+
+    
 }

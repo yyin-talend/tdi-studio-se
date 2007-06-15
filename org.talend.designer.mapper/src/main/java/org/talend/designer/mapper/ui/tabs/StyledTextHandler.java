@@ -47,7 +47,7 @@ import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 
@@ -61,7 +61,7 @@ public class StyledTextHandler {
 
     private StyledText styledText;
 
-    private ITableEntry currentEntry;
+    private IDataMapTableEntry currentEntry;
 
     private MapperManager mapperManager;
 
@@ -202,11 +202,11 @@ public class StyledTextHandler {
         return this.styledText;
     }
 
-    public ITableEntry getCurrentEntry() {
+    public IDataMapTableEntry getCurrentEntry() {
         return this.currentEntry;
     }
 
-    public void setCurrentEntry(ITableEntry currentEntry) {
+    public void setCurrentEntry(IDataMapTableEntry currentEntry) {
         this.currentEntry = currentEntry;
     }
 

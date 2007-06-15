@@ -30,8 +30,9 @@ import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -113,10 +114,10 @@ public class StyleLinkFactory {
         LinkState linkState = link.getState();
         PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptor1();
         PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptor2();
-        ITableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
+        IDataMapTableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
 
         boolean targetIsConstraint = false;
-        if (targetTableEntry instanceof FilterTableEntry) {
+        if (targetTableEntry instanceof FilterTableEntry || targetTableEntry instanceof ExpressionFilterEntry) {
             targetIsConstraint = true;
         }
 

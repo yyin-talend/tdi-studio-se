@@ -63,7 +63,7 @@ public class TableEntryLocation {
         return "{tableName=" + this.tableName + ", columnName=" + this.columnName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    public static TableEntryLocation getNewInstance(ITableEntry dataMapTableEntry) {
+    public static TableEntryLocation getNewInstance(IDataMapTableEntry dataMapTableEntry) {
         return new TableEntryLocation(dataMapTableEntry.getParent().getName(), dataMapTableEntry.getName());
     }
 

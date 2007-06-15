@@ -49,7 +49,7 @@ import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -261,7 +261,7 @@ public class ProblemsManager {
             dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(true);
         }
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
-            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
+            List<IDataMapTableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
             checkProblemsForAllEntries(constraintEntriesList);
             if (refreshTableEntries) {
                 dataMapTableView.getTableViewerCreatorForFilters().getTableViewer().refresh(true);
@@ -281,7 +281,7 @@ public class ProblemsManager {
      * @param entriesList
      * @return true if has errors
      */
-    private boolean checkProblemsForAllEntries(List<? extends ITableEntry> entriesList) {
+    private boolean checkProblemsForAllEntries(List<? extends IDataMapTableEntry> entriesList) {
         boolean stateErrorsHasChanged = false;
         refreshTableEntries = false;
         boolean hasProblemsWasNull = false;
@@ -290,7 +290,7 @@ public class ProblemsManager {
             hasProblemsWasNull = true;
         }
 
-        for (ITableEntry entry : entriesList) {
+        for (IDataMapTableEntry entry : entriesList) {
             boolean haveProblemsBefore = entry.getProblems() != null;
             mapperManager.getProblemsManager().checkProblemsForTableEntry(entry, false);
             boolean haveProblemsAfter = entry.getProblems() != null;
@@ -309,7 +309,7 @@ public class ProblemsManager {
         return returnedValue;
     }
 
-    public void checkProblemsForTableEntryWithDelayLimiter(ITableEntry tableEntry) {
+    public void checkProblemsForTableEntryWithDelayLimiter(IDataMapTableEntry tableEntry) {
 
         if (this.checkProblemForEntryLimiter == null) {
             this.checkProblemForEntryLimiter = new CheckProblemForEntryLimiter(2000, true);
@@ -331,7 +331,7 @@ public class ProblemsManager {
      * @param forceRefreshData
      * @return true if at least one problem has been detected
      */
-    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
+    public boolean checkProblemsForTableEntry(IDataMapTableEntry tableEntry, boolean forceRefreshData) {
 
         if (forceRefreshData) {
             mapperManager.getComponent().refreshMapperConnectorData();
@@ -393,9 +393,9 @@ public class ProblemsManager {
      */
     class CheckProblemForEntryLimiter extends ExecutionLimiter {
 
-        private ITableEntry previousTableEntry;
+        private IDataMapTableEntry previousTableEntry;
 
-        private ITableEntry currentTableEntry;
+        private IDataMapTableEntry currentTableEntry;
 
         /**
          * DOC amaumont CheckProblemForEntryLimiter constructor comment.
@@ -435,15 +435,15 @@ public class ProblemsManager {
             });
         }
 
-        public ITableEntry getCurrentTableEntry() {
+        public IDataMapTableEntry getCurrentTableEntry() {
             return this.currentTableEntry;
         }
 
-        public void setCurrentTableEntry(ITableEntry currentTableEntry) {
+        public void setCurrentTableEntry(IDataMapTableEntry currentTableEntry) {
             this.currentTableEntry = currentTableEntry;
         }
 
-        public ITableEntry getPreviousTableEntry() {
+        public IDataMapTableEntry getPreviousTableEntry() {
             return this.previousTableEntry;
         }
 

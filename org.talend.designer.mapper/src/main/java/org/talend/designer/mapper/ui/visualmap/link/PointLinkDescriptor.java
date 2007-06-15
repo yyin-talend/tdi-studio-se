@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.link;
 
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -32,21 +32,21 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class PointLinkDescriptor {
 
-    private ITableEntry tableEntry;
+    private IDataMapTableEntry tableEntry;
 
     private Zone zone;
 
-    public PointLinkDescriptor(ITableEntry dataMapTableEntry, Zone zone) {
+    public PointLinkDescriptor(IDataMapTableEntry dataMapTableEntry, Zone zone) {
         super();
         this.tableEntry = dataMapTableEntry;
         this.zone = zone;
     }
 
-    public ITableEntry getTableEntry() {
+    public IDataMapTableEntry getTableEntry() {
         return this.tableEntry;
     }
 
-    public void setTableEntry(ITableEntry dataMapTableEntry) {
+    public void setTableEntry(IDataMapTableEntry dataMapTableEntry) {
         this.tableEntry = dataMapTableEntry;
     }
 

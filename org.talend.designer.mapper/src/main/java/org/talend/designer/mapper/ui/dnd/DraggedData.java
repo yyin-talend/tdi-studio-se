@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -51,7 +51,7 @@ public class DraggedData {
     /**
      * DOC amaumont Comment method "addEntry".
      */
-    public void addEntry(ITableEntry tableEntry, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
+    public void addEntry(IDataMapTableEntry tableEntry, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
         transferableEntryList.add(new TransferableEntry(tableEntry, metadataColumn, zoneSourceEntry));
     }
 

@@ -22,7 +22,7 @@
 package org.talend.designer.mapper.ui.dnd;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -35,22 +35,22 @@ public class TransferableEntry {
 
     private IMetadataColumn metadataColumn;
 
-    private ITableEntry tableEntrySource;
+    private IDataMapTableEntry tableEntrySource;
 
     private Zone zoneSourceEntry;
 
-    public TransferableEntry(ITableEntry tableEntryLocation, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
+    public TransferableEntry(IDataMapTableEntry tableEntryLocation, IMetadataColumn metadataColumn, Zone zoneSourceEntry) {
         super();
         this.tableEntrySource = tableEntryLocation;
         this.metadataColumn = metadataColumn;
         this.zoneSourceEntry = zoneSourceEntry;
     }
 
-    public void setTableEntryLocationSource(ITableEntry tableEntryLocation) {
+    public void setTableEntryLocationSource(IDataMapTableEntry tableEntryLocation) {
         this.tableEntrySource = tableEntryLocation;
     }
 
-    public ITableEntry getTableEntrySource() {
+    public IDataMapTableEntry getTableEntrySource() {
         return this.tableEntrySource;
     }
 

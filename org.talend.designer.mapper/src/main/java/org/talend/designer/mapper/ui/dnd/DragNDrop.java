@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -139,7 +139,7 @@ public class DragNDrop {
                         TableItem[] tableItems = table.getSelection();
                         for (int i = 0; i < tableItems.length; i++) {
                             TableItem item = tableItems[i];
-                            ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
+                            IDataMapTableEntry dataMapTableEntry = (IDataMapTableEntry) item.getData();
                             if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
                                 draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
                                         .getMetadataColumn(), dataMapTableView.getZone());

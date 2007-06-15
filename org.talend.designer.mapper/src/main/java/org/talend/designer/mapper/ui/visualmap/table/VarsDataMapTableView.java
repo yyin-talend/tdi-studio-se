@@ -59,7 +59,7 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -118,7 +118,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                             uiManager.parseAllExpressions(varsDataMapTableView, false);
                             mapperManager.getProblemsManager().checkProblemsForAllEntries(varsDataMapTableView, true);
                             uiManager.refreshBackground(true, false);
-                            List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
+                            List<IDataMapTableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
                                     .getTableViewerCreatorForColumns().getTableViewer().getSelection());
 
                             uiManager.selectLinks(varsDataMapTableView, list, false, false);
@@ -260,7 +260,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
                     mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(),
-                            newValue.toString(), VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
+                            newValue.toString(), VarsDataMapTableView.this, (IDataMapTableEntry) currentModifiedBean);
                 }
             }
 
@@ -393,9 +393,9 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewerCreatorForColumns.getTableViewer()
                         .getSelection();
-                List<ITableEntry> selectedBeans = (List<ITableEntry>) selection.toList();
+                List<IDataMapTableEntry> selectedBeans = (List<IDataMapTableEntry>) selection.toList();
 
-                for (ITableEntry entry : selectedBeans) {
+                for (IDataMapTableEntry entry : selectedBeans) {
                     mapperManager.removeTableEntry(entry);
                 }
                 if (selectedBeans.size() > 0) {

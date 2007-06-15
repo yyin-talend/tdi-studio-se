@@ -30,6 +30,7 @@ package org.talend.designer.mapper.ui.image;
 public enum ImageInfo {
 
     MINIMIZE_ICON("/icons/collapse16.png"), //$NON-NLS-1$
+    INTERMEDIATE_SIZE_ICON("/icons/checked.png"), //$NON-NLS-1$
     RESTORE_ICON("/icons/uncollapse16.png"), //$NON-NLS-1$
     // MAPPER_ICON("/icons/tMap32.ico"),
     ADD_CONSTRAINT_ICON("/icons/add_constraint16.png"), //$NON-NLS-1$

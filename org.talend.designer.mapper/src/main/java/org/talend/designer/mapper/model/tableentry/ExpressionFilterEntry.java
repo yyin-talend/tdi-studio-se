@@ -29,7 +29,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * <br/>
  *
  */
-public class ExpressionFilterEntry extends TableEntry {
+public class ExpressionFilterEntry extends DataMapTableEntry {
 
     /**
      * DOC amaumont ExpressionFilterEntry constructor comment.
@@ -56,6 +56,20 @@ public class ExpressionFilterEntry extends TableEntry {
      */
     public ExpressionFilterEntry(AbstractDataMapTable abstractDataMapTable) {
         super(abstractDataMapTable);
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
+     */
+    public boolean isTableEntry() {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
+     */
+    public boolean isColumnEntry() {
+        return false;
     }
 
     

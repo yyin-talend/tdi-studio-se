@@ -34,7 +34,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -54,7 +54,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private IContentProposalProvider[] otherContentProposalProviders;
 
-    private ITableEntry currentModifiedEntry;
+    private IDataMapTableEntry currentModifiedEntry;
 
     /**
      * Constructs a new ProcessProposalProvider.
@@ -70,7 +70,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         this.otherContentProposalProviders = otherContentProposalProviders;
     }
 
-    public void init(AbstractDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
+    public void init(AbstractDataMapTable currentTable, Zone[] zones, IDataMapTableEntry currentEntry) {
 
         tables = new ArrayList<AbstractDataMapTable>();
         for (int i = 0; i < zones.length; i++) {

@@ -27,6 +27,6 @@ package org.talend.designer.mapper.model.tableentry;
  * $Id$
  * 
  */
-public interface IColumnEntry extends ITableEntry {
+public interface IColumnEntry extends IDataMapTableEntry {
 
 }

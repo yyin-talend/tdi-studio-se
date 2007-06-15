@@ -30,7 +30,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public class AbstractInOutTableEntry extends TableEntry implements IColumnEntry {
+public class AbstractInOutTableEntry extends DataMapTableEntry implements IColumnEntry {
 
     private IMetadataColumn metadataColumn;
 
@@ -61,4 +61,20 @@ public class AbstractInOutTableEntry extends TableEntry implements IColumnEntry 
         this.metadataColumn.setLabel(name);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isTableEntry()
+     */
+    public boolean isTableEntry() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.tableentry.IDataMapTableEntry#isColumnEntry()
+     */
+    public boolean isColumnEntry() {
+        return true;
+    }
+
+    
+    
 }

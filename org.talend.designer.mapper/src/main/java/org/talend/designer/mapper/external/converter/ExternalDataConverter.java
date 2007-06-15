@@ -46,7 +46,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 
@@ -231,7 +231,7 @@ public class ExternalDataConverter {
             fillExternalTable(table, externalMapperTable);
             ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
             boolean isVarTable = table instanceof VarsTable;
-            for (ITableEntry dataMapTableEntry : table.getColumnEntries()) {
+            for (IDataMapTableEntry dataMapTableEntry : table.getColumnEntries()) {
                 ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
                 externalMapperTableEntry.setExpression(dataMapTableEntry.getExpression());
                 externalMapperTableEntry.setName(dataMapTableEntry.getName());
@@ -297,6 +297,7 @@ public class ExternalDataConverter {
     private void fillExternalTableWithCommonsData(AbstractDataMapTable table, ExternalMapperTable externalMapperTable) {
         externalMapperTable.setName(table.getName());
         externalMapperTable.setMinimized(table.isMinimized());
+        externalMapperTable.setSizeState(table.getSizeState().toString());
     }
 
     /**
