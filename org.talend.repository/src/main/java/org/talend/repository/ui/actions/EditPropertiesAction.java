@@ -22,7 +22,6 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.internal.compiler.ast.NameReference;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -37,7 +36,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.editor.IUIRefresher;
+import org.talend.core.ui.IUIRefresher;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
@@ -48,7 +47,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.PropertiesWizard;
 
 /**
- * DOC smallet class global comment. Detailled comment <br/>
+ * smallet class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
