@@ -23,6 +23,7 @@ package org.talend.designer.core.model.process;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -115,38 +116,30 @@ public class ConnectionManager {
         return true;
     }
 
-    private static int countNbMergeOutgoing(INode source, int nb) {
-        int curNb = nb;
+    private static int countNbMergeOutgoing(INode node) {
+        int curNb = 0;
 
-        for (IConnection curConnec : source.getOutgoingConnections()) {
+        if (node.getComponent().useMerge()) {
+            // if the component use merge even if there is no connection, then add one merge.
+            curNb++;
+        }
+
+        for (IConnection curConnec : node.getOutgoingConnections()) {
             if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                 curNb++;
             } else if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                 // if main, then test the next component to check if there is a merge
-                curNb += countNbMergeOutgoing(curConnec.getTarget(), curNb);
-            }
-        }
-        return curNb;
-    }
-
-    private static int countNbMergeIncoming(INode source, int nb) {
-        int curNb = nb;
-        if (source.getComponent().useMerge()) {
-            // if the component use merge even if there is no connection, then add one merge.
-            curNb++;
-        }
-        for (IConnection curConnec : source.getIncomingConnections()) {
-            if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                // if main, then test the next component to check if there is a merge
-                curNb += countNbMergeIncoming(curConnec.getSource(), curNb);
+                curNb += countNbMergeOutgoing(curConnec.getTarget());
             }
         }
         return curNb;
     }
 
     private static int countNbMerge(Node source, Node target) {
-        return countNbMergeOutgoing(source, 0) + countNbMergeIncoming(source, 0) + countNbMergeOutgoing(target, 0)
-                + countNbMergeIncoming(target, 0);
+        // Map<INode, Integer> infoSource = source.getSubProcessStartNode(false).getLinkedMergeInfo();
+        // Map<INode, Integer> infoTarget = target.getSubProcessStartNode(false).getLinkedMergeInfo();
+        return countNbMergeOutgoing(source.getSubProcessStartNode(false))
+                + countNbMergeOutgoing(target.getSubProcessStartNode(false));
     }
 
     /**
