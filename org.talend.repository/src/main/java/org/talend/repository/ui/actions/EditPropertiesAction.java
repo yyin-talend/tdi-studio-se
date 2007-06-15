@@ -87,7 +87,6 @@ public class EditPropertiesAction extends AContextualAction {
      * @return
      */
     private IEditorPart getCorrespondingEditor(RepositoryNode node) {
-        Object o = getActivePage().getInput();
         IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
         for (int i = 0; i < eidtors.length; i++) {
