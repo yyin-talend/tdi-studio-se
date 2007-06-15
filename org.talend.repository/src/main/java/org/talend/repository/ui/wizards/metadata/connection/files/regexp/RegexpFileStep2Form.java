@@ -57,19 +57,21 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractRegexpFileStepForm;
+import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * @author ocarbone
  * 
  */
-public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
+public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements IRefreshable {
 
     private static Logger log = Logger.getLogger(RegexpFileStep2Form.class);
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty"); //$NON-NLS-1$
 
-    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+    private static final String[] STRING_NUMBERS_DATA = {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
     private static final String REGEXP_DEFAULT = "^(.*)$"; //$NON-NLS-1$
@@ -149,7 +151,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         // fieldSeparatorType.setText(getConnection().getFieldSeparatorType().getName());
         if (getConnection().getFieldSeparatorValue() != null) {
             fieldSeparatorText.setText(getConnection().getFieldSeparatorValue()); // +"\n tototototot"+"\n
-                                                                                    // ouuuuuuuuuuu"
+            // ouuuuuuuuuuu"
         } else {
             fieldSeparatorText.setText(REGEXP_DEFAULT);
         }
@@ -212,7 +214,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      * @param height
      */
     private void addGroupRegexFileSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2,
+                Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
@@ -227,8 +230,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         // Row Separator Combo & Text
         String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
                 RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
-        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
-                .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor,
+                Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
     }
 
@@ -245,11 +249,13 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         info.setText(Messages.getString("FileStep2.rowsToSkipTip")); //$NON-NLS-1$
 
         // Header
-        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"), //$NON-NLS-1$
+        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
+                .getString("FileStep2.header"), //$NON-NLS-1$
                 Messages.getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Footer
-        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), //$NON-NLS-1$
+        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
+                .getString("FileStep2.footer"), //$NON-NLS-1$
                 Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Empty row
@@ -277,7 +283,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         Composite compositeRegex = Form.startNewDimensionnedGridLayout(group, 1, width, height);
 
         fieldSeparatorText = new Text(compositeRegex, SWT.MULTI | SWT.LEFT | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL); // |
-                                                                                                                        // SWT.WRAP
+        // SWT.WRAP
 
         // Dimension of columb of Separator Text
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -316,8 +322,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
+                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -374,7 +381,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -460,7 +468,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
             }
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID,
+                    Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -583,7 +592,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipHeaderCheckboxCombo.isInteger()
+                            || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipHeaderCheckboxCombo.deselectAll();
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
                         getConnection().setHeaderValue(0);
@@ -608,7 +618,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipFooterCheckboxCombo.isInteger()
+                            || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
@@ -885,5 +896,14 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
                 adaptFormToReadOnly();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
+     */
+    public void refresh() {
+        refreshPreview();
     }
 }

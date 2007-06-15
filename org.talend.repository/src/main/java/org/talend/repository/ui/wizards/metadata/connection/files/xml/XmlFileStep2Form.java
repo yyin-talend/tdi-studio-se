@@ -90,6 +90,7 @@ import org.talend.repository.preview.StoppablePreviewLoader;
 import org.talend.repository.preview.PreviewHandlerEvent.TYPE;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
+import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
@@ -99,7 +100,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction
  * @author ocarbone
  * 
  */
-public class XmlFileStep2Form extends AbstractXmlFileStepForm {
+public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefreshable {
 
     private static Logger log = Logger.getLogger(XmlFileStep2Form.class);
 
@@ -155,7 +156,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     public XmlFileStep2Form(Composite parent, ConnectionItem connectionItem) {
         super(parent, connectionItem);
         setupForm();
-    }
+    } 
+    
 
     /**
      * 
@@ -741,6 +743,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 // refreshPreview();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
+     */
+    public void refresh() {
+        refreshPreview();
     }
 
 }

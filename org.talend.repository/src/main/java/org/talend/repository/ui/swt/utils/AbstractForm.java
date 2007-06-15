@@ -28,12 +28,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -86,6 +88,7 @@ public abstract class AbstractForm extends Composite {
     protected AbstractForm(Composite parent, int style) {
         super(parent, style);
         this.existingNames = Collections.EMPTY_LIST;
+
     }
 
     /**
@@ -131,6 +134,9 @@ public abstract class AbstractForm extends Composite {
         initialize();
         addUtilsButtonListeners();
         addFieldsListeners();
+        if (this instanceof IRefreshable) {
+            addAllKeyListener(getShell(), (IRefreshable) this);
+        }
     }
 
     /**
@@ -238,6 +244,7 @@ public abstract class AbstractForm extends Composite {
     public boolean isStatusOnError() {
         return this.statusLevel == IStatus.ERROR;
     }
+
     /**
      * Getter for statusOnValid.
      * 
@@ -246,7 +253,7 @@ public abstract class AbstractForm extends Composite {
     public boolean isStatusOnValid() {
         return this.statusLevel == IStatus.OK;
     }
-    
+
     public String getStatus() {
         return status;
     }
@@ -277,4 +284,37 @@ public abstract class AbstractForm extends Composite {
         this.isInWizard = isInWizard;
     }
 
+    /**
+     * Add key listener on each control within the wizard page.
+     * 
+     * yzhang Comment method "configKeyListener".
+     */
+    private void addAllKeyListener(Control control, final IRefreshable refresh) {
+
+        control.addKeyListener(new KeyAdapter() {
+
+            private IRefreshable refreshableComposite = refresh;
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+             */
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if ((e.keyCode == SWT.F5)) {
+                    refreshableComposite.refresh();
+                }
+            }
+        });
+
+        if (control instanceof Composite) {
+            Composite composite = (Composite) control;
+            Control[] children = composite.getChildren();
+            for (Control ctrl : children) {
+                addAllKeyListener(ctrl, refresh);
+            }
+        }
+
+    }
 }

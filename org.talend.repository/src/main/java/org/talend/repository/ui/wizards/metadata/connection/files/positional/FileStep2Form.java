@@ -56,13 +56,14 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
+import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * @author ocarbone
  * 
  */
-public class FileStep2Form extends AbstractPositionalFileStepForm {
+public class FileStep2Form extends AbstractPositionalFileStepForm implements IRefreshable {
 
     private static final String PID = RepositoryPlugin.PLUGIN_ID;
 
@@ -74,7 +75,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
     private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+    private static final String[] STRING_NUMBERS_DATA = {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
     /**
@@ -227,7 +229,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
      * @param height
      */
     private void addGroupFileSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2,
+                Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
@@ -239,15 +242,17 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         encodingCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
                 .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
 
-        fieldSeparatorText = new LabelledText(compositeFileDelimitor, Messages.getString("FileStep2.fieldSeparator"), 3, true, //$NON-NLS-1$
+        fieldSeparatorText = new LabelledText(compositeFileDelimitor,
+                Messages.getString("FileStep2.fieldSeparator"), 3, true, //$NON-NLS-1$
                 SWT.RIGHT);
         fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip")); //$NON-NLS-1$
 
         // Row Separator Combo & Text
         String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
                 RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
-        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
-                .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor,
+                Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
     }
 
@@ -264,11 +269,13 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         info.setText(Messages.getString("FileStep2.rowsToSkipTip")); //$NON-NLS-1$
 
         // Header
-        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"), //$NON-NLS-1$
+        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
+                .getString("FileStep2.header"), //$NON-NLS-1$
                 Messages.getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Footer
-        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), //$NON-NLS-1$
+        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
+                .getString("FileStep2.footer"), //$NON-NLS-1$
                 Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Empty row
@@ -292,7 +299,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
     private void addGroupEscapeChar(final Composite mainComposite, final int width, final int height) {
 
         // Composite Escape Char
-        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2,
+                Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
         Composite compositeEscapeChar = Form.startNewDimensionnedGridLayout(group, 3, width, height);
 
         // escape Char Combo
@@ -302,8 +310,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         escapeCharFlag.setText("                            "); //$NON-NLS-1$
 
         // Text Enclosure Combo
-        textEnclosureCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
-                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
+        textEnclosureCombo = new LabelledCombo(compositeEscapeChar,
+                Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
         textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
         textEnclosureFlag.setText("                            "); //$NON-NLS-1$
 
@@ -330,8 +339,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
+                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -389,7 +399,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
         if (!isInWizard()) {
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -476,7 +487,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
             }
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID,
+                    Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         previewButton.setEnabled(true);
@@ -620,7 +632,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipHeaderCheckboxCombo.isInteger()
+                            || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipHeaderCheckboxCombo.deselectAll();
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
                         getConnection().setHeaderValue(0);
@@ -644,7 +657,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipFooterCheckboxCombo.isInteger()
+                            || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
@@ -856,13 +870,13 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
         // escape Char Combo
         if (escapeCharCombo.getText() == "") { // || escapeCharCombo.getText().equals("\\") || //$NON-NLS-1$
-                                                // escapeCharCombo.getText().endsWith("\\"
+            // escapeCharCombo.getText().endsWith("\\"
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.escapeCharAlert")); //$NON-NLS-1$
             return false;
         }
 
         if (textEnclosureCombo.getText() == "") { // || textEnclosureCombo.getText().equals("\\") || //$NON-NLS-1$
-                                                    // textEnclosureCombo.getText().endsWith("\\")
+            // textEnclosureCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.textEnclosureAlert")); //$NON-NLS-1$
             return false;
         }
@@ -932,6 +946,15 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
                 adaptFormToReadOnly();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
+     */
+    public void refresh() {
+        refreshPreview();
     }
 
 }

@@ -63,17 +63,19 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractLdifFileStepForm;
+import org.talend.repository.ui.swt.utils.IRefreshable;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * @author cantoine
  * 
  */
-public class LdifFileStep2Form extends AbstractLdifFileStepForm {
+public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefreshable {
 
     private static Logger log = Logger.getLogger(LdifFileStep2Form.class);
 
-    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$
+    private static final String[] STRING_NUMBERS_DATA = {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$
             "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     /**
@@ -133,7 +135,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-//        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
     }
 
     /**
@@ -142,7 +144,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1,
+                Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
 
         attributeModel = new ExtendedTableModel<String>();
         attributeModel.registerDataList(itemTableName);
@@ -179,21 +182,22 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             }
 
         };
-// uncomment this block for activate the ToolBar MoveUp and MoveDown Lines
-//        new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
-//
-//            /*
-//             * (non-Javadoc)
-//             * 
-//             * @see org.talend.core.ui.extended.ExtendedTableToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
-//             */
-//            @Override
-//            protected void createComponents(Composite parent) {
-//                moveUpButton = createMoveUpPushButton();
-//                moveDownButton = createMoveDownPushButton();
-//            }
-//
-//        };
+        // uncomment this block for activate the ToolBar MoveUp and MoveDown Lines
+        // new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see
+        // org.talend.core.ui.extended.ExtendedTableToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
+        // */
+        // @Override
+        // protected void createComponents(Composite parent) {
+        // moveUpButton = createMoveUpPushButton();
+        // moveDownButton = createMoveDownPushButton();
+        // }
+        //
+        // };
 
     }
 
@@ -213,7 +217,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         LDIFReader ldif = new LDIFReader(bufReader);
         itemTableName = new ArrayList<String>();
 
-        //EVOLUTION cantoine : if we would add a LIMIT of ENTRY read, implement this limit by report with Limit Entry
+        // EVOLUTION cantoine : if we would add a LIMIT of ENTRY read, implement this limit by report with Limit Entry
         while ((entry = ldif.getNext()) != null) {
             NamingEnumeration idsEnum = entry.getIDs();
             while (idsEnum.hasMore()) {
@@ -268,8 +272,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
+                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -283,7 +288,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Ldif File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
-        Composite compositeLdifFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeLdifFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Ldif File Preview Info
@@ -311,14 +317,15 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         // compositeFile Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
         addGroupAttributes(mainComposite, 300, 115);
-//        addGroupLimit(mainComposite, 300, 85);
+        // addGroupLimit(mainComposite, 300, 85);
         addGroupFileViewer(this, 700, 180);
 
         if (!isInWizard()) {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -384,7 +391,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID,
+                    Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -393,7 +401,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * Main Fields addControls.
      */
     protected void addFieldsListeners() {
-//        addFieldsListenersGroupsRowToSkipAndLimit();
+        // addFieldsListenersGroupsRowToSkipAndLimit();
     }
 
     /**
@@ -463,22 +471,23 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         previewButton.setEnabled(false);
 
         // Labelled Checkbox Combo (Row to Skip and Limit)
-//        ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
-//        labelledCheckboxCombo2Control.add(rowsToSkipLimitCheckboxCombo);
-//
-//        Iterator<LabelledCheckboxCombo> iCheckboxCombo;
-//        LabelledCheckboxCombo labelledCheckboxCombo;
-//
-//        for (iCheckboxCombo = labelledCheckboxCombo2Control.iterator(); iCheckboxCombo.hasNext();) {
-//            labelledCheckboxCombo = iCheckboxCombo.next();
-//            // if the checkbox is checked, check Numeric value
-//            if (labelledCheckboxCombo.getCheckbox().getSelection()) {
-//                if (labelledCheckboxCombo.getText() == "") {
-//                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
-//                    return false;
-//                }
-//            }
-//        }
+        // ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
+        // labelledCheckboxCombo2Control.add(rowsToSkipLimitCheckboxCombo);
+        //
+        // Iterator<LabelledCheckboxCombo> iCheckboxCombo;
+        // LabelledCheckboxCombo labelledCheckboxCombo;
+        //
+        // for (iCheckboxCombo = labelledCheckboxCombo2Control.iterator(); iCheckboxCombo.hasNext();) {
+        // labelledCheckboxCombo = iCheckboxCombo.next();
+        // // if the checkbox is checked, check Numeric value
+        // if (labelledCheckboxCombo.getCheckbox().getSelection()) {
+        // if (labelledCheckboxCombo.getText() == "") {
+        // updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() +
+        // Messages.getString("FileStep2.mustBePrecised"));
+        // return false;
+        // }
+        // }
+        // }
         previewInformationLabel.setText(""); //$NON-NLS-1$
         previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
@@ -548,21 +557,22 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            
+
             try {
                 populateLdifAttributes();
             } catch (Exception e) {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("LdifFileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("LdifFileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
                 log.error(Messages.getString("LdifFileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
                 updateStatus(IStatus.ERROR, Messages.getString("LdifFileStep2.previewFailure")); //$NON-NLS-1$
             }
             attributeModel.registerDataList(itemTableName);
-            
+
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath()) //$NON-NLS-1$
                     && getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
-                 refreshPreview();
+                refreshPreview();
             }
             if (getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
                 checkTheRightAttributes(getConnection().getValue());
@@ -571,5 +581,15 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 adaptFormToReadOnly();
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
+     */
+    public void refresh() {
+       refreshPreview();
+        
     }
 }
