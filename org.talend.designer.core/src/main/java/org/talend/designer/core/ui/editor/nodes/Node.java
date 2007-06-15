@@ -474,8 +474,9 @@ public class Node extends Element implements INode {
             boolean customFound = false;
             for (int i = 0; i < metadataList.get(0).getListColumns().size(); i++) {
                 IMetadataColumn column = metadataList.get(0).getListColumns().get(i);
-                if (!column.isCustom()) {
+                if (column.isCustom()) {
                     customFound = true;
+                    break;
                 }
             }
             IMetadataTable originTable = metadataList.get(0);
@@ -1122,6 +1123,7 @@ public class Node extends Element implements INode {
         if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
                 && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) == 0)
+                    && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MERGE) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
                 String errorMessage = "This component should have outputs linked.";

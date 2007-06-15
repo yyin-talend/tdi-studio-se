@@ -997,6 +997,9 @@ public class Process extends Element implements IProcess {
             if (id >= 0) {
                 cType.setOutputId(id);
             }
+            if (connec.getTarget().getComponent().useMerge()) {
+                cType.setMergeOrder(connec.getInputId());
+            }
             listParamType = cType.getElementParameter();
             paramList = connec.getElementParameters();
             saveElementParameters(fileFact, paramList, listParamType, process);
@@ -1455,6 +1458,8 @@ public class Process extends Element implements IProcess {
         Node source, target;
 
         List<String> connectionsProblems = new ArrayList<String>();
+        
+        Hashtable<ConnectionType, Connection> connectionsHashtable = new Hashtable<ConnectionType, Connection>();
 
         for (int i = 0; i < connecList.size(); i++) {
             cType = (ConnectionType) connecList.get(i);
@@ -1498,6 +1503,7 @@ public class Process extends Element implements IProcess {
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
+            connectionsHashtable.put(cType, connec);
             listParamType = cType.getElementParameter();
             loadElementParameters(connec, listParamType);
 
@@ -1507,6 +1513,21 @@ public class Process extends Element implements IProcess {
             INodeConnector nodeConnectorTarget = connec.getTargetNodeConnector();
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
             connec.getConnectionLabel().setOffset(offset);
+        }
+        
+        for (INode node : nodes) {
+            if (node.getComponent().useMerge()) {
+                for (int i = 0; i < connecList.size(); i++) {
+                    cType = (ConnectionType) connecList.get(i);
+                    if (cType.getTarget().equals(node.getUniqueName())) {
+                        if (cType.isSetMergeOrder()) {
+                            Connection connection = connectionsHashtable.get(cType);
+                            connection.setInputId(cType.getMergeOrder());
+                            connection.updateName();
+                        }
+                    }
+                }
+            }
         }
 
         if (connectionsProblems.size() > 0) {

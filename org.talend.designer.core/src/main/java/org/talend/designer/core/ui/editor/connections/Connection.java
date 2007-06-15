@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,7 +32,6 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
@@ -86,7 +86,8 @@ public class Connection extends Element implements IConnection, IPerformance {
     private ConnectionPerformance performance;
 
     // used only for copy / paste (will generate the name) && connection creation
-    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
+    public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+            String linkName) {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
@@ -105,7 +106,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
-    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
+    private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
+            String linkName) {
         performance = new ConnectionPerformance(this);
 
         sourceNodeConnector = source.getConnectorFromName(connectorName);
@@ -116,7 +118,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             trace = new ConnectionTrace(this);
         }
         setName(linkName);
-        reconnect(source, target);
+        reconnect(source, target, lineStyle);
         updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
             IElementParameter param = new ElementParameter(this);
@@ -227,32 +229,34 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (sourceNodeConnector.getDefaultConnectionType().equals(getLineStyle())) { // if it's the standard
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + sourceNodeConnector.getLinkName() + ", order:" + outputId + ")";
+                    labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + outputId + ")";
                 } else {
                     labelText += " (" + sourceNodeConnector.getLinkName() + ")";
                 }
             } else if (sourceNodeConnector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
                 // link
                 if (outputId >= 0) {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", order:" + outputId + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + outputId + ")";
                 } else {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + ")";
                 }
             } else {
                 if (outputId >= 0) {
                     labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
-                            + ", order:" + outputId + ")";
+                            + " order:" + outputId + ")";
                 } else {
-                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName() + ")";
+                    labelText += " (" + getLineStyle().getDefaultLinkName() + ", " + sourceNodeConnector.getLinkName()
+                            + ")";
                 }
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
             int inputId = getInputId();
             if (outputId >= 0) {
-                labelText += " (Output order:" + outputId + ", " + sourceNodeConnector.getLinkName() + " order:" + inputId + ")";
+                labelText += " (Main order:" + outputId + ", " + getLineStyle().getDefaultLinkName() + " order:"
+                        + inputId + ")";
             } else {
-                labelText += " (" + sourceNodeConnector.getLinkName() + " order:" + inputId + ")";
+                labelText += " (" + getLineStyle().getDefaultLinkName() + " order:" + inputId + ")";
             }
             updateName = true;
         } else if (getLineStyle().equals(EConnectionType.RUN_IF) && (!sourceNodeConnector.getLinkName().equals(name))) {
@@ -371,10 +375,11 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @param newSource
      * @param newTarget
      */
-    public void reconnect(Node newSource, Node newTarget) {
+    public void reconnect(Node newSource, Node newTarget, EConnectionType newLineStyle) {
         disconnect();
         this.source = newSource;
         this.target = newTarget;
+        this.lineStyle = newLineStyle;
         sourceNodeConnector = source.getConnectorFromName(connectorName);
         reconnect();
     }
@@ -583,6 +588,31 @@ public class Connection extends Element implements IConnection, IPerformance {
     }
 
     /**
+     * This function will change the merge order of the connection.
+     * 
+     * @param id
+     */
+    public void setInputId(int id) {
+        int newId = id - 1;
+        int curId = 0;
+        if (target != null) {
+            if (target.getIncomingConnections().size() < newId) {
+                throw new IllegalArgumentException("Input Id is not valid");
+            }
+            if (target.getIncomingConnections().get(newId).equals(this)) {
+                return; // id is already set
+            }
+            for (int i = 0; i < target.getIncomingConnections().size(); i++) {
+                if (target.getIncomingConnections().get(i).equals(this)) {
+                    curId = i;
+                    break;
+                }
+            }
+            Collections.swap(target.getIncomingConnections(), curId, newId);
+        }
+    }
+
+    /**
      * Getter for nodeConnector.
      * 
      * @return the nodeConnector
@@ -650,7 +680,7 @@ public class Connection extends Element implements IConnection, IPerformance {
 
                 Boolean absolute = (Boolean) node.getElementParameter("ABSOLUTE").getValue();
                 String reference = (String) node.getElementParameter("CONNECTIONS").getValue();
-                
+
                 if (absolute.equals(Boolean.FALSE) && reference.equals(this.getUniqueName())) {
                     return true;
                 }

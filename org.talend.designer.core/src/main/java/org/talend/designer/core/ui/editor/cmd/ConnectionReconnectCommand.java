@@ -220,18 +220,17 @@ public class ConnectionReconnectCommand extends Command {
             } else {
                 connection.setMetaName(newSource.getUniqueName());
             }
-            connection.reconnect(newSource, oldTarget);
+            connection.reconnect(newSource, oldTarget, newLineStyle);
             connection.updateName();
             ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
             newTargetSchemaType = (String) newTarget.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            connection.setLineStyle(newLineStyle);
             INodeConnector connector = oldTarget.getConnectorFromType(oldLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
-            connection.reconnect(oldSource, newTarget);
+            connection.reconnect(oldSource, newTarget, newLineStyle);
             connection.updateName();
             if (newTargetSchemaType != null) {
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
@@ -248,7 +247,6 @@ public class ConnectionReconnectCommand extends Command {
          * if ((oldSource.getExternalNode() != null) && (oldSource.getExternalNode() != null)) {
          * oldSource.getProcess().removeUniqueConnectionName(oldMetadataTable.getTableName()); }
          */
-        connection.setLineStyle(oldLineStyle);
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
@@ -313,7 +311,7 @@ public class ConnectionReconnectCommand extends Command {
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), newTargetSchemaType);
             }
         }
-        connection.reconnect(oldSource, oldTarget);
+        connection.reconnect(oldSource, oldTarget, oldLineStyle);
         connection.updateName();
         ((Process) oldSource.getProcess()).checkStartNodes();
         ((Process) oldSource.getProcess()).checkProcess();
