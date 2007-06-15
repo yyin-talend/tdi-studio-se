@@ -608,7 +608,7 @@ public class CodeGenerator implements ICodeGenerator {
 
                 NodesTree lightProcess = new NodesTree(lightProcessNodes, false);
                 lightProcess.addRootNode(node);
-                lightProcess.buildSubTrees();
+                lightProcess.buildSubTrees(false);
 
                 Vector headerArgument = new Vector(2);
                 headerArgument.add(process);

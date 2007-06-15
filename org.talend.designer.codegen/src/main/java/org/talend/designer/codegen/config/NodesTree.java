@@ -43,7 +43,7 @@ public class NodesTree {
 
     /**
      * Constuctor for NodesTree.
-     * 
+     * Note: the param init=false, when it is called in generateComponentCodeWithRows(). 
      * @param List of Available Nodes in this tree.
      * @param execute init method or not
      */
@@ -51,20 +51,21 @@ public class NodesTree {
         this.nodes = treeNodes;
         buildRootNodes();
         if (init) {
-            buildSubTrees();
+            buildSubTrees(true);
         }
     }
 
     /**
      * Build SubTrees List.
+     * Note: the param init=false, when it is called in generateComponentCodeWithRows().
      */
-    public void buildSubTrees() {
+    public void buildSubTrees(boolean init) {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
             if (((node.isSubProcessStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
 
                 // need to unite the merge branches to one subStree
-                if (node.isThereLinkWithMerge()) {
+                if (node.isThereLinkWithMerge()&& init) {
 
                     Map<INode, Integer> mergeInfo = node.getLinkedMergeInfo();
                     if (mergeInfo != null && mergeInfo.values().toArray()[0].equals(1)) {
