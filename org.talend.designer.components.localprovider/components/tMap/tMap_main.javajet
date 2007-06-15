@@ -188,65 +188,78 @@
                      sb = new StringBuilder();
                      %>
                           
-								  boolean forceLoop<%= tableName %> = false;
-                          int size<%= tableName %>ListFromLookup = 0;
-                          <%
+	 					    boolean forceLoop<%= tableName %> = false;
+           		  	    	<%
                           if(aKeysValues.length > 0) { // 1
                           %>
+ 									 java.util.List<<%= className %>> <%= tableName %>ListFromLookup = null;
                           
-	                          <%=tableName%>HashKey.hashCodeDirty = true;
-	  								  tHash_Lookup_<%= tableName %>.get( <%= tableName %>HashKey );
-  								  
-	  								  java.util.List<<%= className %>> <%= tableName %>ListFromLookup = null;
+		           		  	    if(!<%= rejectedInnerJoin %>)
+		           		  	    { //20
+		                          <%=tableName%>HashKey.hashCodeDirty = true;
+	  									  tHash_Lookup_<%= tableName %>.get( <%= tableName %>HashKey );
 
-	  								  if(tHash_Lookup_<%= tableName %>.hasResult()) {
-  								  
-		  								  if(tHash_Lookup_<%= tableName %>.resultIsObject()) {
-	  								  
-	  									  		<%= tableName %>ListFromLookup = java.util.Arrays.asList((<%= tableName %>Struct) tHash_Lookup_<%= tableName %>.getResultObject());
-	  								  
-	  									  } else {
-
-												<%= tableName %>ListFromLookup = (java.util.List<<%= className %>>) tHash_Lookup_<%= tableName %>.getResultList();
-	  								  
-	  									  }
-	  								  
-	  									} else {
-		  									<%
-		  									if(externalTable.isInnerJoin()) {
-		  									%>
-		  									  <%= rejectedInnerJoin %> = true;
-		  									<%
+	  									  if(tHash_Lookup_<%= tableName %>.hasResult()) {
+  									  
+		  									  if(tHash_Lookup_<%= tableName %>.resultIsObject()) {
+	  									  
+	  										  		<%= tableName %>ListFromLookup = java.util.Arrays.asList((<%= tableName %>Struct) tHash_Lookup_<%= tableName %>.getResultObject());
+	  									  
+		  									  } else {
+	
+													<%= tableName %>ListFromLookup = (java.util.List<<%= className %>>) tHash_Lookup_<%= tableName %>.getResultList();
+	  									  
+	  										  }
+		  								  
+		  									} else {
+		  										<%
+		  										if(externalTable.isInnerJoin()) {
+		  										%>
+		  										  <%= rejectedInnerJoin %> = true;
+		  										<%
+	  											}
+	  											%>
+	  											forceLoop<%= tableName %> = true;
 	  										}
-	  										%>
-	  										forceLoop<%= tableName %> = true;
-	  									}
 	  								
-									  size<%= tableName %>ListFromLookup = <%= tableName %>ListFromLookup != null ? <%= tableName %>ListFromLookup.size() : 0;
+			           		  	    } //20
+			           		  	    else { // 21
+   										 forceLoop<%= tableName %> = true;
+			           		  	    }
+										 int size<%= tableName %>ListFromLookup = <%= tableName %>ListFromLookup != null ? <%= tableName %>ListFromLookup.size() : -1;
                     		  	 <%
                     		  	 } // 1 
                     		  	 else { // 2
                     		  	 %>
                     		  	 
-                    		  	 	Object[] <%= tableName %>Array = tHash_Lookup_<%= tableName %>.getResultArray();
-									   size<%= tableName %>ListFromLookup = <%= tableName %>Array.length;
+		                      	 boolean hasAtLeastOneValidLookup_<%= tableName %> = false;
+		                      	 Object[] <%= tableName %>Array = null;
+		                      	 
+			           		  	    if(!<%= rejectedInnerJoin %>)
+			           		  	    { // 35
+   	                 		  	 	<%= tableName %>Array = tHash_Lookup_<%= tableName %>.getResultArray();
 									   
-									   if(<%= tableName %>Array.length == 0) {
-		  									<%
-		  									if(externalTable.isInnerJoin()) {
-		  									%>
-		  									  <%= rejectedInnerJoin %> = true;
-		  									<%
-	  										}
-	  										%>
+										   if(<%= tableName %>Array.length == 0) {
+			  									<%
+			  									if(externalTable.isInnerJoin()) {
+			  									%>
+			  									  <%= rejectedInnerJoin %> = true;
+			  									<%
+		  										}
+		  										%>
+		  										forceLoop<%= tableName %> = true;
+											}
+										} // 35
+										else { // 36
 	  										forceLoop<%= tableName %> = true;
-										}
-		                      	boolean hasAtLeastOneValidLookup_<%= tableName %> = false;
+										} // 36
+									   int size<%= tableName %>ListFromLookup = <%= tableName %>Array != null ? <%= tableName %>Array.length : -1;
                     		  	 <%
                     		  	 } // 2
                     		  	 %>
+                    		  	
 
-                    		  	  for(int i<%= tableName %> = 0; i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
+                    		  	  for(int i<%= tableName %> = 0; size<%= tableName %>ListFromLookup != -1 && i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
 
 										<%
 										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
@@ -254,10 +267,11 @@
                     		  	    
                     		  	    <%= tableName %>Struct <%= tableName %>FromLookup = null;
 		                         <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
-
-                    		  	    <%
-		                          if(aKeysValues.length > 0) { // 10
-		                          %>
+										 
+										 if(!forceLoop<%= tableName %>) { // 46
+                    		  	    	<%
+		                          	if(aKeysValues.length > 0) { // 10
+		                          	%>
 			  									if(<%= tableName %>ListFromLookup != null) {
 	      	              		   	   <%= tableName %>FromLookup = <%= tableName %>ListFromLookup.get(i<%= tableName %>);
 		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
@@ -266,16 +280,13 @@
       	              		   	} // 10
       	              		   	else { // 11
       	              		   	%>
-      	              		   		if(!forceLoop<%= tableName %> && i<%= tableName %> < <%= tableName %>Array.length) {
+      	              		   		if(i<%= tableName %> < <%= tableName %>Array.length) {
       	              		   			<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
 		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
       	              		   		}
       	              		   	<%
       	              		   	} // 11
                     		  	    	%>
-                    		  	    
-                    		  			forceLoop<%= tableName %> = false;
-                    		  	    
                     		  	    
                     		  	  	   <%
                     		  	  	   if(
@@ -305,7 +316,9 @@
 				  									} else if(aKeysValues.length == 0){
 					  									if(externalTable.isInnerJoin()) {
 					  									%>
-				                    		  	   	if(i<%= tableName %> == size<%= tableName %>ListFromLookup - 1 && !hasAtLeastOneValidLookup_<%= tableName %>) 
+				                    		  	   	if(size<%= tableName %>ListFromLookup != -1 
+				                    		  	   		&& i<%= tableName %> == size<%= tableName %>ListFromLookup - 1 
+				                    		  	   		&& !hasAtLeastOneValidLookup_<%= tableName %>) 
 				                    		  	   	{ // 15
 			     	  	            		  	  			<%= rejectedInnerJoin %> = true;
 				                    		  	   	} //15
@@ -341,6 +354,11 @@
 	                    		  	   } // 12
 	                    		  	   
 	                    		  	%>	
+	                    		  	
+	                    		  	} // 46
+	                    		  	
+									 	forceLoop<%= tableName %> = false;
+	                    		  	
 	  									<%
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {

@@ -508,7 +508,8 @@ public class MapperManager {
             lastChild = outputsTablesView.get(sizeOutputsView - 1);
         }
 
-        AbstractDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
+        abstractDataMapTable.initFromExternalData(null);
 
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable,
