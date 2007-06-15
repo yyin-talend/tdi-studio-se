@@ -126,8 +126,8 @@ public class RowGenMain {
      */
     public Shell createUI(Display display) {
 
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
-                | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
+                | SWT.TITLE);
         IComponent component = connector.getComponent();
         ImageDescriptor imageDescriptor = component.getIcon32();
         Image createImage = imageDescriptor.createImage();
@@ -176,24 +176,23 @@ public class RowGenMain {
      * @return
      */
     private void addAllControlForKeyListener(Control parent) {
-        if (parent instanceof Composite) {
-            KeyAdapter keyAdapter = new KeyAdapter() {
+        KeyAdapter keyAdapter = new KeyAdapter() {
 
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
-                 */
-                public void keyReleased(KeyEvent e) {
-                    if (e.keyCode == SWT.F5) {
-                        MetadataTableEditorViewExt viewExt = generatorUI.getDataTableView();
-                        viewExt.refreshPreviewColumn();
-                    }
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
+             */
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.F5) {
+                    MetadataTableEditorViewExt viewExt = generatorUI.getDataTableView();
+                    viewExt.refreshPreviewColumn();
                 }
-            };
-            Composite composite = (Composite) parent;
-            composite.addKeyListener(keyAdapter);
-            Control[] children = composite.getChildren();
+            }
+        };
+        parent.addKeyListener(keyAdapter);
+        if (parent instanceof Composite) {
+            Control[] children = ((Composite) parent).getChildren();
             for (Control control : children) {
                 if (control != null && !control.isDisposed()) {
                     addAllControlForKeyListener(control);

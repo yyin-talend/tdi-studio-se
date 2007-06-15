@@ -341,14 +341,16 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             tabFolderEditors.refreshPreview(tabFolderEditors.getRowText());
             next = 0;
         }
-        TableItem item = table.getItems()[next];
-        next++;
-        for (int i = 1; i < table.getColumnCount(); i++) {
-            MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
-            ext.setPreview(item.getText(i));
-            ext.setChanged(false);
+        if (table.getItems().length > 0) {
+            TableItem item = table.getItems()[next];
+            next++;
+            for (int i = 1; i < table.getColumnCount(); i++) {
+                MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
+                ext.setPreview(item.getText(i));
+                ext.setChanged(false);
+            }
+            getTableViewerCreator().getTableViewer().refresh();
         }
-        getTableViewerCreator().getTableViewer().refresh();
 
     }
 
