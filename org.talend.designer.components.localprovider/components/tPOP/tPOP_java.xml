@@ -61,7 +61,7 @@
       FIELD="DIRECTORY"
       NUM_ROW="3"
     >
-      <DEFAULT>"C:/temp"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
