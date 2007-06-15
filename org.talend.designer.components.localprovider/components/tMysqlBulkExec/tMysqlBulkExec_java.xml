@@ -97,7 +97,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"C:/talend_files/mysql_bulk.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mysql_bulk.txt"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

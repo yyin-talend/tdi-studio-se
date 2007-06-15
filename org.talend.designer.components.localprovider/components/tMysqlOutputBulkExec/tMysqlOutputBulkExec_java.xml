@@ -97,7 +97,7 @@
       NUM_ROW="14"
       REQUIRED="true"
     >
-      <DEFAULT>"C:/temp/mysql_data.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mysql_data.txt"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
