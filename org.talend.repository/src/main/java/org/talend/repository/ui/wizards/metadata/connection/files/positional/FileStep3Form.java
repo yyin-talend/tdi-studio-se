@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -63,6 +67,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractPositionalFileStepForm;
+import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -100,7 +105,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * @param Wizard
      * @param Style
      */
-    public FileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public FileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -137,7 +143,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                         + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
             } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
             }
             log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -180,9 +187,11 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
-        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
+        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2,
+                WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
+        informationLabel
+                .setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
         guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
@@ -199,7 +208,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
         if (!isInWizard()) {
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -261,8 +271,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
-                                .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
+                        if (MessageDialog.openConfirm(getShell(),
+                                Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
+                                        .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
                             runShadowProcess();
                         }
                     } else {
@@ -355,6 +366,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 if (value != null && !value.equals("")) { //$NON-NLS-1$
                     label[i] = value.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+
+                label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
+
             }
         }
 
@@ -367,17 +381,19 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             int current = firstRowToExtractMetadata;
             while (globalType == null) {
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                    globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
+                            .getValue());
                     current++;
                     if (current == xmlRows.size()) {
                         globalType = "id_String"; //$NON-NLS-1$
                     }
                 } else {
-                    globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                    globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
+                            .getValue());
                     current++;
                     if (current == xmlRows.size()) {
                         globalType = "String"; //$NON-NLS-1$
-                    }                    
+                    }
                 }
             }
             // for another lines
@@ -389,15 +405,17 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                             if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper.getTalendTypeOfValue(value));
+                                globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+                                        .getTalendTypeOfValue(value));
                             }
                         } else {
                             if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper.getTalendTypeOfValue(value));
+                                globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+                                        .getTalendTypeOfValue(value));
                             }
                         }
                         if (lengthValue < value.length()) {
-                            lengthValue = value.length();                                
+                            lengthValue = value.length();
                         }
                         int positionDecimal = 0;
                         if (value.indexOf(',') > -1) {
@@ -416,7 +434,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             String talendType = null;
             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                talendType = globalType;    
+                talendType = globalType;
             } else {
                 talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
             }
@@ -443,10 +461,12 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * @return
      */
     protected boolean checkFieldsValue() {
+
         if (metadataNameText.getCharCount() == 0) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert")); //$NON-NLS-1$
             return false;
+
         } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$

@@ -64,6 +64,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractDelimitedFileStepForm;
+import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -379,6 +380,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                     if (numberOfCol <= fields.size()) {
                         if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) { //$NON-NLS-1$
                             label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                            label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
                         } else {
                             label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                         }
