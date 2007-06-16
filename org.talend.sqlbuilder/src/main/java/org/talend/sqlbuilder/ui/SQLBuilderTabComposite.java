@@ -193,6 +193,9 @@ public class SQLBuilderTabComposite extends Composite {
                 node, dialog);
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
+        if (connParam.isDoubleClickQuery()) {
+            queryStr = connParam.getQueryObject().getValue();
+        }
         builderEditor.setSqlText(queryStr);
         if (connParam.isShowDesignerPage()) {
             builderEditor.showDesignerPage();

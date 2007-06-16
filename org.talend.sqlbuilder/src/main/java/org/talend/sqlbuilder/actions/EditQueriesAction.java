@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
@@ -36,6 +37,7 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
@@ -74,6 +76,13 @@ public class EditQueriesAction extends AContextualAction {
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         connParameters.setQuery(""); //$NON-NLS-1$
         connParameters.setNodeReadOnly(false);
+        final ERepositoryObjectType properties = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        boolean is = properties == ERepositoryObjectType.METADATA_CON_QUERY;
+        connParameters.setDoubleClickQuery(is);
+        if (is) {
+            final QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
+            connParameters.setQueryObject(object.getQuery());
+        }
         dial.setConnParameters(connParameters);
         dial.open();
         refresh(node);
@@ -85,7 +94,7 @@ public class EditQueriesAction extends AContextualAction {
             canWork = false;
         }
         if (canWork) {
-            
+
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
