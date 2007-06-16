@@ -212,7 +212,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     }
 
     private boolean isInitialized = false;
-    
+
     private void initialize(RepositoryNode treeRoot) {
         if (!connectionParameters.isRepository()) {
             addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject(), true,
@@ -236,6 +236,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         return container;
     }
 
+    private boolean isCleared = false;
+
     private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type) {
         if (fromModel.isEmpty()) {
             return;
@@ -255,7 +257,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             parent.getChildren().add(folder);
             convert(container, folder, type);
         }
-        maps.clear();
+        if (!isCleared) {
+            maps.clear();
+            isCleared = true;
+        }
         for (Object obj : fromModel.getMembers()) {
             IRepositoryObject repositoryObject = ((RepositoryObject) obj).cloneNewObject();
             maps.put(((RepositoryObject) obj).getId(), (RepositoryObject) obj);
