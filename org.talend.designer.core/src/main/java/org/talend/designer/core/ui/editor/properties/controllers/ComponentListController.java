@@ -179,7 +179,14 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
-                componentUniqueNames.add(node.getUniqueName());
+                String uniqueName = node.getUniqueName();
+                String displayName = (String) node.getElementParameter("LABEL").getValue();
+                if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
+                    uniqueName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
+                } else {
+                    uniqueName = uniqueName + " - " + displayName;
+                }
+                componentUniqueNames.add(uniqueName);
             }
 
             String[] componentNameList = (String[]) componentUniqueNames.toArray(new String[0]);
@@ -205,6 +212,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         updateComponentList(elem, param);
 
         String[] curComponentNameList = param.getListItemsDisplayName();
+
         String[] curComponentValueList = (String[]) param.getListItemsValue();
 
         Object value = param.getValue();
