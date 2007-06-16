@@ -44,24 +44,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 int nb_line_<%=cid%> = 0;
 
-javax.xml.parsers.DocumentBuilder builder = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder();
-org.w3c.dom.Document document = builder.parse(new org.xml.sax.InputSource(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>)));
-	
-javax.xml.xpath.XPath xpath = javax.xml.xpath.XPathFactory.newInstance().newXPath();
-org.w3c.dom.NodeList widgetNodes = (org.w3c.dom.NodeList) xpath.evaluate(<%=loopQuery %>, document, javax.xml.xpath.XPathConstants.NODESET);
+org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(<%=filename %>);
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)doc_<%=cid%>.selectNodes(<%=loopQuery %>);	
 
 String str<%=cid %> = "";
-for (int i<%=cid %>=0;i<%=cid %><widgetNodes.getLength();i<%=cid %>++) {
+for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 	nb_line_<%=cid%>++;
-	org.w3c.dom.Node widgetNode = widgetNodes.item(i<%=cid %>);
-	org.w3c.dom.Node resultNode = null;
 <%	
 				for (int i=0;i<mapping.size();i++) { 
 %>
-	resultNode = (org.w3c.dom.Node) xpath.evaluate(<%=mapping.get(i).get("QUERY") %>, widgetNode, javax.xml.xpath.XPathConstants.NODE);
-	if (resultNode!=null) {  
-		str<%=cid %> = resultNode.getTextContent();
+	str<%=cid %> = temp_<%=cid%>.valueOf(<%=mapping.get(i).get("QUERY") %>);
+	if (str<%=cid %> != null ) {  
 <%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {

@@ -98,7 +98,20 @@
     </PARAMETER>
   </PARAMETERS>
 
-  <CODEGENERATION/>
+    <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="Java_DOM4J1.6"
+        MODULE="dom4j-1.6.1.jar"
+        REQUIRED="true"
+      />
+      <IMPORT
+        NAME="Java_JAXEN1.1"
+        MODULE="jaxen-1.1-beta-6.jar"
+        REQUIRED="true"
+      />
+    </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
