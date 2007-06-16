@@ -46,8 +46,10 @@ import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
@@ -206,19 +208,19 @@ public class DatabaseForm extends AbstractForm {
         // Database Type Combo
         urlDataStringConnection = new DataStringConnection();
 
-        //PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
+        // PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
             databasePerl.remove("Microsoft SQL Server");
             databasePerl.remove("Ingres");
-            String [] dbPerl = (String [])databasePerl.toArray(new String[databasePerl.size()]);
+            String[] dbPerl = (String[]) databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
         } else {
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
         }
-        
+
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
         urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
@@ -489,6 +491,10 @@ public class DatabaseForm extends AbstractForm {
                 setPropertiesFormEditable(true);
                 getConnection().setDatabaseType(dbTypeCombo.getText());
                 portText.setText(urlDataStringConnection.getDefaultPort());
+                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).getProduct();
+                getConnection().setProductId(product);
+                final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+                getConnection().setDbmsId(mapping);
                 checkFieldsValue();
             }
         });

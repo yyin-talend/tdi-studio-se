@@ -41,6 +41,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -599,7 +600,7 @@ public class SQLBuilderRepositoryNodeManager {
 
             IMetadataTable metaTable1 = ConvertionHelper.convert(table);
             metadataColumns = ExtractMetaDataFromDataBase.extractMetadataColumnsFormTable(dbMetaData, metaTable1,
-                    iMetadataConnection.getDbType());
+                    iMetadataConnection);
             ExtractMetaDataUtils.closeConnection();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -623,6 +624,11 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setSID(parameters.getDbName());
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
+        final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
+        connection.setProductId(product);
+        final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+        connection.setDbmsId(mapping);
+        
         if (parameters.getSchema() != null && isSchemaNeed) {
             connection.setSchema(parameters.getSchema().replaceAll("\'", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }

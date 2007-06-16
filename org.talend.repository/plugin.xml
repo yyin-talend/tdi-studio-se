@@ -458,6 +458,12 @@
             description="Rename jobs if they contain any space character (for migration of version 1.0 or 1.1)"
             id="org.talend.repository.model.migration.RemoveSpaceInJobNameMigrationTask"
             name="Rename jobs with spaces"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddProductAndMappingInDBConnectionEMFMigrationTask"
+            description="Add two attributes (product and mapping) in DatabaseConnection of Repository"
+            id="org.talend.repository.model.migration.AddProductAndMappingInDBConnectionEMFMigrationTask"
+            name="Add two attributes in DatabaseConnection"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
