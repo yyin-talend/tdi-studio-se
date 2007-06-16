@@ -1,0 +1,38 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
+if(serverType.equals("JBoss")){
+%>
+					
+	}
+	<%if(kListen.equals("false")){%> flag<%=cid%>=false;input<%=cid%>.close();<%}else{%>Thread.sleep(<%=timeOut%>000);<%}%>			
+
+
+}
+<%
+}else{
+%>
+		
+		remoteQ<%=cid%>.close();
+		qMgr<%=cid%>.disconnect();
+	}
+	}
+	catch(com.ibm.mq.MQException ex){
+		System.out.println("A WebSphere MQ error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);
+		remoteQ<%=cid%>.close();
+	}
+<%
+	}
+	%>
