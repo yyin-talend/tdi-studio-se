@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
@@ -45,57 +46,66 @@ public final class ProcessStreamTrashReader {
         super();
     }
 
-    public static void readAndForget(Process process) {
+    public static void readAndForget(final Process process) {
         try {
+            new Thread() {
+
+                public void run() {
+                    InputStream is = process.getInputStream();
+                    InputStreamReader din = new InputStreamReader(is);
+                    BufferedReader reader = new BufferedReader(din);
+                    try {
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println("getInputStream " + line);
+                        }
+                    } catch (Exception ex) {
+                        ex.getMessage();
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
+            }.start();
+
+            // int len = is.available();
+            // if (len > 0) {
+            // byte[] data = new byte[len];
+            // is.read(data);
+            // }
+
+            new Thread() {
+
+                public void run() {
+                    InputStream is = process.getErrorStream();
+                    InputStreamReader din = new InputStreamReader(is);
+                    BufferedReader reader = new BufferedReader(din);
+                    try {
+                        String line = null;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println("getErrorStream " + line);
+                        }
+                    } catch (Exception ex) {
+                        ex.getMessage();
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (Exception ex) {
+                        }
+                    }
+                }
+            }.start();
+
+            // len = is.available();
+            // if (len > 0) {
+            // byte[] data = new byte[len];
+            // is.read(data);
+            // }
+
             boolean stopped = false;
             while (!stopped) {
-                InputStream is = process.getInputStream();
-                DataInputStream din = new java.io.DataInputStream(is);
-                StringBuffer sb = new StringBuffer();
-                try{
-                String line = null;
-                    while((line=din.readLine()) != null){
-                    System.out.println("getInputStream "+line);
-                    }
-                }catch(Exception ex){
-                ex.getMessage();
-                }finally{
-                    try{
-                    is.close();
-                    }catch(Exception ex){}
-                }
-                
-                
-//                int len = is.available();
-//                if (len > 0) {
-//                    byte[] data = new byte[len];
-//                    is.read(data);
-//                }
-                
-                
-                
-                is = process.getErrorStream();
-                din = new java.io.DataInputStream(is);
-                sb = new StringBuffer();
-                try{
-                String line = null;
-                    while((line=din.readLine()) != null){
-                    System.out.println("getErrorStream "+line);
-                    }
-                }catch(Exception ex){
-                ex.getMessage();
-                }finally{
-                    try{
-                    is.close();
-                    }catch(Exception ex){}
-                }
-            
-//                len = is.available();
-//                if (len > 0) {
-//                    byte[] data = new byte[len];
-//                    is.read(data);
-//                }
-
                 try {
                     process.exitValue();
                     stopped = true;
