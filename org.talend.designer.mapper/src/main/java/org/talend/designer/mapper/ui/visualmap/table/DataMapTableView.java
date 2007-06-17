@@ -307,8 +307,6 @@ public abstract class DataMapTableView extends Composite {
             addToolItemSeparator();
         }
 
-        Point realToolbarSize = getRealToolbarSize();
-
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
         realToolbarSize.x += 45;
 
@@ -325,7 +323,7 @@ public abstract class DataMapTableView extends Composite {
         if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
             if (realToolbarSize != null) {
                 gridData.widthHint = realToolbarSize.x;
-                System.out.println("realToolbarSize:" + realToolbarSize);
+//                System.out.println("realToolbarSize:" + realToolbarSize);
             }
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
             // gridData.widthHint -= 48;

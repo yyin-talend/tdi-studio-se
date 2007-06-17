@@ -45,6 +45,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -87,12 +88,12 @@ public class MapperMain {
 
     private MapperModel mapperModel;
 
-    private MapperComponent connector;
+    private MapperComponent component;
 
-    public MapperMain(MapperComponent connector) {
+    public MapperMain(MapperComponent component) {
         super();
-        mapperManager = new MapperManager(connector);
-        this.connector = connector;
+        mapperManager = new MapperManager(component);
+        this.component = component;
     }
 
     /**
@@ -102,36 +103,10 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
-                | SWT.MAX | SWT.TITLE);
-        IComponent component = connector.getComponent();
-        ImageDescriptor imageDescriptor = component.getIcon32();
-        Image createImage = imageDescriptor.createImage();
-        // Shell shell = new Shell(display);
-        // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        shell.setImage(createImage);
-        shell.setText(Messages.getString("MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
-        ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
-        Rectangle boundsMapper = uiProperties.getBoundsMapper();
-        if (uiProperties.isShellMaximized()) {
-            shell.setMaximized(uiProperties.isShellMaximized());
-        } else {
-            // // move shell at outer of display zone to avoid visual effect on loading
-            // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
-            // boundsMapper.height);
-            // shell.setBounds(tmpBoundsMapper);
-            boundsMapper = uiProperties.getBoundsMapper();
-            if (boundsMapper.x < 0) {
-                boundsMapper.x = 0;
-            }
-            if (boundsMapper.y < 0) {
-                boundsMapper.y = 0;
-            }
-            shell.setBounds(boundsMapper);
-        }
-        createUI(shell);
-        shell.open();
-        return shell;
+        
+        UIManager uiManager = mapperManager.getUiManager();
+        return uiManager.createUI(display, this.mapperModel);
+        
     }
 
     /**
@@ -140,8 +115,8 @@ public class MapperMain {
      * @param parent
      */
     public void createUI(Composite parent) {
-        MapperUI mapperUI = new MapperUI(parent, mapperManager);
-        mapperUI.init(mapperModel);
+        UIManager uiManager = mapperManager.getUiManager();
+        uiManager.createUI(parent, this.mapperModel);
     }
 
     public MapperManager getMapperManager() {

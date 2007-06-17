@@ -28,12 +28,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Priority;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
@@ -47,6 +51,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -54,8 +59,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.internal.dialogs.DialogUtil;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -68,6 +73,7 @@ import org.talend.commons.utils.image.ImageCapture;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -75,9 +81,11 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
@@ -162,6 +170,17 @@ public class UIManager {
 
     private IModifiedBeanListener<IMetadataColumn> outputModifiedBeanListener;
 
+    private LINK_STYLE linkStyle;
+
+    /**
+     * 
+     * Style of links. <br/>
+     */
+    public enum LINK_STYLE {
+        BEZIER_CURVE,
+        LINE,
+    }
+
     /**
      * DOC amaumont UIManager constructor comment.
      * 
@@ -171,7 +190,7 @@ public class UIManager {
     public UIManager(MapperManager mapperManager, TableManager tableManager) {
         this.mapperManager = mapperManager;
         this.tableManager = tableManager;
-        this.drawableLinkFactory = new StyleLinkFactory();
+        this.drawableLinkFactory = new StyleLinkFactory(getLinkStyle());
     }
 
     /**
@@ -1805,6 +1824,81 @@ public class UIManager {
 
     public List<DataMapTableView> getInputsTablesView() {
         return tableManager.getInputsTablesView();
+    }
+
+    public LINK_STYLE getLinkStyle() {
+        if (linkStyle == null) {
+            String elementParameterValue = (String) mapperManager.getElementParameterValue("LINK_STYLE");
+            LINK_STYLE defaultLinkStyle = LINK_STYLE.BEZIER_CURVE;
+            if (elementParameterValue != null) {
+                try {
+                    linkStyle = LINK_STYLE.valueOf(elementParameterValue);
+                } catch (RuntimeException e) {
+                    ExceptionHandler.process(e, Level.WARN);
+                    linkStyle = defaultLinkStyle;
+                }
+            } else {
+                linkStyle = defaultLinkStyle;
+            }
+        }
+        return linkStyle;
+    }
+
+    /**
+     * DOC amaumont Comment method "createUI".
+     * 
+     * @param display
+     */
+    public Shell createUI(Display display, MapperModel model) {
+
+        Shell activeShell = display.getActiveShell();
+        Shell mapperShell = null;
+        int style = SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL | SWT.RESIZE;
+        if (activeShell == null) {
+            mapperShell = new Shell(mapperShell, style);
+        } else {
+            mapperShell = new Shell(activeShell, style);
+        }
+
+        MapperComponent component = mapperManager.getComponent();
+        ImageDescriptor imageDescriptor = component.getComponent().getIcon32();
+        Image createImage = imageDescriptor.createImage();
+        // Shell shell = new Shell(display);
+        // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
+        mapperShell.setImage(createImage);
+        mapperShell.setText(Messages.getString(
+                "MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        Rectangle boundsMapper = uiProperties.getBoundsMapper();
+        if (uiProperties.isShellMaximized()) {
+            mapperShell.setMaximized(uiProperties.isShellMaximized());
+        } else {
+            // // move shell at outer of display zone to avoid visual effect on loading
+            // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
+            // boundsMapper.height);
+            // shell.setBounds(tmpBoundsMapper);
+            boundsMapper = uiProperties.getBoundsMapper();
+            if (boundsMapper.x < 0) {
+                boundsMapper.x = 0;
+            }
+            if (boundsMapper.y < 0) {
+                boundsMapper.y = 0;
+            }
+            mapperShell.setBounds(boundsMapper);
+        }
+        createUI(mapperShell, model);
+        mapperShell.open();
+        return mapperShell;
+
+    }
+
+    /**
+     * Init the mapper into the passed parent <code>Component</code>.
+     * 
+     * @param parent
+     */
+    public void createUI(Composite parent, MapperModel model) {
+        setMapperUI(new MapperUI(parent, mapperManager));
+        mapperUI.init(model);
     }
 
 }

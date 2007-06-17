@@ -106,7 +106,6 @@ public class MapperManager {
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager();
         linkManager = new LinkManager();
-        uiManager = new UIManager(this, tableManager);
         problemsManager = new ProblemsManager(this);
         this.mapperComponent = mapperComponent;
     }
@@ -255,8 +254,8 @@ public class MapperManager {
      * @param currentLink
      * @param removedLink
      */
-    private void changeDependentSourcesAndTargetEntriesState(IDataMapTableEntry entryCauseOfChange, IMapperLink currentLink,
-            boolean removedLink) {
+    private void changeDependentSourcesAndTargetEntriesState(IDataMapTableEntry entryCauseOfChange,
+            IMapperLink currentLink, boolean removedLink) {
 
         boolean sourceIsCauseOfChange = false;
         if (currentLink.getPointLinkDescriptor1().getTableEntry() == entryCauseOfChange) {
@@ -403,6 +402,9 @@ public class MapperManager {
     }
 
     public UIManager getUiManager() {
+        if (this.uiManager == null) {
+            uiManager = new UIManager(this, tableManager);
+        }
         return this.uiManager;
     }
 
@@ -619,7 +621,8 @@ public class MapperManager {
             tableViewer.refresh(currentEntry);
         } else if (currentEntry instanceof ExpressionFilterEntry) {
             dataMapTableView.getExpressionFilterText().setText(text);
-            dataMapTableView.checkProblemsForExpressionFilterWithDelay((AbstractInOutTable) dataMapTableView.getDataMapTable(), false);
+            dataMapTableView.checkProblemsForExpressionFilterWithDelay((AbstractInOutTable) dataMapTableView
+                    .getDataMapTable(), false);
         }
 
         uiManager.parseNewExpression(text, currentEntry, false);
@@ -705,6 +708,16 @@ public class MapperManager {
                 }
             }
         }
+    }
+
+    public Object getElementParameterValue(String parameterName) {
+        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
+        for (IElementParameter parameter : elementParameters) {
+            if (parameterName.equals(parameter.getName())) {
+                return parameter.getValue();
+            }
+        }
+        return null;
     }
 
     /**

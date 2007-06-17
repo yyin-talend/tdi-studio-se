@@ -22,6 +22,17 @@
       <PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="1">
          <DEFAULT/>  
       </PARAMETER>
+      <PARAMETER
+        NAME="LINK_STYLE"
+        FIELD="CLOSED_LIST"
+        NUM_ROW="1"
+      >
+        <ITEMS DEFAULT="BEZIER_CURVE">
+          <ITEM NAME="BEZIER_CURVE"   VALUE="BEZIER_CURVE" />
+          <ITEM NAME="LINE"   VALUE="LINE" />
+        </ITEMS>
+      </PARAMETER>
+   
       <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="2">
          <DEFAULT/>
       </PARAMETER>
