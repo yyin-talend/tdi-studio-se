@@ -267,6 +267,8 @@ public class DBStructureComposite extends Composite {
 
     private ViewerFilter filter = new ViewerFilter() {
 
+        private List<String> names = new ArrayList<String>();
+
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (isShowAllConnections) {
@@ -276,14 +278,14 @@ public class DBStructureComposite extends Composite {
             }
 
             RepositoryNode node = (RepositoryNode) element;
+            final String repositoryName = builderDialog.getConnParameters().getRepositoryName();
             if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                if (isExistChildWithRepositoryNodeName(node, builderDialog.getConnParameters().getRepositoryName())) {
-                    return true;
-                }
+                names.clear();
+                getRepositoryNodeNames(node);
+                return names.contains(repositoryName);
             } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                 if (builderDialog.getConnParameters().isRepository()) {
-                    if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(
-                            builderDialog.getConnParameters().getRepositoryName())) {
+                    if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(repositoryName)) {
                         return true;
                     }
                 } else {
@@ -305,18 +307,15 @@ public class DBStructureComposite extends Composite {
             }
         }
 
-        private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
+        private void getRepositoryNodeNames(RepositoryNode folderNode) {
             List<RepositoryNode> nodes = folderNode.getChildren();
             for (RepositoryNode node : nodes) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                    return isExistChildWithRepositoryNodeName(node, repositoryName);
+                    getRepositoryNodeNames(node);
                 } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
-                    if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(repositoryName)) {
-                        return true;
-                    }
+                    names.add(node.getObject().getLabel());
                 }
             }
-            return false;
         }
     };
 
