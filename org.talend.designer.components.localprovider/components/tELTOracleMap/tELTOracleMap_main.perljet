@@ -25,7 +25,6 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	OracleMapperComponent node = (OracleMapperComponent) codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics(); 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

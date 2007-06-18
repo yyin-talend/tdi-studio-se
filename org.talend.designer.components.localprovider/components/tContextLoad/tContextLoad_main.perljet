@@ -11,7 +11,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -39,13 +38,6 @@ if (@<%=cid %>) {
         warn '<%=cid %>', " invalid parameter name : $key \n" ;
     }
 
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-    }
-%>
 }
     
 <%

@@ -13,7 +13,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -55,25 +54,9 @@ my %desc_<%=cid %> = (
     ],
 );
 
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 0);
-<%
-    }
-%>
-
 $_globals{<%=cid%>}{NB_LINE} = $desc_<%=cid %>{nb_rows};
 
 for (1..$desc_<%=cid %>{nb_rows}) {
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-    }
-%>
 
     my @<%=cid %> = ();
 

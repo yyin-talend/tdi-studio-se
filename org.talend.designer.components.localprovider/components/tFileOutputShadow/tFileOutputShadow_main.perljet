@@ -11,7 +11,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();				
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -61,13 +60,6 @@ if (@<%=cid %>) {
         '</'.$desc_<%=cid %>{row_tag}.'>', "\n",
     ) or die "can't write to file " . $output_desc_<%=cid %>{filename} . "\n";
 
-<%
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-        }
-%>
 }
 else {
     print {$output_FH_<%=cid %>} '<'.$desc_<%=cid %>{row_tag}.'/>', "\n"

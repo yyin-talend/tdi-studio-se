@@ -12,7 +12,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -45,14 +44,6 @@ use constant INPUT_FIELD_SEPARATOR_<%=cid %> => <%=ElementParameterParser.getVal
 $/ = $desc_<%=cid %>{row_separator};
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 0);
-<%
-    }
-%>
-
 my $input_FH_<%=cid %> = new FileHandle;
 open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
@@ -66,18 +57,7 @@ my $a_lookup_<%=cid %> = [] ;
 my $a_data_<%=cid %> = [] ;
 
 while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
-
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-    }
-%>
-
     chomp $_<%=cid %>;
-
 
     # increase number of line really splitted
     $nb_line_<%=cid %>++;

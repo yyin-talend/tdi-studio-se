@@ -13,7 +13,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -106,12 +105,6 @@ my @colnames_<%=cid %> = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
 use constant <%=cid%>__<%=column.getLabel() %> => <%= i %>;
 <%
             i++;
-        }
-
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 0);
-<%
         }
 %>
 

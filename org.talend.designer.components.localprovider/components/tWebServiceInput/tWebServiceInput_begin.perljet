@@ -13,7 +13,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -76,14 +75,6 @@ my %desc_<%=cid %> = (
     ],
 );
 
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
-
 use SOAP::Lite;
 
 my $result_<%=cid%> = SOAP::Lite
@@ -105,14 +96,6 @@ else {
 
 foreach my $line_<%=cid%> (@lines_<%=cid%>) {
     $nb_line_<%=cid%>++;
-
-<%
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-        }
-%>
 
     my @<%=cid %> = ();
 

@@ -17,6 +17,7 @@ class="ComponentPartHeader"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
+boolean stat = codeGenArgument.isStatistics();
 %>
 # +-------------------------------------------------------------------------+
 # | [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -58,6 +59,17 @@ $current_component="<%=node.getUniqueName() %>";
 }
 
 if (codePart.equals(ECodePart.MAIN)) {
+    if (stat) {
+        for (IConnection conn : node.getIncomingConnections()) {
+            if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {
+%>
+UpdateStat('<%=conn.getName() %>', 1);
+
+<%
+            }
+        }
+    }
+
     if (node.getComponent().isDataAutoPropagated()) {
         List<IMetadataTable> metadatas = node.getMetadataList();
         if ((metadatas!=null)&&(metadatas.size()>0)) {

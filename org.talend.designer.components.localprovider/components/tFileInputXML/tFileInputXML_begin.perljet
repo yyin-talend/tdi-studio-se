@@ -13,7 +13,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -80,14 +79,6 @@ my %desc_<%=cid %> = (
     ],
 );
 
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
-
 use XML::LibXML;
 
 my $parser_<%=cid%> = XML::LibXML->new();
@@ -102,14 +93,6 @@ foreach my $line_<%=cid%> ($root_<%=cid%>->findnodes(<%=loopQuery%>)) {
         if (!limit.equals("undef")) {
 %>
     last if $nb_line_<%=cid%> > $desc_<%=cid%>{limit};
-<%
-        }
-%>
-
-<%
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
 <%
         }
 %>

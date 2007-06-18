@@ -15,7 +15,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	LocationUtils locationUtils = new LocationUtils();
 
@@ -70,14 +69,6 @@ else {
     }
 }
 
-<%
-    if (stats) {
-%>
-UpdateStat('<%=metadata.getTableName() %>', 1);
-<%
-    }
-%>
-    
 <%
 		}
 	}

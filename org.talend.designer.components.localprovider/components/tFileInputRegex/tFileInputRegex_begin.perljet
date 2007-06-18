@@ -12,7 +12,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -53,14 +52,6 @@ my %desc_<%=metadata.getTableName() %> = (
 my $regex_<%=metadata.getTableName() %> = <%=ElementParameterParser.getValue(node, "__REGEX__") %>;
 $/ = $desc_<%=metadata.getTableName() %>{row_separator};
 my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=metadata.getTableName() %>', 0);
-<%
-    }
-%>
 
 my $input_FH_<%=metadata.getTableName() %> = new FileHandle;
 open($input_FH_<%=metadata.getTableName() %>, '<', $desc_<%=metadata.getTableName() %>{filename})
@@ -119,14 +110,6 @@ while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName(
 
 <%
   }
-%>
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=metadata.getTableName() %>', 1);
-<%
-    }
 %>
 
     chomp $_<%=metadata.getTableName() %>;

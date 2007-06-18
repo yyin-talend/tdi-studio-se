@@ -12,7 +12,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 	
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -63,14 +62,6 @@ my %desc_<%=cid %> = (
 );
 
 my $nb_line_<%=cid%> = 0;
-
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
 
 if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
     $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';

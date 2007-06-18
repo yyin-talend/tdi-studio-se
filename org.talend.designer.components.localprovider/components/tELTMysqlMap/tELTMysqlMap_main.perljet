@@ -25,7 +25,6 @@
 
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	MysqlMapperComponent node = (MysqlMapperComponent) codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics(); 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -10,7 +10,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -21,14 +20,8 @@
 foreach(keys %_context){
 	warn "Warning ! Parameter $_ has not been set by <%=cid %>\n" unless(exists($<%=cid %>_keys{$_}));
 }
-<%
-                        if (stats) {
-%>
-
-UpdateStat('<%=metadata.getTableName() %>', 0, 2);
 
 <%
-                        }
 		}
 	}
 %>

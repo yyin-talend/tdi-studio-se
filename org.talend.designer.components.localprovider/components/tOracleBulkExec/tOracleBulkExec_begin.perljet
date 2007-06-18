@@ -12,7 +12,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -30,14 +29,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
        String command       = ElementParameterParser.getValue(node, "__COMMAND__");
        String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
-%>
-
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
 %>
 
 use DBI;
@@ -141,14 +132,6 @@ else {
         );
     }
 }
-
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0, 2);
-<%
-        }
-%>
 
 <%
     }

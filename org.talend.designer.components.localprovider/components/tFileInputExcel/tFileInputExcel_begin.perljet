@@ -12,7 +12,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -55,14 +54,6 @@ my %desc_<%=cid%> = (
 );
 
 my $nb_fields_<%=cid%> = scalar @{ $desc_<%=cid%>{schema} };
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid%>', 0);
-<%
-    }
-%>
 
 my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse($desc_<%=cid%>{filename});
 
@@ -112,14 +103,6 @@ for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
     my $current_row = $_ - 1;
     my @line_<%=cid%> = ();
     $nb_line_<%=cid%>++;
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid%>', 1);
-<%
-    }
-%>
 
     for (my $current_column = $first_column_<%=cid%>;
          $current_column <= $last_column_<%=cid%>;

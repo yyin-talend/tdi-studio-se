@@ -10,7 +10,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -40,12 +39,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 $<%=dbh%>->commit();
 $<%=dbh%>->disconnect();
-<%
-        }
-
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0, 2);
 <%
         }
     }

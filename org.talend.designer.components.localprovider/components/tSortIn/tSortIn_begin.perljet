@@ -13,7 +13,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -52,12 +51,6 @@ my %desc_<%=cid %> = (
 use constant <%=origin %>__<%=column.getLabel() %> => <%=column_number%>;
 <%
             column_number++;
-        }
-
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 0);
-<%
         }
 
         StringBuffer sb = new StringBuffer();
@@ -109,14 +102,6 @@ foreach my $row_aref (
         <%=sb %>
     } @<%=origin %>
 ) {
-
-<%
-    if (stats) {
-%>
-    UpdateStat('<%=cid %>', 1);
-<%
-    }
-%>
 
 
     # increase number of line really splitted

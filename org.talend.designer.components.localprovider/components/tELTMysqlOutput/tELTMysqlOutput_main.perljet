@@ -18,7 +18,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 String dbtable = null;
 INode previousNode = null;
@@ -106,14 +105,6 @@ my %desc_<%=cid %> = (
 %>
     ],
 );
-
-<%
-        if (stats) {
-%>
-    UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
 
 my $dbh_<%=cid %> = DBI->connect(
     sprintf(
@@ -471,15 +462,6 @@ my $new_nb_line_<%=cid%> =
     + $nb_line_deleted_<%=cid %>
 ;
   
-<%
-        if (stats) {
-%>
-if ($new_nb_line_<%=cid%> > $nb_line_<%=cid%>) {
-    UpdateStat('<%=cid %>', 1);
-}
-<%
-        }
-%>
 $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 
 <%
@@ -498,13 +480,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 $dbh_<%=cid %>->disconnect();
 
-<%
-    if (stats) {
-%>
-UpdateStat('<%=cid %>', 0, 2);
-<%
-    }
-%>
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
 $_globals{<%=cid %>}{NB_LINE_UPDATED}  = $nb_line_updated_<%=cid %>;
 $_globals{<%=cid %>}{NB_LINE_INSERTED} = $nb_line_inserted_<%=cid %>;

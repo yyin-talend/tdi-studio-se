@@ -12,7 +12,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -65,14 +64,6 @@ my %desc_<%=cid %> = (
 %>
     ],
 );
-
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
 
 my $dbh_<%=cid %> = DBI->connect(
     sprintf(

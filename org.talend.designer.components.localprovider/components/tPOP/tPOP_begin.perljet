@@ -13,7 +13,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -65,14 +64,6 @@ if (not -w $desc_<%=cid%>{output_directory}) {
     die 'Cannot write files in '.$desc_<%=cid%>{output_directory};
 }
 
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0);
-<%
-        }
-%>
-
 my @files = ();
 
 {
@@ -119,26 +110,11 @@ my @files = ();
 <%
         }
 %>
-<%
-        if (stats) {
-%>
-            UpdateStat('<%=cid %>', 1);
-<%
-        }
-%>
         }
     }
 
     $pop->quit;
 }
-
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 0, 2);
-<%
-        }
-%>
 
 for my $filename (@files) {
     $_globals{<%=cid %>}{CURRENT_FILE} = $filename;

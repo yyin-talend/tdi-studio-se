@@ -52,7 +52,6 @@ final class SchemaColumn {
 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();				
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -264,13 +263,6 @@ print {$output_FH_<%=cid %>} (
     or die "can't write to file ".$output_desc_<%=cid %>{filename}."\n";
 
 $nb_line_<%=cid %>++;
-<%
-        if (stats) {
-%>
-UpdateStat('<%=cid %>', 1);
-<%
-        }
-%>
 
 <%
         if (split.equals("true")) {

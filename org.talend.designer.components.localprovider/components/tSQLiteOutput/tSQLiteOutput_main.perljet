@@ -14,7 +14,6 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -152,15 +151,6 @@ my $new_nb_line_<%=cid%> =
     + $nb_line_deleted_<%=cid %>
 ;
 
-<%
-        if (stats) {
-%>
-if ($new_nb_line_<%=cid%> > $nb_line_<%=cid%>) {
-    UpdateStat('<%=cid %>', 1);
-}
-<%
-        }
-%>
 $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 
 if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {

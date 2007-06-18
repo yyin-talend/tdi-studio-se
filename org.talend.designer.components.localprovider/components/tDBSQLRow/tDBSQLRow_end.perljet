@@ -10,7 +10,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -22,14 +21,6 @@ $sth_<%=cid %>->finish();
 
 $dbh_<%=cid %>->commit();
 $dbh_<%=cid %>->disconnect();
-
-<%
-    if (stats) {
-%>
-UpdateStat('<%=cid %>', 0, 2);
-<%
-    }
-%>
 
 <%
 		}

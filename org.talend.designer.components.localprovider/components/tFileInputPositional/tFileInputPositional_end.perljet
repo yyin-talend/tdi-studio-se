@@ -10,7 +10,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -21,16 +20,6 @@
 }
 
 close($input_FH_<%=metadata.getTableName() %>);
-
-<%
-        if (stats) {
-%>
-
-UpdateStat('<%=metadata.getTableName() %>', 0, 2);
-
-<%
-        }
-%>
 
 $_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
 
