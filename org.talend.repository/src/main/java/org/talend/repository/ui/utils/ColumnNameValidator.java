@@ -56,7 +56,7 @@ public class ColumnNameValidator {
         Perl5Matcher matcher = new Perl5Matcher();
         boolean match = matcher.matches(columnName, validPatternColumnNameRegexp);
         if (!match) {
-            columnName = "newColumn" + index;
+            columnName = "Column" + index;
         }
         return columnName;
     }
