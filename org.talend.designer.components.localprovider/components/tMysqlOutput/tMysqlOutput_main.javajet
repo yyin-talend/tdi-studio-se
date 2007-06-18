@@ -301,9 +301,13 @@ if(isObject){
 	}else if(typeToGenerate.equals("Date")){
 	%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
-	
-		<%=prefix+cid%>.setTimestamp(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
-		
+		// timestamp < min java date value (year 1) || timestamp > max mysql value (year 10000) => set 0000-00-00 as date in MySQL
+		date_<%=cid %> = <%=incomingConnName%>.<%=column.getName()%>.getTime();
+		if (date_<%=cid %> < year1_<%=cid %> || date_<%=cid %> >= year10000_<%=cid %>) {
+			<%=prefix+cid%>.setString(<%=counter%>, "0000-00-00 00:00:00");
+		} else {
+			<%=prefix+cid%>.setString(<%=counter%>, new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(<%=incomingConnName%>.<%=column.getName()%>));
+		}
 	}else{
 	
 		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.DATE);
