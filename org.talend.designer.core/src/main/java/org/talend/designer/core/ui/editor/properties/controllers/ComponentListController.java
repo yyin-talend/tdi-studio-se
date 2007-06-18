@@ -177,19 +177,21 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         if (elem instanceof Node) {
             List<INode> nodeList = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
 
+            List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
                 String uniqueName = node.getUniqueName();
+                componentUniqueNames.add(uniqueName);
                 String displayName = (String) node.getElementParameter("LABEL").getValue();
                 if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
                     uniqueName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
                 } else {
                     uniqueName = uniqueName + " - " + displayName;
                 }
-                componentUniqueNames.add(uniqueName);
+                componentDisplayNames.add(uniqueName);
             }
 
-            String[] componentNameList = (String[]) componentUniqueNames.toArray(new String[0]);
+            String[] componentNameList = (String[]) componentDisplayNames.toArray(new String[0]);
             String[] componentValueList = (String[]) componentUniqueNames.toArray(new String[0]);
 
             param.setListItemsDisplayName(componentNameList);
