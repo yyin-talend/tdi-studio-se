@@ -44,6 +44,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -77,6 +78,15 @@ public class DataProcess {
         dataNodeList = new ArrayList<INode>();
     }
 
+    private static void initializeDataFromGraphical(INode newNode, INode graphicalNode) {
+        for (IElementParameter curParam : graphicalNode.getElementParameters()) {
+            IElementParameter dataNodeParam = newNode.getElementParameter(curParam.getName());
+            if (dataNodeParam != null) {
+                dataNodeParam.setValue(curParam.getValue());
+            }
+        }
+    }
+
     // should only be called by a starting node
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static INode buildfromNode(final Node graphicalNode) {
@@ -104,7 +114,9 @@ public class DataProcess {
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
-        dataNode.setElementParameters(graphicalNode.getElementParameters());
+        dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
+        initializeDataFromGraphical(dataNode, graphicalNode);
+        // dataNode.setElementParameters(makeCopyofParameters(dataNode, graphicalNode.getElementParameters()));
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
@@ -483,10 +495,12 @@ public class DataProcess {
                 // ///////////////////////////////////////////////////////////////////////////
                 // ///////////////////////////////////////////////////////////////////////////
                 // temporary solution (13 jun 2007)
-//                IExternalNode externalNode = connection.getTarget().getExternalNode();
-//                if (externalNode != null
-//                        && externalNode.getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) { //$NON-NLS-1$
-                if(connection.getTarget().getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                // IExternalNode externalNode = connection.getTarget().getExternalNode();
+                // if (externalNode != null
+                // && externalNode.getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() ==
+                // ECodeLanguage.JAVA) { //$NON-NLS-1$
+                if (connection.getTarget().getUniqueName().startsWith("tMap")
+                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
                     // ///////////////////////////////////////////////////////////////////////////
