@@ -148,8 +148,10 @@ public class ConnectionCreateAction extends SelectionAction {
                     }
                     boolean nameUsed = false;
                     for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                        if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
-                            nameUsed = true;
+                        if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                            if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
+                                nameUsed = true;
+                            }
                         }
                     }
                     // if the name is not already in the process adds to the list
