@@ -202,7 +202,7 @@ for(IMetadataColumn column:columnList){
 				int stmtIndex = 0;
 				
 				for(Column stmtStr:stmtStructure){					
-					if(stmtStr.getName().equals(addCol.get("REFCOL"))){
+					if(stmtStr.getName().replace("\\", "").replace("\"", "").equals(addCol.get("REFCOL"))){
 						break;
 					}
 					stmtIndex++;
