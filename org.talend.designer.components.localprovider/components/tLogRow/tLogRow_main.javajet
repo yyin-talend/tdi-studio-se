@@ -122,7 +122,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, "<%= pattern %>")
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
@@ -185,7 +185,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, "<%= pattern %>")
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
