@@ -232,8 +232,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         commonNodesLimitation.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                
-                treePopulator.setLimit(commonNodesLimitation.getText());
+
+                String str = commonNodesLimitation.getText();
+
+                if ((!str.matches("\\d+"))||(Integer.valueOf(str) < 0)) {
+                    commonNodesLimitation.setText(String.valueOf(treePopulator.getLimit()));
+                } else {                    
+                    treePopulator.setLimit(Integer.valueOf(str));
+                }
+
                 treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
 

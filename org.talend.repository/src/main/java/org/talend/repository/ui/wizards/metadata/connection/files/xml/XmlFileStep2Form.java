@@ -156,8 +156,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
     public XmlFileStep2Form(Composite parent, ConnectionItem connectionItem) {
         super(parent, connectionItem);
         setupForm();
-    } 
-    
+    }
 
     /**
      * 
@@ -363,16 +362,18 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         final Text limitText = new Text(preivewButtonPart, SWT.BORDER | SWT.RIGHT);
         GridData textGd = new GridData(30, SWT.DEFAULT);
         limitText.setLayoutData(textGd);
+        XmlArray.setLimitToDefault();
         limitText.setText(String.valueOf(XmlArray.getRowLimit()));
         limitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
                 String limitValue = limitText.getText();
                 if (!limitValue.matches("\\d+")) {
-                    XmlArray.setRowLimit(10);
+                    limitText.setText(String.valueOf(XmlArray.getRowLimit()));
+                } else {
+                    int limit = Integer.valueOf(limitValue);
+                    XmlArray.setRowLimit(limit);
                 }
-                int limit = Integer.valueOf(limitValue);
-                XmlArray.setRowLimit(limit);
             }
 
         });

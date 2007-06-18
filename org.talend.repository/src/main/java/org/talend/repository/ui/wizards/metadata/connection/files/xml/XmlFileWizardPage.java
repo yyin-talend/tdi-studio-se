@@ -28,6 +28,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.utils.XmlArray;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 
@@ -54,7 +55,8 @@ public class XmlFileWizardPage extends WizardPage {
      * @param isRepositoryObjectEditable
      * @param existingNames
      */
-    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
+    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames) {
         super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
@@ -74,7 +76,8 @@ public class XmlFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new XmlFileStep2Form(parent, connectionItem);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection()).getTables().get(0);
+            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection())
+                    .getTables().get(0);
             currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((XmlFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
@@ -98,6 +101,17 @@ public class XmlFileWizardPage extends WizardPage {
 
         currentComposite.setListener(listener);
         setControl((Composite) currentComposite);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+     */
+    @Override
+    public void dispose() {
+        XmlArray.setLimitToDefault();
+        super.dispose();
     }
 
 }

@@ -163,14 +163,8 @@ public class TreePopulator {
      * 
      * @param limit the limit to set
      */
-    public void setLimit(String str) {
-        if (!str.matches("\\d+")) {
-            limit = 0;
-        } else {
-            if ((limit = Integer.valueOf(str)) < 0) {
-                limit = 0;
-            }
-        }
+    public void setLimit(int lit) {
+        limit = lit;
     }
 
     /**
