@@ -431,11 +431,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 Query q = (Query) item.getData();
                 RepositoryNode node = null;
                 MultiPageSqlBuilderEditor meditor = null;
-                final Control control = ((CTabFolder) item.getControl()).getItem(i).getControl();
-                if (control instanceof SQLBuilderDesignerComposite) {
-                    meditor = ((SQLBuilderDesignerComposite) control).getMultiPageEditor();
-                } else if (control instanceof SQLBuilderEditorComposite) {
-                    meditor = ((SQLBuilderEditorComposite) control).getMultiPageEditor();
+                Object control = item.getData("KEY");
+                if (control instanceof MultiPageSqlBuilderEditor) {
+                    meditor = (MultiPageSqlBuilderEditor) control;
                 }
                 if (meditor != null) {
                     q.setValue(meditor.getActivePageSqlString());

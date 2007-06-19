@@ -140,6 +140,9 @@ public class SQLBuilderTabComposite extends Composite {
                 Query query2 = editorComposite.getConnParam().getQueryObject();
                 if ((RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
                     Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
+                    if (query2 == null && tabItems[i].getData() instanceof Query) {
+                        query2 = (Query) tabItems[i].getData();
+                    }
                     if (query2 != null && query.getLabel().equals(query2.getLabel())) {
                         if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
                             editorComposite.setEditorContent(query.getValue());
@@ -193,6 +196,7 @@ public class SQLBuilderTabComposite extends Composite {
                 node, dialog);
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
+        tabItem.setData("KEY", builderEditor);
         if (connParam.isDoubleClickQuery()) {
             queryStr = connParam.getQueryObject().getValue();
         }
