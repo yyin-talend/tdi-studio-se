@@ -27,7 +27,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataSchema;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -57,7 +57,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         if (function != null) {
             Node parameter = nodeMap.getNamedItem("parameter"); //$NON-NLS-1$
             Node preview = nodeMap.getNamedItem("preview"); //$NON-NLS-1$
-            Function function2 = new FunctionManager().getCurrentFunction(function.getNodeValue(), columnExt);
+            Function function2 = new FunctionManagerExt().getCurrentFunction(function.getNodeValue(), columnExt);
             List<Parameter> parms = function2.getParameters();
             String[] paraStr = parameter.getNodeValue().split(";");
             for (String string : paraStr) {
@@ -72,7 +72,7 @@ public class MetadataSchemaExt extends MetadataSchema {
             columnExt.setFunction(function2);
             columnExt.setPreview(preview.getNodeValue());
         } else {
-            Function function2 = new FunctionManager().getDefaultFunction(columnExt, columnExt.getTalendType());
+            Function function2 = new FunctionManagerExt().getDefaultFunction(columnExt, columnExt.getTalendType());
             columnExt.setFunction(function2);
             columnExt.setPreview("");
         }

@@ -25,6 +25,7 @@ import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IJavaProject;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
@@ -145,6 +146,13 @@ public class RunProcessService implements IRunProcessService {
     
     public void refreshView(){
         delegateService.refreshView();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
+     */
+    public IJavaProject getJavaProject() throws CoreException {
+        return delegateService.getJavaProject();
     }
 
 }

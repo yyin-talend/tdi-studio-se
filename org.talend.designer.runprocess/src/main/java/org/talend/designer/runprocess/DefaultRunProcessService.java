@@ -25,6 +25,7 @@ import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IJavaProject;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -143,6 +144,9 @@ public class DefaultRunProcessService implements IRunProcessService {
         default:
             return PerlUtils.getProject();
         }
+    }
+    public IJavaProject getJavaProject() throws CoreException{
+        return JavaProcessor.getJavaProject();
     }
 
     /*

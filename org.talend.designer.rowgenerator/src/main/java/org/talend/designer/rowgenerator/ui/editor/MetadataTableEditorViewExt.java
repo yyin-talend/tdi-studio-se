@@ -56,7 +56,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
@@ -90,7 +90,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     private Label empty;
 
-    private FunctionManager functionManager;
+    private FunctionManagerExt functionManager;
 
     private MetadataToolbarEditorViewExt extendedToolbar;
 
@@ -100,7 +100,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     public MetadataTableEditorViewExt(Composite parentComposite, int mainCompositeStyle,
             ExtendedTableModel<IMetadataColumn> extendedTableModel, boolean readOnly, boolean toolbarVisible,
-            RowGeneratorComponent rGcomponent, FunctionManager functionManager) {
+            RowGeneratorComponent rGcomponent, FunctionManagerExt functionManager) {
         super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true);
         this.rGcomponent = rGcomponent;
         this.functionManager = functionManager;
@@ -217,14 +217,14 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
-                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     return ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
                 }
                 return bean.getParameter();
             }
 
             public void set(MetadataColumnExt bean, String value) {
-                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     ((StringParameter) bean.getFunction().getParameters().get(0)).setValue(value);
                 }
                 bean.setChanged(true);

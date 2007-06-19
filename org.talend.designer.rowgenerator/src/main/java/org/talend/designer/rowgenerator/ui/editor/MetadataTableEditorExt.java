@@ -25,7 +25,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
 /**
@@ -47,7 +47,7 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
 
     public IMetadataColumn createNewMetadataColumn() {
         final MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) super.createNewMetadataColumn());
-        metadataColumnExt.setFunction((new FunctionManager()).getDefaultFunction(metadataColumnExt, metadataColumnExt
+        metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt, metadataColumnExt
                 .getTalendType()));
         return metadataColumnExt;
     }

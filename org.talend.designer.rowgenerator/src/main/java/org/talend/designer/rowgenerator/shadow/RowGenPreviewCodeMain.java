@@ -44,7 +44,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -104,7 +104,7 @@ public class RowGenPreviewCodeMain {
             MetadataColumnExt ext = (MetadataColumnExt) col;
             Map<String, Object> value = new HashMap<String, Object>();
             value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
-            value.put(RowGeneratorComponent.ARRAY, FunctionManager.getOneColData(ext));
+            value.put(RowGeneratorComponent.ARRAY, FunctionManagerExt.getOneColData(ext));
             map.add(value);
         }
         this.component.setTableElementParameter(map);

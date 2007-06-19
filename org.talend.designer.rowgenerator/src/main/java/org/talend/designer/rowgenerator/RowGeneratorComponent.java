@@ -57,7 +57,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.shadow.RowGenPreviewCodeMain;
@@ -493,7 +493,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
 
-                FunctionManager functionManager = new FunctionManager();
+                FunctionManagerExt functionManager = new FunctionManagerExt();
 
                 List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
                 String[] arrayTalendFunctions2 = new String[funs.size()];

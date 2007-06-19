@@ -38,6 +38,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -148,7 +149,7 @@ public class UIManager {
             MetadataColumnExt ext = (MetadataColumnExt) col;
             Map<String, Object> value = new HashMap<String, Object>();
             value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
-            value.put(RowGeneratorComponent.ARRAY, FunctionManager.getOneColData(ext));
+            value.put(RowGeneratorComponent.ARRAY, FunctionManagerExt.getOneColData(ext));
             map.add(value);
         }
         rgManager.getRowGeneratorComponent().setTableElementParameter(map);
@@ -201,16 +202,13 @@ public class UIManager {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
-        String newValue2 = FunctionManager.getOneColData(bean);
+        String newValue2 = FunctionManagerExt.getOneColData(bean);
         if (rgManager.getRowGeneratorComponent() != null && newValue2 != null) {
             rgManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue2);
         }
     }
 
     public static boolean isJavaProject() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
-        return (codeLanguage == ECodeLanguage.JAVA);
+        return FunctionManagerExt.isJavaProject();
     }
 }

@@ -48,7 +48,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.FunctionManager;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
@@ -88,7 +88,7 @@ public class RowGeneratorUI {
 
     private RowGeneratorComponent externalNode;
 
-    private FunctionManager functionManager;
+    private FunctionManagerExt functionManager;
 
     public RowGeneratorUI(Composite parent, RowGeneratorManager generatorManager) {
         super();
@@ -97,7 +97,7 @@ public class RowGeneratorUI {
         externalNode = generatorManager.getRowGeneratorComponent();
         // add listeners.
         this.rowGenUIParent = parent;
-        functionManager = new FunctionManager();
+        functionManager = new FunctionManagerExt();
     }
 
     /**
