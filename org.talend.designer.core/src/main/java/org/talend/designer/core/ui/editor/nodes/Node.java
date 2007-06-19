@@ -240,11 +240,10 @@ public class Node extends Element implements INode {
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }
-
+        
         if (isExternalNode()) {
             getExternalNode().initialize();
         }
-
     }
 
     public IProcess getProcess() {
@@ -1034,10 +1033,11 @@ public class Node extends Element implements INode {
                         currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
                                 currentQuery.indexOf("FROM"));
                         String[] columnArray = currentQuery.split(",");
+
                         int changedColumnSize = columnArray.length;
                         String compareStr = columnArray[0].trim().replaceAll("\n", "");
 
-                        //Checks if nothing between "SELECT" and "FROM", show warning information on component.
+                        // Checks if nothing between "SELECT" and "FROM", show warning information on component.
                         if (changedColumnSize == 1 && compareStr.equals("")) {
                             Problems.add(ProblemStatus.WARNING, this, errMessage);
                             break;
@@ -1301,18 +1301,34 @@ public class Node extends Element implements INode {
                     String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                } /* else {
-                    if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL
-                            ^ IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
-                        String warningMessage = "The pattern in the schema from the input link \""
-                                + inputConnecion.getName()
-                                + "\" is different from the schema defined in the component.";
-                        Problems.add(ProblemStatus.WARNING, this, warningMessage);
+                } /*
+                     * else { if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL ^
+                     * IMetadataColumn.OPTIONS_IGNORE_PATTERN)) { String warningMessage = "The pattern in the schema
+                     * from the input link \"" + inputConnecion.getName() + "\" is different from the schema defined in
+                     * the component."; Problems.add(ProblemStatus.WARNING, this, warningMessage); } }
+                     */
+            }
+        }
+
+        if (component.useMerge()) {
+            if (inputs.size() > 1) {
+                IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
+                boolean isSame = true;
+                for (int i = 1; i < inputs.size(); i++) {
+                    if (!firstSchema.sameMetadataAs(inputs.get(i).getMetadataTable())) {
+                        isSame = false;
+                        break;
                     }
-                }*/
+                }
+                if (!isSame) {
+                    String warningMessage = "The schemas on the input links of the merge component \"" + getUniqueName()
+                            + "\" are different, they should be the same.";
+                    Problems.add(ProblemStatus.WARNING, this, warningMessage);
                 }
             }
         }
+
+    }
 
     public void checkAndRefreshNode() {
         Problems.clearAll(this);
