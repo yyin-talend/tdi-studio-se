@@ -1293,7 +1293,7 @@ public class Node extends Element implements INode {
                     String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                } else {
+                } /* else {
                     if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_ALL
                             ^ IMetadataColumn.OPTIONS_IGNORE_PATTERN)) {
                         String warningMessage = "The pattern in the schema from the input link \""
@@ -1301,7 +1301,7 @@ public class Node extends Element implements INode {
                                 + "\" is different from the schema defined in the component.";
                         Problems.add(ProblemStatus.WARNING, this, warningMessage);
                     }
-                }
+                }*/
             }
         }
     }
