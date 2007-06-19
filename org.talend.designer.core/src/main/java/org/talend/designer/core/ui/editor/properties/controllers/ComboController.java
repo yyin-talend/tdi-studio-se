@@ -76,8 +76,6 @@ public class ComboController extends AbstractElementPropertySectionController {
 
     private boolean updateColumnListFlag;
 
-    private SelectionEvent e;
-
     private Map<String, IMetadataTable> repositoryTableMap;
 
     private Map<String, ConnectionItem> repositoryConnectionItemMap;
@@ -102,7 +100,7 @@ public class ComboController extends AbstractElementPropertySectionController {
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    public Command createComboCommand() {
+    public Command createComboCommand(SelectionEvent event) {
         repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
         repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
         tablesmap = dynamicTabbedPropertySection.getTablesMap();
@@ -120,7 +118,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                     hashCurControls.remove(name);
                     return null;
                 }
-                CCombo combo = (CCombo) e.getSource();
+                CCombo combo = (CCombo) event.getSource();
 
                 Object data = ctrl.getData(PARAMETER_NAME);
                 if (!(ctrl instanceof CCombo)) {
@@ -403,9 +401,8 @@ public class ComboController extends AbstractElementPropertySectionController {
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            e = event;
             dynamicTabbedPropertySection.updateRepositoryList();
-            Command cmd = createCommand(e);
+            Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
                 if (updateColumnListFlag) {
@@ -421,11 +418,11 @@ public class ComboController extends AbstractElementPropertySectionController {
      * @param e
      * @return
      */
-    private Command createCommand(SelectionEvent e) {
+    private Command createCommand(SelectionEvent event) {
         Command cmd = null;
-        if (e.getSource() instanceof CCombo) {
-            cmd = createComboCommand();
-        } else if (e.getSource() instanceof Button) {
+        if (event.getSource() instanceof CCombo) {
+            cmd = createComboCommand(event);
+        } else if (event.getSource() instanceof Button) {
             cmd = createButtonCommand();
         }
         return cmd;
