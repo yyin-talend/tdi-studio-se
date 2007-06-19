@@ -33,6 +33,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -301,12 +303,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataNode.getChildren().add(metadataFileXmlNode);
 
         // 6.6. Metadata file ldif
-        // if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-        metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-        metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
-        metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
-        metadataNode.getChildren().add(metadataFileLdifNode);
-        // }
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataNode.getChildren().add(metadataFileLdifNode);
+        }
 
     }
 
