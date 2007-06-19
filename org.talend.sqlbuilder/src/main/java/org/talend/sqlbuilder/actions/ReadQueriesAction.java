@@ -72,6 +72,7 @@ public class ReadQueriesAction extends AContextualAction {
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         connParameters.setQuery(""); //$NON-NLS-1$
         connParameters.setNodeReadOnly(true);
+        connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
         refresh(node);

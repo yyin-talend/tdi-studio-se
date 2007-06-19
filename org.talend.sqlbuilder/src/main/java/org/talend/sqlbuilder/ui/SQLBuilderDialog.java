@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,12 +30,15 @@ import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -48,14 +52,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -405,9 +412,53 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         // sql = sql.replace("\"", "\\" + "\"");
         // } else {
         // sql = sql.replace("'", "\\'");
-        //        }
+        // }
 
+        SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+        List<Query> qs = new ArrayList<Query>();
+        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
         connParameters.setQuery(sql);
+        boolean isInfo = false;
+        final CTabFolder tabFolder = getEditorComposite().getTabFolder();
+        final CTabItem[] items = tabFolder.getItems();
+
+        for (int i = 0; i < items.length; i++) {
+            CTabItem item = items[i];
+            boolean isInfo2 = item.getText().startsWith(Messages.getString("SQLBuilderEditorComposite.titleQuery"))
+                    && item.getData() instanceof Query;
+            if (isInfo2) {
+                isInfo = true;
+                Query q = (Query) item.getData();
+                RepositoryNode node = null;
+                MultiPageSqlBuilderEditor meditor = null;
+                final Control control = ((CTabFolder) item.getControl()).getItem(i).getControl();
+                if (control instanceof SQLBuilderDesignerComposite) {
+                    meditor = ((SQLBuilderDesignerComposite) control).getMultiPageEditor();
+                } else if (control instanceof SQLBuilderEditorComposite) {
+                    meditor = ((SQLBuilderEditorComposite) control).getMultiPageEditor();
+                }
+                if (meditor != null) {
+                    q.setValue(meditor.getActivePageSqlString());
+                    node = meditor.getActivePageRepositoryNode();
+                }
+                qs.add(q);
+                nodes.add(node);
+            }
+        }
+        if (isInfo && connParameters.isFromRepository()) {
+            String title = Messages.getString("SQLBuilderDialog.SaveAllQueries.Title"); //$NON-NLS-1$
+            String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
+            boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
+            if (openQuestion) {
+                for (int i = 0; i < nodes.size(); i++) {
+                    RepositoryNode n = nodes.get(i);
+                    Query q = qs.get(i);
+                    if (q != null && n != null) {
+                        manager.saveQuery(n, q);
+                    }
+                }
+            }
+        }
         super.okPressed();
     }
 

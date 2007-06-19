@@ -93,9 +93,11 @@ public class ConnectionParameters {
 
     private boolean isShowDialog = false;
 
-    //add this flag for double-click this Query in Repository. 
+    // add this flag for double-click this Query in Repository.
     private boolean isDoubleClickQuery = false;
-    
+
+    private boolean isFromRepository = false;
+
     /**
      * Sets the connectionComment.
      * 
@@ -512,24 +514,30 @@ public class ConnectionParameters {
         this.repositoryNameParaName = repositoryNameParaName;
     }
 
-    
     public boolean isShowConfigParamDialog() {
         return this.isShowDialog;
     }
 
-    
     public void setShowConfigParamDialog(boolean isShowDialog) {
         this.isShowDialog = isShowDialog;
     }
 
-    
     public boolean isDoubleClickQuery() {
         return this.isDoubleClickQuery;
     }
 
-    
     public void setDoubleClickQuery(boolean isDoubleClickQuery) {
         this.isDoubleClickQuery = isDoubleClickQuery;
+    }
+
+    
+    public boolean isFromRepository() {
+        return this.isFromRepository;
+    }
+
+    
+    public void setFromRepository(boolean isFromRepository) {
+        this.isFromRepository = isFromRepository;
     }
 
 }

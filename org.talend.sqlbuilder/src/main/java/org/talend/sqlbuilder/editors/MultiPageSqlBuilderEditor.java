@@ -145,6 +145,25 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         erDiagramComposite.setSqlText(sql);
     }
 
+    public String getActivePageSqlString() {
+        final int activePage = getActivePage();
+        if (activePage == 0) {
+            return sqlEdit.getSQLToBeExecuted();
+        } else {
+            return sqlDesigner.getSQLToBeExecuted();
+        }
+    }
+    
+    public RepositoryNode getActivePageRepositoryNode() {
+        final int activePage = getActivePage();
+        if (activePage == 0) {
+            return sqlEdit.getRepositoryNode();
+        } else {
+            return sqlDesigner.getRepositoryNode();
+        }
+        
+    }
+
     public boolean isModified() {
         if ("".equals(erDiagramComposite.getSqlText())) {
             return (!"".equals(sqlEdit.getSQLToBeExecuted()));

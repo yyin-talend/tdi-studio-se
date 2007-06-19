@@ -28,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
@@ -83,6 +82,7 @@ public class EditQueriesAction extends AContextualAction {
             final QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
             connParameters.setQueryObject(object.getQuery());
         }
+        connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
         refresh(node);

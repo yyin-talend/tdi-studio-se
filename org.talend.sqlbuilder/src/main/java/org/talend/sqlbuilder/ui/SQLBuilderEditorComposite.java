@@ -514,9 +514,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         title = title + dbName + "(" + repositoryName + ").sql"; 
         if (connParam.getQueryObject() != null) {
             title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
+            tabItem.setData(connParam.getQueryObject());
         } else if (dialog.getConnParameters().getQueryObject() != null) {
             title = Messages.getString("SQLBuilderEditorComposite.titleQuery") //$NON-NLS-1$
                     + dialog.getConnParameters().getQueryObject().getLabel();
+            tabItem.setData(dialog.getConnParameters().getQueryObject());
         }
         tabItem.setText(title);
     }
