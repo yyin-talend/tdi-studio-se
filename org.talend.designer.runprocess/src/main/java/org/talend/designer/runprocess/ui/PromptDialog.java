@@ -215,7 +215,11 @@ public class PromptDialog extends Dialog {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
-                    text.setText(d.open());
+                    String open = d.open();
+                    if (open != null) {
+                        open = open.replaceAll("\\\\", "/");
+                        text.setText(open);
+                    }
                 }
 
             });
@@ -232,7 +236,11 @@ public class PromptDialog extends Dialog {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
-                    text.setText(d.open());
+                    String open = d.open();
+                    if (open != null) {
+                        open = open.replaceAll("\\\\", "/");
+                        text.setText(open);
+                    }
                 }
 
             });
