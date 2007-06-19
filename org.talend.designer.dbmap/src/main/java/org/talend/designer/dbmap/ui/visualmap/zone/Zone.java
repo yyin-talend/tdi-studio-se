@@ -21,14 +21,15 @@
 // ============================================================================
 package org.talend.designer.dbmap.ui.visualmap.zone;
 
+import org.talend.designer.abstractmap.ui.visualmap.zone.IMapZone;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  * $Id: Zone.java 1 2006-09-29 17:06:40Z nrousseau $
  * 
  */
-public enum Zone {
+public enum Zone implements IMapZone {
     INPUTS,
-    VARS,
     OUTPUTS,
 }

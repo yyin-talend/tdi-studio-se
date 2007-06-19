@@ -22,7 +22,7 @@
 package org.talend.designer.dbmap.model.tableentry;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 
 /**
@@ -33,12 +33,12 @@ import org.talend.designer.dbmap.model.table.OutputTable;
  */
 public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
-    public OutputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
             String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
-    public OutputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable, metadataColumn);
     }
 

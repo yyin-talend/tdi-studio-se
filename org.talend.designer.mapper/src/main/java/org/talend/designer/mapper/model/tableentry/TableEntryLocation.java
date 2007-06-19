@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
@@ -63,7 +65,7 @@ public class TableEntryLocation {
         return "{tableName=" + this.tableName + ", columnName=" + this.columnName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    public static TableEntryLocation getNewInstance(IDataMapTableEntry dataMapTableEntry) {
+    public static TableEntryLocation getNewInstance(ITableEntry dataMapTableEntry) {
         return new TableEntryLocation(dataMapTableEntry.getParent().getName(), dataMapTableEntry.getName());
     }
 

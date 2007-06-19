@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.dbmap.model.tableentry;
 
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 

@@ -34,10 +34,10 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 
 /**

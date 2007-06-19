@@ -27,14 +27,15 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -54,7 +55,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private IContentProposalProvider[] otherContentProposalProviders;
 
-    private IDataMapTableEntry currentModifiedEntry;
+    private ITableEntry currentModifiedEntry;
 
     /**
      * Constructs a new ProcessProposalProvider.
@@ -70,7 +71,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         this.otherContentProposalProviders = otherContentProposalProviders;
     }
 
-    public void init(AbstractDataMapTable currentTable, Zone[] zones, IDataMapTableEntry currentEntry) {
+    public void init(IDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
 
         tables = new ArrayList<AbstractDataMapTable>();
         for (int i = 0; i < zones.length; i++) {
@@ -98,7 +99,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
         TableEntryLocation sourceEntryLocation = new TableEntryLocation();
 
-        for (AbstractDataMapTable table : this.tables) {
+        for (IDataMapTable table : this.tables) {
             List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
             for (IColumnEntry entrySource : dataMapTableEntries) {
                 sourceEntryLocation.tableName = entrySource.getParentName();

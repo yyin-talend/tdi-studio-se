@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -35,34 +36,21 @@ import org.talend.designer.mapper.model.tableentry.IColumnEntry;
  * $Id$
  * 
  */
-public abstract class AbstractDataMapTable {
+public abstract class AbstractDataMapTable implements IDataMapTable {
 
-    protected List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
+    public SIZE_STATE sizeState = SIZE_STATE.INTERMEDIATE;
 
-    protected boolean minimized;
+    public boolean minimized;
 
-    /**
-     * 
-     * DOC amaumont AbstractDataMapTable class global comment. Detailled comment
-     * <br/>
-     *
-     */
-    public enum SIZE_STATE {
-        MINIMIZED,
-        INTERMEDIATE,
-        MAXIMIZED,
-        ;
-    }
-    
-    private SIZE_STATE sizeState = SIZE_STATE.INTERMEDIATE;
-    
-    private String name;
+    public String name;
 
-    private ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
+    public ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
 
-    protected MapperManager mapperManager;
+    public MapperManager mapperManager;
 
-    private boolean readOnly;
+    public boolean readOnly;
+
+    public final List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
 
     /**
      * DOC amaumont DataMapTable constructor comment.

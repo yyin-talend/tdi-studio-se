@@ -51,6 +51,8 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.core.ui.celleditor.JavaTypeComboValueAdapter;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
@@ -59,7 +61,6 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -77,7 +78,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
     protected ToolItem moveDownEntryItem;
 
-    public VarsDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+    public VarsDataMapTableView(Composite parent, int style, VarsTable abstractDataMapTable,
             MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
@@ -118,7 +119,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                             uiManager.parseAllExpressions(varsDataMapTableView, false);
                             mapperManager.getProblemsManager().checkProblemsForAllEntries(varsDataMapTableView, true);
                             uiManager.refreshBackground(true, false);
-                            List<IDataMapTableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
+                            List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView
                                     .getTableViewerCreatorForColumns().getTableViewer().getSelection());
 
                             uiManager.selectLinks(varsDataMapTableView, list, false, false);
@@ -260,7 +261,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
                     mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(),
-                            newValue.toString(), VarsDataMapTableView.this, (IDataMapTableEntry) currentModifiedBean);
+                            newValue.toString(), VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
                 }
             }
 
@@ -347,7 +348,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 if (indices.length > 0) {
                     indexInsert = indices[indices.length - 1] + 1;
                 }
-                AbstractDataMapTable dataMapTable = VarsDataMapTableView.this.getDataMapTable();
+                IDataMapTable dataMapTable = VarsDataMapTableView.this.getDataMapTable();
                 String varName = null;
                 if (dataMapTable instanceof VarsTable) {
                     varName = ((VarsTable) dataMapTable).findUniqueColumnName("var"); //$NON-NLS-1$
@@ -393,9 +394,9 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewerCreatorForColumns.getTableViewer()
                         .getSelection();
-                List<IDataMapTableEntry> selectedBeans = (List<IDataMapTableEntry>) selection.toList();
+                List<ITableEntry> selectedBeans = (List<ITableEntry>) selection.toList();
 
-                for (IDataMapTableEntry entry : selectedBeans) {
+                for (ITableEntry entry : selectedBeans) {
                     mapperManager.removeTableEntry(entry);
                 }
                 if (selectedBeans.size() > 0) {

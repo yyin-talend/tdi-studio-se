@@ -25,17 +25,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id: AbstractDataMapTable.java 1782 2007-02-03 07:57:38Z bqian $
+ * $Id: IDataMapTable.java 1782 2007-02-03 07:57:38Z bqian $
  * 
  */
-public abstract class AbstractDataMapTable {
+public abstract class AbstractDataMapTable implements IDataMapTable {
 
     protected List<IColumnEntry> dataMapTableEntries = new ArrayList<IColumnEntry>();
 
@@ -59,7 +60,7 @@ public abstract class AbstractDataMapTable {
         this.mapperManager = mapperManager;
         this.name = name;
         if (name == null) {
-            throw new IllegalArgumentException("Name of AbstractDataMapTable can't be null"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Name of IDataMapTable can't be null"); //$NON-NLS-1$
         }
         this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(
                 name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
@@ -139,4 +140,38 @@ public abstract class AbstractDataMapTable {
         return this.getName();
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.table.IDataMapTable#getSizeState()
+     */
+    public SIZE_STATE getSizeState() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.table.IDataMapTable#isReadOnly()
+     */
+    public boolean isReadOnly() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.table.IDataMapTable#setReadOnly(boolean)
+     */
+    public void setReadOnly(boolean readOnly) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.table.IDataMapTable#setSizeState(org.talend.designer.abstractmap.model.table.IDataMapTable.SIZE_STATE)
+     */
+    public void setSizeState(SIZE_STATE sizeState) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    
+    
 }

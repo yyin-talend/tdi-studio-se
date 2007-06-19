@@ -240,6 +240,11 @@ public class Node extends Element implements INode {
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }
+
+        if (isExternalNode()) {
+            getExternalNode().initialize();
+        }
+
     }
 
     public IProcess getProcess() {
@@ -508,7 +513,7 @@ public class Node extends Element implements INode {
     public List<? extends IConnection> getIncomingConnections() {
         return this.inputs;
     }
-    
+
     public void setIncomingConnections(List<Connection> connections) {
         this.inputs = connections;
     }
@@ -521,7 +526,6 @@ public class Node extends Element implements INode {
     public List<? extends IConnection> getOutgoingConnections() {
         return this.outputs;
     }
-
 
     /**
      * Remove a connection input.
@@ -1030,10 +1034,9 @@ public class Node extends Element implements INode {
                         currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
                                 currentQuery.indexOf("FROM"));
                         String[] columnArray = currentQuery.split(",");
-
                         int changedColumnSize = columnArray.length;
                         String compareStr = columnArray[0].trim().replaceAll("\n", "");
-                        
+
                         //Checks if nothing between "SELECT" and "FROM", show warning information on component.
                         if (changedColumnSize == 1 && compareStr.equals("")) {
                             Problems.add(ProblemStatus.WARNING, this, errMessage);
@@ -1307,9 +1310,9 @@ public class Node extends Element implements INode {
                         Problems.add(ProblemStatus.WARNING, this, warningMessage);
                     }
                 }*/
+                }
             }
         }
-    }
 
     public void checkAndRefreshNode() {
         Problems.clearAll(this);

@@ -23,11 +23,11 @@ package org.talend.designer.dbmap.ui.proposal.expression;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.AbstractDbLanguage;
 import org.talend.designer.dbmap.language.IDbLanguage;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;

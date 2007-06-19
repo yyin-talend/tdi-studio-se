@@ -24,24 +24,18 @@ package org.talend.designer.dbmap.utils.problems;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.converter.ExternalDataConverter;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
-import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
-import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
-import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.ProblemsManager;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

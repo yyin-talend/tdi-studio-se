@@ -27,6 +27,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.ILinkState;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
+import org.talend.designer.abstractmap.ui.visualmap.zone.IMapZone;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.ui.MapperUI;
@@ -49,7 +53,7 @@ public class Link implements IMapperLink {
 
     protected Point point2;
 
-    private LinkState linkState;
+    private ILinkState linkState;
 
     protected UIManager uiManager;
 
@@ -91,13 +95,13 @@ public class Link implements IMapperLink {
             throw new NullPointerException();
         }
 
-        Zone zone1 = pointLinkDescriptor1.getZone();
-        Zone zone2 = pointLinkDescriptor2.getZone();
+        IMapZone zone1 = pointLinkDescriptor1.getZone();
+        IMapZone zone2 = pointLinkDescriptor2.getZone();
 
-        int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar(zone1);
-        int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar(zone2);
+        int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar((Zone)zone1);
+        int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar((Zone)zone2);
 
-        boolean leftSidePosition = ((zone1 == Zone.INPUTS || zone1 == Zone.VARS) && zone1 == zone2);
+        boolean leftSidePosition = (zone1 == Zone.INPUTS && zone1 == zone2);
 
         int point1xForTraceLink = point1.x + (leftSidePosition ? 0 : widthTable1 - 4);
         int point2xForTraceLink = point2.x + (leftSidePosition ? 0 : 0);
@@ -145,7 +149,7 @@ public class Link implements IMapperLink {
      * 
      * @return the linkState
      */
-    public LinkState getState() {
+    public ILinkState getState() {
         return this.linkState;
     }
 
@@ -154,7 +158,7 @@ public class Link implements IMapperLink {
      * 
      * @param state the linkState to set
      */
-    public void setState(LinkState state) {
+    public void setState(ILinkState state) {
         this.linkState = state;
     }
 

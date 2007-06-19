@@ -31,13 +31,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
@@ -52,9 +52,9 @@ public class TableEntriesManager {
 
     private static Logger log = Logger.getLogger(TableEntriesManager.class);
     
-    private Map<TableEntryLocation, IDataMapTableEntry> tableEntries;
+    private Map<TableEntryLocation, ITableEntry> tableEntries;
 
-    private Map<IDataMapTableEntry, TableEntryProperties> dataMapTableEntryToProperties;
+    private Map<ITableEntry, TableEntryProperties> dataMapTableEntryToProperties;
 
     MapperManager mapperManager;
 
@@ -76,14 +76,14 @@ public class TableEntriesManager {
 
     TableEntriesManager(MapperManager mapperManager) {
         super();
-        this.tableEntries = new HashMap<TableEntryLocation, IDataMapTableEntry>();
-        this.dataMapTableEntryToProperties = new HashMap<IDataMapTableEntry, TableEntryProperties>();
+        this.tableEntries = new HashMap<TableEntryLocation, ITableEntry>();
+        this.dataMapTableEntryToProperties = new HashMap<ITableEntry, TableEntryProperties>();
         this.mapperManager = mapperManager;
     }
 
-    void removeAll(List<? extends IDataMapTableEntry> dataMapTableEntriesGroup) {
+    void removeAll(List<? extends ITableEntry> dataMapTableEntriesGroup) {
 
-        for (IDataMapTableEntry dataMapTableEntry : new ArrayList<IDataMapTableEntry>(dataMapTableEntriesGroup)) {
+        for (ITableEntry dataMapTableEntry : new ArrayList<ITableEntry>(dataMapTableEntriesGroup)) {
             remove(dataMapTableEntry);
         }
 
@@ -98,8 +98,8 @@ public class TableEntriesManager {
      * 
      * @param tableEntries2
      */
-    void addAll(List<? extends IDataMapTableEntry> dataMapTableEntriesGroup) {
-        for (IDataMapTableEntry dataMapTableEntry : dataMapTableEntriesGroup) {
+    void addAll(List<? extends ITableEntry> dataMapTableEntriesGroup) {
+        for (ITableEntry dataMapTableEntry : dataMapTableEntriesGroup) {
             add(dataMapTableEntry);
         }
 
@@ -108,7 +108,7 @@ public class TableEntriesManager {
         // fireEvent(event);
     }
 
-    void addTableEntry(IDataMapTableEntry dataMapTableEntry) {
+    void addTableEntry(ITableEntry dataMapTableEntry) {
         addTableEntry(dataMapTableEntry, null);
     }
 
@@ -118,13 +118,13 @@ public class TableEntriesManager {
      * @param dataMapTableEntry
      * @param index
      */
-    public void addTableEntry(IDataMapTableEntry dataMapTableEntry, Integer index) {
+    public void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
         if (dataMapTableEntry == null) {
             throw new IllegalArgumentException(Messages
                     .getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
         add(dataMapTableEntry);
-        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+        IDataMapTable dataMapTable = dataMapTableEntry.getParent();
         if (dataMapTableEntry instanceof IColumnEntry) {
             if (index == null) {
                 dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry);
@@ -153,16 +153,16 @@ public class TableEntriesManager {
      * 
      * @param dataMapTableEntry
      */
-    private void add(IDataMapTableEntry dataMapTableEntry) {
+    private void add(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
     }
 
-    public void remove(IDataMapTableEntry dataMapTableEntry) {
+    public void remove(ITableEntry dataMapTableEntry) {
         if (dataMapTableEntry != null) {
             mapperManager.removeLinksOf(dataMapTableEntry);
             tableEntries.remove(TableEntriesManager.buildLocation(dataMapTableEntry));
             dataMapTableEntryToProperties.remove(dataMapTableEntry);
-            AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+            IDataMapTable dataMapTable = dataMapTableEntry.getParent();
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
             } else if (dataMapTableEntry instanceof FilterTableEntry) {
@@ -184,7 +184,7 @@ public class TableEntriesManager {
      * @param tableName
      * @param columnName
      */
-    IDataMapTableEntry retrieveTableEntry(TableEntryLocation location) {
+    ITableEntry retrieveTableEntry(TableEntryLocation location) {
         return tableEntries.get(location);
     }
 
@@ -194,7 +194,7 @@ public class TableEntriesManager {
      * @param dataMapTableEntry
      * @return
      */
-    TableEntryProperties getTableEntryProperties(IDataMapTableEntry dataMapTableEntry) {
+    TableEntryProperties getTableEntryProperties(ITableEntry dataMapTableEntry) {
         TableEntryProperties tableEntryProperties = dataMapTableEntryToProperties.get(dataMapTableEntry);
         if (tableEntryProperties == null) {
             tableEntryProperties = new TableEntryProperties();
@@ -203,7 +203,7 @@ public class TableEntriesManager {
         return tableEntryProperties;
     }
 
-    TableItem retrieveTableItem(IDataMapTableEntry dataMapTableEntry) {
+    TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
         DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry
                 .getParent());
         TableItem[] tableItems = new TableItem[0];
@@ -233,7 +233,7 @@ public class TableEntriesManager {
      * @param dataMapTableEntry
      * @return
      */
-    Table retrieveTable(IDataMapTableEntry dataMapTableEntry) {
+    Table retrieveTable(ITableEntry dataMapTableEntry) {
         return retrieveTableItem(dataMapTableEntry).getParent();
     }
 
@@ -244,7 +244,7 @@ public class TableEntriesManager {
      * @param newColumnName
      * @param newColumnName
      */
-    public void renameEntryName(IDataMapTableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
+    public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
         System.out.println(previousColumnName + " -> " + newColumnName);
         
 //        ExceptionHandler.process(new RuntimeException("test : " + previousColumnName + " -> " + newColumnName));
@@ -253,7 +253,7 @@ public class TableEntriesManager {
         TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(),
                 previousColumnName);
         // TableEntriesManager.buildLocation(dataMapTableEntry);
-        IDataMapTableEntry entry = tableEntries.get(tableEntryLocationKey);
+        ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
             log.warn(Messages.getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
             return;
@@ -264,7 +264,7 @@ public class TableEntriesManager {
         dataMapTableEntry.setName(newColumnName);
     }
 
-    public static TableEntryLocation buildLocation(IDataMapTableEntry dataMapTableEntry) {
+    public static TableEntryLocation buildLocation(ITableEntry dataMapTableEntry) {
         return new TableEntryLocation(dataMapTableEntry.getParentName(), dataMapTableEntry.getName());
     }
 

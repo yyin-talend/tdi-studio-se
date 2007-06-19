@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 
 
 /**
@@ -37,7 +37,7 @@ public class ExpressionFilterEntry extends DataMapTableEntry {
      * @param name
      * @param expression
      */
-    public ExpressionFilterEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public ExpressionFilterEntry(IDataMapTable abstractDataMapTable, String name, String expression) {
         super(abstractDataMapTable, name, expression);
     }
 
@@ -46,7 +46,7 @@ public class ExpressionFilterEntry extends DataMapTableEntry {
      * @param abstractDataMapTable
      * @param expression
      */
-    public ExpressionFilterEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
+    public ExpressionFilterEntry(IDataMapTable abstractDataMapTable, String expression) {
         super(abstractDataMapTable, expression);
     }
 
@@ -54,7 +54,7 @@ public class ExpressionFilterEntry extends DataMapTableEntry {
      * DOC amaumont ExpressionFilterEntry constructor comment.
      * @param abstractDataMapTable
      */
-    public ExpressionFilterEntry(AbstractDataMapTable abstractDataMapTable) {
+    public ExpressionFilterEntry(IDataMapTable abstractDataMapTable) {
         super(abstractDataMapTable);
     }
 

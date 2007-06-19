@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.dbmap.model.tableentry;
 
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -31,7 +31,7 @@ import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
  */
 public class FilterTableEntry extends TableEntry {
 
-    public FilterTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public FilterTableEntry(IDataMapTable abstractDataMapTable, String name, String expression) {
         super(abstractDataMapTable, name, expression);
     }
 

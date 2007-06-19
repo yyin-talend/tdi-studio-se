@@ -28,12 +28,12 @@ import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 
 /**

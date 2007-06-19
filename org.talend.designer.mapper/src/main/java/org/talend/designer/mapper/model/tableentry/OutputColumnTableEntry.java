@@ -22,7 +22,7 @@
 package org.talend.designer.mapper.model.tableentry;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -32,12 +32,12 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  */
 public class OutputColumnTableEntry extends AbstractInOutTableEntry {
 
-    public OutputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
             String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
-    public OutputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
+    public OutputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable, metadataColumn);
     }
 

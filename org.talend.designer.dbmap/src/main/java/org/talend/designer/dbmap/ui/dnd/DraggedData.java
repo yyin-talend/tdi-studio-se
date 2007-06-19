@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 

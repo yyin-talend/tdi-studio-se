@@ -41,11 +41,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
@@ -61,7 +61,7 @@ import org.talend.designer.dbmap.utils.problems.ProblemsAnalyser;
  * $Id: MapperComponent.java 1782 2007-02-03 07:57:38Z bqian $
  * 
  */
-public abstract class AbstractDbMapComponent extends AbstractExternalNode {
+public abstract class AbstractDbMapComponent extends AbstractMapComponent {
 
     private MapperMain mapperMain;
 

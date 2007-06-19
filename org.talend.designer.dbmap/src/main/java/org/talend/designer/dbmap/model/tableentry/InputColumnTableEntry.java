@@ -22,7 +22,8 @@
 package org.talend.designer.dbmap.model.tableentry;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.dbmap.managers.MapperManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -41,12 +42,12 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
 
     private String originalExpression;
 
-    public InputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
+    public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
             String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
-    public InputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
+    public InputColumnTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable, metadataColumn);
     }
 
@@ -107,7 +108,7 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
 
     
     public boolean isUnmatchingEntry() {
-        return getParent().getMapperManager().isUnmatchingEntry(this);
+        return ((MapperManager)getParent().getMapperManager()).isUnmatchingEntry(this);
     }
     
 }

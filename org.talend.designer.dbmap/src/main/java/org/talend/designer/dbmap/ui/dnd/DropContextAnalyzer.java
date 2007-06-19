@@ -174,19 +174,10 @@ public class DropContextAnalyzer {
         }
 
         TableItem tableItemTarget = getTableItemFromPosition(new Point(event.x, event.y));
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.VARS && tableItemTarget != null) {
-            if (tableItemSource == tableItemTarget || !dropVarsEntryIsValid(tableItemTarget)) {
-                /*
-                 * VAR => VAR && (item source == item target || item target is invalid)
-                 */
-                return false;
-            }
-        }
 
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS
-                && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
+        if (zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS) {
             /*
-             * VAR => INPUT OUTPUT => OUTPUT OUTPUT => INPUT OUTPUT => VAR
+             * OUTPUT => OUTPUT OUTPUT => INPUT
              */
             return false;
         }
@@ -272,9 +263,7 @@ public class DropContextAnalyzer {
                 mapOneToOneMode = false;
                 insertionEntryMode = false;
                 dropFeedback |= DND.FEEDBACK_SELECT;
-            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS
-                    && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.VARS && zoneTarget == Zone.VARS
-                    || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.OUTPUTS
+            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.OUTPUTS
                     && zoneTarget == Zone.OUTPUTS) {
 
                 if (isCursorOverExpressionCell) {

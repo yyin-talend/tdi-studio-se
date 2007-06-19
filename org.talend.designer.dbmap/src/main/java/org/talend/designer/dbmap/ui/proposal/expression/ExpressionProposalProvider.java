@@ -27,11 +27,11 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 
@@ -45,7 +45,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private MapperManager mapperManager;
 
-    private List<AbstractDataMapTable> tables;
+    private List<IDataMapTable> tables;
 
     private IDbLanguage currentLanguage;
 
@@ -67,16 +67,14 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         this.otherContentProposalProviders = otherContentProposalProviders;
     }
 
-    public void init(AbstractDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
+    public void init(IDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
 
-        tables = new ArrayList<AbstractDataMapTable>();
+        tables = new ArrayList<IDataMapTable>();
         for (int i = 0; i < zones.length; i++) {
             if (zones[i] == Zone.INPUTS) {
                 tables.addAll(mapperManager.getInputTables());
             } else if (zones[i] == Zone.OUTPUTS) {
                 tables.addAll(mapperManager.getOutputTables());
-            } else if (zones[i] == Zone.VARS) {
-                tables.addAll(mapperManager.getVarsTables());
             }
         }
         this.currentModifiedEntry = currentEntry;
@@ -93,7 +91,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         TableEntryLocation sourceEntryLocation = new TableEntryLocation();
 
         // Proposals based on process context
-        for (AbstractDataMapTable table : this.tables) {
+        for (IDataMapTable table : this.tables) {
             // proposals.add(new TableContentProposal(table, this.currentLanguage));
             List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
             for (IColumnEntry entrySource : dataMapTableEntries) {

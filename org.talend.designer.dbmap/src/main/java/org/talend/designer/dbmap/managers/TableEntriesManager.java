@@ -32,14 +32,14 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.i18n.Messages;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.ui.visualmap.TableEntryProperties;
@@ -138,7 +138,7 @@ public class TableEntriesManager {
                     .getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
         addInternal(dataMapTableEntry);
-        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+        IDataMapTable dataMapTable = dataMapTableEntry.getParent();
         if (dataMapTableEntry instanceof IColumnEntry) {
             if (index == null) {
                 dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry);
@@ -169,7 +169,7 @@ public class TableEntriesManager {
      */
     private void addInternal(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
-        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+        IDataMapTable dataMapTable = dataMapTableEntry.getParent();
         InputTable inputTable = isPhysicalTable(dataMapTable);
         if (inputTable != null) {
             IMetadataColumn metadataColumn = ((InputColumnTableEntry) dataMapTableEntry).getMetadataColumn();
@@ -231,7 +231,7 @@ public class TableEntriesManager {
             mapperManager.removeLinksOf(dataMapTableEntry);
             tableEntries.remove(TableEntriesManager.buildLocation(dataMapTableEntry));
             dataMapTableEntryToProperties.remove(dataMapTableEntry);
-            AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+            IDataMapTable dataMapTable = dataMapTableEntry.getParent();
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
                 InputTable inputTable = isPhysicalTable(dataMapTable);
@@ -256,7 +256,7 @@ public class TableEntriesManager {
      * 
      * @param dataMapTable
      */
-    private InputTable isPhysicalTable(AbstractDataMapTable dataMapTable) {
+    private InputTable isPhysicalTable(IDataMapTable dataMapTable) {
         if (dataMapTable instanceof InputTable) {
             InputTable inputTable = (InputTable) dataMapTable;
             if (inputTable.getAlias() == null) {
@@ -292,7 +292,7 @@ public class TableEntriesManager {
     }
 
     TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
-        DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry
+        DataMapTableView dataMapTableView = this.mapperManager.retrieveIDataMapTableView(dataMapTableEntry
                 .getParent());
         TableItem[] tableItems = new TableItem[0];
         if (dataMapTableEntry instanceof IColumnEntry) {

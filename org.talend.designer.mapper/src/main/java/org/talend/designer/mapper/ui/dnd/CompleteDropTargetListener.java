@@ -37,14 +37,14 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
@@ -337,11 +337,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         draggableTable.deselectAll();
 
-        IDataMapTableEntry currentEntryTarget = getEntryFromPosition(cursorPosition);
+        ITableEntry currentEntryTarget = getEntryFromPosition(cursorPosition);
 
         ArrayList<String> columnsBeingAdded = new ArrayList<String>();
         ArrayList<Integer> columnIndicesToSelect = new ArrayList<Integer>();
-        ArrayList<IDataMapTableEntry> sourceEntriesOfEntriesBeingAdded = new ArrayList<IDataMapTableEntry>();
+        ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded = new ArrayList<ITableEntry>();
         ArrayList<IMetadataColumn> metadataColumnsBeingAdded = new ArrayList<IMetadataColumn>();
 
         boolean targetTableIsFiltersTable = analyzer.targetTableIsFiltersTable();
@@ -360,9 +360,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         // MapperDropCommand dropCommand = new MapperDropCommand();
 
         // MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
-        IDataMapTableEntry lastEntryTarget = null;
+        ITableEntry lastEntryTarget = null;
         for (TransferableEntry transferableEntry : transferableEntryList) {
-            IDataMapTableEntry tableEntrySource = transferableEntry.getTableEntrySource();
+            ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();
             IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
             Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
 
@@ -460,7 +460,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         int[] selection = ArrayUtils.toPrimitive((Integer[]) columnIndicesToSelect.toArray(new Integer[0]));
         tableViewerCreatorTarget.getSelectionHelper().setSelection(selection);
         ISelection iselection = tableViewerCreatorTarget.getTableViewer().getSelection();
-        List<IDataMapTableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
+        List<ITableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
         tableViewerCreatorTarget.getTable().deselectAll();
 
         uiManager.unselectAllOutputMetaDataEntries();
@@ -492,7 +492,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void updateExpressionsOfInsertedEntries(ILanguage currentLanguage,
             MetadataTableEditorView metadataEditorView, int currentIndex,
-            ArrayList<IDataMapTableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
+            ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
     // , MetadataEditorEvent metadataEditorEvent
     ) {
@@ -510,8 +510,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
             List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
             for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
-                IDataMapTableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
-                IDataMapTableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
+                ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
+                ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
                 if (zoneTarget == Zone.INPUTS) {
                     ((InputColumnTableEntry) dataMapTableEntry).getMetadataColumn().setKey(true);
                 }
@@ -534,21 +534,21 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         tableViewerCreatorTarget.getTableViewer().refresh();
 
-        List<IDataMapTableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
-        for (IDataMapTableEntry tableEntry : refreshedTableEntriesList) {
+        List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
+        for (ITableEntry tableEntry : refreshedTableEntriesList) {
             uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
         }
 
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private IDataMapTableEntry getNextEntryTarget(IDataMapTableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
+    private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
         // mapperManager.get
         // currentEntryTarget.getParent()
         if (currentEntryTarget == null) {
             throw new IllegalArgumentException("currentEntryTarget should'nt be null"); //$NON-NLS-1$
         }
-        List<IDataMapTableEntry> tableEntries = tableViewerCreatorTarget.getInputList();
+        List<ITableEntry> tableEntries = tableViewerCreatorTarget.getInputList();
         int indexCurrentEntryTarget = tableEntries.indexOf(currentEntryTarget);
         if (indexCurrentEntryTarget + 1 >= tableEntries.size()) {
             return null;
@@ -557,10 +557,10 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         }
     }
 
-    private void insertNewInOutEntryFromInputEntry(ArrayList<IDataMapTableEntry> sources,
+    private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources,
             ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
             // MetadataEditorEvent metadataEditorEvent,
-            IDataMapTableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
+            ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
         metadataColumn.setLabel(columnName);
         metadataColumnsBeingAdded.add(metadataColumn);
@@ -568,10 +568,10 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         sources.add(tableEntrySource);
     }
 
-    private void insertOutpuEntryCopyToOtherOutput(ArrayList<IDataMapTableEntry> sources,
+    private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources,
             ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
             // MetadataEditorEvent metadataEditorEvent,
-            IDataMapTableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
+            ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
         metadataColumn.setLabel(columnName);
         metadataColumnsBeingAdded.add(metadataColumn);
@@ -579,8 +579,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         sources.add(tableEntrySource);
     }
 
-    private void insertNewOutputEntryFromVarEntry(ArrayList<IDataMapTableEntry> sources,
-            ArrayList<IMetadataColumn> metadataColumnsBeingAdded, IDataMapTableEntry tableEntrySource, String columnName) {
+    private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources,
+            ArrayList<IMetadataColumn> metadataColumnsBeingAdded, ITableEntry tableEntrySource, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel(columnName);
         metadataColumn.setTalendType(((VarTableEntry) tableEntrySource).getType());
@@ -590,8 +590,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget, int currentIndex,
-            IDataMapTableEntry tableEntrySource, String columnName) {
-        IDataMapTableEntry dataMapTableEntry;
+            ITableEntry tableEntrySource, String columnName) {
+        ITableEntry dataMapTableEntry;
 
         String type = null;
         if (tableEntrySource.getParent() instanceof InputTable) {
@@ -606,8 +606,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         return currentIndex;
     }
 
-    private void modifyExistingExpression(ILanguage currentLanguage, IDataMapTableEntry entryTarget,
-            IDataMapTableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
+    private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget,
+            ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
         String expression = null;
         if (zoneSourceEntry == Zone.OUTPUTS) {
             expression = tableEntrySource.getExpression();
@@ -689,10 +689,10 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param cursorPosition
      * @return
      */
-    private IDataMapTableEntry getEntryFromPosition(Point cursorPosition) {
+    private ITableEntry getEntryFromPosition(Point cursorPosition) {
         TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
         if (tableItemBehindCursor != null) {
-            return (IDataMapTableEntry) tableItemBehindCursor.getData();
+            return (ITableEntry) tableItemBehindCursor.getData();
         } else {
             return null;
         }

@@ -46,8 +46,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 
@@ -61,7 +61,7 @@ public class StyledTextHandler {
 
     private StyledText styledText;
 
-    private IDataMapTableEntry currentEntry;
+    private ITableEntry currentEntry;
 
     private MapperManager mapperManager;
 
@@ -202,11 +202,11 @@ public class StyledTextHandler {
         return this.styledText;
     }
 
-    public IDataMapTableEntry getCurrentEntry() {
+    public ITableEntry getCurrentEntry() {
         return this.currentEntry;
     }
 
-    public void setCurrentEntry(IDataMapTableEntry currentEntry) {
+    public void setCurrentEntry(ITableEntry currentEntry) {
         this.currentEntry = currentEntry;
     }
 

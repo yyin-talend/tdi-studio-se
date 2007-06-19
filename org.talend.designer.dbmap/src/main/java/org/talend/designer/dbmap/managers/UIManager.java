@@ -30,7 +30,6 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -64,26 +63,29 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.image.ImageCapture;
 import org.talend.commons.utils.image.ImageUtils;
-import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.managers.AbstractMapperManager;
+import org.talend.designer.abstractmap.managers.AbstractUIManager;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
+import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.i18n.Messages;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.ui.MapperUI;
@@ -92,10 +94,7 @@ import org.talend.designer.dbmap.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.dbmap.ui.dnd.DropTargetOperationListener;
 import org.talend.designer.dbmap.ui.tabs.TabFolderEditors;
 import org.talend.designer.dbmap.ui.visualmap.TableEntryProperties;
-import org.talend.designer.dbmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.dbmap.ui.visualmap.link.Link;
-import org.talend.designer.dbmap.ui.visualmap.link.LinkState;
-import org.talend.designer.dbmap.ui.visualmap.link.PointLinkDescriptor;
 import org.talend.designer.dbmap.ui.visualmap.link.StyleLinkFactory;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.table.EntryState;
@@ -117,7 +116,7 @@ import org.talend.designer.dbmap.utils.ParseExpressionResult;
  * $Id: UIManager.java 2077 2007-02-15 11:16:46Z amaumont $
  * 
  */
-public class UIManager {
+public class UIManager extends AbstractUIManager {
 
     private MapperManager mapperManager;
 
@@ -168,6 +167,7 @@ public class UIManager {
      * @param manager
      */
     public UIManager(MapperManager mapperManager, TableManager tableManager) {
+        super();
         this.mapperManager = mapperManager;
         this.tableManager = tableManager;
         this.drawableLinkFactory = new StyleLinkFactory();
@@ -189,7 +189,7 @@ public class UIManager {
         MetadataTableEditorView otherMetadataTableEditorView = null;
         final Zone currentZone = dataMapTableView.getZone();
 
-        List<? extends AbstractDataMapTable> tables = null;
+        List<? extends IDataMapTable> tables = null;
 
         DataMapTableView previousSelectedTableView = null;
         DataMapTableView newSelectedTableView = null;
@@ -210,151 +210,137 @@ public class UIManager {
             setCurrentSelectedOutputTableView((OutputDataMapTableView) dataMapTableView);
         }
 
-        if (currentZone != Zone.VARS) {
+        updateToolbarButtonsStates(currentZone);
 
-            updateToolbarButtonsStates(currentZone);
+        final AbstractInOutTable abstractDataMapTable = (AbstractInOutTable) mapperManager
+                .retrieveIDataMapTable(dataMapTableView);
+        MetadataTableEditor currentMetadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
+        final TableViewerCreator dataMapTVCreator = dataMapTableView.getTableViewerCreatorForColumns();
+        final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
+        if (currentMetadataTableEditor == null || currentMetadataTableEditor != null
+                && newSelectedTableView != previousSelectedTableView) {
 
-            final AbstractInOutTable abstractDataMapTable = (AbstractInOutTable) mapperManager
-                    .retrieveAbstractDataMapTable(dataMapTableView);
-            MetadataTableEditor currentMetadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
-            final TableViewerCreator dataMapTVCreator = dataMapTableView.getTableViewerCreatorForColumns();
-            final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
-            if (currentMetadataTableEditor == null || currentMetadataTableEditor != null
-                    && newSelectedTableView != previousSelectedTableView) {
+            if (useNewCommand) {
+                DataMapTableViewSelectedCommand command = new DataMapTableViewSelectedCommand(this,
+                        previousSelectedTableView, dataMapTableView);
+                mapperManager.executeCommand(command);
+            }
 
-                if (useNewCommand) {
-                    DataMapTableViewSelectedCommand command = new DataMapTableViewSelectedCommand(this,
-                            previousSelectedTableView, dataMapTableView);
-                    mapperManager.executeCommand(command);
-                }
+            currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
+                    abstractDataMapTable.getTitle());
 
-                currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
-                        abstractDataMapTable.getTitle());
+            currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
 
-                currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
+            final MetadataTableEditorView metadataTableEditorViewFinal = metadataTableEditorView;
+            final TableViewerCreator metadataTVCreator = metadataTableEditorViewFinal.getTableViewerCreator();
+            final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
 
-                final MetadataTableEditorView metadataTableEditorViewFinal = metadataTableEditorView;
-                final TableViewerCreator metadataTVCreator = metadataTableEditorViewFinal.getTableViewerCreator();
-                final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
+            modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator,
+                    metadataTableEditor, dataMapTableView, previousSelectedTableView);
 
-                modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator,
-                        metadataTableEditor, dataMapTableView, previousSelectedTableView);
+            // init actions listeners for list which contains metadata
+            metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
 
-                // init actions listeners for list which contains metadata
-                metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
+                /**
+                 * DOC acer Comment method "handleEvent".
+                 * 
+                 * @param event
+                 */
+                public void handleEvent(ListenableListEvent event) {
 
-                    /**
-                     * DOC acer Comment method "handleEvent".
-                     * 
-                     * @param event
-                     */
-                    public void handleEvent(ListenableListEvent event) {
+                    DataMapTableView view = mapperManager.retrieveIDataMapTableView(abstractDataMapTable);
+                    if (event.type == TYPE.ADDED) {
+                        // metadataEditorTableViewer.refresh();
+                        List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.addedObjects;
 
-                        DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(abstractDataMapTable);
-                        if (event.type == TYPE.ADDED) {
-                            // metadataEditorTableViewer.refresh();
-                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.addedObjects;
-
-                            lastCreatedInOutColumnEntries.clear();
-                            if (event.index != null) {
-                                int index = event.index;
-                                for (IMetadataColumn metadataColumn : metadataColumns) {
-                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
-                                            metadataColumn, index++));
-                                }
-                            } else if (event.indicesTarget != null) {
-                                List<Integer> indicesTarget = event.indicesTarget;
-                                int lstSize = indicesTarget.size();
-                                for (int i = 0; i < lstSize; i++) {
-                                    Integer indice = indicesTarget.get(i);
-                                    IMetadataColumn metadataColumn = metadataColumns.get(i);
-                                    lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
-                                            metadataColumn, indice));
-                                }
-
-                            } else {
-                                throw new IllegalStateException(Messages.getString("UIManager.1")); //$NON-NLS-1$
-                            }
-                            refreshBackground(false, false);
-                            if (event.index != null) {
-                                dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
-                                dataMapTableViewer.refresh();
-                                dataMapTVCreator.getSelectionHelper().setSelection(event.index);
-                            } else if (event.indicesTarget != null) {
-                                dataMapTableViewer.refresh();
-                                dataMapTableView.changeSize(view.getPreferredSize(false, true, false), true, true);
-                                int[] selection = ArrayUtils.toPrimitive((Integer[]) event.indicesTarget
-                                        .toArray(new Integer[0]));
-                                dataMapTVCreator.getSelectionHelper().setSelection(selection);
-                            }
-                            mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
-                        }
-
-                        if (event.type == TYPE.REMOVED) {
-                            // metadataEditorTableViewer.refresh();
-                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.removedObjects;
+                        lastCreatedInOutColumnEntries.clear();
+                        if (event.index != null) {
+                            int index = event.index;
                             for (IMetadataColumn metadataColumn : metadataColumns) {
-                                ITableEntry metadataTableEntry = mapperManager
-                                        .retrieveTableEntry(new TableEntryLocation(abstractDataMapTable.getName(),
-                                                metadataColumn.getLabel()));
-                                mapperManager.removeTableEntry(metadataTableEntry);
+                                lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
+                                        metadataColumn, index++));
                             }
+                        } else if (event.indicesTarget != null) {
+                            List<Integer> indicesTarget = event.indicesTarget;
+                            int lstSize = indicesTarget.size();
+                            for (int i = 0; i < lstSize; i++) {
+                                Integer indice = indicesTarget.get(i);
+                                IMetadataColumn metadataColumn = metadataColumns.get(i);
+                                lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
+                                        metadataColumn, indice));
+                            }
+
+                        } else {
+                            throw new IllegalStateException(Messages.getString("UIManager.1")); //$NON-NLS-1$
+                        }
+                        refreshBackground(false, false);
+                        if (event.index != null) {
+                            dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
                             dataMapTableViewer.refresh();
-                            dataMapTableView.resizeAtExpandedSize();
-                            resizeTablesZoneViewAtComputedSize(dataMapTableView.getZone());
-                            moveScrollBarZoneAtSelectedTable(dataMapTableView.getZone());
-                            refreshBackground(true, false);
-                            mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+                            dataMapTVCreator.getSelectionHelper().setSelection(event.index);
+                        } else if (event.indicesTarget != null) {
+                            dataMapTableViewer.refresh();
+                            dataMapTableView.changeSize(view.getPreferredSize(false, true, false), true, true);
+                            int[] selection = ArrayUtils.toPrimitive((Integer[]) event.indicesTarget
+                                    .toArray(new Integer[0]));
+                            dataMapTVCreator.getSelectionHelper().setSelection(selection);
                         }
-
-                        if (event.type == TYPE.SWAPED) {
-                            List<Integer> listIndexTarget = event.indicesTarget;
-                            abstractDataMapTable.swapColumnElements(event.indicesOrigin, listIndexTarget);
-                            // dataMapTableViewer.refresh();
-                            refreshBackground(true, false);
-                        }
-
+                        mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                     }
 
-                });
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(
-                        false);
-                metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper()
-                        .setActiveFireSelectionChanged(true);
-                metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+                    if (event.type == TYPE.REMOVED) {
+                        // metadataEditorTableViewer.refresh();
+                        List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.removedObjects;
+                        for (IMetadataColumn metadataColumn : metadataColumns) {
+                            ITableEntry metadataTableEntry = mapperManager.retrieveTableEntry(new TableEntryLocation(
+                                    abstractDataMapTable.getName(), metadataColumn.getLabel()));
+                            mapperManager.removeTableEntry(metadataTableEntry);
+                        }
+                        dataMapTableViewer.refresh();
+                        dataMapTableView.resizeAtExpandedSize();
+                        resizeTablesZoneViewAtComputedSize(dataMapTableView.getZone());
+                        moveScrollBarZoneAtSelectedTable(dataMapTableView.getZone());
+                        refreshBackground(true, false);
+                        mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+                    }
 
-                dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
-                        dataMapTableViewer.getTable().getSelectionIndices());
-                dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
+                    if (event.type == TYPE.SWAPED) {
+                        List<Integer> listIndexTarget = event.indicesTarget;
+                        abstractDataMapTable.swapColumnElements(event.indicesOrigin, listIndexTarget);
+                        // dataMapTableViewer.refresh();
+                        refreshBackground(true, false);
+                    }
 
-                // disable highlight for other DataMapTableView and highlight selected DataMapTableView
-                for (AbstractDataMapTable table : tables) {
-                    DataMapTableView otherDataMapTableView = mapperManager.retrieveAbstractDataMapTableView(table);
-                    otherDataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(
-                            SWT.COLOR_WIDGET_LIGHT_SHADOW));
                 }
-                dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+
+            });
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
+            metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+            metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+
+            dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
+                    dataMapTableViewer.getTable().getSelectionIndices());
+            dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
+
+            // disable highlight for other DataMapTableView and highlight selected DataMapTableView
+            for (IDataMapTable table : tables) {
+                DataMapTableView otherDataMapTableView = mapperManager.retrieveIDataMapTableView(table);
+                otherDataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(
+                        SWT.COLOR_WIDGET_LIGHT_SHADOW));
             }
-
-            if (selectAllEntries) {
-                dataMapTVCreator.getTable().selectAll();
-                selectAllLinks(dataMapTableView);
-                if (currentZone != Zone.VARS) {
-                    metadataTableEditorView.getTableViewerCreator().getTable().selectAll();
-                    metadataTableEditorView.getToolBar().updateEnabledStateOfButtons();
-                }
-                if (currentZone == Zone.OUTPUTS) {
-                    dataMapTableView.getTableViewerCreatorForFilters().getTable().selectAll();
-                }
-            }
-
+            dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
         }
 
-        if (selectAllEntries && currentZone == Zone.VARS) {
+        if (selectAllEntries) {
+            dataMapTVCreator.getTable().selectAll();
             selectAllLinks(dataMapTableView);
-            getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable().selectAll();
+            metadataTableEditorView.getTableViewerCreator().getTable().selectAll();
+            metadataTableEditorView.getToolBar().updateEnabledStateOfButtons();
+            if (currentZone == Zone.OUTPUTS) {
+                dataMapTableView.getTableViewerCreatorForFilters().getTable().selectAll();
+            }
         }
 
         if (otherMetadataTableEditorView != null) {
@@ -551,9 +537,6 @@ public class UIManager {
         case INPUTS:
             return -mapperUI.getScollbarSelectionZoneInputs();
 
-        case VARS:
-            return -mapperUI.getScollbarSelectionZoneVars();
-
         case OUTPUTS:
             return -mapperUI.getScollbarSelectionZoneOutputs();
 
@@ -566,8 +549,6 @@ public class UIManager {
         switch (zone) {
         case INPUTS:
             return mapperUI.getScollbarZoneInputs();
-        case VARS:
-            return mapperUI.getScollbarZoneVars();
         case OUTPUTS:
             return mapperUI.getScollbarZoneOutputs();
 
@@ -749,8 +730,8 @@ public class UIManager {
         // ////////////////////////////////////////////////////////////////////////
         // Unselect all links and tableEntries if Ctrl or Shift keys are not pressed or if zone different of last
         // selection
-        boolean zoneHasChanged = (previousSelectedZone == Zone.INPUTS || previousSelectedZone == Zone.VARS)
-                && currentZone == Zone.OUTPUTS || (currentZone == Zone.INPUTS || currentZone == Zone.VARS)
+        boolean zoneHasChanged = previousSelectedZone == Zone.INPUTS
+                && currentZone == Zone.OUTPUTS || currentZone == Zone.INPUTS
                 && previousSelectedZone == Zone.OUTPUTS;
         boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected
                 && currentZone == Zone.OUTPUTS;
@@ -770,7 +751,7 @@ public class UIManager {
                 }
             }
 
-            if (currentZone == Zone.INPUTS || currentZone == Zone.VARS) {
+            if (currentZone == Zone.INPUTS) {
                 unselectAllOutputMetaDataEntries();
             } else if (currentZone == Zone.OUTPUTS) {
                 unselectAllInputMetaDataEntries();
@@ -1106,7 +1087,7 @@ public class UIManager {
         Collection<DataMapTableView> tableViews = mapperManager.getTablesView();
         boolean atLeastOneLinkHasBeenRemoved = false;
         for (DataMapTableView view : tableViews) {
-            AbstractDataMapTable dataMapTable = view.getDataMapTable();
+            IDataMapTable dataMapTable = view.getDataMapTable();
             List<IColumnEntry> metadataTableEntries = dataMapTable.getColumnEntries();
             for (IColumnEntry entry : metadataTableEntries) {
                 if (parseExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
@@ -1159,8 +1140,8 @@ public class UIManager {
 
                 if (physicalInputTable == null) {
 
-                    List<IOConnection> incomingConnections = mapperManager.getComponent()
-                            .getMapperMain().getIoInputConnections();
+                    List<IOConnection> incomingConnections = mapperManager.getComponent().getMapperMain()
+                            .getIoInputConnections();
                     IOConnection connectionFound = null;
                     for (IOConnection connection : incomingConnections) {
                         if (connection.getName().equals(physicalTableName)) {
@@ -1168,30 +1149,26 @@ public class UIManager {
                         }
                     }
                     IMetadataColumn metadataColumn = connectionFound.getTable().getColumn(previousColumnName);
-                    if(metadataColumn != null) {
+                    if (metadataColumn != null) {
                         metadataColumn.setLabel(newColumnName);
                     }
                 }
 
                 for (InputTable table : inputTables) {
-                    if (
-                            (
-                            // Physical table parent
-                            alias != null && table.getAlias() == null && table.getName().equals(physicalTableName) 
-                        ||  
-                            // Alias table
-                            alias == null && table.getAlias() != null && table.getTableName().equals(physicalTableName)
-                            )
-                        ) {
-                        
-                        TableEntryLocation location = new TableEntryLocation(table.getName(),
-                                previousColumnName);
+                    if ((
+                    // Physical table parent
+                    alias != null && table.getAlias() == null && table.getName().equals(physicalTableName) ||
+                    // Alias table
+                    alias == null && table.getAlias() != null && table.getTableName().equals(physicalTableName))) {
+
+                        TableEntryLocation location = new TableEntryLocation(table.getName(), previousColumnName);
                         DataMapTableView aliasTableView = mapperManager.retrieveDataMapTableView(location);
                         ITableEntry aliasTableEntry = mapperManager.retrieveTableEntry(location);
-                        if(aliasTableEntry != null) {
-                            processColumnNameChanged(previousColumnName, newColumnName, aliasTableView, aliasTableEntry, true);
+                        if (aliasTableEntry != null) {
+                            processColumnNameChanged(previousColumnName, newColumnName, aliasTableView,
+                                    aliasTableEntry, true);
                         }
-                        
+
                     }
                 }
 
@@ -1221,8 +1198,8 @@ public class UIManager {
         // }
     }
 
-    public OutputDataMapTableView createNewOutputTableView(Control previousControl,
-            AbstractDataMapTable abstractDataMapTable, Composite parent) {
+    public OutputDataMapTableView createNewOutputTableView(Control previousControl, IDataMapTable abstractDataMapTable,
+            Composite parent) {
         OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable,
                 mapperManager);
         FormData formData = new FormData();
@@ -1364,8 +1341,6 @@ public class UIManager {
             return getTablesZoneViewOutputs();
         } else if (zone == Zone.INPUTS) {
             return getTablesZoneViewInputs();
-        } else if (zone == Zone.VARS) {
-            return getTablesZoneViewVars();
         } else {
             throw new IllegalArgumentException("Case not found"); //$NON-NLS-1$
         }
@@ -1647,8 +1622,6 @@ public class UIManager {
             tablesZoneView = getTablesZoneViewInputs();
         } else if (zone == Zone.OUTPUTS) {
             tablesZoneView = getTablesZoneViewOutputs();
-        } else if (zone == Zone.VARS) {
-            tablesZoneView = getTablesZoneViewVars();
         }
         tablesZoneView.setSize(tablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
     }
@@ -1799,7 +1772,7 @@ public class UIManager {
         if (selectedOutputTableView == null) {
 
         } else {
-            AbstractDataMapTable dataMapTable = selectedOutputTableView.getDataMapTable();
+            IDataMapTable dataMapTable = selectedOutputTableView.getDataMapTable();
             String tableName = dataMapTable.getName();
             String sql = mapperManager.getComponent().getGenerationManager().buildSqlSelect(
                     mapperManager.getComponent(), tableName);
@@ -1830,6 +1803,16 @@ public class UIManager {
 
     public Shell getShell() {
         return mapperUI.getShell();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.abstractmap.managers.AbstractUIManager#getAbstractMapperManager()
+     */
+    @Override
+    public AbstractMapperManager getAbstractMapperManager() {
+        return mapperManager;
     }
 
 }

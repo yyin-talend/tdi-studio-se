@@ -24,11 +24,11 @@ package org.talend.designer.dbmap.ui.automap;
 import java.util.HashMap;
 import java.util.List;
 
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -98,7 +98,7 @@ public class AutoMapper {
                 }
 
             }
-            DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(outputTable);
+            DataMapTableView view = mapperManager.retrieveIDataMapTableView(outputTable);
             view.getTableViewerCreatorForColumns().getTableViewer().refresh();
 
         }

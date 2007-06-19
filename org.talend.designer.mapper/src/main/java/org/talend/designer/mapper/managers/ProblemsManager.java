@@ -40,6 +40,8 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -48,8 +50,6 @@ import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROB
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -98,7 +98,7 @@ public class ProblemsManager {
 
             public void configure(INode processNode) {
 
-                IExternalNode mapperNode = mapperManager.getComponent();
+                IExternalNode mapperNode = mapperManager.getAbstractMapComponent();
                 if (processNode.getUniqueName().equals(mapperNode.getUniqueName())) {
 
                     IExternalNode processExternalNode = (IExternalNode) processNode;
@@ -218,7 +218,7 @@ public class ProblemsManager {
         tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
         tablesView.addAll(mapperManager.getUiManager().getOutputsTablesView());
         if (forceRefreshData) {
-            mapperManager.getComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
             checkProblems();
         }
         for (DataMapTableView view : tablesView) {
@@ -239,7 +239,7 @@ public class ProblemsManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public boolean checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
-            mapperManager.getComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
             checkProblems();
         }
 
@@ -261,7 +261,7 @@ public class ProblemsManager {
             dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(true);
         }
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
-            List<IDataMapTableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
+            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
             checkProblemsForAllEntries(constraintEntriesList);
             if (refreshTableEntries) {
                 dataMapTableView.getTableViewerCreatorForFilters().getTableViewer().refresh(true);
@@ -281,7 +281,7 @@ public class ProblemsManager {
      * @param entriesList
      * @return true if has errors
      */
-    private boolean checkProblemsForAllEntries(List<? extends IDataMapTableEntry> entriesList) {
+    private boolean checkProblemsForAllEntries(List<? extends ITableEntry> entriesList) {
         boolean stateErrorsHasChanged = false;
         refreshTableEntries = false;
         boolean hasProblemsWasNull = false;
@@ -290,7 +290,7 @@ public class ProblemsManager {
             hasProblemsWasNull = true;
         }
 
-        for (IDataMapTableEntry entry : entriesList) {
+        for (ITableEntry entry : entriesList) {
             boolean haveProblemsBefore = entry.getProblems() != null;
             mapperManager.getProblemsManager().checkProblemsForTableEntry(entry, false);
             boolean haveProblemsAfter = entry.getProblems() != null;
@@ -309,7 +309,7 @@ public class ProblemsManager {
         return returnedValue;
     }
 
-    public void checkProblemsForTableEntryWithDelayLimiter(IDataMapTableEntry tableEntry) {
+    public void checkProblemsForTableEntryWithDelayLimiter(ITableEntry tableEntry) {
 
         if (this.checkProblemForEntryLimiter == null) {
             this.checkProblemForEntryLimiter = new CheckProblemForEntryLimiter(2000, true);
@@ -331,10 +331,10 @@ public class ProblemsManager {
      * @param forceRefreshData
      * @return true if at least one problem has been detected
      */
-    public boolean checkProblemsForTableEntry(IDataMapTableEntry tableEntry, boolean forceRefreshData) {
+    public boolean checkProblemsForTableEntry(ITableEntry tableEntry, boolean forceRefreshData) {
 
         if (forceRefreshData) {
-            mapperManager.getComponent().refreshMapperConnectorData();
+            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
             checkProblems();
         }
 
@@ -393,9 +393,9 @@ public class ProblemsManager {
      */
     class CheckProblemForEntryLimiter extends ExecutionLimiter {
 
-        private IDataMapTableEntry previousTableEntry;
+        private ITableEntry previousTableEntry;
 
-        private IDataMapTableEntry currentTableEntry;
+        private ITableEntry currentTableEntry;
 
         /**
          * DOC amaumont CheckProblemForEntryLimiter constructor comment.
@@ -435,15 +435,15 @@ public class ProblemsManager {
             });
         }
 
-        public IDataMapTableEntry getCurrentTableEntry() {
+        public ITableEntry getCurrentTableEntry() {
             return this.currentTableEntry;
         }
 
-        public void setCurrentTableEntry(IDataMapTableEntry currentTableEntry) {
+        public void setCurrentTableEntry(ITableEntry currentTableEntry) {
             this.currentTableEntry = currentTableEntry;
         }
 
-        public IDataMapTableEntry getPreviousTableEntry() {
+        public ITableEntry getPreviousTableEntry() {
             return this.previousTableEntry;
         }
 

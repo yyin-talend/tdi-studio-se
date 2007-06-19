@@ -24,14 +24,10 @@ package org.talend.designer.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -41,8 +37,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
-import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
-import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -50,7 +44,6 @@ import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.ui.MapperUI;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -103,10 +96,8 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        
         UIManager uiManager = mapperManager.getUiManager();
         return uiManager.createUI(display, this.mapperModel);
-        
     }
 
     /**

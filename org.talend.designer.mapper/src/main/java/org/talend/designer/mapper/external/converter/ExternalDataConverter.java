@@ -33,6 +33,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
@@ -46,7 +48,6 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 
@@ -94,6 +95,7 @@ public class ExternalDataConverter {
 
         ArrayList<InputTable> inputDataMapTables = prepareInputTables(inputs, externalData);
 
+        System.out.println();
         ArrayList<OutputTable> outputDataMapTables = prepareOutputTables(outputs, outputMetadataTables, externalData);
 
         List<VarsTable> varsTablesList = prepareVarsTables(externalData);
@@ -227,12 +229,12 @@ public class ExternalDataConverter {
     }
 
     private void loadInExternalData(Collection<? extends AbstractDataMapTable> tables) {
-        for (AbstractDataMapTable table : tables) {
+        for (IDataMapTable table : tables) {
             ExternalMapperTable externalMapperTable = new ExternalMapperTable();
             fillExternalTable(table, externalMapperTable);
             ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
             boolean isVarTable = table instanceof VarsTable;
-            for (IDataMapTableEntry dataMapTableEntry : table.getColumnEntries()) {
+            for (ITableEntry dataMapTableEntry : table.getColumnEntries()) {
                 ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
                 externalMapperTableEntry.setExpression(dataMapTableEntry.getExpression());
                 externalMapperTableEntry.setName(dataMapTableEntry.getName());
@@ -255,7 +257,7 @@ public class ExternalDataConverter {
      * @param table
      * @param externalMapperTable
      */
-    private void fillExternalTable(AbstractDataMapTable table, ExternalMapperTable externalMapperTable) {
+    private void fillExternalTable(IDataMapTable table, ExternalMapperTable externalMapperTable) {
         if (table instanceof InputTable) {
             fillExternalTable((InputTable) table, externalMapperTable);
         } else if (table instanceof VarsTable) {
@@ -295,7 +297,7 @@ public class ExternalDataConverter {
      * @param table
      * @param externalMapperTable
      */
-    private void fillExternalTableWithCommonsData(AbstractDataMapTable table, ExternalMapperTable externalMapperTable) {
+    private void fillExternalTableWithCommonsData(IDataMapTable table, ExternalMapperTable externalMapperTable) {
         externalMapperTable.setName(table.getName());
         externalMapperTable.setMinimized(table.isMinimized());
         externalMapperTable.setSizeState(table.getSizeState().toString());

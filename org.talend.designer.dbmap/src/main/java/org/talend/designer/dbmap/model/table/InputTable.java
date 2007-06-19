@@ -197,7 +197,7 @@ public class InputTable extends AbstractInOutTable {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getName()
+     * @see org.talend.designer.dbmap.model.table.IDataMapTable#getName()
      */
     @Override
     public String getName() {

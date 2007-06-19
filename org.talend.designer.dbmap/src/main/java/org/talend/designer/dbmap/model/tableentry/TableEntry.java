@@ -24,7 +24,8 @@ package org.talend.designer.dbmap.model.tableentry;
 import java.util.List;
 
 import org.talend.core.model.process.Problem;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -36,19 +37,19 @@ public abstract class TableEntry implements ITableEntry {
 
     private String expression;
 
-    private AbstractDataMapTable parent;
+    private IDataMapTable parent;
 
     private String name;
 
     private List<Problem> problems;
 
-    public TableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
+    public TableEntry(IDataMapTable abstractDataMapTable, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.expression = expression;
     }
 
-    public TableEntry(AbstractDataMapTable abstractDataMapTable) {
+    public TableEntry(IDataMapTable abstractDataMapTable) {
         this(abstractDataMapTable, null);
     }
 
@@ -58,7 +59,7 @@ public abstract class TableEntry implements ITableEntry {
      * @param abstractDataMapTable
      * @param name, can't be null
      */
-    public TableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public TableEntry(IDataMapTable abstractDataMapTable, String name, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.name = name;
@@ -76,11 +77,11 @@ public abstract class TableEntry implements ITableEntry {
         this.expression = expression;
     }
 
-    public AbstractDataMapTable getParent() {
+    public IDataMapTable getParent() {
         return this.parent;
     }
 
-    public void setParent(AbstractDataMapTable parent) {
+    public void setParent(IDataMapTable parent) {
         this.parent = parent;
     }
 
@@ -108,4 +109,22 @@ public abstract class TableEntry implements ITableEntry {
         this.problems = problems;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.tableentry.ITableEntry#isColumnEntry()
+     */
+    public boolean isColumnEntry() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.model.tableentry.ITableEntry#isTableEntry()
+     */
+    public boolean isTableEntry() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    
+    
 }

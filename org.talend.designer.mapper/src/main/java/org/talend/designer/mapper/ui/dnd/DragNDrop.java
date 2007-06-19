@@ -34,10 +34,10 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -139,7 +139,7 @@ public class DragNDrop {
                         TableItem[] tableItems = table.getSelection();
                         for (int i = 0; i < tableItems.length; i++) {
                             TableItem item = tableItems[i];
-                            IDataMapTableEntry dataMapTableEntry = (IDataMapTableEntry) item.getData();
+                            ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
                             if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
                                 draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
                                         .getMetadataColumn(), dataMapTableView.getZone());

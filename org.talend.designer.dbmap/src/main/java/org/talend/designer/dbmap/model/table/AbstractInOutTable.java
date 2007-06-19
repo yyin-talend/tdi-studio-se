@@ -64,4 +64,6 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         this.metadataTable = metadataTable;
     }
 
+    
+    
 }

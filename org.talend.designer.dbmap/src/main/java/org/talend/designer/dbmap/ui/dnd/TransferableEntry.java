@@ -22,7 +22,7 @@
 package org.talend.designer.dbmap.ui.dnd;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 
 /**

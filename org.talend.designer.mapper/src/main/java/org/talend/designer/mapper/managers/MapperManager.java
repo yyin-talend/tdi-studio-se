@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -44,13 +43,19 @@ import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.managers.AbstractMapperManager;
+import org.talend.designer.abstractmap.managers.ILinkManager;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
@@ -58,8 +63,6 @@ import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -67,8 +70,6 @@ import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.automap.AutoMapper;
 import org.talend.designer.mapper.ui.commands.AddVarEntryCommand;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
-import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
-import org.talend.designer.mapper.ui.visualmap.link.LinkState;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.EntryState;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -83,7 +84,7 @@ import org.talend.repository.model.RepositoryConstants;
  * $Id$
  * 
  */
-public class MapperManager {
+public class MapperManager extends AbstractMapperManager {
 
     public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA"; //$NON-NLS-1$
 
@@ -91,26 +92,23 @@ public class MapperManager {
 
     TableManager tableManager;
 
-    private LinkManager linkManager;
+    private ILinkManager linkManager;
 
     private UIManager uiManager;
-
-    private MapperComponent mapperComponent;
 
     private CommandStack commandStack;
 
     private ProblemsManager problemsManager;
 
     public MapperManager(MapperComponent mapperComponent) {
-        super();
+        super(mapperComponent);
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager();
         linkManager = new LinkManager();
         problemsManager = new ProblemsManager(this);
-        this.mapperComponent = mapperComponent;
     }
 
-    public void addTablePair(DataMapTableView view, AbstractDataMapTable data) {
+    public void addTablePair(DataMapTableView view, IDataMapTable data) {
         tableManager.addTable(view, data);
         tableEntriesManager.addAll(data.getColumnEntries());
         if (data instanceof OutputTable) {
@@ -125,7 +123,7 @@ public class MapperManager {
      * @param view
      */
     public void removeTablePair(DataMapTableView view) {
-        AbstractDataMapTable dataTable = tableManager.getData(view);
+        IDataMapTable dataTable = tableManager.getData(view);
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         tableEntriesManager.removeAll(dataMapTableEntries);
         if (dataTable instanceof OutputTable) {
@@ -141,7 +139,7 @@ public class MapperManager {
      * 
      * @param view
      */
-    public void removeTablePair(AbstractDataMapTable dataTable) {
+    public void removeTablePair(IDataMapTable dataTable) {
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         tableEntriesManager.removeAll(dataMapTableEntries);
         if (dataTable instanceof OutputTable) {
@@ -154,26 +152,26 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "getDataMapTable".
      */
-    public AbstractDataMapTable retrieveAbstractDataMapTable(DataMapTableView dataMapTableView) {
+    public IDataMapTable retrieveAbstractDataMapTable(DataMapTableView dataMapTableView) {
         return tableManager.getData(dataMapTableView);
     }
 
     /**
      * DOC amaumont Comment method "getDataMapTableView".
      */
-    public DataMapTableView retrieveAbstractDataMapTableView(AbstractDataMapTable abstractDataMapTable) {
+    public DataMapTableView retrieveAbstractDataMapTableView(IDataMapTable abstractDataMapTable) {
         return tableManager.getView(abstractDataMapTable);
     }
 
-    public IDataMapTableEntry retrieveTableEntry(TableEntryLocation location) {
+    public ITableEntry retrieveTableEntry(TableEntryLocation location) {
         return tableEntriesManager.retrieveTableEntry(location);
     }
 
-    public DataMapTableView retrieveDataMapTableView(IDataMapTableEntry dataMapTableEntry) {
+    public DataMapTableView retrieveDataMapTableView(ITableEntry dataMapTableEntry) {
         return tableManager.getView(dataMapTableEntry.getParent());
     }
 
-    public TableViewerCreator retrieveTableViewerCreator(IDataMapTableEntry dataMapTableEntry) {
+    public TableViewerCreator retrieveTableViewerCreator(ITableEntry dataMapTableEntry) {
         DataMapTableView view = retrieveDataMapTableView(dataMapTableEntry);
         TableViewerCreator tableViewerCreator = null;
         if (view != null) {
@@ -190,7 +188,7 @@ public class MapperManager {
      * DOC amaumont Comment method "getDataMapTable".
      */
     public DataMapTableView retrieveDataMapTableView(TableEntryLocation names) {
-        IDataMapTableEntry dataMapTableEntry = retrieveTableEntry(names);
+        ITableEntry dataMapTableEntry = retrieveTableEntry(names);
         if (dataMapTableEntry == null) {
             return null;
         }
@@ -204,8 +202,8 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "getDataMapTable".
      */
-    public AbstractDataMapTable retrieveAbstractDataMapTable(TableEntryLocation names) {
-        IDataMapTableEntry dataMapTableEntry = retrieveTableEntry(names);
+    public IDataMapTable retrieveAbstractDataMapTable(TableEntryLocation names) {
+        ITableEntry dataMapTableEntry = retrieveTableEntry(names);
         if (dataMapTableEntry == null) {
             return null;
         }
@@ -241,7 +239,7 @@ public class MapperManager {
      * 
      * @param link
      */
-    public void removeLink(IMapperLink link, IDataMapTableEntry entryCauseOfRemove) {
+    public void removeLink(IMapperLink link, ITableEntry entryCauseOfRemove) {
         changeDependentSourcesAndTargetEntriesState(entryCauseOfRemove, link, true);
         linkManager.removeLink(link);
     }
@@ -254,7 +252,7 @@ public class MapperManager {
      * @param currentLink
      * @param removedLink
      */
-    private void changeDependentSourcesAndTargetEntriesState(IDataMapTableEntry entryCauseOfChange,
+    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange,
             IMapperLink currentLink, boolean removedLink) {
 
         boolean sourceIsCauseOfChange = false;
@@ -291,7 +289,7 @@ public class MapperManager {
      * @param currentEntry
      * @param removedLink
      */
-    private void changeDependentEntriesState(IMapperLink link, IDataMapTableEntry currentEntry, boolean removedLink) {
+    private void changeDependentEntriesState(IMapperLink link, ITableEntry currentEntry, boolean removedLink) {
         Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(currentEntry);
         dependentLinks.addAll(linkManager.getLinksFromTarget(currentEntry));
         boolean hasSelectedLink = false;
@@ -313,7 +311,7 @@ public class MapperManager {
      * 
      * @param link
      */
-    public Set<IDataMapTableEntry> getSourcesForTarget(IDataMapTableEntry dataMapTableEntry) {
+    public Set<ITableEntry> getSourcesForTarget(ITableEntry dataMapTableEntry) {
         return linkManager.getSourcesForTarget(dataMapTableEntry);
     }
 
@@ -322,11 +320,11 @@ public class MapperManager {
      * 
      * @param link
      */
-    public Set<IMapperLink> getGraphicalLinksFromSource(IDataMapTableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
         return linkManager.getLinksFromSource(dataMapTableEntry);
     }
 
-    public Set<IMapperLink> getGraphicalLinksFromTarget(IDataMapTableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
         return linkManager.getLinksFromTarget(dataMapTableEntry);
     }
 
@@ -340,11 +338,11 @@ public class MapperManager {
      * @param dataMapTableEntry
      * @return
      */
-    public Table retrieveTable(IDataMapTableEntry dataMapTableEntry) {
+    public Table retrieveTable(ITableEntry dataMapTableEntry) {
         return tableEntriesManager.retrieveTable(dataMapTableEntry);
     }
 
-    public TableItem retrieveTableItem(IDataMapTableEntry dataMapTableEntry) {
+    public TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
         return tableEntriesManager.retrieveTableItem(dataMapTableEntry);
     }
 
@@ -357,7 +355,7 @@ public class MapperManager {
      * 
      * @return
      */
-    public Collection<AbstractDataMapTable> getTablesData() {
+    public Collection<IDataMapTable> getTablesData() {
         return tableManager.getTablesData();
     }
 
@@ -380,11 +378,11 @@ public class MapperManager {
      * @param newColumnName
      * @param newColumnName2
      */
-    public void changeColumnName(IDataMapTableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
+    public void changeColumnName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
         tableEntriesManager.renameEntryName(dataMapTableEntry, previousColumnName, newColumnName);
     }
 
-    public void removeTableEntry(IDataMapTableEntry dataMapTableEntry) {
+    public void removeTableEntry(ITableEntry dataMapTableEntry) {
         tableEntriesManager.remove(dataMapTableEntry);
     }
 
@@ -393,7 +391,7 @@ public class MapperManager {
      * 
      * @param dataMapTableEntry
      */
-    public void removeLinksOf(IDataMapTableEntry dataMapTableEntry) {
+    public void removeLinksOf(ITableEntry dataMapTableEntry) {
         Set<IMapperLink> links = linkManager.getLinksFromSource(dataMapTableEntry);
         links.addAll(linkManager.getLinksFromTarget(dataMapTableEntry));
         for (IMapperLink link : links) {
@@ -414,7 +412,7 @@ public class MapperManager {
      * @param dataMapTableEntry
      * @return
      */
-    public TableEntryProperties getTableEntryProperties(IDataMapTableEntry dataMapTableEntry) {
+    public TableEntryProperties getTableEntryProperties(ITableEntry dataMapTableEntry) {
         return tableEntriesManager.getTableEntryProperties(dataMapTableEntry);
     }
 
@@ -428,7 +426,7 @@ public class MapperManager {
      */
     public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn,
             Integer index) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         IColumnEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             dataMapTableEntry = new InputColumnTableEntry(abstractDataMapTable, metadataColumn);
@@ -454,7 +452,7 @@ public class MapperManager {
      * @param metadataColumn, can be null if added in VarsTable
      */
     public VarTableEntry addNewVarEntry(DataMapTableView dataMapTableView, String name, Integer index, String type) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         VarTableEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.VARS) {
             dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name, null, type);
@@ -481,7 +479,7 @@ public class MapperManager {
     }
 
     public FilterTableEntry addNewFilterEntry(DataMapTableView dataMapTableView, String name, Integer index) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         FilterTableEntry constraintEntry = new FilterTableEntry(abstractDataMapTable, name, null);
         tableEntriesManager.addTableEntry(constraintEntry, index);
         return constraintEntry;
@@ -497,7 +495,7 @@ public class MapperManager {
             return;
         }
 
-        IProcess process = mapperComponent.getProcess();
+        IProcess process = getAbstractMapComponent().getProcess();
         process.addUniqueConnectionName(tableName);
 
         MetadataTable metadataTable = new MetadataTable();
@@ -532,7 +530,7 @@ public class MapperManager {
             if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
                     .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
                     Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + "' ?")) { //$NON-NLS-1$ //$NON-NLS-2$
-                IProcess process = mapperComponent.getProcess();
+                IProcess process = getAbstractMapComponent().getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
                 uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
                 process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
@@ -601,7 +599,7 @@ public class MapperManager {
      * @param currentEntry
      * @param text
      */
-    public void changeEntryExpression(final IDataMapTableEntry currentEntry, String text) {
+    public void changeEntryExpression(final ITableEntry currentEntry, String text) {
         currentEntry.setExpression(text);
 
         getProblemsManager().checkProblemsForTableEntryWithDelayLimiter(currentEntry);
@@ -628,10 +626,6 @@ public class MapperManager {
         uiManager.parseNewExpression(text, currentEntry, false);
     }
 
-    public MapperComponent getComponent() {
-        return this.mapperComponent;
-    }
-
     /**
      * DOC amaumont Comment method "checkLocationIsValid".
      * 
@@ -639,11 +633,11 @@ public class MapperManager {
      * @param currentModifiedITableEntry
      * @return
      */
-    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, IDataMapTableEntry entryTarget) {
+    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
         return checkSourceLocationIsValid(retrieveTableEntry(locationSource), entryTarget);
     }
 
-    public boolean checkSourceLocationIsValid(IDataMapTableEntry entrySource, IDataMapTableEntry entryTarget) {
+    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
 
         if (entrySource instanceof VarTableEntry && entrySource.getParent() == entryTarget.getParent()) {
             List<IColumnEntry> columnEntries = entrySource.getParent().getColumnEntries();
@@ -686,8 +680,8 @@ public class MapperManager {
      * @return
      */
     private String getPreviewFileName() {
-        return mapperComponent.getProcess().getId()
-                + "-" + mapperComponent.getUniqueName() + "-" + EParameterName.PREVIEW.getName() //$NON-NLS-1$ //$NON-NLS-2$
+        return getAbstractMapComponent().getProcess().getId()
+                + "-" + getAbstractMapComponent().getUniqueName() + "-" + EParameterName.PREVIEW.getName() //$NON-NLS-1$ //$NON-NLS-2$
                 + ".bmp"; //$NON-NLS-1$
     }
 
@@ -698,7 +692,7 @@ public class MapperManager {
             hParametersToUpdate.add(parametersToUpdate[i]);
         }
 
-        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
+        List<? extends IElementParameter> elementParameters = getAbstractMapComponent().getElementParameters();
         for (IElementParameter parameter : elementParameters) {
             if (hParametersToUpdate.contains(parameter.getName())) {
                 // set preview path to PREVIEW parameter
@@ -710,16 +704,6 @@ public class MapperManager {
         }
     }
 
-    public Object getElementParameterValue(String parameterName) {
-        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
-        for (IElementParameter parameter : elementParameters) {
-            if (parameterName.equals(parameter.getName())) {
-                return parameter.getValue();
-            }
-        }
-        return null;
-    }
-
     /**
      * DOC amaumont Comment method "replacePreviousLocationInAllExpressions".
      */
@@ -728,8 +712,8 @@ public class MapperManager {
 
         DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
                 .getCurrentLanguage());
-        Collection<AbstractDataMapTable> tablesData = getTablesData();
-        for (AbstractDataMapTable table : tablesData) {
+        Collection<IDataMapTable> tablesData = getTablesData();
+        for (IDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
             for (IColumnEntry entry : columnEntries) {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
@@ -757,7 +741,7 @@ public class MapperManager {
      * @return true if expression of entry has changed
      */
     private boolean replaceLocation(final TableEntryLocation previousLocation, final TableEntryLocation newLocation,
-            DataMapExpressionParser dataMapExpressionParser, AbstractDataMapTable table, IDataMapTableEntry entry) {
+            DataMapExpressionParser dataMapExpressionParser, IDataMapTable table, ITableEntry entry) {
         boolean expressionHasChanged = false;
         String currentExpression = entry.getExpression();
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
@@ -838,7 +822,7 @@ public class MapperManager {
                 && inputEntry.getExpression().trim().length() > 0;
     }
 
-    public boolean checkEntryHasEmptyExpression(IDataMapTableEntry entry) {
+    public boolean checkEntryHasEmptyExpression(ITableEntry entry) {
         return entry.getExpression() == null || entry.getExpression().trim().length() == 0;
     }
 
@@ -858,7 +842,7 @@ public class MapperManager {
      * @return
      */
     public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return problemsManager.buildProblemKey(mapperComponent.getUniqueName(), problemKeyField, tableName, entryName);
+        return problemsManager.buildProblemKey(getAbstractMapComponent().getUniqueName(), problemKeyField, tableName, entryName);
     }
 
     /**
@@ -871,7 +855,7 @@ public class MapperManager {
     }
 
     public boolean componentIsReadOnly() {
-        return getComponent().isReadOnly() || getComponent().getProcess().isReadOnly();
+        return getAbstractMapComponent().isReadOnly() || getAbstractMapComponent().getProcess().isReadOnly();
     }
 
     /**
@@ -880,7 +864,7 @@ public class MapperManager {
      * @return
      */
     public boolean isAdvancedMap() {
-        // return getComponent().getClass().getName().endsWith("AdvancedMapperComponent");
+        // return getComponent().getClass().getName().endsWith("AdvancedgetAbstractMapComponent()");
         return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA;
     }
 
@@ -901,4 +885,14 @@ public class MapperManager {
         return atLeastOneHashKey;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.managers.AbstractMapperManager#getLinkManager()
+     */
+    @Override
+    public ILinkManager getLinkManager() {
+        return linkManager;
+    }
+
+    
+    
 }

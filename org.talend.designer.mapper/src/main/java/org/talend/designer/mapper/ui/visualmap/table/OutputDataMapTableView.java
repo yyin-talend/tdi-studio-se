@@ -47,13 +47,13 @@ import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEven
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -66,7 +66,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class OutputDataMapTableView extends DataMapTableView {
 
-    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+    public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
             MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
@@ -291,7 +291,7 @@ public class OutputDataMapTableView extends DataMapTableView {
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
                 ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
                         extendedTableViewerForFilters.getExtendedTableModel());
-                mapperManager.removeTableEntry((IDataMapTableEntry) bean);
+                mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();
                 List list = tableViewerCreatorForFilters.getInputList();

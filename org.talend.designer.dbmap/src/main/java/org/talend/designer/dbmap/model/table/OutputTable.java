@@ -35,7 +35,6 @@ import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 
 /**
@@ -152,7 +151,7 @@ public class OutputTable extends AbstractInOutTable {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getName()
+     * @see org.talend.designer.dbmap.model.table.IDataMapTable#getName()
      */
     @Override
     public String getName() {
@@ -162,7 +161,7 @@ public class OutputTable extends AbstractInOutTable {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.dbmap.model.table.AbstractDataMapTable#getTitle()
+     * @see org.talend.designer.dbmap.model.table.IDataMapTable#getTitle()
      */
     @Override
     public String getTitle() {

@@ -31,15 +31,14 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.utils.data.list.ListUtils;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.IConnection;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.external.connection.IOConnection;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.table.VarsTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 
 /**
@@ -50,7 +49,7 @@ import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
  */
 public class TableManager {
 
-    private Map<AbstractDataMapTable, DataMapTableView> abstractDataMapTableToView = new HashMap<AbstractDataMapTable, DataMapTableView>();
+    private Map<IDataMapTable, DataMapTableView> abstractDataMapTableToView = new HashMap<IDataMapTable, DataMapTableView>();
 
     private Map<Table, DataMapTableView> swtTableToView = new HashMap<Table, DataMapTableView>();
 
@@ -60,7 +59,7 @@ public class TableManager {
 
     private ArrayList<VarsTable> listVarsTables = new ArrayList<VarsTable>();
 
-    private Map<IMetadataTable, AbstractInOutTable> metadataTableToAbstractDataMapTable = new HashMap<IMetadataTable, AbstractInOutTable>();
+    private Map<IMetadataTable, AbstractInOutTable> metadataTableToIDataMapTable = new HashMap<IMetadataTable, AbstractInOutTable>();
 
     private HashMap<String, InputTable> aliasToInputTable = new HashMap<String, InputTable>();
 
@@ -78,11 +77,11 @@ public class TableManager {
      * @param tableData
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    void addTable(DataMapTableView view, AbstractDataMapTable tableData) {
+    void addTable(DataMapTableView view, IDataMapTable tableData) {
 
         if (tableData instanceof AbstractInOutTable) {
             AbstractInOutTable data = (AbstractInOutTable) tableData;
-            metadataTableToAbstractDataMapTable.put(data.getMetadataTable(), data);
+            metadataTableToIDataMapTable.put(data.getMetadataTable(), data);
         }
         getMatchedList(tableData).add(tableData);
         swtTableToView.put(view.getTableViewerCreatorForColumns().getTable(), view);
@@ -95,14 +94,14 @@ public class TableManager {
     /**
      * DOC amaumont Comment method "getTable".
      */
-    AbstractDataMapTable getData(DataMapTableView view) {
+    IDataMapTable getData(DataMapTableView view) {
         return view.getDataMapTable();
     }
 
     /**
      * DOC amaumont Comment method "getTable".
      */
-    DataMapTableView getView(AbstractDataMapTable data) {
+    DataMapTableView getView(IDataMapTable data) {
         return abstractDataMapTableToView.get(data);
     }
 
@@ -118,8 +117,8 @@ public class TableManager {
      * 
      * @param view
      */
-    AbstractDataMapTable removeTable(DataMapTableView view) {
-        AbstractDataMapTable abstractDataMapTable = getData(view);
+    IDataMapTable removeTable(DataMapTableView view) {
+        IDataMapTable abstractDataMapTable = getData(view);
         removeTable(abstractDataMapTable);
         return abstractDataMapTable;
     }
@@ -129,7 +128,7 @@ public class TableManager {
      * 
      * @param dataTable
      */
-    Object removeTable(AbstractDataMapTable dataTable) {
+    Object removeTable(IDataMapTable dataTable) {
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         TableEntriesManager tableEntriesManager = mapperManager.getTableEntriesManager();
         
@@ -177,10 +176,10 @@ public class TableManager {
         return list;
     }
 
-    private List<DataMapTableView> getTablesView(List<? extends AbstractDataMapTable> listAbstractDataMapTables,
+    private List<DataMapTableView> getTablesView(List<? extends IDataMapTable> listIDataMapTables,
             IMetadataTable metadataTable) {
         ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>();
-        for (AbstractDataMapTable data : listAbstractDataMapTables) {
+        for (IDataMapTable data : listIDataMapTables) {
             if (metadataTable == null || metadataTable != null && data instanceof AbstractInOutTable
                     && metadataTable == ((AbstractInOutTable) data).getMetadataTable()) {
                 list.add(abstractDataMapTableToView.get(data));
@@ -195,7 +194,7 @@ public class TableManager {
      * 
      * @return
      */
-    Collection<AbstractDataMapTable> getTablesData() {
+    Collection<IDataMapTable> getTablesData() {
         return Collections.unmodifiableCollection(abstractDataMapTableToView.keySet());
     }
 
@@ -230,11 +229,11 @@ public class TableManager {
     }
 
     AbstractInOutTable getData(IMetadataTable metadataTable) {
-        return metadataTableToAbstractDataMapTable.get(metadataTable);
+        return metadataTableToIDataMapTable.get(metadataTable);
     }
 
     DataMapTableView getView(IMetadataTable metadataTable) {
-        AbstractDataMapTable abstractDataMapTable = getData(metadataTable);
+        IDataMapTable abstractDataMapTable = getData(metadataTable);
         if (abstractDataMapTable != null) {
             return getView(abstractDataMapTable);
         }
@@ -247,7 +246,7 @@ public class TableManager {
      * @param dataMapTable
      * @param dataMapTable2
      */
-    boolean swapWithNextTable(AbstractDataMapTable dataMapTable) {
+    boolean swapWithNextTable(IDataMapTable dataMapTable) {
         List currentList = null;
         currentList = getMatchedList(dataMapTable);
         int indexTable = currentList.indexOf(dataMapTable);
@@ -266,7 +265,7 @@ public class TableManager {
      * @param dataMapTable
      * @param dataMapTable2
      */
-    boolean swapWithPreviousTable(AbstractDataMapTable dataMapTable) {
+    boolean swapWithPreviousTable(IDataMapTable dataMapTable) {
         List currentList = null;
         currentList = getMatchedList(dataMapTable);
         int indexTable = currentList.indexOf(dataMapTable);
@@ -279,7 +278,7 @@ public class TableManager {
         }
     }
 
-    private List getMatchedList(AbstractDataMapTable dataMapTable) {
+    private List getMatchedList(IDataMapTable dataMapTable) {
         List currentList = null;
         if (dataMapTable instanceof InputTable) {
             currentList = listInputsTables;

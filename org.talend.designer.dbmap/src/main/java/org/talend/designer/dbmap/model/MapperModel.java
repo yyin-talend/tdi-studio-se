@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
-import org.talend.designer.dbmap.model.table.VarsTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

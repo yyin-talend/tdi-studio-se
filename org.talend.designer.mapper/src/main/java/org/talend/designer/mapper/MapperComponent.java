@@ -44,7 +44,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
@@ -54,6 +53,7 @@ import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
@@ -72,7 +72,7 @@ import org.talend.designer.mapper.utils.problems.ProblemsAnalyser;
  * $Id$
  * 
  */
-public class MapperComponent extends AbstractExternalNode implements IHashableInputConnections {
+public class MapperComponent extends AbstractMapComponent implements IHashableInputConnections {
 
     private MapperMain mapperMain;
 
@@ -95,6 +95,7 @@ public class MapperComponent extends AbstractExternalNode implements IHashableIn
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
     public void initialize() {
+        super.initialize();
         initMapperMain();
         mapperMain.loadInitialParamters();
     }
@@ -152,6 +153,7 @@ public class MapperComponent extends AbstractExternalNode implements IHashableIn
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
     public void refreshMapperConnectorData() {
+        super.refreshMapperConnectorData();
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();

@@ -47,13 +47,14 @@ import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEven
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.ui.dnd.DragNDrop;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
@@ -66,7 +67,7 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
  */
 public class OutputDataMapTableView extends DataMapTableView {
 
-    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+    public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
             MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
@@ -91,7 +92,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS, Zone.OUTPUTS }, false);
+        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.OUTPUTS }, false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -257,7 +258,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS, Zone.OUTPUTS }, true);
+        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.OUTPUTS }, true);
         column.setWeight(99);
         column.setMoveable(false);
         column.setResizable(false);
@@ -342,7 +343,7 @@ public class OutputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected String getTitle() {
-        return abstractDataMapTable.getTitle();
+        return ((AbstractDataMapTable) abstractDataMapTable).getTitle();
     }
 
 }

@@ -24,12 +24,12 @@ package org.talend.designer.mapper.ui.automap;
 import java.util.HashMap;
 import java.util.List;
 
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 
 /**

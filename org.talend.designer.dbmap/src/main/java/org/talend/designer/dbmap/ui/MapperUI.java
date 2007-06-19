@@ -54,11 +54,12 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.MapperModel;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.ui.color.ColorInfo;
@@ -70,7 +71,6 @@ import org.talend.designer.dbmap.ui.font.FontProviderMapper;
 import org.talend.designer.dbmap.ui.footer.FooterComposite;
 import org.talend.designer.dbmap.ui.image.ImageProviderMapper;
 import org.talend.designer.dbmap.ui.tabs.TabFolderEditors;
-import org.talend.designer.dbmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.table.InputDataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.table.OutputDataMapTableView;
@@ -549,11 +549,11 @@ public class MapperUI {
      * @param tables
      * @return new Boolean(true) if button state should be to minimize, else new Boolean(false)
      */
-    private Boolean getMinimizedButtonState(List<? extends AbstractDataMapTable> tables) {
+    private Boolean getMinimizedButtonState(List<? extends IDataMapTable> tables) {
         boolean allTablesAreMinimized = true;
         boolean allTablesAreNotMinimized = true;
 
-        for (AbstractDataMapTable table : tables) {
+        for (IDataMapTable table : tables) {
             if (table.isMinimized()) {
                 allTablesAreNotMinimized = false;
             } else {
@@ -600,7 +600,7 @@ public class MapperUI {
         // // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
         //
         // previousControl = null;
-        // for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
+        // for (IDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
         //
         // DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
         // abstractDataMapTable, mapperManager);
@@ -664,7 +664,7 @@ public class MapperUI {
             outputsZone.getToolbar().setMinimizeButtonState(minimizeStateOfTables.booleanValue());
         }
 
-        for (AbstractDataMapTable abstractDataMapTable : tables) {
+        for (IDataMapTable abstractDataMapTable : tables) {
 
             OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
                     abstractDataMapTable, outputTablesZoneView);

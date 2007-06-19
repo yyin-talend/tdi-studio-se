@@ -95,18 +95,18 @@ import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.process.Problem;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.MapperMain;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.ProblemsManager;
 import org.talend.designer.dbmap.managers.UIManager;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.AbstractInOutTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.ui.color.ColorInfo;
 import org.talend.designer.dbmap.ui.color.ColorProviderMapper;
@@ -139,7 +139,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected TableViewerCreator tableViewerCreatorForColumns;
 
-    protected AbstractDataMapTable abstractDataMapTable;
+    protected IDataMapTable abstractDataMapTable;
 
     private Composite headerComposite;
 
@@ -220,7 +220,7 @@ public abstract class DataMapTableView extends Composite {
      * @param abstractDataMapTable
      * @param mapperManager
      */
-    public DataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+    public DataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
             MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;
@@ -990,7 +990,7 @@ public abstract class DataMapTableView extends Composite {
         }
     }
 
-    public AbstractDataMapTable getDataMapTable() {
+    public IDataMapTable getDataMapTable() {
         return this.abstractDataMapTable;
     }
 

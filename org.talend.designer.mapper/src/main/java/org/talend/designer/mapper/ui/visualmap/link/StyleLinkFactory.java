@@ -31,10 +31,15 @@ import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.LineLinkWithHorizontalConnectors;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
-import org.talend.designer.mapper.managers.UIManager.LINK_STYLE;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.properties.LINK_STYLE;
+import org.talend.designer.abstractmap.ui.visualmap.link.ILinkState;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
+import org.talend.designer.abstractmap.ui.visualmap.link.PointLinkDescriptor;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -65,14 +70,14 @@ public class StyleLinkFactory {
 
     private IStyleLink unselectedSameVarsZoneStyle;
 
-    private LINK_STYLE linkStyle;
+    private UIManager uiManager;
 
     /**
      * DOC amaumont LinkFactory constructor comment.
      */
-    public StyleLinkFactory(LINK_STYLE linkStyle) {
+    public StyleLinkFactory(UIManager uiManager) {
         super();
-        this.linkStyle = linkStyle;
+        this.uiManager = uiManager;
         init();
     }
 
@@ -116,10 +121,10 @@ public class StyleLinkFactory {
     // }
     //
     public IStyleLink getStyleLink(IMapperLink link) {
-        LinkState linkState = link.getState();
+        ILinkState linkState = link.getState();
         PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptor1();
         PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptor2();
-        IDataMapTableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
+        ITableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
 
         boolean targetIsConstraint = false;
         if (targetTableEntry instanceof FilterTableEntry || targetTableEntry instanceof ExpressionFilterEntry) {
@@ -327,7 +332,7 @@ public class StyleLinkFactory {
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
-        if (linkStyle == LINK_STYLE.BEZIER_CURVE) {
+        if (uiManager.getLinkStyle() == LINK_STYLE.BEZIER_CURVE) {
             return new BezierHorizontalLink(style);
         } else {
             return new LineLinkWithHorizontalConnectors(style);

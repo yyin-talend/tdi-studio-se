@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -56,13 +57,18 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
+import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
@@ -72,7 +78,6 @@ import org.talend.designer.mapper.ui.font.FontProviderMapper;
 import org.talend.designer.mapper.ui.footer.FooterComposite;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
-import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.OutputDataMapTableView;
@@ -168,14 +173,88 @@ public class MapperUI {
 
     private BackgroundRefresher backgroundRefresher;
 
+    private Display display;
+
+    private Shell shell;
+
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
         this.mapperManager.getUiManager().setMapperUI(this);
         this.mapperUIParent = parent;
+        this.display = this.mapperUIParent.getDisplay();
     }
 
-    public void init(MapperModel mapperModel) {
+    public MapperUI(Display display, MapperManager mapperManager) {
+        super();
+        this.mapperManager = mapperManager;
+        this.mapperManager.getUiManager().setMapperUI(this);
+        this.display = display;
+    }
+
+    public void createUI(MapperModel mapperModel) {
+        if (mapperUIParent == null) {
+            this.shell = createWindow(display, mapperModel);
+        } else {
+            createCompositeContent(mapperModel);
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "createUI".
+     * 
+     * @param display
+     */
+    public Shell createWindow(Display display, MapperModel model) {
+
+        Shell activeShell = display.getActiveShell();
+        Shell mapperShell = null;
+        int style = SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL | SWT.RESIZE;
+        if (activeShell == null) {
+            mapperShell = new Shell(mapperShell, style);
+        } else {
+            mapperShell = new Shell(activeShell, style);
+        }
+
+        this.mapperUIParent = mapperShell;
+
+        MapperComponent component = (MapperComponent) mapperManager.getAbstractMapComponent();
+        ImageDescriptor imageDescriptor = component.getComponent().getIcon32();
+        Image createImage = imageDescriptor.createImage();
+        // Shell shell = new Shell(display);
+        // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
+        
+        ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
+        
+        mapperShell.setImage(createImage);
+        mapperShell.setText(Messages.getString(
+                "MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        Rectangle boundsMapper = uiProperties.getBoundsMapper();
+        if (uiProperties.isShellMaximized()) {
+            mapperShell.setMaximized(uiProperties.isShellMaximized());
+        } else {
+            // // move shell at outer of display zone to avoid visual effect on loading
+            // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
+            // boundsMapper.height);
+            // shell.setBounds(tmpBoundsMapper);
+            boundsMapper = uiProperties.getBoundsMapper();
+            if (boundsMapper.x < 0) {
+                boundsMapper.x = 0;
+            }
+            if (boundsMapper.y < 0) {
+                boundsMapper.y = 0;
+            }
+            mapperShell.setBounds(boundsMapper);
+        }
+        createCompositeContent(model);
+        mapperShell.open();
+        return mapperShell;
+
+    }
+
+
+    
+    public void createCompositeContent(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
         // CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
@@ -186,7 +265,6 @@ public class MapperUI {
 
         addParentListeners(uiManager, uiProperties);
 
-        final Display display = mapperUIParent.getDisplay();
         bgColorLinksZone = ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE);
 
         GridLayout parentLayout = new GridLayout(1, true);
@@ -264,8 +342,9 @@ public class MapperUI {
             }).start();
         }
         selectFirstInOutTablesView();
-    }
 
+    }
+    
     /**
      * DOC amaumont Comment method "initBackgroundRefresher".
      */
@@ -549,7 +628,7 @@ public class MapperUI {
         boolean allTablesAreMinimized = true;
         boolean allTablesAreNotMinimized = true;
 
-        for (AbstractDataMapTable table : tables) {
+        for (IDataMapTable table : tables) {
             if (table.isMinimized()) {
                 allTablesAreNotMinimized = false;
             } else {
@@ -596,10 +675,10 @@ public class MapperUI {
         // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
 
         previousControl = null;
-        for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
+        for (VarsTable varsTable : mapperModel.getVarsDataMapTables()) {
 
             DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
-                    abstractDataMapTable, mapperManager);
+                    varsTable, mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
@@ -607,7 +686,7 @@ public class MapperUI {
             formData.top = new FormAttachment(previousControl);
             dataMapTableView.setLayoutData(formData);
             previousControl = dataMapTableView;
-            dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
+            dataMapTableView.minimizeTable(varsTable.isMinimized());
             // dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
             // dataMapTableView.fillMinimumSize(false);
         }
@@ -660,10 +739,10 @@ public class MapperUI {
             outputsZone.getToolbar().setMinimizeButtonState(minimizeStateOfTables.booleanValue());
         }
 
-        for (AbstractDataMapTable abstractDataMapTable : tables) {
+        for (OutputTable outputTable : tables) {
 
             OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
-                    abstractDataMapTable, outputTablesZoneView);
+                    outputTable, outputTablesZoneView);
             dataMapTableView.loaded();
             previousControl = dataMapTableView;
         }
@@ -890,5 +969,15 @@ public class MapperUI {
     public OutputsZone getOutputsZone() {
         return this.outputsZone;
     }
+    
+    /**
+     * Getter for shell.
+     * @return the shell
+     */
+    public Shell getShell() {
+        return this.shell;
+    }
 
+    
+    
 }

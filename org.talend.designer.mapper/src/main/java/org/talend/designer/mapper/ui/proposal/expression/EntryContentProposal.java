@@ -23,11 +23,11 @@ package org.talend.designer.mapper.ui.proposal.expression;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.model.tableentry.IDataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
@@ -39,7 +39,7 @@ import org.talend.designer.mapper.model.tableentry.VarTableEntry;
  */
 public class EntryContentProposal implements IContentProposal {
 
-    private IDataMapTableEntry entry;
+    private ITableEntry entry;
 
     private ILanguage language;
 
@@ -51,7 +51,7 @@ public class EntryContentProposal implements IContentProposal {
      * @param language
      * @param control
      */
-    public EntryContentProposal(IDataMapTableEntry entry, ILanguage language) {
+    public EntryContentProposal(ITableEntry entry, ILanguage language) {
         super();
         this.entry = entry;
         this.language = language;

@@ -31,6 +31,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.utils.data.list.ListUtils;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -46,7 +47,7 @@ import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
  */
 public class TableManager {
 
-    private Map<AbstractDataMapTable, DataMapTableView> abstractDataMapTableToView = new HashMap<AbstractDataMapTable, DataMapTableView>();
+    private Map<IDataMapTable, DataMapTableView> abstractDataMapTableToView = new HashMap<IDataMapTable, DataMapTableView>();
 
     private Map<Table, DataMapTableView> swtTableToView = new HashMap<Table, DataMapTableView>();
 
@@ -69,7 +70,7 @@ public class TableManager {
      * @param tableData
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    void addTable(DataMapTableView view, AbstractDataMapTable tableData) {
+    void addTable(DataMapTableView view, IDataMapTable tableData) {
 
         if (tableData instanceof AbstractInOutTable) {
             AbstractInOutTable data = (AbstractInOutTable) tableData;
@@ -86,14 +87,14 @@ public class TableManager {
     /**
      * DOC amaumont Comment method "getTable".
      */
-    AbstractDataMapTable getData(DataMapTableView view) {
+    IDataMapTable getData(DataMapTableView view) {
         return view.getDataMapTable();
     }
 
     /**
      * DOC amaumont Comment method "getTable".
      */
-    DataMapTableView getView(AbstractDataMapTable data) {
+    DataMapTableView getView(IDataMapTable data) {
         return abstractDataMapTableToView.get(data);
     }
 
@@ -109,8 +110,8 @@ public class TableManager {
      * 
      * @param view
      */
-    AbstractDataMapTable removeTable(DataMapTableView view) {
-        AbstractDataMapTable abstractDataMapTable = getData(view);
+    IDataMapTable removeTable(DataMapTableView view) {
+        IDataMapTable abstractDataMapTable = getData(view);
         removeTable(abstractDataMapTable);
         return abstractDataMapTable;
     }
@@ -120,7 +121,7 @@ public class TableManager {
      * 
      * @param data
      */
-    Object removeTable(AbstractDataMapTable data) {
+    Object removeTable(IDataMapTable data) {
         getMatchedList(data).remove(data);
         DataMapTableView view = abstractDataMapTableToView.remove(data);
         swtTableToView.remove(view.getTableViewerCreatorForColumns().getTable());
@@ -154,7 +155,7 @@ public class TableManager {
 
     private List<DataMapTableView> getTablesView(List<? extends AbstractDataMapTable> listAbstractDataMapTables) {
         ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>();
-        for (AbstractDataMapTable data : listAbstractDataMapTables) {
+        for (IDataMapTable data : listAbstractDataMapTables) {
             list.add(abstractDataMapTableToView.get(data));
         }
         return list;
@@ -166,7 +167,7 @@ public class TableManager {
      * 
      * @return
      */
-    Collection<AbstractDataMapTable> getTablesData() {
+    Collection<IDataMapTable> getTablesData() {
         return Collections.unmodifiableCollection(abstractDataMapTableToView.keySet());
     }
 
@@ -205,7 +206,7 @@ public class TableManager {
     }
 
     DataMapTableView getView(IMetadataTable metadataTable) {
-        AbstractDataMapTable abstractDataMapTable = getData(metadataTable);
+        IDataMapTable abstractDataMapTable = getData(metadataTable);
         if (abstractDataMapTable != null) {
             return getView(abstractDataMapTable);
         }
@@ -218,7 +219,7 @@ public class TableManager {
      * @param dataMapTable
      * @param dataMapTable2
      */
-    boolean swapWithNextTable(AbstractDataMapTable dataMapTable) {
+    boolean swapWithNextTable(IDataMapTable dataMapTable) {
         List currentList = null;
         currentList = getMatchedList(dataMapTable);
         int indexTable = currentList.indexOf(dataMapTable);
@@ -237,7 +238,7 @@ public class TableManager {
      * @param dataMapTable
      * @param dataMapTable2
      */
-    boolean swapWithPreviousTable(AbstractDataMapTable dataMapTable) {
+    boolean swapWithPreviousTable(IDataMapTable dataMapTable) {
         List currentList = null;
         currentList = getMatchedList(dataMapTable);
         int indexTable = currentList.indexOf(dataMapTable);
@@ -250,7 +251,7 @@ public class TableManager {
         }
     }
 
-    private List getMatchedList(AbstractDataMapTable dataMapTable) {
+    private List getMatchedList(IDataMapTable dataMapTable) {
         List currentList = null;
         if (dataMapTable instanceof InputTable) {
             currentList = listInputsTables;

@@ -24,7 +24,8 @@ package org.talend.designer.mapper.model.tableentry;
 import java.util.List;
 
 import org.talend.core.model.process.Problem;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -32,23 +33,23 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public abstract class DataMapTableEntry implements IDataMapTableEntry {
+public abstract class DataMapTableEntry implements ITableEntry {
 
     private String expression;
 
-    private AbstractDataMapTable parent;
+    private IDataMapTable parent;
 
     private String name;
 
     private List<Problem> problems;
 
-    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
+    public DataMapTableEntry(IDataMapTable abstractDataMapTable, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.expression = expression;
     }
 
-    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable) {
+    public DataMapTableEntry(IDataMapTable abstractDataMapTable) {
         this(abstractDataMapTable, null);
     }
 
@@ -58,7 +59,7 @@ public abstract class DataMapTableEntry implements IDataMapTableEntry {
      * @param abstractDataMapTable
      * @param name, can't be null
      */
-    public DataMapTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public DataMapTableEntry(IDataMapTable abstractDataMapTable, String name, String expression) {
         super();
         this.parent = abstractDataMapTable;
         this.name = name;
@@ -76,11 +77,11 @@ public abstract class DataMapTableEntry implements IDataMapTableEntry {
         this.expression = expression;
     }
 
-    public AbstractDataMapTable getParent() {
+    public IDataMapTable getParent() {
         return this.parent;
     }
 
-    public void setParent(AbstractDataMapTable parent) {
+    public void setParent(IDataMapTable parent) {
         this.parent = parent;
     }
 

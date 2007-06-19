@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.dbmap.managers;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -40,10 +39,16 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.managers.AbstractMapperManager;
+import org.talend.designer.abstractmap.managers.ILinkManager;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
+import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.AbstractDbMapComponent;
 import org.talend.designer.dbmap.DbMapActivator;
@@ -55,18 +60,13 @@ import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.table.VarsTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 import org.talend.designer.dbmap.ui.automap.AutoMapper;
-import org.talend.designer.dbmap.ui.commands.AddVarEntryCommand;
 import org.talend.designer.dbmap.ui.dialog.AliasDialog;
 import org.talend.designer.dbmap.ui.visualmap.TableEntryProperties;
-import org.talend.designer.dbmap.ui.visualmap.link.IMapperLink;
-import org.talend.designer.dbmap.ui.visualmap.link.LinkState;
 import org.talend.designer.dbmap.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.dbmap.ui.visualmap.table.EntryState;
 import org.talend.designer.dbmap.ui.visualmap.table.InputDataMapTableView;
@@ -83,7 +83,7 @@ import org.talend.repository.model.RepositoryConstants;
  * $Id: MapperManager.java 2077 2007-02-15 11:16:46Z amaumont $
  * 
  */
-public class MapperManager {
+public class MapperManager extends AbstractMapperManager {
 
     public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA"; //$NON-NLS-1$
 
@@ -102,7 +102,7 @@ public class MapperManager {
     private ProblemsManager problemsManager;
 
     public MapperManager(AbstractDbMapComponent mapperComponent) {
-        super();
+        super(mapperComponent);
         this.mapperComponent = mapperComponent;
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager(this);
@@ -111,7 +111,7 @@ public class MapperManager {
         problemsManager = new ProblemsManager(this);
     }
 
-    public void addTablePair(DataMapTableView view, AbstractDataMapTable data) {
+    public void addTablePair(DataMapTableView view, IDataMapTable data) {
         tableManager.addTable(view, data);
         tableEntriesManager.addAll(data.getColumnEntries());
         if (data instanceof OutputTable) {
@@ -126,7 +126,7 @@ public class MapperManager {
      * @param view
      */
     public void removeTablePair(DataMapTableView view) {
-        AbstractDataMapTable dataTable = tableManager.getData(view);
+        IDataMapTable dataTable = tableManager.getData(view);
         removeTablePair(tableManager.getData(view));
     }
 
@@ -136,21 +136,21 @@ public class MapperManager {
      * 
      * @param view
      */
-    public void removeTablePair(AbstractDataMapTable dataTable) {
+    public void removeTablePair(IDataMapTable dataTable) {
         tableManager.removeTable(dataTable);
     }
 
     /**
      * DOC amaumont Comment method "getDataMapTable".
      */
-    public AbstractDataMapTable retrieveAbstractDataMapTable(DataMapTableView dataMapTableView) {
+    public IDataMapTable retrieveIDataMapTable(DataMapTableView dataMapTableView) {
         return tableManager.getData(dataMapTableView);
     }
 
     /**
      * DOC amaumont Comment method "getDataMapTableView".
      */
-    public DataMapTableView retrieveAbstractDataMapTableView(AbstractDataMapTable abstractDataMapTable) {
+    public DataMapTableView retrieveIDataMapTableView(IDataMapTable abstractDataMapTable) {
         return tableManager.getView(abstractDataMapTable);
     }
 
@@ -180,7 +180,7 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "getDataMapTable".
      */
-    public AbstractDataMapTable retrieveAbstractDataMapTable(TableEntryLocation names) {
+    public IDataMapTable retrieveIDataMapTable(TableEntryLocation names) {
         ITableEntry dataMapTableEntry = retrieveTableEntry(names);
         if (dataMapTableEntry == null) {
             return null;
@@ -333,7 +333,7 @@ public class MapperManager {
      * 
      * @return
      */
-    public Collection<AbstractDataMapTable> getTablesData() {
+    public Collection<IDataMapTable> getTablesData() {
         return tableManager.getTablesData();
     }
 
@@ -410,7 +410,7 @@ public class MapperManager {
      */
     public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn,
             Integer index) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         IColumnEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             dataMapTableEntry = new InputColumnTableEntry(abstractDataMapTable, metadataColumn);
@@ -420,33 +420,6 @@ public class MapperManager {
             throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
         }
         tableEntriesManager.addTableEntry(dataMapTableEntry, index);
-        return dataMapTableEntry;
-    }
-
-    /**
-     * This method is called when "addMetadataTableEditorEntry" is called (event on list of MetadataEditor) , so if you
-     * want keep synchronisation between inputs/outputs DataMaps and MetadataEditors don't call this method.
-     * 
-     * For other uses such as add an entry to VarsTable or add entries to inputs or outputs DataMaps when
-     * MetadataEditors are not active, call it.
-     * 
-     * @param dataMapTableView
-     * @param index
-     * @param type TODO
-     * @param metadataColumn, can be null if added in VarsTable
-     */
-    public VarTableEntry addNewVarEntry(DataMapTableView dataMapTableView, String name, Integer index, String type) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
-        VarTableEntry dataMapTableEntry = null;
-        if (dataMapTableView.getZone() == Zone.VARS) {
-            dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name, null, type);
-        } else {
-            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
-        }
-
-        AddVarEntryCommand varEntryCommand = new AddVarEntryCommand(tableEntriesManager, dataMapTableEntry, index);
-        executeCommand(varEntryCommand);
-
         return dataMapTableEntry;
     }
 
@@ -463,7 +436,7 @@ public class MapperManager {
     }
 
     public FilterTableEntry addNewFilterEntry(DataMapTableView dataMapTableView, String name, Integer index) {
-        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         FilterTableEntry constraintEntry = new FilterTableEntry(abstractDataMapTable, name, null);
         tableEntriesManager.addTableEntry(constraintEntry, index);
         return constraintEntry;
@@ -495,7 +468,7 @@ public class MapperManager {
             lastChild = outputsTablesView.get(sizeOutputsView - 1);
         }
 
-        AbstractDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, uniqueName, tableName);
+        IDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, uniqueName, tableName);
 
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable,
@@ -530,7 +503,7 @@ public class MapperManager {
 
         if (currentSelectedDataMapTableView != null) {
             OutputTable outputTable = (OutputTable) currentSelectedDataMapTableView.getDataMapTable();
-            String tableTitle = currentSelectedDataMapTableView.getDataMapTable().getTitle();
+            String tableTitle = ((AbstractDataMapTable)currentSelectedDataMapTableView.getDataMapTable()).getTitle();
             if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages
                     .getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
                     Messages.getString("MapperManager.removeOutputTableTitleMessage", new Object[] { tableTitle }))) { //$NON-NLS-1$
@@ -721,8 +694,8 @@ public class MapperManager {
             final TableEntryLocation newLocation) {
 
         DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getCurrentLanguage());
-        Collection<AbstractDataMapTable> tablesData = getTablesData();
-        for (AbstractDataMapTable table : tablesData) {
+        Collection<IDataMapTable> tablesData = getTablesData();
+        for (IDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
             for (IColumnEntry entry : columnEntries) {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
@@ -759,7 +732,7 @@ public class MapperManager {
      * @return true if expression of entry has changed
      */
     private boolean replaceLocation(final TableEntryLocation previousLocation, final TableEntryLocation newLocation,
-            DataMapExpressionParser dataMapExpressionParser, AbstractDataMapTable table, ITableEntry entry) {
+            DataMapExpressionParser dataMapExpressionParser, IDataMapTable table, ITableEntry entry) {
         boolean expressionHasChanged = false;
         String currentExpression = entry.getExpression();
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
@@ -774,7 +747,7 @@ public class MapperManager {
         }
         if (expressionHasChanged) {
             entry.setExpression(currentExpression);
-            DataMapTableView dataMapTableView = retrieveAbstractDataMapTableView(table);
+            DataMapTableView dataMapTableView = retrieveIDataMapTableView(table);
             TableViewerCreator tableViewerCreator = null;
             if (entry instanceof IColumnEntry) {
                 tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
@@ -790,7 +763,7 @@ public class MapperManager {
 
     /**
      * @return
-     * @see org.talend.designer.dbmap.managers.LinkManager#getCurrentNumberLinks()
+     * @see org.talend.designer.abstractmap.managers.LinkManager#getCurrentNumberLinks()
      */
     public int getCurrentNumberLinks() {
         return this.linkManager.getCurrentNumberLinks();
@@ -925,6 +898,15 @@ public class MapperManager {
     
     protected TableEntriesManager getTableEntriesManager() {
         return this.tableEntriesManager;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.managers.AbstractMapperManager#getLinkManager()
+     */
+    @Override
+    public ILinkManager getLinkManager() {
+        // TODO terminate abstraction of ELT map
+        return null;
     }
 
     

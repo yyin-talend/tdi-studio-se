@@ -37,13 +37,13 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.managers.UIManager;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.VarsTable;
-import org.talend.designer.dbmap.model.tableentry.IColumnEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
@@ -387,27 +387,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                     currentIndex = tableViewerCreatorTarget.getInputList().size();
                     columnIndicesToSelect.add(currentIndex);
                 }
-                if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS
-                        && zoneTarget == Zone.VARS) {
-                    columnIndicesToSelect.add(currentIndex);
-                    currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex,
-                            tableEntrySource, columnName);
-                    atLeastOneEntryInserted = true;
-
-                } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
-                    insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
-                    // metadataEditorEvent,
-                            tableEntrySource, columnName);
-                    atLeastOneEntryInserted = true;
-
-                } else if (zoneSourceEntry == Zone.INPUTS && zoneTarget != Zone.VARS) {
+                if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.OUTPUTS) {
                     insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
                     // metadataEditorEvent,
                             tableEntrySource, metadataColumnDragged, columnName);
                     atLeastOneEntryInserted = true;
 
-                } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
-                    // nothing
                 } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
 
                     insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
@@ -538,7 +523,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 if (zoneTarget == Zone.INPUTS) {
                     setDefaultOperator((InputColumnTableEntry) dataMapTableEntry);
                 }
-                DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource
+                DataMapTableView dataMapTableView = mapperManager.retrieveIDataMapTableView(tableEntrySource
                         .getParent());
                 Zone zoneSource = dataMapTableView.getZone();
                 String location = null;
@@ -621,23 +606,6 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         metadataColumn.setNullable(((VarTableEntry) tableEntrySource).isNullable());
         metadataColumnsBeingAdded.add(metadataColumn);
         sources.add(tableEntrySource);
-    }
-
-    private int insertNewVarEntry(IDbLanguage currentLanguage, DataMapTableView dataMapTableViewTarget,
-            int currentIndex, ITableEntry tableEntrySource, String columnName) {
-        ITableEntry dataMapTableEntry;
-
-        String type = null;
-        if (tableEntrySource.getParent() instanceof InputTable) {
-            type = ((InputColumnTableEntry) tableEntrySource).getMetadataColumn().getTalendType();
-        } else if (tableEntrySource.getParent() instanceof VarsTable) {
-            type = ((VarTableEntry) tableEntrySource).getType();
-        }
-
-        dataMapTableEntry = mapperManager.addNewVarEntry(dataMapTableViewTarget, columnName, currentIndex++, type);
-        String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
-        dataMapTableEntry.setExpression(location + " "); //$NON-NLS-1$
-        return currentIndex;
     }
 
     private void modifyExistingExpression(IDbLanguage currentLanguage, ITableEntry entryTarget,

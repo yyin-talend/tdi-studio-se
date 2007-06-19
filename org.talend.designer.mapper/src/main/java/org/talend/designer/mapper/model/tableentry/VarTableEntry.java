@@ -21,7 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -35,12 +36,12 @@ public class VarTableEntry extends DataMapTableEntry implements IColumnEntry {
 
     private boolean nullable;
 
-    public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression, String type) {
+    public VarTableEntry(IDataMapTable abstractDataMapTable, String name, String expression, String type) {
         super(abstractDataMapTable, name, expression);
         this.type = type;
     }
 
-    public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name) {
+    public VarTableEntry(IDataMapTable abstractDataMapTable, String name) {
         this(abstractDataMapTable, name, null, null);
     }
 

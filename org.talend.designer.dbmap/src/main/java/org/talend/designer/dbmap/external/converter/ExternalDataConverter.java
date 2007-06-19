@@ -31,6 +31,8 @@ import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
@@ -38,12 +40,10 @@ import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.MapperModel;
-import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 import org.talend.designer.dbmap.model.table.InputTable;
 import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.table.VarsTable;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 
 /**
@@ -220,8 +220,8 @@ public class ExternalDataConverter {
         return externalData;
     }
 
-    private void loadInExternalData(Collection<? extends AbstractDataMapTable> tables) {
-        for (AbstractDataMapTable table : tables) {
+    private void loadInExternalData(Collection<? extends IDataMapTable> tables) {
+        for (IDataMapTable table : tables) {
             ExternalDbMapTable externalMapperTable = new ExternalDbMapTable();
             fillExternalTable(table, externalMapperTable);
             ArrayList<ExternalDbMapEntry> perTableEntries = new ArrayList<ExternalDbMapEntry>();
@@ -247,7 +247,7 @@ public class ExternalDataConverter {
      * @param table
      * @param externalMapperTable
      */
-    private void fillExternalTable(AbstractDataMapTable table, ExternalDbMapTable externalMapperTable) {
+    private void fillExternalTable(IDataMapTable table, ExternalDbMapTable externalMapperTable) {
         if (table instanceof InputTable) {
             fillExternalTable((InputTable) table, externalMapperTable);
         } else if (table instanceof VarsTable) {
@@ -278,7 +278,7 @@ public class ExternalDataConverter {
      * @param table
      * @param externalMapperTable
      */
-    private void fillExternalTableWithCommonsData(AbstractDataMapTable table, ExternalDbMapTable externalMapperTable) {
+    private void fillExternalTableWithCommonsData(IDataMapTable table, ExternalDbMapTable externalMapperTable) {
         externalMapperTable.setName(table.getName());
         externalMapperTable.setMinimized(table.isMinimized());
     }

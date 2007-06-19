@@ -46,8 +46,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
+import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.managers.MapperManager;
-import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.ui.color.ColorInfo;
 import org.talend.designer.dbmap.ui.color.ColorProviderMapper;
 

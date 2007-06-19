@@ -22,7 +22,8 @@
 package org.talend.designer.mapper.model.tableentry;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.abstractmap.model.table.IDataMapTable;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -34,18 +35,18 @@ public class AbstractInOutTableEntry extends DataMapTableEntry implements IColum
 
     private IMetadataColumn metadataColumn;
 
-    public AbstractInOutTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
+    public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
             String expression) {
         super(abstractDataMapTable, expression);
         this.metadataColumn = metadataColumn;
     }
 
-    public AbstractInOutTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
+    public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn) {
         super(abstractDataMapTable);
         this.metadataColumn = metadataColumn;
     }
 
-    public AbstractInOutTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public AbstractInOutTableEntry(IDataMapTable abstractDataMapTable, String name, String expression) {
         super(abstractDataMapTable, name, expression);
     }
 

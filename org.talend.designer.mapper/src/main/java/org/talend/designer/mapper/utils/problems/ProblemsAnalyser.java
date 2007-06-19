@@ -29,6 +29,8 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
+import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
@@ -40,7 +42,6 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 
 /**
@@ -86,9 +87,9 @@ public class ProblemsAnalyser {
             checkExpressionSyntaxProblems(extOutputTables, codeChecker);
 
             List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager
-                    .getComponent().getIncomingConnections());
+                    .getAbstractMapComponent().getIncomingConnections());
             ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
-            MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
+            MapperMain mapperMain = ((MapperComponent) mapperManager.getAbstractMapComponent()).getMapperMain();
             ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
             ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
 
