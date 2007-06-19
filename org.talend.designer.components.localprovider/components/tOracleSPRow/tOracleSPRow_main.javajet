@@ -5,15 +5,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
-	org.talend.core.model.process.EConnectionType
-	java.io.*
-	java.util.*
-	javax.xml.transform.Source
-	javax.xml.transform.stream.StreamSource
-	javax.xml.validation.*
-	org.xml.sax.SAXException
-	org.xml.sax.SAXParseException
-	org.xml.sax.helpers.DefaultHandler
+	java.util.List
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.types.JavaTypesManager
@@ -45,15 +37,13 @@ class="OracleSPRow"
 		}
 	}			
 	int sizeColumns=columnList.size();
-
-
 %>
+
 java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
 <% for (int i = 0; i < sizeColumns; i++){
 	if(i<sizeColumns-1){
 %>?,<%}else{%>?<% }}%> )}");
 
-StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 
 
 	<%
