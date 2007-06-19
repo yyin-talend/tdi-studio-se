@@ -167,7 +167,8 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
         // **********************
         hashCurControls.put(param.getName(), combo);
-        updateComponentList(elem, param);
+
+        refresh(param, false);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
