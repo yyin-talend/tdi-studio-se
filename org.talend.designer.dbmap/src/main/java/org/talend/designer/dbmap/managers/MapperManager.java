@@ -905,8 +905,7 @@ public class MapperManager extends AbstractMapperManager {
      */
     @Override
     public ILinkManager getLinkManager() {
-        // TODO terminate abstraction of ELT map
-        return null;
+        return linkManager;
     }
 
     

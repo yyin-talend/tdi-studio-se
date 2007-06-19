@@ -82,6 +82,7 @@ public abstract class AbstractDbMapComponent extends AbstractMapComponent {
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
     public void initialize() {
+        super.initialize();
         initMapperMain();
         mapperMain.loadInitialParamters();
     }

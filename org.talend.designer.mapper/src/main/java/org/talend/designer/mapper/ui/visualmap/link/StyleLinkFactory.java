@@ -70,14 +70,14 @@ public class StyleLinkFactory {
 
     private IStyleLink unselectedSameVarsZoneStyle;
 
-    private UIManager uiManager;
+    private LINK_STYLE linkStyle;
 
     /**
      * DOC amaumont LinkFactory constructor comment.
      */
-    public StyleLinkFactory(UIManager uiManager) {
+    public StyleLinkFactory(LINK_STYLE linkStyle) {
         super();
-        this.uiManager = uiManager;
+        this.linkStyle = linkStyle;
         init();
     }
 
@@ -332,7 +332,7 @@ public class StyleLinkFactory {
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
-        if (uiManager.getLinkStyle() == LINK_STYLE.BEZIER_CURVE) {
+        if (linkStyle == LINK_STYLE.BEZIER_CURVE) {
             return new BezierHorizontalLink(style);
         } else {
             return new LineLinkWithHorizontalConnectors(style);

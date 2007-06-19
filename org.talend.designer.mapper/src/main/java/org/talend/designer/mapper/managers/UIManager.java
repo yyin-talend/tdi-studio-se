@@ -1770,7 +1770,7 @@ public class UIManager extends AbstractUIManager {
      */
     public StyleLinkFactory getStyleLinkFactory() {
         if (this.drawableLinkFactory == null) {
-            this.drawableLinkFactory = new StyleLinkFactory(this);
+            this.drawableLinkFactory = new StyleLinkFactory(getLinkStyle());
         }
         return this.drawableLinkFactory;
     }

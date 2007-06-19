@@ -41,7 +41,7 @@ import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
  * $Id: LinkManager.java 1309 2007-01-05 17:04:10Z amaumont $
  * 
  */
-public abstract class LinkManager {
+public abstract class LinkManager implements ILinkManager {
 
     private static final Comparator<IMapperLink> COMPARATOR = new Comparator<IMapperLink>() {
 
