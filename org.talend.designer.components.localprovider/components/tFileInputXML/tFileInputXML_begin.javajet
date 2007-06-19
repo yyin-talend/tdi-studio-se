@@ -45,7 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 int nb_line_<%=cid%> = 0;
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(<%=filename %>);
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
 java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)doc_<%=cid%>.selectNodes(<%=loopQuery %>);	
 
 String str<%=cid %> = "";
