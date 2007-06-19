@@ -106,10 +106,10 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                 }
             }
 
-            Connection connection = (Connection) elem;
+/*            Connection connection = (Connection) elem;
             if (connection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                 addChangeOrder();
-            }
+            }*/
 
             FormData data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
@@ -151,6 +151,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         Connection connection = (Connection) elem;
         return connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA);
     }
+    /*
 
     CLabel currentOrderLabel;
 
@@ -242,6 +243,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     private void updateCurrentOrder() {
         currentOrderLabel.setText("CurrentOrder: " + ((Connection) elem).getInputId());
-    }
+    }*/
 
 }

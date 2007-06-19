@@ -126,6 +126,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
+import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
 import org.talend.designer.core.ui.editor.job.deletion.IJobDeletion;
@@ -339,6 +340,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction setRefAction = new ConnectionSetAsMainRef(this);
         getActionRegistry().registerAction(setRefAction);
         getSelectionActions().add(setRefAction.getId());
+        
+        IAction modifyMergeAction = new ModifyMergeOrderAction(this);
+        getActionRegistry().registerAction(modifyMergeAction);
+        getSelectionActions().add(modifyMergeAction.getId());
 
         viewer.setRootEditPart(root);
 

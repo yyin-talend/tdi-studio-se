@@ -508,6 +508,10 @@ public class Node extends Element implements INode {
     public List<? extends IConnection> getIncomingConnections() {
         return this.inputs;
     }
+    
+    public void setIncomingConnections(List<Connection> connections) {
+        this.inputs = connections;
+    }
 
     /**
      * Gives all outgoing connections (only).
@@ -517,6 +521,7 @@ public class Node extends Element implements INode {
     public List<? extends IConnection> getOutgoingConnections() {
         return this.outputs;
     }
+
 
     /**
      * Remove a connection input.
