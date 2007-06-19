@@ -46,8 +46,6 @@ java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=d
 	if(i<addCols.size()-1){
 %>?,<%}else{%>?<% }}%> )}");
 
-StringBuffer strBuffer_<%=cid%> = new StringBuffer();
-
 
 	<%
 	
@@ -209,6 +207,13 @@ class Convert{
 //output
 int outNum=1;
 String outColumnType=null;
+List< ? extends IConnection> outConns = node.getOutgoingConnections();
+	if(outConns!=null && outConns.size()>0){
+		IConnection conn2 = outConns.get(0);
+		String firstConnName = conn2.getName();
+		IMetadataTable outputMetadata = conn2.getMetadataTable();
+		List<IMetadataColumn> outputColumnList = outputMetadata.getListColumns();
+
 for (Map<String, String> addCol:addCols) {
 	if(addCol.get("NAME").equals(outpara)){
 		if(!(addCol.get("DATATYPE").equals("Basic"))){
@@ -217,43 +222,26 @@ for (Map<String, String> addCol:addCols) {
 	java.sql.ResultSetMetaData md<%=cid%> = var<%=cid%>.getMetaData();
 	int nColumns<%=cid%> = md<%=cid%>.getColumnCount();
 <%
-		List< ? extends IConnection> outConns = node.getOutgoingConnections();
- 		  IConnection conn2 = outConns.get(0);
- 		  IMetadataTable outputMetadata = conn2.getMetadataTable();
- 		  List<IMetadataColumn> outputColumnList = outputMetadata.getListColumns();
  		  int i=1;
  		  %>
-		    while(var<%=cid%>.next()){
-	    
+		    while(var<%=cid%>.next()){    
 		    <%
 		    		i=1;
 		     		  for(IMetadataColumn column:outputColumnList){
 		    %>
-		     System.out.print("   "+var<%=cid%>.getString(<%=i%>));	     
+		     <%=firstConnName%>.<%=column.getLabel()%>=var<%=cid%>.getString(<%=i%>);	     
 		     <%
 		      		  i=i+1;
-		     }
-		     %>
-		     		     System.out.println("");
-		     <%
-		     %>
-		     }
+		    		 }
 
-		globalMap.put("<%=cid %>_RESULTSET", var<%=cid%>); 
-		globalMap.put("<%=cid %>_RESULTTYPE","SetType");
-
-
-<%
 		}else
 		{
-outColumnType=incomeColumnList.get(outNum).getTalendType();
-  					
+outColumnType=incomeColumnList.get(outNum-1).getTalendType();					
 %>
 
 	<%=convert.genVarType(outColumnType)%> var<%=cid%>=stmt<%=cid%>.get<%=convert.genConvert(outColumnType)%>(<%=outNum%>);	
-	System.out.println("<%=outpara%> = "+var<%=cid%>);
-	globalMap.put("<%=cid %>_RESULTSET", var<%=cid%>); 
-	globalMap.put("<%=cid %>_RESULTTYPE","SimType");
+for(int i=0;i<1;i++){
+	<%=firstConnName%>.<%=outputColumnList.get(0).getLabel()%>=var<%=cid%>;
 <%
   		}
   				break;	
@@ -261,16 +249,11 @@ outColumnType=incomeColumnList.get(outNum).getTalendType();
 	outNum=outNum+1;
 
 }
+
+	}//end if
 %>
 
 	
-
-
-
-
-
-
-
 
 
 					 
