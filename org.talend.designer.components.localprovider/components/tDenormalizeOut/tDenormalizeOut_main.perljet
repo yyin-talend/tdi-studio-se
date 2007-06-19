@@ -1,0 +1,94 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String colname = ElementParameterParser.getValue(node, "__DENORMALIZE_COLUMN__");
+String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+String deduplicate = ElementParameterParser.getValue(node, "__DEDUPLICATE__");
+
+int icolDenormalize = 0;
+String inputRowName = new String("input_row");
+String prevComponentName = new String("prev_component_name");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+
+    // We need the name of the input connection and the name of the
+    // previous component
+
+    List< ? extends IConnection> inConns = node.getIncomingConnections();
+    if (inConns != null && !inConns.isEmpty()) {
+        IConnection inConn = inConns.get(0);
+
+        inputRowName = inConn.getName();
+        prevComponentName = inConn.getMetadataTable().getTableName();
+    }
+
+    StringBuffer hashKey = new StringBuffer();
+
+    IMetadataTable metadata = metadatas.get(0);
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( colname.equals( column.getLabel() ) ){
+            break;
+        }
+        icolDenormalize++;
+    }
+
+    StringBuffer hashValue = new StringBuffer();
+
+    hashValue.append("$");
+    hashValue.append(inputRowName);
+    hashValue.append("[");
+    hashValue.append(icolDenormalize);
+    hashValue.append("]");
+
+
+    int icolGroup = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( icolDenormalize != icolGroup ){
+            hashKey.append("$");
+            hashKey.append(inputRowName);
+            hashKey.append("[");
+            hashKey.append(icolGroup);
+            hashKey.append("], ");
+        }
+        icolGroup++;
+    }
+%>
+
+<%
+if(deduplicate.equals("true")){
+%>
+    $href_<%=destination %>->{ join($;, <%=hashKey%>) }->{<%=hashValue%>}++  ;
+<%
+}
+else {
+%>
+    $href_<%=destination %>->{ join($;, <%=hashKey%>) } ||= [] ;
+    push @{ $href_<%=destination %>->{ join($;, <%=hashKey%>) } }, <%=hashValue%> ;
+<%
+}
+%>
+
+
+
+<%
+}
+%>
+
+$nb_line_input_<%=cid %>++;
+

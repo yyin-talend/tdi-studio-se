@@ -1,0 +1,89 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String colname = ElementParameterParser.getValue(node, "__DENORMALIZE_COLUMN__");
+String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+String deduplicate = ElementParameterParser.getValue(node, "__DEDUPLICATE__");
+
+int icolDenormalize = 0;
+String inputRowName = new String("input_row");
+String prevComponentName = new String("prev_component_name");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+
+    // We need the name of the input connection and the name of the
+    // previous component
+
+    List< ? extends IConnection> inConns = node.getIncomingConnections();
+    if (inConns != null && !inConns.isEmpty()) {
+        IConnection inConn = inConns.get(0);
+        inputRowName = inConn.getName();
+        prevComponentName = inConn.getMetadataTable().getTableName();
+    }
+
+
+    IMetadataTable metadata = metadatas.get(0);
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( colname.equals( column.getLabel() ) ){
+            break;
+        }
+        icolDenormalize++;
+    }
+
+    int icolGroup = 0;
+    StringBuffer rowDestinationExpr = new StringBuffer();
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if( icolDenormalize != icolGroup ){
+            rowDestinationExpr.append("$row_");
+            rowDestinationExpr.append(destination);
+            rowDestinationExpr.append("->[");
+            rowDestinationExpr.append(icolGroup);
+            rowDestinationExpr.append("], ");
+        }
+        icolGroup++;
+    }
+%>
+
+our @<%=destination%> ;
+
+while( ( $key_<%=destination%>, $value_<%=destination%> ) = each %$href_<%=destination %> ){
+    my $row_<%=destination%> = [] ;
+<%
+if(deduplicate.equals("true")){
+%>
+    ( <%=rowDestinationExpr%> $row_<%=destination%>->[<%=icolDenormalize%>]) = ( split($;, $key_<%=destination%> ), join(<%=separator%>, keys %$value_<%=destination%> ) ) ;
+<%
+}
+else {
+%>
+    ( <%=rowDestinationExpr%> $row_<%=destination%>->[<%=icolDenormalize%>]) = ( split($;, $key_<%=destination%> ), join(<%=separator%>, @$value_<%=destination%> ) ) ;
+<%
+}
+%>
+     push @<%=destination%>, $row_<%=destination%> ;
+
+}
+
+
+#use Data::Dumper ;
+#print Dumper(\@<%=destination%>);
+
+<%
+}
+%>
