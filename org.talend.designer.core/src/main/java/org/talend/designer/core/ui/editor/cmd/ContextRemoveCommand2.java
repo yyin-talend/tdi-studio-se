@@ -41,7 +41,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.context.JobContextComposite;
-import org.talend.core.ui.context.JobContextCompositeForView;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 
@@ -74,29 +73,6 @@ public class ContextRemoveCommand2 extends Command {
     IProcess process = null;
 
     public ContextRemoveCommand2(IProcess process, JobContextComposite composite, String contextName, CCombo combo) {
-        this.composite = composite;
-        this.contextName = contextName;
-        this.process = process;
-        boolean found = false;
-        this.combo = combo;
-        this.tableViewerCreatorMap = composite.getTableViewerCreatorMap();
-        this.tabFolder = composite.getTabFolder();
-
-        contextManager = composite.getContextManager();
-        listContext = contextManager.getListContext();
-
-        for (int i = 0; i < listContext.size() && !found; i++) {
-            if (listContext.get(i).getName().equals(contextName)) {
-                context = listContext.get(i);
-                found = true;
-            }
-        }
-
-        found = false;
-        setLabel(Messages.getString("ContextRemoveCommand.label")); //$NON-NLS-1$
-    }
-
-    public ContextRemoveCommand2(IProcess process, JobContextCompositeForView composite, String contextName, CCombo combo) {
         this.composite = composite;
         this.contextName = contextName;
         this.process = process;
@@ -182,9 +158,7 @@ public class ContextRemoveCommand2 extends Command {
     @Override
     public void undo() {
         listContext.add(context);
-        if (composite instanceof JobContextCompositeForView) {
-            ((JobContextCompositeForView) composite).addContext(context);
-        } else if (composite instanceof JobContextComposite) {
+        if (composite instanceof JobContextComposite) {
             ((JobContextComposite) composite).addContext(context);
         }
 

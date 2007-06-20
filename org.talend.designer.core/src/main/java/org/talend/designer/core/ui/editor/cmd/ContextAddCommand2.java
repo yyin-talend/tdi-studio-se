@@ -38,7 +38,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.ui.context.JobContextComposite;
-import org.talend.core.ui.context.JobContextCompositeForView;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 
@@ -78,18 +77,6 @@ public class ContextAddCommand2 extends Command {
         setLabel(Messages.getString("ContextAddCommand.label")); //$NON-NLS-1$
     }
 
-    public ContextAddCommand2(JobContextCompositeForView composite, IContext newContext, CCombo combo) {
-        this.context = newContext;
-        this.composite = composite;
-        this.combo = combo;
-        this.tabFolder = composite.getTabFolder();
-        this.tableViewerCreatorMap = composite.getTableViewerCreatorMap();
-
-        contextManager = composite.getContextManager();
-        listContext = contextManager.getListContext();
-        setLabel(Messages.getString("ContextAddCommand.label")); //$NON-NLS-1$
-    }
-
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
@@ -114,9 +101,7 @@ public class ContextAddCommand2 extends Command {
 
     public void execute() {
         listContext.add(context);
-        if (composite instanceof JobContextCompositeForView) {
-            ((JobContextCompositeForView) composite).addContext(context);
-        } else if (composite instanceof JobContextComposite) {
+        if (composite instanceof JobContextComposite) {
             ((JobContextComposite) composite).addContext(context);
         }
 

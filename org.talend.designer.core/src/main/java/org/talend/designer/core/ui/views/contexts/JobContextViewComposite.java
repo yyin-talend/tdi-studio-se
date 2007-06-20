@@ -42,7 +42,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
-import org.talend.core.ui.context.JobContextCompositeForView;
+import org.talend.core.ui.context.JobContextComposite;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -63,7 +63,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * qzhang class global comment. Detailled comment <br/>
  * 
  */
-public class JobContextViewComposite extends JobContextCompositeForView {
+public class JobContextViewComposite extends JobContextComposite {
 
     private MultiPageTalendEditor part;
 
@@ -179,12 +179,12 @@ public class JobContextViewComposite extends JobContextCompositeForView {
     }
 
     @Override
-    protected void onContextAdd(JobContextCompositeForView composite, IContext newContext, CCombo combo) {
+    protected void onContextAdd(JobContextComposite composite, IContext newContext, CCombo combo) {
         getCommandStack().execute(new ContextAddCommand2(composite, newContext, combo));
     }
 
     @Override
-    protected void onContextRemove(JobContextCompositeForView composite, String contextName, CCombo combo) {
+    protected void onContextRemove(JobContextComposite composite, String contextName, CCombo combo) {
         getCommandStack().execute(new ContextRemoveCommand2(process, composite, contextName, combo));
     }
 
