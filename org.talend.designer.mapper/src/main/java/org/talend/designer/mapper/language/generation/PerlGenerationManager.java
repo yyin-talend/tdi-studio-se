@@ -96,7 +96,7 @@ public class PerlGenerationManager extends GenerationManager {
         for (int i = 0; i < lstSize; i++) {
 
             String constraintExpression = ((ExternalMapperTableEntry) constraintTableEntries.get(i)).getExpression();
-            if (constraintExpression == null) {
+            if (constraintExpression == null || constraintExpression.trim().equals("")) {
                 continue;
             }
             if (and != null && constraintExpression.trim().length() > 0) {

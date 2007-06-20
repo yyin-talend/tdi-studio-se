@@ -70,9 +70,9 @@
 					String matchingModeStr = null;
 					if(matchingMode == null) {
 						if(hHashableColumns.size() > 0) {
-							matchingModeStr = "ALL_ROWS";
-						} else {
 							matchingModeStr = "UNIQUE_MATCH";
+						} else {
+							matchingModeStr = "ALL_ROWS";
 						}
 					} else {
 						matchingModeStr = matchingMode.toString();

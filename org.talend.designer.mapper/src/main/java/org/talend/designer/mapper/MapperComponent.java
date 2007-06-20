@@ -515,7 +515,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 IMatchingMode matchingMode = MATCHING_MODE
                         .parse(inputTable.getMatchingMode());
                 if (matchingMode == null) {
-                    matchingMode = MATCHING_MODE.ALL_MATCHES;
+                    matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
                 hashConfigurationForMapper = new HashConfigurationForMapper(hashableColumns, matchingMode);
                 break;
