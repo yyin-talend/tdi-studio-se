@@ -414,45 +414,47 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         // sql = sql.replace("'", "\\'");
         // }
 
-        SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-        List<Query> qs = new ArrayList<Query>();
-        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-        connParameters.setQuery(sql);
-        boolean isInfo = false;
-        final CTabFolder tabFolder = getEditorComposite().getTabFolder();
-        final CTabItem[] items = tabFolder.getItems();
+        if (connParameters.isFromRepository()) {
+            SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+            List<Query> qs = new ArrayList<Query>();
+            List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
+            connParameters.setQuery(sql);
+            boolean isInfo = false;
+            final CTabFolder tabFolder = getEditorComposite().getTabFolder();
+            final CTabItem[] items = tabFolder.getItems();
 
-        for (int i = 0; i < items.length; i++) {
-            CTabItem item = items[i];
-            boolean isInfo2 = item.getText().startsWith(Messages.getString("SQLBuilderEditorComposite.titleQuery"))
-                    && item.getData() instanceof Query;
-            if (isInfo2) {
-                isInfo = true;
-                Query q = (Query) item.getData();
-                RepositoryNode node = null;
-                MultiPageSqlBuilderEditor meditor = null;
-                Object control = item.getData("KEY");
-                if (control instanceof MultiPageSqlBuilderEditor) {
-                    meditor = (MultiPageSqlBuilderEditor) control;
+            for (int i = 0; i < items.length; i++) {
+                CTabItem item = items[i];
+                boolean isInfo2 = item.getText().startsWith(Messages.getString("SQLBuilderEditorComposite.titleQuery"))
+                        && item.getData() instanceof Query;
+                if (isInfo2) {
+                    isInfo = true;
+                    Query q = (Query) item.getData();
+                    RepositoryNode node = null;
+                    MultiPageSqlBuilderEditor meditor = null;
+                    Object control = item.getData("KEY");
+                    if (control instanceof MultiPageSqlBuilderEditor) {
+                        meditor = (MultiPageSqlBuilderEditor) control;
+                    }
+                    if (meditor != null) {
+                        q.setValue(meditor.getActivePageSqlString());
+                        node = meditor.getActivePageRepositoryNode();
+                    }
+                    qs.add(q);
+                    nodes.add(node);
                 }
-                if (meditor != null) {
-                    q.setValue(meditor.getActivePageSqlString());
-                    node = meditor.getActivePageRepositoryNode();
-                }
-                qs.add(q);
-                nodes.add(node);
             }
-        }
-        if (isInfo && connParameters.isFromRepository()) {
-            String title = Messages.getString("SQLBuilderDialog.SaveAllQueries.Title"); //$NON-NLS-1$
-            String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
-            boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
-            if (openQuestion) {
-                for (int i = 0; i < nodes.size(); i++) {
-                    RepositoryNode n = nodes.get(i);
-                    Query q = qs.get(i);
-                    if (q != null && n != null) {
-                        manager.saveQuery(n, q);
+            if (isInfo) {
+                String title = Messages.getString("SQLBuilderDialog.SaveAllQueries.Title"); //$NON-NLS-1$
+                String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
+                boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
+                if (openQuestion) {
+                    for (int i = 0; i < nodes.size(); i++) {
+                        RepositoryNode n = nodes.get(i);
+                        Query q = qs.get(i);
+                        if (q != null && n != null) {
+                            manager.saveQuery(n, q);
+                        }
                     }
                 }
             }

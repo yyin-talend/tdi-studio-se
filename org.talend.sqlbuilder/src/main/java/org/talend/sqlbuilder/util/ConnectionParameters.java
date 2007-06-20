@@ -537,7 +537,7 @@ public class ConnectionParameters {
 
     
     public void setFromRepository(boolean isFromRepository) {
-        this.isFromRepository = isFromRepository;
+        this.isFromRepository = false;
     }
 
 }
