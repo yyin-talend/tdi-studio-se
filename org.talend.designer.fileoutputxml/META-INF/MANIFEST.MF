@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: File Output XML external component
+Bundle-SymbolicName: org.talend.designer.fileoutputxml;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.talend.designer.fileoutputxml.FOXPlugin
+Bundle-Vendor: Talend
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.talend.core,
+ org.talend.commons,
+ org.talend.libraries,
+ org.talend.repository,
+ org.eclipse.datatools.enablement.oda.xml,
+ org.eclipse.datatools.enablement.oda.xml.ui,
+ org.eclipse.datatools.connectivity,
+ org.eclipse.datatools.connectivity.oda,
+ org.eclipse.datatools.connectivity.oda.consumer,
+ org.eclipse.datatools.connectivity.oda.design,
+ org.eclipse.datatools.connectivity.oda.design.ui,
+ org.eclipse.datatools.connectivity.oda.profile,
+ org.eclipse.datatools.connectivity.ui,
+ org.talend.designer.codegen
+Eclipse-LazyStart: true
