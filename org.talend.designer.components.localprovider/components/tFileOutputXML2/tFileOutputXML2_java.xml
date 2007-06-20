@@ -1,6 +1,13 @@
 <!-- $Id: tFileOutputXML_perl.xml 1549 2007-01-23 04:34:23 +0000 (星期二, 23 一月 2007) nrousseau $ -->
 <COMPONENT>
-   <HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.101" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20050320A" STARTABLE="false">
+   <HEADER PLATEFORM="ALL" 
+   	 SERIAL="" VERSION="0.102" 
+   	 STATUS="ALPHA" COMPATIBILITY="ALL" 
+   	 AUTHOR="Talend" RELEASE_DATE="20050320A" 
+   	 STARTABLE="false"
+   	 VISIBLE="false"
+   	 EXTENSION="org.talend.designer.fileoutputxml"
+   	 >
       <SIGNATURE></SIGNATURE>
    </HEADER>
    <DOCUMENTATION>
@@ -21,6 +28,8 @@
      <PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="1" REQUIRED="true">
        <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xml"</DEFAULT>
      </PARAMETER>
+     
+     
 
     <PARAMETER
       NAME="ROOT_TAGS"
@@ -28,6 +37,7 @@
       REQUIRED="false"
       NUM_ROW="3"
       NB_LINES="2"
+      SHOW="false"
     >
       <ITEMS>
         <ITEM NAME="TAG" VALUE="rootTag"/>
@@ -40,12 +50,13 @@
       REQUIRED="true"
       NUM_ROW="5"
       NB_LINES="5"
+      SHOW="false"
     >
       <ITEMS>
-      	<ITEM NAME="LABEL" FIELD="TEXT" VALUE="label" />
-        <ITEM NAME="ATTRIBUTE" FIELD="CHECK" />
+      	<ITEM NAME="LABEL" FIELD="TEXT"/>
+        <ITEM NAME="ATTRIBUTE" FIELD="TEXT"/>
         <ITEM NAME="DEPTH" FIELD="TEXT" />
-        <ITEM NAME="COLUMN" FIELD="TEXT" />
+        <ITEM NAME="COLUMN" FIELD="TEXT"/>
       </ITEMS>
     </PARAMETER>
     
@@ -56,7 +67,11 @@
      <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="13">
        <DEFAULT/> 
      </PARAMETER>
-
+     
+	<PARAMETER NAME="MAP" FIELD="EXTERNAL" NUM_ROW="7">
+         <DEFAULT/>  
+    </PARAMETER>
+    
    </PARAMETERS>
 
    <CODEGENERATION/>

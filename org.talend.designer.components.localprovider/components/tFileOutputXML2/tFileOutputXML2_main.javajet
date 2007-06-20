@@ -26,6 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__MAPPING__"
             );
+         if(tree.size() > 0){ 
          boolean[][] nodeInfo = new boolean[tree.size()][2];//for tag: [][0]noAtt[][1]noChild; for Att: [][0]isLastAtt [][1]tagNoChild
          int[] nodeDepth = new int[tree.size()];
          for(int i = 0; i < nodeInfo.length; i++){
@@ -226,7 +227,8 @@ out_<%=cid%>.newLine();
 				}
 				j--;
 			}
-		}
+		}%>nb_line_<%=cid %>++;
+		<%
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -241,6 +243,7 @@ out_<%=cid%>.newLine();
 
 
 <%
+	}
 	}
 }
 %>
