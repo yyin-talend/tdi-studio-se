@@ -210,7 +210,7 @@ public class FOXUI {
     private void addXMLViewer(final Composite mainComposite, final int width, final int height) {
 
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, "Linker Target", height); //$NON-NLS-1$
         group.setBackgroundMode(SWT.INHERIT_FORCE);
 
         xmlViewer = new TreeViewer(group, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
@@ -222,11 +222,11 @@ public class FOXUI {
         tree.setLinesVisible(true);
         // tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-        column1.setText("XML Label");
+        column1.setText("XML Tree");
         column1.setWidth(250);
 
         TreeColumn column2 = new TreeColumn(tree, SWT.LEFT);
-        column2.setText("Column name");
+        column2.setText("Related Column Label");
         column2.setWidth(100);
 
         TreeColumn column3 = new TreeColumn(tree, SWT.LEFT);
@@ -289,8 +289,7 @@ public class FOXUI {
 
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1,
-                Messages.getString("XmlFileStep1.groupSchemaTarget"), height); //$NON-NLS-1$
+        final Group group = Form.createGroup(mainComposite, 1, "Linker Source", height); //$NON-NLS-1$
         group.setBackgroundMode(SWT.INHERIT_FORCE);
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
@@ -318,7 +317,7 @@ public class FOXUI {
 //        table.setLinesVisible(true);
         table.setHeaderVisible(true);
         TableColumn column1 = new TableColumn(table, SWT.LEFT);
-        column1.setText("Schema");
+        column1.setText("Schema List");
         column1.setWidth(100);
         table.setLayoutData(data2);
 
