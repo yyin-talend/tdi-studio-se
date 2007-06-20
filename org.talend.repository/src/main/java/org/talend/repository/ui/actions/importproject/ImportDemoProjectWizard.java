@@ -22,18 +22,12 @@
 package org.talend.repository.ui.actions.importproject;
 
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

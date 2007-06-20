@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
@@ -83,8 +82,7 @@ public final class ImportDemoProjectAction extends Action {
 
         ImportDemoProjectWizard demoProjectWizard = new ImportDemoProjectWizard(demoProjectList);
 
-        Shell activeShell = Display.getCurrent().getActiveShell();
-        WizardDialog dialog = new WizardDialog(activeShell, demoProjectWizard);
+        WizardDialog dialog = new WizardDialog(shell, demoProjectWizard);
         if (dialog.open() != 1 && demoProjectWizard.getSelectedDemoProjectIndex() != Integer.MAX_VALUE) {
             final int selectedDemoProjectIndex = demoProjectWizard.getSelectedDemoProjectIndex();
 
