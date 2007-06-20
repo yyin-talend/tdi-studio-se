@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.utils.data.list.ListUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -38,6 +39,7 @@ import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
+import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -49,7 +51,7 @@ public class TableManager {
 
     private Map<IDataMapTable, DataMapTableView> abstractDataMapTableToView = new HashMap<IDataMapTable, DataMapTableView>();
 
-    private Map<Table, DataMapTableView> swtTableToView = new HashMap<Table, DataMapTableView>();
+    private Map<Control, DataMapTableView> swtTableToView = new HashMap<Control, DataMapTableView>();
 
     private ArrayList<OutputTable> listOutputsTables = new ArrayList<OutputTable>();
 
@@ -77,6 +79,9 @@ public class TableManager {
             metadataTableToAbstractDataMapTable.put(data.getMetadataTable(), data);
         }
         getMatchedList(tableData).add(tableData);
+        if (view.getZone() == Zone.INPUTS || view.getZone() == Zone.OUTPUTS) {
+            swtTableToView.put(view.getExpressionFilterText(), view);
+        }
         swtTableToView.put(view.getTableViewerCreatorForColumns().getTable(), view);
         if (view.getTableViewerCreatorForFilters() != null) {
             swtTableToView.put(view.getTableViewerCreatorForFilters().getTable(), view);
@@ -101,8 +106,8 @@ public class TableManager {
     /**
      * DOC amaumont Comment method "getTable".
      */
-    DataMapTableView getView(Table swtTable) {
-        return swtTableToView.get(swtTable);
+    DataMapTableView getView(Control swtControl) {
+        return swtTableToView.get(swtControl);
     }
 
     /**
@@ -125,6 +130,7 @@ public class TableManager {
         getMatchedList(data).remove(data);
         DataMapTableView view = abstractDataMapTableToView.remove(data);
         swtTableToView.remove(view.getTableViewerCreatorForColumns().getTable());
+        swtTableToView.remove(view.getExpressionFilterText());
         if (view.getTableViewerCreatorForFilters() != null) {
             swtTableToView.remove(view.getTableViewerCreatorForFilters().getTable());
         }

@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -58,9 +59,9 @@ import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
  * $Id$
  * 
  */
-public class CompleteDropTargetListener extends DefaultDropTargetListener {
+public class CompleteDropTargetTableListener extends DefaultDropTargetListener {
 
-    private Table draggableTable;
+    private Table draggableTargetControl;
 
     private boolean isIntersectAtPreviousDragOver;
 
@@ -71,14 +72,14 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * 
      * @param mapperManager
      */
-    public CompleteDropTargetListener(MapperManager mapperManager, Table draggableTable) {
+    public CompleteDropTargetTableListener(MapperManager mapperManager, Table draggableTargetControl) {
         super(mapperManager);
-        this.draggableTable = draggableTable;
+        this.draggableTargetControl = draggableTargetControl;
     }
 
     public void dragEnter(DropTargetEvent event) {
         super.dragEnter(event);
-        draggableTable.setFocus();
+        draggableTargetControl.setFocus();
     }
 
     public void dragOver(DropTargetEvent event) {
@@ -103,7 +104,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 draggingInfosPopup.setInsertionEntryContext(false);
             } else if (analyzer.isCursorOverExpressionCell()) {
                 draggingInfosPopup.setExpressionContext(true);
-            } else if (analyzer.targetTableIsFiltersTable()) {
+            } else if (analyzer.targetIsExpressionFilterText() || analyzer.targetTableIsFiltersTable()) {
                 draggingInfosPopup.setExpressionContext(true);
             } else {
                 draggingInfosPopup.setExpressionContext(false);
@@ -114,11 +115,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                 int size = draggedData.getTransferableEntryList().size();
                 if (itemIndexWhereInsertFromPosition != null) {
-                    draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition
-                            + size - 1);
-                    if (!analyzer.targetTableIsFiltersTable()
-                            && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
-                        insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
+                    draggableTargetControl.setSelection(itemIndexWhereInsertFromPosition,
+                            itemIndexWhereInsertFromPosition + size - 1);
+                    if (!analyzer.targetIsExpressionFilterText() && !analyzer.targetTableIsFiltersTable()
+                            && itemIndexWhereInsertFromPosition + size - 1 >= draggableTargetControl.getItemCount()) {
+                        insertionIndicator
+                                .updatePosition(draggableTargetControl, draggableTargetControl.getItemCount());
                         insertionIndicator.setVisible(true);
                         draggingInfosPopup.setInsertionEntryContext(true);
                     } else {
@@ -126,18 +128,18 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                         draggingInfosPopup.setInsertionEntryContext(false);
                     }
                 } else {
-                    draggableTable.deselectAll();
+                    draggableTargetControl.deselectAll();
                     insertionIndicator.setVisible(false);
                     draggingInfosPopup.setInsertionEntryContext(false);
                 }
             } else {
                 if (!analyzer.isTableSourceAndTargetAreSame()) {
-                    draggableTable.deselectAll();
+                    draggableTargetControl.deselectAll();
                 }
                 if (itemIndexWhereInsertFromPosition != null && !analyzer.isInsertionEntryMode()) {
-                    draggableTable.setSelection(itemIndexWhereInsertFromPosition);
+                    draggableTargetControl.setSelection(itemIndexWhereInsertFromPosition);
                 }
-                if (!analyzer.targetTableIsFiltersTable()) {
+                if (!analyzer.targetIsExpressionFilterText() && !analyzer.targetTableIsFiltersTable()) {
                     updateInsertionIndicator(event);
                     insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
                 }
@@ -178,7 +180,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             } else if (analyzer.isCursorOverExpressionCell()) {
                 draggingInfosPopup.setExpressionContext(true);
                 draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
-            } else if (analyzer.targetTableIsFiltersTable()) {
+            } else if (analyzer.targetIsExpressionFilterText() || analyzer.targetTableIsFiltersTable()) {
                 draggingInfosPopup.setExpressionContext(true);
                 draggingInfosPopup.setInsertionEntryContext(false);
             } else {
@@ -226,8 +228,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         Point eventPosition = new Point(event.x, event.y);
         // int itemIndexTarget = getItemIndexWhereInsertFromPosition(eventPosition);
-        int itemIndexTarget = TableUtils.getItemIndexWhereInsertFromPosition(draggableTable, eventPosition);
-        insertionIndicator.updatePosition(draggableTable, itemIndexTarget);
+        int itemIndexTarget = TableUtils.getItemIndexWhereInsertFromPosition(draggableTargetControl, eventPosition);
+        insertionIndicator.updatePosition(draggableTargetControl, itemIndexTarget);
 
         if (WindowSystem.isGTK()) {
             if (insertionIndicator.isRightArrowVisible() && !eventPosition.equals(lastDragPosition)) {
@@ -252,7 +254,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private InsertionIndicator retrieveInsertionIndicator() {
-        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
+        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTargetControl);
         TablesZoneView targetTablesZoneView = mapperManager.getUiManager().getTablesZoneView(dataMapTableViewTarget);
         InsertionIndicator insertionIndicator = targetTablesZoneView.getInsertionIndicator();
         return insertionIndicator;
@@ -268,7 +270,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         UIManager uiManager = mapperManager.getUiManager();
         if (!analyzer.isTableSourceAndTargetAreSame()) {
-            draggableTable.deselectAll();
+            draggableTargetControl.deselectAll();
         }
         retrieveInsertionIndicator().setVisible(false);
         DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
@@ -323,9 +325,10 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         // System.out.println(event);
         Point cursorPosition = new Point(event.x, event.y);
         // int startInsertAtThisIndex = getItemIndexWhereInsertFromPosition(cursorPosition);
-        int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(draggableTable, cursorPosition);
+        int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(draggableTargetControl,
+                cursorPosition);
         ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
-        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
+        DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTargetControl);
         Zone zoneTarget = dataMapTableViewTarget.getZone();
 
         uiManager.selectDataMapTableView(dataMapTableViewTarget, true, false);
@@ -335,7 +338,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         int currentIndex = startInsertAtThisIndex;
         uiManager.clearLastCreatedInOutColumnEntries();
 
-        draggableTable.deselectAll();
+        draggableTargetControl.deselectAll();
 
         ITableEntry currentEntryTarget = getEntryFromPosition(cursorPosition);
 
@@ -351,10 +354,13 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         boolean mapEachSourceToNextTargets = analyzer.isMapOneToOneMode();
 
         TableViewerCreator tableViewerCreatorTarget = null;
-        if (targetTableIsFiltersTable) {
-            tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForFilters();
-        } else {
-            tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
+
+        if (!analyzer.targetIsExpressionFilterText()) {
+            if (targetTableIsFiltersTable) {
+                tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForFilters();
+            } else {
+                tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
+            }
         }
 
         // MapperDropCommand dropCommand = new MapperDropCommand();
@@ -655,7 +661,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @return
      */
     private Integer getItemIndexFromPosition(Point cursorPosition) {
-        TableItem[] tableItems = draggableTable.getItems();
+        TableItem[] tableItems = draggableTargetControl.getItems();
         TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
         if (tableItemBehindCursor != null) {
             for (int i = 0; i < tableItems.length; i++) {
@@ -675,11 +681,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @return
      */
     private TableItem getTableItemFromPosition(Point cursorPosition) {
-        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
+        Point pointCursor = draggableTargetControl.toControl(cursorPosition.x, cursorPosition.y);
         if (WindowSystem.isGTK()) {
-            pointCursor.y -= draggableTable.getHeaderHeight();
+            pointCursor.y -= draggableTargetControl.getHeaderHeight();
         }
-        return draggableTable.getItem(pointCursor);
+        return draggableTargetControl.getItem(pointCursor);
     }
 
     /**

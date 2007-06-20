@@ -169,6 +169,8 @@ public class TableEntriesManager {
                 if (dataMapTable instanceof OutputTable) {
                     ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
                 }
+            } else if (dataMapTableEntry instanceof ExpressionFilterEntry) {
+                // nothing
             } else {
                 String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", //$NON-NLS-1$
                         dataMapTableEntry.getClass().toString());

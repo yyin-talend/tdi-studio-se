@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
@@ -404,8 +405,7 @@ public class UIManager extends AbstractUIManager {
                     if (modifiedObject != null) {
                         TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView
                                 .getDataMapTable().getName(), (String) event.previousValue);
-                        final ITableEntry dataMapTableEntry = mapperManager
-                                .retrieveTableEntry(tableEntryLocation);
+                        final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
                         processColumnNameChanged((String) event.previousValue, (String) event.newValue,
                                 dataMapTableView, dataMapTableEntry);
                     }
@@ -992,8 +992,7 @@ public class UIManager extends AbstractUIManager {
      * @param newSelectedDataMapTableView
      * @param currentModifiedObject
      */
-    public void parseNewExpression(String expression, ITableEntry currentModifiedITableEntry,
-            boolean appliedOrCanceled) {
+    public void parseNewExpression(String expression, ITableEntry currentModifiedITableEntry, boolean appliedOrCanceled) {
         ParseExpressionResult result = parseExpression(expression, currentModifiedITableEntry, true, true,
                 appliedOrCanceled);
         if (result.isAtLeastOneLinkHasBeenAddedOrRemoved()) {
@@ -1026,20 +1025,19 @@ public class UIManager extends AbstractUIManager {
         parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
         if (mapperManager.isAdvancedMap()
                 && (dataMapTableView.getZone() == Zone.INPUTS || dataMapTableView.getZone() == Zone.OUTPUTS)) {
-            ExpressionFilterEntry expressionFilter = ((AbstractInOutTable) dataMapTableView.getDataMapTable())
-                    .getExpressionFilter();
-            parseExpression(expressionFilter.getExpression(), expressionFilter, newLinksMustHaveSelectedState, false,
-                    false);
-        }
-        if (dataMapTableView.getZone() == Zone.OUTPUTS) {
-            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters()
-                    .getInputList();
+            AbstractInOutTable table = (AbstractInOutTable) dataMapTableView.getDataMapTable();
+            if (table.isActivateExpressionFilter()) {
+                ExpressionFilterEntry expressionFilter = table.getExpressionFilter();
+                parseExpression(expressionFilter.getExpression(), expressionFilter, newLinksMustHaveSelectedState,
+                        false, false);
+            }
+        } else if (dataMapTableView.getZone() == Zone.OUTPUTS) {
+            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
             parseAllExpressions(constraintEntriesList, newLinksMustHaveSelectedState);
         }
     }
 
-    private void parseAllExpressions(List<? extends ITableEntry> entriesList,
-            boolean newLinksMustHaveSelectedState) {
+    private void parseAllExpressions(List<? extends ITableEntry> entriesList, boolean newLinksMustHaveSelectedState) {
         for (ITableEntry entry : entriesList) {
             parseExpression(entry.getExpression(), entry, newLinksMustHaveSelectedState, false, false);
         }
@@ -1284,8 +1282,8 @@ public class UIManager extends AbstractUIManager {
         }
     }
 
-    public OutputDataMapTableView createNewOutputTableView(Control previousControl,
-            IDataMapTable abstractDataMapTable, Composite parent) {
+    public OutputDataMapTableView createNewOutputTableView(Control previousControl, IDataMapTable abstractDataMapTable,
+            Composite parent) {
         OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable,
                 mapperManager);
         FormData formData = new FormData();
@@ -1815,6 +1813,7 @@ public class UIManager extends AbstractUIManager {
 
     /**
      * DOC amaumont Comment method "createUI".
+     * 
      * @param parent
      * @param mapperModel
      */
@@ -1825,6 +1824,7 @@ public class UIManager extends AbstractUIManager {
 
     /**
      * DOC amaumont Comment method "createUI".
+     * 
      * @param display
      * @param mapperModel
      * @return
@@ -1835,7 +1835,9 @@ public class UIManager extends AbstractUIManager {
         return mapperUI.getShell();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.managers.AbstractUIManager#getAbstractMapperManager()
      */
     @Override
@@ -1843,6 +1845,12 @@ public class UIManager extends AbstractUIManager {
         return mapperManager;
     }
 
-    
-    
+    /**
+     * @return
+     * @see org.talend.designer.mapper.ui.MapperUI#getDatasFlowViewSashForm()
+     */
+    public SashForm getDatasFlowViewSashForm() {
+        return this.mapperUI.getDatasFlowViewSashForm();
+    }
+
 }

@@ -23,10 +23,12 @@ package org.talend.designer.mapper.ui.dnd;
 
 import java.util.List;
 
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -88,6 +90,8 @@ public class DropContextAnalyzer {
 
     private boolean invalidKeyPressed;
 
+    private StyledText currentStyledTextTarget;
+
     public DropContextAnalyzer(DraggedData draggedData, DropTargetEvent event, MapperManager mapperManager) {
         super();
         this.draggedData = draggedData;
@@ -102,15 +106,25 @@ public class DropContextAnalyzer {
     private void init() {
 
         DropTarget dropTarget = (DropTarget) event.widget;
-        currentTableTarget = (Table) dropTarget.getControl();
-        dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(currentTableTarget);
+        Control controlTarget = dropTarget.getControl();
+        dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(controlTarget);
+        if (controlTarget instanceof Table) {
+            currentTableTarget = (Table) dropTarget.getControl();
+        } else if (controlTarget instanceof StyledText) {
+            currentStyledTextTarget = (StyledText) dropTarget.getControl();
+        } else {
+            throw new IllegalArgumentException("This type of Control is unsupported for DND :"
+                    + controlTarget.toString());
+        }
         zoneTarget = dataMapTableViewTarget.getZone();
         draggedData = TableEntriesTransfer.getInstance().getDraggedData();
         dataMapTableViewSource = draggedData.getDataMapTableViewSource();
         tableItemSource = draggedData.getTableItemSource();
         zoneSource = dataMapTableViewSource.getZone();
 
-        analyzeCursorOverExpressionCell();
+        if (currentTableTarget != null) {
+            analyzeCursorOverExpressionCell();
+        }
 
         invalidKeyPressed = hasInvalidKeyPressed();
 
@@ -129,7 +143,8 @@ public class DropContextAnalyzer {
         isInputToInput = false;
         mapOneToOneAuthorized = true;
 
-        if (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1) {
+        if (targetIsExpressionFilterText()
+                || (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1)) {
             mapOneToOneAuthorized = false;
         }
 
@@ -147,13 +162,26 @@ public class DropContextAnalyzer {
             List<InputTable> inputTables = mapperManager.getInputTables();
             int indexTableSource = inputTables.indexOf(dataMapTableViewSource.getDataMapTable());
             int indexTableTarget = inputTables.indexOf(dataMapTableViewTarget.getDataMapTable());
-            if (indexTableSource >= indexTableTarget) {
-                /*
-                 * INPUT => INPUT && index of table source >= index of table target
-                 */
-                return false;
+            if (currentTableTarget != null) {
+                if (indexTableSource >= indexTableTarget) {
+                    /*
+                     * INPUT => INPUT && index of table source >= index of table target
+                     */
+                    return false;
+                } else {
+                    return true;
+                }
+            } else if (currentStyledTextTarget != null) {
+                if (indexTableSource > indexTableTarget) {
+                    /*
+                     * INPUT => INPUT && index of table source > index of table target
+                     */
+                    return false;
+                } else {
+                    return true;
+                }
             } else {
-                return true;
+                throw new IllegalStateException("Case not found");
             }
 
         }
@@ -179,13 +207,15 @@ public class DropContextAnalyzer {
 
         }
 
-        TableItem tableItemTarget = getTableItemFromPosition(new Point(event.x, event.y));
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.VARS && tableItemTarget != null) {
-            if (tableItemSource == tableItemTarget || !dropVarsEntryIsValid(tableItemTarget)) {
-                /*
-                 * VAR => VAR && (item source == item target || item target is invalid)
-                 */
-                return false;
+        if (currentTableTarget != null) {
+            TableItem tableItemTarget = getTableItemFromPosition(new Point(event.x, event.y));
+            if (zoneSource == Zone.VARS && zoneTarget == Zone.VARS && tableItemTarget != null) {
+                if (tableItemSource == tableItemTarget || !dropVarsEntryIsValid(tableItemTarget)) {
+                    /*
+                     * VAR => VAR && (item source == item target || item target is invalid)
+                     */
+                    return false;
+                }
             }
         }
 
@@ -327,6 +357,16 @@ public class DropContextAnalyzer {
 
     public boolean targetTableIsFiltersTable() {
         return targetTableIsFiltersTable(dataMapTableViewTarget);
+    }
+
+    public boolean targetIsExpressionFilterText() {
+        if (currentStyledTextTarget != null && dataMapTableViewTarget.getZone() == Zone.INPUTS
+                && dataMapTableViewTarget.getZone() == Zone.OUTPUTS
+                && currentStyledTextTarget == dataMapTableViewTarget.getExpressionFilterText()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private TableItem getTableItemFromPosition(Point cursorPosition) {

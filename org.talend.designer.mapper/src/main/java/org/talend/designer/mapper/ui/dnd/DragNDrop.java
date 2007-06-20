@@ -24,6 +24,8 @@ package org.talend.designer.mapper.ui.dnd;
 import java.util.ArrayList;
 
 import org.eclipse.jface.util.TransferDragSourceListener;
+import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -32,6 +34,7 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
@@ -54,7 +57,7 @@ public class DragNDrop {
 
     private DropTarget dropTarget;
 
-    private Table draggableTable;
+    private Control draggableControl;
 
     private MapperManager mapperManager;
 
@@ -64,24 +67,24 @@ public class DragNDrop {
      * Set source and target listeners.
      * 
      * @param mapperManager
-     * @param draggedTable
+     * @param draggableControl
      */
-    public DragNDrop(MapperManager mapperManager, Table draggedTable) {
-        this(mapperManager, draggedTable, true, true);
+    public DragNDrop(MapperManager mapperManager, Control draggableControl) {
+        this(mapperManager, draggableControl, true, true);
     }
 
     /**
      * 
      * @param mapperManager
-     * @param draggedTable
+     * @param draggableControl
      * @param canBeSourceOfDragging
      * @param canBeTargetOfDragging
      */
-    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging,
+    public DragNDrop(MapperManager mapperManager, Control draggableControl, boolean canBeSourceOfDragging,
             boolean canBeTargetOfDragging) {
         super();
         this.mapperManager = mapperManager;
-        this.draggableTable = draggedTable;
+        this.draggableControl = draggableControl;
 
         // DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
         // dragAdapter.addDragSourceListener(dragSourceListener);
@@ -96,8 +99,14 @@ public class DragNDrop {
             createDragSource(dragSourceListener);
         }
         if (canBeTargetOfDragging) {
-            CompleteDropTargetListener completeDropTargetListener = new CompleteDropTargetListener(mapperManager,
-                    draggedTable);
+            TransferDropTargetListener completeDropTargetListener = null;
+            if (draggableControl instanceof Table) {
+                completeDropTargetListener = new CompleteDropTargetTableListener(mapperManager,
+                        (Table) draggableControl);
+            } else if (draggableControl instanceof StyledText) {
+                completeDropTargetListener = new CompleteDropTargetStyledTextListener(mapperManager,
+                        (StyledText) draggableControl);
+            }
             createDropTarget(completeDropTargetListener);
         }
 
@@ -118,50 +127,56 @@ public class DragNDrop {
         public void dragStart(DragSourceEvent event) {
             // System.out.println("\n>>dragStart");
             // System.out.println(event);
-            TableItem[] items = draggableTable.getSelection();
-            if (items.length == 0) {
-                event.doit = false;
-            } else {
-                DataMapTableView dataMapTableViewSource = mapperManager.retrieveDataMapTableView(draggableTable);
 
-                TableItem tableItemSource = draggableTable.getItem(new Point(event.x, event.y));
+            if (draggableControl instanceof Table) {
 
-                if (dataMapTableViewSource != null) {
-                    DraggedData draggedData = new DraggedData();
+                Table draggableTable = (Table) draggableControl;
+                TableItem[] items = draggableTable.getSelection();
+                if (items.length == 0) {
+                    event.doit = false;
+                } else {
+                    DataMapTableView dataMapTableViewSource = mapperManager.retrieveDataMapTableView(draggableTable);
 
-                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getUiManager()
-                            .getVarsTablesView());
-                    list.addAll(mapperManager.getUiManager().getInputsTablesView());
-                    list.addAll(mapperManager.getUiManager().getOutputsTablesView());
+                    TableItem tableItemSource = draggableTable.getItem(new Point(event.x, event.y));
 
-                    for (DataMapTableView dataMapTableView : list) {
-                        Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();
-                        TableItem[] tableItems = table.getSelection();
-                        for (int i = 0; i < tableItems.length; i++) {
-                            TableItem item = tableItems[i];
-                            ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
-                            if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
-                                draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
-                                        .getMetadataColumn(), dataMapTableView.getZone());
-                            } else {
-                                draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
+                    if (dataMapTableViewSource != null) {
+                        DraggedData draggedData = new DraggedData();
+
+                        ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getUiManager()
+                                .getVarsTablesView());
+                        list.addAll(mapperManager.getUiManager().getInputsTablesView());
+                        list.addAll(mapperManager.getUiManager().getOutputsTablesView());
+
+                        for (DataMapTableView dataMapTableView : list) {
+                            Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();
+                            TableItem[] tableItems = table.getSelection();
+                            for (int i = 0; i < tableItems.length; i++) {
+                                TableItem item = tableItems[i];
+                                ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
+                                if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
+                                    draggedData.addEntry(dataMapTableEntry,
+                                            ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn(),
+                                            dataMapTableView.getZone());
+                                } else {
+                                    draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
+                                }
                             }
                         }
+                        draggedData.setDataMapTableViewSource(dataMapTableViewSource);
+                        draggedData.setTableItemSource(tableItemSource);
+                        TableEntriesTransfer.getInstance().setDraggedData(draggedData);
+                        int countEntries = draggedData.getTransferableEntryList().size();
+                        UIManager uiManager = mapperManager.getUiManager();
+                        DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
+                        draggingInfosPopup.setCountDraggingEntries(countEntries);
+                        draggingInfosPopup.setMapOneToOneMode(uiManager.isShiftPressed(), true);
+                        draggingInfosPopup.setOverwriteMode(uiManager.isCtrlPressed());
+                        draggingInfosPopup.setInsertionEntryContext(false);
+                        draggingInfosPopup.setExpressionContext(false);
+                        uiManager.setDragging(true);
                     }
-                    draggedData.setDataMapTableViewSource(dataMapTableViewSource);
-                    draggedData.setTableItemSource(tableItemSource);
-                    TableEntriesTransfer.getInstance().setDraggedData(draggedData);
-                    int countEntries = draggedData.getTransferableEntryList().size();
-                    UIManager uiManager = mapperManager.getUiManager();
-                    DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-                    draggingInfosPopup.setCountDraggingEntries(countEntries);
-                    draggingInfosPopup.setMapOneToOneMode(uiManager.isShiftPressed(), true);
-                    draggingInfosPopup.setOverwriteMode(uiManager.isCtrlPressed());
-                    draggingInfosPopup.setInsertionEntryContext(false);
-                    draggingInfosPopup.setExpressionContext(false);
-                    uiManager.setDragging(true);
-                }
 
+                }
             }
         }
 
@@ -180,7 +195,7 @@ public class DragNDrop {
         if (dragSource != null) {
             dragSource.dispose();
         }
-        dragSource = new DragSource(draggableTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        dragSource = new DragSource(draggableControl, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dragSource.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
         dragSource.addDragListener(sourceListener);
     }
@@ -194,7 +209,7 @@ public class DragNDrop {
         if (dropTarget != null) {
             dropTarget.dispose();
         }
-        dropTarget = new DropTarget(draggableTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        dropTarget = new DropTarget(draggableControl, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dropTarget.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
         dropTarget.addDropListener(targetListener);
     }

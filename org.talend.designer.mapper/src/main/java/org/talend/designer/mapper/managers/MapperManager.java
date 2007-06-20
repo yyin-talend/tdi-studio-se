@@ -195,8 +195,8 @@ public class MapperManager extends AbstractMapperManager {
         return retrieveDataMapTableView(dataMapTableEntry);
     }
 
-    public DataMapTableView retrieveDataMapTableView(Table swtTable) {
-        return this.tableManager.getView(swtTable);
+    public DataMapTableView retrieveDataMapTableView(Control swtControl) {
+        return this.tableManager.getView(swtControl);
     }
 
     /**
