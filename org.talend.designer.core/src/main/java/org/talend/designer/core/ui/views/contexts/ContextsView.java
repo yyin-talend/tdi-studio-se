@@ -162,10 +162,8 @@ public class ContextsView extends ViewPart {
     public void refresh() {
         if (composite != null) {
             getPart();
-            if (part != null) {
-                composite.setPart(part);
-                initialContents();
-            }
+            composite.setPart(part);
+            initialContents();
         } else {
             createJobComposite();
         }
