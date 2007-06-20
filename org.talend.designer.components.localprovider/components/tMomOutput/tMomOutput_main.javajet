@@ -1,0 +1,64 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+" 
+class="MomInput"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		List<IMetadataColumn> columns = metadata.getListColumns();
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+		if((conns!=null)&&(conns.size()>0)) {
+			IConnection conn = conns.get(0);
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+%>
+	String msg_<%=cid%> = <%=conn.getName() %>.<%=((IMetadataColumn)columns.get(0)).getLabel() %>;
+<%
+				if(serverType.equals("JBoss")){ // server judgement
+					String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+
+%>					
+    javax.jms.TextMessage messageQ_<%=cid%> = session_<%=cid%>.createTextMessage();
+    messageQ_<%=cid%>.setText(msg_<%=cid%>);
+<%
+                    if(msgType.equals("Queue")){
+%>
+    javax.jms.QueueSender queueSender_<%=cid%>=session_<%=cid%>.createSender(type_<%=cid%>);
+    queueSender_<%=cid%>.send(type_<%=cid%>,messageQ_<%=cid%>);
+<%
+                    }else{
+%>
+	javax.jms.TopicPublisher topicPublisher_<%=cid%>=session_<%=cid%>.createPublisher(type_<%=cid%>);
+    topicPublisher_<%=cid%>.publish(type_<%=cid%>,messageQ_<%=cid%>);
+<%
+					}
+				}else{//server judgement   /***WebSphere MQ*****/
+%>
+	com.ibm.mq.MQMessage message_<%=cid%> = new com.ibm.mq.MQMessage();
+    message_<%=cid%>.writeString(msg_<%=cid%>);
+    remoteQ_<%=cid%>.put(message_<%=cid%>, opM_<%=cid%>);
+<%
+				}
+			}
+		}
+	}  
+%>
+	
+
+
+		

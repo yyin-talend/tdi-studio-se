@@ -1,0 +1,68 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+" 
+class="MomInput"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
+	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
+	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
+	IMetadataTable metadata=null;
+	List<IMetadataTable> metadatas = node.getMetadataList();
+		if ((metadatas!=null)&&(metadatas.size()>0)) {
+		metadata = metadatas.get(0);
+		}
+%>
+	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+<%
+if(serverType.equals("JBoss")){ // server judgement
+	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
+	String to = ElementParameterParser.getValue(node, "__TO__");
+%>
+	props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
+	props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "<%=host%>:<%=port%>");
+	props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
+	
+	javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
+	javax.jms.<%=msgType%>ConnectionFactory factory_<%=cid%>
+		= (javax.jms.<%=msgType%>ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
+	javax.jms.<%=msgType%>Connection connection_<%=cid%>
+		= factory_<%=cid%>.create<%=msgType%>Connection();
+	javax.jms.<%=msgType%>Session session_<%=cid%>
+		= connection_<%=cid%>.create<%=msgType%>Session(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
+	javax.jms.<%=msgType%> type_<%=cid%>=(javax.jms.<%=msgType%>)context_<%=cid%>.lookup("<%=to%>");
+
+<%
+}else{ //server judgement   /***WebSphere MQ*****/
+	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
+	String qm=ElementParameterParser.getValue(node, "__QM__");
+	String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+%>
+    props_<%=cid%>.put("hostname", "<%=host%>");
+    props_<%=cid%>.put("port", new Integer(<%=port%>));
+    props_<%=cid%>.put("channel", "<%=channel%>");
+    props_<%=cid%>.put("CCSID", new Integer(1381));
+    props_<%=cid%>.put("transport", "MQSeries");
+
+	com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager("<%=qm%>", props_<%=cid%>);
+    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue("<%=queue%>", 16);
+    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
+<%
+}
+%>
+	
+
+
+		

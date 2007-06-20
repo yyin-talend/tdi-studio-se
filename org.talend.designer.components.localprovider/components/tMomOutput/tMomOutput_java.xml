@@ -1,0 +1,136 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+  >
+    <SIGNATURE />
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL />
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE" />
+    <CONNECTOR CTYPE="RUN_OK" />
+    <CONNECTOR CTYPE="RUN_ERROR" />
+    <CONNECTOR CTYPE="RUN_IF" />
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="SERVER"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+    >
+      <ITEMS DEFAULT="WEBSPHERE">
+        <ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
+        <ITEM NAME="JBOSS"   VALUE="JBoss" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SERVERADDRESS"
+      FIELD="TEXT"
+      NUM_ROW="2"
+    >
+	<DEFAULT>localhost</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SERVERPORT"
+      FIELD="TEXT"
+      NUM_ROW="2"
+    >
+	<DEFAULT IF="(SERVER == 'JBOSS')">1099</DEFAULT>
+	<DEFAULT IF="(SERVER == 'WEBSPHERE')">1414</DEFAULT>
+    </PARAMETER>
+    
+     <PARAMETER
+      NAME="TO"
+      FIELD="TEXT"
+      SHOW="true"
+      NUM_ROW="3"
+      SHOW_IF="(SERVER == 'JBOSS')"
+    />
+    
+    <PARAMETER
+      NAME="MSGTYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="3"
+      SHOW_IF="(SERVER == 'JBOSS')"
+    >
+      <ITEMS DEFAULT="TOPIC">
+        <ITEM NAME="TOPIC"   VALUE="Topic" />
+        <ITEM NAME="QUEUE"   VALUE="Queue" />
+      </ITEMS>
+    </PARAMETER>
+    
+  <PARAMETER
+      NAME="CHANNEL"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW_IF="(SERVER == 'WEBSPHERE')" >
+   	<DEFAULT>DC.SVRCONN</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="4"
+	  READONLY="true"
+    >
+      <TABLE>
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+    </PARAMETER>
+    
+   
+  <PARAMETER
+      NAME="QM"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      SHOW_IF="(SERVER == 'WEBSPHERE')"
+    > 
+    <DEFAULT></DEFAULT>
+    </PARAMETER>
+    
+  <PARAMETER
+      NAME="QUEUE"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      SHOW_IF="(SERVER == 'WEBSPHERE')"
+    > 
+    <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+   <IMPORTS>
+       <IMPORT NAME="JBOSS-J2EE" MODULE="jboss-j2ee.jar" REQUIRED="true" />
+       <IMPORT NAME="JBOSSALL-CLIENT" MODULE="jbossall-client.jar" REQUIRED="true" />
+       <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
+       <IMPORT NAME="MQ" MODULE="com.ibm.mq.jar" REQUIRED="true" />
+       <IMPORT NAME="MQJMS" MODULE="com.ibm.mqjms.jar" REQUIRED="true" />
+     </IMPORTS>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+  </RETURNS>
+
+</COMPONENT>
