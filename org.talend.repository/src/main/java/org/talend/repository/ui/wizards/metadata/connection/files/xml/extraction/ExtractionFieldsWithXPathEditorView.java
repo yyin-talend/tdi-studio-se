@@ -219,7 +219,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         // //////////////////////////////////////////////////////////////////////////////////////
         // Tag Name
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ExtractionFieldsWithXPathEditorView.columnTitle.tagName")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ExtractionFieldsWithXPathEditorView.columnTitle.columnName")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
