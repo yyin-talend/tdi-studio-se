@@ -120,7 +120,7 @@ public class OpenSQLBuilderDialogJob extends Job {
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
                                 String sql = connectionParameters.getQuery();
-                                sql = TalendTextUtils.addQuotes(sql);
+                                sql = TalendTextUtils.addSQLQuotes(sql);
                                 Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
                                 commandStack.execute(cmd);
                             }

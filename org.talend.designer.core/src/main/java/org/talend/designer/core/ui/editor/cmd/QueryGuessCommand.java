@@ -98,7 +98,7 @@ public class QueryGuessCommand extends Command {
 
         String schema = this.dbNameAndSchemaMap.get(this.realTableId);
 
-        String newQuery = TalendTextUtils.addQuotes(generateNewQuery(newOutputMetadataTable, dbType, schema));
+        String newQuery = TalendTextUtils.addSQLQuotes(generateNewQuery(newOutputMetadataTable, dbType, schema));
 
         for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
             if (param.getField() == EParameterFieldType.MEMO_SQL) {

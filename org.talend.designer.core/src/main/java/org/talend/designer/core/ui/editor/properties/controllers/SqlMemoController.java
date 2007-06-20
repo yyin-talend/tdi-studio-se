@@ -276,7 +276,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             if (Window.OK == dial.open()) {
                 if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                     String sql = connParameters.getQuery();
-                    sql = TalendTextUtils.addQuotes(sql);
+                    sql = TalendTextUtils.addSQLQuotes(sql);
                     return new PropertyChangeCommand(elem, propertyName, sql);
                 }
             }

@@ -1240,7 +1240,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$
             return sql;
         }
-        return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
+        return TalendTextUtils.addSQLQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
