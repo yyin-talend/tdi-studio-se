@@ -181,19 +181,24 @@ class Convert{
 	Convert convert=new Convert();	
 	IMetadataColumn incomeColumn=null;	
 	int count=0;
-    for (Map<String, String> addCol:addCols) {//5 
-    count=count+1; 			
-  	if(addCol.get("TYPE").equals("OUT")){
+for (Map<String, String> addCol:addCols) {//5 
+    count=count+1; 	
+   for(IMetadataColumn column:incomeColumnList){//6
+   	if(addCol.get("COLUMN").equals(column.getLabel())){//7
+  	if(addCol.get("TYPE").equals("OUT")){//8
   	%>
   		stmt<%=cid%>.registerOutParameter(<%=count%>,<%if(addCol.get("DATATYPE").equals("Basic")){%>java.sql.Types.<%=convert.genOUTConvert(incomeColumnList.get(count-1).getTalendType())%><%}else{%>oracle.jdbc.driver.OracleTypes.CURSOR<%}%>);
   	<%
   	}else{
+System.out.println(addCol.get("COLUMN"));//!!!!!!!!!!!!start here
 %>
-  		stmt<%=cid%>.set<%=convert.genConvert(incomeColumnList.get(count-1).getTalendType())%>(<%=count%>, <%=incomingConnName %>.<%=incomeColumnList.get(count-1).getLabel() %>);																					    			 	
+  		stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=count%>, <%=incomingConnName %>.<%=column.getLabel() %>);																					    			 	
   	<%
-  	}
-
-				}//5	
+  	  } //8
+  	 }//7
+  	} //6
+   }//5
+	
 %> 
 
 			   try{		    			      
@@ -204,17 +209,16 @@ class Convert{
 				   }				   
 
 <%
-//output
 int outNum=1;
 String outColumnType=null;
 List< ? extends IConnection> outConns = node.getOutgoingConnections();
-	if(outConns!=null && outConns.size()>0){
+if((outConns!=null && outConns.size()>0)&&(addCols.size()>0)){ //if1
 		IConnection conn2 = outConns.get(0);
 		String firstConnName = conn2.getName();
 		IMetadataTable outputMetadata = conn2.getMetadataTable();
 		List<IMetadataColumn> outputColumnList = outputMetadata.getListColumns();
 
-for (Map<String, String> addCol:addCols) {
+for (Map<String, String> addCol:addCols) {//for1
 	if(addCol.get("NAME").equals(outpara)){
 		if(!(addCol.get("DATATYPE").equals("Basic"))){
 %>
@@ -248,9 +252,14 @@ for(int i=0;i<1;i++){
 	}
 	outNum=outNum+1;
 
-}
+}//end for1
 
-	}//end if
+}//end if1
+else{
+%>
+for(int i=0;i<0;i++){
+<%
+}
 %>
 
 	

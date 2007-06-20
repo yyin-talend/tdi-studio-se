@@ -8,7 +8,7 @@
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
-    STARTABLE="false"
+    STARTABLE="true"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
     IS_MULTIPLYING_OUTPUTS="true"
@@ -118,9 +118,9 @@
       NB_LINES="3"
     >
       <ITEMS>
-
         <ITEM NAME="NAME" VALUE="paraName" />
-
+        <ITEM NAME="COLUMN" FIELD="PREV_COLUMN_LIST"/>
+        
         <ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="IN">
             <ITEM NAME="IN" VALUE="IN"/>
@@ -128,16 +128,13 @@
             <ITEM NAME="IN_AND_OUT" VALUE="IN_AND_OUT"/>
           </ITEMS>
         </ITEM>
-
+        
         <ITEM NAME="DATATYPE" FIELD="CLOSED_LIST">
            <ITEMS DEFAULT="BASIC">
             <ITEM NAME="BASIC" VALUE="Basic"/>
             <ITEM NAME="ORACLE" VALUE="Oralce DataType"/>
           </ITEMS>
         </ITEM>
-        
-        
-
       </ITEMS>
     </PARAMETER>
 
