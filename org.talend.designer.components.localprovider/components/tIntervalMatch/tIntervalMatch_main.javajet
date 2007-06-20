@@ -45,8 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//11
 		
 			IConnection conn = connsOut.get(0); //the first connection
 			firstConnName = conn.getName();			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
-
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) && inMainCon!= null) {//3
 				List<IMetadataColumn> listColumns = inMainCon.getMetadataTable().getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {//4

@@ -40,8 +40,8 @@ for (IConnection conn : connsIn) {//3
 
 String minNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MIN__");
 String maxNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_MAX__");
-boolean minBounds = ElementParameterParser.getValue(node, "__LOOKUP_MIN_BOUNDS__").equals("true");
-boolean maxBounds = ElementParameterParser.getValue(node, "__LOOKUP_MAX_BOUNDS__").equals("true");
+boolean minBounds = ElementParameterParser.getValue(node, "__LOOKUP_MIN_BOUNDS__").equals("false");
+boolean maxBounds = ElementParameterParser.getValue(node, "__LOOKUP_MAX_BOUNDS__").equals("false");
 String lookupNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
 String mainName = ElementParameterParser.getValue(node, "__MAIN_COLUMN__");
 String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
