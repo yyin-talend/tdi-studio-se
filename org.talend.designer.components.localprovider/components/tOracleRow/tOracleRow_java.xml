@@ -7,7 +7,7 @@
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
-    STARTABLE="false"
+    STARTABLE="true"
   >
     <SIGNATURE/>
   </HEADER>
