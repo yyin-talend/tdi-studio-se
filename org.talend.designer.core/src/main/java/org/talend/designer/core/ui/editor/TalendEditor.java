@@ -65,7 +65,9 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.palette.PaletteListener;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
@@ -73,6 +75,7 @@ import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
+import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite.FlyoutPreferences;
 import org.eclipse.gef.ui.parts.ContentOutlinePage;
@@ -81,6 +84,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
+import org.eclipse.gef.ui.views.palette.PaletteView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -103,6 +107,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -205,14 +211,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         case PERL:
             srcPath = new Path(".Perl");
             deletion = new PerlJobDeletion(this.process);
-            return;
+            break;
         case JAVA:
             srcPath = new Path(".Java/src");
             deletion = new JavaJobDeletion(this.process);
-            return;
+            break;
 
         }
-
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -340,7 +345,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction setRefAction = new ConnectionSetAsMainRef(this);
         getActionRegistry().registerAction(setRefAction);
         getSelectionActions().add(setRefAction.getId());
-        
+
         IAction modifyMergeAction = new ModifyMergeOrderAction(this);
         getActionRegistry().registerAction(modifyMergeAction);
         getSelectionActions().add(modifyMergeAction.getId());
@@ -807,7 +812,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     @Override
     public void dispose() {
-        TalendEditorPaletteFactory.saveFamilyState(getPaletteViewerProvider().getEditDomain().getPaletteViewer());
         workspace.removeResourceChangeListener(this);
 
         process.closed();
@@ -840,13 +844,20 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     }
 
-    
     /**
      * Getter for deletion.
+     * 
      * @return the deletion
      */
     public IJobDeletion getDeletion() {
         return this.deletion;
     }
-    
+
+    public void savePaletteState() {
+        PaletteViewer paletteViewer = getPaletteViewerProvider().getEditDomain().getPaletteViewer();
+        if (paletteViewer != null) {
+            TalendEditorPaletteFactory.saveFamilyState(paletteViewer);
+        }
+    }
+
 }

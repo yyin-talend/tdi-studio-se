@@ -162,7 +162,10 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partDeactivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partDeactivated(IWorkbenchPart part) {
-        // Do nothing
+        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
+            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+            mpte.getTalendEditor().savePaletteState();
+        }
     }
 
     /*
