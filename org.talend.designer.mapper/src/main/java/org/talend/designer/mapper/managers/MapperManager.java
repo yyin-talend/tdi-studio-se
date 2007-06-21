@@ -252,8 +252,8 @@ public class MapperManager extends AbstractMapperManager {
      * @param currentLink
      * @param removedLink
      */
-    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange,
-            IMapperLink currentLink, boolean removedLink) {
+    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange, IMapperLink currentLink,
+            boolean removedLink) {
 
         boolean sourceIsCauseOfChange = false;
         if (currentLink.getPointLinkDescriptor1().getTableEntry() == entryCauseOfChange) {
@@ -842,7 +842,8 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return problemsManager.buildProblemKey(getAbstractMapComponent().getUniqueName(), problemKeyField, tableName, entryName);
+        return problemsManager.buildProblemKey(getAbstractMapComponent().getUniqueName(), problemKeyField, tableName,
+                entryName);
     }
 
     /**
@@ -865,7 +866,10 @@ public class MapperManager extends AbstractMapperManager {
      */
     public boolean isAdvancedMap() {
         // return getComponent().getClass().getName().endsWith("AdvancedgetAbstractMapComponent()");
-        return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA;
+        return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA
+//                || LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
+                ;
+        
     }
 
     /**
@@ -885,7 +889,9 @@ public class MapperManager extends AbstractMapperManager {
         return atLeastOneHashKey;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.managers.AbstractMapperManager#getLinkManager()
      */
     @Override
@@ -893,6 +899,4 @@ public class MapperManager extends AbstractMapperManager {
         return linkManager;
     }
 
-    
-    
 }

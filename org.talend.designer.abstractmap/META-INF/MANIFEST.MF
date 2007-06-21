@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Map Plug-in
+Bundle-Name: Abstract Map Plug-in
 Bundle-SymbolicName: org.talend.designer.abstractmap;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: org.talend.designer.abstractmap.MapPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,

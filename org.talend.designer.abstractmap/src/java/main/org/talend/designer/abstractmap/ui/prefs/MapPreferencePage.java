@@ -97,7 +97,7 @@ public class MapPreferencePage extends FieldEditorPreferencePage implements IWor
      */
     public MapPreferencePage() {
         super(GRID);
-        setDescription(Messages.getString("prefs.configuration.title"));
+//        setDescription(Messages.getString("prefs.configuration.title"));
         setPreferenceStore(MapPlugin.getDefault().getPreferenceStore());
     }
 

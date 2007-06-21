@@ -37,6 +37,7 @@ import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -95,11 +96,50 @@ public class ProblemsAnalyser {
 
             checkKeysProblems(inputTables);
 
+            checkOutputTablesProblems(extOutputTables);
+
             checkLookupTablesUnusedProblems(inputTables);
 
         }
 
         return getProblems();
+    }
+
+    /**
+     * DOC amaumont Comment method "checkOutputTablesProblems".
+     * 
+     * @param extOutputTables
+     */
+    private void checkOutputTablesProblems(List<ExternalMapperTable> extOutputTables) {
+        ArrayList<ExternalMapperTable> rejectTables = new ArrayList<ExternalMapperTable>();
+        ArrayList<ExternalMapperTable> normalTables = new ArrayList<ExternalMapperTable>();
+        ArrayList<ExternalMapperTable> normalTablesWithFilter = new ArrayList<ExternalMapperTable>();
+        for (ExternalMapperTable outputTable : extOutputTables) {
+            if (outputTable.isReject()) {
+                rejectTables.add(outputTable);
+            } else if (!outputTable.isRejectInnerJoin()) {
+                if (outputTable.getExpressionFilter() != null && outputTable.isActivateExpressionFilter()
+                        && !outputTable.getExpressionFilter().trim().equals("")) {
+                    normalTablesWithFilter.add(outputTable);
+                } else {
+                    normalTables.add(outputTable);
+                }
+            }
+        }
+        if (rejectTables.size() > 0 && normalTables.size() > 0) {
+            String tables = "";
+            int normalTablesListSize = normalTables.size();
+            for (int i = 0; i < normalTablesListSize; i++) {
+                ExternalMapperTable normalOutputTable = normalTables.get(i);
+                if (i > 0) {
+                    tables += ", ";
+                }
+                tables += "\"" + normalOutputTable.getName() + "\"";
+            }
+            String description = Messages.getString("Problem.warning.unusableReject", new Object[] { tables }); //$NON-NLS-1$
+            addProblem(new Problem(null, description, ProblemStatus.WARNING));
+        }
+
     }
 
     /**
@@ -125,8 +165,8 @@ public class ProblemsAnalyser {
 
             if (!atLeastOneExpressionFilled) {
                 if (mapperManager.isAdvancedMap()) {
-                    addProblem(new Problem(null, "Try to set an Expression key if possible in the lookup table '"
-                            + table.getName() + "' to improve performance. ", ProblemStatus.WARNING));
+                    addProblem(new Problem(null, Messages.getString("Problem.warning.setExpressionKey",
+                            new Object[] { table.getName() }), ProblemStatus.WARNING));
                 } else {
                     addProblem(new Problem(
                             null,

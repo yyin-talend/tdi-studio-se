@@ -74,14 +74,14 @@ public class OutputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable
                     .getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+                if (!mapperManager.isAdvancedMap()) {
                     for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
                         FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
                                 .getExpression());
                         // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
                         addFilterEntry(filterTableEntry);
                     }
-                } else if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                } else {
                     ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
                     JavaGenerationManager javaGenerationManager = new JavaGenerationManager(currentLanguage);
                     DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);

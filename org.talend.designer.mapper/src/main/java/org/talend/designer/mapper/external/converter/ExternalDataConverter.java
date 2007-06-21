@@ -95,7 +95,6 @@ public class ExternalDataConverter {
 
         ArrayList<InputTable> inputDataMapTables = prepareInputTables(inputs, externalData);
 
-        System.out.println();
         ArrayList<OutputTable> outputDataMapTables = prepareOutputTables(outputs, outputMetadataTables, externalData);
 
         List<VarsTable> varsTablesList = prepareVarsTables(externalData);
@@ -240,6 +239,7 @@ public class ExternalDataConverter {
                 externalMapperTableEntry.setName(dataMapTableEntry.getName());
                 if (isVarTable) {
                     externalMapperTableEntry.setType(((VarTableEntry) dataMapTableEntry).getType());
+                    externalMapperTableEntry.setNullable(((VarTableEntry) dataMapTableEntry).isNullable());
                 } else {
                     externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
                             .getTalendType());
@@ -320,7 +320,9 @@ public class ExternalDataConverter {
                         && table.getExpressionFilter().getExpression().equals(
                                 InputDataMapTableView.DEFAULT_EXPRESSION_FILTER) ? null : table.getExpressionFilter()
                         .getExpression());
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+        if (mapperManager.isAdvancedMap()) {
+            externalMapperTable.setConstraintTableEntries(null);
+        } else {
             ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
             for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
                 ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
@@ -329,9 +331,6 @@ public class ExternalDataConverter {
                 constraintTableEntries.add(externalMapperTableEntry);
             }
             externalMapperTable.setConstraintTableEntries(constraintTableEntries);
-        
-        } else if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            externalMapperTable.setConstraintTableEntries(null);
         }
 
         outputTables.add(externalMapperTable);

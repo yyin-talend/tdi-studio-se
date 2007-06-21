@@ -1085,7 +1085,7 @@ public class UIManager extends AbstractUIManager {
 
             if (!alreadyProcessed.contains(location)
                     && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
-                    && (codeLanguage == ECodeLanguage.JAVA || codeLanguage == ECodeLanguage.PERL && dontRemoveLink)) {
+                    && (mapperManager.isAdvancedMap() || !mapperManager.isAdvancedMap() && dontRemoveLink)) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
                 if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)

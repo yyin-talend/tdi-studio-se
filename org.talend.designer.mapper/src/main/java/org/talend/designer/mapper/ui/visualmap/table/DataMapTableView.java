@@ -2043,8 +2043,8 @@ public abstract class DataMapTableView extends Composite {
                          * @see java.lang.Runnable#run()
                          */
                         public void run() {
-                            System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
-                                    + System.currentTimeMillis());
+//                            System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
+//                                    + System.currentTimeMillis());
                             onExpressionFilterTextResized();
                         }
 
@@ -2103,7 +2103,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "onExpressionFilterTextResized".
      */
     private void onExpressionFilterTextResized() {
-        System.out.println("Filter text resized" + System.currentTimeMillis());
+//        System.out.println("Filter text resized" + System.currentTimeMillis());
         expressionFilterText.redraw();
     }
 
