@@ -53,7 +53,7 @@
        REQUIRED="true"
        NUM_ROW="10"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/document.dtd"</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/document.dtd'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -62,7 +62,7 @@
        REQUIRED="true"
        NUM_ROW="20"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/file.xml"</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/file.xml'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -71,7 +71,7 @@
        REQUIRED="true"
        NUM_ROW="30"
     >
-      <DEFAULT>"[job " . jobName . "] File is Valid"</DEFAULT>
+      <DEFAULT>"[job " . $_globals{job_name} . "] File is Valid "</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -80,7 +80,7 @@
        REQUIRED="true"
        NUM_ROW="40"
     >
-      <DEFAULT>"[job " . jobName . "] File is Invalid"</DEFAULT>
+      <DEFAULT>"[job " . $_globals{job_name} . "] File is Invalid "</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

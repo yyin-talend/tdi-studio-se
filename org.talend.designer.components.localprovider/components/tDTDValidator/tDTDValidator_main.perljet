@@ -54,7 +54,7 @@ my @<%=cid %> = ();
     my $dtd_<%=cid%> = XML::LibXML::Dtd->new('-//dtd public id//-', <%=dtdfile%>);
 
     eval {
-    	$dtd_<%=cid%>->validate( $parser_<%=cid%>->parse_file(<%=xmlfile%>) );
+    	$parser_<%=cid%>->parse_file(<%=xmlfile%>)->validate( $dtd_<%=cid%> );
     };
 
     my $message ;
