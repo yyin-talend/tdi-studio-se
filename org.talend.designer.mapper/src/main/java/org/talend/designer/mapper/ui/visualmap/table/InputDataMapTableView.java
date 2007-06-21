@@ -126,12 +126,8 @@ public class InputDataMapTableView extends DataMapTableView {
 
                 public Image getImage(InputColumnTableEntry bean) {
                     if (bean.getExpression() != null && !bean.getExpression().trim().equals("")) {
-                        if (LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA) {
-                            if (mapperManager.isAdvancedMap()) {
-                                return ImageProviderMapper.getImage(ImageInfo.LOOKUP_KEY_ICON);
-                            } else {
-                                return null;
-                            }
+                        if (mapperManager.isAdvancedMap()) {
+                            return ImageProviderMapper.getImage(ImageInfo.LOOKUP_KEY_ICON);
                         } else {
                             return null;
                         }
