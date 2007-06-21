@@ -3,8 +3,11 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+    java.util.Map
+    java.util.HashMap
 "
 %>
 
@@ -20,6 +23,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         String query = ElementParameterParser.getValue(node, "__QUERY__");
 
+        String preparedStatement = ElementParameterParser.getValue(node, "__PREPARED_STATEMENT__");
+
+        List<Map<String, String>> statementParams =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__STATEMENT_PARAMS__"
+            );
+
+        StringBuffer paramValues = new StringBuffer();
+
         String commitEvery = ElementParameterParser.getValue(
             node,
             "__COMMIT_EVERY__"
@@ -31,31 +44,53 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 %>
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
-    <%=query %>
-)
 <%
-        if (dieOnError.equals("true")) {
+if(preparedStatement.equals("false")){
 %>
-    or die '[<%=cid%>] cannot prepare query '.$DBI::errstr;
-<%
-        }
-%>
+    my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+        <%=query %>
+    )
+    <%
+            if (dieOnError.equals("true")) {
+    %>
+        or die '[<%=cid%>] cannot prepare query '.$DBI::errstr;
+    <%
+            }
+    %>
 
 ;
 <%
+}
+else {
+    Map<String, Integer> indexOfColumns = new HashMap() ;
+    int indx = 0 ;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        indexOfColumns.put(column.getLabel(), indx );
+        indx++;
+    }
+
+    paramValues.append("( ");
+    for(int i=0; i<statementParams.size(); i++) {
+        Map<String, String> statementParam = statementParams.get(i);
+        paramValues.append("$");
+        paramValues.append(cid);
+        paramValues.append("[");
+        paramValues.append(indexOfColumns.get(statementParam.get("INPUT_COLUMN")));
+        paramValues.append("],");
+    }
+    paramValues.append(" )");
+}
+%>
+
+$sth_<%=cid %>->execute(<%=paramValues %>)
+<%
         if (dieOnError.equals("true")) {
 %>
-$sth_<%=cid %>->execute()
     or die '[<%=cid%>] cannot execute query '.$DBI::errstr;
 <%
-        }
-        else {
-%>
-$sth_<%=cid %>->execute();
-<%
-        }
-%>
+   }
+%> ;
+
 $sth_<%=cid %>->finish();
 
 if ($_context{StoreSQLQuery}) {

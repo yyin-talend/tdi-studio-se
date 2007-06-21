@@ -25,6 +25,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String dbuser = ElementParameterParser.getValue(node, "__USER__");
         String dbpass = ElementParameterParser.getValue(node, "__PASS__");
         String query  = ElementParameterParser.getValue(node, "__QUERY__");
+        String preparedStatement = ElementParameterParser.getValue(node, "__PREPARED_STATEMENT__");
         String encoding = ElementParameterParser.getValue(
             node,
             "__ENCODING__"
@@ -33,6 +34,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__COMMIT_EVERY__"
         );
+
+        String dieOnError = ElementParameterParser.getValue(
+            node,
+            "__DIE_ON_ERROR__"
+        );
+
 %>
 
 use DBI;
@@ -90,6 +97,25 @@ my $dbh_<%=cid %> = DBI->connect(
 my $sth_<%=cid %>;
 
 my $nb_line_current_commit_<%=cid%> = 0;
+
+<%
+if(preparedStatement.equals("true")){
+%>
+my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    <%=query %>
+)
+    <%
+            if (dieOnError.equals("true")) {
+    %>
+        or die '[<%=cid%>] cannot prepare query '.$DBI::errstr;
+    <%
+            }
+    %>
+
+;
+<%
+}
+%>
 
 <%
     }

@@ -124,9 +124,31 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="PREPARED_STATEMENT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="8"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="STATEMENT_PARAMS"
+      FIELD="TABLE"
+      NUM_ROW="9"
+      NB_LINES="2"
+      NOT_SHOW_IF="(PREPARED_STATEMENT=='false')"
+    >
+      <ITEMS>
+        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
@@ -135,7 +157,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="11"
       REQUIRED="true"
     >
       <DEFAULT>100</DEFAULT>
