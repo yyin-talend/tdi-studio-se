@@ -169,7 +169,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
                         metadataInput = true;
                     }
-                    if (!metadataInput) {
+                    if (!metadataInput && (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null)) {
                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                         IElementParameter repositorySchemaTypeParameter = elem
                                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
