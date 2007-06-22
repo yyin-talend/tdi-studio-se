@@ -37,11 +37,9 @@ int validate<%=cid %> = 0;
 try {
     validator<%=cid %>.validate(source<%=cid %>);
   	message<%=cid %> = <%=validMessage%>;
-	validate<%=cid %> = 0;  	
+	validate<%=cid %> = 1;  	
 } catch (org.xml.sax.SAXException ex) {
-	message<%=cid %> = <%=invalidMessage%> + " " + ex.getMessage();
-	validate<%=cid %> = 1;
-	System.err.println(ex.getMessage());
+	message<%=cid %> = <%=invalidMessage%>;
 } 
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
