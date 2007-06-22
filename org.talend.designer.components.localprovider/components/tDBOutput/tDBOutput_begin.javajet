@@ -92,6 +92,28 @@ if(metadatas !=null && metadatas.size()>0){
 	}
 }
 %>
+
+<%
+if(!dataAction.equals("INSERT"))
+{
+    int keyCount = 0;
+    for(IMetadataColumn column:columnList)
+    {
+    	if(column.isKey())
+    	{
+    		keyCount++;
+    	}
+    }
+    %>
+    int keyCount_<%=cid%> = <%=keyCount%>;
+    if(keyCount_<%=cid%> < 1)
+    {
+    	throw new Exception("For update or delete, Schema must have a key");
+    }
+<%
+}
+%> 
+
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 

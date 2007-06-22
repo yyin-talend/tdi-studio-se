@@ -49,6 +49,40 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 %>
+
+<%
+List<IMetadataColumn> columnList = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas !=null && metadatas.size()>0){
+	IMetadataTable metadata = metadatas.get(0);
+	if(metadata != null){
+		columnList = metadata.getListColumns();
+	}
+}
+%>
+
+<%
+if(!dataAction.equals("INSERT"))
+{
+    int keyCount = 0;
+    for(IMetadataColumn column:columnList)
+    {
+    	if(column.isKey())
+    	{
+    		keyCount++;
+    	}
+    }
+    %>
+    int keyCount_<%=cid%> = <%=keyCount%>;
+    if(keyCount_<%=cid%> < 1)
+    {
+    	throw new Exception("For update or delete, Schema must have a key");
+    }
+<%
+}
+%> 
+
 java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
 calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
 long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
@@ -103,16 +137,6 @@ java.sql.PreparedStatement pstmt_<%=cid %> =null;
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 	
 <%
-}
-
-List<IMetadataColumn> columnList = null;
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if(metadatas !=null && metadatas.size()>0){
-	IMetadataTable metadata = metadatas.get(0);
-	if(metadata != null){
-		columnList = metadata.getListColumns();
-	}
 }
 
 if(columnList != null && columnList.size()>0){
@@ -316,7 +340,7 @@ for(Column colStmt:stmtStructure){
 
 
 	if(dataAction.equals("INSERT")){
-	%>	
+	%>		
 	
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
