@@ -26,6 +26,7 @@ import java.util.List;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -49,13 +50,17 @@ public class ExternalUtilities {
 
         List<IODataComponent> inputs = inAndOut.getInputs();
         for (IConnection currentConnection : node.getIncomingConnections()) {
-            IODataComponent component = new IODataComponent(currentConnection);
-            inputs.add(component);
+            if (currentConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                IODataComponent component = new IODataComponent(currentConnection);
+                inputs.add(component);
+            }
         }
         List<IODataComponent> outputs = inAndOut.getOuputs();
         for (IConnection currentConnection : node.getOutgoingConnections()) {
-            IODataComponent component = new IODataComponent(currentConnection);
-            outputs.add(component);
+            if (currentConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                IODataComponent component = new IODataComponent(currentConnection);
+                outputs.add(component);
+            }
         }
 
         externalNode.setIODataComponents(inAndOut);
