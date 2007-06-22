@@ -46,6 +46,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.constants.FileConstants;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
@@ -297,6 +298,7 @@ public abstract class JobScriptsManager {
                         .getProject();
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
+                sourceFile.add(prj.getFile(FileConstants.LOCAL_PROJECT_FILENAME));
                 addNodeToResource(folder.members(), sourceFile);
                 sourceResouces = sourceFile.toArray(new IResource[sourceFile.size()]);
             } catch (Exception e) {
@@ -329,6 +331,7 @@ public abstract class JobScriptsManager {
                 name = name != null ? name.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 list.add(name + ".item"); //$NON-NLS-1$
                 list.add(name + ".properties"); //$NON-NLS-1$
+                list.add(FileConstants.LOCAL_PROJECT_FILENAME);
 
             } catch (Exception e) {
                 ExceptionHandler.process(e);
