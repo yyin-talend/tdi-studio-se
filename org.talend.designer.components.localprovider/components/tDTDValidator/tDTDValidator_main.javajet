@@ -26,67 +26,56 @@ String validMessage = ElementParameterParser.getValue(node, "__VALID_MESSAGE__")
 String invalidMessage = ElementParameterParser.getValue(node, "__INVALID_MESSAGE__");
 String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 %>
+
 String message<%=cid %> = "";
 int validate<%=cid %> = 0;
 
 java.io.InputStream is<%=cid %>=null;
 javax.xml.parsers.DocumentBuilderFactory dbf<%=cid %>=null;
 javax.xml.parsers.DocumentBuilder db<%=cid %>=null;
-try {
-	message<%=cid%>=<%=validMessage%>;
-	is<%=cid %>=new java.io.FileInputStream(<%=xmlfile%>);
-	java.io.File xmlfile<%=cid %>=new java.io.File(<%=xmlfile%>);
-	java.io.BufferedReader br<%=cid %>=new java.io.BufferedReader(new java.io.FileReader(xmlfile<%=cid %>));
-	java.lang.StringBuffer sb<%=cid %>=new java.lang.StringBuffer("");
-	char[] xml<%=cid %>=new char[(int) xmlfile<%=cid %>.length()];
-	br<%=cid %>.read(xml<%=cid %>);
-	sb<%=cid %>.append(xml<%=cid %>);//read xml document		
-	dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-	dbf<%=cid %>.setValidating(false);
-	db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
-	org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.File(<%=xmlfile%>));
-	String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
+message<%=cid%>=<%=validMessage%>;
+is<%=cid %>=new java.io.FileInputStream(<%=xmlfile%>);
+java.io.File xmlfile<%=cid %>=new java.io.File(<%=xmlfile%>);
+java.io.BufferedReader br<%=cid %>=new java.io.BufferedReader(new java.io.FileReader(xmlfile<%=cid %>));
+java.lang.StringBuffer sb<%=cid %>=new java.lang.StringBuffer("");
+char[] xml<%=cid %>=new char[(int) xmlfile<%=cid %>.length()];
+br<%=cid %>.read(xml<%=cid %>);
+sb<%=cid %>.append(xml<%=cid %>);//read xml document		
+dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+dbf<%=cid %>.setValidating(false);
+db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
+org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.File(<%=xmlfile%>));
+String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
 	
-	String DTDpath<%=cid %>=<%=dtdfile%>;		
-	String reference<%=cid %>="<!DOCTYPE "+rootnode<%=cid %>+" PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' '"+DTDpath<%=cid %>+"'>";
+String DTDpath<%=cid %>=<%=dtdfile%>;		
+String reference<%=cid %>="<!DOCTYPE "+rootnode<%=cid %>+" PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' '"+DTDpath<%=cid %>+"'>";
 	
-	int offset<%=cid %>=sb<%=cid %>.indexOf(rootnode<%=cid %>);
-	sb<%=cid %>.insert(offset<%=cid %>-1,reference<%=cid %>);//insert reference
-	is<%=cid %>=new java.io.StringBufferInputStream(sb<%=cid %>.toString());
-	
-	class MyHandler<%=cid %> extends org.xml.sax.helpers.DefaultHandler{
-	    String errorMessage = null;
-	    public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
-	    	errorMessage = e.getMessage();
-	    	System.err.println("General Error " + errorMessage);
-	    }
-	    public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
-	    	errorMessage = e.getMessage();
-	    	System.err.println("Fatal Error " + errorMessage);
-	    }
-	}
-	
-	MyHandler<%=cid %> handler<%=cid %> = new MyHandler<%=cid %>(); //
-	dbf<%=cid %>.setValidating(true);
-	db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
-	db<%=cid %>.setErrorHandler(handler<%=cid %>);
-	doc<%=cid %> = db<%=cid %>.parse(is<%=cid %>);
-	
-	if (handler<%=cid %>.errorMessage == null) {
-		message<%=cid %>= <%=validMessage%>;
-	} else {
-		message<%=cid %>= <%=invalidMessage%> + " " + handler<%=cid %>.errorMessage;
-		validate<%=cid %> = 1;
-	}				
-} catch (javax.xml.parsers.ParserConfigurationException e) {
-	message<%=cid%> = <%=invalidMessage%> + " " + e.getMessage();
-	validate<%=cid %> = 1;
-	e.printStackTrace();
-} catch (org.xml.sax.SAXException e) {
-	e.printStackTrace();
-	validate<%=cid %> = 1;
-	message<%=cid%> = <%=invalidMessage%> + " " + e.getMessage();
+int offset<%=cid %>=sb<%=cid %>.indexOf(rootnode<%=cid %>);
+sb<%=cid %>.insert(offset<%=cid %>-1,reference<%=cid %>);//insert reference
+is<%=cid %>=new java.io.StringBufferInputStream(sb<%=cid %>.toString());
+
+class MyHandler<%=cid %> extends org.xml.sax.helpers.DefaultHandler{
+    String errorMessage = null;
+    public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+    	errorMessage = e.getMessage();
+    }
+    public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+    	errorMessage = e.getMessage();
+    }
 }
+
+MyHandler<%=cid %> handler<%=cid %> = new MyHandler<%=cid %>();
+dbf<%=cid %>.setValidating(true);
+db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
+db<%=cid %>.setErrorHandler(handler<%=cid %>);
+doc<%=cid %> = db<%=cid %>.parse(is<%=cid %>);
+
+if (handler<%=cid %>.errorMessage == null) {
+	message<%=cid %>= <%=validMessage%>;
+	validate<%=cid %> = 1;
+} else {
+	message<%=cid %>= <%=invalidMessage%>;
+}				
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
 
