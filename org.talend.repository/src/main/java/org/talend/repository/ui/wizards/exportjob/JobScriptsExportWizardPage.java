@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -48,14 +48,25 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.ui.editor.ITalendEditorService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.wizards.exportjob.deletion.AbstractJobDeletionAfterExported;
+import org.talend.repository.ui.wizards.exportjob.deletion.DeleteJavaJobAfterExport;
+import org.talend.repository.ui.wizards.exportjob.deletion.DeletePerlScriptAfterExport;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
@@ -90,6 +101,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected JobScriptsManager manager;
 
+    private IWorkspace workspace;
+
+    private AbstractJobDeletionAfterExported deletion;
+
     /**
      * Create an instance of this class.
      * 
@@ -97,6 +112,18 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
+
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+
+        switch (language) {
+        case PERL:
+            deletion = new DeletePerlScriptAfterExport(language);
+            break;
+        case JAVA:
+            deletion = new DeleteJavaJobAfterExport(language);
+        }
+
         manager = createJobScriptsManager();
 
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
@@ -111,7 +138,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -409,11 +437,35 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // path can like name/name
         manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
+
+        ITalendEditorService talendEditorService = (ITalendEditorService) GlobalServiceRegister.getDefault()
+                .getService(ITalendEditorService.class);
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext(),
-                    false, false);
+            String processItemLabel = processItem.getProperty().getLabel();
+            if (talendEditorService.isProcessAlive(processItemLabel)) {
+                ProcessorUtilities.generateCode(processItemLabel, processItem.getProcess().getDefaultContext(), false,
+                        false);
+            } else {
+                List<NodeType> list = processItem.getProcess().getNode();
+                for (NodeType nodeType : list) {
+                    if (nodeType.getComponentName().equals("tRunJob")) {//$NON-NLS-1$
+                        for (Object obj : nodeType.getElementParameter()) {
+                            ElementParameterType element = (ElementParameterType) obj;
+                            if ("PROCESS_TYPE_PROCESS".equals(element.getName())) {
+                                String str = element.getValue().replaceAll("'", "");
+                                if (!talendEditorService.isProcessAlive(str)) {
+                                    deletion.removeJobResource(str);
+                                }
+                            }
+                        }
+                    }
+                }
+                deletion.removeJobResource(processItemLabel);
+            }
+
         }
+
         return ok;
     }
 
@@ -424,8 +476,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport, getDestinationValue());
         return exporterOperation;
     }
 
@@ -565,4 +617,5 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
     }
+
 }

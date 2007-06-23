@@ -70,6 +70,9 @@ public abstract class AbstractJobDeletion {
      * @return
      */
     protected String[] containRunJob(Process job) {
+        if (job == null) {
+            return null;
+        }
         List list = job.getGraphicalNodes();
         List<String> strList = new ArrayList<String>();
         for (Iterator iter = list.iterator(); iter.hasNext();) {
@@ -91,8 +94,11 @@ public abstract class AbstractJobDeletion {
      * @return
      */
     protected boolean withinRunJob(Process job) {
+        if (job == null) {
+            return true;
+        }
         for (String jobName : jobNamesWithInRunJob) {
-            if (job.getName().equals(jobName)) {
+            if (job.getName().equalsIgnoreCase(jobName)) {
                 return true;
             }
         }
@@ -100,4 +106,20 @@ public abstract class AbstractJobDeletion {
         return false;
     }
 
+    /**
+     * To see whether this job is within a run job component.
+     * 
+     * yzhang Comment method "withinRunJob".
+     * 
+     * @param str
+     * @return
+     */
+    protected boolean withinRunJob(String str) {
+        for (String jobName : jobNamesWithInRunJob) {
+            if (str.equalsIgnoreCase(jobName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -27,18 +27,31 @@ import org.eclipse.core.runtime.CoreException;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * Resource registration and deletion when Talend editor opended and closed.
+ * 
+ * yzhang class global comment. Detailled comment <br/>
  * 
  * $Id: IJobDeletion.java 下午04:00:39 2007-5-28 +0000 (2007-5-28) yzhang $
  * 
  */
 public interface IJobDeletion {
 
-    public void storeResource(IResourceDelta root);
+    /**
+     * Registration of the resources added by Talend editor opened.
+     * 
+     * yzhang Comment method "storeResource".
+     * 
+     * @param root
+     * @param process
+     */
+    public void storeResource(IResourceDelta root, Process process);
 
+    /**
+     * Delete the registed resources related to current job.
+     * 
+     * yzhang Comment method "deleteJobs".
+     */
     public void deleteJobs();
-
-    public void setProcess(Process pro);
 
     /**
      * Delete all the related scripts files to job file, including folders and context files.

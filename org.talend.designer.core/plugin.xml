@@ -293,6 +293,9 @@
       <Service
       		serviceId="IDesignerCoreService"
       		class="org.talend.designer.core.DesignerCoreService"/>
+      <Service
+            class="org.talend.designer.core.ui.editor.TalendEditor"
+            serviceId="ITalendEditorService"/>
    </extension>
       <extension
             point="org.talend.designer.core.generators">

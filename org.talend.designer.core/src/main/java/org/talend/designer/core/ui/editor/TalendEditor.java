@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor;
 
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -157,7 +158,9 @@ import org.talend.repository.model.RepositoryConstants;
  * 
  */
 public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements ITabbedPropertySheetPageContributor,
-        IResourceChangeListener {
+        IResourceChangeListener, ITalendEditorService {
+
+    private static List<TalendEditor> editors = new ArrayList<TalendEditor>();
 
     private boolean savePreviouslyNeeded;
 
@@ -192,6 +195,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     }
 
     public TalendEditor(boolean readOnly) {
+
+        editors.add(this);
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
         setEditDomain(new DefaultEditDomain(this));
@@ -218,6 +223,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             break;
 
         }
+
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -230,6 +236,24 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     public Property getProperty() {
         return this.property;
+    }
+
+    /**
+     * To see if the process is opend or not within editor.
+     * 
+     * yzhang Comment method "isProcessOpend".
+     * 
+     * @param processName
+     * @return
+     */
+    public static Process isProcessOpend(String processName) {
+        for (TalendEditor editor : editors) {
+            Process process = editor.getProcess();
+            if (process != null && process.getLabel().equalsIgnoreCase(processName) && !process.isClosed()) {
+                return process;
+            }
+        }
+        return null;
     }
 
     /**
@@ -817,6 +841,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         process.closed();
         deletion.deleteJobs();
 
+        editors.remove(this);
+
         super.dispose();
     }
 
@@ -838,8 +864,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         IResourceDelta rootDelta = event.getDelta().findMember(srcPath);
         if (rootDelta != null && ((rootDelta.getKind() & IResourceDelta.ADDED) == 0)) {
-            deletion.setProcess(this.process);
-            deletion.storeResource(rootDelta);
+            deletion.storeResource(rootDelta, this.process);
         }
 
     }
@@ -852,6 +877,22 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public IJobDeletion getDeletion() {
         return this.deletion;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.ITalendEditorService#isProcessAlive(java.lang.String)
+     */
+    public boolean isProcessAlive(String processName) {
+        for (TalendEditor editor : editors) {
+            Process process = editor.getProcess();
+            if (process != null && process.getLabel().equalsIgnoreCase(processName) && !process.isClosed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void savePaletteState() {
         PaletteViewer paletteViewer = getPaletteViewerProvider().getEditDomain().getPaletteViewer();

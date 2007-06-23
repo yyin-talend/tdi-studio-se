@@ -24,27 +24,37 @@ package org.talend.designer.core.ui.editor.job.deletion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * Delete java jobs after Talend editor is closed.
+ * 
+ * yzhang class global comment. Detailled comment <br/>
  * 
  * $Id: JavaJobDeletion.java 下午04:02:44 2007-5-28 +0000 (2007-5-28) yzhang $
  * 
  */
 public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion {
 
-    private static Map<Process, IResource> jobFolders = Collections.synchronizedMap(new HashMap<Process, IResource>());
+    private static Map<Process, Set<IResource>> jobFolder = Collections
+            .synchronizedMap(new HashMap<Process, Set<IResource>>());
 
     /**
+     * Initialize process.
+     * 
      * yzhang JavaJobDeletion constructor comment.
      * 
      * @param process
@@ -58,20 +68,23 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
      * 
      * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#storeResource(org.eclipse.core.resources.IResourceDelta)
      */
-    public void storeResource(IResourceDelta root) {
-
-        if (root.getAffectedChildren().length == 0) {
+    public void storeResource(IResourceDelta root, Process p) {
+        if (root == null || p == null || root.getAffectedChildren().length == 0) {
             return;
         }
+        this.process = p;
 
         IResourceDelta[] childDeltas = root.getAffectedChildren();
+
         for (int i = 0; i < childDeltas.length; i++) {
 
-            storeResource(childDeltas[i]);
+            storeResource(childDeltas[i], p);
             IResourceDelta rd = childDeltas[i];
 
-            if ((rd.getKind() == IResourceDelta.ADDED) && rd.getResource().getType() == IResource.FOLDER
-                    && process.getLabel().equalsIgnoreCase(rd.getResource().getName())) {
+            if ((rd.getKind() == IResourceDelta.ADDED)
+                    && rd.getResource().getType() == IResource.FOLDER
+                    && (process.getLabel().equalsIgnoreCase(rd.getResource().getName()) || (withinRunJob(rd
+                            .getResource().getName())))) {
                 String[] jobName = containRunJob(this.process);
                 if (jobName != null) {
                     for (int j = 0; j < jobName.length; j++) {
@@ -80,7 +93,14 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
                         }
                     }
                 }
-                jobFolders.put(this.process, rd.getResource());
+                if (jobFolder.get(this.process) == null) {
+                    Set<IResource> set = new HashSet<IResource>();
+                    set.add(rd.getResource());
+                    jobFolder.put(this.process, set);
+                } else {
+                    Set<IResource> set = jobFolder.get(this.process);
+                    set.add(rd.getResource());
+                }
 
             }
 
@@ -99,9 +119,11 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
             if (jobName != null) {
                 List<Process> jobs = new ArrayList<Process>();
                 for (int i = 0; i < jobName.length; i++) {
-                    for (Process storedProcess : jobFolders.keySet()) {
+                    for (Process storedProcess : jobFolder.keySet()) {
                         if (storedProcess.getName().equals(jobName[i]) && storedProcess.isClosed()) {
-                            jobFolders.get(storedProcess).delete(true, null);
+                            for (IResource resrouce : jobFolder.get(storedProcess)) {
+                                resrouce.delete(true, null);
+                            }
                             jobs.add(storedProcess);
                         }
                     }
@@ -109,30 +131,36 @@ public class JavaJobDeletion extends AbstractJobDeletion implements IJobDeletion
                 }
                 if (jobs.size() > 0) {
                     for (Process job : jobs) {
-                        jobFolders.remove(job);
+                        jobFolder.remove(job);
                     }
                 }
-                jobFolders.get(this.process).delete(true, null);
-                jobFolders.remove(this.process);
+                for (IResource resource : jobFolder.get(this.process)) {
+                    Process p = TalendEditor.isProcessOpend(resource.getName());
+                    if (p != null) {
+                        Set<IResource> set = jobFolder.get(p);
+                        if (set == null) {
+                            set = new HashSet<IResource>();
+                            set.add(resource);
+                            jobFolder.put(p, set);
+                        } else {
+                            set.add(resource);
+                        }
+                        continue;
+                    }
+                    resource.delete(true, null);
+                }
+                jobFolder.remove(this.process);
 
             } else if (!withinRunJob(this.process)) {
-                jobFolders.get(this.process).delete(true, null);
-                jobFolders.remove(this.process);
+                for (IResource resource : jobFolder.get(this.process)) {
+                    resource.delete(true, null);
+                }
+                jobFolder.remove(this.process);
             }
 
         } catch (CoreException e) {
             MessageBoxExceptionHandler.process(e);
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#setProcess(org.talend.designer.core.ui.editor.process.Process)
-     */
-    public void setProcess(Process pro) {
-        this.process = pro;
-
     }
 
     /*

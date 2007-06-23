@@ -32,10 +32,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * Delete jobs after Talend eidtor closed.
+ * 
+ * yzhang class global comment. Detailled comment <br/>
  * 
  * $Id: PerlJobDeletion.java 下午04:22:37 2007-5-28 +0000 (2007-5-28) yzhang $
  * 
@@ -59,16 +62,17 @@ public class PerlJobDeletion extends AbstractJobDeletion implements IJobDeletion
      * 
      * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#storeResource(org.eclipse.core.resources.IResourceDelta)
      */
-    public void storeResource(IResourceDelta root) {
+    public void storeResource(IResourceDelta root, Process p) {
+        this.process = p;
 
-        if (root.getAffectedChildren().length == 0) {
+        if (root == null && root.getAffectedChildren().length == 0) {
             return;
         }
 
         IResourceDelta[] childDeltas = root.getAffectedChildren();
         for (int i = 0; i < childDeltas.length; i++) {
 
-            storeResource(childDeltas[i]);
+            storeResource(childDeltas[i], p);
             IResourceDelta rd = childDeltas[i];
 
             if ((rd.getKind() == IResourceDelta.ADDED) && rd.getResource().getType() == IResource.FILE
@@ -107,7 +111,8 @@ public class PerlJobDeletion extends AbstractJobDeletion implements IJobDeletion
                 List<Process> jobs = new ArrayList<Process>();
                 for (int i = 0; i < jobName.length; i++) {
                     for (Process storedProcess : jobFolders.keySet()) {
-                        if (storedProcess.getName().equals(jobName[i]) && storedProcess.isClosed()) {
+                        if (storedProcess != null && storedProcess.getName().equals(jobName[i])
+                                && storedProcess.isClosed()) {
                             for (IResource perlFile : jobFolders.get(storedProcess)) {
                                 perlFile.delete(true, null);
                             }
@@ -122,6 +127,21 @@ public class PerlJobDeletion extends AbstractJobDeletion implements IJobDeletion
                     }
                 }
                 for (IResource perlFile : jobFolders.get(this.process)) {
+                    String[] arg1 = perlFile.getName().split("\\.");
+                    String[] arg2 = arg1[1].split("_");
+                    Process p = TalendEditor.isProcessOpend(arg2[1]);
+
+                    if (p != null) {
+                        List<IResource> list = jobFolders.get(p);
+                        if (list == null) {
+                            List<IResource> d = new ArrayList<IResource>();
+                            d.add(perlFile);
+                            jobFolders.put(p, d);
+                        } else {
+                            list.add(perlFile);
+                        }
+                        continue;
+                    }
                     perlFile.delete(true, null);
                 }
                 jobFolders.remove(this.process);
@@ -141,12 +161,8 @@ public class PerlJobDeletion extends AbstractJobDeletion implements IJobDeletion
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#setProcess(org.talend.designer.core.ui.editor.process.Process)
+     * @see org.talend.designer.core.ui.editor.job.deletion.IJobDeletion#deleteRelatedJobs(org.eclipse.core.resources.IFile)
      */
-    public void setProcess(Process pro) {
-        this.process = pro;
-    }
-
     public void deleteRelatedJobs(IFile file) throws CoreException {
         // find the context scripts related to the job file fisrt, then remove them all.
         IResource[] resources = file.getParent().members();
