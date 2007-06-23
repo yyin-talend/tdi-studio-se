@@ -323,14 +323,14 @@ public class ImportProjectsUtilities {
         DemoProjectBean demoProject = null;
 
         try {
-            doc = reader.read(new File(getXMLFilePath()));
+            doc = reader.read(getXMLFilePath());
         } catch (DocumentException e) {
             ExceptionHandler.process(e);
             return null;
         }
 
         Element demoProjectsInfo = doc.getRootElement();
-
+        
         for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) {
             Element demoProjectElement = (Element) i.next();
             demoProject = new DemoProjectBean();
@@ -349,15 +349,15 @@ public class ImportProjectsUtilities {
      * 
      * @return String
      */
-    private static String getXMLFilePath() {
+    private static File getXMLFilePath() {
         Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
         URL url = null;
         try {
-            url = FileLocator.resolve(bundle.getEntry(XML_FILE_PATH));
+            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(XML_FILE_PATH), null));
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
-        String xmlFilePath = new Path(url.getFile()).toOSString();
+        File xmlFilePath = new File(url.getPath());
         return xmlFilePath;
     }
 }

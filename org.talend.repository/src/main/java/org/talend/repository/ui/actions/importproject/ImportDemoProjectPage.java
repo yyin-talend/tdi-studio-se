@@ -127,9 +127,9 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         for (int i = 0; i < this.demoProjectList.size(); i++) {
             DemoProjectBean demoProject = this.demoProjectList.get(i);
 
-            TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
-            tableItem.setText(demoProject.getProjectName());
-            tableItem.setImage(getImageForDemoProject(demoProject.getLanguage()));
+                TableItem tableItem = new TableItem(wizardSelectionViewer.getTable(), i);
+                tableItem.setText(demoProject.getProjectName());
+                tableItem.setImage(getImageForDemoProject(demoProject.getLanguage()));
         }
     }
 
@@ -161,12 +161,12 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         } else {
             relatedImagePath = "icons/perl.gif";
         }
-
         Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
         URL url = null;
         String pluginPath = null;
         try {
-            url = FileLocator.resolve(bundle.getEntry(relatedImagePath));
+            //url = FileLocator.resolve(bundle.getEntry(relatedImagePath)); 
+            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(relatedImagePath), null));
             pluginPath = new Path(url.getFile()).toOSString();
         } catch (IOException e1) {
             ExceptionHandler.process(e1);
@@ -187,8 +187,8 @@ public class ImportDemoProjectPage extends WizardFileSystemResourceExportPage1 i
         Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
         URL url;
         try {
-            url = FileLocator.resolve(bundle.getEntry(this.demoProjectList.get(selectedDemoProjectIndex)
-                    .getDescriptionFilePath()));
+            url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(this.demoProjectList.get(selectedDemoProjectIndex)
+                    .getDescriptionFilePath()), null));
 
             String descriptionFilePath = new Path(url.getFile()).toOSString();
 
