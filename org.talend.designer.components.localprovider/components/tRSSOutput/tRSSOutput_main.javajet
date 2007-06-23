@@ -65,11 +65,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			IMetadataColumn column = columns.get(i);
     			String coluLabel=column.getLabel();
     			coluLabel=coluLabel.toLowerCase();
- %>
- 				
- 				org.dom4j.Element <%=coluLabel%>Element=itemElement.addElement("<%=coluLabel%>");
+    			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+   %> 	
+   		org.dom4j.Element <%=coluLabel%>Element=itemElement.addElement("<%=coluLabel%>");
+   <%		
+    			if(javaType == JavaTypesManager.STRING )
+				{
+	%>	
+		
  				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %>);
-<%					
+	<%		
+				}else
+				{
+ 	%>
+ 				
+ 				<%=coluLabel%>Element.setText(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
+ 				
+<%						}
 					}
 				}
 			}
