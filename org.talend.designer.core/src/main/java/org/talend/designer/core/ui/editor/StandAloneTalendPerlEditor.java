@@ -43,6 +43,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
@@ -85,12 +86,18 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
     }
 
     public void doSetInput(IEditorInput input) throws CoreException {
-        super.doSetInput(input);
+      
         // Lock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        try {
+        if (input instanceof RepositoryEditorInput) {
             rEditorInput = (RepositoryEditorInput) input;
+        } else {
+            FileEditorInput fileInput = (FileEditorInput) input;
+            rEditorInput = new RepositoryEditorInput(fileInput.getFile(), rEditorInput.getItem());
+        }
+        super.doSetInput(rEditorInput);
+        try {
             item = (RoutineItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
             if (!rEditorInput.isReadOnly()) {
@@ -147,7 +154,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
         try {
             ByteArray byteArray = item.getContent();
-            byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
+            byteArray.setInnerContentFromFile(((IFileEditorInput) getEditorInput()).getFile());
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             repFactory.save(item);
