@@ -74,7 +74,9 @@ public class ChangeMetadataCommand extends Command {
 
     private IMetadataTable currentInputMetadata, newInputMetadata, oldInputMetadata;
 
-    private IODataComponentContainer dataContainer;
+    private IODataComponentContainer inputdataContainer;
+
+    private IODataComponentContainer outputdataContainer;
 
     private IODataComponent dataComponent;
 
@@ -90,8 +92,8 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
-            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
+            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
@@ -136,7 +138,7 @@ public class ChangeMetadataCommand extends Command {
     }
 
     private void initializeContainer() {
-        dataContainer = new IODataComponentContainer();
+        outputdataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
             if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                 IODataComponent input = null;
@@ -148,7 +150,7 @@ public class ChangeMetadataCommand extends Command {
                     }
                 }
                 if (input != null) {
-                    dataContainer.getInputs().add(input);
+                    outputdataContainer.getInputs().add(input);
                 }
 
             }
@@ -160,7 +162,20 @@ public class ChangeMetadataCommand extends Command {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
-                    dataContainer.getOuputs().add(output);
+                    outputdataContainer.getOuputs().add(output);
+                }
+            }
+        }
+
+        if (inputNode != null) {
+            inputdataContainer = new IODataComponentContainer();
+            for (Connection connec : (List<Connection>) inputNode.getOutgoingConnections()) {
+                if (connec.isActivate() && (connec.getTarget().equals(node))) {
+                    if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
+                            || (connec.getMetaName().equals(newInputMetadata.getTableName()))) {
+                        IODataComponent output = new IODataComponent(connec, newInputMetadata);
+                        inputdataContainer.getOuputs().add(output);
+                    }
                 }
             }
         }
@@ -218,7 +233,8 @@ public class ChangeMetadataCommand extends Command {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                            if (map2 != null
+                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
                                 ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
@@ -239,8 +255,9 @@ public class ChangeMetadataCommand extends Command {
 
     private void propagateDatas(boolean isExecute) {
         // Propagate :
-        if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
-            for (IODataComponent currentIO : dataContainer.getInputs()) {
+        if (outputdataContainer != null
+                && (!outputdataContainer.getInputs().isEmpty() || !outputdataContainer.getOuputs().isEmpty())) {
+            for (IODataComponent currentIO : outputdataContainer.getInputs()) {
                 INode sourceNode = currentIO.getSource();
                 if (currentIO.hasChanged()) {
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
@@ -253,7 +270,7 @@ public class ChangeMetadataCommand extends Command {
                     }
                 }
             }
-            for (IODataComponent currentIO : dataContainer.getOuputs()) {
+            for (IODataComponent currentIO : outputdataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
                     INode targetNode = currentIO.getTarget();
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
@@ -266,10 +283,10 @@ public class ChangeMetadataCommand extends Command {
                                     IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
                                     MetadataTool.copyTable(toCopy, copy);
                                     ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, copy);
-                                    if (dataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = dataContainer.getOuputs().get(0)
-                                                .getColumnNameChanged();
-                                        for (IODataComponent dataComp : cmd.dataContainer.getOuputs()) {
+                                    if (outputdataContainer.getOuputs().size() > 0) {
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
+                                                .get(0).getColumnNameChanged();
+                                        for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                             dataComp.setColumnNameChanged(columnNameChanged);
                                         }
                                     }
@@ -282,13 +299,15 @@ public class ChangeMetadataCommand extends Command {
                         currentIO.setColumnNameChanged(null);
                     } else {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).isExternalNode() && getPropagate()) {
+                            if (!((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
+                                    .isBuiltIn()
+                                    && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
-                                    if (dataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = dataContainer.getOuputs().get(0)
-                                                .getColumnNameChanged();
+                                    if (outputdataContainer.getOuputs().size() > 0) {
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
+                                                .get(0).getColumnNameChanged();
                                         for (ChangeMetadataCommand cmd : propagatedChange) {
-                                            for (IODataComponent dataComp : cmd.dataContainer.getOuputs()) {
+                                            for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                                 dataComp.setColumnNameChanged(columnNameChanged);
                                             }
                                         }
@@ -306,6 +325,22 @@ public class ChangeMetadataCommand extends Command {
         } else if (dataComponent != null) {
             for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                 outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
+            }
+        }
+        
+        if (inputdataContainer != null) {
+            for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
+                if (currentIO.hasChanged()) {
+                    INode targetNode = currentIO.getTarget();
+                    targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
+                    if (isExecute) {
+                        currentIO.setTable(oldInputMetadata);
+                        currentIO.setColumnNameChanged(null);
+                    } else {
+                        currentIO.setTable(newInputMetadata);
+                        currentIO.setColumnNameChanged(null);
+                    }
+                }
             }
         }
         // End propagate
