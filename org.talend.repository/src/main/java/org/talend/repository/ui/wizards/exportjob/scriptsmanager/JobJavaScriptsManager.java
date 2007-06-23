@@ -166,7 +166,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IPath classRoot = getClassRootPath();
             classRoot = classRoot.append(projectName).append(jobName).append(JOB_CONTEXT_FOLDER);
             list.add(classRoot.toFile().toURL());
-            String jobPackagePath = projectName + File.separatorChar + jobName + File.separatorChar;
+
+            String jobPackagePath = projectName + "/" + jobName + "/";
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -360,18 +361,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         try {
             String classRoot = getClassRootLocation();
-            String jarPath = getTmpFolder() + File.separatorChar + jobName + ".jar";
+            String jarPath = getTmpFolder() + "/" + jobName + ".jar";
             // Exports the jar file
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job
-            String jobPath = projectName + File.separatorChar + jobName;
+            String jobPath = projectName + "/" + jobName;
             List<String> include = new ArrayList<String>();
             include.add(jobPath);
             jarbuilder.setIncludeDir(include);
             // filter the context
-            String contextPaht = jobPath + File.separatorChar + JOB_CONTEXT_FOLDER;
+            String contextPaht = jobPath + "/" + JOB_CONTEXT_FOLDER;
             List<String> excludes = new ArrayList<String>(1);
             excludes.add(contextPaht);
             jarbuilder.setExcludeDir(excludes);
@@ -460,7 +461,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<String> include = new ArrayList<String>();
             include.add(SYSTEM_ROUTINES_PATH);
 
-            String jarPath = getTmpFolder() + File.separatorChar + SYSTEMROUTINE_JAR;
+            String jarPath = getTmpFolder() + "/" + SYSTEMROUTINE_JAR;
 
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
@@ -496,7 +497,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<String> excludes = new ArrayList<String>();
             excludes.add(SYSTEM_ROUTINES_PATH);
 
-            String jarPath = getTmpFolder() + File.separatorChar + USERROUTINE_JAR;
+            String jarPath = getTmpFolder() + "" + USERROUTINE_JAR;
 
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
