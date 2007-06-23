@@ -103,10 +103,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
             if (!rEditorInput.isReadOnly()) {
                 repFactory.lock(item);
             }
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
             ExceptionHandler.process(e);
-        } catch (BusinessException e) {
-            // Nothing to do
         }
 
         setName();
