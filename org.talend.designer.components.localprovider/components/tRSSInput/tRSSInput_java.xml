@@ -91,7 +91,12 @@
   
 	<CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Java-RSS" MODULE="rsslib4j-0.2.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-Feed" MODULE="feed4j.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-DOM" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+        <IMPORT NAME="Java-NEKO" MODULE="nekohtml.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-XER" MODULE="xercesImpl.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-XML" MODULE="xml-apis.jar" REQUIRED="true" />
+       
      </IMPORTS>
   </CODEGENERATION>
   
