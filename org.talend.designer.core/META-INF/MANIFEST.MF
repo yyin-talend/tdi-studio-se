@@ -21,7 +21,10 @@ Require-Bundle: org.eclipse.core.expressions,
  org.talend.sqlbuilder,
  org.eclipse.update.scheduler,
  org.eclipse.jdt.ui,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring,
+ org.eclipse.jdt.core.manipulation
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core.model.components,

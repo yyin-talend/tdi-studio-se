@@ -21,24 +21,39 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
+import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
-import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -49,7 +64,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * Stand alone Perl editor.<br/>
  * 
  */
-public class StandAloneTalendJavaEditor extends JavaEditor {
+public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresher {
 
     private RepositoryEditorInput rEditorInput;
 
@@ -71,23 +86,31 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
     }
 
     public void doSetInput(IEditorInput input) throws CoreException {
-        super.doSetInput(input);
         // Lock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        try {
+
+        if (input instanceof RepositoryEditorInput) {
             rEditorInput = (RepositoryEditorInput) input;
+        } else {
+            FileEditorInput fileInput = (FileEditorInput) input;
+            rEditorInput = new RepositoryEditorInput(fileInput.getFile(), rEditorInput.getItem());
+        }
+        super.doSetInput(rEditorInput);
+        try {
+            // see bug 1321
             item = (RoutineItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
             if (!rEditorInput.isReadOnly()) {
                 repFactory.lock(item);
             }
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        } catch (BusinessException e) {
-            // Nothing to do
+        } catch (Exception e) {
+           ExceptionHandler.process(e);
         }
-        
+        setName();
+    }
+
+    private void setName() {
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
         setTitleImage(labelProvider.getImage(item.getProperty()));
@@ -110,7 +133,6 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         }
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         viewPart.refresh();
-        // viewPart1.refresh();
     }
 
     @Override
@@ -129,7 +151,7 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
 
         try {
             ByteArray byteArray = item.getContent();
-            byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
+            byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
             IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
             repFactory.save(item);
@@ -177,4 +199,48 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.IUIRefresher#refreshName()
+     */
+    public void refreshName() {
+
+        ICompilationUnit unit = (ICompilationUnit) this.getInputJavaElement();
+        String newName = item.getProperty().getLabel();
+        propertyIsDirty = false;
+        try {
+            JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
+            processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
+            RenameRefactoring ref = new JavaRenameRefactoring(processor);
+            final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
+                    CheckConditionsOperation.ALL_CONDITIONS);
+            IRunnableWithProgress r = new IRunnableWithProgress() {
+
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    try {
+                        operation.run(monitor);
+                    } catch (CoreException e) {
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            };
+            PlatformUI.getWorkbench().getProgressService().run(true, true, r);
+            RefactoringStatus conditionStatus = operation.getConditionStatus();
+            if (conditionStatus.hasError()) {
+                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!";
+                RefactoringStatusEntry[] entries = conditionStatus.getEntries();
+                for (int i = 0; i < entries.length; i++) {
+                    RefactoringStatusEntry entry = entries[i];
+                    errorMessage += "\n>>>" + entry.getMessage();
+                }
+                MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage);
+            } else {
+                doSave(null);
+            }
+            setName();
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
 }
