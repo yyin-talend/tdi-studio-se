@@ -125,6 +125,8 @@
    <CODEGENERATION>
      <IMPORTS>
 		<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-DB2" MODULE="db2jcc_license_cisuz.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 
