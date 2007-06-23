@@ -72,6 +72,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -489,6 +490,7 @@ public class Node extends Element implements INode {
                     && (inputTable.getListColumns().size() != 0)) {
                 // For the auto propagate.
                 MetadataTool.copyTable(inputTable, originTable);
+                ColumnListController.updateColumnList(this, null);
             }
         }
         fireStructureChange(INPUTS, connection);

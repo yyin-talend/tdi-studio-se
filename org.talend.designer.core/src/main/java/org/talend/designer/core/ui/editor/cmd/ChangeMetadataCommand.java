@@ -52,6 +52,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 
 /**
  * Command that will change a metadata in a node.
@@ -155,7 +156,7 @@ public class ChangeMetadataCommand extends Command {
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
             if (connec.isActivate()
                     && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                            EConnectionType.FLOW_REF))) {
+                            EConnectionType.FLOW_MERGE))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
@@ -202,7 +203,7 @@ public class ChangeMetadataCommand extends Command {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
                 DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
                 if (currentSection.getElement().equals(node)) {
-                    currentSection.updateColumnList(columnNameChanged);
+                    ColumnListController.updateColumnList(node, columnNameChanged);
                     currentSection.refresh();
                 }
             }
@@ -218,7 +219,7 @@ public class ChangeMetadataCommand extends Command {
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
                             if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
-                                MetadataTool.updateColumnList(columnNameChanged, inputNode);
+                                ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
                     }

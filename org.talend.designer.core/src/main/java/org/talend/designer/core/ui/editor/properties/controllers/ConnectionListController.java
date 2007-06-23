@@ -189,10 +189,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
         // **********************
         hashCurControls.put(param.getName(), combo);
-        this.dynamicTabbedPropertySection.updateColumnList(null);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        updateComponentList(elem, param, param.getFilter());
+        updateConnectionList(elem, param, param.getFilter());
         return cLayout;
     }
 
@@ -218,7 +217,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        updateComponentList(elem, param, param.getFilter());
+        updateConnectionList(elem, param, param.getFilter());
 
         String[] curComponentNameList = param.getListItemsDisplayName();
         String[] curComponentValueList = (String[]) param.getListItemsValue();
@@ -246,7 +245,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
     }
 
-    public static void updateComponentList(Element elem, IElementParameter param, String filter) {
+    public static void updateConnectionList(Element elem, IElementParameter param, String filter) {
         if (elem instanceof Node) {
             IConnection[] connections = ((Node) elem).getProcess().getAllConnections(filter);
 
@@ -257,11 +256,11 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
             Arrays.sort(connectionNames);
 
-            String[] componentNameList = connectionNames;
-            String[] componentValueList = connectionNames;
+            String[] connectionNameList = connectionNames;
+            String[] connectionValueList = connectionNames;
 
-            param.setListItemsDisplayName(componentNameList);
-            param.setListItemsValue(componentValueList);
+            param.setListItemsDisplayName(connectionNameList);
+            param.setListItemsValue(connectionValueList);
         }
     }
 }

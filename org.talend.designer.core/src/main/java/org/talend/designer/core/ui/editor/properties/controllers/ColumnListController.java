@@ -22,6 +22,9 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,16 +46,20 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.metadata.ColumnNameChanged;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
-import org.talend.designer.core.ui.editor.cmd.SchemaPropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
@@ -231,10 +238,17 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         // **********************
         hashCurControls.put(param.getName(), combo);
-        this.dynamicTabbedPropertySection.updateColumnList(null);
+        updateData();
+        // this.dynamicTabbedPropertySection.updateColumnList(null);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
+    }
+
+    private void updateData() {
+        if (elem instanceof Node) {
+            updateColumnList((Node) elem, null);
+        }
     }
 
     /*
@@ -255,7 +269,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             if (cmd != null) {
                 getCommandStack().execute(cmd);
                 if (updateColumnListFlag) {
-                    ColumnListController.this.dynamicTabbedPropertySection.updateColumnList(null);
+                    updateData();
                 }
             }
         }
@@ -263,7 +277,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        this.dynamicTabbedPropertySection.updateColumnList(null);
+        updateData();
 
         String[] curColumnNameList = param.getListItemsDisplayName();
         String[] curColumnValueList = (String[]) param.getListItemsValue();
@@ -290,4 +304,186 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             combo.setText(curColumnNameList[numValue]);
         }
     }
+    
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged) {
+        List<String> columnList = getColumnList(node);
+        List<String> prevColumnList = getPrevColumnList(node);
+        Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
+
+        String[] columnNameList = (String[]) columnList.toArray(new String[0]);
+        String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
+        String[] curColumnNameList = null;
+        String[] curColumnValueList = null;
+
+        List<String> refColumnListNamesTmp = new ArrayList<String>();
+        List<String> refColumnListValuesTmp = new ArrayList<String>();
+        for (IConnection connection : refColumnLists.keySet()) {
+            String name = connection.getName() + ".";
+            String value = connection.getSource().getUniqueName() + ".";
+            for (String column : refColumnLists.get(connection)) {
+                refColumnListNamesTmp.add(name + column);
+                refColumnListValuesTmp.add(value + column);
+            }
+        }
+        String[] refColumnListNames = (String[]) refColumnListNamesTmp.toArray(new String[0]);
+        String[] refColumnListValues = (String[]) refColumnListValuesTmp.toArray(new String[0]);
+        for (int i = 0; i < node.getElementParameters().size(); i++) {
+            IElementParameter param = node.getElementParameters().get(i);
+            if (param.getField() == EParameterFieldType.COLUMN_LIST) {
+                curColumnNameList = columnNameList;
+                curColumnValueList = columnNameList;
+            }
+            if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                curColumnNameList = prevColumnNameList;
+                curColumnValueList = prevColumnNameList;
+            }
+            if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                curColumnNameList = refColumnListNames;
+                curColumnValueList = refColumnListValues;
+            }
+            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                    || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                param.setListItemsDisplayName(curColumnNameList);
+                param.setListItemsValue(curColumnValueList);
+            }
+            if (param.getField() == EParameterFieldType.TABLE) {
+                Object[] itemsValue = (Object[]) param.getListItemsValue();
+                for (int j = 0; j < itemsValue.length; j++) {
+                    if (itemsValue[j] instanceof IElementParameter) {
+                        IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                        if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                            curColumnNameList = columnNameList;
+                            curColumnValueList = columnNameList;
+                        }
+                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                            curColumnNameList = prevColumnNameList;
+                            curColumnValueList = prevColumnNameList;
+                        }
+                        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                            curColumnNameList = refColumnListNames;
+                            curColumnValueList = refColumnListValues;
+                        }
+                        if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
+                                || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                                || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                            tmpParam.setListItemsDisplayCodeName(curColumnNameList);
+                            tmpParam.setListItemsDisplayName(curColumnNameList);
+                            tmpParam.setListItemsValue(curColumnValueList);
+                            if (curColumnValueList.length > 0) {
+                                tmpParam.setDefaultClosedListValue(curColumnValueList[0]);
+                            } else {
+                                tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
+                            }
+                        }
+                    }
+                }
+            }
+            if (param.isBasedOnSchema()) {
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                List<Map<String, Object>> newParamValues = new ArrayList<Map<String, Object>>();
+                for (int j = 0; j < columnNameList.length; j++) {
+                    String columnName = columnNameList[j];
+                    String[] codes = param.getListItemsDisplayCodeName();
+
+                    Map<String, Object> newLine = null;
+                    boolean found = false;
+                    ColumnNameChanged colChanged = null;
+                    if (columnsChanged != null) {
+                        for (int k = 0; k < columnsChanged.size() && !found; k++) {
+                            colChanged = columnsChanged.get(k);
+                            if (colChanged.getNewName().equals(columnName)) {
+                                found = true;
+                            }
+                        }
+                    }
+                    if (found) {
+                        found = false;
+                        for (int k = 0; k < paramValues.size() && !found; k++) {
+                            Map<String, Object> currentLine = (Map<String, Object>) paramValues.get(k);
+                            if (currentLine.get(codes[0]).equals(colChanged.getOldName())) {
+                                currentLine.put(codes[0], colChanged.getNewName());
+                                found = true;
+                            }
+                        }
+                    }
+                    found = false;
+                    for (int k = 0; k < paramValues.size() && !found; k++) {
+                        Map<String, Object> currentLine = (Map<String, Object>) paramValues.get(k);
+                        if (currentLine.get(codes[0]) == null) {
+                            currentLine.put(codes[0], columnName);
+                        }
+                        if (currentLine.get(codes[0]).equals(columnName)) {
+                            found = true;
+                            newLine = currentLine;
+                        }
+                    }
+                    if (!found) {
+                        newLine = new HashMap<String, Object>();
+                        newLine.put(codes[0], columnName);
+                    }
+                    newParamValues.add(j, newLine);
+                }
+                paramValues.clear();
+                paramValues.addAll(newParamValues);
+
+            }
+        }
+    }
+    
+    private static List<String> getColumnList(INode node) {
+        List<String> columnList = new ArrayList<String>();
+
+        if (node.getMetadataList().size() > 0) {
+            IMetadataTable table = node.getMetadataList().get(0);
+            for (IMetadataColumn column : table.getListColumns()) {
+                columnList.add(column.getLabel());
+            }
+        }
+
+        return columnList;
+    }
+
+    private static List<String> getPrevColumnList(INode node) {
+        List<String> columnList = new ArrayList<String>();
+
+        IConnection connection = null;
+        boolean found = false;
+        for (int i = 0; i < node.getIncomingConnections().size() && !found; i++) {
+            IConnection curConnec = node.getIncomingConnections().get(i);
+            if (curConnec.getLineStyle() == EConnectionType.FLOW_MAIN) {
+                connection = curConnec;
+                found = true;
+            }
+        }
+        if (connection != null) {
+            IMetadataTable table = connection.getMetadataTable();
+            for (IMetadataColumn column : table.getListColumns()) {
+                columnList.add(column.getLabel());
+            }
+        }
+
+        return columnList;
+    }
+
+    private static Map<IConnection, List<String>> getRefColumnLists(INode node) {
+        Map<IConnection, List<String>> refColumnLists = new HashMap<IConnection, List<String>>();
+
+        List<IConnection> refConnections = new ArrayList<IConnection>();
+        for (int i = 0; i < node.getIncomingConnections().size(); i++) {
+            IConnection curConnec = node.getIncomingConnections().get(i);
+            if (curConnec.getLineStyle() == EConnectionType.FLOW_REF) {
+                refConnections.add(curConnec);
+            }
+        }
+        for (IConnection connection : refConnections) {
+            List<String> columnList = new ArrayList<String>();
+            IMetadataTable table = connection.getMetadataTable();
+            for (IMetadataColumn column : table.getListColumns()) {
+                columnList.add(column.getLabel());
+            }
+            refColumnLists.put(connection, columnList);
+        }
+        return refColumnLists;
+    }
+
 }

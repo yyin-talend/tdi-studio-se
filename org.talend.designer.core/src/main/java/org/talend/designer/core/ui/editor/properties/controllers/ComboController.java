@@ -74,8 +74,6 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class ComboController extends AbstractElementPropertySectionController {
 
-    private boolean updateColumnListFlag;
-
     private Map<String, IMetadataTable> repositoryTableMap;
 
     private Map<String, ConnectionItem> repositoryConnectionItemMap;
@@ -405,9 +403,6 @@ public class ComboController extends AbstractElementPropertySectionController {
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
-                if (updateColumnListFlag) {
-                    ComboController.this.dynamicTabbedPropertySection.updateColumnList(null);
-                }
             }
         }
     };

@@ -151,7 +151,8 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
+                + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -192,10 +193,54 @@ public class TableController extends AbstractElementPropertySectionController {
     }
 
     private void updateTableValues(IElementParameter param) {
-        dynamicTabbedPropertySection.updateColumnList(null);
+        updateColumnList(param);
         updateContextList(param);
         updateConnectionList(param);
         updateComponentList(param);
+    }
+
+    private void updateColumnList(IElementParameter param) {
+        ColumnListController.updateColumnList((Node) elem, null);
+
+        TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
+        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        if (tableViewerCreator != null) {
+            List colList = tableViewerCreator.getColumns();
+            for (int j = 0; j < itemsValue.length; j++) {
+                if (itemsValue[j] instanceof IElementParameter) {
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                    if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
+                            || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                            || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                        TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
+
+                        CCombo combo = (CCombo) column.getCellEditor().getControl();
+                        String[] oldItems = combo.getItems();
+                        combo.setItems(tmpParam.getListItemsDisplayName());
+
+                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                        String[] items = param.getListItemsDisplayCodeName();
+
+                        for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
+                            Map<String, Object> currentLine = paramValues.get(currentIndex);
+                            Object o = currentLine.get(items[j]);
+                            if (o instanceof Integer) {
+                                Integer nb = (Integer) o;
+                                if ((nb >= oldItems.length) || (nb == -1)) {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                                            .getDefaultClosedListValue()));
+                                    currentLine.put(items[j], nb);
+                                } else {
+                                    nb = new Integer(tmpParam.getIndexOfItemFromList(oldItems[nb]));
+                                    currentLine.put(items[j], nb);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     private void updateConnectionList(IElementParameter param) {
@@ -210,7 +255,7 @@ public class TableController extends AbstractElementPropertySectionController {
                     if (tmpParam.getField() == EParameterFieldType.CONNECTION_LIST) {
                         String[] contextParameterNames = null;
 
-                        ConnectionListController.updateComponentList(elem, tmpParam, tmpParam.getFilter());
+                        ConnectionListController.updateConnectionList(elem, tmpParam, tmpParam.getFilter());
                         contextParameterNames = tmpParam.getListItemsDisplayName();
                         tmpParam.setListItemsDisplayCodeName(contextParameterNames);
                         // tmpParam.setListItemsDisplayName(contextParameterNames);

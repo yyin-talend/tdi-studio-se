@@ -81,7 +81,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             metadataTableEditor.setMetadataTable(outputMetaTable);
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-            CustomTableManager.addCustomManagementToTable(metadataTableEditorView.getTableViewerCreator(), true, metadataTableEditorView.getCurrentDbms());
+            CustomTableManager.addCustomManagementToTable(metadataTableEditorView.getTableViewerCreator(), true,
+                    metadataTableEditorView.getCurrentDbms());
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
             composite.getParent().layout();
@@ -106,10 +107,10 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                 }
             }
 
-/*            Connection connection = (Connection) elem;
-            if (connection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                addChangeOrder();
-            }*/
+            /*
+             * Connection connection = (Connection) elem; if
+             * (connection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) { addChangeOrder(); }
+             */
 
             FormData data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
@@ -118,12 +119,15 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             data.width = 300; // to correct bug of table growing indefinitly
 
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
-                    + ((Connection) elem).getSource().getElementName() + " output ");
-            metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false);
+            if (outputMetaTable != null) {
+                metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
+                        + ((Connection) elem).getSource().getElementName() + " output ");
+                metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true,
+                        false);
 
-            Composite compositeEditorView = metadataTableEditorView.getMainComposite();
-            compositeEditorView.setLayoutData(data);
+                Composite compositeEditorView = metadataTableEditorView.getMainComposite();
+                compositeEditorView.setLayoutData(data);
+            }
 
             // composite.getParent().layout();
             composite.layout();
@@ -152,97 +156,63 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         return connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA);
     }
     /*
-
-    CLabel currentOrderLabel;
-
-    private void addChangeOrder() {
-        final Connection connection = (Connection) elem;
-        CLabel labelLabel = getWidgetFactory().createCLabel(composite, "Merge order");
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(0, curRowSize);
-        labelLabel.setLayoutData(data);
-        currentOrderLabel = getWidgetFactory().createCLabel(composite, "");
-
-        Button btnUp;
-        Point btnSize;
-        btnUp = getWidgetFactory().createButton(composite, "Lower", SWT.PUSH);
-        btnSize = btnUp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-        btnUp.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                connectionOrderUp((List<IConnection>) connection.getTarget().getIncomingConnections(), connection);
-            }
-
-        });
-
-        data = new FormData();
-        data.left = new FormAttachment(labelLabel, 0);
-        data.top = new FormAttachment(0, curRowSize);
-        btnUp.setLayoutData(data);
-
-        Button btnDown;
-        btnDown = getWidgetFactory().createButton(composite, "Higher", SWT.PUSH);
-        btnSize = btnDown.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-        btnDown.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                connectionOrderDown((List<IConnection>) connection.getTarget().getIncomingConnections(), connection);
-            }
-
-        });
-
-        data = new FormData();
-        data.left = new FormAttachment(btnUp, 0);
-        data.top = new FormAttachment(0, curRowSize);
-        btnDown.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(btnDown, 0);
-        data.top = new FormAttachment(0, curRowSize);
-        currentOrderLabel.setLayoutData(data);
-        updateCurrentOrder();
-
-        curRowSize += btnSize.y;
-    }
-
-    private void connectionOrderUp(List<IConnection> connectionList, Connection connection) {
-        int order = connection.getInputId() - 1;
-        if (order <= 0) {
-            return;
-        }
-        IConnection connectionToSwitch = connectionList.get(order - 1);
-        connectionList.set(order, connectionToSwitch);
-        connectionList.set(order - 1, connection);
-        connection.updateAllId();
-        updateCurrentOrder();
-        ((Process)connection.getSource().getProcess()).checkStartNodes();
-    }
-
-    private void connectionOrderDown(List<IConnection> connectionList, Connection connection) {
-        int order = connection.getInputId();
-        if (order >= connectionList.size()) {
-            return;
-        }
-        order--;
-        IConnection connectionToSwitch = connectionList.get(order + 1);
-        connectionList.set(order, connectionToSwitch);
-        connectionList.set(order + 1, connection);
-        connection.updateAllId();
-        updateCurrentOrder();
-        ((Process)connection.getSource().getProcess()).checkStartNodes();
-    }
-
-    private void updateCurrentOrder() {
-        currentOrderLabel.setText("CurrentOrder: " + ((Connection) elem).getInputId());
-    }*/
+     * 
+     * CLabel currentOrderLabel;
+     * 
+     * private void addChangeOrder() { final Connection connection = (Connection) elem; CLabel labelLabel =
+     * getWidgetFactory().createCLabel(composite, "Merge order"); FormData data = new FormData(); data.left = new
+     * FormAttachment(0, 0); data.top = new FormAttachment(0, curRowSize); labelLabel.setLayoutData(data);
+     * currentOrderLabel = getWidgetFactory().createCLabel(composite, "");
+     * 
+     * Button btnUp; Point btnSize; btnUp = getWidgetFactory().createButton(composite, "Lower", SWT.PUSH); btnSize =
+     * btnUp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+     * 
+     * btnUp.addSelectionListener(new SelectionListener() {
+     * 
+     * public void widgetDefaultSelected(SelectionEvent e) { }
+     * 
+     * public void widgetSelected(SelectionEvent e) { connectionOrderUp((List<IConnection>)
+     * connection.getTarget().getIncomingConnections(), connection); }
+     * 
+     * });
+     * 
+     * data = new FormData(); data.left = new FormAttachment(labelLabel, 0); data.top = new FormAttachment(0,
+     * curRowSize); btnUp.setLayoutData(data);
+     * 
+     * Button btnDown; btnDown = getWidgetFactory().createButton(composite, "Higher", SWT.PUSH); btnSize =
+     * btnDown.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+     * 
+     * btnDown.addSelectionListener(new SelectionListener() {
+     * 
+     * public void widgetDefaultSelected(SelectionEvent e) { }
+     * 
+     * public void widgetSelected(SelectionEvent e) { connectionOrderDown((List<IConnection>)
+     * connection.getTarget().getIncomingConnections(), connection); }
+     * 
+     * });
+     * 
+     * data = new FormData(); data.left = new FormAttachment(btnUp, 0); data.top = new FormAttachment(0, curRowSize);
+     * btnDown.setLayoutData(data);
+     * 
+     * data = new FormData(); data.left = new FormAttachment(btnDown, 0); data.top = new FormAttachment(0, curRowSize);
+     * currentOrderLabel.setLayoutData(data); updateCurrentOrder();
+     * 
+     * curRowSize += btnSize.y; }
+     * 
+     * private void connectionOrderUp(List<IConnection> connectionList, Connection connection) { int order =
+     * connection.getInputId() - 1; if (order <= 0) { return; } IConnection connectionToSwitch =
+     * connectionList.get(order - 1); connectionList.set(order, connectionToSwitch); connectionList.set(order - 1,
+     * connection); connection.updateAllId(); updateCurrentOrder();
+     * ((Process)connection.getSource().getProcess()).checkStartNodes(); }
+     * 
+     * private void connectionOrderDown(List<IConnection> connectionList, Connection connection) { int order =
+     * connection.getInputId(); if (order >= connectionList.size()) { return; } order--; IConnection connectionToSwitch =
+     * connectionList.get(order + 1); connectionList.set(order, connectionToSwitch); connectionList.set(order + 1,
+     * connection); connection.updateAllId(); updateCurrentOrder();
+     * ((Process)connection.getSource().getProcess()).checkStartNodes(); }
+     * 
+     * private void updateCurrentOrder() { currentOrderLabel.setText("CurrentOrder: " + ((Connection)
+     * elem).getInputId()); }
+     */
 
 }
