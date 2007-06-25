@@ -168,7 +168,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
         gridData.minimumHeight = 150;
         fileViewerText.setLayoutData(gridData);
-        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         fileViewerText.setEditable(false);
         fileViewerText.setText(Messages.getString("FileStep1.fileViewerAlert")); //$NON-NLS-1$
@@ -252,7 +252,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
         updateStatus(IStatus.OK, null);
         filePathIsDone = false;
         if (fileField.getText() == "") { //$NON-NLS-1$
-            fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         } else {
             fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
@@ -272,7 +272,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 in = new BufferedReader(new InputStreamReader(new FileInputStream(fileField.getText()), guessedCharset
                         .displayName()));
 
-                while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
+                while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
                     numberLine++;
                     previewRows.append(str + "\n"); //$NON-NLS-1$
                 }

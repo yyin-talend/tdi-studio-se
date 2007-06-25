@@ -459,7 +459,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
         filePathIsDone = false;
         if (fileField.getText() == "") { //$NON-NLS-1$
-            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     + " " + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -482,7 +482,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                                 guessedCharset.displayName()));
                 
                 previewRows.append("\n");
-                while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
+                while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
                     numberLine++;
                     // replace Tabulation by a CaretChar
                     previewRows.append(str.replaceAll("\t", "\u25A1") + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

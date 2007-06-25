@@ -46,7 +46,7 @@ import org.talend.repository.preview.ProcessDescription;
  */
 public class ShadowProcessPreview {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+    protected  int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     /**
@@ -320,8 +320,8 @@ public class ShadowProcessPreview {
         Integer numbersOfColumns = null;
         int parserLine = xmlRows.size();
 
-        if (parserLine > MAXIMUM_ROWS_TO_PREVIEW) {
-            parserLine = MAXIMUM_ROWS_TO_PREVIEW;
+        if (parserLine > maximumRowsToPreview) {
+            parserLine = maximumRowsToPreview;
         }
         for (int i = 0; i < parserLine; i++) {
             if (xmlRows.get(i) != null) {

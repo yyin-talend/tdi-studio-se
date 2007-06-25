@@ -37,7 +37,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  */
 public abstract class AbstractRegexpFileStepForm extends AbstractForm {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+    protected  int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     protected ConnectionItem connectionItem;

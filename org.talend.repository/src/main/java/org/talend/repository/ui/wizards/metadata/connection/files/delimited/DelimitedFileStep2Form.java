@@ -482,13 +482,13 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         processDescription.setHeaderRow(i);
 
         // adapt the limit to the preview
-        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+        processDescription.setLimitRows(maximumRowsToPreview);
         if (rowsToSkipLimitCheckboxCombo.isInteger()) {
             i = new Integer(rowsToSkipLimitCheckboxCombo.getText());
             if (firstRowIsCaptionCheckbox.getSelection()) {
                 i++;
             }
-            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
+            if (i < maximumRowsToPreview) {
                 processDescription.setLimitRows(i);
             }
         }

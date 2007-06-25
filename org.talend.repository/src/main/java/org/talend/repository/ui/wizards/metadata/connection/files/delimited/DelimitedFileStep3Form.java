@@ -281,13 +281,13 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         }
 
         // adapt the limit to the extract sames rows of preview
-        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+        processDescription.setLimitRows(maximumRowsToPreview);
         if (getConnection().isUseLimit()) {
             Integer i = getConnection().getLimitValue();
             if (getConnection().isFirstLineCaption()) {
                 i++;
             }
-            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
+            if (i < maximumRowsToPreview) {
                 processDescription.setLimitRows(i);
             }
         }

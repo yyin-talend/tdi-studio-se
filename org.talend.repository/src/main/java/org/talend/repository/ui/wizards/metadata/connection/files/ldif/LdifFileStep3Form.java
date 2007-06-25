@@ -274,10 +274,10 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         // adapt the limit to the extract sames rows of preview
-        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+        processDescription.setLimitRows(maximumRowsToPreview);
         if (getConnection().isUseLimit()) {
             Integer i = getConnection().getLimitEntry();
-            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
+            if (i < maximumRowsToPreview) {
                 processDescription.setLimitRows(i);
             }
         }
