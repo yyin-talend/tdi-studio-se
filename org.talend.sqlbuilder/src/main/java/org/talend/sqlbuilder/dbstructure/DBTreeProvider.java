@@ -104,6 +104,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private Map<String, Color> colors = new HashMap<String, Color>();
 
+    private RepositoryNode selectQuery;
+
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
         this(connectionParameters);
     }
@@ -345,6 +347,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
             node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
             queriesConnectionNode.getChildren().add(node);
+            if (connectionParameters.getQueryObject() != null
+                    && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
+                this.selectQuery = node;
+            }
         }
     }
 
@@ -617,6 +623,10 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     public static Map<String, IRepositoryObject> getMaps() {
         return maps;
+    }
+
+    public RepositoryNode getSelectQuery() {
+        return this.selectQuery;
     }
 
 }

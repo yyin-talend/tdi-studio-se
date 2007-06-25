@@ -22,7 +22,9 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -91,7 +93,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     public SqlMemoController(DynamicTabbedPropertySection dtp) {
         super(dtp);
     }
-    
+
     private Button openSQLEditorButton;
 
     /*
@@ -171,6 +173,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return "";
     }
 
+    private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
+
     private Command createCommand() {
 
         ConnectionParameters connParameters = new ConnectionParameters();
@@ -203,8 +207,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             }
 
         }
-        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem
-                .getPropertyValue(EParameterName.SCHEMA_TYPE.getName())));
+        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
+                .getName())));
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
@@ -232,8 +236,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setDbName(dbName);
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
-                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
-                        connParameters, part.getTalendEditor().getProcess().getContextManager());
+                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
+                        .getTalendEditor().getProcess().getContextManager());
                 if (paramDialog.open() == Window.OK) {
                     openSqlBuilderBuildIn(connParameters, propertyName);
                 }
@@ -254,8 +258,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                     for (String key : this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().keySet()) {
 
                         if (key.equals(value)) {
-                            repositoryName2 = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(
-                                    key).getProperty().getLabel();
+                            repositoryName2 = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(key)
+                                    .getProperty().getLabel();
 
                         }
                     }
@@ -268,16 +272,23 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                         .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
-            connParameters.setRepositoryName(repositoryName2);
-            Shell parentShell = new Shell(composite.getShell().getDisplay());
-            SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-            connParameters.setQuery(query);
-            dial.setConnParameters(connParameters);
-            if (Window.OK == dial.open()) {
-                if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
-                    String sql = connParameters.getQuery();
-                    sql = TalendTextUtils.addSQLQuotes(sql);
-                    return new PropertyChangeCommand(elem, propertyName, sql);
+            final SQLBuilderDialog builderDialog = sqlbuilers.get(((Node) elem).getUniqueName() + repositoryName2);
+            if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
+                    && !builderDialog.getShell().isDisposed()) {
+                builderDialog.getShell().setActive();
+            } else {
+                connParameters.setRepositoryName(repositoryName2);
+                Shell parentShell = new Shell(composite.getShell().getDisplay());
+                SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+                connParameters.setQuery(query);
+                dial.setConnParameters(connParameters);
+                sqlbuilers.put(((Node) elem).getUniqueName() + repositoryName2, dial);
+                if (Window.OK == dial.open()) {
+                    if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
+                        String sql = connParameters.getQuery();
+                        sql = TalendTextUtils.addSQLQuotes(sql);
+                        return new PropertyChangeCommand(elem, propertyName, sql);
+                    }
                 }
             }
         }
@@ -291,8 +302,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @param propertyName
      */
     public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
-        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
-                propertyName, getCommandStack(), this);
+        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
+                getCommandStack(), this);
 
         IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                 IWorkbenchSiteProgressService.class);
@@ -355,7 +366,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             Control lastControl) {
 
         switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
-
 
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
@@ -430,7 +440,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             public void keyReleased(KeyEvent e) {
             }
-            
+
         });
 
         addDragAndDropTarget(queryText);

@@ -65,6 +65,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
     private boolean isDefaultEditor;
 
+    private int num = 0;
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public GenerateSelectSQLAction(ISelectionProvider provider, ISQLBuilderDialog dialog, boolean isDefaultEditor) {
         super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
@@ -135,6 +137,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             connParam.setQuery("");
             connParam.setNeedTakePrompt(false);
             connParam.setShowDesignerPage(true);
+            connParam.setEditorTitle("new Query " + num++);
             dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
                     isDefaultEditor, selectedNodes);
         } catch (Throwable e) {

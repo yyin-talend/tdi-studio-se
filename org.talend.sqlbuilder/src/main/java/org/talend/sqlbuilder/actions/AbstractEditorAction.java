@@ -32,8 +32,6 @@ import org.talend.sqlbuilder.ui.editor.ISQLEditor;
  */
 public abstract class AbstractEditorAction extends Action {
 
-    private String parentId;
-
     public abstract String getText();
 
     public String getToolTipText() {
@@ -62,11 +60,4 @@ public abstract class AbstractEditorAction extends Action {
         return this.editor;
     }
 
-    public String getParentId() {
-        return this.parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
 }

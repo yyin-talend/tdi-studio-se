@@ -50,12 +50,14 @@ public interface ISQLBuilderDialog {
 
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor, List<RepositoryNode> nodeSel);
-    
+
     public ConnectionParameters getConnParameters();
 
     public void refreshNode(RepositoryNode node);
 
     public Shell getShell();
-    
+
     public IProgressMonitor getProgressMonitor();
+    
+    public void updateTitle();
 }

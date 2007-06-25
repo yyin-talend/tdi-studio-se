@@ -83,6 +83,9 @@ public class SQLBuilderRepositoryNodeManager {
     // /store all DatabaseConnection's RepositoryNode.
     private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
+    private static List<RepositoryNode> repositoryNodes2 = new ArrayList<RepositoryNode>();
+
+    
     /**
      * dev Comment method "isChangeElementColor".
      * 
@@ -166,8 +169,9 @@ public class SQLBuilderRepositoryNodeManager {
     /**
      * dev Comment method "removeAllRepositoryNodes".
      */
-    public void removeAllRepositoryNodes() {
+    public static void removeAllRepositoryNodes() {
         repositoryNodes.clear();
+        repositoryNodes2.clear();
     }
 
     /**
@@ -180,6 +184,12 @@ public class SQLBuilderRepositoryNodeManager {
             return;
         }
         repositoryNodes.add(node);
+        repositoryNodes2.add(node);
+    }
+    
+    public void addAllRepositoryNodes() {
+        repositoryNodes.clear();
+        repositoryNodes.addAll(repositoryNodes2);
     }
 
     /**

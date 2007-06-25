@@ -168,12 +168,7 @@ public class SQLBuilderTabComposite extends Composite {
             }
         }
         CTabItem tabItem = null;
-        if (isDefaultEditor) {
-            tabItem = new CTabItem(tabFolder, SWT.NULL);
-        } else {
-            // Do not allow user to close the default editor.
-            tabItem = new CTabItem(tabFolder, SWT.CLOSE);
-        }
+        tabItem = new CTabItem(tabFolder, SWT.CLOSE);
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
 
         // SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
@@ -197,7 +192,7 @@ public class SQLBuilderTabComposite extends Composite {
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
         tabItem.setData("KEY", builderEditor);
-        if (connParam.isDoubleClickQuery()) {
+        if (connParam.isFromRepository() && connParam.getQueryObject() != null) {
             queryStr = connParam.getQueryObject().getValue();
         }
         builderEditor.setSqlText(queryStr);

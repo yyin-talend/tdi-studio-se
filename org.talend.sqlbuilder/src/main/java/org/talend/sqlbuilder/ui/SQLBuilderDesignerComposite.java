@@ -21,45 +21,22 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.List;
 
-import org.eclipse.jface.action.CoolBarManager;
-import org.eclipse.jface.action.ToolBarContributionItem;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.Assert;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.FileDialog;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.actions.AbstractEditorAction;
-import org.talend.sqlbuilder.actions.ClearTextAction;
-import org.talend.sqlbuilder.actions.ExecSQLAction;
-import org.talend.sqlbuilder.actions.GUIModificationQueryAction;
-import org.talend.sqlbuilder.actions.OpenFileAction;
-import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
-import org.talend.sqlbuilder.actions.SaveFileAsAction;
-import org.talend.sqlbuilder.actions.SaveSQLAction;
-import org.talend.sqlbuilder.actions.explain.DB2ExplainPlanAction;
-import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
-import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
-import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -67,23 +44,15 @@ import org.talend.sqlbuilder.util.UIUtils;
  * $Id: talend-code-templates.xml 1 2007-3-7 上午09:35:17 (星期五, 29 九月 2006) qzhang $
  * 
  */
-public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor {
-
-    public static final String ID = "sqlbuilder.sqleditor.designer";
+public class SQLBuilderDesignerComposite extends AbstractSQLEditorComposite {
 
     private CTabItem tabItem;
 
-    private ConnectionParameters connParam;
-
     private boolean isDefaultEditor;
-
-    private ISQLBuilderDialog dialog;
 
     private RepositoryNode repositoryNode;
 
     private ErDiagramComposite erDiagramComposite;
-
-    
 
     private boolean ifLimit = true;
 
@@ -95,12 +64,10 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
      */
     public SQLBuilderDesignerComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor,
             ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d, List<RepositoryNode> nodes) {
-        super(parent, SWT.NONE);
-        dialog = d;
+        super(parent, SWT.NONE, d, connParam);
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
         isOpen = isDefaultEditor;
-        this.connParam = connParam;
         repositoryNode = node;
         initialContent(this, nodes);
         setRepositoryNode(node);
@@ -148,117 +115,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         erDiagramComposite.setWeights(new int[] { 12, 3 });
     }
 
-    /**
-     * qzhang Comment method "createToolBar".
-     */
-    private void createToolBar() {
-        // create coolbar
-        coolBar = new CoolBar(this, SWT.NONE);
-        coolBarMgr = new CoolBarManager(coolBar);
-
-        GridData gid = new GridData();
-        gid.horizontalAlignment = GridData.FILL;
-        coolBar.setLayoutData(gid);
-
-        // initialize default actions
-        defaultToolBarMgr = new ToolBarManager(SWT.NONE);
-
-        execSQLAction = new ExecSQLAction(SQLResultComposite.getInstance(), this);
-        execSQLAction.setParentId(ID);
-
-        openFileAction = new OpenFileAction();
-        openFileAction.setEditor(this);
-        openFileAction.setParentId(ID);
-
-        saveSQLAction = new SaveSQLAction(repositoryNode, connParam);
-        saveSQLAction.setEditor(this);
-        saveSQLAction.setParentId(ID);
-
-        exportAction = new SaveFileAsAction();
-        exportAction.setEditor(this);
-        exportAction.setParentId(ID);
-
-        clearTextAction = new ClearTextAction();
-        clearTextAction.setEditor(this);
-        clearTextAction.setParentId(ID);
-
-        guiModificationQueryAction = new GUIModificationQueryAction(repositoryNode, connParam, dialog);
-        guiModificationQueryAction.setEditor(this);
-        guiModificationQueryAction.setParentId(ID);
-
-        addDefaultActions();
-
-        // initialize session actions
-        sessionToolBarMgr = new ToolBarManager(SWT.NONE);
-
-        sessionSwitcher = new SQLEditorSessionSwitcher(this);
-        sessionToolBarMgr.add(sessionSwitcher);
-        sessionSwitcher.setParentId(ID);
-
-        // add all toolbars to parent coolbar
-        coolBar.setLocked(true);
-        coolBarMgr.add(new ToolBarContributionItem(defaultToolBarMgr));
-        coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
-
-        coolBarMgr.update(true);
-    }
-
-    private ToolBarManager defaultToolBarMgr;
-
-    private AbstractEditorAction clearTextAction;
-
-    private CoolBar coolBar;
-
-    private CoolBarManager coolBarMgr;
-
-    private AbstractEditorAction execSQLAction;
-
-    private AbstractEditorAction openFileAction;
-
-    private AbstractEditorAction exportAction;
-
-    private AbstractEditorAction saveSQLAction;
-
-    private AbstractEditorAction explainAction;
-
-    private SQLEditorSessionSwitcher sessionSwitcher;
-    
-    private GUIModificationQueryAction guiModificationQueryAction;
-    
-    private ToolBarManager sessionToolBarMgr;
-    
     private boolean isOpen = true;
-    /**
-     * qzhang Comment method "addDefaultActions".
-     * 
-     */
-    private void addDefaultActions() {
-        // /addDefaultActions(defaultToolBarMgr);
-
-        defaultToolBarMgr.removeAll();
-        execSQLAction.setEnabled(true);
-        defaultToolBarMgr.add(execSQLAction);
-        defaultToolBarMgr.add(openFileAction);
-        defaultToolBarMgr.add(saveSQLAction);
-        defaultToolBarMgr.add(exportAction);
-        defaultToolBarMgr.add(clearTextAction);
-        explainAction = addExplainPlanAction(repositoryNode);
-        if (explainAction != null) {
-            openFileAction.setParentId(ID);
-            defaultToolBarMgr.add(explainAction);
-        }
-        defaultToolBarMgr.add(guiModificationQueryAction);
-    }
-
-    public AbstractEditorAction addExplainPlanAction(RepositoryNode node) {
-
-        if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(node).startsWith("Oracle")) { //$NON-NLS-1$
-            return new OracleExplainPlanAction(SQLResultComposite.getInstance(), this);
-        } else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(node).startsWith("IBM DB2")) { //$NON-NLS-1$
-            return new DB2ExplainPlanAction(SQLResultComposite.getInstance(), this);
-        }
-        return null;
-    }
 
     /*
      * (non-Java)
@@ -267,75 +124,6 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
      */
     public void clearText() {
         erDiagramComposite.clearAll();
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
-     */
-    public void doSaveAs() {
-        FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
-        fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title")); //$NON-NLS-1$
-        fileDialog.setFilterExtensions(SQLBuilderEditorComposite.SUPPORTED_FILETYPES);
-        fileDialog.setFilterNames(SQLBuilderEditorComposite.SUPPORTED_FILETYPES);
-        fileDialog.setFileName(tabItem.getText());
-
-        String path = fileDialog.open();
-        if (path == null) {
-            return;
-        }
-        BufferedWriter writer = null;
-        try {
-
-            File file = new File(path);
-            if (file.exists()) {
-                file.delete();
-            }
-
-            file.createNewFile();
-
-            String content = erDiagramComposite.getSqlText();
-            writer = new BufferedWriter(new FileWriter(file));
-            writer.write(content, 0, content.length());
-
-        } catch (Exception e) {
-
-            UIUtils.openErrorDialog(Messages.getString("SQLEditor.SaveAsDialog.Error"), e); //$NON-NLS-1$
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    SqlBuilderPlugin.log(e.getMessage(), e);
-                }
-            }
-
-        }
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveSQL(org.talend.core.model.metadata.builder.connection.Query)
-     */
-    public void doSaveSQL(Query query2) {
-        SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
-        List<String> existingName = repositoryNodeManager.getALLQueryLabels(repositoryNode);
-        if (query2 != null && existingName.contains(query2.getLabel())) {
-            query2.setValue(erDiagramComposite.getSqlText());
-            repositoryNodeManager.saveQuery(repositoryNode, query2);
-            dialog.refreshNode(repositoryNode);
-            return;
-        }
-        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
-        saveSQLDialog.setSql(this.erDiagramComposite.getSqlText());
-        // saveSQLDialog.setQuery(connParam.getQueryObject());
-        if (Window.OK == saveSQLDialog.open()) {
-            Query query = saveSQLDialog.getQuery();
-            repositoryNodeManager.saveQuery(repositoryNode, query);
-            dialog.refreshNode(repositoryNode);
-        }
     }
 
     /*
@@ -387,19 +175,6 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
      */
     public void setMaxResult(String maxResult) {
         this.maxResult = maxResult;
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
-     */
-    public String getRepositoryName() {
-        if (repositoryNode == null) {
-            return ""; //$NON-NLS-1$
-        }
-        String repositoryName = ((SqlBuilderRepositoryObject) repositoryNode.getObject()).getRepositoryName();
-        return repositoryName;
     }
 
     /*
@@ -478,7 +253,7 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         Assert.isNotNull(node, Messages.getString("SQLBuilderEditorComposite.assertMessage")); //$NON-NLS-1$
         this.repositoryNode = node;
         guiModificationQueryAction.setCurrentNode(node);
-        this.setEditorTitle(this.repositoryNode);
+        setEditorTitle(this.repositoryNode, connParam, tabItem);
         sessionSwitcher.refreshSelectedRepository();
         EMFRepositoryNodeManager.getInstance().setRoot(node);
     }
@@ -487,42 +262,32 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         return this.erDiagramComposite;
     }
 
-    /**
-     * Sets tab title.
-     * 
-     * @param node
-     */
-    private void setEditorTitle(RepositoryNode node) {
-        String dbName = SQLBuilderRepositoryNodeManager.getDatabaseNameByRepositoryNode(node);
-        String title = ""; //$NON-NLS-1$
-        String repositoryName = getRepositoryName();
-        String selectedComponentName = connParam.getSelectedComponentName();
-        if (this.isDefaultEditor && (selectedComponentName != null && selectedComponentName.length() != 0)) {
-            title = selectedComponentName + "."; //$NON-NLS-1$
-        }
-        title = title + dbName + "(" + repositoryName + ").sql";
-        if (connParam.getQueryObject() != null) {
-            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
-        } else if (dialog.getConnParameters().getQueryObject() != null) {
-            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") //$NON-NLS-1$
-                    + dialog.getConnParameters().getQueryObject().getLabel();
-        }
-        tabItem.setText(title);
-    }
-
     private MultiPageSqlBuilderEditor multiPageEditor;
+
     /**
      * Sets the multiPageEditor.
+     * 
      * @param multiPageEditor the multiPageEditor to set
      */
     public void setMultiPageEditor(MultiPageSqlBuilderEditor multiPageEditor) {
         this.multiPageEditor = multiPageEditor;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMultiPageEditor()
      */
     public MultiPageSqlBuilderEditor getMultiPageEditor() {
         return multiPageEditor;
     }
-    
+
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.AbstractSQLEditorComposite#getColorText()
+     */
+    @Override
+    public StyledText getColorText() {
+        return getErDiagramComposite().getStyledText();
+    }
+
 }

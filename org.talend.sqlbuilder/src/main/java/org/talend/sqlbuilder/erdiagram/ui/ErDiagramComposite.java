@@ -160,6 +160,9 @@ public class ErDiagramComposite extends SashForm {
         return text;
     }
 
+    public StyledText getStyledText() {
+        return this.sqlText;
+    }
     /**
      * Sets the sqlText.
      * 

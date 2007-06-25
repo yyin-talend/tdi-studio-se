@@ -104,7 +104,7 @@ public interface ISQLEditor {
     /**
      * Saves current editor's sql text into dbstructure composite.
      */
-    void doSaveSQL(Query query2);
+    Query doSaveSQL(Query query2, boolean as);
 
     /**
      * Sets repository node.

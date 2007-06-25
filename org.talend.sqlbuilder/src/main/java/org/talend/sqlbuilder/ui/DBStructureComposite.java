@@ -40,6 +40,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -49,13 +50,13 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -65,7 +66,6 @@ import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.DeleteQueryAction;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
@@ -75,6 +75,7 @@ import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -123,6 +124,8 @@ public class DBStructureComposite extends Composite {
     private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+
+    private DBTreeProvider treeLabelProvider;
 
     /**
      * Create the composite.
@@ -178,9 +181,46 @@ public class DBStructureComposite extends Composite {
     public void openNewEditor() {
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
         Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog.getConnParameters(),
-                true);
+                false);
         tempOpenNewEditorAction.run();
         treeViewer.getTree().deselectAll();
+    }
+
+    private List<RepositoryNode> expandNodes;
+
+    /**
+     * qzhang Comment method "openNewQueryEditor".
+     */
+    public void openNewQueryEditor() {
+        final ConnectionParameters connParameters = builderDialog.getConnParameters();
+        final RepositoryNode selectQuery = this.treeLabelProvider.getSelectQuery();
+        expandNodes = new ArrayList<RepositoryNode>();
+        getNeedExpandedNodes(selectQuery);
+        treeViewer.setExpandedElements(expandNodes.toArray(new Object[0]));
+        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
+        Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, connParameters, true);
+        tempOpenNewEditorAction.run();
+        final Object data2 = this.builderDialog.getEditorComposite().getTabFolder().getItem(0).getData("KEY");
+        if (data2 instanceof MultiPageSqlBuilderEditor) {
+            MultiPageSqlBuilderEditor ed = (MultiPageSqlBuilderEditor) data2;
+            ed.updateEditorTitle(AbstractSQLEditorComposite.QUERY_PREFIX + connParameters.getQueryObject().getLabel());
+        }
+
+    }
+
+    /**
+     * qzhang Comment method "getNeedExpandedNodes".
+     * 
+     * @return
+     */
+    private boolean getNeedExpandedNodes(RepositoryNode selectQuery) {
+        expandNodes.add(selectQuery);
+        final RepositoryNode parent2 = selectQuery.getParent();
+        if (parent2 != null) {
+            return getNeedExpandedNodes(parent2);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -243,7 +283,7 @@ public class DBStructureComposite extends Composite {
 
         tree.setHeaderVisible(true);
 
-        DBTreeProvider treeLabelProvider = new DBTreeProvider(this, builderDialog.getConnParameters());
+        treeLabelProvider = new DBTreeProvider(this, builderDialog.getConnParameters());
         treeViewer.setContentProvider(treeLabelProvider);
         treeViewer.setLabelProvider(treeLabelProvider);
         treeViewer.addFilter(filter);
@@ -427,6 +467,7 @@ public class DBStructureComposite extends Composite {
 
                     if (isChecked()) {
                         isShowAllConnections = true;
+                        repositoryNodeManager.addAllRepositoryNodes();
                     } else {
                         isShowAllConnections = false;
                     }

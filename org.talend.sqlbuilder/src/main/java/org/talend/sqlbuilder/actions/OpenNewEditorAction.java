@@ -23,12 +23,17 @@ package org.talend.sqlbuilder.actions;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
@@ -44,11 +49,11 @@ public class OpenNewEditorAction extends SelectionProviderAction {
 
     private ISQLBuilderDialog dialog;
 
-    private ISelectionProvider selectionProvider;
+    private TreeViewer selectionProvider;
 
     private ConnectionParameters connParam;
 
-    private boolean isDefaultEditor;
+    private boolean isQuery;
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
@@ -58,24 +63,24 @@ public class OpenNewEditorAction extends SelectionProviderAction {
      * @param selectionProvider
      * @param editorComposite
      * @param connParam
-     * @param isDefaultEditor
+     * @param isQuery
      */
-    public OpenNewEditorAction(ISelectionProvider selectionProvider, ISQLBuilderDialog dialog,
-            ConnectionParameters connParam, boolean isDefaultEditor) {
+    public OpenNewEditorAction(TreeViewer selectionProvider, ISQLBuilderDialog dialog, ConnectionParameters connParam,
+            boolean isQuery) {
         super(selectionProvider, Messages.getString("OpenNewEditorAction.textNewEditor")); //$NON-NLS-1$
         setText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
         setToolTipText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
         this.dialog = dialog;
         this.selectionProvider = selectionProvider;
         this.connParam = connParam;
-        this.isDefaultEditor = isDefaultEditor;
+        this.isQuery = isQuery;
         init();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void init() {
-        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
-                .toList().toArray(new RepositoryNode[] {});
+        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection()).toList()
+                .toArray(new RepositoryNode[] {});
         if (selectedNodes.length == 0) {
             this.setEnabled(false);
             return;
@@ -100,6 +105,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         init();
     }
 
+    private int num = 0;
+
     @Override
     public void run() {
         IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
@@ -108,11 +115,24 @@ public class OpenNewEditorAction extends SelectionProviderAction {
             firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
         }
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
-        ConnectionParameters connectionParameters = new ConnectionParameters();
-        connectionParameters.setQuery(connParam.getQuery());
-        connectionParameters.setRepositoryName(SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject()
-                .getLabel());
-        dialog.openEditor(firstNode, repositoryNames, connectionParameters, isDefaultEditor);
+        connParam.setRepositoryName(SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject().getLabel());
+        if (isQuery) {
+            DBTreeProvider provider = (DBTreeProvider) selectionProvider.getContentProvider();
+            selectReveal(provider.getSelectQuery());
+            isQuery = false;
+        } else {
+            connParam.setEditorTitle("New Editor " + num++);
+        }
+        dialog.openEditor(firstNode, repositoryNames, connParam, false);
+    }
+
+    private void selectReveal(final RepositoryNode selectQuery) {
+        Control ctrl = selectionProvider.getControl();
+        if (ctrl == null || ctrl.isDisposed()) {
+            return;
+        }
+        ISelection javaSelection = new StructuredSelection(selectQuery);
+        selectionProvider.setSelection(javaSelection, true);
     }
 
     /**

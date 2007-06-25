@@ -34,7 +34,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
-import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 
@@ -45,16 +44,6 @@ import org.talend.sqlbuilder.ui.editor.ISQLEditor;
  * 
  */
 public class SQLEditorSessionSwitcher extends ControlContribution {
-
-    private String parentId;
-
-    public String getParentId() {
-        return this.parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
 
     private ISQLEditor editor;
 
@@ -87,22 +76,18 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
         List<String> repositoryNameList = nodeManager.getALLReposotoryNodeNames();
         sessionCombo.setItems(repositoryNameList.toArray(new String[repositoryNameList.size()]));
 
-        if (editor.getDefaultEditor()) {
-            sessionCombo.setEnabled(false);
-        } else {
-            sessionCombo.addSelectionListener(new SelectionAdapter() {
+        sessionCombo.addSelectionListener(new SelectionAdapter() {
 
-                public void widgetSelected(SelectionEvent e) {
-                    String repoName = sessionCombo.getText();
-                    RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
-                    if (!repoName.equals(DBTreeProvider.BUILT_IN)) {
-                        MultiPageSqlBuilderEditor multiPageEditor = editor.getMultiPageEditor();
-                        multiPageEditor.setRepositoryNode(node);
-                    }
-                    // editor.refresh(true);
+            public void widgetSelected(SelectionEvent e) {
+                String repoName = sessionCombo.getText();
+                RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
+                if (!repoName.equals(DBTreeProvider.BUILT_IN)) {
+                    MultiPageSqlBuilderEditor multiPageEditor = editor.getMultiPageEditor();
+                    multiPageEditor.setRepositoryNode(node);
                 }
-            });
-        }
+                // editor.refresh(true);
+            }
+        });
 
         return sessionCombo;
     }

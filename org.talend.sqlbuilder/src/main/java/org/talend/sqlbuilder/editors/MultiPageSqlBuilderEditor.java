@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,8 +36,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.actions.AbstractEditorAction;
+import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
@@ -114,11 +119,42 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             erDiagramComposite = sqlDesigner.getErDiagramComposite();
             index = addPage(sqlDesigner);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
+            attachListeners();
         } catch (Exception e) {
             MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
                     Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
         }
 
+    }
+
+    /**
+     * qzhang Comment method "attachListeners".
+     */
+    private void attachListeners() {
+        sqlDesigner.getColorText().addModifyListener(new ModifyListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                updateEditorTitle(null);
+            }
+
+        });
+        sqlEdit.getColorText().addModifyListener(new ModifyListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                updateEditorTitle(null);
+            }
+
+        });
     }
 
     public void showDesignerPage() {
@@ -133,12 +169,11 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.part.MultiPageEditorPart#setActivePage(int)
+     * @see org.eclipse.ui.part.MultiPageEditorPart#getActivePage()
      */
     @Override
-    protected void setActivePage(int pageIndex) {
-        super.setActivePage(pageIndex);
-
+    public int getActivePage() {
+        return super.getActivePage();
     }
 
     public void setSqlText(String sql) {
@@ -153,7 +188,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             return sqlDesigner.getSQLToBeExecuted();
         }
     }
-    
+
     public RepositoryNode getActivePageRepositoryNode() {
         final int activePage = getActivePage();
         if (activePage == 0) {
@@ -161,7 +196,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         } else {
             return sqlDesigner.getRepositoryNode();
         }
-        
+
     }
 
     public boolean isModified() {
@@ -284,4 +319,41 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     public Composite getContainer() {
         return super.getContainer();
     }
+
+    public void updateEditorTitle(String text) {
+        if (text == null) {
+            text = this.tabItem.getText();
+            if (!text.substring(0, 1).equals("*")) {
+                text = "*" + text;
+            }
+            tabItem.setText(text);
+        } else {
+            tabItem.setText(text);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#getTitle()
+     */
+    @Override
+    public String getTitle() {
+        if (tabItem != null) {
+            return tabItem.getText();
+        }
+        return super.getTitle();
+    }
+
+    public SaveSQLAction getDeactivePageSaveSQLAction() {
+        switch (getActivePage()) {
+        case 1:
+            return sqlEdit.getSaveSQLAction();
+        case 0:
+            return sqlDesigner.getSaveSQLAction();
+        default:
+            return null;
+        }
+    }
+
 }

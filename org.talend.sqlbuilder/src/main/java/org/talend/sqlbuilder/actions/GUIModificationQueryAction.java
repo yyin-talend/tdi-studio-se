@@ -27,15 +27,18 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramDialog;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
+import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SqlEditDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -65,6 +68,8 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
 
     private String currentSql;
 
+    private boolean isDesigner;
+
     /**
      * qzhang GUIModificationQuery constructor comment.
      */
@@ -80,7 +85,7 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
      */
     @Override
     public String getToolTipText() {
-        if (getParentId() != null && getParentId().equals(SQLBuilderDesignerComposite.ID)) {
+        if (isDesigner) {
             return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText");
         }
         return Messages.getString("GUIModificationQueryAction.ButtonText");
@@ -103,7 +108,7 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
      */
     @Override
     public String getText() {
-        if (getParentId() != null && getParentId().equals(SQLBuilderDesignerComposite.ID)) {
+        if (isDesigner) {
             return Messages.getString("GUIModificationQueryAction.TextDialog.TitleText");
         }
         return Messages.getString("GUIModificationQueryAction.ButtonText");
@@ -143,8 +148,24 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         // if (isForce != null && !isForce.booleanValue()) {
         // return;
         // }
+        if (dialog instanceof SQLBuilderDialog) {
+            SQLBuilderDialog d = (SQLBuilderDialog) dialog;
+            final CTabItem selection = d.getEditorComposite().getTabFolder().getSelection();
+            if (selection.getData("KEY") instanceof MultiPageSqlBuilderEditor) {
+                MultiPageSqlBuilderEditor editor = (MultiPageSqlBuilderEditor) selection.getData("KEY");
+                switch (editor.getActivePage()) {
+                case 1:
+                    isDesigner = true;
+                    break;
+                default:
+                    isDesigner = false;
+                    break;
+                }
+            }
+        }
+
         String query = null;
-        if (getParentId() != null && getParentId().equals(SQLBuilderDesignerComposite.ID)) {
+        if (isDesigner) {
             SqlEditDialog textDialog = new SqlEditDialog(dialog.getShell(), Messages
                     .getString("GUIModificationQueryAction.TextDialog.TitleText"), currentSql, currentNode);
             if (Window.OK == textDialog.open()) {
@@ -202,7 +223,6 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
 
     }
 
-    
     public void setCurrentNode(RepositoryNode currentNode) {
         this.currentNode = currentNode;
     }

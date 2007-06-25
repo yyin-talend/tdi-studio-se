@@ -61,16 +61,19 @@ public class ReadQueriesAction extends AContextualAction {
         ConnectionParameters connParameters = new ConnectionParameters();
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
+            connParameters.setQuery("");
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
+            connParameters.setQueryObject(queryRepositoryObject.getQuery());
+            connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
 
         Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-        connParameters.setQuery(""); //$NON-NLS-1$
+        
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);

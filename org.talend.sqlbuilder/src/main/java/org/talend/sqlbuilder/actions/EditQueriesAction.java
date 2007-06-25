@@ -36,7 +36,6 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryObject;
@@ -64,24 +63,19 @@ public class EditQueriesAction extends AContextualAction {
         ConnectionParameters connParameters = new ConnectionParameters();
         if (node.getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             connParameters.setRepositoryName(node.getObject().getLabel());
+            connParameters.setQuery("");
         } else if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_QUERY) {
             QueryRepositoryObject queryRepositoryObject = (QueryRepositoryObject) node.getObject();
             DatabaseConnectionItem parent = (DatabaseConnectionItem) queryRepositoryObject.getProperty().getItem();
             connParameters.setRepositoryName(parent.getProperty().getLabel());
+            connParameters.setQueryObject(queryRepositoryObject.getQuery());
+            connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
         }
 
-        Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
+        Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-        connParameters.setQuery(""); //$NON-NLS-1$
+        
         connParameters.setNodeReadOnly(false);
-        final ERepositoryObjectType properties = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        boolean is = properties == ERepositoryObjectType.METADATA_CON_QUERY;
-        connParameters.setDoubleClickQuery(is);
-        if (is) {
-            final QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
-            connParameters.setQueryObject(object.getQuery());
-        }
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();

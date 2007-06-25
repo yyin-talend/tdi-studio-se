@@ -233,7 +233,11 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         createSQLEditor(sashFormStructureAndEditor);
         sashFormStructureAndEditor.setWeights(new int[] { 4, 6 });
 
-        structureComposite.openNewEditor();
+        if (connParameters.isFromRepository() && connParameters.getQueryObject() != null) {
+            structureComposite.openNewQueryEditor();
+        } else {
+            structureComposite.openNewEditor();
+        }
 
         // RefreshDetailCompositeAction refreshAction =
         new RefreshDetailCompositeAction(structureComposite.getTreeViewer());
@@ -368,7 +372,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         SqlBuilderPlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
 
         clean();
-
+        SQLBuilderRepositoryNodeManager.removeAllRepositoryNodes();
         return super.close();
     }
 
@@ -414,19 +418,21 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         // sql = sql.replace("'", "\\'");
         // }
 
+        connParameters.setQuery(sql);
         if (connParameters.isFromRepository()) {
             SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
             List<Query> qs = new ArrayList<Query>();
             List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-            connParameters.setQuery(sql);
             boolean isInfo = false;
             final CTabFolder tabFolder = getEditorComposite().getTabFolder();
             final CTabItem[] items = tabFolder.getItems();
 
             for (int i = 0; i < items.length; i++) {
                 CTabItem item = items[i];
-                boolean isInfo2 = item.getText().startsWith(Messages.getString("SQLBuilderEditorComposite.titleQuery"))
-                        && item.getData() instanceof Query;
+                final String text = item.getText();
+                boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*")
+                        && text.substring(1).startsWith(AbstractSQLEditorComposite.QUERY_PREFIX);
+                isInfo2 = isInfo2 && item.getData() instanceof Query;
                 if (isInfo2) {
                     isInfo = true;
                     Query q = (Query) item.getData();
@@ -557,5 +563,13 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#updateTitle()
+     */
+    public void updateTitle() {
     }
 }
