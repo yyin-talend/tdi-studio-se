@@ -92,8 +92,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + "/" + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + libPath + "/" + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
+            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
@@ -167,7 +167,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             classRoot = classRoot.append(projectName).append(jobName).append(JOB_CONTEXT_FOLDER);
             list.add(classRoot.toFile().toURL());
 
-            String jobPackagePath = projectName + "/" + jobName + "/";
+            String jobPackagePath = projectName + PATH_SEPARATOR + jobName + PATH_SEPARATOR;
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -202,7 +202,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     private String calculateLibraryPathFromDirectory(String directory) {
-        int nb = directory.split("/").length - 1;
+        int nb = directory.split(PATH_SEPARATOR).length - 1;
         String path = "../";
         for (int i = 0; i < nb; i++) {
             path = path.concat("../");
@@ -361,18 +361,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         try {
             String classRoot = getClassRootLocation();
-            String jarPath = getTmpFolder() + "/" + jobName + ".jar";
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobName + ".jar";
             // Exports the jar file
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job
-            String jobPath = projectName + "/" + jobName;
+            String jobPath = projectName + PATH_SEPARATOR + jobName;
             List<String> include = new ArrayList<String>();
             include.add(jobPath);
             jarbuilder.setIncludeDir(include);
             // filter the context
-            String contextPaht = jobPath + "/" + JOB_CONTEXT_FOLDER;
+            String contextPaht = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
             List<String> excludes = new ArrayList<String>(1);
             excludes.add(contextPaht);
             jarbuilder.setExcludeDir(excludes);
@@ -461,7 +461,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<String> include = new ArrayList<String>();
             include.add(SYSTEM_ROUTINES_PATH);
 
-            String jarPath = getTmpFolder() + "/" + SYSTEMROUTINE_JAR;
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + SYSTEMROUTINE_JAR;
 
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);

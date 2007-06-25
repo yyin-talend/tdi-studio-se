@@ -65,6 +65,8 @@ public abstract class JobScriptsManager {
     protected static final String WINDOWS_LAUNCHER = "run.bat";
 
     protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
+    
+    protected static final String PATH_SEPARATOR = "/";
 
     public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
 
