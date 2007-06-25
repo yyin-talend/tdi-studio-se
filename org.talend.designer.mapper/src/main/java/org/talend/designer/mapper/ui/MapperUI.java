@@ -757,7 +757,6 @@ public class MapperUI {
         if (threadToEvaluatePerformance != null) {
             threadToEvaluatePerformance.interrupt();
         }
-        backgroundRefresher.releaseBgImages();
         ImageProviderMapper.releaseImages();
         ColorProviderMapper.releaseColors();
         FontProviderMapper.releaseFonts();
