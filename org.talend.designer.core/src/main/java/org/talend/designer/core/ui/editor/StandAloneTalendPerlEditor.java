@@ -190,43 +190,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
      * @see org.talend.core.ui.IUIRefresher#refreshName()
      */
     public void refreshName() {
-        IFileEditorInput input = (IFileEditorInput) getEditorInput();
-
-        IFile file = input.getFile();
-        String newName = item.getProperty().getLabel();
-        propertyIsDirty = false;
-        try {
-            RenameResourceProcessor processor = new RenameResourceProcessor(file);
-            processor.setNewElementName(newName + ".pl");
-            RenameRefactoring ref = new RenameRefactoring(processor);
-            final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
-                    CheckConditionsOperation.ALL_CONDITIONS);
-            IRunnableWithProgress r = new IRunnableWithProgress() {
-
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        operation.run(monitor);
-                    } catch (CoreException e) {
-                        throw new InvocationTargetException(e);
-                    }
-                }
-            };
-            PlatformUI.getWorkbench().getProgressService().run(true, true, r);
-            RefactoringStatus conditionStatus = operation.getConditionStatus();
-            if (conditionStatus.hasError()) {
-                String errorMessage = "Rename " + file.getName() + " to " + newName + " has errors!";
-                RefactoringStatusEntry[] entries = conditionStatus.getEntries();
-                for (int i = 0; i < entries.length; i++) {
-                    RefactoringStatusEntry entry = entries[i];
-                    errorMessage += "\n>>>" + entry.getMessage();
-                }
-                MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage);
-            } else {
-                doSave(null);
-            }
-            setName();
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+        doSave(null);
+        setName();
     }
 }
