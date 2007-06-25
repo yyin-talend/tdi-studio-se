@@ -56,6 +56,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.RepositoryNodeExt;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.DBStructureComposite;
@@ -252,7 +253,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             oFolder.setImage(IMAGES_CLOSED_FOLDER);
             oFolder.setSourceName(oFolder.getLabel());
             oFolder.setRepositoryName(null);
-            RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
+            RepositoryNode folder = new RepositoryNodeExt(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
             // ERepositoryObjectType.FOLDER);
             folder.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.FOLDER);
@@ -291,7 +292,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
         connectionRepositoryObject.setBuildIn(isBuildIn);
 
-        RepositoryNode node = new RepositoryNode(connectionRepositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
+        RepositoryNode node = new RepositoryNodeExt(connectionRepositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
         node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
         boolean[] isDiffs = repositoryNodeManager.isDiff(node);
@@ -331,7 +332,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             QueriesConnectionRepositoryObject repositoryObject = new QueriesConnectionRepositoryObject(repObj, queriesConnection);
             repositoryObject.setImage(IMAGES_APPEND_TO_EDITOR);
             repositoryObject.setSourceName(Messages.getString("DBTreeProvider.sourceName")); //$NON-NLS-1$
-            RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
+            RepositoryNode queriesConnectionNode = new RepositoryNodeExt(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
             queriesConnectionNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERIESCONNECTION);
             node.getChildren().add(queriesConnectionNode);
             createQuery(queriesConnectionNode, repObj, queriesConnection);
@@ -344,7 +345,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
             repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
             repositoryObject.setSourceName(query.getLabel());
-            RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
+            RepositoryNode node = new RepositoryNodeExt(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
             node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
             queriesConnectionNode.getChildren().add(node);
             if (connectionParameters.getQueryObject() != null
@@ -407,7 +408,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
         modelObj.setBuildIn(isBuildIn);
 
-        RepositoryNode columnNode = new RepositoryNode(modelObj, tableNode, ENodeType.REPOSITORY_ELEMENT);
+        RepositoryNode columnNode = new RepositoryNodeExt(modelObj, tableNode, ENodeType.REPOSITORY_ELEMENT);
         columnNode.setProperties(EProperties.LABEL, metadataColumn.getLabel());
         columnNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.COLUMN);
         return columnNode;
@@ -438,7 +439,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
         }
         modelObj.setBuildIn(isBuildIn);
 
-        RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
+        RepositoryNode tableNode = new RepositoryNodeExt(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.TABLE);
 
