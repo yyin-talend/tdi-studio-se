@@ -34,45 +34,53 @@ public class StatsAndLogsConstants {
 
     private static final String[] PERL_DISPLAY_DBNAMES = new String[] {
             "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+            "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
     private static final String[] JAVA_DISPLAY_DBNAMES = new String[] {
             "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "PostgreSQL", "IBM DB2", "Sybase", "Ingres", "Interbase", "SQLite", "FireBird", "Informix" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] PERL_DB_COMPONENTS = new String[] {
             "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] JAVA_DB_COMPONENTS = new String[] {
             "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput", "tInterbaseOutput", "tSQLiteOutput", "tFirebirdOutput", "tInformixOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final String[] PERL_REPOSITORY_ITEMS = new String[] { RepositoryToComponentProperty.ODBC,
             RepositoryToComponentProperty.MYSQL, RepositoryToComponentProperty.ODBC,
             RepositoryToComponentProperty.ORACLE, RepositoryToComponentProperty.POSTGRESQL,
             RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-            RepositoryToComponentProperty.INGRES };
+            RepositoryToComponentProperty.INGRES, RepositoryToComponentProperty.INTERBASE,
+            RepositoryToComponentProperty.SQLITE, RepositoryToComponentProperty.FIREBIRD,
+            RepositoryToComponentProperty.INFORMIX };
 
     private static final String[] PERL_CODE_LIST = new String[] { RepositoryToComponentProperty.ODBC,
             RepositoryToComponentProperty.MYSQL,
             RepositoryToComponentProperty.ODBC,
             "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
             RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-            RepositoryToComponentProperty.INGRES };
+            RepositoryToComponentProperty.INGRES, RepositoryToComponentProperty.INTERBASE,
+            RepositoryToComponentProperty.SQLITE, RepositoryToComponentProperty.FIREBIRD,
+            RepositoryToComponentProperty.INFORMIX };
 
     private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { RepositoryToComponentProperty.ODBC,
             RepositoryToComponentProperty.MYSQL, RepositoryToComponentProperty.SQL_SERVER,
             RepositoryToComponentProperty.ORACLE, RepositoryToComponentProperty.POSTGRESQL,
             RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-            RepositoryToComponentProperty.INGRES };
+            RepositoryToComponentProperty.INGRES, RepositoryToComponentProperty.INTERBASE,
+            RepositoryToComponentProperty.SQLITE, RepositoryToComponentProperty.FIREBIRD,
+            RepositoryToComponentProperty.INFORMIX };
 
     private static final String[] JAVA_CODE_LIST = new String[] { RepositoryToComponentProperty.ODBC,
             RepositoryToComponentProperty.MYSQL,
             RepositoryToComponentProperty.SQL_SERVER,
             "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
             RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-            RepositoryToComponentProperty.INGRES };
+            RepositoryToComponentProperty.INGRES, RepositoryToComponentProperty.INTERBASE,
+            RepositoryToComponentProperty.SQLITE, RepositoryToComponentProperty.FIREBIRD,
+            RepositoryToComponentProperty.INFORMIX   };
 
     public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
 
