@@ -1,66 +1,92 @@
 <%@ jet 
 	imports="
 		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IHashableInputConnections
+		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IHashableColumn
+		org.talend.core.model.process.IMatchingMode
         org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		java.util.ArrayList
 	"
 %>
+
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+
+
+    List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+    List<IConnection> outConnections = (List<IConnection>) node.getOutgoingConnections();
+    
+    List<INode> graphicalNodes = (List<INode>) node.getProcess().getGraphicalNodes();
+    
+	if (connections != null && connections.size() > 0) {
+        for (IConnection connection : connections) {
+        	String connectionName = connection.getName();
+			INode nodeSource = connection.getSource();
+
+			INode validTarget = null;
+			INode currentTarget = null;
 	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-%>
+			// searching the target graphic node of current tHash because no generation nodes are connected at outputs
+		    for(INode graphcalNode : graphicalNodes) {
+		    	if(graphcalNode.getUniqueName().equals(nodeSource.getUniqueName())) {
+		    		List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
+		    		for(IConnection outGraphicalConnection : outGraphicalConnections) {
+		    			if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
+		    				currentTarget = outGraphicalConnection.getTarget();
+		    			}
+		    		}
+		    	}
+		    }
 
-my %desc_<%=metadata.getTableName() %> = (
-    schema        => [
-    <%
-                for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
-        {
-            name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
-                },
-        <%
-                }
-    %>
-    ]
-);
+			
 
-my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
+			if(!(currentTarget instanceof IHashableInputConnections)) {
+				currentTarget = currentTarget.getExternalNode();
+			}
+			if(currentTarget instanceof IHashableInputConnections) {
+				validTarget = currentTarget;
+			}
 
-our %<%=metadata.getTableName() %> = ();
+			// System.out.println(connectionName + " ######## " + validTarget + " " + validTarget.getClass());
 
-my @key_positions_<%=metadata.getTableName() %> = ();
-my $column_number = 0;
-foreach my $column_href (@{$desc_<%=metadata.getTableName() %>{schema} }) {
-    if ($column_href->{key}) {
-        push @key_pos_<%=metadata.getTableName() %>, $column_number;
-    }
-    $column_number++;
-}
-
-my $keys_string_<%=metadata.getTableName() %> = join(
-    '',
-    '$<%=metadata.getTableName() %>',
-    join(
-        '',
-         map {'{ $<%=metadata.getTableName() %>['.$_.'] }'} @key_pos_<%=metadata.getTableName() %>
-    )
-);
-
-<%
+			if(validTarget != null) {
+					IHashableInputConnections target = (IHashableInputConnections) validTarget;
+					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
+					List<IHashableColumn> hashableColumns = null;
+					IMatchingMode matchingMode = null;
+					if(hashConfiguration == null) {
+						hashableColumns = new ArrayList<IHashableColumn>(0);
+					} else {
+						hashableColumns = hashConfiguration.getHashableColumns();
+						matchingMode = hashConfiguration.getMatchingMode();
+					}
+					
+					String matchingModeStr = null;
+					if(matchingMode == null) {
+						if(hashableColumns.size() > 0) {
+							matchingModeStr = "UNIQUE_MATCH";
+						} else {
+							matchingModeStr = "ALL_ROWS";
+						}
+					} else {
+						matchingModeStr = matchingMode.toString();
+					}
+					
+			   %>
+				our %tHash_Lookup_<%= connectionName %> = ();
+			   	$prmMatchingMode = "<%= matchingModeStr %>";
+				<%
+			} else { 
+				// System.out.println(connectionName + " ######## Valid target not found" );
+			}
 		}
 	}
+
 %>

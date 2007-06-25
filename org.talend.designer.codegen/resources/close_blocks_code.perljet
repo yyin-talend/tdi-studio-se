@@ -4,16 +4,23 @@
 	imports="
 		org.talend.core.model.process.IConnection 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.designer.codegen.config.SubTreeArgument
+		org.talend.designer.codegen.config.CloseBlocksCodeArgument
+		java.util.List
+		org.talend.core.model.process.BlockCode
 	"
 	class="CloseBlocksCode" 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
-IConnection connection = subTreeArgument.getInputSubtreeConnection();
+CloseBlocksCodeArgument closeBlocksCodeArgument = (CloseBlocksCodeArgument)codeGenArgument.getArgument();
 
-// TODO: COMPLETE THIS TEMPLATE
-
+List<BlockCode> blocksCodeList = closeBlocksCodeArgument.getBlocksCodeToClose();
+if(blocksCodeList != null) {
+	int count = blocksCodeList.size();
+	for(int i = 0; i < count; i++) {
+	%>
+		} # <%= blocksCodeList.get(i).getLabel()%>
+	<%
+	}
+}
 %>
-

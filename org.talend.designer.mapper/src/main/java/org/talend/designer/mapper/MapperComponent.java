@@ -28,10 +28,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -45,10 +43,13 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.BlockCode;
+import org.talend.core.model.process.HashConfiguration;
+import org.talend.core.model.process.HashableColumn;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IHashConfiguration;
+import org.talend.core.model.process.IHashableColumn;
 import org.talend.core.model.process.IHashableInputConnections;
 import org.talend.core.model.process.IMatchingMode;
 import org.talend.core.model.process.Problem;
@@ -499,16 +500,18 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      */
     public IHashConfiguration getHashConfiguration(String connectionName) {
 
-        HashConfigurationForMapper hashConfigurationForMapper = null;
+        IHashConfiguration hashConfigurationForMapper = null;
         ExternalMapperData externalData = (ExternalMapperData) getExternalData();
         List<ExternalMapperTable> inputTables = externalData.getInputTables();
-        Set<String> hashableColumns = new HashSet<String>();
+        List<IHashableColumn> hashableColumns = new ArrayList<IHashableColumn>();
         for (ExternalMapperTable inputTable : inputTables) {
             if (inputTable.getName().equals(connectionName)) {
                 List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
-                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                int metadataTableEntriesListSize = metadataTableEntries.size();
+                for (int i = 0; i < metadataTableEntriesListSize; i++) {
+                    ExternalMapperTableEntry entry = metadataTableEntries.get(i);
                     if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
-                        hashableColumns.add(entry.getName());
+                        hashableColumns.add(new HashableColumn(entry.getName(), i));
                     }
                 }
 
@@ -517,7 +520,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 if (matchingMode == null) {
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
-                hashConfigurationForMapper = new HashConfigurationForMapper(hashableColumns, matchingMode);
+                hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode);
                 break;
             }
         }
@@ -525,49 +528,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return hashConfigurationForMapper;
     }
 
-    /**
-     * 
-     * DOC amaumont AdvancedMapperComponent class global comment. Detailled comment <br/>
-     * 
-     */
-    public class HashConfigurationForMapper implements IHashConfiguration {
-
-        private Set<String> hashableColumns;
-
-        private IMatchingMode matchingMode;
-
-        /**
-         * DOC amaumont HashConfigurationForMapper constructor comment.
-         * 
-         * @param hashableColumns
-         * @param matchingMode
-         * @param uniqueMatch
-         */
-        public HashConfigurationForMapper(Set<String> hashableColumns, IMatchingMode matchingMode) {
-            super();
-            this.hashableColumns = hashableColumns;
-            this.matchingMode = matchingMode;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.IHashConfiguration#getHashableColumns(java.lang.String)
-         */
-        public Set<String> getHashableColumns() {
-            return this.hashableColumns;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.IHashConfiguration#getMatchingMode()
-         */
-        public IMatchingMode getMatchingMode() {
-            return this.matchingMode;
-        }
-
-    }
-
+    
 
 }

@@ -52,6 +52,7 @@ import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.Activator;
+import org.talend.designer.mapper.IAdvancedMap;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -865,11 +866,10 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public boolean isAdvancedMap() {
-        // return getComponent().getClass().getName().endsWith("AdvancedgetAbstractMapComponent()");
         return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA
-//                || LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
-                ;
-        
+                || LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
+                && getAbstractMapComponent() instanceof IAdvancedMap;
+
     }
 
     /**

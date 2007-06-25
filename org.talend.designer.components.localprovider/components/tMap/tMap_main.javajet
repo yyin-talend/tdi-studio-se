@@ -387,7 +387,7 @@
                 continue;
             }
             if (varsTableEntries.size() > 0) {
-                // sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
+                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
             }
             String varsTableName = varsTable.getName();
             String instanceVarName = varsTableName + "__" + uniqueNameComponent;
@@ -557,7 +557,7 @@
 
             boolean rejectValueHasJustChanged = lastValueReject != (currentIsReject || currentIsRejectInnerJoin);
 
-            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters || hasExpressionFilter;
+            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && (hasFilters || hasExpressionFilter);
 
             if (rejectValueHasJustChanged) {
 
@@ -617,12 +617,12 @@
                     } else if (currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = rejectedInnerJoin;
                     }
-                    if (hasFilters || hasExpressionFilter) {
+                    if (hasFilters && !hasExpressionFilter || hasExpressionFilter) {
                         String filtersConditions = null;
-                        if(hasFilters) {
-	                        filtersConditions = gm.buildConditions(filters, expressionParser);
-	                     } else {
+                        if(hasExpressionFilter) {
 	                     	filtersConditions = outputTable.getExpressionFilter();
+	                     } else {
+	                        filtersConditions = gm.buildConditions(filters, expressionParser);
 	                     }
                         if (rejectedTests == null) {
                             ifConditions += filtersConditions;

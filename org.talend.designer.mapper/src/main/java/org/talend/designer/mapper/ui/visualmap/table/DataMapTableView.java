@@ -1186,10 +1186,6 @@ public abstract class DataMapTableView extends Composite {
                             true);
                     DataMapTableView.this.layout();
 
-                    // to correct bug of CR when content is multiline
-                    if (expressionFilterText.getText() != null) {
-                        expressionFilterText.setText(expressionFilterText.getText());
-                    }
                     mapperManager.getUiManager().refreshBackground(true, false);
                     new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
 
@@ -1198,7 +1194,7 @@ public abstract class DataMapTableView extends Composite {
                         }
 
                     }).start();
-                    // changeMinimizeState(false);
+                    correctAsynchStyledTextWrapBug();
                 }
 
             });
@@ -2022,38 +2018,26 @@ public abstract class DataMapTableView extends Composite {
 
             });
 
-            ScrolledComposite scrolledCompositeView = null;
-            if (getZone() == Zone.INPUTS) {
-                scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewInputs();
-            } else if (getZone() == Zone.OUTPUTS) {
-                scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewOutputs();
-            }
-            scrolledCompositeView.addControlListener(new ControlListener() {
+            ControlListener listenerForCorrectWrapBug = new ControlListener() {
 
                 public void controlMoved(ControlEvent e) {
                     onExpressionFilterTextResized();
                 }
 
                 public void controlResized(ControlEvent e) {
-                    new AsynchronousThreading(100, false, expressionFilterText.getDisplay(), new Runnable() {
-
-                        /*
-                         * (non-Javadoc)
-                         * 
-                         * @see java.lang.Runnable#run()
-                         */
-                        public void run() {
-//                            System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
-//                                    + System.currentTimeMillis());
-                            onExpressionFilterTextResized();
-                        }
-
-                    }).start();
-
+                    correctAsynchStyledTextWrapBug();
                 }
-            });
-
-            expressionFilterText.getVerticalBar().addSelectionListener(new SelectionListener() {
+            };
+            
+            ScrolledComposite scrolledCompositeView = null;
+            if (getZone() == Zone.INPUTS) {
+                scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewInputs();
+            } else if (getZone() == Zone.OUTPUTS) {
+                scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewOutputs();
+            }
+            scrolledCompositeView.addControlListener(listenerForCorrectWrapBug);
+            
+            SelectionListener selectionListenerToCorrectWrapBug = new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
@@ -2062,7 +2046,11 @@ public abstract class DataMapTableView extends Composite {
                     onExpressionTextVerticalBarSelection(e);
                 }
 
-            });
+            };
+            
+            scrolledCompositeView.getVerticalBar().addSelectionListener(selectionListenerToCorrectWrapBug);
+
+            expressionFilterText.getVerticalBar().addSelectionListener(selectionListenerToCorrectWrapBug);
 
             expressionFilterText.addKeyListener(new KeyListener() {
 
@@ -2242,6 +2230,26 @@ public abstract class DataMapTableView extends Composite {
      */
     public StyledText getExpressionFilterText() {
         return this.expressionFilterText;
+    }
+
+    /**
+     * DOC amaumont Comment method "correctAsynchStyledTextWrapBug".
+     */
+    private void correctAsynchStyledTextWrapBug() {
+        new AsynchronousThreading(100, false, expressionFilterText.getDisplay(), new Runnable() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+//                            System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
+//                                    + System.currentTimeMillis());
+                onExpressionFilterTextResized();
+            }
+
+        }).start();
     }
 
 }

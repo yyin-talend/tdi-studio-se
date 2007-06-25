@@ -4,10 +4,12 @@
 		org.talend.core.model.process.IConnection
         org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		java.util.ArrayList
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.process.IMatchingMode
 		java.util.HashSet
 		java.util.Set
@@ -58,18 +60,18 @@
 			if(validTarget != null) {
 					IHashableInputConnections target = (IHashableInputConnections) validTarget;
 					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
-					Set<String> hHashableColumns = null;
+					List<IHashableColumn> hashableColumns = null;
 					IMatchingMode matchingMode = null;
 					if(hashConfiguration == null) {
-						hHashableColumns = new HashSet(0);
+						hashableColumns = new ArrayList(0);
 					} else {
-						hHashableColumns = hashConfiguration.getHashableColumns();
+						hashableColumns = hashConfiguration.getHashableColumns();
 						matchingMode = hashConfiguration.getMatchingMode();
 					}
 					
 					String matchingModeStr = null;
 					if(matchingMode == null) {
-						if(hHashableColumns.size() > 0) {
+						if(hashableColumns.size() > 0) {
 							matchingModeStr = "UNIQUE_MATCH";
 						} else {
 							matchingModeStr = "ALL_ROWS";

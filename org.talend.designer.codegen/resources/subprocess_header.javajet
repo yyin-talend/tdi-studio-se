@@ -4,6 +4,7 @@
 		org.talend.designer.codegen.config.NodesSubTree
 		org.talend.core.model.process.INode
 		java.util.List
+		java.util.ArrayList
 		java.util.HashSet
 		java.util.Set
 		org.talend.core.model.process.EConnectionType
@@ -16,6 +17,8 @@
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
+		org.talend.core.model.process.IHashableColumn
+		org.talend.core.model.process.HashableColumn
 	" 
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -46,23 +49,23 @@
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
 						
-						Set<String> hHashableColumns = new HashSet<String>();
+						List<IHashableColumn> hashableColumns = new ArrayList<IHashableColumn>();
 						if(conn.getTarget() instanceof IHashableInputConnections) {
 							IHashableInputConnections target = (IHashableInputConnections) conn.getTarget();
 							IHashConfiguration hashConfiguration = target.getHashConfiguration(conn.getName());
 							if(hashConfiguration != null) {
-								hHashableColumns = hashConfiguration.getHashableColumns();
+								hashableColumns = hashConfiguration.getHashableColumns();
 							}
 						} else {
 							if (metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
-										hHashableColumns.add(column.getLabel());
+										hashableColumns.add(new HashableColumn(column.getLabel(), -1));
 									}
 								}
 							}
 						}
-						boolean hasAtLeastOneKey = hHashableColumns.size() > 0;
+						boolean hasAtLeastOneKey = hashableColumns.size() > 0;
 						
 %>
 
@@ -100,7 +103,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 	<%
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hHashableColumns.contains(column.getLabel())) {
+				if (hashableColumns.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 	%>
 				result = prime * result + (int) this.<%=column.getLabel() %>;
@@ -129,7 +132,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 		<%	
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hHashableColumns.contains(column.getLabel())) {
+				if (hashableColumns.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 				%>
 					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 

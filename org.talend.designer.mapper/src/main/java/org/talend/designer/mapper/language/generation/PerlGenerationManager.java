@@ -136,11 +136,14 @@ public class PerlGenerationManager extends GenerationManager {
      */
     public String buildNewArrayDeclarationWithKeyValue(String name, String[] keysValues, int indent) {
         String string = ""; //$NON-NLS-1$
-        string += "my @" + name + " = @{ $tHash_" + name + ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//        string += "my @" + name + "ArrayFromLookup = $tHash_" + name + "{"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         for (int i = 0; i < keysValues.length; i++) {
-            string += "{ " + keysValues[i] + " }"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (i > 0) {
+                string += ".'|'.";
+            }
+            string += keysValues[i]; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        string += "};"; //$NON-NLS-1$
+//        string += "};"; //$NON-NLS-1$
         return string;
     }
 

@@ -500,7 +500,10 @@ public class DataProcess {
                 // && externalNode.getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() ==
                 // ECodeLanguage.JAVA) { //$NON-NLS-1$
                 if (connection.getTarget().getUniqueName().startsWith("tMap")
-                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA
+                        || connection.getTarget().getUniqueName().startsWith("tAdvancedMap")
+                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
+                        ) {
                     uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
                     // ///////////////////////////////////////////////////////////////////////////

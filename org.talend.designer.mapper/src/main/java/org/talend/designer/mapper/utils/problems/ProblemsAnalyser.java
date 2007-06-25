@@ -119,7 +119,9 @@ public class ProblemsAnalyser {
                 rejectTables.add(outputTable);
             } else if (!outputTable.isRejectInnerJoin()) {
                 if (outputTable.getExpressionFilter() != null && outputTable.isActivateExpressionFilter()
-                        && !outputTable.getExpressionFilter().trim().equals("")) {
+                        && !outputTable.getExpressionFilter().trim().equals("")
+                        || outputTable.getConstraintTableEntries() != null
+                        && outputTable.getConstraintTableEntries().size() > 0) {
                     normalTablesWithFilter.add(outputTable);
                 } else {
                     normalTables.add(outputTable);
