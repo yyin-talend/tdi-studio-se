@@ -54,6 +54,8 @@ public class CodeGeneratorArgument {
     private ECodePart codePart;
 
     String incomingName;
+    
+    private boolean isRunInMultiThread;
 
     /**
      * Constructor.
@@ -195,5 +197,15 @@ public class CodeGeneratorArgument {
 
     public String getIncomingName() {
         return incomingName;
+    }
+
+    
+    public boolean getIsRunInMultiThread() {
+        return this.isRunInMultiThread;
+    }
+
+    
+    public void setIsRunInMultiThread(boolean isRunInMultiThread) {
+        this.isRunInMultiThread = isRunInMultiThread;
     }
 }

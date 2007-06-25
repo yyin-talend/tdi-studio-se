@@ -4,6 +4,8 @@
 		org.talend.core.model.process.IProcess
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.CorePlugin
+		
 		java.util.Vector
 		java.util.List
 	" 
@@ -17,6 +19,7 @@
 
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
@@ -27,7 +30,28 @@
     public static String pid = "0";
     public static String rootPid = null;
     public static String fatherPid = null;
-       
+<%
+	if(isRunInMultiThread){
+%>
+	private static SyncInt runningThreadCount =new SyncInt();
+	
+	private static class SyncInt
+	{
+		private int count = 0;
+	    public synchronized void add(int i)
+	    {
+	        count +=i;
+	    }
+	    
+	    public synchronized int getCount()
+	    {
+	        return count;
+	    }
+	}
+<%
+	}
+%>
+  
     private static java.util.Properties context_param = new java.util.Properties();
     
     public static String status= "";
@@ -101,27 +125,87 @@
 
 	long end = 0;
 	long start = java.util.Calendar.getInstance().getTimeInMillis();
+<%
+	if(isRunInMultiThread 
+		&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1){
+%>
+	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
+<%
+		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+%>
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
+		runningThreadCount.add(1);
+		new Thread(){
+	    	public void run()
+	   		{
+	        	try {
+	            	<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+	            } catch (TalendException e) {
+	            	status="failure";
+	            	e.printStackTrace();
+	         	}finally
+	         	{
+	            	runningThreadCount.add(-1);
+	        	}
+	    	}
+		}.start();
+		
+<%
+    	}
+		for (INode rootNode : rootNodes) {
+%>
+		runningThreadCount.add(1);
+   		new Thread(){
+	    	public void run()
+	   		{
+	        	try {
+	            	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
+	            } catch (TalendException e) {
+	            	status="failure";
+	            	e.printStackTrace();
+	         	}finally
+	         	{
+	            	runningThreadCount.add(-1);
+	        	}
+	    	}
+		}.start();
+		
+<%
+		}
+%>
+	while(<%=process.getName() %>Class.runningThreadCount.getCount()>0)
+    {
+        try {
+            Thread.sleep(10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }            
+    }
+<%
+	}else{ //isRunInMultiThread
+%>
 	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 	try {
 <%
-   	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+   		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
 <%
-    }
-
-	for (INode rootNode : rootNodes) {
+    	}
+		for (INode rootNode : rootNodes) {
 %>
 		<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
-	}
+		}
 %>
-		status="end";
 	} catch(TalendException e) {
 		status="failure";
 		e.printStackTrace();
 	} finally {
+<%
+	}//end if(isRunInMultiThread)
+%>	
 		end = java.util.Calendar.getInstance().getTimeInMillis();
 		if (watch) {
     		System.out.println((end-start)+" milliseconds");
@@ -129,7 +213,7 @@
 <%
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status, (end-start));
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-start));
 		try {
 			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
 		} catch (Exception e) {
@@ -137,10 +221,13 @@
 		}
 <%
     }
+    if(!(isRunInMultiThread 
+    	&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1)){
 %>
 	}
-
 <%
+	}
+	
     if (stats) {
 %>
 	runStat.stopThreadStat();

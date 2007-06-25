@@ -44,6 +44,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
 import org.talend.designer.codegen.config.EInternalTemplate;
@@ -276,7 +277,9 @@ public class CodeGenerator implements ICodeGenerator {
                 codeGenArgument.setContextName(designerContext.getName());
                 codeGenArgument.setCurrentProjectName(currentProjectName);
                 codeGenArgument.setJobName(jobName);
-
+                codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
+                        ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+                
                 JetBean jetBean = initializeJetBean(codeGenArgument);
 
                 jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
@@ -336,6 +339,8 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setContextName(contextName);
         codeGenArgument.setJobName(jobName);
         codeGenArgument.setCheckingSyntax(checkingSyntax);
+        codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
+                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
@@ -489,7 +494,9 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setJobName(jobName);
         argument.setCheckingSyntax(checkingSyntax);
         argument.setIncomingName(incomingName);
-
+        argument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
+                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+        
         JetBean jetBean = initializeJetBean(argument);
 
         StringBuffer content = new StringBuffer();
@@ -536,7 +543,8 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setContextName(contextName);
         argument.setJobName(jobName);
         argument.setCheckingSyntax(checkingSyntax);
-
+        argument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
+                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
         JetBean jetBean = initializeJetBean(argument);
 
         StringBuffer content = new StringBuffer();
