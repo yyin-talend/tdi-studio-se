@@ -37,12 +37,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.temp.ECodePart;
@@ -72,10 +71,6 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
 
     private FOXMain foxmain;
 
-    // private List<IMetadataTable> metadataListOut;
-
-    // private IElementParameter mapping;
-
     public FileOutputXMLComponent() {
         super();
     }
@@ -94,7 +89,6 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
      */
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -113,8 +107,6 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#loadDataIn(java.io.InputStream, java.io.Reader)
      */
     public void loadDataIn(InputStream inputStream, Reader reader) throws IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
-
     }
 
     /*
@@ -123,8 +115,6 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
     public void loadDataOut(OutputStream out, Writer writer) throws IOException {
-        // TODO Auto-generated method stub
-
     }
 
     /*
@@ -180,32 +170,112 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
      */
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+    }
+
+    @Override
+    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
         List<Map<String, String>> list = (List<Map<String, String>>) this.getElementParameter(MAPPING).getValue();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).get(COLUMN).equals(oldColumnName)) {
-                list.get(i).put(COLUMN, newColumnName);
+        boolean[] flags = new boolean[list.size()];
+
+        for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
+            System.out.println("    -> " + col + " " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$
+            for (int i = 0; i < list.size(); i++) {
+                if (!flags[i] && list.get(i).get(COLUMN).equals(col.getOldName())) {
+                    list.get(i).put(COLUMN, col.getNewName());
+                    flags[i] = true;
+                }
             }
         }
-        this.getElementParameter(MAPPING).setValue(list);
+
+        for (int i = 0; i < flags.length; i++) {
+            if (flags[i]) {
+                this.getElementParameter(MAPPING).setValue(list);
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
+        List<Map<String, String>> list = (List<Map<String, String>>) this.getElementParameter(MAPPING).getValue();
+        boolean[] flags = new boolean[list.size()];
+
+        for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
+            System.out.println("    -> " + col + " " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$
+            for (int i = 0; i < list.size(); i++) {
+                if (!flags[i] && list.get(i).get(COLUMN).equals(col.getOldName())) {
+                    list.get(i).put(COLUMN, col.getNewName());
+                    flags[i] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < flags.length; i++) {
+            if (flags[i]) {
+                this.getElementParameter(MAPPING).setValue(list);
+                break;
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void setTableElementParameter(List<Map<String, String>> epsl, String paraName) {
+    public boolean setTableElementParameter(List<Map<String, String>> epsl, String paraName) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
-
+        boolean result = false;
         for (int i = 0; i < eps.size(); i++) {
             IElementParameter parameter = eps.get(i);
             if (parameter.getField() == EParameterFieldType.TABLE && parameter.getName().equals(paraName)) {
-                ArrayList<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
+                List<Map<String, String>> newValues = new ArrayList<Map<String, String>>();
                 for (Map<String, String> map : epsl) {
                     Map<String, String> newMap = new HashMap<String, String>();
                     newMap.putAll(map);
                     newValues.add(newMap);
                 }
-                parameter.setValue(newValues);
+                List<Map<String, String>> oldValues = (List<Map<String, String>>) parameter.getValue();
+                if (paraName.equals(ROOT_TAGS)) {
+                    if (oldValues.size() != newValues.size()) {
+                        result = true;
+                    } else {
+                        for (int k = 0; k < oldValues.size(); k++) {
+                            if (!oldValues.get(k).get(TAG).equals(newValues.get(k).get(TAG))) {
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (paraName.equals(MAPPING)) {
+                    if (oldValues.size() != newValues.size()) {
+                        result = true;
+                    } else {
+                        for (int k = 0; k < oldValues.size(); k++) {
+                            if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
+                                result = true;
+                                break;
+                            }
+                            if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
+                                result = true;
+                                break;
+                            }
+                            if (!oldValues.get(k).get(LABEL).equals(newValues.get(k).get(LABEL))) {
+                                result = true;
+                                break;
+                            }
+                            if (!oldValues.get(k).get(DEPTH).equals(newValues.get(k).get(DEPTH))) {
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (result) {
+                    parameter.setValue(newValues);
+                }
                 break;
             }
         }
+        return result;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -241,43 +311,24 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
     }
 
     public void renameInputConnection(String oldName, String newName) {
-        // TODO Auto-generated method stub
 
     }
 
     public void renameOutputConnection(String oldName, String newName) {
-        // TODO Auto-generated method stub
 
     }
 
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.talend.core.model.process.INode#getMetadataList()
-    // */
-    // public List<IMetadataTable> getMetadataList() {
-    // return this.metadataListOut;
-    // }
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
-    // */
-    // public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
-    // this.metadataListOut = metadataTablesOut;
-    // }
-
-    // @Override
-    // public IODataComponentContainer getIODataComponents() {
-    // IODataComponentContainer inAndOut = new IODataComponentContainer();
-    //
-    // List<IODataComponent> outputs = inAndOut.getInputs();
-    // for (IConnection currentConnection : getIncomingConnections()) {
-    // IODataComponent component = new IODataComponent(currentConnection, metadataListOut.get(0));
-    // outputs.add(component);
-    // }
-    // return inAndOut;
-    // }
+    /**
+     * DOC gke Comment method "getMetadataTable".
+     * 
+     * @return
+     */
+    public IMetadataTable getMetadataTable() {
+        try {
+            return getMetadataList().get(0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

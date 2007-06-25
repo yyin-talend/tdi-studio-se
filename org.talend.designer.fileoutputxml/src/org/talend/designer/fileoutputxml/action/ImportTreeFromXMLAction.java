@@ -77,15 +77,12 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             FOXTreeNode root = cloneATreeNode(treeNode);
             root = ((Element) root).getElementChildren().get(0);
-            if (root instanceof Element) {
-                Element e = (Element) root;
-                List<FOXTreeNode> cs = e.getElementChildren();
-                for (int i = 1; i < cs.size(); i++) {
-                    e.removeChild(cs.get(i));
-                }
-                root.setParent(null);
-                list.add(root);
+            Element e = (Element) root;
+            while (e.getElementChildren().size() > 1) {
+                e.getElementChildren().remove(1);
             }
+            root.setParent(null);
+            list.add(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,5 +137,9 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         this.setEnabled(true);
+        FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
+        if (node != null) {
+            foxui.setSelectedText(node.getLabel());
+        }
     }
 }

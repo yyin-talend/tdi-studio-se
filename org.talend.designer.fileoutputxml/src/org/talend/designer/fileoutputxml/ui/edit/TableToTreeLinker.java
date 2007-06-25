@@ -103,9 +103,9 @@ public class TableToTreeLinker<D1, D2> extends BgDrawableComposite implements IB
         this.display = sourceTable.getDisplay();
         this.backgroundRefresher = backgroundRefresher;
 
-        LinkableTree linkableTree=new LinkableTree(this, backgroundRefresher, targetTree, this);
+        LinkableTree linkableTree = new LinkableTree(this, backgroundRefresher, targetTree, this);
         targetTree.removeSelectionListener(linkableTree.getSelectionListener());
-        
+
         new LinkableTable(this, backgroundRefresher, sourceTable);
         this.target = targetTree;
         this.source = sourceTable;
@@ -167,18 +167,16 @@ public class TableToTreeLinker<D1, D2> extends BgDrawableComposite implements IB
         int xStartBezierLink = findXRightStartBezierLink(source.getItems(), 0);
 
         Point sourceToCommonPoint = display.map(source, getBgDrawableComposite(), new Point(0, 0));
-        // System.out.println("treeToCommonPoint=" + treeToCommonPoint);
 
         int treeItemHeight = source.getItemHeight();
 
-        Rectangle treeBounds = source.getBounds();
+        Rectangle tableBounds = source.getBounds();
 
         if (WindowSystem.isGTK()) {
             gc.setAdvanced(false);
         } else {
-            gc.fillRectangle(sourceToCommonPoint.x, sourceToCommonPoint.y, treeBounds.width - source.getBorderWidth(),
-                    treeBounds.height - source.getBorderWidth());
-            // System.out.println(isAntialiasAllowed());
+            gc.fillRectangle(sourceToCommonPoint.x, sourceToCommonPoint.y, tableBounds.width - source.getBorderWidth(),
+                    tableBounds.height - source.getBorderWidth());
             if (backgroundRefresher.isAntialiasAllowed()) {
                 gc.setAntialias(SWT.ON);
             } else {
@@ -201,30 +199,48 @@ public class TableToTreeLinker<D1, D2> extends BgDrawableComposite implements IB
             IExtremityLink<Item, D1> extremity1 = link.getExtremity1();
             IExtremityLink<Tree, D2> extremity2 = link.getExtremity2();
 
-            TableItem treeItem = TableUtils.getTableItem(source, (Object) extremity1.getDataItem());
-            TableItem firstExpandedAscTreeItem = treeItem;
+            TableItem tableItem = TableUtils.getTableItem(source, (Object) extremity1.getDataItem());
+            TableItem firstExpandedAscTableItem = tableItem;
 
-            Rectangle treeItemBounds = firstExpandedAscTreeItem.getBounds();
+            Rectangle tableItemBounds = firstExpandedAscTableItem.getBounds();
 
-            int yStraight = sourceToCommonPoint.y + treeItemHeight / 2 + treeItemBounds.y;
-            Point pointStartStraight = new Point(sourceToCommonPoint.x + treeItemBounds.x + treeItemBounds.width, yStraight);
+            int yStraight = sourceToCommonPoint.y + treeItemHeight / 2 + tableItemBounds.y;
+            Point pointStartStraight = new Point(sourceToCommonPoint.x + tableItemBounds.x + tableItemBounds.width,
+                    yStraight);
             Point pointEndStraight = new Point(sourceToCommonPoint.x + xStartBezierLink, yStraight);
 
-            Rectangle tableItemBounds = TreeUtils.getTreeItem(tree, (Object) extremity2.getDataItem()).getBounds();
-            Rectangle tableBounds = tree.getBounds();
+            TreeItem treeItem = TreeUtils.getTreeItem(tree, (Object) extremity2.getDataItem());
+            Rectangle treeItemBounds = treeItem.getBounds();
+            Rectangle treeBounds = tree.getBounds();
 
-            int pointY = tableItemBounds.y + tree.getItemHeight() / 2 + tree.getBorderWidth();
+            int pointY = treeItemBounds.y + tree.getItemHeight() / 2 + tree.getBorderWidth();
             if (tree.getHeaderVisible()) {
                 pointY += tree.getHeaderHeight();
             }
-            Point pointEndCentralCurve = backgroundRefresher.convertPointToCommonParentOrigin(new Point(tableItemBounds.x - 10,
+
+            // TreeItem[] selects = tree.getSelection();
+            // Boolean isSelected = false;
+            // for (int k = 0; k < selects.length; k++) {
+            // if (selects[k].equals(treeItem)) {
+            // isSelected = true;
+            // break;
+            // }
+            // }
+            Point pointEndCentralCurve = null;
+            // if (isSelected) {
+            pointEndCentralCurve = backgroundRefresher.convertPointToCommonParentOrigin(new Point(treeBounds.x - 10,
                     pointY), tree);
+
+            // } else {
+            // pointEndCentralCurve = backgroundRefresher.convertPointToCommonParentOrigin(new Point(
+            // treeItemBounds.x - 10, pointY), tree);
+            // }
 
             boolean lineStyleDot = false;
 
             Point point = display.map(source, getBgDrawableComposite(), new Point(0, 0));
 
-            if (yStraight < point.y || yStraight > point.y + treeBounds.height) {
+            if (yStraight < point.y || yStraight > point.y + tableBounds.height) {
                 lineStyleDot = true;
             }
 
@@ -233,12 +249,12 @@ public class TableToTreeLinker<D1, D2> extends BgDrawableComposite implements IB
                 lineStyleDot = true;
             }
 
-            if (pointEndCentralCurve.y > tableToCommonPoint.y + tableBounds.height) {
-                pointEndCentralCurve.y = tableToCommonPoint.y + tableBounds.height - 2 * tree.getBorderWidth();
+            if (pointEndCentralCurve.y > tableToCommonPoint.y + treeBounds.height) {
+                pointEndCentralCurve.y = tableToCommonPoint.y + treeBounds.height - 2 * tree.getBorderWidth();
                 lineStyleDot = true;
             }
 
-            if (firstExpandedAscTreeItem == treeItem && !lineStyleDot) {
+            if (firstExpandedAscTableItem == tableItem && !lineStyleDot) {
                 gc.setLineStyle(SWT.LINE_SOLID);
             } else {
                 gc.setLineStyle(SWT.LINE_DOT);
@@ -250,8 +266,8 @@ public class TableToTreeLinker<D1, D2> extends BgDrawableComposite implements IB
                 pointStartStraight.x += -15;
             }
 
-            gc.drawLine(pointStartStraight.x + offset.x, pointStartStraight.y + offset.y, pointEndStraight.x + offset.x,
-                    pointEndStraight.y + offset.y);
+            gc.drawLine(pointStartStraight.x + offset.x, pointStartStraight.y + offset.y,
+                    pointEndStraight.x + offset.x, pointEndStraight.y + offset.y);
 
             pointEndStraight.x += offset.x;
             pointEndStraight.y += offset.y;

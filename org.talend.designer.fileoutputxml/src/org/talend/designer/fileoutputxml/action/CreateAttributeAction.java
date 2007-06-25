@@ -83,7 +83,7 @@ public class CreateAttributeAction extends SelectionProviderAction {
         String label = "";
         while (!StringUtil.validateLabelForXML(label)) {
             InputDialog dialog = new InputDialog(null, "Input attribute's label",
-                    "Input the new attribute's valid label", "DEFAULT", null);
+                    "Input the new attribute's valid label", "", null);
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
@@ -110,7 +110,11 @@ public class CreateAttributeAction extends SelectionProviderAction {
         if (node != null && node.getClass() != Element.class) {
             this.setEnabled(false);
         } else {
-            this.setEnabled(true);
+            if (node == null || node.getParent() == null) {
+                this.setEnabled(false);
+            } else {
+                this.setEnabled(true);
+            }
         }
     }
 }

@@ -95,7 +95,7 @@ public class CreateElementAction extends SelectionProviderAction {
         String label = "";
         while (!StringUtil.validateLabelForXML(label)) {
             InputDialog dialog = new InputDialog(null, "Input element's label", "Input the new element's valid label",
-                    "DEFAULT", null);
+                    "", null);
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();

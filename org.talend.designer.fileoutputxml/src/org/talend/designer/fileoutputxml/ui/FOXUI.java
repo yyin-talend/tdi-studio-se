@@ -29,7 +29,14 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorListener;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -44,6 +51,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -56,7 +64,6 @@ import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
 import org.talend.designer.fileoutputxml.action.CreateElementAction;
 import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.action.DisconnectAction;
-import org.talend.designer.fileoutputxml.action.EditLabelAction;
 import org.talend.designer.fileoutputxml.action.GuessLoopAction;
 import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
@@ -66,7 +73,7 @@ import org.talend.designer.fileoutputxml.ui.edit.FOXTargetTreeViewerProvider;
 import org.talend.designer.fileoutputxml.ui.edit.Schema2XMLLinker;
 import org.talend.designer.fileoutputxml.ui.edit.SchemaTableViewerProvider;
 import org.talend.designer.fileoutputxml.ui.footer.FooterComposite;
-import org.talend.repository.i18n.Messages;
+import org.talend.designer.fileoutputxml.util.StringUtil;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -98,13 +105,15 @@ public class FOXUI {
 
     private IAction createAttributeAction;
 
-    private IAction editAction;
+    // private IAction editAction;
 
     private IAction importFromXMLAction;
 
     private IAction guessLoopAction;
 
     private IAction setLoopAction;
+
+    private String selectedText;
 
     public FOXUI(Composite parent, FOXManager foxManager) {
         this.foxManager = foxManager;
@@ -190,10 +199,10 @@ public class FOXUI {
     }
 
     protected void initSchemaTable() {
-        List<IMetadataTable> metadataTables = this.externalNode.getMetadataList();
-        if (metadataTables != null && metadataTables.size() > 0) {
-            List<IMetadataColumn> columnList = metadataTables.get(0).getListColumns();
-            schemaViewer.setInput(columnList == null ? new ArrayList<IMetadataColumn>() : columnList);
+        IMetadataTable metadataTable = this.externalNode.getMetadataTable();
+        if (metadataTable != null) {
+            List<IMetadataColumn> columnList = metadataTable.getListColumns();
+            schemaViewer.setInput(columnList);
         } else {
             schemaViewer.setInput(new ArrayList<IMetadataColumn>());
         }
@@ -210,38 +219,71 @@ public class FOXUI {
     private void addXMLViewer(final Composite mainComposite, final int width, final int height) {
 
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, "Linker Target", height); //$NON-NLS-1$
-        group.setBackgroundMode(SWT.INHERIT_FORCE);
+        Group group = Form.createGroup(mainComposite, 1, "Linker Target", height);
+        // group.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        xmlViewer = new TreeViewer(group, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         xmlViewer.getControl().setLayoutData(gridData);
         xmlViewer.setUseHashlookup(true);
-
         Tree tree = xmlViewer.getTree();
         tree.setLinesVisible(true);
-        // tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
         column1.setText("XML Tree");
         column1.setWidth(250);
 
-        TreeColumn column2 = new TreeColumn(tree, SWT.LEFT);
-        column2.setText("Related Column Label");
-        column2.setWidth(100);
+        TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
+        column2.setText("Related Column");
+        column2.setWidth(110);
 
-        TreeColumn column3 = new TreeColumn(tree, SWT.LEFT);
+        TreeColumn column3 = new TreeColumn(tree, SWT.CENTER);
         column3.setText("Node Status");
-        column3.setWidth(100);
+        column3.setWidth(90);
 
         tree.setHeaderVisible(true);
-        tree.setBackgroundMode(SWT.INHERIT_NONE);
+        // tree.setBackgroundMode(SWT.INHERIT_NONE);
         FOXTargetTreeViewerProvider provider = new FOXTargetTreeViewerProvider();
         xmlViewer.setLabelProvider(provider);
+
+        xmlViewer.setCellModifier(new ICellModifier() {
+
+            public boolean canModify(Object element, String property) {
+                if (property.equals("C1")) {
+                    return true;
+                }
+                return false;
+            }
+
+            public Object getValue(Object element, String property) {
+                FOXTreeNode node = (FOXTreeNode) element;
+                if (property.equals("C1")) {
+                    return node.getLabel();
+                }
+                return null;
+            }
+
+            public void modify(Object element, String property, Object value) {
+                TreeItem treeItem = (TreeItem) element;
+                FOXTreeNode node = (FOXTreeNode) treeItem.getData();
+                if (property.equals("C1")) {
+                    node.setLabel((String) value);
+                }
+                xmlViewer.refresh(node);
+            }
+        });
+        xmlViewer.setColumnProperties(new String[] { "C1", "C2", "C3" });
+        CellEditor editor = new TextCellEditor(xmlViewer.getTree());
+
+        editor.addListener(new DialogErrorXMLLabelCellEditor(editor));
+
+        xmlViewer.setCellEditors(new CellEditor[] { editor, null, null });
+
         xmlViewer.setContentProvider(provider);
         xmlViewer.setInput(this.foxManager.getTreeData());
         xmlViewer.expandAll();
         createAction();
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
@@ -251,6 +293,14 @@ public class FOXUI {
         });
         Menu menu = menuMgr.createContextMenu(xmlViewer.getControl());
         xmlViewer.getControl().setMenu(menu);
+        xmlViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                // TODO Auto-generated method stub
+
+            }
+
+        });
     }
 
     /**
@@ -261,7 +311,7 @@ public class FOXUI {
     protected void fillContextMenu(IMenuManager manager) {
         manager.add(createAction);
         manager.add(createAttributeAction);
-        manager.add(editAction);
+        // manager.add(editAction);
         manager.add(new Separator());
         manager.add(deleteAction);
         manager.add(disconnectAction);
@@ -275,11 +325,11 @@ public class FOXUI {
     private void createAction() {
         createAction = new CreateElementAction(xmlViewer, this, "Add Sub-element");
         createAttributeAction = new CreateAttributeAction(xmlViewer, this, "Add Attribute");
-        editAction = new EditLabelAction(xmlViewer, "Edit Label");
+        // editAction = new EditLabelAction(xmlViewer, "Edit Label");
         deleteAction = new DeleteNodeAction(xmlViewer, this, "Delete");
         disconnectAction = new DisconnectAction(xmlViewer, this, "Disconnect Linker");
         // disconnectAction.setToolTipText("Disconnect the linker of the current tree node.");
-        importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, "Import Tree From XML");
+        importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, "Import XML Tree");
         // importFromXMLAction
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
         guessLoopAction = new GuessLoopAction(xmlViewer, "Guess Loop Element");
@@ -289,8 +339,8 @@ public class FOXUI {
 
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1, "Linker Source", height); //$NON-NLS-1$
-        group.setBackgroundMode(SWT.INHERIT_FORCE);
+        final Group group = Form.createGroup(mainComposite, 1, "Linker Source", height);
+        // group.setBackgroundMode(SWT.INHERIT_FORCE);
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
         if (WindowSystem.isGTK()) {
@@ -305,18 +355,19 @@ public class FOXUI {
             });
         }
         schemaViewer = new TableViewer(group);
-        
-//        schemaViewer.set
+
+        // schemaViewer.set
         // schemaViewer.getTable().setBackground(schemaViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+
         SchemaTableViewerProvider provider = new SchemaTableViewerProvider();
         schemaViewer.setContentProvider(provider);
         schemaViewer.setLabelProvider(provider);
 
         GridData data2 = new GridData(GridData.FILL_BOTH);
         Table table = schemaViewer.getTable();
-//        table.setLinesVisible(true);
+        // table.setLinesVisible(true);
         table.setHeaderVisible(true);
-        TableColumn column1 = new TableColumn(table, SWT.LEFT);
+        TableColumn column1 = new TableColumn(table, SWT.CENTER);
         column1.setText("Schema List");
         column1.setWidth(100);
         table.setLayoutData(data2);
@@ -339,8 +390,62 @@ public class FOXUI {
         return this.foxUIParent;
     }
 
-    
     public FOXManager getFoxManager() {
         return foxManager;
+    }
+
+    /**
+     * DOC gke FOXUI class global comment. Detailled comment <br/>
+     * 
+     */
+    class DialogErrorXMLLabelCellEditor implements ICellEditorListener {
+
+        CellEditor editor;
+
+        public void applyEditorValue() {
+            String text = getControl().getText();
+            onValueChanged(text, true);
+        }
+
+        public void cancelEditor() {
+        }
+
+        public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+            onValueChanged(getControl().getText(), false);
+        }
+
+        private void onValueChanged(final String newValue, boolean showAlertIfError) {
+            final Text text = getControl();
+
+            String errorMessage = null;
+
+            if (!StringUtil.validateLabelForXML(text.getText())) {
+                errorMessage = "Invalid string for XML Label. Label was not changed.";
+            }
+
+            if (errorMessage == null) {
+                text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+            } else {
+                text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
+                if (showAlertIfError) {
+                    text.setText(selectedText);
+                    MessageDialog.openError(text.getShell(), "Invalid XML label.", errorMessage); //$NON-NLS-1$
+                }
+            }
+        }
+
+        public DialogErrorXMLLabelCellEditor(CellEditor editor) {
+            super();
+            this.editor = editor;
+        }
+
+        private Text getControl() {
+            return (Text) editor.getControl();
+        }
+
+    }
+
+    public void setSelectedText(String label) {
+        selectedText = label;
     }
 }

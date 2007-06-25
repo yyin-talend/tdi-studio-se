@@ -27,18 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
-
 /**
- * DOC ke  class global comment. Detailled comment
- * <br/>
- *
+ * DOC ke class global comment. Detailled comment <br/>
+ * 
  */
 public class FOXManager {
 
@@ -58,7 +55,7 @@ public class FOXManager {
     }
 
     /**
-     * Getter for foxComponent.
+     * Getter for k.
      * 
      * @return the foxComponent
      */
@@ -115,10 +112,9 @@ public class FOXManager {
         List<Map<String, String>> mapping = (List<Map<String, String>>) foxComponent
                 .getTableList(FileOutputXMLComponent.MAPPING);
         int depth = 0;
-        List<IMetadataTable> metadataTables = this.foxComponent.getMetadataList();
         List<IMetadataColumn> columns = null;
-        if (metadataTables != null && metadataTables.size() > 0) {
-            columns = metadataTables.get(0).getListColumns();
+        if (foxComponent.getMetadataTable() != null) {
+            columns = foxComponent.getMetadataTable().getListColumns();
         }
         if (columns == null) {
             columns = new ArrayList<IMetadataColumn>();
@@ -143,7 +139,7 @@ public class FOXManager {
                 if (curDepth == 1) {
                     FOXTreeNode tag = new Element(map.get(FileOutputXMLComponent.LABEL));
                     tag.setColumn(column);
-                    tag.setLoop(true);// this node is tagged as loop
+                    tag.setLoop(true); // this node is tagged as loop
                     current.addChild(tag);
                     current = tag;
                     depth = curDepth;
@@ -162,7 +158,7 @@ public class FOXManager {
             }
         }
         if (rootNode == null) {
-            rootNode = new Element("rootTag");
+            rootNode = new Element("rootTag"); //$NON-NLS-1$
         }
 
         rootNode.setParent(null);
@@ -175,15 +171,15 @@ public class FOXManager {
         Map<String, String> newMap = new HashMap<String, String>();
         newMap.put(FileOutputXMLComponent.LABEL, node.getLabel());
         newMap.put(FileOutputXMLComponent.COLUMN, node.getColumnLabel());
-        newMap.put(FileOutputXMLComponent.ATTRIBUTE, "false");
-        newMap.put(FileOutputXMLComponent.DEPTH, depth + "");
+        newMap.put(FileOutputXMLComponent.ATTRIBUTE, "false"); //$NON-NLS-1$
+        newMap.put(FileOutputXMLComponent.DEPTH, depth + ""); //$NON-NLS-1$
         result.add(newMap);
         for (FOXTreeNode att : node.getAttributeChildren()) {
             newMap = new HashMap<String, String>();
             newMap.put(FileOutputXMLComponent.LABEL, att.getLabel());
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
-            newMap.put(FileOutputXMLComponent.ATTRIBUTE, "true");
-            newMap.put(FileOutputXMLComponent.DEPTH, depth + "");
+            newMap.put(FileOutputXMLComponent.ATTRIBUTE, "true"); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.DEPTH, depth + ""); //$NON-NLS-1$
             result.add(newMap);
         }
         List<FOXTreeNode> children = node.getElementChildren();
@@ -237,27 +233,15 @@ public class FOXManager {
         } while (true);
     }
 
-    public void saveDataToComponent() {
-        // // testing
-        // List<Map<String, String>> mapping = this.getRootTags();
-        // System.out.println("Before saving.....\nROOTS:");
-        // for (Map<String, String> map : mapping) {
-        // System.out.println(map.get("TAG"));
-        // }
-        // // System.out.println("LOOP TAG:");
-        // // System.out.println(this.getLoopNode() == null ? "null" : this.getLoopNode().getLabel());
-        // System.out.println("LOOPS:");
-        // mapping = this.getMapping();
-        // for (Map<String, Object> map : mapping) {
-        // String c = (String) map.get("COLUMN");
-        //
-        // System.out.println(map.get("LABEL") + " " + map.get("ATTRIBUTE") + " " + map.get("DEPTH") + " "
-        // + (c == null ? "null" : c));
-        // }
-
-        foxComponent.setTableElementParameter(getRootTags(), FileOutputXMLComponent.ROOT_TAGS);
-
-        foxComponent.setTableElementParameter(getMapping(), FileOutputXMLComponent.MAPPING);
+    public boolean saveDataToComponent() {
+        boolean result = false;
+        if (foxComponent.setTableElementParameter(getRootTags(), FileOutputXMLComponent.ROOT_TAGS)) {
+            result = true;
+        }
+        if (foxComponent.setTableElementParameter(getMapping(), FileOutputXMLComponent.MAPPING)) {
+            result = true;
+        }
+        return result;
     }
 
     public List<FOXTreeNode> getTreeData() {

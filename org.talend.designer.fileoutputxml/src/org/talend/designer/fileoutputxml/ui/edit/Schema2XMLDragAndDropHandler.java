@@ -203,6 +203,12 @@ public class Schema2XMLDragAndDropHandler {
                     event.detail = DND.DROP_NONE;
                     return;
                 }
+            } else {
+                FOXTreeNode parent = targetNode.getParent();
+                if (parent.getParent() == null) {
+                    event.detail = DND.DROP_NONE;
+                    return;
+                }
             }
             event.detail = DND.DROP_LINK;
         }

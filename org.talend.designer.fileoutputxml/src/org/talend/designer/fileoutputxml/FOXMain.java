@@ -27,8 +27,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
@@ -60,6 +63,25 @@ public class FOXMain {
      * @return
      */
     public void createUI(Composite parent) {
+        IConnection inConn = null;
+        for (IConnection conn : connector.getIncomingConnections()) {
+            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))
+                    || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                inConn = conn;
+                break;
+            }
+        }
+        if (inConn != null) {
+            if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
+                MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
+                messageBox.setText("Error in schema");
+                messageBox.setMessage("Please synchronize columns first.");
+                if (messageBox.open() == SWT.OK) {
+                    ((Shell) parent).close();
+                    return;
+                }
+            }
+        }
         generatorUI = new FOXUI(parent, foxManager);
         generatorUI.init();
     }
@@ -71,13 +93,13 @@ public class FOXMain {
      * @return
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
-                | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
+                | SWT.MAX | SWT.TITLE);
         IComponent component = connector.getComponent();
         ImageDescriptor imageDescriptor = component.getIcon32();
         Image createImage = imageDescriptor.createImage();
         shell.setImage(createImage);
-        shell.setText(connector.getUniqueName()); //$NON-NLS-1$
+        shell.setText(connector.getUniqueName());
         Rectangle boundsRG = new Rectangle(50, 50, 800, 600);
         shell.setBounds(boundsRG);
         createUI(shell);
@@ -104,7 +126,6 @@ public class FOXMain {
         this.standAloneMode = standAloneMode;
     }
 
-    
     public FOXManager getFoxManager() {
         return foxManager;
     }

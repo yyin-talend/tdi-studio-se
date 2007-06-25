@@ -457,11 +457,6 @@ public class Schema2XMLLinker extends TableToTreeLinker<Object, Object> {
         setSelectedStyleLink(selectedStyleLink);
     }
 
-    public String getCurrentLoopXPath() {
-        return "/mapping/dbmsTT";
-        // return loopTableEditorView..getBeansList().get(0).getAbsoluteXPathQuery();
-    }
-
     /**
      * DOC amaumont Comment method "validateXPathExpression".
      * 

@@ -34,7 +34,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 public class FOXPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.fileoutputxml";
+    public static final String PLUGIN_ID = "org.talend.designer.fileoutputxml"; //$NON-NLS-1$
 
     // The shared instance
     private static FOXPlugin plugin;

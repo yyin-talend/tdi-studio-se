@@ -109,14 +109,17 @@ public class UIManager {
      * @param reponse
      */
     public void closeFOX(int response) {
-        
-        saveCurrentUIProperties();
+
         if (response == SWT.CANCEL) {
-            //do nothing.....
+            setUiResponse(SWT.CANCEL);
         }
 
         if (response == SWT.OK) {
-            saveAllData();
+            if (saveAllData()) {
+                setUiResponse(SWT.OK);
+            } else {
+                setUiResponse(SWT.CANCEL);
+            }
         }
         Composite parent = foxUI.getFoxUIParent();
         if (parent instanceof Shell) {
@@ -126,17 +129,10 @@ public class UIManager {
     }
 
     /**
-     * DOC qiang.zhang Comment method "saveCurrentUIProperties".
-     */
-    private void saveCurrentUIProperties() {
-        
-    }
-    
-    /**
      * DOC gke Comment method "saveAllData".
      */
-    private void saveAllData() {
-        foxManager.saveDataToComponent();
+    private boolean saveAllData() {
+        return foxManager.saveDataToComponent();
 
     }
 
