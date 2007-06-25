@@ -101,6 +101,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
 import org.talend.designer.core.model.metadata.MetadataUtils;
 import org.talend.designer.core.model.process.DataProcess;
+import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -254,372 +255,10 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * This function will add quotes only if necessary for the stats & logs.
-     * 
-     * @param str
-     * @return
-     */
-    private String addQuotes(String str) {
-        // function?
-        if (str.contains("(") && str.contains(")")) { //$NON-NLS-1$ //$NON-NLS-2$
-            return str;
-        }
-
-        switch (LanguageManager.getCurrentLanguage()) {
-        case JAVA:
-            // if the user already added quotes (anywhere) then don't add.
-            if (str.contains("\"")) { //$NON-NLS-1$
-                return str;
-            }
-            break;
-        default: // PERL
-            // if the user already added quotes (anywhere) then don't add.
-            if (str.contains("'")) { //$NON-NLS-1$
-                return str;
-            }
-        }
-        return TalendTextUtils.addQuotes(str);
-    }
-
-    /**
      * crate parameters for tabbed page 'Stats & Logs'.
      */
     private void createStatsAndLogsParameters() {
-        ElementParameter param;
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-
-        param = new ElementParameter(this);
-        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
-        param.setValue(Boolean.FALSE);
-        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(1);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(false);
-        addElementParameter(param);
-
-        // checks current language, if it is perl, set languageType to 0(default value), otherwise to 1.
-        int languageType = 0;
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            languageType = 1;
-        }
-
-        // on console
-        param = new ElementParameter(this);
-        param.setName("ON_CONSOLE_FLAG"); //$NON-NLS-1$
-        param.setValue(Boolean.FALSE);
-        param.setDisplayName(EParameterName.ON_CONSOLE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(1);
-        addElementParameter(param);
-
-        // on files
-        param = new ElementParameter(this);
-        param.setName("ON_FILE_FLAG"); // On files //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(2);
-        addElementParameter(param);
-
-        // file path
-        param = new ElementParameter(this);
-        param.setName("FILE_PATH"); // File path //$NON-NLS-1$
-        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(StatsAndLogsConstants.FILE_PATH[languageType]
-                .getName()))));
-        param.setDisplayName(StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName());
-        param.setField(EParameterFieldType.DIRECTORY);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(3);
-        addElementParameter(param);
-
-        // stats file name
-        param = new ElementParameter(this);
-        param.setName("FILENAME_STATS"); // Stats file name //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore
-                .getString(StatsAndLogsConstants.FILENAME_STATS[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(4);
-
-        addElementParameter(param);
-
-        // split every ** rows
-        /*
-         * param = new ElementParameter(this); param.setName("ON_FIlES_START_FILE_SPLIT_ROWS");
-         * param.setValue(Boolean.FALSE); param.setDisplayName("Split Rows"); param.setField(EParameterFieldType.CHECK);
-         * param.setCategory(EComponentCategory.STATSANDLOGS); param.setNumRow(5); addElementParameter(param);
-         */
-        // rows
-        // param = new ElementParameter(this);
-        // param.setName("ON_FIlES_START_FILE_SPLIT_ROWS");
-        // param.setValue(new String());
-        // param.setField(EParameterFieldType);
-        // param.setCategory(EComponentCategory.STATSANDLOGS);
-        // param.setNumRow(5);
-        // addElementParameter(param);
-        // Log file name
-        param = new ElementParameter(this);
-        param.setName("FILENAME_LOGS"); //$NON-NLS-1$
-        param
-                .setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.FILENAME_LOGS[languageType]
-                        .getName())));
-        param.setDisplayName(StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName()); // "Logs File Name"
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(6);
-        addElementParameter(param);
-
-        // split every ** rows
-        /*
-         * param = new ElementParameter(this); param.setName("ON_FIlES_LOG_FILE_SPLIT_ROWS_FLAG");
-         * param.setValue(Boolean.FALSE); param.setDisplayName("Split Rows"); param.setField(EParameterFieldType.CHECK);
-         * param.setCategory(EComponentCategory.STATSANDLOGS); param.setNumRow(7); addElementParameter(param);
-         */
-        // rows
-        // param = new ElementParameter(this);
-        // param.setName("ON_FIlES_LOG_FILE_SPLIT_ROWS");
-        // param.setValue(new String());
-        // param.setField(EParameterFieldType.TEXT);
-        // param.setCategory(EComponentCategory.STATSANDLOGS);
-        // param.setNumRow(8);
-        // addElementParameter(param);
-        // on database
-        param = new ElementParameter(this);
-        param.setName("ON_DATABASE_FLAG"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName()); // On Database
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(9);
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setName("PROPERTY_TYPE"); //$NON-NLS-1$
-        param.setDisplayName(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName());
-        param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
-        param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
-        param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName()));
-        param.setNumRow(10);
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        param = new ElementParameter(this);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        param.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
-        param.setListItemsDisplayName(new String[] {});
-        param.setListItemsValue(new String[] {});
-        param.setNumRow(10);
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setValue(preferenceStore
-                .getString(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName())); //$NON-NLS-1$
-        param.setShow(false);
-        param.setRequired(true);
-        addElementParameter(param);
-
-        // dbType
-        param = new ElementParameter(this);
-        param.setName("DB_TYPE"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getString(StatsAndLogsConstants.DB_TYPE[languageType].getName()));
-        param.setDisplayName(EParameterName.PERL_DB_TYPE.getDisplayName()); // "DB Type");
-        param.setField(EParameterFieldType.CLOSED_LIST);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        String[] strDisplay = null, strValue = null, strItems = null, strCodes = null;
-        if (languageType == 0) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                    "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                    "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.ORACLE,
-                    RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
-                    RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
-            strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.ODBC, "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
-                    RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-                    RepositoryToComponentProperty.INGRES };
-        } else if (languageType == 1) {
-            strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", "PostgreSQL", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                    "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            strValue = new String[] { "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                    "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            strItems = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.SQL_SERVER, RepositoryToComponentProperty.ORACLE,
-                    RepositoryToComponentProperty.POSTGRESQL, RepositoryToComponentProperty.IBM_DB2,
-                    RepositoryToComponentProperty.SYBASE, RepositoryToComponentProperty.INGRES };
-            strCodes = new String[] { RepositoryToComponentProperty.ODBC, RepositoryToComponentProperty.MYSQL,
-                    RepositoryToComponentProperty.SQL_SERVER, "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
-                    RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
-                    RepositoryToComponentProperty.INGRES };
-        } else {
-            strDisplay = new String[0];
-            strValue = new String[0];
-            strItems = new String[0];
-            strCodes = new String[0];
-        }
-
-        param.setListItemsDisplayName(strDisplay);
-        param.setListItemsValue(strValue);
-        param.setListRepositoryItems(strItems);
-        param.setListItemsDisplayCodeName(strCodes);
-        param.setNumRow(11);
-        param.setRepositoryValue("TYPE"); //$NON-NLS-1$
-        param.setRequired(true);
-        addElementParameter(param);
-
-        // host
-        param = new ElementParameter(this);
-        param.setName("HOST"); //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.HOST[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.HOST[languageType].getDisplayName()); // Host
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(11);
-        param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // port
-        param = new ElementParameter(this);
-        param.setName("PORT"); //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PORT[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.PORT[languageType].getDisplayName()); // Port
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(11);
-        param.setRepositoryValue("PORT"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // dbName
-        param = new ElementParameter(this);
-        param.setName("DBNAME");// DBNAME //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.DBNAME[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.DBNAME[languageType].getDisplayName()); // "DB Name"
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(12);
-        param.setRepositoryValue("SID"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // schema
-        param = new ElementParameter(this);
-        param.setName("SCHEMA_DB"); // SCHEMA_DB //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.SCHEMA_DB[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.SCHEMA_DB[languageType].getDisplayName());// "Schema"
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(12);
-        String showIfStr = "(DB_TYPE=='" + "OCLE" + "') or (DB_TYPE=='" + "POSTGRESQL" + "')"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        param.setShowIf(showIfStr);
-
-        param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // username
-        param = new ElementParameter(this);
-        param.setName("USER"); //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.USER[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.USER[languageType].getDisplayName()); // User
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(13);
-        param.setRequired(true);
-        param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // password
-        param = new ElementParameter(this);
-        param.setName("PASS"); // Pass //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.PASS[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.PASS[languageType].getDisplayName()); // "Password"
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(13);
-        param.setRequired(true);
-        param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
-        addElementParameter(param);
-
-        // Stats table
-        param = new ElementParameter(this);
-        param.setName("TABLE_STATS"); // "TABLE_STATS" //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_STATS[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.TABLE_STATS[languageType].getDisplayName());// "Stats Table");
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(13);
-        addElementParameter(param);
-
-        /*
-         * // Stats table button param = new ElementParameter(this); param.setName("OPEN_STATS_TABLE");
-         * param.setField(EParameterFieldType.QUERYSTORE_TYPE); param.setCategory(EComponentCategory.STATSANDLOGS);
-         * 
-         * String[] str3 = new String[] { "Built-in", "repository" }; param.setListItemsDisplayName(str3);
-         * 
-         * param.setNumRow(13); addElementParameter(param);
-         */
-        // Log table
-        param = new ElementParameter(this);
-        param.setName("TABLE_LOGS"); //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(StatsAndLogsConstants.TABLE_LOGS[languageType].getName())));
-        param.setDisplayName(StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName()); // "Log Table");
-        param.setField(EParameterFieldType.TEXT);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(13);
-        addElementParameter(param);
-
-        // Catch runtime errors
-        param = new ElementParameter(this);
-        param.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType].getDisplayName());// "Catch
-        // runtime
-        // errors");
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(15);
-        addElementParameter(param);
-
-        // Catch user errors
-        param = new ElementParameter(this);
-        param.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getDisplayName());// "Catch user
-        // errors");
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(15);
-        addElementParameter(param);
-
-        // Catch user warning
-        param = new ElementParameter(this);
-        param.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getDisplayName());// "Catch user
-        // warning");
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(15);
-        addElementParameter(param);
-
-        // Catch realtime statistics
-        param = new ElementParameter(this);
-        param.setName("CATCH_REALTIME_STATS"); //$NON-NLS-1$
-        param.setValue(preferenceStore.getBoolean(StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType].getName()));
-        param.setDisplayName(StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType].getDisplayName()); // "Catch
-        // realtime
-        // statistics");
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(15);
-        addElementParameter(param);
+        StatsAndLogsManager.createStatsAndLogsParameters(this);
     }
 
     /**
@@ -1458,7 +1097,7 @@ public class Process extends Element implements IProcess {
         Node source, target;
 
         List<String> connectionsProblems = new ArrayList<String>();
-        
+
         Hashtable<ConnectionType, Connection> connectionsHashtable = new Hashtable<ConnectionType, Connection>();
 
         for (int i = 0; i < connecList.size(); i++) {
@@ -1514,7 +1153,7 @@ public class Process extends Element implements IProcess {
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
             connec.getConnectionLabel().setOffset(offset);
         }
-        
+
         for (INode node : nodes) {
             if (node.getComponent().useMerge()) {
                 for (int i = 0; i < connecList.size(); i++) {
@@ -2244,16 +1883,6 @@ public class Process extends Element implements IProcess {
      */
     public void setProcessor(IProcessor processor) {
         this.processor = processor;
-    }
-
-    /**
-     * DOC Administrator Comment method "change".
-     * 
-     * @param str
-     */
-    private String replaceSlash(String str) {
-        String tempStr = str.replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
-        return tempStr;
     }
 
     /**

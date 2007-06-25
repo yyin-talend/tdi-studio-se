@@ -19,20 +19,28 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.preferences;
-
-import org.talend.core.language.ECodeLanguage;
+package org.talend.designer.core.model.process.statsandlogs;
 
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
+ * DOC nrousseau class global comment. Detailled comment <br/>
  * 
  */
-public class JAVAStatsAndLogsPreferencePage extends StatsAndLogsPreferencePage {
+public class JobMetterComponent extends AbstractStatsLogsComponent {
 
-    /**
-     * Default constructor.
-     */
-    public JAVAStatsAndLogsPreferencePage() {
-        super(ECodeLanguage.JAVA);
+    public JobMetterComponent(boolean useFile, boolean useConsole, String dbComponent) {
+        if (dbComponent != null) {
+            this.useDb = true;
+            this.dbComponent = dbComponent;
+        }
+        this.useFile = useFile;
+        this.useConsole = useConsole;
+        this.componentId = "METTER"; //$NON-NLS-1$
+        this.subComponent = "tMetterCatcher"; //$NON-NLS-1$
+
+        loadMultipleComponentManager();
+    }
+
+    public String getVersion() {
+        return "0.1"; //$NON-NLS-1$
     }
 }

@@ -44,7 +44,6 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -592,13 +591,12 @@ public class DataProcess {
             }
         }
 
-        boolean dbFlag = (Boolean) process.getElementParameter("ON_DATABASE_FLAG").getValue(); //$NON-NLS-1$
-        boolean file = (Boolean) process.getElementParameter("ON_FILE_FLAG").getValue(); //$NON-NLS-1$
-        boolean console = (Boolean) process.getElementParameter("ON_CONSOLE_FLAG").getValue(); //$NON-NLS-1$
-
-        if (dbFlag || file || console) {
+        if (StatsAndLogsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
-            Boolean realTimeStats = (Boolean) process.getElementParameter("CATCH_REALTIME_STATS").getValue(); //$NON-NLS-1$
+            Boolean realTimeStats = ((Boolean) process.getElementParameter(
+                    EParameterName.CATCH_REALTIME_STATS.getName()).getValue())
+                    && process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName()).isShow(
+                            process.getElementParameters());
 
             if (!realTimeStats) {
                 for (INode node : dataNodeList) {

@@ -21,51 +21,94 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
-import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.designer.core.model.components.EParameterName;
 
 /**
- * This class is used to create a preference page for tabbed page 'Stats & logs'. <br/>
- * 
- * @author ftang
+ * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
-public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    // private ComboFieldEditor repositoryField = null;
+    private ECodeLanguage language;
+
+    private String languagePrefix;
+
+    /** controls. * */
+    private CheckBoxFieldEditor onStatCatcherField;
+
+    private CheckBoxFieldEditor onLogCatcherField;
+
+    private CheckBoxFieldEditor onMetterCatcherField;
+
+    private CheckBoxFieldEditor onFilesField;
+
+    private DirectoryFieldEditor filePathField;
+
+    private StringFieldEditor statsFileNameField;
+
+    private StringFieldEditor logsFileNameField;
+
+    private StringFieldEditor metterFileNameField;
+
+    private CheckBoxFieldEditor onDatabaseField;
+
+    private ComboFieldEditor dbTypeField;
+
+    private StringFieldEditor hostField;
+
+    private StringFieldEditor portField;
+
+    private StringFieldEditor dbNameField;
+
+    private StringFieldEditor schemaField;
+
+    private StringFieldEditor userField;
+
+    private StringFieldEditor passwordField;
+
+    private StringFieldEditor logsTableField;
+
+    private StringFieldEditor statsTableField;
+
+    private StringFieldEditor metterTableField;
+
+    private CheckBoxFieldEditor catchRuntimeErrorsField;
+
+    private CheckBoxFieldEditor catchUserErrorsField;
+
+    private CheckBoxFieldEditor catchUserWarningField;
+
+    private CheckBoxFieldEditor catchRealtimeStatsField;
+
+    private Composite parent;
+
+    private Composite dbTypeComposite;
+
+    private Composite finalPart;
 
     /**
-     * Default contructor.
+     * Default constructor.
      */
-    public StatsAndLogsPreferencePage() {
+    public StatsAndLogsPreferencePage(ECodeLanguage language) {
         super(GRID);
+        this.language = language;
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
-    }
-
-    @Override
-    protected void performApply() {
-        super.performApply();
     }
 
     /**
@@ -73,113 +116,54 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
      * types of preferences. Each field editor knows how to save and restore itself.
      */
     public void createFieldEditors() {
+        languagePrefix = language.toString() + "_";
 
-        BooleanFieldEditor onFilesField;
-        DirectoryFieldEditor filePathField;
-        StringFieldEditor statsFileNameField;
-        StringFieldEditor logsFileNameField;
-        BooleanFieldEditor onDatabaseField;
-        ComboFieldEditor propertyTypeField;
+        createFields();
+        updateEnableStateFromPreferences();
+        addListeners();
+    }
 
-        ComboFieldEditor dbTypeField;
-        StringFieldEditor hostField;
-        StringFieldEditor portField;
-        StringFieldEditor dbNameField;
-        StringFieldEditor schemaField;
-        StringFieldEditor userField;
-        StringFieldEditor passwordField;
+    private void createFields() {
+        parent = getFieldEditorParent();
+        int languageType = language == ECodeLanguage.JAVA ? 1 : 0;
 
-        StringFieldEditor logsTableField;
-        StringFieldEditor statsTableField;
-        BooleanFieldEditor catchRuntimeErrorsField;
-        BooleanFieldEditor catchUserErrorsField;
-        BooleanFieldEditor catchUserWarningField;
-        BooleanFieldEditor catchRealtimeStatsField;
+        Composite titlePart = new Composite(parent, SWT.None);
+        titlePart.setLayout(new GridLayout());
 
-        // Checks the language type, perl is 0(default), java is 1.
-        int languageType = 0;
-
-        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            languageType = 1;
-        }
-        onFilesField = new BooleanFieldEditor(StatsAndLogsConstants.ON_FILE_FLAG[languageType].getName(),
-                StatsAndLogsConstants.ON_FILE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
-        filePathField = new DirectoryFieldEditor(StatsAndLogsConstants.FILE_PATH[languageType].getName(),
-                StatsAndLogsConstants.FILE_PATH[languageType].getDisplayName(), getFieldEditorParent());
-        statsFileNameField = new StringFieldEditor(StatsAndLogsConstants.FILENAME_STATS[languageType].getName(),
-                StatsAndLogsConstants.FILENAME_STATS[languageType].getDisplayName(), getFieldEditorParent());
-        logsFileNameField = new StringFieldEditor(StatsAndLogsConstants.FILENAME_LOGS[languageType].getName(),
-                StatsAndLogsConstants.FILENAME_LOGS[languageType].getDisplayName(), getFieldEditorParent());
-        onDatabaseField = new BooleanFieldEditor(StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getName(),
-                StatsAndLogsConstants.ON_DATABASE_FLAG[languageType].getDisplayName(), getFieldEditorParent());
-
-        String[][] stringsForPropertyType = new String[][] { { "Built-In", EmfComponent.BUILTIN } };
-        // { "Repository", EmfComponent.REPOSITORY } };
-
-        final Composite composite = new Composite(getFieldEditorParent(), SWT.NONE);
+        onStatCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName(),
+                EParameterName.ON_STATCATCHER_FLAG.getDisplayName(), titlePart);
+        onLogCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName(),
+                EParameterName.ON_LOGCATCHER_FLAG.getDisplayName(), titlePart);
+        onMetterCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_METTERCATCHER_FLAG.getName(),
+                EParameterName.ON_METTERCATCHER_FLAG.getDisplayName(), titlePart);
 
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 4;
-        composite.setLayoutData(gridData);
+        titlePart.setLayoutData(gridData);
 
-        final String[] strDisplay;
-        String[] strValue;
-        strDisplay = new String[] { "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle",
-                "PostgreSQL", "IBM DB2", "Sybase", "Ingres" };
-        strValue = new String[] { "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", "tPostgresqlOutput",
-                "tDB2Output", "tSybaseOutput", "tIngresOutput" };
+        GridLayout gridLayout = (GridLayout) titlePart.getLayout();
+        gridLayout.numColumns = 12;
+        titlePart.setLayout(gridLayout);
 
-        propertyTypeField = new ComboFieldEditor(StatsAndLogsConstants.PROPERTY_TYPE[languageType].getName(),
-                StatsAndLogsConstants.PROPERTY_TYPE[languageType].getDisplayName(), stringsForPropertyType, composite);
+        onFilesField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_FILES_FLAG.getName(),
+                EParameterName.ON_FILES_FLAG.getDisplayName(), parent);
+        filePathField = new DirectoryFieldEditor(languagePrefix + EParameterName.FILE_PATH.getName(),
+                EParameterName.FILE_PATH.getDisplayName(), parent);
+        statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
+                EParameterName.FILENAME_STATS.getDisplayName(), parent);
+        logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
+                EParameterName.FILENAME_LOGS.getDisplayName(), parent);
+        metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
+                EParameterName.FILENAME_METTER.getDisplayName(), parent);
 
-        // propertyTypeField.getComboBoxControl(composite).addSelectionListener(new SelectionListener() {
-        //
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-        // */
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // widgetSelected(e);
-        // }
-        //
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-        // */
-        // public void widgetSelected(SelectionEvent e) {
-        // if (e.getSource() instanceof Combo) {
-        // Combo combo = (Combo) e.getSource();
-        // if (combo.getText().equals("Repository")) {
-        // repositoryField.getComboBoxControl(composite).setEnabled(true);
-        // } else {
-        //
-        // repositoryField.getComboBoxControl(composite).setEnabled(false);
-        // }
-        // }
-        // }
-        // });
+        onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
+                EParameterName.ON_DATABASE_FLAG.getDisplayName(), parent);
 
-        GridLayout gridLayout = (GridLayout) composite.getLayout();
-        gridLayout.numColumns = 16;
-        composite.setLayout(gridLayout);
+        dbTypeComposite = new Composite(parent, SWT.NONE);
 
-        String[] tempStrArr = getRepositoryValue();
-        String[][] newStrArr = new String[tempStrArr.length][2];
-        for (int i = 0; i < tempStrArr.length; i++) {
-            newStrArr[i][0] = tempStrArr[i];
-            newStrArr[i][1] = tempStrArr[i];
-        }
-
-        // repositoryField = new
-        // ComboFieldEditor(StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getName(),
-        // StatsAndLogsConstants.REPOSITORY_PROPERTY_TYPE[languageType].getDisplayName(), newStrArr, composite);
-        //
-        // if (tempStrArr != null && tempStrArr.length > 0) {
-        // repositoryField.getComboBoxControl(composite).setText(newStrArr[0][1]);
-        // }
-
+        String[] strDisplay, strValue;
+        strDisplay = StatsAndLogsConstants.DISPLAY_DBNAMES[languageType];
+        strValue = StatsAndLogsConstants.DB_COMPONENTS[languageType];
         String[][] strsForDBType = new String[strDisplay.length][2];
 
         for (int i = 0; i < strDisplay.length; i++) {
@@ -187,46 +171,75 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
             strsForDBType[i][1] = strValue[i];
         }
 
-        dbTypeField = new ComboFieldEditor(StatsAndLogsConstants.DB_TYPE[languageType].getName(),
-                StatsAndLogsConstants.DB_TYPE[languageType].getDisplayName(), strsForDBType, composite);
-        hostField = new StringFieldEditor(StatsAndLogsConstants.HOST[languageType].getName(),
-                StatsAndLogsConstants.HOST[languageType].getDisplayName(), getFieldEditorParent());
-        portField = new StringFieldEditor(StatsAndLogsConstants.PORT[languageType].getName(),
-                StatsAndLogsConstants.PORT[languageType].getDisplayName(), getFieldEditorParent());
-        dbNameField = new StringFieldEditor(StatsAndLogsConstants.DBNAME[languageType].getName(),
-                StatsAndLogsConstants.DBNAME[languageType].getDisplayName(), getFieldEditorParent());
-        schemaField = new StringFieldEditor(StatsAndLogsConstants.SCHEMA_DB[languageType].getName(),
-                StatsAndLogsConstants.SCHEMA_DB[languageType].getDisplayName(), getFieldEditorParent());
-        userField = new StringFieldEditor(StatsAndLogsConstants.USER[languageType].getName(),
-                StatsAndLogsConstants.USER[languageType].getDisplayName(), getFieldEditorParent());
-        passwordField = new StringFieldEditor(StatsAndLogsConstants.PASS[languageType].getName(),
-                StatsAndLogsConstants.PASS[languageType].getDisplayName(), getFieldEditorParent());
+        dbTypeField = new ComboFieldEditor(languagePrefix + EParameterName.DB_TYPE.getName(), EParameterName.DB_TYPE
+                .getDisplayName(), strsForDBType, dbTypeComposite);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 4;
+        dbTypeComposite.setLayoutData(gridData);
 
-        statsTableField = new StringFieldEditor(StatsAndLogsConstants.TABLE_STATS[languageType].getName(),
-                StatsAndLogsConstants.TABLE_STATS[languageType].getDisplayName(), getFieldEditorParent());
-        logsTableField = new StringFieldEditor(StatsAndLogsConstants.TABLE_LOGS[languageType].getName(),
-                StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName(), getFieldEditorParent());
+        gridLayout = (GridLayout) dbTypeComposite.getLayout();
+        gridLayout.numColumns = 6;
+        dbTypeComposite.setLayout(gridLayout);
 
-        catchRuntimeErrorsField = new BooleanFieldEditor(StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType]
-                .getName(), StatsAndLogsConstants.CATCH_RUNTIME_ERRORS[languageType].getDisplayName(),
-                getFieldEditorParent());
-        catchUserErrorsField = new BooleanFieldEditor(StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getName(),
-                StatsAndLogsConstants.CATCH_USER_ERRORS[languageType].getDisplayName(), getFieldEditorParent());
-        catchUserWarningField = new BooleanFieldEditor(
-                StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getName(),
-                StatsAndLogsConstants.CATCH_USER_WARNING[languageType].getDisplayName(), getFieldEditorParent());
-        catchRealtimeStatsField = new BooleanFieldEditor(StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType]
-                .getName(), StatsAndLogsConstants.CATCH_REALTIME_STATS[languageType].getDisplayName(),
-                getFieldEditorParent());
+        hostField = new StringFieldEditor(languagePrefix + EParameterName.HOST.getName(), EParameterName.HOST
+                .getDisplayName(), parent);
+
+        portField = new StringFieldEditor(languagePrefix + EParameterName.PORT.getName(), EParameterName.PORT
+                .getDisplayName(), parent);
+
+        dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(), EParameterName.DBNAME
+                .getDisplayName(), parent);
+
+        schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(),
+                EParameterName.SCHEMA_DB.getDisplayName(), parent);
+
+        userField = new StringFieldEditor(languagePrefix + EParameterName.USER.getName(), EParameterName.USER
+                .getDisplayName(), parent);
+
+        passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(), EParameterName.PASS
+                .getDisplayName(), parent);
+
+        statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(),
+                EParameterName.TABLE_STATS.getDisplayName(), parent);
+
+        logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(),
+                EParameterName.TABLE_LOGS.getDisplayName(), parent);
+
+        metterTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_METTER.getName(),
+                EParameterName.TABLE_METTER.getDisplayName(), parent);
+
+        finalPart = new Composite(parent, SWT.None);
+        finalPart.setLayout(new GridLayout());
+
+        catchRuntimeErrorsField = new CheckBoxFieldEditor(languagePrefix
+                + EParameterName.CATCH_RUNTIME_ERRORS.getName(), EParameterName.CATCH_RUNTIME_ERRORS.getDisplayName(),
+                finalPart);
+        catchUserErrorsField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_USER_ERRORS.getName(),
+                EParameterName.CATCH_USER_ERRORS.getDisplayName(), finalPart);
+        catchUserWarningField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_USER_WARNING.getName(),
+                EParameterName.CATCH_USER_WARNING.getDisplayName(), finalPart);
+        catchRealtimeStatsField = new CheckBoxFieldEditor(languagePrefix
+                + EParameterName.CATCH_REALTIME_STATS.getName(), EParameterName.CATCH_REALTIME_STATS.getDisplayName(),
+                finalPart);
+
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 4;
+        finalPart.setLayoutData(gridData);
+
+        gridLayout = (GridLayout) finalPart.getLayout();
+        gridLayout.numColumns = 12;
+        finalPart.setLayout(gridLayout);
+
+        addField(onStatCatcherField);
+        addField(onLogCatcherField);
+        addField(onMetterCatcherField);
 
         addField(onFilesField);
         addField(filePathField);
         addField(statsFileNameField);
         addField(logsFileNameField);
+        addField(metterFileNameField);
         addField(onDatabaseField);
-        addField(propertyTypeField);
-
-        // addField(repositoryField);
 
         addField(dbTypeField);
         addField(hostField);
@@ -238,11 +251,94 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
 
         addField(statsTableField);
         addField(logsTableField);
+        addField(metterTableField);
 
         addField(catchRuntimeErrorsField);
         addField(catchUserErrorsField);
         addField(catchUserWarningField);
         addField(catchRealtimeStatsField);
+    }
+
+    private void updateEnableStateFromPreferences() {
+        IPreferenceStore preferenceStore = getPreferenceStore();
+
+        boolean onStatCatcher = preferenceStore.getBoolean(languagePrefix
+                + EParameterName.ON_STATCATCHER_FLAG.getName());
+        boolean onLogCatcher = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName());
+        boolean onMetterCatcher = preferenceStore.getBoolean(languagePrefix
+                + EParameterName.ON_METTERCATCHER_FLAG.getName());
+        boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
+        boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
+        String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
+        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue);
+    }
+
+    private void updateEnableStateFromDisplay() {
+        boolean onStatCatcher = onStatCatcherField.getBooleanValue();
+        boolean onLogCatcher = onLogCatcherField.getBooleanValue();
+        boolean onMetterCatcher = onMetterCatcherField.getBooleanValue();
+        boolean onFiles = onFilesField.getBooleanValue();
+        boolean onDatabase = onDatabaseField.getBooleanValue();
+        String dbValue = dbTypeField.getFieldValue();
+        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue);
+    }
+
+    private void updateEnableState(boolean onStatCatcher, boolean onLogCatcher, boolean onMetterCatcher,
+            boolean onFiles, boolean onDatabase, String dbValue) {
+        onFilesField.setEnabled(onStatCatcher || onLogCatcher || onMetterCatcher, parent);
+        filePathField.setEnabled(onFiles && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        statsFileNameField.setEnabled(onFiles && onStatCatcher, parent);
+        logsFileNameField.setEnabled(onFiles && onLogCatcher, parent);
+        metterFileNameField.setEnabled(onFiles && onMetterCatcher, parent);
+
+        onDatabaseField.setEnabled(onStatCatcher || onLogCatcher || onMetterCatcher, parent);
+        dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(
+                onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher));
+        dbTypeField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
+        hostField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        portField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        dbNameField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        
+        schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase
+                && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        userField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        passwordField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        statsTableField.setEnabled(onDatabase && onStatCatcher, parent);
+        logsTableField.setEnabled(onDatabase && onLogCatcher, parent);
+        metterTableField.setEnabled(onDatabase && onMetterCatcher, parent);
+
+        catchRuntimeErrorsField.setEnabled(onLogCatcher, finalPart);
+        catchUserErrorsField.setEnabled(onLogCatcher, finalPart);
+        catchUserWarningField.setEnabled(onLogCatcher, finalPart);
+        catchRealtimeStatsField.setEnabled(onStatCatcher, finalPart);
+    }
+
+    private void addListeners() {
+        SelectionListener listener = new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                updateEnableStateFromDisplay();
+            }
+        };
+        onStatCatcherField.getCheckbox().addSelectionListener(listener);
+        onLogCatcherField.getCheckbox().addSelectionListener(listener);
+        onMetterCatcherField.getCheckbox().addSelectionListener(listener);
+        onFilesField.getCheckbox().addSelectionListener(listener);
+        onDatabaseField.getCheckbox().addSelectionListener(listener);
+        dbTypeField.getComboBoxControl(dbTypeComposite).addSelectionListener(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performDefaults()
+     */
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        updateEnableStateFromDisplay();
     }
 
     /*
@@ -251,36 +347,6 @@ public class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implem
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
-    }
-
-    /**
-     * Gets the repository value.
-     * 
-     * @param newList
-     * @param repositoryName
-     * @return
-     */
-    private String[] getRepositoryValue() {
-        List<String> repostioryValueList = new ArrayList<String>();
-        String value = null;
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-
-        List<ConnectionItem> metadataConnectionsItem = null;
-        try {
-            metadataConnectionsItem = factory.getMetadataConnectionsItem();
-            if (metadataConnectionsItem != null) {
-                for (ConnectionItem connectionItem : metadataConnectionsItem) {
-                    String aliasName = new RepositoryValueUtils().getRepositoryAliasName(connectionItem);
-                    value = aliasName + ":" + connectionItem.getProperty().getLabel();
-                    if (value != null && value.length() != 0) {
-                        repostioryValueList.add(value);
-                    }
-                }
-            }
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-        return (String[]) repostioryValueList.toArray(new String[0]);
     }
 
 }

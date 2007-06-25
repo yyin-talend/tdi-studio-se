@@ -82,49 +82,78 @@ public enum EParameterName {
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
 
-    PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
-    PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
-    PERL_FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
-    PERL_FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
-    PERL_ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
-    PERL_DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
-    PERL_PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
-    PERL_REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
-    PERL_HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
-    PERL_PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
-    PERL_DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
-    PERL_SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
-    PERL_USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
-    PERL_PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
-    PERL_TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
-    PERL_TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
-    PERL_CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
-    PERL_CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
-    PERL_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
-    PERL_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
+    /**
+     * For stats & logs parameters.
+     */
+    ON_STATCATCHER_FLAG("Use statistics (tStatCatcher)"),
+    ON_LOGCATCHER_FLAG("Use logs (tLogCatcher)"),
+    ON_METTERCATCHER_FLAG("Use volumetrics (tMetterCatcher)"),
+    ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag")), //$NON-NLS-1$
+    ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
+    FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
+    FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
+    FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
+    FILENAME_METTER("Metter file name"),
+    ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
+    DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
+    HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
+    PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
+    DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
+    SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
+    USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
+    PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
+    TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
+    TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
+    TABLE_METTER("Metter Table"),
+    CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
+    CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
+    CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
+    CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")) //$NON-NLS-1$
 
-    JAVA_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
-    JAVA_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
-    JAVA_FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
-    JAVA_FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
-    JAVA_ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
-    JAVA_DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
-    JAVA_PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
-    JAVA_REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
-    JAVA_HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
-    JAVA_PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
-    JAVA_DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
-    JAVA_SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
-    JAVA_USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
-    JAVA_PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
-    JAVA_TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
-    JAVA_TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
-    JAVA_CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
-    JAVA_CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
-    JAVA_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
-    JAVA_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")),  //$NON-NLS-1$
-    
-    ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag")); //$NON-NLS-1$
+    /*
+     * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
+     * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
+     * PERL_FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
+     * PERL_FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
+     * PERL_ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
+     * PERL_DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
+     * PERL_PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
+     * PERL_REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$ Hidden parameter so no translation needed
+     * PERL_HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
+     * PERL_PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
+     * PERL_DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
+     * PERL_SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
+     * PERL_USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
+     * PERL_PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
+     * PERL_TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
+     * PERL_TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
+     * PERL_CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
+     * PERL_CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
+     * PERL_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
+     * PERL_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
+     * 
+     * JAVA_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
+     * JAVA_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
+     * JAVA_FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
+     * JAVA_FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
+     * JAVA_ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
+     * JAVA_DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
+     * JAVA_PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
+     * JAVA_REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$ Hidden parameter so no translation needed
+     * JAVA_HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
+     * JAVA_PORT(Messages.getString("EParameterName.port")), //$NON-NLS-1$
+     * JAVA_DBNAME(Messages.getString("EParameterName.dbName")), //$NON-NLS-1$
+     * JAVA_SCHEMA_DB(Messages.getString("EParameterName.schemaDb")), //$NON-NLS-1$
+     * JAVA_USER(Messages.getString("EParameterName.user")), //$NON-NLS-1$
+     * JAVA_PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
+     * JAVA_TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
+     * JAVA_TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
+     * JAVA_CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
+     * JAVA_CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
+     * JAVA_CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
+     * JAVA_CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
+     */
+    ;
 
     private String displayName;
 

@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.designer.core.model.components.EParameterName;
 
 /**
@@ -31,64 +32,54 @@ import org.talend.designer.core.model.components.EParameterName;
  */
 public class StatsAndLogsConstants {
 
-    public static final EParameterName[] ON_FILE_FLAG = new EParameterName[] { EParameterName.PERL_ON_FILES_FLAG,
-            EParameterName.JAVA_ON_FILES_FLAG };
+    private static final String[] PERL_DISPLAY_DBNAMES = new String[] {
+            "Generic ODBC", "MySQL", "Microsoft SQL Server (Odbc driver)", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
-    public static final EParameterName[] FILE_PATH = new EParameterName[] { EParameterName.PERL_FILE_PATH,
-            EParameterName.JAVA_FILE_PATH };
+    private static final String[] JAVA_DISPLAY_DBNAMES = new String[] {
+            "Generic ODBC", "MySQL", "Microsoft SQL Server", "Oracle", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "PostgreSQL", "IBM DB2", "Sybase", "Ingres" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public static final EParameterName[] FILENAME_STATS = new EParameterName[] { EParameterName.PERL_FILENAME_STATS,
-            EParameterName.JAVA_FILENAME_STATS };
+    private static final String[] PERL_DB_COMPONENTS = new String[] {
+            "tDBOutput", "tMysqlOutput", "tDBOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public static final EParameterName[] FILENAME_LOGS = new EParameterName[] { EParameterName.PERL_FILENAME_LOGS,
-            EParameterName.JAVA_FILENAME_LOGS };
+    private static final String[] JAVA_DB_COMPONENTS = new String[] {
+            "tDBOutput", "tMysqlOutput", "tMSSqlOutput", "tOracleOutput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            "tPostgresqlOutput", "tDB2Output", "tSybaseOutput", "tIngresOutput" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
-    public static final EParameterName[] ON_DATABASE_FLAG = new EParameterName[] {
-            EParameterName.PERL_ON_DATABASE_FLAG, EParameterName.JAVA_ON_DATABASE_FLAG };
+    private static final String[] PERL_REPOSITORY_ITEMS = new String[] { RepositoryToComponentProperty.ODBC,
+            RepositoryToComponentProperty.MYSQL, RepositoryToComponentProperty.ODBC,
+            RepositoryToComponentProperty.ORACLE, RepositoryToComponentProperty.POSTGRESQL,
+            RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+            RepositoryToComponentProperty.INGRES };
 
-    public static final EParameterName[] DB_TYPE = new EParameterName[] { EParameterName.PERL_DB_TYPE,
-            EParameterName.JAVA_DB_TYPE };
+    private static final String[] PERL_CODE_LIST = new String[] { RepositoryToComponentProperty.ODBC,
+            RepositoryToComponentProperty.MYSQL,
+            RepositoryToComponentProperty.ODBC,
+            "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
+            RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+            RepositoryToComponentProperty.INGRES };
 
-    public static final EParameterName[] PROPERTY_TYPE = new EParameterName[] { EParameterName.PERL_PROPERTY_TYPE,
-            EParameterName.JAVA_PROPERTY_TYPE, };
+    private static final String[] JAVA_REPOSITORY_ITEMS = new String[] { RepositoryToComponentProperty.ODBC,
+            RepositoryToComponentProperty.MYSQL, RepositoryToComponentProperty.SQL_SERVER,
+            RepositoryToComponentProperty.ORACLE, RepositoryToComponentProperty.POSTGRESQL,
+            RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+            RepositoryToComponentProperty.INGRES };
 
-    public static final EParameterName[] REPOSITORY_PROPERTY_TYPE = new EParameterName[] {
-            EParameterName.PERL_REPOSITORY_PROPERTY_TYPE, EParameterName.JAVA_REPOSITORY_PROPERTY_TYPE };
+    private static final String[] JAVA_CODE_LIST = new String[] { RepositoryToComponentProperty.ODBC,
+            RepositoryToComponentProperty.MYSQL,
+            RepositoryToComponentProperty.SQL_SERVER,
+            "OCLE", RepositoryToComponentProperty.POSTGRESQL, //$NON-NLS-1$
+            RepositoryToComponentProperty.IBM_DB2, RepositoryToComponentProperty.SYBASE,
+            RepositoryToComponentProperty.INGRES };
 
-    public static final EParameterName[] HOST = new EParameterName[] { EParameterName.PERL_HOST,
-            EParameterName.JAVA_HOST };
+    public static final String[][] DISPLAY_DBNAMES = new String[][] { PERL_DISPLAY_DBNAMES, JAVA_DISPLAY_DBNAMES };
 
-    public static final EParameterName[] PORT = new EParameterName[] { EParameterName.PERL_PORT,
-            EParameterName.JAVA_PORT };
+    public static final String[][] DB_COMPONENTS = new String[][] { PERL_DB_COMPONENTS, JAVA_DB_COMPONENTS };
 
-    public static final EParameterName[] DBNAME = new EParameterName[] { EParameterName.PERL_DBNAME,
-            EParameterName.JAVA_DBNAME };
+    public static final String[][] REPOSITORY_ITEMS = new String[][] { PERL_REPOSITORY_ITEMS, JAVA_REPOSITORY_ITEMS };
 
-    public static final EParameterName[] SCHEMA_DB = new EParameterName[] { EParameterName.PERL_SCHEMA_DB,
-            EParameterName.JAVA_SCHEMA_DB };
-
-    public static final EParameterName[] USER = new EParameterName[] { EParameterName.PERL_USER,
-            EParameterName.JAVA_USER };
-
-    public static final EParameterName[] PASS = new EParameterName[] { EParameterName.PERL_PASS,
-            EParameterName.JAVA_PASS };
-
-    public static final EParameterName[] TABLE_STATS = new EParameterName[] { EParameterName.PERL_TABLE_STATS,
-            EParameterName.JAVA_TABLE_STATS };
-
-    public static final EParameterName[] TABLE_LOGS = new EParameterName[] { EParameterName.PERL_TABLE_LOGS,
-            EParameterName.JAVA_TABLE_LOGS };
-
-    public static final EParameterName[] CATCH_RUNTIME_ERRORS = new EParameterName[] {
-            EParameterName.PERL_CATCH_RUNTIME_ERRORS, EParameterName.JAVA_CATCH_RUNTIME_ERRORS };
-
-    public static final EParameterName[] CATCH_USER_ERRORS = new EParameterName[] {
-            EParameterName.PERL_CATCH_USER_ERRORS, EParameterName.JAVA_CATCH_USER_ERRORS };
-
-    public static final EParameterName[] CATCH_USER_WARNING = new EParameterName[] {
-            EParameterName.PERL_CATCH_USER_WARNING, EParameterName.JAVA_CATCH_USER_WARNING };
-
-    public static final EParameterName[] CATCH_REALTIME_STATS = new EParameterName[] {
-            EParameterName.PERL_CATCH_REALTIME_STATS, EParameterName.JAVA_CATCH_REALTIME_STATS };
+    public static final String[][] CODE_LIST = new String[][] { PERL_CODE_LIST, JAVA_CODE_LIST };
 
 }

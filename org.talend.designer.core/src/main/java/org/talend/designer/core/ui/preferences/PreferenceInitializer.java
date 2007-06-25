@@ -25,7 +25,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 
 /**
@@ -51,6 +54,20 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, true);
+        
+        // defaults for the stats preferences for java
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
+
+        // defaults for the stats preferences for perl
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
     }
 
 }
