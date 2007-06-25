@@ -8,6 +8,7 @@
 		org.talend.core.model.process.EConnectionType 
         org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnectionCategory
   		java.util.List
  		 java.util.Set
   		java.util.HashSet
@@ -50,22 +51,18 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 	if(codePart.equals(ECodePart.MAIN)) {
 	    if ((node.getProcess().getNodesOfType("tMetter").size() > 0))
 	    {
-	        List<IConnection> connections = (List<IConnection>)node.getMainOutgoingConnections();
-	        if(connections.size()>0)
-	        {
-	        	Iterator it_conn = (Iterator)connections.iterator();
-	        	while(it_conn.hasNext())
-	        	{
-	        	    IConnection temp_conn = (IConnection)it_conn.next();
-	        	    if(temp_conn.isUseByMetter())
-	        	    {
-	        	    	String name_conn = temp_conn.getUniqueName();
+        	Iterator it_conn = (Iterator)connSet.iterator();
+        	while(it_conn.hasNext())
+        	{
+        	    IConnection temp_conn = (IConnection)it_conn.next();
+        	    if(temp_conn.isUseByMetter())
+        	    {
+        	    	String name_conn = temp_conn.getUniqueName();
 %>
    MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
 <%
-					}
 				}
-	        }
+			}
 	    }
 	}
 %>
