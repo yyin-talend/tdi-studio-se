@@ -386,9 +386,6 @@
             if (varsTableEntries == null) {
                 continue;
             }
-            if (varsTableEntries.size() > 0) {
-                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
-            }
             String varsTableName = varsTable.getName();
             String instanceVarName = varsTableName + "__" + uniqueNameComponent;
             String className = instanceVarName + "__Struct";
