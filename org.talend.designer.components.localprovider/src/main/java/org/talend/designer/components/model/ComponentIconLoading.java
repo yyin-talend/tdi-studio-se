@@ -70,8 +70,8 @@ public class ComponentIconLoading {
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else {
-                image24 = getImage32(); // Temp code
-                // image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
+                //image24 = getImage32(); // Temp code
+                 image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
             }
         }
         return image24;
