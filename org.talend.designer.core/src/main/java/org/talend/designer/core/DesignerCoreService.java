@@ -33,6 +33,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
+import org.talend.designer.core.ui.views.contexts.Contexts;
 
 /**
  * Detailled comment <br/>.
@@ -88,5 +89,10 @@ public class DesignerCoreService implements IDesignerCoreService {
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return repositoryValueUtils.getRepositoryAliasName(connectionItem);
     }
+
+    public void switchToCurContextsView() {
+        Contexts.switchToCurContextsView();
+    }
+
     // ends.
 }

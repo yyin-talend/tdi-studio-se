@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.designer.core.DesignerCoreService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -125,6 +127,9 @@ public class ContextsView extends ViewPart {
         composite.addComponents();
         composite.layout();
         composite.refresh();
+        
+        DesignerPlugin.getDefault().getRunProcessService().refreshView();
+        
     }
 
     public void updateContextView(boolean isBuildIn) {
