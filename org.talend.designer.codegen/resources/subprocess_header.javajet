@@ -49,23 +49,25 @@
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
 						
-						List<IHashableColumn> hashableColumns = new ArrayList<IHashableColumn>();
+						Set<String> hashableColumnsNames = new HashSet<String>();
 						if(conn.getTarget() instanceof IHashableInputConnections) {
 							IHashableInputConnections target = (IHashableInputConnections) conn.getTarget();
 							IHashConfiguration hashConfiguration = target.getHashConfiguration(conn.getName());
 							if(hashConfiguration != null) {
-								hashableColumns = hashConfiguration.getHashableColumns();
+								for(IHashableColumn hashableColumn : hashConfiguration.getHashableColumns()) {
+									hashableColumnsNames.add(hashableColumn.getName());
+								}
 							}
 						} else {
 							if (metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
-										hashableColumns.add(new HashableColumn(column.getLabel(), -1));
+										hashableColumnsNames.add(column.getLabel());
 									}
 								}
 							}
 						}
-						boolean hasAtLeastOneKey = hashableColumns.size() > 0;
+						boolean hasAtLeastOneKey = hashableColumnsNames.size() > 0;
 						
 %>
 
@@ -103,7 +105,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 	<%
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hashableColumns.contains(column.getLabel())) {
+				if (hashableColumnsNames.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 	%>
 				result = prime * result + (int) this.<%=column.getLabel() %>;
@@ -132,7 +134,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 		<%	
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hashableColumns.contains(column.getLabel())) {
+				if (hashableColumnsNames.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 				%>
 					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
