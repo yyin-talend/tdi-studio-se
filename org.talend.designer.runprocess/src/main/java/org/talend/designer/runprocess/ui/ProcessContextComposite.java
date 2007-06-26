@@ -88,8 +88,8 @@ public class ProcessContextComposite extends Composite {
         layout.marginWidth = 0;
         setLayout(layout);
 
-//        Group contextGroup = new Group(this, SWT.NONE);
-//        contextGroup.setText(Messages.getString("ProcessComposite.contextGroup")); //$NON-NLS-1$
+        // Group contextGroup = new Group(this, SWT.NONE);
+        // contextGroup.setText(Messages.getString("ProcessComposite.contextGroup")); //$NON-NLS-1$
         Composite contextGroup = this;
 
         layout = new GridLayout();
@@ -126,8 +126,7 @@ public class ProcessContextComposite extends Composite {
             public void selectionChanged(final SelectionChangedEvent event) {
                 Object input = null;
                 if (!event.getSelection().isEmpty()) {
-                    IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection())
-                            .getFirstElement();
+                    IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     input = selectedContext.getContextParameterList();
                 }
                 contextTableViewer.setInput(input);
@@ -151,8 +150,8 @@ public class ProcessContextComposite extends Composite {
 
                 public void contextsChanged() {
                     getInformationsFromContextManager(process.getContextManager());
-                    contextComboViewer.refresh();
-                    contextTableViewer.refresh();
+                    // contextComboViewer.refresh();
+
                 }
             });
         } else {
@@ -168,8 +167,7 @@ public class ProcessContextComposite extends Composite {
         IContext newSelectedCopiedContext = null;
 
         if (!contextComboViewer.getSelection().isEmpty()) {
-            oldSelectedCopiedContext = (IContext) ((StructuredSelection) contextComboViewer.getSelection())
-                    .getFirstElement();
+            oldSelectedCopiedContext = (IContext) ((StructuredSelection) contextComboViewer.getSelection()).getFirstElement();
         }
 
         for (IContext context : contextManager.getListContext()) {
@@ -191,7 +189,9 @@ public class ProcessContextComposite extends Composite {
 
         if (newSelectedCopiedContext != null) {
             contextComboViewer.setSelection(new StructuredSelection(newSelectedCopiedContext));
+            contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
         }
+      
     }
 
     protected IContext getSelectedContext() {
