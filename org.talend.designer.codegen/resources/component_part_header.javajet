@@ -67,7 +67,12 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 	}
 %>
 currentComponent="<%=node.getUniqueName() %>";
+
 <%
+	connSet =  new HashSet<IConnection>();
+	connSet.addAll(node.getIncomingConnections(EConnectionType.FLOW_MAIN));
+	connSet.addAll(node.getIncomingConnections(EConnectionType.FLOW_MERGE));
+	
 	if ((codePart.equals(ECodePart.BEGIN))&&(stat)&&connSet.size()>0) {
 		for(IConnection con:connSet){
 %>
