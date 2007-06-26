@@ -44,6 +44,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -89,8 +90,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         if (creation) {
             contextItem = PropertiesFactory.eINSTANCE.createContextItem();
             contextProperty = PropertiesFactory.eINSTANCE.createProperty();
-            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getUser());
             contextProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             contextProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -154,12 +155,14 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                     contextManager.saveToEmf(contextItem.getContext());
                     contextItem.setDefaultContext(contextManager.getDefaultContext().getName());
                     factory.save(contextItem);
+
+                    updateRelatedView();
+
                 }
                 closeLockStrategy();
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
@@ -168,6 +171,13 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         } else {
             return false;
         }
+    }
+
+    /**
+     * DOC bqian Comment method "updateProcessContextManager".
+     */
+    private void updateRelatedView() {
+        RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
     }
 
     /**
