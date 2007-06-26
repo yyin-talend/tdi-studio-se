@@ -43,6 +43,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
+import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -205,10 +206,10 @@ public class ProblemsManager {
         return codeChecker.checkProblemsForExpression(expression);
     }
 
-
     /**
      * 
      * DOC amaumont Comment method "checkProblemsForAllEntriesOfAllTables".
+     * 
      * @param forceRefreshData
      * @return true if has errors
      */
@@ -232,6 +233,7 @@ public class ProblemsManager {
     /**
      * 
      * DOC amaumont Comment method "checkProblemsForAllEntries".
+     * 
      * @param dataMapTableView
      * @param forceRefreshData
      * @return true if has errors
@@ -374,7 +376,8 @@ public class ProblemsManager {
         tableEntry.setProblems(problems);
 
         TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
-        if (tableViewerCreator != null) {
+        if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null
+                && !tableViewerCreator.getTableViewer().getTable().isDisposed()) {
             tableViewerCreator.getTableViewer().refresh(tableEntry, true);
         }
 
@@ -425,14 +428,26 @@ public class ProblemsManager {
 
         @Override
         protected void execute(boolean isFinalExecution) {
-            mapperManager.getUiManager().getDisplay().syncExec(new Runnable() {
+            if (canExecuteCheckProblems()) {
+                mapperManager.getUiManager().getDisplay().syncExec(new Runnable() {
 
-                public void run() {
-                    checkProblemsForTableEntry(getCurrentTableEntry(), true);
-                    previousTableEntry = getCurrentTableEntry();
-                }
+                    public void run() {
+                        if (canExecuteCheckProblems()) {
+                            checkProblemsForTableEntry(getCurrentTableEntry(), true);
+                            previousTableEntry = getCurrentTableEntry();
+                        }
+                    }
+                });
+            }
+        }
 
-            });
+        /**
+         * DOC amaumont Comment method "canExecuteCheckProblems".
+         * 
+         * @return
+         */
+        private boolean canExecuteCheckProblems() {
+            return !mapperManager.getUiManager().getMapperContainer().isDisposed();
         }
 
         public ITableEntry getCurrentTableEntry() {

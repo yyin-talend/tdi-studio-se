@@ -166,6 +166,8 @@ public class UIManager extends AbstractUIManager {
 
     private IModifiedBeanListener<IMetadataColumn> outputModifiedBeanListener;
 
+    private Display display;
+
     /**
      * DOC amaumont UIManager constructor comment.
      * 
@@ -624,6 +626,9 @@ public class UIManager extends AbstractUIManager {
         }
         if (save) {
             setMapperResponse(response);
+            
+            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+
             Composite parent = mapperUI.getMapperUIParent();
             saveCurrentUIProperties();
 
@@ -1498,7 +1503,7 @@ public class UIManager extends AbstractUIManager {
      * DOC amaumont Comment method "getDisplay".
      */
     public Display getDisplay() {
-        return getMapperContainer().getDisplay();
+        return display;
     }
 
     /**
@@ -1818,6 +1823,7 @@ public class UIManager extends AbstractUIManager {
      * @param mapperModel
      */
     public void createUI(Composite parent, MapperModel mapperModel) {
+        this.display = parent.getDisplay();
         mapperUI = new MapperUI(parent, mapperManager);
         mapperUI.createUI(mapperModel);
     }
@@ -1830,6 +1836,7 @@ public class UIManager extends AbstractUIManager {
      * @return
      */
     public Shell createUI(Display display, MapperModel mapperModel) {
+        this.display = display;
         mapperUI = new MapperUI(display, mapperManager);
         mapperUI.createUI(mapperModel);
         return mapperUI.getShell();

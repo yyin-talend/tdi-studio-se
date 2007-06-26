@@ -97,7 +97,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      */
     public void initialize() {
         super.initialize();
-        initMapperMain();
+        initMapperMain(false);
         mapperMain.loadInitialParamters();
     }
 
@@ -113,8 +113,10 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return this.externalData;
     }
 
-    private void initMapperMain() {
-        mapperMain = new MapperMain(this);
+    private void initMapperMain(boolean forceNew) {
+        if (forceNew || !forceNew && mapperMain == null) {
+            mapperMain = new MapperMain(this);
+        }
     }
 
     /*
@@ -125,7 +127,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     public int open(final Display display) {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
-        initMapperMain();
+        initMapperMain(true);
         mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         Shell shell = mapperMain.createUI(display);
         // TimeMeasure.display = true;
@@ -146,7 +148,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         if (MapperMain.isStandAloneMode()) {
             display.dispose();
         }
-        refreshMapperConnectorData();
         return mapperMain.getMapperDialogResponse();
     }
 
@@ -158,6 +159,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();
+        // System.out.println("refreshMapperConnectorData");
         sortOutputsConnectionsLikeVisualOrder();
     }
 
@@ -194,7 +196,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @see org.talend.designer.core.model.components.IExternalComponent#open()
      */
     public int open(final Composite parent) {
-        initMapperMain();
+        initMapperMain(true);
         mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         mapperMain.createUI(parent);
         return mapperMain.getMapperDialogResponse();
@@ -285,8 +287,10 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
+//        System.out.println("loadDataOut");
 
-        initMapperMain();
+        initMapperMain(false);
+
         mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
                 getMetadataList(), false);
         ExternalMapperData data = mapperMain.buildExternalData();
@@ -451,7 +455,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      */
     @Override
     public List<Problem> getProblems() {
-        initMapperMain();
+        initMapperMain(false);
         ProblemsAnalyser problemsAnalyser = new ProblemsAnalyser(mapperMain.getMapperManager());
         return problemsAnalyser.checkProblems(externalData);
     }
@@ -515,8 +519,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                     }
                 }
 
-                IMatchingMode matchingMode = MATCHING_MODE
-                        .parse(inputTable.getMatchingMode());
+                IMatchingMode matchingMode = MATCHING_MODE.parse(inputTable.getMatchingMode());
                 if (matchingMode == null) {
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
@@ -527,7 +530,5 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
         return hashConfigurationForMapper;
     }
-
-    
 
 }

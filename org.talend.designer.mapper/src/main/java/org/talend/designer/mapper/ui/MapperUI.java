@@ -223,9 +223,9 @@ public class MapperUI {
         Image createImage = imageDescriptor.createImage();
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        
+
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
-        
+
         mapperShell.setImage(createImage);
         mapperShell.setText(Messages.getString(
                 "MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
@@ -252,8 +252,6 @@ public class MapperUI {
 
     }
 
-
-    
     public void createCompositeContent(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
@@ -344,7 +342,7 @@ public class MapperUI {
         selectFirstInOutTablesView();
 
     }
-    
+
     /**
      * DOC amaumont Comment method "initBackgroundRefresher".
      */
@@ -427,18 +425,18 @@ public class MapperUI {
             @Override
             public void execute(final boolean isFinalExecution) {
 
-                display.asyncExec(new Runnable() {
+                    display.asyncExec(new Runnable() {
 
-                    public void run() {
+                        public void run() {
 
-                        if (mouseMoveScrollZoneHelper.mouseDownOnScroll && mouseMoveScrollZoneHelper.scrolling) {
-                            updateBackground(false, false);
-                        } else {
-                            updateBackground(false, true);
+                            if (mouseMoveScrollZoneHelper.mouseDownOnScroll && mouseMoveScrollZoneHelper.scrolling) {
+                                updateBackground(false, false);
+                            } else {
+                                updateBackground(false, true);
+                            }
                         }
-                    }
 
-                });
+                    });
 
             }
         };
@@ -677,8 +675,8 @@ public class MapperUI {
         previousControl = null;
         for (VarsTable varsTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
-                    varsTable, mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, varsTable,
+                    mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
@@ -741,8 +739,8 @@ public class MapperUI {
 
         for (OutputTable outputTable : tables) {
 
-            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
-                    outputTable, outputTablesZoneView);
+            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, outputTable,
+                    outputTablesZoneView);
             dataMapTableView.loaded();
             previousControl = dataMapTableView;
         }
@@ -968,15 +966,14 @@ public class MapperUI {
     public OutputsZone getOutputsZone() {
         return this.outputsZone;
     }
-    
+
     /**
      * Getter for shell.
+     * 
      * @return the shell
      */
     public Shell getShell() {
         return this.shell;
     }
 
-    
-    
 }
