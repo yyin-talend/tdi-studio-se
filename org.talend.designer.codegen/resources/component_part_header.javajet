@@ -74,5 +74,12 @@ currentComponent="<%=node.getUniqueName() %>";
 	runStat.updateStatOnConnection("<%=con.getUniqueName() %>",0, 0); 
 <%		}
 	}
+	
+	if((codePart.equals(ECodePart.MAIN))&&(stat)&&connSet.size()>0){
+		for(IConnection con:connSet){
 %>
-
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1); 
+<%
+		}
+	}
+%>

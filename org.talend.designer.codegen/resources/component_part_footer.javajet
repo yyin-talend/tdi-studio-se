@@ -28,14 +28,6 @@ connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
 %>
 
 <%
-if((codePart.equals(ECodePart.MAIN))&&(stat)&&connSet.size()>0){
-  for(IConnection con:connSet){
-%>
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1); 
-<%
-  }
-}
- 
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
