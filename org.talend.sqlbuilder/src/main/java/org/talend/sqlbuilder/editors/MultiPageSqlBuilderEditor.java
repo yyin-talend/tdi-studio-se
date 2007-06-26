@@ -127,6 +127,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     }
 
+    private boolean isFirst = true;
+
+    private boolean isFirst2 = true;
+
     /**
      * qzhang Comment method "attachListeners".
      */
@@ -139,7 +143,11 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
-                updateEditorTitle(null);
+                if (!isFirst) {
+                    updateEditorTitle(null);
+                } else {
+                    isFirst = false;
+                }
             }
 
         });
@@ -151,7 +159,11 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
-                updateEditorTitle(null);
+                if (!isFirst2) {
+                    updateEditorTitle(null);
+                } else {
+                    isFirst2 = false;
+                }
             }
 
         });

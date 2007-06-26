@@ -419,7 +419,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         // }
 
         connParameters.setQuery(sql);
-        if (connParameters.isFromRepository()) {
+        if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
             SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
             List<Query> qs = new ArrayList<Query>();
             List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
@@ -563,13 +563,5 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#updateTitle()
-     */
-    public void updateTitle() {
     }
 }

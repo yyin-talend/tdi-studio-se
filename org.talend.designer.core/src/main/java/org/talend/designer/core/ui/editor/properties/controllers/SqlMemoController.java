@@ -210,6 +210,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
                 .getName())));
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        connParameters.setFromDBNode(true);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {

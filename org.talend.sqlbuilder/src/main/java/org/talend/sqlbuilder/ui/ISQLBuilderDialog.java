@@ -58,6 +58,4 @@ public interface ISQLBuilderDialog {
     public Shell getShell();
 
     public IProgressMonitor getProgressMonitor();
-    
-    public void updateTitle();
 }

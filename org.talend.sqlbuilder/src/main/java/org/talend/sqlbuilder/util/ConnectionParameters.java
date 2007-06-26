@@ -44,22 +44,25 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  * 
  */
 public class ConnectionParameters {
-    
+
+    // set this SqlEditor's Title (tabItem.setText()).
     private String editorTitle;
-    
+
     private Hashtable<String, String> repositoryNameParaName = new Hashtable<String, String>();
 
+    // use Generate Sql Statement Action for show Designer page.
     private boolean showDesignerPage = false;
 
     private boolean isNeedTakePrompt = true;
 
+    // set this Node Read Only this (save, save as .etc) will disable.
     private static boolean isNodeReadOnly;
+
+    private boolean isSchemaRepository;
 
     private IMetadataTable metadataTable;
 
     private String schemaName;
-
-    private boolean isSchemaRepository;
 
     private String query;
 
@@ -98,6 +101,8 @@ public class ConnectionParameters {
     // add this flag for double-click this Query in Repository.
 
     private boolean isFromRepository = false;
+
+    private boolean isFromDBNode = false;
 
     /**
      * Sets the connectionComment.
@@ -522,24 +527,31 @@ public class ConnectionParameters {
     public void setShowConfigParamDialog(boolean isShowDialog) {
         this.isShowDialog = isShowDialog;
     }
-    
+
     public boolean isFromRepository() {
         return this.isFromRepository;
     }
 
-    
     public void setFromRepository(boolean isFromRepository) {
         this.isFromRepository = isFromRepository;
     }
 
-    
     public String getEditorTitle() {
         return this.editorTitle;
     }
 
-    
     public void setEditorTitle(String editorTitle) {
         this.editorTitle = editorTitle;
+    }
+
+    
+    public boolean isFromDBNode() {
+        return this.isFromDBNode;
+    }
+
+    
+    public void setFromDBNode(boolean isFromDBNode) {
+        this.isFromDBNode = isFromDBNode;
     }
 
 }

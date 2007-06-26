@@ -77,7 +77,7 @@ public class ShadowProcessPreview {
      * 
      */
     public void newTablePreview() {
-        table = new Table(composite, SWT.BORDER);
+        table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -205,7 +205,6 @@ public class ShadowProcessPreview {
 
         refreshTablePreview(cols, newItems);
     }
-
 
     public Table getTable() {
         return this.table;

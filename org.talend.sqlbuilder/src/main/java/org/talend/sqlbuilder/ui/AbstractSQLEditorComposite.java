@@ -90,22 +90,26 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
     protected void setEditorTitle(RepositoryNode node, ConnectionParameters connParam, CTabItem tabItem) {
         String dbName = SQLBuilderRepositoryNodeManager.getDatabaseNameByRepositoryNode(node);
         String title = "";
-        String selectedComponentName = connParam.getSelectedComponentName();
-        if (selectedComponentName != null && selectedComponentName.length() != 0) {
-            title = selectedComponentName + "."; //$NON-NLS-1$
-        }
-        title = title + dbName + "(" + getRepositoryName() + ").sql";
-        if (connParam.getQueryObject() != null) {
-            title = QUERY_PREFIX + connParam.getQueryObject().getLabel();
-            tabItem.setData(connParam.getQueryObject());
-        } else if (dialog.getConnParameters().getQueryObject() != null) {
-            title = QUERY_PREFIX + dialog.getConnParameters().getQueryObject().getLabel();
-            tabItem.setData(dialog.getConnParameters().getQueryObject());
-        }
-        if (connParam.getEditorTitle() != null) {
-            tabItem.setText(connParam.getEditorTitle());
-        } else {
+        if (connParam.isFromDBNode()) {
+            String selectedComponentName = connParam.getSelectedComponentName();
+            if (selectedComponentName != null && selectedComponentName.length() != 0) {
+                title = selectedComponentName + "."; //$NON-NLS-1$
+            }
+            title = dbName + "(" + getRepositoryName() + ").sql";
             tabItem.setText(title);
+        } else {
+            if (connParam.getQueryObject() != null) {
+                title = QUERY_PREFIX + connParam.getQueryObject().getLabel();
+                tabItem.setData(connParam.getQueryObject());
+            } else if (dialog.getConnParameters().getQueryObject() != null) {
+                title = QUERY_PREFIX + dialog.getConnParameters().getQueryObject().getLabel();
+                tabItem.setData(dialog.getConnParameters().getQueryObject());
+            }
+            if (connParam.getEditorTitle() != null) {
+                tabItem.setText(connParam.getEditorTitle());
+            } else {
+                tabItem.setText(title);
+            }
         }
         title2 = tabItem.getText();
     }
@@ -261,11 +265,12 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         openFileAction = new OpenFileAction();
         openFileAction.setEditor(this);
 
+        saveSQLAction = new SaveSQLAction(getRepositoryNode(), connParam);
+        saveSQLAction.setEditor(this);
+        
         saveAsSQLAction = new SaveAsSQLAction(getRepositoryNode(), connParam);
         saveAsSQLAction.setEditor(this);
 
-        saveSQLAction = new SaveSQLAction(getRepositoryNode(), connParam);
-        saveSQLAction.setEditor(this);
 
         exportAction = new SaveFileAsAction();
         exportAction.setEditor(this);
@@ -303,8 +308,8 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         execSQLAction.setEnabled(true);
         defaultToolBarMgr.add(execSQLAction);
         defaultToolBarMgr.add(openFileAction);
-        defaultToolBarMgr.add(saveAsSQLAction);
         defaultToolBarMgr.add(saveSQLAction);
+        defaultToolBarMgr.add(saveAsSQLAction);
         defaultToolBarMgr.add(exportAction);
         defaultToolBarMgr.add(clearTextAction);
         explainAction = addExplainPlanAction(getRepositoryNode());

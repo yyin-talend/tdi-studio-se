@@ -168,7 +168,11 @@ public class SQLBuilderTabComposite extends Composite {
             }
         }
         CTabItem tabItem = null;
-        tabItem = new CTabItem(tabFolder, SWT.CLOSE);
+        if (connParam.isFromDBNode()) {
+            tabItem = new CTabItem(tabFolder, SWT.NULL);
+        } else {
+            tabItem = new CTabItem(tabFolder, SWT.CLOSE);
+        }
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
 
         // SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
@@ -228,15 +232,16 @@ public class SQLBuilderTabComposite extends Composite {
      * @return a string representing sql text.
      */
     public String getCurrentTabSql() {
-        Control control = (((CTabFolder) tabFolder.getSelection().getControl())).getSelection().getControl();
-        if (control instanceof SQLBuilderDesignerComposite) {
-            return ((SQLBuilderDesignerComposite) control).getSQLToBeExecuted();
-        } else if (control instanceof SQLBuilderEditorComposite) {
-            SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) control;
-            return editorComposite.getSQLToBeExecuted();
-        } else {
-            return "";
+        if (tabFolder.getSelection() != null) {
+            Control control = (((CTabFolder) tabFolder.getSelection().getControl())).getSelection().getControl();
+            if (control instanceof SQLBuilderDesignerComposite) {
+                return ((SQLBuilderDesignerComposite) control).getSQLToBeExecuted();
+            } else if (control instanceof SQLBuilderEditorComposite) {
+                SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) control;
+                return editorComposite.getSQLToBeExecuted();
+            }
         }
+        return "";
     }
 
     public CTabFolder getTabFolder() {

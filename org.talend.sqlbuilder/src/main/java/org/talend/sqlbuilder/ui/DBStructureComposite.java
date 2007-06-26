@@ -200,12 +200,6 @@ public class DBStructureComposite extends Composite {
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
         Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, connParameters, true);
         tempOpenNewEditorAction.run();
-        final Object data2 = this.builderDialog.getEditorComposite().getTabFolder().getItem(0).getData("KEY");
-        if (data2 instanceof MultiPageSqlBuilderEditor) {
-            MultiPageSqlBuilderEditor ed = (MultiPageSqlBuilderEditor) data2;
-            ed.updateEditorTitle(AbstractSQLEditorComposite.QUERY_PREFIX + connParameters.getQueryObject().getLabel());
-        }
-
     }
 
     /**
