@@ -207,13 +207,24 @@ public class PropertyChangeCommand extends Command {
 
             // if the field is not a schema type, then use standard "set value".
             if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                String oldMapping = (String) testedParam.getValue();
                 testedParam.setValueToDefault(elem.getElementParameters());
+                if (testedParam.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                    String newMapping = (String) testedParam.getValue();
+                    if (!oldMapping.equals(newMapping)) {
+                        Node node = (Node) elem;
+                        if (node.getMetadataList().size() > 0) {
+                            IMetadataTable metadataTable = node.getMetadataList().get(0);
+                            metadataTable.setDbms(newMapping);
+                        }
+                    }
+                }
             } else {
                 // See issue 975, update the schema.
                 Node node = (Node) elem;
-                if (((Node) elem).getMetadataList().size() > 0) {
-                    IMetadataTable metadataTable = ((Node) elem).getMetadataList().get(0);
-                    testedParam.setValueToDefault(elem.getElementParameters());
+                if (node.getMetadataList().size() > 0) {
+                    IMetadataTable metadataTable = node.getMetadataList().get(0);
+                    testedParam.setValueToDefault(node.getElementParameters());
                     IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
 
                     changeMetadataCommand = new ChangeMetadataCommand(node, metadataTable, newMetadataTable);

@@ -38,12 +38,18 @@ public class MetadataUtils {
 
     public static void initilializeSchemaFromElementParameters(IMetadataTable metadataTable,
             List<IElementParameter> elementParameters) {
+        IElementParameter mappingParameter = getMappingParameter(elementParameters);
         for (int i = 0; i < elementParameters.size(); i++) {
             IElementParameter param = elementParameters.get(i);
             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 if (param.getValue() instanceof IMetadataTable) {
                     param.setValueToDefault(elementParameters);
                     IMetadataTable table = (IMetadataTable) param.getValue();
+                    if (mappingParameter != null) {
+                        if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
+                            table.setDbms((String) mappingParameter.getValue());
+                        }
+                    }
                     metadataTable.setReadOnly(table.isReadOnly());
                     for (int k = 0; k < table.getListColumns().size(); k++) {
                         IMetadataColumn newColumn = table.getListColumns().get(k);
@@ -72,5 +78,15 @@ public class MetadataUtils {
             }
         }
         metadataTable.sortCustomColumns();
+    }
+
+    public static IElementParameter getMappingParameter(List<IElementParameter> elementParameters) {
+        for (int i = 0; i < elementParameters.size(); i++) {
+            IElementParameter param = elementParameters.get(i);
+            if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
+                return param;
+            }
+        }
+        return null;
     }
 }

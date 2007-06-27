@@ -68,6 +68,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.metadata.MetadataUtils;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -219,6 +220,13 @@ public class Node extends Element implements INode {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
 
         meta.setTableName(uniqueName);
+        IElementParameter mappingParameter = MetadataUtils.getMappingParameter((List<IElementParameter>) this.getElementParameters());
+        
+        if (mappingParameter != null) {
+            if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
+                meta.setDbms((String) mappingParameter.getValue());
+            }
+        }
         for (int i = 0; i < getElementParameters().size(); i++) {
             IElementParameter param = getElementParameters().get(i);
             if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
