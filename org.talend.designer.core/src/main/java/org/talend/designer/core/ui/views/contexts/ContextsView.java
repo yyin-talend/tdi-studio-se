@@ -145,6 +145,7 @@ public class ContextsView extends ViewPart {
         composite.addComponents();
         composite.refresh();
         composite.layout();
+        DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
@@ -162,6 +163,7 @@ public class ContextsView extends ViewPart {
         // composite.addComponents();
         composite.refresh();
         composite.layout();
+        DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void refresh() {
