@@ -56,7 +56,6 @@ imports="
 	%>	
 		 crm<%=cid%>.save(<%=modulename%><%=cid%>);
   		 boolean result<%=cid%> = crm<%=cid%>.commit();
-  		 System.out.println(result<%=cid%>);
    		 nb_line_<%=cid%>++;  
        
 <% }

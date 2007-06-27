@@ -74,7 +74,7 @@
     >
       <ITEMS DEFAULT="insert">
 	  <ITEM NAME="insert"   VALUE="INSERT" />
-     
+     	<ITEM NAME="update"   VALUE="UPDATE" />
       </ITEMS>
     </PARAMETER>
 
