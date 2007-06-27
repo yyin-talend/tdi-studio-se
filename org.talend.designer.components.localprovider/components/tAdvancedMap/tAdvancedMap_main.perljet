@@ -28,6 +28,10 @@
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.process.BlockCode
+	org.talend.core.model.process.IHashableInputConnections
+	org.talend.core.model.process.IHashConfiguration
+	org.talend.core.model.process.IHashableColumn
+	org.talend.core.model.process.IMatchingMode
 	" 
 %>
 <%
@@ -104,8 +108,10 @@
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
+					System.out.println("tableName="+ tableName);
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
+					System.out.println("connection == null");
                 continue;
             }
             EConnectionType connectionType = connection.getLineStyle();
@@ -141,6 +147,7 @@
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
+					System.out.println("metadataTableEntries == null");
                         continue;
                     }
                     for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
@@ -166,6 +173,32 @@
                     validLookupTables.add(externalTable);
 
                    	%><%= sb.toString()%><%
+
+					IHashConfiguration hashConfiguration = node.getHashConfiguration(tableName);
+					List<IHashableColumn> hashableColumns = null;
+					IMatchingMode matchingMode = null;
+					if(hashConfiguration == null) {
+						hashableColumns = new ArrayList<IHashableColumn>(0);
+					} else {
+						hashableColumns = hashConfiguration.getHashableColumns();
+						matchingMode = hashConfiguration.getMatchingMode();
+					}
+					String matchingModeStr = null;
+					System.out.println(matchingMode);
+					if(matchingMode == null) {
+						if(hashableColumns.size() > 0) {
+							matchingModeStr = "UNIQUE_MATCH";
+						} else {
+							matchingModeStr = "ALL_ROWS";
+						}
+					} else {
+						matchingModeStr = matchingMode.toString();
+					}
+                   	%>
+				   	$prmMatchingMode_<%= tableName %> = "<%= matchingModeStr %>";
+                   	
+                   	<%
+                   	
                     String keys = "+"; //$NON-NLS-1$
                     
                     if (aKeysValues.length > 0) {
@@ -279,13 +312,12 @@
 				                        	listCoupleForAddTablePrefix.add(location);
 			        			        }
             						    String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
-                    		  	  	   		
                     		  	  	   %>
-                    		  	  		
-                    		  	  		
 							   	  		  if(
 					 				  		  			!(<%= expressionFilterWithPrefixs%>)
 						  	  		  			) { # 16
+                    		  	  		  
+													@<%= tableName %> = ();	
                     		  	  		  
 	  												<%
 				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
@@ -491,15 +523,6 @@
         if (inputTablesWithInnerJoin.size() > 0 && lstSizeOutputs > 0) {
             sb.append(cr + gm.indent(indent) + "if( !$");
             sb.append(rejectedInnerJoin);
-//            String and = null;
-//            for (ExternalMapperTable inputTable : inputTablesWithInnerJoin) {
-//                if (and == null) {
-//                    and = "";
-//                } else {
-//                    and = " &&";
-//                }
-//                sb.append(and + " scalar( @$ref_" + inputTable.getName() + "FromLookup)");
-//            }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
             indent++;
