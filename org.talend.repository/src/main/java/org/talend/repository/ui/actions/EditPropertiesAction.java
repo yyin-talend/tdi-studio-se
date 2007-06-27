@@ -21,8 +21,11 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -35,6 +38,10 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.IUIRefresher;
@@ -69,6 +76,8 @@ public class EditPropertiesAction extends AContextualAction {
 
         IPath path = RepositoryNodeUtilities.getPath(node);
 
+        String originalName = node.getObject().getLabel();
+
         PropertiesWizard wizard = new PropertiesWizard(node.getObject(), path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
@@ -78,9 +87,49 @@ public class EditPropertiesAction extends AContextualAction {
             if (part != null && part instanceof IUIRefresher) {
                 ((IUIRefresher) part).refreshName();
             }
+            processRoutineRenameOperation(originalName, node, path);
         }
     }
 
+    /**
+     * delete the used routine java file if the routine is renamed.
+     * 
+     * @param path
+     * @param node
+     * @param originalName
+     */
+    private void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
+        if(LanguageManager.getCurrentLanguage()!=ECodeLanguage.JAVA){
+            return;
+        }
+        
+        if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
+            return;
+        }
+        if (originalName.equals(node.getObject().getLabel())) {
+            return;
+        }
+
+        try {
+            IJavaProject javaProject = CorePlugin.getDefault().getRunProcessService().getJavaProject();
+            if (javaProject != null) {
+                IProject project = javaProject.getProject();
+                IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+                IFile file = srcFolder.getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY).getFile(
+                        originalName + "."+LanguageManager.getCurrentLanguage().getExtension());
+                if (file.exists()) {
+                    file.delete(true, null);
+                }
+            }
+        } catch (Exception e) {
+            // do nothing.
+        }
+    }
+
+    
+    
+    
+    
     /**
      * Find the editor that is related to the node.
      * 
