@@ -131,7 +131,7 @@ else{
 	properties<%=cid%>.put("hostname", "<%=host%>");
 	properties<%=cid%>.put("port", new Integer(<%=port%>));
 	properties<%=cid%>.put("channel", "<%=channel%>");
-	properties<%=cid%>.put("CCSID", new Integer(1381));
+	properties<%=cid%>.put("CCSID", new Integer(1208));
 	properties<%=cid%>.put("transport","MQSeries");
 	
 	com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
