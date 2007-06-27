@@ -53,7 +53,7 @@ if(serverType.equals("JBoss")){ // server judgement
     props_<%=cid%>.put("hostname", "<%=host%>");
     props_<%=cid%>.put("port", new Integer(<%=port%>));
     props_<%=cid%>.put("channel", "<%=channel%>");
-    props_<%=cid%>.put("CCSID", new Integer(1381));
+    props_<%=cid%>.put("CCSID", new Integer(1208));
     props_<%=cid%>.put("transport", "MQSeries");
 
 	com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager("<%=qm%>", props_<%=cid%>);
