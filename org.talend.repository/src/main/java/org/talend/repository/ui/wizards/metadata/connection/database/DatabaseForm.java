@@ -214,7 +214,6 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("Microsoft SQL Server");
             databasePerl.remove("Ingres");
             databasePerl.remove("Interbase");
-            databasePerl.remove("SQLite");
             databasePerl.remove("FireBird");
             databasePerl.remove("Informix");
             String[] dbPerl = (String[]) databasePerl.toArray(new String[databasePerl.size()]);
