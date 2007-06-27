@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -128,6 +129,7 @@ import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvider;
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 
 import com.sybase.jdbc3.utils.CheckPureConverter;
 
@@ -1194,6 +1196,19 @@ public abstract class DataMapTableView extends Composite {
                         }
 
                     }).start();
+
+                    if (expressionFilterText.isVisible()) {
+                        expressionFilterText.setFocus();
+                        if (DataMapTableView.this.getZone() == Zone.INPUTS) {
+                            ScrolledComposite scrolledZoneView = mapperManager.getUiManager()
+                                    .getScrolledCompositeViewInputs();
+                            Point point = expressionFilterText.getDisplay().map(expressionFilterText,
+                                    mapperManager.getUiManager().getTablesZoneViewInputs(), new Point(0, 0));
+                            mapperManager.getUiManager().setPositionOfVerticalScrollBarZone(scrolledZoneView,
+                                    point.y - 20);
+                        }
+                    }
+
                     correctAsynchStyledTextWrapBug();
                 }
 
@@ -1582,8 +1597,8 @@ public abstract class DataMapTableView extends Composite {
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                         .getStyledTextHandler();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                styledTextHandler.setTextWithoutNotifyListeners(
-                        currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
+                styledTextHandler
+                        .setTextWithoutNotifyListeners(currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
@@ -2028,7 +2043,7 @@ public abstract class DataMapTableView extends Composite {
                     correctAsynchStyledTextWrapBug();
                 }
             };
-            
+
             ScrolledComposite scrolledCompositeView = null;
             if (getZone() == Zone.INPUTS) {
                 scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewInputs();
@@ -2036,7 +2051,7 @@ public abstract class DataMapTableView extends Composite {
                 scrolledCompositeView = getMapperManager().getUiManager().getScrolledCompositeViewOutputs();
             }
             scrolledCompositeView.addControlListener(listenerForCorrectWrapBug);
-            
+
             SelectionListener selectionListenerToCorrectWrapBug = new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent e) {
@@ -2047,7 +2062,7 @@ public abstract class DataMapTableView extends Composite {
                 }
 
             };
-            
+
             scrolledCompositeView.getVerticalBar().addSelectionListener(selectionListenerToCorrectWrapBug);
 
             expressionFilterText.getVerticalBar().addSelectionListener(selectionListenerToCorrectWrapBug);
@@ -2091,7 +2106,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "onExpressionFilterTextResized".
      */
     private void onExpressionFilterTextResized() {
-//        System.out.println("Filter text resized" + System.currentTimeMillis());
+        // System.out.println("Filter text resized" + System.currentTimeMillis());
         expressionFilterText.redraw();
     }
 
@@ -2244,8 +2259,8 @@ public abstract class DataMapTableView extends Composite {
              * @see java.lang.Runnable#run()
              */
             public void run() {
-//                            System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
-//                                    + System.currentTimeMillis());
+                // System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
+                // + System.currentTimeMillis());
                 onExpressionFilterTextResized();
             }
 

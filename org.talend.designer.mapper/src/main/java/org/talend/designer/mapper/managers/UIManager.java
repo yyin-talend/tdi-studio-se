@@ -626,7 +626,7 @@ public class UIManager extends AbstractUIManager {
         }
         if (save) {
             setMapperResponse(response);
-            
+
             mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
 
             Composite parent = mapperUI.getMapperUIParent();
@@ -1449,6 +1449,22 @@ public class UIManager extends AbstractUIManager {
         }
     }
 
+    /**
+     * DOC amaumont Comment method "getTablesZoneView".
+     * 
+     * @param dataMapTableViewTarget
+     */
+    public ScrolledComposite getScrolledZoneView(DataMapTableView dataMapTableViewTarget) {
+        Zone zone = dataMapTableViewTarget.getZone();
+        if (zone == Zone.OUTPUTS) {
+            return getScrolledCompositeViewOutputs();
+        } else if (zone == Zone.INPUTS) {
+            return getScrolledCompositeViewInputs();
+        } else {
+            throw new IllegalArgumentException("Case not found"); //$NON-NLS-1$
+        }
+    }
+
     public DropTargetOperationListener getDropTargetOperationListener() {
         return this.mapperUI.getDropTargetOperationListener();
     }
@@ -1493,7 +1509,7 @@ public class UIManager extends AbstractUIManager {
         setPositionOfVerticalScrollBarZone(scrolledCompositeViewInputs, selection);
     }
 
-    private void setPositionOfVerticalScrollBarZone(ScrolledComposite scrollComposite, int scrollBarSelection) {
+    public void setPositionOfVerticalScrollBarZone(ScrolledComposite scrollComposite, int scrollBarSelection) {
         ScrollBar verticalBar = scrollComposite.getVerticalBar();
         verticalBar.setSelection(scrollBarSelection);
         scrollComposite.setOrigin(0, scrollBarSelection);

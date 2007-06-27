@@ -108,10 +108,8 @@
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
-					System.out.println("tableName="+ tableName);
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
-					System.out.println("connection == null");
                 continue;
             }
             EConnectionType connectionType = connection.getLineStyle();
@@ -147,7 +145,6 @@
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
-					System.out.println("metadataTableEntries == null");
                         continue;
                     }
                     for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
@@ -184,7 +181,6 @@
 						matchingMode = hashConfiguration.getMatchingMode();
 					}
 					String matchingModeStr = null;
-					System.out.println(matchingMode);
 					if(matchingMode == null) {
 						if(hashableColumns.size() > 0) {
 							matchingModeStr = "UNIQUE_MATCH";
