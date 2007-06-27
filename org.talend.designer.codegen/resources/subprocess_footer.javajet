@@ -3,6 +3,9 @@
 	imports="
 		org.talend.designer.codegen.config.NodesSubTree
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.INode 
+		java.util.List
+		java.util.Iterator
 	" 
 	class="SubProcessFooter" 
 %>
@@ -18,7 +21,43 @@
 		<%=before %>Process();
 <%
 	}
+	
+	if (subTree.getRootNode().getProcess().getNodesOfType("tMetterCatcher").size() > 0 
+		&& subTree.getRootNode().getProcess().getNodesOfType("tMetter").size() >0 ) {
+		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tMetterCatcher");
+		List<INode> metters = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tMetter");
+		List<INode> nodes = (List<INode>)subTree.getNodes();
+		
+		boolean hasMetterProcess = false;
+		for(INode tmp : nodes)
+		{
+			for(INode metter : metters)
+			{
+				if(tmp.getUniqueName().equals(metter.getUniqueName()))
+				{
+					hasMetterProcess = true;
+					break;
+				}
+			}
+			if(hasMetterProcess)
+			{
+				break;
+			}
+		}
+		if(hasMetterProcess)
+		{
+			for (INode metterCatcher : metterCatchers) {
+				
 %>
+	<%=metterCatcher.getUniqueName() %>Process();
+<%      
+
+			}
+		}
+	}
+%>
+
+	
 	} catch(Exception e) {
 		throw new TalendException(this, e);
 	}

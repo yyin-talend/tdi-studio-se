@@ -44,9 +44,13 @@
                
         Boolean absolute = (Boolean)ElementParameterParser.getObjectValue(
                 node,"__ABSOLUTE__");  
-        
-        String reference = (String)ElementParameterParser.getObjectValue(
+           
+        String reference = null;     
+        if(absolute.equals(Boolean.FALSE))
+        { 
+        	reference = (String)ElementParameterParser.getObjectValue(
                       node,"__CONNECTIONS__");  
+        }
 
         List<Map<String, String>> shreshlods =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -67,26 +71,12 @@
        		                    .append(map.get("COLOR").replace(";","|"));
             } 
         } 
+        
+	    if (node.getProcess().getNodesOfType("tMetterCatcher").size() > 0) {
+			List<INode> metterCatchers = (List<INode>)node.getProcess().getNodesOfType("tMetterCatcher");
+			for (INode metterCatcher : metterCatchers) {
 %>
-    Integer reference_<%=cid%> = null;  
-<%
-        if(absolute.equals(Boolean.FALSE))
-        {
-%>
-	 reference_<%=cid%>= (Integer)MetterCatcherUtils.getConnLinesCount("<%=reference%>_count");
-     if(reference_<%=cid%> == null)
-     {
-     	throw new TalendException(this, new java.lang.Exception("cannot get the <%=reference%>_count value"));
-     }           
-<%       
-        }
-	      if (node.getProcess().getNodesOfType("tMetterCatcher").size() > 0) {
-	      
-			  List<INode> metterCatchers = (List<INode>)node.getProcess().getNodesOfType("tMetterCatcher");
-			  for (INode metterCatcher : metterCatchers) {
-%>
-	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), reference_<%=cid%>, "<%=shreshlods_str%>", "<%=cid%>");
-	<%=metterCatcher.getUniqueName() %>Process();
+	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), "<%=reference%>", "<%=shreshlods_str%>", "<%=cid%>");
 <%      
 				}
 			}

@@ -31,7 +31,7 @@
 		<%=conn.getName() %>.system_pid = mcm.getSystemPid();
 		<%=conn.getName() %>.label = mcm.getLabel();
 		<%=conn.getName() %>.count = mcm.getCount();
-		<%=conn.getName() %>.reference = mcm.getReferense();
+		<%=conn.getName() %>.reference = MetterCatcherUtils.getConnLinesCount(mcm.getReferense()+"_count");
 		<%=conn.getName() %>.thresholds = mcm.getThresholds();
 		
 <%
