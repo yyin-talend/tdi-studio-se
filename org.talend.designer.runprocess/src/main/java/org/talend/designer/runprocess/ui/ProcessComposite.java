@@ -231,8 +231,7 @@ public class ProcessComposite extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText(Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$
         debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint")); //$NON-NLS-1$
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_debug.gif") //$NON-NLS-1$
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif") //$NON-NLS-1$
                 .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
@@ -254,8 +253,8 @@ public class ProcessComposite extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin
+                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -558,6 +557,7 @@ public class ProcessComposite extends Composite {
     }
 
     public void exec() {
+        CorePlugin.getDefault().getDesignerCoreService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
         }
@@ -573,7 +573,7 @@ public class ProcessComposite extends Composite {
 
         processContext.kill();
     }
-    
+
     boolean debugMode = false;
 
     public void debug() {
@@ -605,8 +605,7 @@ public class ProcessComposite extends Composite {
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
 
                         } else {
-                            MessageDialog.openInformation(getShell(),
-                                    Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
                                     Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
@@ -622,8 +621,8 @@ public class ProcessComposite extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
-                        .getWorkspace().getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
+                        .getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -645,29 +644,24 @@ public class ProcessComposite extends Composite {
                                 public void run() {
                                     setRunnable(true);
                                     killBtn.setEnabled(false);
-                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT,
-                                            oldValueConsoleOnOut);
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, oldValueConsoleOnOut);
 
-                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR,
-                                            oldValueConsoleOnErr);
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, oldValueConsoleOnErr);
 
                                     if (isAddedStreamListener) {
-                                        process.getStreamsProxy().getOutputStreamMonitor().removeListener(
-                                                streamListener);
+                                        process.getStreamsProxy().getOutputStreamMonitor().removeListener(streamListener);
                                         isAddedStreamListener = false;
 
                                         if (processContext.isRunning()) {
-                                            final String endingPattern = Messages
-                                                    .getString("ProcessComposite.endPattern"); //$NON-NLS-1$
+                                            final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                                             MessageFormat mf = new MessageFormat(endingPattern);
                                             String byeMsg;
                                             try {
                                                 byeMsg = "\n"
-                                                        + mf.format(new Object[] {
-                                                                processContext.getProcess().getName(), new Date(),
-                                                                new Integer(process.getExitValue()) });
-                                                processContext.addDebugResultToConsole(new ProcessMessage(
-                                                        MsgType.CORE_OUT, byeMsg));
+                                                        + mf.format(new Object[] { processContext.getProcess().getName(),
+                                                                new Date(), new Integer(process.getExitValue()) });
+                                                processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
+                                                        byeMsg));
                                             } catch (DebugException e) {
                                                 e.printStackTrace();
                                             }
@@ -687,8 +681,7 @@ public class ProcessComposite extends Composite {
                                         processContext.setRunning(true);
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
-                                            process.getStreamsProxy().getOutputStreamMonitor().addListener(
-                                                    streamListener);
+                                            process.getStreamsProxy().getOutputStreamMonitor().addListener(streamListener);
                                             if (clearBeforeExec.getSelection()) {
                                                 processContext.clearMessages();
                                             }
@@ -705,11 +698,10 @@ public class ProcessComposite extends Composite {
                                             clearTraceAction.run();
                                             isAddedStreamListener = true;
 
-                                            final String startingPattern = Messages
-                                                    .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
+                                            final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                             MessageFormat mf = new MessageFormat(startingPattern);
-                                            String welcomeMsg = mf.format(new Object[] {
-                                                    processContext.getProcess().getName(), new Date() });
+                                            String welcomeMsg = mf.format(new Object[] { processContext.getProcess().getName(),
+                                                    new Date() });
                                             processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
                                                     welcomeMsg));
                                         }
