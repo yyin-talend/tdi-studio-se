@@ -61,7 +61,7 @@
     </PARAMETER>
     <PARAMETER
       NAME="DATE"
-      FIELD="TEXT"
+      FIELD="DATE"
       REQUIRED="true"
       NUM_ROW="3"
       SHOW_IF="ARTICLE_DATE == 'true'"
