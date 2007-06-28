@@ -43,6 +43,7 @@ import org.talend.commons.utils.workbench.gef.SimpleHtmlTextEditManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerLayoutEditPolicy;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * Graphical part of the node label of Gef. <br/>
@@ -135,6 +136,8 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             refreshVisuals();
             // set the new size to update the node container
             ((NodeLabel) getModel()).setLabelSize(((SimpleHtmlFigure) figure).getPreferredSize());
+            NodeLabel label= (NodeLabel) getModel();
+            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode().getUniqueName());
             getParent().refresh();
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$

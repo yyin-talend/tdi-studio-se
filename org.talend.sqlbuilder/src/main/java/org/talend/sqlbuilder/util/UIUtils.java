@@ -35,6 +35,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -165,6 +166,21 @@ public class UIUtils {
             for (SQLBuilderDialog dialog : list) {
                 if (dialog != null && dialog.getShell() != null && !dialog.getShell().isDisposed()) {
                     dialog.close();
+                }
+            }
+        }
+    }
+
+    public static void updateSqlBuilderDialogTitle(String newLabel, String jobName, String uniqueName) {
+        List<SQLBuilderDialog> list = sqlBuilders.get(jobName);
+        if (list != null) {
+            for (SQLBuilderDialog dialog : list) {
+                if (dialog != null && dialog.getShell() != null && !dialog.getShell().isDisposed()) {
+                    if (dialog.getShell().getText().contains(uniqueName)) {
+                        String title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
+                        title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + newLabel + "(" + uniqueName + ")";
+                        dialog.getShell().setText(title);
+                    }
                 }
             }
         }

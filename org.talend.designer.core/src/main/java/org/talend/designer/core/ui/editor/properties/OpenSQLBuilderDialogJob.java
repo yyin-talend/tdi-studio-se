@@ -37,6 +37,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.SqlMemoController;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -119,8 +120,8 @@ public class OpenSQLBuilderDialogJob extends Job {
 
                     public void run() {
                         Shell parentShell = new Shell(composite.getShell().getDisplay());
-                        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + process.getName()
-                                + TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + elem.getElementName());
+                        TextUtil.setDialogTitle(process.getName(),
+                                (String) ((Node) elem).getElementParameter("LABEL").getValue(), elem.getElementName());
                         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
                         UIUtils.addSqlBuilderDialog(process.getName(), dial);
                         dial.setConnParameters(connectionParameters);

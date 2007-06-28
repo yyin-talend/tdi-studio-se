@@ -284,17 +284,19 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             } else {
                 connParameters.setRepositoryName(repositoryName2);
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
-                TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX
-                        + this.part.getTalendEditor().getProcess().getName() + TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME
-                        + elem.getElementName());
-                part.addPropertyListener(new IPropertyListener(){
-                   /* (non-Javadoc)
+                TextUtil.setDialogTitle(this.part.getTalendEditor().getProcess().getName(), (String) ((Node) elem)
+                        .getElementParameter("LABEL").getValue(), elem.getElementName());
+                part.addPropertyListener(new IPropertyListener() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
                      * @see org.eclipse.ui.IPropertyListener#propertyChanged(java.lang.Object, int)
                      */
                     public void propertyChanged(Object source, int propId) {
-                        
+
                     }
-                    
+
                 });
                 SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
                 UIUtils.addSqlBuilderDialog(part.getTalendEditor().getProcess().getName(), dial);

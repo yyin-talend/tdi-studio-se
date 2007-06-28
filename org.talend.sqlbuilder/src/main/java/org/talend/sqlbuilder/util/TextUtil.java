@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import org.talend.core.model.utils.TalendTextUtils;
+
 /**
  * Text handling utility.
  * 
@@ -39,7 +41,7 @@ public class TextUtil {
     private static final String TAB_EXPR = "\\t"; //$NON-NLS-1$
 
     private static String dialogTitle;
-    
+
     /**
      * qzhang TextUtil constructor comment.
      */
@@ -205,13 +207,23 @@ public class TextUtil {
         }
     }
 
-    
     public static String getDialogTitle() {
         return dialogTitle;
     }
 
-    
     public static void setDialogTitle(String dialogTitle) {
         TextUtil.dialogTitle = dialogTitle;
+    }
+
+    public static void setDialogTitle(String jobName, String nodeLabel, String uniqueName) {
+        String title = "";
+        if (nodeLabel.indexOf("__UNIQUE_NAME__") != -1) {
+            title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + jobName;
+            title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + uniqueName;
+        } else {
+            title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_MODPREFIX + jobName;
+            title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + nodeLabel + "(" + uniqueName + ")";
+        }
+        dialogTitle = title;
     }
 }
