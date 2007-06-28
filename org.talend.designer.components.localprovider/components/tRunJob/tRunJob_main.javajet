@@ -66,7 +66,7 @@ for (int i=0; i<contextParams.size(); i++) {
     contextStr.append(",\"--context_param ");
     contextStr.append(name);
     contextStr.append("=");
-    contextStr.append(value);
+    contextStr.append(value.replaceAll("\"","\\\\\\\\\\\\\""));
     contextStr.append("\"");
   }
 
