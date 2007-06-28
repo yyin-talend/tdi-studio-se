@@ -310,27 +310,27 @@
             						    String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
                     		  	  	   %>
 							   	  		  if(
-					 				  		  			!(<%= expressionFilterWithPrefixs%>)
+			 				  		  			!(<%= expressionFilterWithPrefixs%>)
 						  	  		  			) { # 16
-                    		  	  		  
-													@<%= tableName %> = ();	
                     		  	  		  
 	  												<%
 				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
 				  									%>
-         	            		  	  			$<%= rejectedInnerJoin %> = true;
+    		     	            		  	  			$<%= rejectedInnerJoin %> = true;
 													<%
-				  									} else if(aKeysValues.length == 0){
-					  									if(externalTable.isInnerJoin()) {
-					  									%>
-				                    		  	   	if($size<%= tableName %>ArrayFromLookup != -1 
-				                    		  	   		&& $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
-				                    		  	   		&& !$hasAtLeastOneValidLookup_<%= tableName %>) 
-				                    		  	   	{ # 15
+				  									} else if(!externalTable.isInnerJoin() && aKeysValues.length > 0){
+													%>				  									
+														@<%= tableName %> = ();	
+				  									<%
+				  									} else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
+				  									%>
+					                    		  	   	if($size<%= tableName %>ArrayFromLookup != -1 
+					                    		  	   		&& $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
+					                    		  	   		&& !$hasAtLeastOneValidLookup_<%= tableName %>) 
+					                    		  	   	{ # 15
 			     	  	            		  	  			<%= rejectedInnerJoin %> = true;
-				                    		  	   	} # 15
-															<%
-					  									} 
+					                    		  	   	} # 15
+														<%
 				  									}
 				  									%>
      	               		  	  	  } # 16
@@ -347,7 +347,7 @@
 					  								# 17
 				                    		 	else if(!$<%= rejectedInnerJoin %>)
 				                    		 	{ # 18
-					                    	   	$hasAtLeastOneValidLookup_<%= tableName %> = true;
+					                    	   		$hasAtLeastOneValidLookup_<%= tableName %> = true;
 					                    		} # 18
 				                    		 <%
 				                    		 }
