@@ -32,7 +32,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.proposal.xpath.XPathContentProposal;
-import org.talend.commons.xml.NodeRetriever;
+import org.talend.commons.xml.XmlNodeRetriever;
 import org.talend.repository.i18n.Messages;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -208,7 +208,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                                 // System.out.println("nodeField : " + j);
                                 Node node = nodeList.item(j);
                                 String nodeName = node.getNodeName();
-                                String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                                String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(node);
                                 if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
                                         .equals("/")) //$NON-NLS-1$
                                         && !alreadyAdded.contains(absoluteXPathFromNode)) {
@@ -272,7 +272,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                     // System.out.println("nodeField : " + j);
                     Node node = nodeList.item(j);
                     String nodeName = node.getNodeName();
-                    String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                    String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(node);
                     if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
                             .equals("/")) //$NON-NLS-1$
                             && !alreadyAdded.contains(absoluteXPathFromNode)) {

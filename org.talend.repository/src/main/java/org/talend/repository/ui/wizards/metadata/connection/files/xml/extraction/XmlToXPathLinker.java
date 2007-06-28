@@ -74,7 +74,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
-import org.talend.commons.xml.NodeRetriever;
+import org.talend.commons.xml.XmlNodeRetriever;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
@@ -97,7 +97,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private ExtractionFieldsWithXPathEditorView fieldsTableEditorView;
 
-    private NodeRetriever nodeRetriever;
+    private XmlNodeRetriever nodeRetriever;
 
     private ExtractionLoopWithXPathEditorView loopTableEditorView;
 
@@ -136,7 +136,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         this.treePopulator = treePopulator;
         this.loopTableEditorView = loopTableEditorView;
         this.fieldsTableEditorView = fieldsTableEditorView;
-        this.nodeRetriever = new NodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
+        this.nodeRetriever = new XmlNodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
         TextCellEditorWithProposal xPathCellEditor = loopTableEditorView.getXPathCellEditor();
         xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this, false));
         xPathCellEditor = fieldsTableEditorView.getXPathCellEditor();
@@ -600,7 +600,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 }
 
                 allLoopNodes.add(node);
-                String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(node);
                 if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                     TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                     if (treeItemFromAbsoluteXPath != null) {
@@ -696,7 +696,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     Node relativeNode = relativeNodeList.item(i);
 
                     if (relativeNode != null) {
-                        String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(relativeNode);
+                        String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(relativeNode);
                         if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                             TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                             if (treeItemFromAbsoluteXPath != null) {
@@ -748,7 +748,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                     // System.out.println("main node index : " + i);
                     Node loopNode = nodeList.item(i);
-                    String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(loopNode);
+                    String absoluteXPathFromNode = XmlNodeRetriever.getAbsoluteXPathFromNode(loopNode);
                     if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                         TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                         if (treeItemFromAbsoluteXPath != null) {
@@ -1038,7 +1038,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * 
      * @return the nodeRetriever
      */
-    public NodeRetriever getNodeRetriever() {
+    public XmlNodeRetriever getNodeRetriever() {
         return this.nodeRetriever;
     }
 
