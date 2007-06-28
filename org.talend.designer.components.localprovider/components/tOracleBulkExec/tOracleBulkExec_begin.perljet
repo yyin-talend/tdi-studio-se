@@ -123,7 +123,7 @@ else {
     else {
     	$_globals{<%=cid %>}{NB_LINE_BAD} = 0 ;
     }
-    $_globals{<%=cid %>}{NB_LINE_INSERTED} = $_globals{<%=cid %>}{ROWCOUNT_DATA} -  $_globals{<%=cid %>}{ROWCOUNT_BAD} ;
+    $_globals{<%=cid %>}{NB_LINE_INSERTED} = $_globals{<%=cid %>}{NB_LINE_DATA} -  $_globals{<%=cid %>}{NB_LINE_BAD} ;
     $_globals{<%=cid %>}{PERL_ERROR_CODE} = $? >> 8;
     if ($_globals{<%=cid %>}{PERL_ERROR_CODE} != 0) {
         die sprintf(
