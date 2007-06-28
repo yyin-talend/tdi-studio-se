@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.ui.branding.BrandingService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 
@@ -108,8 +109,7 @@ public class LicenseWizardPage extends WizardPage {
     private String getLicense() {
         String license = ""; //$NON-NLS-1$
         try {
-            final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-            final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/license.txt"), null)); //$NON-NLS-1$
+            final URL url = BrandingService.getInstance().getLicenseFile();
 
             FileReader fileReader = new FileReader(new File(url.getPath()));
             BufferedReader in = new BufferedReader(fileReader);
