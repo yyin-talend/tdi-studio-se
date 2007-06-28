@@ -8,6 +8,7 @@
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
+    SCHEMA_AUTO_PROPAGATE="false"
     STARTABLE="false"
   >
     <SIGNATURE/>

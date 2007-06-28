@@ -29,13 +29,10 @@ class="OracleSPRow"
 		incomingConnName = conn.getName();
 	}	
 	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if(metadatas != null && metadatas.size()>0){
-		IMetadataTable metadata = metadatas.get(0);
+		IMetadataTable metadata = conn.getMetadataTable();
 		if(metadata != null){
 			columnList = metadata.getListColumns();
-		}
-	}			
+		}		
 	int sizeColumns=columnList.size();
 %>
 
@@ -103,22 +100,21 @@ class Convert{
 	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());	
 	boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 
-	
-	
-%>   		
-	stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=i+1%>, <%=conn.getName() %>.<%=column.getLabel() %>);																					    			
+
+
+
+
+	if(column.getTalendType().equals("id_Date")){%>
+		stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=i+1%>, new java.sql.Date(<%=conn.getName() %>.<%=column.getLabel()%>.getTime()));
 <%
+	}else{	
+%>   		
+		stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=i+1%>, <%=conn.getName() %>.<%=column.getLabel() %>);																						    			
+<%
+	}																					    			
 				}//5	
 %> 
-			   try{		    			      
-
 				    stmt<%=cid%>.executeQuery();			    			    
-
-				   }
-				   catch(java.sql.SQLException ex){
-				    System.err.println(ex.getMessage()+"Error on Connecting Database!");
-				   }				   
-				   System.out.println("done");
 
 
 		
