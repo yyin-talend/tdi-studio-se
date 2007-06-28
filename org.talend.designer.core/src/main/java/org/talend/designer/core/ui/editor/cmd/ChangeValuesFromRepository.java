@@ -161,40 +161,43 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
             if (allowAutoSwitch) {
-                if (elem instanceof Node) {
-                    Node node = (Node) elem;
-                    boolean metadataInput = false;
-                    if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
-                            || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
-                            || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
-                        metadataInput = true;
-                    }
-                    if (!metadataInput && (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null)) {
-                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-                        IElementParameter repositorySchemaTypeParameter = elem
-                                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                        String repositoryTable = getFirstRepositoryTable(value);
-                        repositorySchemaTypeParameter.setValue(repositoryTable);
-                        IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
-                        if (table != null) {
-                            table = table.clone();
-                            table.setTableName(node.getMetadataList().get(0).getTableName());
-                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                                cmd.setRepositoryMode(true);
-                                cmd.execute();
-                            }
-                        }
-                    }
-                }
-                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
-                if (queriesmap == null || queriesmap.get(value).isEmpty()) {
-                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
-                }
-                if (tablesmap == null || tablesmap.get(value).isEmpty()) {
-                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                }
+                setOtherProperties();
             }
+            // if (allowAutoSwitch) {
+            // if (elem instanceof Node) {
+            // Node node = (Node) elem;
+            // boolean metadataInput = false;
+            // if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+            // || node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
+            // || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+            // metadataInput = true;
+            // }
+            // if (!metadataInput && (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null)) {
+            // elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            // IElementParameter repositorySchemaTypeParameter = elem
+            // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            // String repositoryTable = getFirstRepositoryTable(value);
+            // repositorySchemaTypeParameter.setValue(repositoryTable);
+            // IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
+            // if (table != null) {
+            // table = table.clone();
+            // table.setTableName(node.getMetadataList().get(0).getTableName());
+            // if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+            // ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
+            // cmd.setRepositoryMode(true);
+            // cmd.execute();
+            // }
+            // }
+            // }
+            // }
+            // elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
+            // if (queriesmap == null || queriesmap.get(value).isEmpty()) {
+            // elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+            // }
+            // if (tablesmap == null || tablesmap.get(value).isEmpty()) {
+            // elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            // }
+            // }
         }
 
         refreshPropertyView();
@@ -224,57 +227,92 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
                 metadataInput = true;
             }
+            boolean hasSchema = elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
             if (value.equals(EmfComponent.BUILTIN)) {
-                if (!metadataInput) {
+                if (!metadataInput && hasSchema) {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
                 }
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
             } else {
-                if (!metadataInput) {
-                    if (tablesmap != null
-                            && !tablesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                                    .isEmpty()) {
-                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+                if (hasSchema) {
+                    if (!metadataInput) {
+                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                         IElementParameter repositorySchemaTypeParameter = elem
                                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                        if (repositorySchemaTypeParameter != null) {
-                            String repositoryValue = (String) repositorySchemaTypeParameter.getValue();
-                            IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryValue);
-                            if (table != null) {
-                                table = table.clone();
-                                table.setTableName(node.getMetadataList().get(0).getTableName());
-                                if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                                    cmd.setRepositoryMode(true);
-                                    cmd.execute();
-                                }
+                        String repositoryTable;
+                        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                            repositoryTable = (String) repositorySchemaTypeParameter.getValue();
+                        } else {
+                            repositoryTable = getFirstRepositoryTable(value);
+                            repositorySchemaTypeParameter.setValue(repositoryTable);
+                        }
+                        IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
+                        if (table != null) {
+                            table = table.clone();
+                            table.setTableName(node.getMetadataList().get(0).getTableName());
+                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
+                                cmd.setRepositoryMode(true);
+                                cmd.execute();
                             }
                         }
-                    }
-                } else {
-                    Node sourceNode = getRealSourceNode((INode) elem);
-                    if (sourceNode != null) {
-                        IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
-                        Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                        boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
-                                && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
-                        if (isTake && getTake()) {
-                            ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
-                                    sourceMetadataTable);
-                            cmd.execute(true);
-                            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
-                            if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
-                                elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
-                                        .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
+
+                        // if (tablesmap != null
+                        // && !tablesmap.get(
+                        // elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                        // .isEmpty()) {
+                        // elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+                        // IElementParameter repositorySchemaTypeParameter = elem
+                        // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                        // if (repositorySchemaTypeParameter != null) {
+                        // String repositoryValue = (String) repositorySchemaTypeParameter.getValue();
+                        // IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryValue);
+                        // if (table != null) {
+                        // table = table.clone();
+                        // table.setTableName(node.getMetadataList().get(0).getTableName());
+                        // if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                        // ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
+                        // cmd.setRepositoryMode(true);
+                        // cmd.execute();
+                        // }
+                        // }
+                        // }
+                        // }
+                    } else {
+                        Node sourceNode = getRealSourceNode((INode) elem);
+                        if (sourceNode != null) {
+                            IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
+                            Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+                            boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
+                                    && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
+                            if (isTake && getTake()) {
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
+                                        sourceMetadataTable);
+                                cmd.execute(true);
+                                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
+                                if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
+                                    elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
+                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
+                                }
                             }
                         }
                     }
                 }
             }
-            if (queriesmap != null
-                    && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                            .isEmpty()) {
-                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+            if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                if (queriesmap != null
+                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
+                                .isEmpty()) {
+                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+                }
+            } else {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
+                if (queriesmap == null || queriesmap.get(value).isEmpty()) {
+                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+                }
+                if (tablesmap == null || tablesmap.get(value).isEmpty()) {
+                    elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                }
             }
         }
     }

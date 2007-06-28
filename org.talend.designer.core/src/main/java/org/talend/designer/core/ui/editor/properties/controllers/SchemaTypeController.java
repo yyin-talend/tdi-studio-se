@@ -99,7 +99,10 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
 
         String paramName;
-        Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        
+        IElementParameter repositorySchemaTypeParameter = elem
+        .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo.equals(repositoryControl)) {
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
@@ -301,7 +304,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             Node node = (Node) elem;
             IMetadataTable meta = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable metaCopy = meta.clone(true);
-            
+
             boolean inputFound = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
@@ -366,18 +369,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             FormData data;
             String[] originalList = schemaTypeParameter.getListItemsDisplayName();
             List<String> stringToDisplay = new ArrayList<String>();
-            String[] itemsShowIf = schemaTypeParameter.getListItemsShowIf();
-            if (itemsShowIf != null) {
-                String[] itemsNotShowIf = schemaTypeParameter.getListItemsNotShowIf();
-                for (int i = 0; i < originalList.length; i++) {
-                    if (schemaTypeParameter.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
-                        stringToDisplay.add(originalList[i]);
-                    }
-                }
-            } else {
-                for (int i = 0; i < originalList.length; i++) {
-                    stringToDisplay.add(originalList[i]);
-                }
+            for (int i = 0; i < originalList.length; i++) {
+                stringToDisplay.add(originalList[i]);
             }
             combo.setItems(stringToDisplay.toArray(new String[0]));
             combo.setEditable(false);
@@ -431,7 +424,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
 
             // **********************
-            hashCurControls.put(EParameterName.SCHEMA_TYPE.getName(), combo);
+            hashCurControls.put(schemaTypeParameter.getName(), combo);
 
             Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
@@ -552,12 +545,12 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         CCombo combo = (CCombo) dField.getControl();
-        hashCurControls.put(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), dField.getControl());
-        dynamicTabbedPropertySection.updateRepositoryList();
         IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        hashCurControls.put(repositorySchemaTypeParameter.getName(), dField.getControl());
+        dynamicTabbedPropertySection.updateRepositoryList();
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
-        //ControlUtils.setSortedValuesForCombo(combo, paramItems);
+        // ControlUtils.setSortedValuesForCombo(combo, paramItems);
         combo.setItems(paramItems);
 
         return cLayout;
@@ -585,12 +578,12 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        CCombo combo = (CCombo) hashCurControls.get(EParameterName.SCHEMA_TYPE.getName());
+        IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        CCombo combo = (CCombo) hashCurControls.get(schemaTypeParameter.getName());
 
         if (combo == null) {
             return;
         }
-        IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
         Object value = schemaTypeParameter.getValue();
 
         if (value instanceof String) {
@@ -607,18 +600,17 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String[] comboItems = combo.getItems();
             if (!paramItems.equals(comboItems)) {
                 combo.setItems(paramItems);
-                // ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }
 
-        combo = (CCombo) hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        IElementParameter repositorySchemaTypeParameter = elem
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        combo = (CCombo) hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo == null) {
             return;
         }
-        IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         value = repositorySchemaTypeParameter.getValue();
 
         if (value instanceof String) {

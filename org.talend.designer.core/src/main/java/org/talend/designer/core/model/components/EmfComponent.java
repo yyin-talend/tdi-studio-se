@@ -309,7 +309,6 @@ public class EmfComponent implements IComponent {
 
     private void addMainParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
-
         param = new ElementParameter(node);
         param.setName(EParameterName.UNIQUE_NAME.getName());
         param.setValue(""); //$NON-NLS-1$
@@ -365,7 +364,6 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(true);
         param.setRequired(false);
         param.setShow(true);
-
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -382,7 +380,6 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(false);
-
         listParam.add(param);
 
         if (canStart()) {
@@ -504,10 +501,10 @@ public class EmfComponent implements IComponent {
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
-            newParam.setShow(false);
-            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setShow(true);
+//            newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setReadOnly(xmlParam.isREADONLY());
-            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+//            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);
@@ -552,7 +549,7 @@ public class EmfComponent implements IComponent {
             newParam.setValue(ENCODING_TYPE_ISO_8859_15);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
-            newParam.setShow(false);
+            newParam.setShow(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
@@ -691,6 +688,11 @@ public class EmfComponent implements IComponent {
             case SCHEMA_TYPE:
                 initializeTableFromXml(xmlParam, param);
                 break;
+            case DBTABLE:
+                if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    param.setDisplayName(EParameterName.DBTABLE.getDisplayName());
+                }
+                break;
             case MAPPING_TYPE:
                 if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                     param.setDisplayName(EParameterName.MAPPING_TYPE.getDisplayName());
@@ -701,6 +703,10 @@ public class EmfComponent implements IComponent {
                     param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
                 }
                 param.setValue(""); // TODO to change ? //$NON-NLS-1$
+                break;
+            case PROPERTY_TYPE:
+                param.setShow(false);
+                param.setValue(""); //$NON-NLS-1$
                 break;
             default:
                 param.setValue(""); //$NON-NLS-1$

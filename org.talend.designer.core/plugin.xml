@@ -374,7 +374,7 @@
       <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaMemoGenerator"
             mapping="MEMO_JAVA"
-            name="Jave Memo"/>
+            name="Java Memo"/>
       <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.ProcessGenerator"
             mapping="PROCESS_TYPE"
@@ -392,7 +392,8 @@
             mapping="COLOR"
             name="Color"/>
       <generator
-            class="org.talend.designer.core.ControllerGenerator2"
-            mapping="CONNECTION_LIST"/>             
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.DbTableControllerGenerator"
+            mapping="DBTABLE"
+            name="Db Table"/>
    </extension>
 </plugin>

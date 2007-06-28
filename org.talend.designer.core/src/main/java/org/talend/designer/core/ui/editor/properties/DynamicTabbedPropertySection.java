@@ -37,7 +37,6 @@ import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -52,13 +51,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableCommand;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
-import org.talend.core.model.metadata.ColumnNameChanged;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -74,7 +69,6 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -185,7 +179,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             String currentProcess = part.getTalendEditor().getProcess().getLabel();
             for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
-                if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
+                if (factory.getStatus(process) != ERepositoryStatus.DELETED
+                        && !currentProcess.equals(process.getLabel())) {
                     String path = object.getParent().getPath().toString();
                     String name;
                     if (path.equals("")) { //$NON-NLS-1$
@@ -218,9 +213,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 // if (!processMap.keySet().contains(param.getValue())) {
                 // if (processTableNameList.length > 0) {
                 // elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(), "");
-                //                        }
-                //                    }
-                //                }
+                // }
+                // }
+                // }
                 if (elem instanceof Node) {
                     ((Node) elem).checkAndRefreshNode();
                 }
@@ -398,11 +393,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryTableNameList);
                 param.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(param.getValue())) {
-                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(true,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
+                                true, repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -410,16 +406,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
-                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(false,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                getDefaultRepository(false, repositoryConnectionValueList[0]));
                     }
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getRepositoryValue();
+                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                        .getRepositoryValue();
                 if (repositoryValue != null) {
                     List<String> connectionNamesList = new ArrayList<String>();
                     List<String> connectionValuesList = new ArrayList<String>();
@@ -495,9 +493,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsValue(repositoryConnectionValueList);
                 if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
                     if (repositoryConnectionNameList.length > 0) {
-                        elem
-                                .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                                        repositoryConnectionValueList[0]);
+                        elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
+                                repositoryConnectionValueList[0]);
                     }
                 }
             }
@@ -548,23 +545,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * Initialize all components for the defined section for this node.
      */
-    public void addComponents() {
+    public void addComponents(boolean forceRedraw) {
         registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
-
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
-
-        // oldSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-        // if (oldSchemaType != null) {
-        // if (oldSchemaType.equals(EmfComponent.REPOSITORY)) {
-        // showSchemaRepositoryList(true);
-        // updateRepositoryList();
-        // } else {
-        // showSchemaRepositoryList(false);
-        // }
-        // }
 
         oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
         if (oldQueryStoreType != null) {
@@ -588,13 +574,61 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
+            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                    .getListItemsDisplayName();
             if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
                 updateProcessList();
                 updateContextList();
                 if (elem instanceof Node) {
                     ((Node) elem).checkAndRefreshNode();
                 }
+            }
+        }
+
+        IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        if (schemaTypeParameter != null) {
+            IElementParameter repositorySchemaTypeParameter = elem
+                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            String schemaType = (String) schemaTypeParameter.getValue();
+            if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
+                repositorySchemaTypeParameter.setShow(true);
+            } else {
+                repositorySchemaTypeParameter.setShow(false);
+            }
+        }
+
+        IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        if (encodingTypeParameter != null) {
+            IElementParameter repositoryEncodingTypeParameter = elem
+                    .getElementParameter(EParameterName.REPOSITORY_ENCODING_TYPE.getName());
+            String encodingType = (String) encodingTypeParameter.getValue();
+            if (encodingType != null && encodingType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
+                repositoryEncodingTypeParameter.setShow(true);
+            } else {
+                repositoryEncodingTypeParameter.setShow(false);
+            }
+        }
+
+        if (!forceRedraw) {
+            boolean needRedraw = false;
+            for (int i = 0; i < elem.getElementParameters().size() && !needRedraw; i++) {
+                IElementParameter elementParameter = elem.getElementParameters().get(i);
+                if (elementParameter.getCategory().equals(section)
+                        && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
+                        && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)
+                        && (elementParameter.getField() != EParameterFieldType.ENCODING_TYPE)) {
+                    // if the component must be displayed, then check if the control exists or not.
+                    boolean show = elementParameter.isShow(elem.getElementParameters());
+                    Object control = this.hashCurControls.get(elementParameter.getName());
+                    if ((control == null && show) || (control != null && !show)) {
+                        needRedraw = true;
+                        // System.out.println(elementParameter.getName() + " need redraw");
+                    }
+                }
+            }
+            if (!needRedraw) {
+                // System.out.println("no need redraw");
+                return;
             }
         }
 
@@ -618,35 +652,43 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
+        generator.initController(this);
+
         curRowSize = 0;
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
             for (int i = 0; i < listParam.size(); i++) {
-                if (listParam.get(i).getCategory() == section) {
-                    if (listParam.get(i).getNumRow() == curRow && listParam.get(i).isShow(listParam)) {
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getNumRow() == curRow && curParam.isShow(listParam)
+                            && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
                         nbInRow++;
                     }
                 }
             }
             numInRow = 0;
             lastControl = null;
-            generator.initController(this);
             for (int i = 0; i < listParam.size(); i++) {
-                if (listParam.get(i).getCategory() == section) {
-                    if (listParam.get(i).getNumRow() == curRow && listParam.get(i).isShow(listParam)) {
-                        numInRow++;
-                        AbstractElementPropertySectionController controller = generator.getController(
-                                listParam.get(i).getField(), this);
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                        // System.out.println("test:" + curParam.getName() + " field:"+curParam.getField());
+                        if (curParam.isShow(listParam)) {
+                            // System.out.println("show:" + curParam.getName()+ " field:"+curParam.getField());
+                            numInRow++;
+                            AbstractElementPropertySectionController controller = generator.getController(curParam
+                                    .getField(), this);
 
-                        if (controller == null) {
-                            break;
-                        }
-                        lastControl = controller.createControl(composite, listParam.get(i), numInRow, nbInRow, heightSize,
-                                lastControl);
+                            if (controller == null) {
+                                break;
+                            }
+                            lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
+                                    lastControl);
 
-                        if (curRowSize > maxRowSize) {
-                            maxRowSize = curRowSize;
+                            if (curRowSize > maxRowSize) {
+                                maxRowSize = curRowSize;
+                            }
                         }
                     }
                 }
@@ -694,7 +736,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
         if (updateNeeded != null) {
             if (updateNeeded) {
-                addComponents();
+                addComponents(false);
                 elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(false));
             }
         }
@@ -702,8 +744,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getField(),
-                            this);
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
+                            .getField(), this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
                     }
@@ -725,17 +767,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
-        // if (lastSelection != null) { // added to correct a bug of the TabbedProperties
-        // if (lastSelection.equals(selection)) {
-        // return;
-        // }
-        // }
-        // lastSelection = selection;
 
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
         } else {
-            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getActiveEditor();
         }
         super.setInput(part, selection);
         Assert.isTrue(selection instanceof IStructuredSelection);
@@ -760,10 +797,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         if (currentComponent == null || elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {
-            addComponents();
+            addComponents(true);
         } else {
             if (!currentComponent.equals(elem.getElementName())) {
-                addComponents();
+                addComponents(true);
             } else {
                 updateRepositoryList();
                 updateProcessList();
@@ -787,6 +824,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         repositoryQueryStoreMap = new HashMap<String, Query>();
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
         repositoryTableMap = new HashMap<String, IMetadataTable>();
+        hashCurControls = new DualHashBidiMap();
     }
 
     /**
@@ -909,7 +947,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                             IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
                             PropertySheet sheet = (PropertySheet) view;
-                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
+                                    .getCurrentPage();
                             tabbedPropertySheetPage.refresh();
 
                         }

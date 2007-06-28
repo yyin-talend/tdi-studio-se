@@ -23,30 +23,25 @@ package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
-import org.talend.designer.core.ui.editor.properties.controllers.TextController;
+import org.talend.designer.core.ui.editor.properties.controllers.DbTableController;
+
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
- * 
- * $Id: TextGenerator.java 1 2006-12-22 下午04:44:37 +0000 (下午04:44:37) yzhang $
- * 
+ * DOC nrousseau  class global comment. Detailled comment
+ * <br/>
+ *
  */
-public class TextGenerator implements IControllerGenerator {
-
+public class DbTableControllerGenerator implements IControllerGenerator {
     private DynamicTabbedPropertySection dtp;
-
-    /*
-     * (non-Javadoc)
-     * 
+    
+    /* (non-Javadoc)
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
     public AbstractElementPropertySectionController generate() {
-        return new TextController(dtp);
+        return new DbTableController(dtp);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicTabbedPropertySection(org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection)
      */
     public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {

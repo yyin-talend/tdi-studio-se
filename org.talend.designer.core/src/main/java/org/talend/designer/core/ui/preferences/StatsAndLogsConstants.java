@@ -22,7 +22,6 @@
 package org.talend.designer.core.ui.preferences;
 
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
-import org.talend.designer.core.model.components.EParameterName;
 
 /**
  * This class is used for storing the same variable name of JAVA and Perl.

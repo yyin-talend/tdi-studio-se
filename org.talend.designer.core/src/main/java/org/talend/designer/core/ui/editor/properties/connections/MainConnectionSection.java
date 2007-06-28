@@ -90,7 +90,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
     }
 
     @Override
-    public void addComponents() {
+    public void addComponents(boolean forceRedraw) {
 
         if (conSchema()) {
             disposeChildren();
@@ -132,7 +132,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             // composite.getParent().layout();
             composite.layout();
         } else if (conIf()) {
-            super.addComponents();
+            super.addComponents(forceRedraw);
         } else {
             disposeChildren();
         }

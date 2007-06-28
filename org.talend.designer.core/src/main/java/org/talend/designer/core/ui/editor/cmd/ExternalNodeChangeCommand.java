@@ -144,7 +144,7 @@ public class ExternalNodeChangeCommand extends Command {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
                 DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
                 if (currentSection.getElement().equals(node)) {
-                    currentSection.addComponents();
+                    currentSection.addComponents(false);
                     currentSection.refresh();
                 }
             }

@@ -184,7 +184,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             }
 
             // **********************
-            hashCurControls.put(EParameterName.ENCODING_TYPE.getName(), combo);
+            hashCurControls.put(encodingTypeParameter.getName(), combo);
 
             Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);

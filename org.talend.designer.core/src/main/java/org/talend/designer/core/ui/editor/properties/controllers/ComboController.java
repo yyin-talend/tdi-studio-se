@@ -438,7 +438,9 @@ public class ComboController extends AbstractElementPropertySectionController {
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
             Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
             String paramName;
-            Object repositoryControl = hashCurControls.get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            IElementParameter repositorySchemaTypeParameter = elem
+            .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
 
@@ -539,7 +541,6 @@ public class ComboController extends AbstractElementPropertySectionController {
 
             if (!paramItems.equals(comboItems)) {
                 combo.setItems(paramItems);
-                // ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
             combo.setText(strValue);
         }

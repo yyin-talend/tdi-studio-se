@@ -72,22 +72,7 @@ public class StatsAndLogsTabPropertySection extends DynamicTabbedPropertySection
      */
     @Override
     public void refresh() {
-        // as the view can have several inputs, will check for each component if need to redraw the view or not.
-        boolean needRedraw = false;
-        for (int i = 0; i < elem.getElementParameters().size() && !needRedraw; i++) {
-            IElementParameter elementParameter = elem.getElementParameters().get(i);
-            if (elementParameter.getCategory().equals(section)) {
-                // if the component must be displayed, then check if the control exists or not.
-                boolean show = elementParameter.isShow(elem.getElementParameters());
-                Object control = this.hashCurControls.get(elementParameter.getName());
-                if ((control == null && show) || (control != null && !show)) {
-                    needRedraw = true;
-                }
-            }
-        }
-        if (needRedraw) {
-            addComponents();
-        }
+        addComponents(false);
         super.refresh();
     }
 }
