@@ -548,6 +548,14 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         return new FileEditorInput(codeFile);
     }
 
+    /**
+     * Getter for process.
+     * @return the process
+     */
+    public IProcess getProcess() {
+        return this.process;
+    }
+
     /*
      * (non-Javadoc)
      * 

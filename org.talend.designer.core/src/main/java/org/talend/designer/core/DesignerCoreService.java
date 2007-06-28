@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
@@ -94,5 +94,8 @@ public class DesignerCoreService implements IDesignerCoreService {
         Contexts.switchToCurContextsView();
     }
 
+    public void saveJobBeforeRun(IProcess activeProcess) {
+        new SaveJobBeforeRunAction(activeProcess).run();
+    }
     // ends.
 }
