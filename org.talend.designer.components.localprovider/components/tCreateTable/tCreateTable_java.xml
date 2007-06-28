@@ -7,7 +7,7 @@
     
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
-    RELEASE_DATE="20070314A"
+    RELEASE_DATE="20070627A"
     STARTABLE="true"
   >
     <SIGNATURE/>
@@ -37,10 +37,30 @@
       NUM_ROW="1"
     >
       <ITEMS DEFAULT="ACCESS">       
+        <ITEM NAME="ACCESS"        VALUE="Access" />
+        <ITEM NAME="DB2"           VALUE="DB2"/>
+        <ITEM NAME="FIREBIRD"      VALUE="Firebird"/>
+        <ITEM NAME="INFORMIX"      VALUE="Informix"/>
+        <ITEM NAME="INGRES"      VALUE="Ingres"/>
+        <ITEM NAME="JAVADB"      VALUE="JavaDB"/>
         <ITEM NAME="MSSQL" 		   VALUE="MSSQL"/>
         <ITEM NAME="MYSQL"         VALUE="MySQL"/>
         <ITEM NAME="DBORACLE"      VALUE="Oracle"/>
         <ITEM NAME="POSTGRE"      VALUE="Postgre"/>
+        <ITEM NAME="SQLITE"      VALUE="SQLite"/>
+        <ITEM NAME="SYBASE"      VALUE="Sybase"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SPECIALACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="1"
+    >
+      <ITEMS DEFAULT="NONE">       
+        <ITEM NAME="NONE"        VALUE="None" />
+        <ITEM NAME="CREATEONLY"           VALUE="CreateOnly"/>
+        <ITEM NAME="DROPANDCREATE"      VALUE="DropAndCreate"/>
       </ITEMS>
     </PARAMETER>
     
@@ -72,6 +92,35 @@
       SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION == 'true')"
     />
     
+    
+     
+     <PARAMETER
+      NAME="JAVADBFRAME"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+	  SHOW_IF="(DBTYPE=='JAVADB')"  
+    >
+      <ITEMS DEFAULT="EMBEDED">
+        <ITEM NAME="EMBEDED"        VALUE="Embeded" />
+        <ITEM NAME="JCCJDBC"    	VALUE="JCCJDBC"/>
+        <ITEM NAME="DERBYCLIENT"    VALUE="DERBYCLIENT"/>
+      </ITEMS>
+    </PARAMETER>
+ 
+     <PARAMETER
+      NAME="JAVADBNETSERVER"
+      FIELD="CHECK"
+      SHOW_IF="(DBTYPE=='JAVADB')"
+      NUM_ROW="2"    
+    >   
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>  
+    
+    
+    
+    
+    
+    
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
@@ -79,13 +128,35 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="DATABASE"
     />
-        
+    
+    <PARAMETER
+      NAME="ACCESSDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='ACCESS')"
+      
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
+    </PARAMETER> 
+
+
+    <PARAMETER
+      NAME="DBPATH"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='JAVADB' and JAVADBFRAME=='EMBEDED')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -95,7 +166,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED')"
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
@@ -106,18 +177,57 @@
       NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+   <PARAMETER
+      NAME="SQLITEDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='SQLITE')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER> 
+    <PARAMETER
+      NAME="FIREBIRJNI"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='FIREBIRD')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+   <PARAMETER
+      NAME="FIREBIRDDBNAME"
+      FIELD="FILE"
+      NUM_ROW="5"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='FIREBIRD')"     
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="INFORMIXSERVER"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='INFORMIX')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='SQLITE') "
     >
       <DEFAULT>"sa"</DEFAULT>
     </PARAMETER>
@@ -128,10 +238,12 @@
       NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='SQLITE') "
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+        
+
     
     <PARAMETER
       NAME="TABLE"
@@ -148,6 +260,25 @@
       NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="8"
+    >  
+      <DEFAULT IF="DBTYPE=='ACCESS'">access_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='DB2'">ibmdb2_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='FIREBIRD'">firebird_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='INFORMIX'">informix_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='JAVADB'">javadb_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='MSSQL'">MSODBC</DEFAULT>
+      <DEFAULT IF="DBTYPE=='MYSQL'">mysql_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='DBORACLE'">oracle_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='POSTGRES'">postgres_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='SQLITE'">sqlite_id</DEFAULT>
+      <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -170,7 +301,25 @@
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-ORACLE" MODULE="ojdbc14.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />		
+		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-ACCESS" MODULE="Access_JDBC30.jar" REQUIRED="true" />	
+		<IMPORT NAME="Driver-FIREBIRD-JAAS" MODULE="jaas.jar" REQUIRED="true" />	
+		<IMPORT NAME="Driver-FIREBIRD-JAYBIRD" MODULE="jaybird-2.1.1.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-FIREBIRD-LOG4J" MODULE="log4j-core.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-FIREBIRD-MINI-J2EE" MODULE="mini-j2ee.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v033-nested.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SQLITE-JDBC" MODULE="sqlitejdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
+		
      </IMPORTS>
    </CODEGENERATION>
    

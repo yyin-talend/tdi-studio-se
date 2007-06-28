@@ -6,15 +6,12 @@ imports="
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType 
 	org.talend.core.database.EDatabaseTypeName
 	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.core.model.metadata.types.TypesManager
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
-	java.util.Random
 "
 %>
 
@@ -29,10 +26,8 @@ imports="
 	String dbname = ElementParameterParser.getValue(node,"__DBNAME__");
 	String user = ElementParameterParser.getValue(node,"__USER__");
 	String pass = ElementParameterParser.getValue(node,"__PASS__");
+	String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
 	
-	
-	List<Map<String, String>> tableColumns =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__TABLECOLUMNS__");
 	List<IMetadataColumn> columnList = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	
@@ -45,97 +40,125 @@ imports="
 
 //inner class
 class Transfer{
-	public String dbDriver(String dbType){
+	public String dbDriver(INode node){
+		String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
 		if(dbType.equals("MSSQL")){
 			return "net.sourceforge.jtds.jdbc.Driver";
-		}else if(dbType.equals("MySQL")){//depends on useExisting connection
+		}else if(dbType.equals("MySQL")){
 			return "org.gjt.mm.mysql.Driver";
 		}else if(dbType.equals("Oracle")){
 			return "oracle.jdbc.driver.OracleDriver";
 		}else if(dbType.equals("Postgre")){
 			return "org.postgresql.Driver";
+		}else if(dbType.equals("Access")){
+			return "com.hxtt.sql.access.AccessDriver";
+		}else if(dbType.equals("DB2")){
+			return "com.ibm.db2.jcc.DB2Driver";
+		}else if(dbType.equals("Firebird")){
+			return "org.firebirdsql.jdbc.FBDriver";
+		}else if(dbType.equals("Informix")){
+			return "com.informix.jdbc.IfxDriver";
+		}else if(dbType.equals("Ingres")){
+			return "com.ingres.jdbc.IngresDriver";
+		}else if(dbType.equals("JavaDB")){
+			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
+			if(frameworkType.equals("Embeded")){
+				return "org.apache.derby.jdbc.EmbeddedDriver";
+			}else if(frameworkType.equals("JCCJDBC")){
+				return "com.ibm.db2.jcc.DB2Driver";
+			}else if(frameworkType.equals("DERBYCLIENT")){
+				return "org.apache.derby.jdbc.ClientDriver";
+			}
+		}else if(dbType.equals("SQLite")){
+			return "org.sqlite.JDBC";
+		}else if(dbType.equals("Sybase")){
+			return "com.sybase.jdbc3.jdbc.SybDriver";
 		}
 		return null;
 	}
 	
 	
-	public String url(String dbType,String host,String port, String dbname, String oraType){
+	public String url(INode node){	
+		//String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+		String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
+		String host = ElementParameterParser.getValue(node,"__HOST__");
+		String port = ElementParameterParser.getValue(node,"__PORT__");
+		String dbname = ElementParameterParser.getValue(node,"__DBNAME__");
+		String user = ElementParameterParser.getValue(node,"__USER__");
+		String pass = ElementParameterParser.getValue(node,"__PASS__");
+		String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
+
 		if(dbType.equals("MSSQL")){
-		//return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		return "\"jdbc:jtds:sqlserver://\"+"+host+"+\":\"+"+port+"+\"//\"+"+dbname;
+			return "\"jdbc:jtds:sqlserver://\"+"+host+"+\":\"+"+port+"+\"//\"+"+dbname;
 		}else if(dbType.equals("MySQL")){
 			return "\"jdbc:mysql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname+ "+\"?noDatetimeStringSync=true\"";
 		}else if(dbType.equals("Oracle")){//depends on SID/Service
-			if(oraType.equals("Oracle SID")){
-				return "\"jdbc:oracle:thin:@\"+"+host+"+\":\"+" + port + "+\":\"+" + dbname;
-			}else{
-				return "\"dbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\"+" + host + "+\")(port=\"+" + port + "+\"))(connect_data=(service_name=\"+" + dbname +"+\")))\"";			
-			}
-
+					if(oraType.equals("Oracle SID")){
+						return "\"jdbc:oracle:thin:@\"+"+host+"+\":\"+" + port + "+\":\"+" + dbname;
+					}else{
+						return "\"dbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\"+" + host + "+\")(port=\"+" + port + "+\"))(connect_data=(service_name=\"+" + dbname +"+\")))\"";			
+					}
 		}else if(dbType.equals("Postgre")){
 			return "\"jdbc:postgresql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}
-		return null;
-	}
-	
-	
-	public String dbID(String dbType, INode node){
-		if(dbType.equals("MSSQL")){
-			return "Microsoft SQL Server";
-		}else if(dbType.equals("MySQL")){
-			return "MySQL";
-		}else if(dbType.equals("Oracle")){
-			String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
-			if(oraType.equals("Oracle SID")){
-				return "Oracle with SID";
-			}else{
-				return "Oracle with service name";			
+		}else if(dbType.equals("Access")){
+		String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
+		
+			return "\"jdbc:access:/\"+"+accessDbname+"+\"?user=\"+"+user+"+\";password=\"+"+pass;
+		}else if(dbType.equals("DB2")){
+			return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
+		}else if(dbType.equals("Firebird")){			
+			String firebirdDB=ElementParameterParser.getValue(node,"__FIREBIRDDBNAME__");
+			return "\"jdbc:firebirdsql:\"+"+host+"+\":\"+"+firebirdDB;
+		}else if(dbType.equals("Informix")){
+			String server=ElementParameterParser.getValue(node,"__INFORMIXSERVER__");			
+			return "\"jdbc:informix-sqli://\"+"+host+ "+\":\"+"+port+"+\"/\"+"+dbname+"+\":informixserver=\"+"+server;
+		}else if(dbType.equals("Ingres")){
+			return "\"jdbc:ingres://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
+		}else if(dbType.equals("JavaDB")){
+			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
+			if(frameworkType.equals("Embeded")){
+				return "\"jdbc:derby:\"+" + dbname;
+			}else if(frameworkType.equals("JCCJDBC")){
+				return "\"+jdbc:derby:net://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
+			}else if(frameworkType.equals("DERBYCLIENT")){
+				return "\"+jdbc:derby://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 			}
-		}else if(dbType.equals("Postgre")){
-			return "PostgreSQL";
+		}else if(dbType.equals("SQLite")){		
+			String sqliteDB=ElementParameterParser.getValue(node,"__SQLITEDBNAME__");
+			return "\"jdbc:sqlite:/\"+" +sqliteDB.toLowerCase();
+		}else if(dbType.equals("Sybase")){
+			return "\"jdbc:sybase:Tds:\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}
 		return null;
 	}
 	
 	
-	public String sql(String dbType,String tableName,INode node,List<Map<String, String>> tableColumns){
+	public String sql(String dbType,String tableName,INode node){
 	String sql="create table \"+"+tableName+"+\"(";
-	//final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).getProduct();
-	//final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
-	//final String dbType = TypesManager.getDBTypeFromTalendType(mapping, talendType);
-
 		List<IMetadataTable> metadatas = node.getMetadataList();
+		List PKey=new ArrayList();	
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IMetadataTable metadata = metadatas.get(0);
 			if (metadata!=null) {
 				List<IMetadataColumn> columnList = metadata.getListColumns();
-				int colNum=1;	
-				List PKey=new ArrayList();						
+				int colNum=1;									
 			 	for(IMetadataColumn column:columnList){	
-			 		//column name(done)
+			 	//column name
 			 		sql=sql+column.getLabel()+" ";
-			 		
-			 		//primary key(shouldn't be here)
+			 	//primary key(shouldn't be here)
 					if(column.isKey()==true){PKey.add(column.getLabel());}
-			 		
-			 		//column type(incomplete)
-			 		String product = EDatabaseTypeName.getTypeFromDisplayName(dbID(dbType,node)).getProduct();
-	 				String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
-					String dbColumnType = TypesManager.getDBTypeFromTalendType(mapping, column.getTalendType());		 		
-System.out.println("column mapping = "+mapping);
-			 		sql=sql+dbColumnType;
-			 		
-			 		//column DataDefine(incomplete)
-			 		
+			 	//column type
+				 		sql=sql+column.getType();
+			 	//column DataDefine
 			 		if(column.getTalendType().equals("id_String")){
-			 			if(column.getLength().equals(-1)){
-			 			sql=sql+"(100)";
+			 			if((column.getLength()==0)||(column.getLength()==-1)){
+			 				sql=sql+"(100)";
 			 			}else{
-			 			sql=sql+"("+column.getLength()+") ";
+			 				sql=sql+"("+column.getLength()+") ";
 			 			}
 			 		}
 			 		sql=sql+" ";
-			 		//default value(done)
+			 	//default_value
 			 		if(!(column.getDefault().equals(""))){
 			 		sql=sql+"default ";
 				 		if((column.getTalendType().equals("id_String"))||(column.getTalendType().equals("id_Date"))){
@@ -144,34 +167,28 @@ System.out.println("column mapping = "+mapping);
 				 			sql=sql+column.getDefault()+" ";
 				 		}
 			 		}
-			 		
-			 		//nullable(done)
+			 	//nullable
 			 		if(column.isNullable()==false){
 			 			sql=sql+"not null ";
 			 		}
-			 		
-			 		
-			 		//ifthere should be a ','
+			 	//if_there_should_be_a ','
 			 		colNum=colNum+1;
 			 		if(!((colNum>columnList.size())&&(PKey.isEmpty()))){sql=sql+",";}
 			 	}
-			 	
 			 	//primary key
-			 	if(!(PKey.isEmpty())){
-			 	Random a = new Random();
-			 	sql=sql+"constraint C"+String.valueOf(a.nextLong())+" primary key (";
-			 	for(int i=0;i<PKey.size();i++){
-			 		sql=sql+(String)PKey.get(i);
-			 		if(i<PKey.size()-1){sql=sql+",";}
-			 	}
-			 	sql=sql+")";
-			 	}
+				 	if(!(PKey.isEmpty())){
+					 	sql=sql+" primary key (";
+					 	for(int i=0;i<PKey.size();i++){
+					 		sql=sql+(String)PKey.get(i);
+					 		if(i<PKey.size()-1){sql=sql+",";}
+					 	}
+					 	sql=sql+")";
+				 	}
 		 	}
 	 	}		
-	sql=sql+")";
+		sql=sql+")";
 		return sql;
 	}
-
 }
        Transfer tr=new Transfer();
 %>
@@ -180,26 +197,89 @@ System.out.println("column mapping = "+mapping);
 		java.sql.Connection con<%=cid%>=null;
 		java.sql.Statement stmt<%=cid%>=null;
 		String sql<%=cid%>=null;
-
+		Class.forName("<%=tr.dbDriver(node)%>");
 <%
 	String useExistingConn = ElementParameterParser.getValue(node,"__EXISTINGCONNECTION__");
 	String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
 	if((dbType.equals("MySQL"))&&(useExistingConn.equals("true")))
 	{
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		String conn = "conn_" + connection;%>
+		String conn = "conn_" + connection;
+%>
 		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-<%  }else{%>
-		Class.forName("<%=tr.dbDriver(dbType)%>");// cancel the quote mark later!!!
-		url<%=cid%>=<%=tr.url(dbType,host,port,dbname,oraType)%>;
+<%  }else if((dbType.equals("Access"))||(dbType.equals("SQLite"))){%>
+		url<%=cid%> = <%=tr.url(node)%>;
+		con<%=cid%> = java.sql.DriverManager.getConnection(url<%=cid %>);
+<%	}else if(dbType.equals("JavaDB")){%>
+		url<%=cid%> = <%=tr.url(node)%>;
+<%		if(frameworkType.equals("Embeded")){%>
+			System.setProperty("derby.system.home",<%=ElementParameterParser.getValue(node,"__DBPATH__")%>);
+<%		}
+		String connectionFlag = ElementParameterParser.getValue(node, "__JAVADBNETSERVER__");
+    	if(connectionFlag.equals("false")){%>
+       		org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
+        	serverControl_<%=cid%> = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName(<%=host%>),Integer.parseInt(<%=port%>));
+			serverControl_<%=cid%>.start(new java.io.PrintWriter(System.out,true));
+        	boolean isServerUp_<%=cid%> = false;
+        	int timeOut_<%=cid%> = 5;
+        	while(!isServerUp_<%=cid%> && timeOut_<%=cid%> > 0)
+        	{	try
+        		{	timeOut_<%=cid%>--;
+            		serverControl_<%=cid%>.ping();
+            		isServerUp_<%=cid%> = true;
+        		}catch(Exception e) {
+    				Thread.currentThread().sleep(3000);
+    			}    				
+        	}
+        	if(!isServerUp_<%=cid%>)
+        	{	System.exit(1);	}
+<%		}%>
+		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
+<%	}else if(dbType.equals("Firebird")){%>
+			Class clazz_<%=cid%> = ClassLoader.class;
+			java.lang.reflect.Field field_<%=cid%> = clazz_<%=cid%>.getDeclaredField("sys_paths");
+			boolean accessible_<%=cid%> = field_<%=cid%>.isAccessible();
+			if (!accessible_<%=cid%>)
+				field_<%=cid%>.setAccessible(true);
+				Object original_<%=cid%> = field_<%=cid%>.get(clazz_<%=cid%>);
+				field_<%=cid%>.set(clazz_<%=cid%>, null);
+			try {
+				System.setProperty("java.library.path", <%=ElementParameterParser.getValue(node,"__FIREBIRJNI__")%>);
+				System.loadLibrary("jaybird21");
+			} finally {
+				field_<%=cid%>.set(clazz_<%=cid%>, original_<%=cid%>);
+				field_<%=cid%>.setAccessible(accessible_<%=cid%>);
+			}				
+		url<%=cid%>=<%=tr.url(node)%>;
+		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
+
+<%	}else{%>
+		url<%=cid%>=<%=tr.url(node)%>;
 		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
 <%	} %>
+
 		stmt<%=cid%>=con<%=cid%>.createStatement();
-		sql<%=cid%>="<%=tr.sql(dbType,tableName,node,tableColumns)%>";
-		stmt<%=cid%>.execute("sql");
-
-
-
+	
+	
+ 
+<%//  special action / Main action
+	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
+	if(specialAction.equals("DropAndCreate")){%>//drop and then create
+		stmt<%=cid%>.execute("drop table "+<%=tableName%>);	
+		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+		stmt<%=cid%>.execute(sql<%=cid%>);	
+<%	}else if(specialAction.equals("CreateOnly")){%>
+		try{
+			stmt<%=cid%>.execute("select * from "+<%=tableName%>);
+			System.out.println("This table already exists. Can not be created");
+		}catch(Exception e){//create only if it doesn't exist
+			sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+			stmt<%=cid%>.execute(sql<%=cid%>);	
+		}
+<%}else{%>// just create
+		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+		stmt<%=cid%>.execute(sql<%=cid%>);
+<%}%>
 
 		
 
