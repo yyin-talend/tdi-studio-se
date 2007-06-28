@@ -37,12 +37,15 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.SqlMemoController;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.ui.progress.OpenSQLBuilderDialogProgress;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * Open SqlBuilderDialog Job.
@@ -108,6 +111,7 @@ public class OpenSQLBuilderDialogJob extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         loginProgress = new OpenSQLBuilderDialogProgress(connectionParameters, manager, composite);
+        final Process process = controller.getDynamicTabbedPropertySection().part.getTalendEditor().getProcess();
         try {
             loginProgress.run(monitor);
             if (connectionParameters.isStatus()) {
@@ -115,7 +119,10 @@ public class OpenSQLBuilderDialogJob extends Job {
 
                     public void run() {
                         Shell parentShell = new Shell(composite.getShell().getDisplay());
+                        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + process.getName()
+                                + TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + elem.getElementName());
                         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+                        UIUtils.addSqlBuilderDialog(process.getName(), dial);
                         dial.setConnParameters(connectionParameters);
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
@@ -136,9 +143,9 @@ public class OpenSQLBuilderDialogJob extends Job {
                         String mainMsg = Messages.getString("ConnectionError.Message"); //$NON-NLS-1$
                         if (new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters
                                 .getConnectionComment()).getCodeOfButton() == Dialog.OK) {
+
                             ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
-                                    connectionParameters, controller.getDynamicTabbedPropertySection().part.getTalendEditor()
-                                            .getProcess().getContextManager());
+                                    connectionParameters, process.getContextManager());
                             if (paramDialog.open() == Window.OK) {
                                 controller.openSqlBuilderBuildIn(connectionParameters, propertyName);
                             }

@@ -29,6 +29,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * Track the active Process being edited. <br/>
@@ -147,12 +148,14 @@ public class ActiveProcessTracker implements IPartListener {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.removeProcess(process);
 
+            
             if (currentProcess == process) {
                 Problems.setTitle(""); //$NON-NLS-1$
                 Problems.clearAll();
                 Contexts.setTitle(""); //$NON-NLS-1$
                 Contexts.clearAll();
             }
+            UIUtils.closeSqlBuilderDialogs(process.getName());
         }
     }
 

@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
@@ -72,6 +73,8 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -273,17 +276,31 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                         .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
-            final SQLBuilderDialog builderDialog = sqlbuilers.get(((Node) elem).getUniqueName() + repositoryName2);
+            String key = this.part.getTalendEditor().getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
+            final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
             if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
                     && !builderDialog.getShell().isDisposed()) {
                 builderDialog.getShell().setActive();
             } else {
                 connParameters.setRepositoryName(repositoryName2);
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
+                TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX
+                        + this.part.getTalendEditor().getProcess().getName() + TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME
+                        + elem.getElementName());
+                part.addPropertyListener(new IPropertyListener(){
+                   /* (non-Javadoc)
+                     * @see org.eclipse.ui.IPropertyListener#propertyChanged(java.lang.Object, int)
+                     */
+                    public void propertyChanged(Object source, int propId) {
+                        
+                    }
+                    
+                });
                 SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+                UIUtils.addSqlBuilderDialog(part.getTalendEditor().getProcess().getName(), dial);
                 connParameters.setQuery(query);
                 dial.setConnParameters(connParameters);
-                sqlbuilers.put(((Node) elem).getUniqueName() + repositoryName2, dial);
+                sqlbuilers.put(key, dial);
                 if (Window.OK == dial.open()) {
                     if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                         String sql = connParameters.getQuery();

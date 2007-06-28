@@ -28,6 +28,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -40,6 +41,7 @@ import org.talend.repository.ui.views.RepositoryContentProvider.QueryRepositoryO
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -71,6 +73,7 @@ public class EditQueriesAction extends AContextualAction {
         }
 
         Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
+        TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         
         connParameters.setNodeReadOnly(false);

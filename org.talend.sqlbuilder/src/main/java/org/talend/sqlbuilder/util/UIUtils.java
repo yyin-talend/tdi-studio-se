@@ -22,6 +22,10 @@
 package org.talend.sqlbuilder.util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 
 /**
  * DOC qianbing class global comment. Detailled comment <br/>
@@ -42,11 +47,12 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class UIUtils {
 
-	/**
-	 * DOC dev UIUtils constructor comment.
-	 */
-	public UIUtils() {
-	}
+    /**
+     * DOC dev UIUtils constructor comment.
+     */
+    public UIUtils() {
+    }
+
     /**
      * Open a error dialog.
      * 
@@ -94,14 +100,16 @@ public class UIUtils {
      */
     /**
      * DOC dev Comment method "runWithProgress".
+     * 
      * @param operation
      * @param fork
      * @param monitor
      * @param shell
      */
-    public static void runWithProgress(final IRunnableWithProgress operation, final boolean fork,
-            final IProgressMonitor monitor, final Shell shell) {
+    public static void runWithProgress(final IRunnableWithProgress operation, final boolean fork, final IProgressMonitor monitor,
+            final Shell shell) {
         final IRunnableWithProgress progress = new IRunnableWithProgress() {
+
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitor.beginTask("test task", scale * total);
                 // SubProgressMonitor sm = new SubProgressMonitor(monitor, 1 * scale);
@@ -125,6 +133,7 @@ public class UIUtils {
         };
 
         Runnable run = new Runnable() {
+
             public void run() {
                 try {
                     ModalContext.run(progress, fork, monitor, shell.getDisplay());
@@ -135,5 +144,29 @@ public class UIUtils {
         };
 
         BusyIndicator.showWhile(Display.getDefault(), run);
+    }
+
+    private static Map<String, List<SQLBuilderDialog>> sqlBuilders = new HashMap<String, List<SQLBuilderDialog>>();
+
+    public static void addSqlBuilderDialog(String jobName, SQLBuilderDialog dialog) {
+        List<SQLBuilderDialog> list = sqlBuilders.get(jobName);
+        if (list == null) {
+            list = new ArrayList<SQLBuilderDialog>();
+            list.add(dialog);
+            sqlBuilders.put(jobName, list);
+        } else {
+            list.add(dialog);
+        }
+    }
+
+    public static void closeSqlBuilderDialogs(String jobName) {
+        List<SQLBuilderDialog> list = sqlBuilders.get(jobName);
+        if (list != null) {
+            for (SQLBuilderDialog dialog : list) {
+                if (dialog != null && dialog.getShell() != null && !dialog.getShell().isDisposed()) {
+                    dialog.close();
+                }
+            }
+        }
     }
 }

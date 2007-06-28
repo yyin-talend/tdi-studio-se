@@ -38,6 +38,8 @@ public class TextUtil {
 
     private static final String TAB_EXPR = "\\t"; //$NON-NLS-1$
 
+    private static String dialogTitle;
+    
     /**
      * qzhang TextUtil constructor comment.
      */
@@ -201,5 +203,15 @@ public class TextUtil {
             }
 
         }
+    }
+
+    
+    public static String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    
+    public static void setDialogTitle(String dialogTitle) {
+        TextUtil.dialogTitle = dialogTitle;
     }
 }

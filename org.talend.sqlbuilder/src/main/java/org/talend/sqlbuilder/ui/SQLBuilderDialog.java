@@ -66,6 +66,7 @@ import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
+import org.talend.sqlbuilder.util.TextUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -184,11 +185,17 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         }
     }
 
+    private String dialogTitle;
+
     /**
      * Create the dialog.
      * 
      * @param parentShell
      */
+    public SQLBuilderDialog(Shell parentShell, String title) {
+        this(parentShell);
+    }
+
     public SQLBuilderDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
@@ -201,11 +208,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
-    protected void configureShell(Shell shell) {
+    public void configureShell(Shell shell) {
         super.configureShell(shell);
         // Set the title bar text
-        shell.setText("SQL Builder"); //$NON-NLS-1$
-
+        shell.setText(TextUtil.getDialogTitle());
     }
 
     /**
