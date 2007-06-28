@@ -73,13 +73,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				{
 	%>	
 		
- 				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %>);
+ 				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : <%=conn.getName() %>.<%=column.getLabel() %>);
 	<%		
+				}else if(javaType == JavaTypesManager.DATE )
+				{
+				
+	%>
+				java.text.SimpleDateFormat sdfTemp<%=cid%> = new java.text.SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z",java.util.Locale.US);
+				 java.util.SimpleTimeZone aZone<%=cid%> = new java.util.SimpleTimeZone(8,"GMT");
+				 sdfTemp<%=cid%>.setTimeZone(aZone<%=cid%>);
+				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : sdfTemp<%=cid%>.format( <%=conn.getName() %>.<%=column.getLabel()%>));
+	<%			
 				}else
 				{
  	%>
  				
- 				<%=coluLabel%>Element.setText(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
+ 				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
  				
 <%						}
 					}
