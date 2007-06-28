@@ -81,6 +81,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REQUIRED="true"
+      REPOSITORY_VALUE="DATASOURCE"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
