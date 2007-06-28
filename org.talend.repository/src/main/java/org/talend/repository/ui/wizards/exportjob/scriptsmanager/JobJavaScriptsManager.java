@@ -497,7 +497,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             List<String> excludes = new ArrayList<String>();
             excludes.add(SYSTEM_ROUTINES_PATH);
 
-            String jarPath = getTmpFolder() + "" + USERROUTINE_JAR;
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + USERROUTINE_JAR;
 
             // make a jar file of system routine classes
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
