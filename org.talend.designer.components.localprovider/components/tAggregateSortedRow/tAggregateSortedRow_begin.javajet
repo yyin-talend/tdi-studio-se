@@ -1,0 +1,124 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+
+    IMetadataTable metadata = metadatas.get(0);
+    List< ? extends IConnection> conns = node.getIncomingConnections();
+    IMetadataTable inMetadata = null;
+    if(conns != null){ 
+    for (IConnection conn : conns) { 
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+			inMetadata = conn.getMetadataTable();
+    		break;
+		}
+	}
+    if (metadata != null && inMetadata != null) { 
+    	List<IMetadataColumn> inColumns = inMetadata.getListColumns();
+		List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+		IMetadataColumn[] column_op = new IMetadataColumn[operations.size()];
+		String[] functions = new String[operations.size()];
+		List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+		IMetadataColumn[] column_gr = new IMetadataColumn[groupbys.size()];
+		for(int i = 0; i < column_op.length; i++){
+			Map<String, String> operation = operations.get(i);
+			String in = operation.get("INPUT_COLUMN");
+			functions[i] = operation.get("FUNCTION");
+			for (IMetadataColumn column: inColumns) {
+				if(column.getLabel().equals(in)){
+					column_op[i] = column;
+					break;
+				}
+			}
+		}
+		for(int i = 0; i < column_gr.length; i++){
+			Map<String, String> groupby = groupbys.get(i);
+			String in = groupby.get("INPUT_COLUMN");
+			for (IMetadataColumn column: inColumns) {
+				if(column.getLabel().equals(in)){
+					column_gr[i] = column;
+					break;
+				}
+			}
+		}
+%>int nb_line_<%=cid%> = 0;
+<%	if(column_gr.length > 0){
+%>boolean  flag_<%=cid%> = true;
+boolean  flag2_<%=cid%> = true;
+<%	}
+	//gen groups variable
+	for(int i = 0; i < column_gr.length; i++){
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_gr[i].getTalendType());
+%><%= JavaTypesManager.getTypeToGenerate(column_gr[i].getTalendType(), column_gr[i].isNullable()) %> group_<%=column_gr[i].getLabel() %>_<%=cid %><%
+if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT 
+|| javaType == JavaTypesManager.DATE || javaType == JavaTypesManager.BYTE_ARRAY){%>=null<%}else if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else{%>=(<%= JavaTypesManager.getTypeToGenerate(column_gr[i].getTalendType(), column_gr[i].isNullable()) %>)0<%}%>;
+<%	}
+	//gen aggre variable
+	for(int i = 0; i < column_op.length; i++){
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i].getTalendType());
+		boolean duplicate = false;
+		for(int j = 0; j < i; j++){
+			if(functions[j].equals(functions[i]) && column_op[j].getLabel().equals(column_op[i].getLabel())){
+				duplicate = true;
+				break;
+			}
+		}
+		if(duplicate){
+			continue;
+		}
+		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+%><%= JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %> <%=functions[i] %>_<%=column_op[i].getLabel() %>_<%=cid %><%
+if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT 
+|| javaType == JavaTypesManager.DATE || javaType == JavaTypesManager.BYTE_ARRAY){%>=null<%}else if(javaType == JavaTypesManager.BOOLEAN){%>=false<%}else{%>=(<%= JavaTypesManager.getTypeToGenerate(column_op[i].getTalendType(), column_op[i].isNullable()) %>)0<%}%>;
+<%		}else if(functions[i].equals("count")){
+			boolean countHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j].getLabel().equals(column_op[i].getLabel())){
+					countHasAvg = true;
+					break;
+				}
+			}
+			if(!countHasAvg){
+%>int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+<%			}
+		}else if(functions[i].equals("sum")){
+			boolean sumHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j].getLabel().equals(column_op[i].getLabel())){
+					sumHasAvg = true;
+					break;
+				}
+			}
+			if(!sumHasAvg){
+%>float sum_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+<%			}
+		}else if(functions[i].equals("avg")){
+%>float sum_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+<%		}else{
+%>StringBuilder list_<%=column_op[i].getLabel() %>_<%=cid %>=null;
+<%		}
+	}
+	%><%
+	}
+	}
+}
+%>

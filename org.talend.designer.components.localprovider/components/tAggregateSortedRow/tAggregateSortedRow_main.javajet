@@ -1,0 +1,532 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    List< ? extends IConnection> conns = node.getIncomingConnections();
+    IMetadataTable inMetadata = null;
+    String connName = "";
+    if(conns != null){
+    for (IConnection conn : conns) { 
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+			inMetadata = conn.getMetadataTable();
+			connName = conn.getName();
+    		break;
+		}
+	}
+    if (metadata != null && inMetadata != null) { 
+		List<IMetadataColumn> columns = metadata.getListColumns();
+    	List<IMetadataColumn> inColumns = inMetadata.getListColumns();
+		List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+		IMetadataColumn[][] column_op = new IMetadataColumn[operations.size()][2];
+		String[] functions = new String[operations.size()];
+		List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+		IMetadataColumn[][] column_gr = new IMetadataColumn[groupbys.size()][2];
+		for(int i = 0; i < column_op.length; i++){
+			Map<String, String> operation = operations.get(i);
+			String in = operation.get("INPUT_COLUMN");
+			String out = operation.get("OUTPUT_COLUMN");
+			functions[i] = operation.get("FUNCTION");
+			for (IMetadataColumn column: inColumns) {
+				if(column.getLabel().equals(in)){
+					column_op[i][0] = column;
+					break;
+				}
+			}
+    		for (IMetadataColumn column: columns) {
+				if(column.getLabel().equals(out)){
+					column_op[i][1] = column;
+					break;
+				}
+			}
+		}
+		for(int i = 0; i < column_gr.length; i++){
+			Map<String, String> groupby = groupbys.get(i);
+			String in = groupby.get("INPUT_COLUMN");
+			String out = groupby.get("OUTPUT_COLUMN");
+			for (IMetadataColumn column: inColumns) {
+				if(column.getLabel().equals(in)){
+					column_gr[i][0] = column;
+					break;
+				}
+			}
+    		for (IMetadataColumn column: columns) {
+				if(column.getLabel().equals(out)){
+					column_gr[i][1] = column;
+					break;
+				}
+			}
+		}
+	if(column_gr.length > 0){
+%>if(flag_<%=cid%>){
+	flag_<%=cid%> = false;
+<%	}
+	for(int i = 0; i < column_gr.length; i++){
+%>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
+<%	}
+	for(int i = 0; i < column_op.length; i++){
+		boolean duplicate = false;
+		for(int j = 0; j < i; j++){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				duplicate = true;
+				break;
+			}
+		}
+		if(duplicate){
+			continue;
+		}
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
+		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%		}else if(functions[i].equals("count")){
+			boolean countHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					countHasAvg = true;
+					break;
+				}
+			}
+			if(!countHasAvg){
+%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%			}
+		}else if(functions[i].equals("sum")){
+			boolean sumHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					sumHasAvg = true;
+					break;
+				}
+			}
+			if(!sumHasAvg){
+				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				}else{
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
+<%				}
+			}
+		}else if(functions[i].equals("avg")){
+			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				}else{
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
+<%			}
+%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%		}else{
+%>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
+list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}
+	}
+	if(column_gr.length > 0){
+		conns = null;
+		conns = node.getOutgoingSortedConnections();
+		if (conns!=null) {
+			for(IConnection conn:conns){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+%><%=conn.getName() %> = null;
+<%				}
+			}
+		}
+%>flag2_<%=cid %> = false;
+<%	}else{
+	}
+	if(column_gr.length > 0){//
+%>}else{
+boolean sameGroup_<%=cid %> = true;
+while(true){
+<%	for(int i = 0; i < column_gr.length; i++){
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_gr[i][0].getTalendType());
+		if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT 
+					|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+%>if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> == null){
+	if(<%=connName %>.<%=column_gr[i][0].getLabel() %> != null){
+		sameGroup_<%=cid %> = false;
+		break;
+	}
+}else{
+	if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> == null || !group_<%=column_gr[i][0].getLabel() %>_<%=cid %>.equals(<%=connName %>.<%=column_gr[i][0].getLabel() %>)){
+		sameGroup_<%=cid %> = false;
+		break;
+	}
+}
+<%		}else{
+%>if(group_<%=column_gr[i][0].getLabel() %>_<%=cid %> != <%=connName %>.<%=column_gr[i][0].getLabel() %>){
+	sameGroup_<%=cid %> = false;
+	break;
+}
+<%		}
+		if(i+1 == column_gr.length){
+%>break;
+<%		}
+	}
+%>}
+if(sameGroup_<%=cid %>){
+	if(flag2_<%=cid %>){
+<%	conns = null;
+	conns = node.getOutgoingSortedConnections();
+	if (conns!=null) {
+		for(IConnection conn:conns){
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+%><%=conn.getName() %> = null;
+<%			}
+		}
+	}%>flag2_<%=cid %> = false;
+	}
+<%	for(int i = 0; i < column_op.length; i++){
+		boolean duplicate = false;
+		for(int j = 0; j < i; j++){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				duplicate = true;
+				break;
+			}
+		}
+		if(duplicate){
+			continue;
+		}
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
+		if(functions[i].equals("first")){
+			//do nothing here
+		}else if(functions[i].equals("last")){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%		}else if(functions[i].equals("min")){
+			if(javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
+			//do nothing
+			}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) > 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}
+}
+<%			}else if(javaType == JavaTypesManager.BOOLEAN){
+%>if(!<%=connName %>.<%=column_op[i][0].getLabel() %> && <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = true;
+}
+<%			}else{
+%>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> > <%=connName %>.<%=column_op[i][0].getLabel() %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}
+<%			}
+		}else if(functions[i].equals("max")){
+			if(javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.BYTE_ARRAY){
+			//do nothing
+			}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> !=null){
+	if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> == null || <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.compareTo(<%=connName %>.<%=column_op[i][0].getLabel() %>) < 0){
+		<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+	}
+}
+<%			}else if(javaType == JavaTypesManager.BOOLEAN){
+%>if(<%=connName %>.<%=column_op[i][0].getLabel() %> && !<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = true;
+}
+<%			}else{
+%>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> < <%=connName %>.<%=column_op[i][0].getLabel() %>){
+	<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+}
+<%			}
+		}else if(functions[i].equals("count")){
+			boolean countHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					countHasAvg = true;
+					break;
+				}
+			}
+			if(!countHasAvg){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
+<%			}
+		}else if(functions[i].equals("sum")){
+			boolean sumHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					sumHasAvg = true;
+					break;
+				}
+			}
+			if(!sumHasAvg){
+				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				}
+			}
+		}else if(functions[i].equals("avg")){
+				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%				}
+%>count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
+<%		}else if(functions[i].equals("list")){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(",");
+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}
+	}
+%>}else{
+<%		conns = null;
+		conns = node.getOutgoingSortedConnections();
+		if (conns!=null) {
+			for(IConnection conn:conns){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+%><%=conn.getName() %> = new <%=conn.getName() %>Struct();
+<%				}
+			}
+		}
+%>	flag2_<%=cid %> = true;
+<%	}//line 157 if(column_gr.length > 0)
+	//do out start ...
+	conns = null;
+	conns = node.getOutgoingSortedConnections();
+	String firstConnName = "";
+	if (conns!=null) {
+		if (conns.size()>0) {
+			IConnection conn = conns.get(0);
+			firstConnName = conn.getName();
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int sizeListColumns = listColumns.size();
+				boolean flag = true;
+				next_column:
+				for (int valueN=0; valueN < sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					for(int i = 0; i < column_gr.length; i++){
+						if(column.getLabel().equals(column_gr[i][1].getLabel())){
+							JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_gr[i][0].getTalendType());
+							if(inJavaType == javaType){
+%><%=firstConnName %>.<%=column.getLabel() %> = group_<%=column_gr[i][0].getLabel() %>_<%=cid %>;
+<%							}else{//for different data type
+								if(flag){
+									flag = false;
+%>String temp_<%=cid %> = "";
+<%								}
+								if(inJavaType == JavaTypesManager.BYTE_ARRAY){
+%>temp_<%=cid %> = new String(group_<%=column_gr[i][0].getLabel() %>_<%=cid %>);
+<%								}else{
+%>temp_<%=cid %> = ""+group_<%=column_gr[i][0].getLabel() %>_<%=cid %>;
+<%								}
+%>if(temp_<%=cid %>.length() > 0) {
+<%								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
+<%								} else if(javaType == JavaTypesManager.DATE) { 
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%								} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%								}
+%>} else {						
+<%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+								if(defaultValue == null) {
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+<%								} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%								}
+%>}
+<%							}							
+							continue next_column;
+						}
+					}					
+					for(int i = 0; i < column_op.length; i++){
+						if(column.getLabel().equals(column_op[i][1].getLabel())){
+							if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+								JavaType inJavaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
+								if(inJavaType == javaType){
+%><%=firstConnName %>.<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else{//for different data type
+									if((javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+										|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+										|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+										|| javaType == JavaTypesManager.DOUBLE)&&(inJavaType == JavaTypesManager.BYTE || inJavaType == JavaTypesManager.CHARACTER 
+										|| inJavaType == JavaTypesManager.SHORT || inJavaType == JavaTypesManager.INTEGER 
+										|| inJavaType == JavaTypesManager.LONG || inJavaType == JavaTypesManager.FLOAT 
+										|| inJavaType == JavaTypesManager.DOUBLE)){
+%><%=firstConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%									}else{
+										if(flag){
+											flag = false;
+%>String temp_<%=cid %> = "";
+<%										}
+										if(inJavaType == JavaTypesManager.BYTE_ARRAY){
+%>temp_<%=cid %> = new String(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>);
+<%										}else{
+%>temp_<%=cid %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%										}
+%>if(temp_<%=cid %>.length() > 0) {
+<%										if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>;
+<%										} else if(javaType == JavaTypesManager.DATE) { 
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%										} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
+%><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+<%										} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
+<%										}
+%>} else {						
+<%										String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+										if(defaultValue == null) {
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+<%										} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%										}
+%>}
+<%									}
+								}
+							}else if(functions[i].equals("count")){
+								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+									|| javaType == JavaTypesManager.DOUBLE){
+%><%=firstConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=firstConnName %>.<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
+<%								}
+							}else if(functions[i].equals("sum")){
+								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+									|| javaType == JavaTypesManager.DOUBLE){
+%><%=firstConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=firstConnName %>.<%=column.getLabel() %> = (""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>).getBytes();
+<%								}
+							}else if(functions[i].equals("avg")){
+%>double avg_<%=i %>_<%=cid %> = sum_<%=column_op[i][0].getLabel() %>_<%=cid %>/count_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+									|| javaType == JavaTypesManager.DOUBLE){
+%><%=firstConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)avg_<%=i %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = ""+avg_<%=i %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=firstConnName %>.<%=column.getLabel() %> = (""+avg_<%=i %>_<%=cid %>).getBytes();
+<%								}
+							}else{
+%>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString().length() > 0) {
+<%								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString();
+<%								} else if(javaType == JavaTypesManager.DATE) { 
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString(), <%= patternValue %>);
+<%								} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString());
+<%								}
+%>} else {						
+<%								String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+								if(defaultValue == null) {
+%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+<%								} else {
+%><%=firstConnName %>.<%=column.getLabel() %> = <%=defaultValue %>;
+<%								}
+%>}
+<%							}
+							continue next_column;
+						}
+					}
+				}
+			}
+		}
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {
+			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+<%				 	}
+				}
+			}
+		}
+	}
+%>nb_line_<%=cid%>++;
+<%	//do out end ...
+	//do first
+	for(int i = 0; i < column_gr.length; i++){
+%>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
+<%	}
+	for(int i = 0; i < column_op.length; i++){
+		boolean duplicate = false;
+		for(int j = 0; j < i; j++){
+			if(functions[j].equals(functions[i]) && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+				duplicate = true;
+				break;
+			}
+		}
+		if(duplicate){
+			continue;
+		}
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_op[i][0].getTalendType());
+		if(functions[i].equals("min") || functions[i].equals("max") || functions[i].equals("first") || functions[i].equals("last")){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%		}else if(functions[i].equals("count")){
+			boolean countHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					countHasAvg = true;
+					break;
+				}
+			}
+			if(!countHasAvg){
+%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%			}
+		}else if(functions[i].equals("sum")){
+			boolean sumHasAvg = false;
+			for(int j = 0; j < functions.length; j++){
+				if(functions[j].equals("avg") && column_op[j][0].getLabel().equals(column_op[i][0].getLabel())){
+					sumHasAvg = true;
+					break;
+				}
+			}
+			if(!sumHasAvg){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
+<%			}
+		}else if(functions[i].equals("avg")){
+			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%			}else{
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
+<%			}
+%>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%		}else{
+%>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
+list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}
+	}
+	if(column_gr.length > 0){
+%>	}
+}
+<%	}
+	}
+	}
+}
+%>
