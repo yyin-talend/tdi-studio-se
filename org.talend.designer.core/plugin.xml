@@ -395,5 +395,9 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.DbTableControllerGenerator"
             mapping="DBTABLE"
             name="Db Table"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.DateControllerGenerator"
+            mapping="DATE"
+            name="Date"/>
    </extension>
 </plugin>
