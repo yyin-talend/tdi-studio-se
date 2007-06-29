@@ -81,6 +81,15 @@
     </PARAMETER>
 
 	<PARAMETER
+      NAME="PASSPHRASE"
+      FIELD="TEXT"
+      NUM_ROW="50"
+      SHOW_IF="AUTH_METHOD == 'PUBLICKEY'"
+    >
+      <DEFAULT>"secret"</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
       NAME="COMMANDSEPARATOR"
       FIELD="TEXT"
       NUM_ROW="90"

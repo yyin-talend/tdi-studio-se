@@ -50,6 +50,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__PASSWORD__"
         );
         
+        String passphrase = ElementParameterParser.getValue(
+            node,
+            "__PASSPHRASE__"
+        );
+        
         String useTimeout = ElementParameterParser.getValue(
             node,
             "__USE_TIMEOUT__"
@@ -91,8 +96,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if (authMethod.equals("PUBLICKEY")) {
 %>
         java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
-		    String keyfilePass_<%=cid%> = ""; 
-		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, keyfilePass_<%=cid%>);
+		    boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
 			  if (isAuthenticated_<%=cid%> == false)
 				      throw new java.io.IOException("Authentication failed.");
 <%
