@@ -676,10 +676,9 @@ public class JavaProcessor extends Processor {
                 classPathSeparator = ":";
             }
         }
-        
-                
+
         Set<String> neededLibraries = process.getNeededLibraries(false);
-        
+
         if (neededLibraries == null) {
             neededLibraries = new HashSet<String>();
             for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
@@ -716,7 +715,8 @@ public class JavaProcessor extends Processor {
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString();
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
+                    + classPathSeparator;
         }
 
         // init class name
@@ -725,11 +725,17 @@ public class JavaProcessor extends Processor {
 
         String exportJar = "";
         if (ProcessorUtilities.isExportConfig()) {
-            exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar";
+            exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar" + classPathSeparator;
         }
 
+        String libFolder = "";
+        if (ProcessorUtilities.isExportConfig()) {
+            libFolder = new Path(this.getLibraryPath()) + classPathSeparator;
+        } else {
+            libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
+        }
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
-                libPath.toString() + new Path(projectPath).toPortableString() + exportJar, className };
+                libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
     }
 
     /*
