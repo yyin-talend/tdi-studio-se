@@ -161,6 +161,7 @@ public abstract class AbstractDbMapComponent extends AbstractMapComponent {
             }
 
             List<ExternalDbMapTable> outputTables = externalData.getOutputTables();
+            List<IConnection> tmpList = new ArrayList<IConnection>(outgoingConnections);
             outgoingConnections.clear();
 
             int lstSize = outputTables.size();
@@ -173,7 +174,12 @@ public abstract class AbstractDbMapComponent extends AbstractMapComponent {
                     outgoingConnections.add(connection);
                 }
             }
-
+            // add connections without metadata
+            for (IConnection connection : tmpList) {
+                if (!outgoingConnections.contains(connection)) {
+                    outgoingConnections.add(connection);
+                }
+            }
         }
     }
 
