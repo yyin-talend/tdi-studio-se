@@ -63,7 +63,6 @@ import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
-import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 import org.talend.designer.dbmap.ui.automap.AutoMapper;
 import org.talend.designer.dbmap.ui.dialog.AliasDialog;
 import org.talend.designer.dbmap.ui.visualmap.TableEntryProperties;
@@ -597,43 +596,6 @@ public class MapperManager extends AbstractMapperManager {
 
     public AbstractDbMapComponent getComponent() {
         return this.mapperComponent;
-    }
-
-    /**
-     * DOC amaumont Comment method "checkLocationIsValid".
-     * 
-     * @param couple
-     * @param currentModifiedITableEntry
-     * @return
-     */
-    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
-        return checkSourceLocationIsValid(retrieveTableEntry(locationSource), entryTarget);
-    }
-
-    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
-
-        if (entrySource instanceof VarTableEntry && entrySource.getParent() == entryTarget.getParent()) {
-            List<IColumnEntry> columnEntries = entrySource.getParent().getColumnEntries();
-            if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
-                return true;
-            }
-        } else if (entrySource instanceof InputColumnTableEntry && entryTarget instanceof InputColumnTableEntry
-        // && entrySource.getParent() != entryTarget.getParent()
-        ) {
-            // List<InputTable> inputTables = getInputTables();
-            // int indexTableSource = inputTables.indexOf(entrySource.getParent());
-            // int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
-            // if (indexTableSource < indexTableTarget) {
-            return true;
-            // }
-        } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
-                || entryTarget instanceof FilterTableEntry) {
-            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry
-                    || entrySource instanceof OutputColumnTableEntry) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

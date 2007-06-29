@@ -101,7 +101,7 @@ public class Link implements IMapperLink {
         int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar((Zone)zone1);
         int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar((Zone)zone2);
 
-        boolean leftSidePosition = (zone1 == Zone.INPUTS && zone1 == zone2);
+        boolean leftSidePosition = ((zone1 == Zone.INPUTS || zone1 == Zone.OUTPUTS) && zone1 == zone2);
 
         int point1xForTraceLink = point1.x + (leftSidePosition ? 0 : widthTable1 - 4);
         int point2xForTraceLink = point2.x + (leftSidePosition ? 0 : 0);

@@ -87,7 +87,9 @@ import org.talend.designer.dbmap.model.table.OutputTable;
 import org.talend.designer.dbmap.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
+import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 import org.talend.designer.dbmap.ui.MapperUI;
 import org.talend.designer.dbmap.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.dbmap.ui.dnd.DraggingInfosPopup;
@@ -1001,7 +1003,7 @@ public class UIManager extends AbstractUIManager {
             TableEntryLocation location = tableEntriesLocationsSources[i];
 
             if (!alreadyProcessed.contains(location)
-                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)) {
+                    && checkSourceLocationIsValid(location, currentModifiedITableEntry)) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
                 if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)
@@ -1813,6 +1815,41 @@ public class UIManager extends AbstractUIManager {
     @Override
     public AbstractMapperManager getAbstractMapperManager() {
         return mapperManager;
+    }
+
+    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
+    
+        if (entrySource instanceof InputColumnTableEntry && entryTarget instanceof InputColumnTableEntry
+        // && entrySource.getParent() != entryTarget.getParent()
+        ) {
+            // List<InputTable> inputTables = getInputTables();
+            // int indexTableSource = inputTables.indexOf(entrySource.getParent());
+            // int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
+            // if (indexTableSource < indexTableTarget) {
+            return true;
+            // }
+        } else if (entryTarget instanceof OutputColumnTableEntry
+                || entryTarget instanceof FilterTableEntry) {
+            if (entrySource instanceof InputColumnTableEntry
+                    || entrySource instanceof OutputColumnTableEntry && entrySource.getParent() == entryTarget.getParent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * DOC amaumont Comment method "checkLocationIsValid".
+     * 
+     * @param couple
+     * @param currentModifiedITableEntry
+     * @param manager TODO
+     * @param locationSource TODO
+     * @param entryTarget TODO
+     * @return
+     */
+    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
+        return checkSourceLocationIsValid(mapperManager.retrieveTableEntry(locationSource), entryTarget);
     }
 
 }

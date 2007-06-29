@@ -628,44 +628,6 @@ public class MapperManager extends AbstractMapperManager {
     }
 
     /**
-     * DOC amaumont Comment method "checkLocationIsValid".
-     * 
-     * @param couple
-     * @param currentModifiedITableEntry
-     * @return
-     */
-    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
-        return checkSourceLocationIsValid(retrieveTableEntry(locationSource), entryTarget);
-    }
-
-    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
-
-        if (entrySource instanceof VarTableEntry && entrySource.getParent() == entryTarget.getParent()) {
-            List<IColumnEntry> columnEntries = entrySource.getParent().getColumnEntries();
-            if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
-                return true;
-            }
-        } else if (entrySource instanceof InputColumnTableEntry
-                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry
-                        && entryTarget.getParent() instanceof InputTable)) {
-            List<InputTable> inputTables = getInputTables();
-            int indexTableSource = inputTables.indexOf(entrySource.getParent());
-            int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
-            if (indexTableSource < indexTableTarget || entryTarget instanceof ExpressionFilterEntry
-                    && indexTableSource <= indexTableTarget) {
-                return true;
-            }
-        } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
-                || entryTarget instanceof FilterTableEntry || entryTarget instanceof ExpressionFilterEntry
-                && entryTarget.getParent() instanceof OutputTable) {
-            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * DOC amaumont Comment method "getPreviewPath".
      * 
      * @return

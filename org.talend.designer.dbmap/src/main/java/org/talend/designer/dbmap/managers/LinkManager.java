@@ -28,6 +28,7 @@ import java.util.Set;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.model.tableentry.VarTableEntry;
 
 /**
@@ -47,20 +48,19 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
     protected void registerLevelForNewLink(IMapperLink link, Set<IMapperLink> graphicalLinksFromTarget) {
         boolean hasAlreadyInputTarget = false;
         boolean hasAlreadyVarTarget = false;
+        ITableEntry sourceEntry = link.getPointLinkDescriptor1().getTableEntry();
         ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
-        boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
-
+        boolean hasSameZone = sourceEntry.getClass() == targetEntry.getClass();
+        boolean isInput = targetEntry instanceof InputColumnTableEntry;
+        boolean isOutput = targetEntry instanceof OutputColumnTableEntry;
         if (hasSameZone) {
-            boolean isInput = targetEntry instanceof InputColumnTableEntry;
-            boolean isVar = targetEntry instanceof VarTableEntry;
 
             List<List<IMapperLink>> leveledLinks = null;
             if (isInput) {
                 leveledLinks = getInputLinksForLevels();
             }
-
-            if (isVar) {
-                leveledLinks = getVarLinksForLevels();
+            if (isOutput) {
+                leveledLinks = getOutputLinksForLevels();
             }
 
             int lstSize = leveledLinks.size();
@@ -88,7 +88,7 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
                 }
             }
 
-            if (isInput && !hasAlreadyInputTarget || isVar && !hasAlreadyVarTarget) {
+            if (isInput && !hasAlreadyInputTarget) {
                 ArrayList<IMapperLink> list = new ArrayList<IMapperLink>();
                 int firstEmptyIndex = searchFirstEmptyIndexLeveledList(leveledLinks);
                 link.setLevel(firstEmptyIndex + 1);
@@ -114,15 +114,15 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
 
         if (hasSameZone) {
             boolean isInput = targetEntry instanceof InputColumnTableEntry;
-            boolean isVar = targetEntry instanceof VarTableEntry;
+            boolean isOutput = targetEntry instanceof OutputColumnTableEntry;
 
             List<List<IMapperLink>> leveledLinks = null;
             if (isInput) {
                 leveledLinks = getInputLinksForLevels();
             }
 
-            if (isVar) {
-                leveledLinks = getVarLinksForLevels();
+            if (isOutput) {
+                leveledLinks = getOutputLinksForLevels();
             }
 
             boolean breakAll = false;

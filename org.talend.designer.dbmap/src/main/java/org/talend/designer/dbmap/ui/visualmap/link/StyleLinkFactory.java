@@ -58,7 +58,7 @@ public class StyleLinkFactory {
 
     private IStyleLink selectedSameInputZoneStyle;
 
-    private IStyleLink unselectedSameInputZoneStyle;
+    private IStyleLink unselectedSameZoneStyle;
 
     private IStyleLink unselectedZoneToZoneStyle;
 
@@ -83,7 +83,7 @@ public class StyleLinkFactory {
         unselectedFilterStyle = getUnselectedFilterStyle();
 
         selectedSameInputZoneStyle = getSelectedSameInputZoneStyle();
-        unselectedSameInputZoneStyle = getUnselectedSameInputZoneStyle();
+        unselectedSameZoneStyle = getUnselectedSameZoneStyle();
 
     }
 
@@ -132,12 +132,12 @@ public class StyleLinkFactory {
                     style = unselectedZoneToZoneStyle;
                 }
             }
-        } else if (pointLinkDescriptorSource.getZone() == Zone.INPUTS
+        } else if ((pointLinkDescriptorSource.getZone() == Zone.INPUTS ||pointLinkDescriptorSource.getZone() == Zone.OUTPUTS) 
                 && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
                 style = selectedSameInputZoneStyle;
             } else if (linkState == LinkState.UNSELECTED) {
-                style = unselectedSameInputZoneStyle;
+                style = unselectedSameZoneStyle;
             }
         }
         return style;
@@ -213,7 +213,7 @@ public class StyleLinkFactory {
      * 
      * @return
      */
-    private IStyleLink getUnselectedSameInputZoneStyle() {
+    private IStyleLink getUnselectedSameZoneStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));

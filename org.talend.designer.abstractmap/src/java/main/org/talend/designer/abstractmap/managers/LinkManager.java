@@ -75,6 +75,8 @@ public abstract class LinkManager implements ILinkManager {
 
     private List<List<IMapperLink>> varLinksForLevels = new ArrayList<List<IMapperLink>>();
 
+    private List<List<IMapperLink>> outputLinksForLevels = new ArrayList<List<IMapperLink>>();
+    
     public LinkManager() {
         super();
         currentNumberLinks = 0;
@@ -291,6 +293,16 @@ public abstract class LinkManager implements ILinkManager {
         return this.varLinksForLevels;
     }
 
+    
+    /**
+     * Getter for outputLinksForLevels.
+     * @return the outputLinksForLevels
+     */
+    protected List<List<IMapperLink>> getOutputLinksForLevels() {
+        return this.outputLinksForLevels;
+    }
+
+    
     
     
 }

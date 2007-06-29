@@ -89,12 +89,15 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
+import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.commands.DataMapTableViewSelectedCommand;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
@@ -1089,7 +1092,7 @@ public class UIManager extends AbstractUIManager {
                                     .checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
 
             if (!alreadyProcessed.contains(location)
-                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
+                    && checkSourceLocationIsValid(location, currentModifiedITableEntry)
                     && (mapperManager.isAdvancedMap() || !mapperManager.isAdvancedMap() && dontRemoveLink)) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
@@ -1874,6 +1877,47 @@ public class UIManager extends AbstractUIManager {
      */
     public SashForm getDatasFlowViewSashForm() {
         return this.mapperUI.getDatasFlowViewSashForm();
+    }
+
+    /**
+     * DOC amaumont Comment method "checkLocationIsValid".
+     * 
+     * @param couple
+     * @param currentModifiedITableEntry
+     * @param manager TODO
+     * @param locationSource TODO
+     * @param entryTarget TODO
+     * @return
+     */
+    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
+        return checkSourceLocationIsValid(mapperManager.retrieveTableEntry(locationSource), entryTarget);
+    }
+
+    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
+
+        if (entrySource instanceof VarTableEntry && entrySource.getParent() == entryTarget.getParent()) {
+            List<IColumnEntry> columnEntries = entrySource.getParent().getColumnEntries();
+            if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
+                return true;
+            }
+        } else if (entrySource instanceof InputColumnTableEntry
+                && (entryTarget instanceof InputColumnTableEntry && entrySource.getParent() != entryTarget.getParent() || entryTarget instanceof ExpressionFilterEntry
+                        && entryTarget.getParent() instanceof InputTable)) {
+            List<InputTable> inputTables = mapperManager.getInputTables();
+            int indexTableSource = inputTables.indexOf(entrySource.getParent());
+            int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
+            if (indexTableSource < indexTableTarget || entryTarget instanceof ExpressionFilterEntry
+                    && indexTableSource <= indexTableTarget) {
+                return true;
+            }
+        } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
+                || entryTarget instanceof FilterTableEntry || entryTarget instanceof ExpressionFilterEntry
+                && entryTarget.getParent() instanceof OutputTable) {
+            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
