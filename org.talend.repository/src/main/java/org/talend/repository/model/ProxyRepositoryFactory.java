@@ -82,7 +82,7 @@ import org.talend.repository.utils.RepositoryPathProvider;
  * $Id$
  * 
  */
-public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
+public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private static Logger log = Logger.getLogger(ProxyRepositoryFactory.class);
 
@@ -93,11 +93,11 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /**
      * DOC smallet ProxyRepositoryFactory constructor comment.
      */
-    public ProxyRepositoryFactory() {
+    private ProxyRepositoryFactory() {
         // TODO Auto-generated constructor stub
     }
 
-    public static ProxyRepositoryFactory getInstance() {
+    public static synchronized ProxyRepositoryFactory getInstance() {
         if (singleton == null) {
             singleton = new ProxyRepositoryFactory();
         }
