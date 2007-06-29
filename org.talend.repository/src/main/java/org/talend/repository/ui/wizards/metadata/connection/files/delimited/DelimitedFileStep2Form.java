@@ -53,6 +53,7 @@ import org.talend.core.model.metadata.builder.connection.FieldSeparator;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -71,10 +72,12 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty"); //$NON-NLS-1$
 
-    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+ 
     private static final String[] STRING_NUMBERS_DATA = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
@@ -937,7 +940,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             // Init Custom Label
             rowSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
             getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-            rowSeparatorText.setEditable(false);
+            rowSeparatorText.setEditable(true);
         }
     }
 
@@ -959,19 +962,19 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             // { "Tabulation", "Semicolon", "Comma", "Space", "''(Alt 65, #A4)", "Custom ANSI", "Custom UTF8",
             switch (fieldSeparatorCombo.getSelectionIndex()) {
             case 0:
-                fieldSeparatorText.setText(";"); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ";" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             case 1:
-                fieldSeparatorText.setText(","); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "," + TalendTextUtils.QUOTATION_MARK ); //$NON-NLS-1$
                 break;
             case 2:
-                fieldSeparatorText.setText("\\t"); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ("\\t") + TalendTextUtils.QUOTATION_MARK ); //$NON-NLS-1$
                 break;
             case 3:
-                fieldSeparatorText.setText(" "); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + " " + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             case 4:
-                fieldSeparatorText.setText("''"); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "''" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             default:
                 break;
@@ -980,7 +983,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             // Init Custom Label
             getConnection().setFieldSeparatorValue(fieldSeparatorText.getText());
             fieldSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
-            fieldSeparatorText.setEditable(false);
+            fieldSeparatorText.setEditable(true);
         }
     }
 

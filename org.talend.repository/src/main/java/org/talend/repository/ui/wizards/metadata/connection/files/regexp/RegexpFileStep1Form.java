@@ -168,8 +168,9 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
         gridData.minimumHeight = 150;
         fileViewerText.setLayoutData(gridData);
-        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
+        fileViewerText
+                .setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         fileViewerText.setEditable(false);
         fileViewerText.setText(Messages.getString("FileStep1.fileViewerAlert")); //$NON-NLS-1$
 
@@ -178,7 +179,8 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
             // nextButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.next"),
             // WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
@@ -263,20 +265,18 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
 
             StringBuffer previewRows = new StringBuffer(""); //$NON-NLS-1$
             BufferedReader in = null;
-            
+
             try {
-                
+
                 File file = new File(fileField.getText());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
                 getConnection().setEncoding(guessedCharset.displayName());
-                
+
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                in = 
-                    new BufferedReader(
-                        new InputStreamReader(new FileInputStream(fileField.getText()),
-                                guessedCharset.displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(fileField.getText()), guessedCharset
+                        .displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= maximumRowsToPreview)) {
                     numberLine++;
                     previewRows.append(str + "\n"); //$NON-NLS-1$

@@ -52,6 +52,7 @@ import org.talend.core.model.metadata.builder.connection.FieldSeparator;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -74,7 +75,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
-    private static final String REGEXP_DEFAULT = "^(.*)$"; //$NON-NLS-1$
+    private static final String REGEXP_DEFAULT = TalendTextUtils.addQuotes("^(.*)$"); //$NON-NLS-1$
 
     /**
      * Main Fields.
@@ -159,7 +160,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
-        rowSeparatorText.setEditable(false);
+        rowSeparatorText.setEditable(true);
 
         // adpat Separator Combo and Text
         rowSeparatorManager();
@@ -768,13 +769,13 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                 if (getConnection().getFormat().toString().equals(FileFormat.MAC_LITERAL.getName())) {
                     rowSeparatorText.setText("\\r"); //$NON-NLS-1$
                 } else {
-                    rowSeparatorText.setText("\\n"); //$NON-NLS-1$
+                    rowSeparatorText.setText("\\n" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 }
             }
             // Init Custom Label
             rowSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
             getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-            rowSeparatorText.setEditable(false);
+            rowSeparatorText.setEditable(true);
         }
     }
 

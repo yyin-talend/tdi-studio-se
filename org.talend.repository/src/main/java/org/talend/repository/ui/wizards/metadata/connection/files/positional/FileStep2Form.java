@@ -46,10 +46,13 @@ import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -71,9 +74,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty"); //$NON-NLS-1$
 
-    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
+            TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     private static final String[] STRING_NUMBERS_DATA = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
@@ -148,11 +153,10 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         } else {
             encodingCombo.select(0);
         }
-
         fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
-        rowSeparatorText.setEditable(false);
+        rowSeparatorText.setEditable(true);
 
         // adapt Separator Combo and Text
         rowSeparatorManager();
@@ -740,10 +744,12 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                 // get and clean the FieldSeparatorValue
                 String value = getValidateFieldSeparator(fieldSeparatorText.getText());
                 Point selection = fieldSeparatorText.getSelection();
-                if (!value.equals(fieldSeparatorText.getText())) {
-                    fieldSeparatorText.setText(value);
+                String temp = TalendTextUtils.QUOTATION_MARK + value + TalendTextUtils.QUOTATION_MARK;
+                if (!(temp.equals(fieldSeparatorText.getText()))) {
+                    fieldSeparatorText.setText(temp);
                 }
-                getConnection().setFieldSeparatorValue(value);
+
+                getConnection().setFieldSeparatorValue(temp);
                 fieldSeparatorText.forceFocus();
                 fieldSeparatorText.setSelection(selection.x);
                 checkFieldsValue();
@@ -813,7 +819,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             // Init Custom Label
             rowSeparatorText.setLabelText(Messages.getString("FileStep2.correspondingCharacter")); //$NON-NLS-1$
             getConnection().setRowSeparatorValue(rowSeparatorText.getText());
-            rowSeparatorText.setEditable(false);
+            rowSeparatorText.setEditable(true);
         }
     }
 
@@ -833,7 +839,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             return false;
         }
 
-        if (!fieldSeparatorText.getText().equals(getValidateFieldSeparator(fieldSeparatorText.getText()))) {
+        if (!fieldSeparatorText.getText().equals(
+                TalendTextUtils.QUOTATION_MARK + getValidateFieldSeparator(fieldSeparatorText.getText())
+                        + TalendTextUtils.QUOTATION_MARK)) {
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
             return false;
         }
@@ -928,7 +936,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         super.setVisible(visible);
         if (super.isVisible()) {
             // Adapt the UI fieldSeparator to step1
-            fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
+            fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + getConnection().getFieldSeparatorValue()
+                    + TalendTextUtils.QUOTATION_MARK);
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
 
