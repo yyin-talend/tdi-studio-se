@@ -65,9 +65,15 @@ for (int i=0; i<contextParams.size(); i++) {
     String value = contextParam.get("PARAM_VALUE_COLUMN");    
     contextStr.append(",\"--context_param ");
     contextStr.append(name);
-    contextStr.append("=");
-    contextStr.append(value.replaceAll("\"","\\\\\\\\\\\\\""));
-    contextStr.append("\"");
+
+    if(value.contains("context.getProperty")) {
+        contextStr.append("=\"+");
+        contextStr.append(value);
+    }else{
+    	contextStr.append("=\"+\"");
+        contextStr.append(value.replaceAll("\"","\\\\\\\\\\\\\""));        
+        contextStr.append("\"");
+    } 
   }
 
 
