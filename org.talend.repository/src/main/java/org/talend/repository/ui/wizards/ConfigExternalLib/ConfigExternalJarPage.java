@@ -179,7 +179,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 File jarFile = dialog.getFile();
                 if (jarFile != null) {
                     newJarFiles.put(type, jarFile);
-                   
+
                 }
                 importTypes.add(type);
             }
@@ -319,13 +319,13 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 }
             });
 
-            ModifyListener modifyListener=  new ModifyListener() {
+            ModifyListener modifyListener = new ModifyListener() {
 
                 public void modifyText(ModifyEvent e) {
                     checkEnable();
                 }
             };
-            
+
             nameText = new Text(composite, SWT.BORDER);
             nameText.addModifyListener(modifyListener);
             GridDataFactory.fillDefaults().span(3, 1).applyTo(nameText);
@@ -349,7 +349,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             Text filePathText = fileField.getTextControl(composite);
             filePathText.addModifyListener(modifyListener);
 
-            fileField.setFileExtensions(new String[] { "*.jar" }); //$NON-NLS-1$
+            fileField.setFileExtensions(new String[] { "*.jar;*.properties" }); //$NON-NLS-1$
             composite.setLayout(copyLayout);
 
             GridData data = new GridData();
