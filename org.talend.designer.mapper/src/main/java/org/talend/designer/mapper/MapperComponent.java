@@ -175,6 +175,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
 
         List<ExternalMapperTable> outputTables = externalData.getOutputTables();
+        List<IConnection> tmpList = new ArrayList<IConnection>(outgoingConnections);
         outgoingConnections.clear();
 
         int lstSize = outputTables.size();
@@ -187,7 +188,12 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 outgoingConnections.add(connection);
             }
         }
-
+        // add connections without metadata
+        for (IConnection connection : tmpList) {
+            if (!outgoingConnections.contains(connection)) {
+                outgoingConnections.add(connection);
+            }
+        }
     }
 
     /*
@@ -287,7 +293,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
-//        System.out.println("loadDataOut");
+        // System.out.println("loadDataOut");
 
         initMapperMain(false);
 
