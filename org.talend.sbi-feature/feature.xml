@@ -5,20 +5,21 @@
       version="2.1.0.qualifier"
       provider-name=".Talend SA.">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://www.talend.com/online/featuresdescription.html#sbi-feature">
+      Complete description about this feature at http://www.talend.com/online/featuresdescription.html#sbi-feature
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright url="http://www.talend.com/online/copyright.txt">
+      Copyright Talend 2006, 2007
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license>
+      The licence are describe in branding feature
    </license>
 
    <url>
-      <update label="Talend update site" url="http://talendforge.org/tos/updatesite/testing/"/>
+      <update label="CORE Talend testing update site for milestones" url="http://talendforge.org/tos/updatesite/testing/"/>
+      <discovery label="Talend web site" url="http://www.talend.com"/>
    </url>
 
    <requires>
