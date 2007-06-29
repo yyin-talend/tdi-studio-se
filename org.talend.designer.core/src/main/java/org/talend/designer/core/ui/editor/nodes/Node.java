@@ -1436,7 +1436,25 @@ public class Node extends Element implements INode {
 
     @Override
     public String toString() {
-        return component.getTranslatedName() + "/" + getLabel(); //$NON-NLS-1$
+        StringBuffer buff = new StringBuffer();
+        buff.append(getUniqueName() + " - ");
+        buff.append("inputs:(");
+        for (int i = 0; i < inputs.size(); i++) {
+            buff.append(inputs.get(i).getName());
+            if (i < (inputs.size() - 1)) {
+                buff.append(",");
+            }
+        }
+        buff.append(") ");
+        buff.append("outputs:(");
+        for (int i = 0; i < outputs.size(); i++) {
+            buff.append(outputs.get(i).getName());
+            if (i < (outputs.size() - 1)) {
+                buff.append(",");
+            }
+        }
+        buff.append(")");
+        return buff.toString();
     }
 
     /*

@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
@@ -119,12 +120,14 @@ public class ExternalNodeChangeCommand extends Command {
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                EmfComponent.BUILTIN);
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                         if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                    EmfComponent.BUILTIN);
                         }
                     }
                 }
@@ -172,9 +175,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private void propagateInput() {
         for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
-            if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                    || connection.getLineStyle().equals(EConnectionType.FLOW_REF)
-                    || connection.getLineStyle().equals(EConnectionType.TABLE)) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent currentIO = inAndOut.getDataComponent(connection);
                 if (currentIO.hasChanged()) {
                     IMetadataTable metadata = inAndOut.getTable(connection);
@@ -182,11 +183,13 @@ public class ExternalNodeChangeCommand extends Command {
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
                     IMetadataTable oldMetadata = connection.getMetadataTable().clone();
                     currentIO.setTable(oldMetadata);
-                    String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+                    String schemaType = (String) connection.getSource().getPropertyValue(
+                            EParameterName.SCHEMA_TYPE.getName());
                     if (schemaType != null) {
                         // if there is a SCHEMA_TYPE, then switch it to BUILT_IN if REPOSITORY is set.
                         if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                    EmfComponent.BUILTIN);
                             metadataInputWasRepository.put(connection, Boolean.TRUE);
                         }
                     }
@@ -202,17 +205,19 @@ public class ExternalNodeChangeCommand extends Command {
 
         metadataOutputChanges.clear();
         for (IConnection connection : node.getOutgoingConnections()) {
-            IODataComponent dataComponent = inAndOut.getDataComponent(connection);
-            if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
-                if (getPropagate()) {
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), connection
-                            .getMetadataTable(), dataComponent.getTable());
-                    cmd.execute(true);
-                    metadataOutputChanges.add(cmd);
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                IODataComponent dataComponent = inAndOut.getDataComponent(connection);
+                if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
+                    if (getPropagate()) {
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), connection
+                                .getMetadataTable(), dataComponent.getTable());
+                        cmd.execute(true);
+                        metadataOutputChanges.add(cmd);
+                    }
                 }
-            }
-            if (connection instanceof Connection) {
-                ((Connection) connection).updateName();
+                if (connection instanceof Connection) {
+                    ((Connection) connection).updateName();
+                }
             }
         }
         if (!oldMetaDataList.isEmpty() && !newMetaDataList.isEmpty()
@@ -252,7 +257,8 @@ public class ExternalNodeChangeCommand extends Command {
                     currentIO.setTable(oldMetadata);
                     connection.getMetadataTable().setListColumns(metadata.getListColumns());
                     if (metadataInputWasRepository.get(connection) != null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                EmfComponent.REPOSITORY);
                     }
                 }
             }
