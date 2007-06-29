@@ -151,7 +151,7 @@ class Transfer{
 				 		sql=sql+column.getType();
 			 	//column DataDefine
 			 		if(column.getTalendType().equals("id_String")){
-			 			if((column.getLength()==0)||(column.getLength()==-1)){
+			 			if(column.getLength()==null){
 			 				sql=sql+"(100)";
 			 			}else{
 			 				sql=sql+"("+column.getLength()+") ";
