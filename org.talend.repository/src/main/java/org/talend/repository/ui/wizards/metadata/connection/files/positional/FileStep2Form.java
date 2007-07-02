@@ -46,8 +46,6 @@ import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
@@ -145,6 +143,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * 
      * Initialize value, forceFocus first field.
      */
+    @Override
     protected void initialize() {
 
         // Fields to the Group File Settings
@@ -208,6 +207,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
+    @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
         encodingCombo.setReadOnly(isReadOnly());
@@ -387,6 +387,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         fileManager.newTablePreview();
     }
 
+    @Override
     protected void addFields() {
 
         // compositeFileDelimitor Main Fields
@@ -501,6 +502,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
         addFieldsListenersGroupFileSettings();
         addFieldsListenersGroupsRowToSkipAndLimit();
@@ -515,6 +517,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         // Manage rowsToSkipHeader when firstRowIsCaption is checked
         firstRowIsCaptionCheckbox.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 getConnection().setFirstLineCaption(firstRowIsCaptionCheckbox.getSelection());
 
@@ -560,6 +563,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         // Radio and Checkbox: Event modify
         emptyRowsToSkipCheckbox.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 getConnection().setRemoveEmptyRow(emptyRowsToSkipCheckbox.getSelection());
                 checkFieldsValue();
@@ -624,6 +628,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             // Event Key (numeric value only)
             labelledCheckboxCombo.addKeyListener(new KeyAdapter() {
 
+                @Override
                 public void keyPressed(KeyEvent e) {
                     if (Character.getNumericValue(e.character) >= 10) {
                         e.doit = false;
@@ -699,6 +704,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         // If nothing in rowsToSkipHeader, the firstRowIsCaption mustn't be checked
         rowsToSkipHeaderCheckboxCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if ((!rowsToSkipHeaderCheckboxCombo.isChecked()) || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                     firstRowIsCaptionCheckbox.setSelection(false);
@@ -710,6 +716,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         // empty Rows To Skip
         emptyRowsToSkipCheckbox.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 getConnection().setRemoveEmptyRow(emptyRowsToSkipCheckbox.getSelection());
             }
@@ -758,6 +765,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
         fieldSeparatorText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
                         .getSelection().x);
@@ -773,6 +781,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         });
         rowSeparatorText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 Boolean quoteIsEscape = false;
                 if ((e.character) == Character.valueOf('"')) {
@@ -811,9 +820,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             // { "Standard EOL", "Custom String" };
             if (rowSeparatorCombo.getSelectionIndex() == 0) {
                 if (getConnection().getFormat().toString().equals(FileFormat.MAC_LITERAL.getName())) {
-                    rowSeparatorText.setText("\\r"); //$NON-NLS-1$
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\r" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 } else {
-                    rowSeparatorText.setText("\\n"); //$NON-NLS-1$
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\n" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 }
             }
             // Init Custom Label
@@ -828,6 +837,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
@@ -900,11 +910,13 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * 
      * @param cancelButton
      */
+    @Override
     protected void addUtilsButtonListeners() {
 
         // Event PreviewButton
         previewButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) { //$NON-NLS-1$
                     previewButton.setText(Messages.getString("FileStep2.wait")); //$NON-NLS-1$
@@ -919,6 +931,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             // Event CancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -932,6 +945,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {

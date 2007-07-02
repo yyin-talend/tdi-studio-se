@@ -140,6 +140,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * 
      * Initialize value, forceFocus first field.
      */
+    @Override
     protected void initialize() {
 
         // Fields to the Group Regex File Settings
@@ -194,6 +195,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
+    @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
         encodingCombo.setReadOnly(isReadOnly());
@@ -367,6 +369,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         regexpFilePreview.newTablePreview();
     }
 
+    @Override
     protected void addFields() {
 
         // compositeFileDelimitor Main Fields
@@ -478,6 +481,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
         addFieldsListenersGroupRegexFileSettings();
         addFieldsListenersGroupsRowToSkipAndLimit();
@@ -492,6 +496,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         // Manage rowsToSkipHeader when firstRowIsCaption is checked
         firstRowIsCaptionCheckbox.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 getConnection().setFirstLineCaption(firstRowIsCaptionCheckbox.getSelection());
 
@@ -581,6 +586,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             // Event Key (numeric value only)
             labelledCheckboxCombo.addKeyListener(new KeyAdapter() {
 
+                @Override
                 public void keyPressed(KeyEvent e) {
                     if (Character.getNumericValue(e.character) >= 10) {
                         e.doit = false;
@@ -657,6 +663,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         // If nothing in rowsToSkipHeader, the firstRowIsCaption mustn't be checked
         rowsToSkipHeaderCheckboxCombo.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if ((!rowsToSkipHeaderCheckboxCombo.isChecked()) || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                     firstRowIsCaptionCheckbox.setSelection(false);
@@ -668,6 +675,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         // empty Rows To Skip
         emptyRowsToSkipCheckbox.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 getConnection().setRemoveEmptyRow(emptyRowsToSkipCheckbox.getSelection());
             }
@@ -705,6 +713,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         });
         fieldSeparatorText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 Boolean quoteIsEscape = false;
                 if ((e.character) == Character.valueOf('"')) {
@@ -731,6 +740,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         });
         rowSeparatorText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 Boolean quoteIsEscape = false;
                 if ((e.character) == Character.valueOf('"')) {
@@ -767,9 +777,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             // { "Standard EOL", "Custom String" };
             if (rowSeparatorCombo.getSelectionIndex() == 0) {
                 if (getConnection().getFormat().toString().equals(FileFormat.MAC_LITERAL.getName())) {
-                    rowSeparatorText.setText("\\r"); //$NON-NLS-1$
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\r" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 } else {
-                    rowSeparatorText.setText("\\n" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
+                    rowSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "\\n" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 }
             }
             // Init Custom Label
@@ -784,6 +794,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
@@ -840,11 +851,13 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * 
      * @param cancelButton
      */
+    @Override
     protected void addUtilsButtonListeners() {
 
         // Event PreviewButton
         previewButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) { //$NON-NLS-1$
                     previewButton.setText(Messages.getString("FileStep2.wait")); //$NON-NLS-1$
@@ -859,6 +872,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             // Event CancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -872,6 +886,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {

@@ -33,8 +33,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.utils.PathUtils;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -78,29 +76,15 @@ public class ShadowProcessHelper {
 
         processDescription.setServer(TalendTextUtils.addQuotes(connection.getServer()));
 
-        String fieldSeparator = connection.getFieldSeparatorValue();
+        processDescription.setRowSeparator(connection.getRowSeparatorValue()); 
 
-        String rowSeparatorValue = connection.getRowSeparatorValue();
-
-        if (rowSeparatorValue != null && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            rowSeparatorValue = TalendTextUtils.QUOTATION_MARK
-                    + (rowSeparatorValue.substring(1, rowSeparatorValue.length() - 1)) + TalendTextUtils.QUOTATION_MARK;
-        }
-
-        processDescription.setRowSeparator(rowSeparatorValue); //$NON-NLS-1$
-
-        if (fieldSeparator != null && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            fieldSeparator = TalendTextUtils.QUOTATION_MARK
-                    + (fieldSeparator.substring(1, fieldSeparator.length() - 1)) + TalendTextUtils.QUOTATION_MARK;
-        }
-
-        processDescription.setFieldSeparator(fieldSeparator); //$NON-NLS-1$
+        processDescription.setFieldSeparator(connection.getFieldSeparatorValue()); 
 
         // we make differences between Pattern in DELIMITED, CSV and REGEX FileConnection
         if (connection.getEscapeChar() != null || connection.getTextEnclosure() != null) {
-            processDescription.setPattern(connection.getFieldSeparatorValue()); //$NON-NLS-1$    
+            processDescription.setPattern(connection.getFieldSeparatorValue()); 
         } else {
-            processDescription.setPattern(connection.getFieldSeparatorValue()); //$NON-NLS-1$            
+            processDescription.setPattern(connection.getFieldSeparatorValue()); 
         }
 
         processDescription.setHeaderRow(connection.getHeaderValue());
@@ -108,19 +92,19 @@ public class ShadowProcessHelper {
         processDescription.setLimitRows(connection.getLimitValue());
         if (connection.getEscapeChar() != null
                 && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$
-            processDescription.setEscapeCharacter(connection.getEscapeChar()); //$NON-NLS-1$
+            processDescription.setEscapeCharacter(connection.getEscapeChar()); 
         } else {
             processDescription.setEscapeCharacter(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
         }
         if (connection.getTextEnclosure() != null
                 && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) { //$NON-NLS-1$
-            processDescription.setTextEnclosure(connection.getTextEnclosure()); //$NON-NLS-1$
+            processDescription.setTextEnclosure(connection.getTextEnclosure()); 
         } else {
             processDescription.setTextEnclosure(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
         }
 
         processDescription.setRemoveEmptyRow(connection.isRemoveEmptyRow());
-        processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding())); //$NON-NLS-1$
+        processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding())); 
 
         return processDescription;
     }
@@ -139,11 +123,11 @@ public class ShadowProcessHelper {
         processDescription.setFilepath(TalendTextUtils
                 .addQuotes(PathUtils.getPortablePath(connection.getXmlFilePath())));
         processDescription.setLoopQuery(TalendTextUtils.addQuotes(((XmlXPathLoopDescriptor) connection.getSchema().get(
-                0)).getAbsoluteXPathQuery())); //$NON-NLS-1$ //$NON-NLS-2$
+                0)).getAbsoluteXPathQuery())); 
         if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null
                 && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()) //$NON-NLS-1$
                 && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
-            processDescription.setLoopLimit(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()); //$NON-NLS-1$ //$NON-NLS-2$
+            processDescription.setLoopLimit(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()); 
         }
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
@@ -155,13 +139,13 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
                 SchemaTarget schemaTarget = iterate.next();
                 Map<String, String> lineMapping = new HashMap<String, String>();
-                lineMapping.put("QUERY", TalendTextUtils.addQuotes(schemaTarget.getRelativeXPathQuery())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                lineMapping.put("QUERY", TalendTextUtils.addQuotes(schemaTarget.getRelativeXPathQuery())); //$NON-NLS-1$ 
                 mapping.add(lineMapping);
             }
         }
         processDescription.setMapping(mapping);
         if (connection.getEncoding() != null && !("").equals(connection.getEncoding())) { //$NON-NLS-1$
-            processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding())); //$NON-NLS-1$ //$NON-NLS-2$
+            processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding())); 
         } else {
             processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
         }
@@ -220,7 +204,7 @@ public class ShadowProcessHelper {
 
         // PTODO cantoine : create encoding field for LDIF fileConnection
         processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
-    
+
         return processDescription;
     }
 
