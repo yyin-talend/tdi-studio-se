@@ -31,6 +31,7 @@
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.process.BlockCode
+	org.talend.core.model.process.IMatchingMode
 	" 
 %>
 <%
@@ -176,7 +177,6 @@
                         sb.append(cr
                                 + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
                                         indent, checkingSyntax));
-                        
                         %>
                         
                         	<%= sb.toString()%>
@@ -186,32 +186,53 @@
 
 
                      sb = new StringBuilder();
+                     String matchingMode = externalTable.getMatchingMode();
+                     boolean isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
                      %>
-                          
+                            
+				  		<%if(isMultipleResultMode) { // T 55 %>
 	 					    boolean forceLoop<%= tableName %> = false;
-           		  	    	<%
-                          if(aKeysValues.length > 0) { // 1
-                          %>
- 									 java.util.List<<%= className %>> <%= tableName %>ListFromLookup = null;
+	       		  	    	int sizeResultsFromLookup_<%= tableName %> = -1;
+       		  	    	<% } // T 55 %>
+       		  	    	
+       		  	    	
+       		  	    	<%
+                        if(aKeysValues.length > 0) { // T 1
+                        %>
+					  		<%if(isMultipleResultMode) { // T 80 %>
+ 									 java.util.List<<%= className %>> listFromLookup_<%= tableName %> = null;
+ 							<% } // T 80 %>
+ 									 <%= className %> <%= tableName %>ObjectFromLookup = null;
                           
 		           		  	    if(!<%= rejectedInnerJoin %>)
-		           		  	    { //20
-		                          <%=tableName%>HashKey.hashCodeDirty = true;
+		           		  	    { // G 20
+		                          		  <%=tableName%>HashKey.hashCodeDirty = true;
 	  									  tHash_Lookup_<%= tableName %>.get( <%= tableName %>HashKey );
 
-	  									  if(tHash_Lookup_<%= tableName %>.hasResult()) {
+	  									  if(tHash_Lookup_<%= tableName %>.hasResult()) { // G 90
   									  
-		  									  if(tHash_Lookup_<%= tableName %>.resultIsObject()) {
+  									  		<%if(isMultipleResultMode) { // T 50 %>
+  									  		
+		  									  if(tHash_Lookup_<%= tableName %>.resultIsObject()) { // G 49
+		  									  
+		  									 <% } // T 50 %>
 	  									  
-	  										  		<%= tableName %>ListFromLookup = java.util.Arrays.asList((<%= tableName %>Struct) tHash_Lookup_<%= tableName %>.getResultObject());
+	  										  		<%= tableName %>ObjectFromLookup = (<%= tableName %>Struct) tHash_Lookup_<%= tableName %>.getResultObject();
+
+  									  	<%if(isMultipleResultMode) { // T 51 %>
+
+													sizeResultsFromLookup_<%= tableName %> = <%= tableName %>ObjectFromLookup != null ? 1 : -1;
 	  									  
-		  									  } else {
+		  									  } else { // G 49
 	
-													<%= tableName %>ListFromLookup = (java.util.List<<%= className %>>) tHash_Lookup_<%= tableName %>.getResultList();
+													listFromLookup_<%= tableName %> = (java.util.List<<%= className %>>) tHash_Lookup_<%= tableName %>.getResultList();
+													sizeResultsFromLookup_<%= tableName %> = listFromLookup_<%= tableName %> != null ? listFromLookup_<%= tableName %>.size() : -1;
 	  									  
 	  										  }
+		  								 <% } // T 51 %>
 		  								  
-		  									} else {
+		  									} // G 90
+		  									else { // G 91
 		  										<%
 		  										if(externalTable.isInnerJoin()) {
 		  										%>
@@ -219,24 +240,28 @@
 		  										<%
 	  											}
 	  											%>
-	  											forceLoop<%= tableName %> = true;
-	  										}
+												<%if(isMultipleResultMode) { // T 56 %>
+		  											forceLoop<%= tableName %> = true;
+	  											<% } // T 56 %>
+	  										} // G 91
 	  								
-			           		  	    } //20
-			           		  	    else { // 21
+			           		  	  } // G 20
+			           		  	  
+								  <%if(isMultipleResultMode) { // T 57 %>
+			           		  	    else { // G 21
    										 forceLoop<%= tableName %> = true;
-			           		  	    }
-										 int size<%= tableName %>ListFromLookup = <%= tableName %>ListFromLookup != null ? <%= tableName %>ListFromLookup.size() : -1;
-                    		  	 <%
-                    		  	 } // 1 
-                    		  	 else { // 2
+			           		  	    } // G 21
+                    		  	   <%
+                    		  	   } // T 57
+                    		  	 } // T 1 
+                    		  	 else { // T 2
                     		  	 %>
                     		  	 
 		                      	 boolean hasAtLeastOneValidLookup_<%= tableName %> = false;
 		                      	 Object[] <%= tableName %>Array = null;
 		                      	 
 			           		  	    if(!<%= rejectedInnerJoin %>)
-			           		  	    { // 35
+			           		  	    { // G 35
    	                 		  	 	<%= tableName %>Array = tHash_Lookup_<%= tableName %>.getResultArray();
 									   
 										   if(<%= tableName %>Array.length == 0) {
@@ -249,43 +274,59 @@
 		  										%>
 		  										forceLoop<%= tableName %> = true;
 											}
-										} // 35
-										else { // 36
+										} // G 35
+										else { // G 36
 	  										forceLoop<%= tableName %> = true;
-										} // 36
-									   int size<%= tableName %>ListFromLookup = <%= tableName %>Array != null ? <%= tableName %>Array.length : -1;
+										} // G 36
+									   sizeResultsFromLookup_<%= tableName %> = <%= tableName %>Array != null ? <%= tableName %>Array.length : -1;
                     		  	 <%
-                    		  	 } // 2
-                    		  	 %>
+                    		  	 } // T 2
                     		  	
+                    		  	if(isMultipleResultMode) { // T 60
+                    		  	 %>
 
-                    		  	  for(int i<%= tableName %> = 0; size<%= tableName %>ListFromLookup != -1 && i<%= tableName %> < size<%= tableName %>ListFromLookup || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
+                    		  	  for(int i<%= tableName %> = 0; sizeResultsFromLookup_<%= tableName %> != -1 && i<%= tableName %> < sizeResultsFromLookup_<%= tableName %> || forceLoop<%= tableName %> ;i<%= tableName %>++) { 
 
 										<%
 										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
 									  	%>
-                    		  	    
-                    		  	    <%= tableName %>Struct <%= tableName %>FromLookup = null;
-		                         <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
+                    		  	 
+                    		  	 <% } // T 60 %>   
+                    		  	 
+                    		  	    <%= tableName %>Struct fromLookup_<%= tableName %> = null;
+		                            <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
 										 
-										 if(!forceLoop<%= tableName %>) { // 46
-                    		  	    	<%
-		                          	if(aKeysValues.length > 0) { // 10
+		                          	<%if(isMultipleResultMode) { // T 69 %>
+										 if(!forceLoop<%= tableName %>) { // G 46
+                    		  	    <%
+                    		  	    } // T 69
+                    		  	    
+		                          	if(aKeysValues.length > 0) { // T 10
 		                          	%>
-			  									if(<%= tableName %>ListFromLookup != null) {
-	      	              		   	   <%= tableName %>FromLookup = <%= tableName %>ListFromLookup.get(i<%= tableName %>);
-		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
-	      	              		   	}
+		                          	  
+		                          		
+		                          		if(<%= tableName %>ObjectFromLookup != null) {
+		                          		
+	      	              		   	   		fromLookup_<%= tableName %> = <%= tableName %>ObjectFromLookup;
+		                    		  	    <%= tableName %> = fromLookup_<%= tableName %>;
+			  							} 
+			  							
+		                          	  <%if(isMultipleResultMode) { // 61 %>
+			  							else if(listFromLookup_<%= tableName %> != null) {
+	      	              		   	   		fromLookup_<%= tableName %> = listFromLookup_<%= tableName %>.get(i<%= tableName %>);
+		                    		  	    <%= tableName %> = fromLookup_<%= tableName %>;
+	      	              		   		}
+	                    		  	 <% } // 61 %>   
       	              		   	<%
-      	              		   	} // 10
-      	              		   	else { // 11
+      	              		   	} // T 10
+      	              		   	else { // T 11
       	              		   	%>
       	              		   		if(i<%= tableName %> < <%= tableName %>Array.length) {
-      	              		   			<%= tableName %>FromLookup = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
-		                    		  	    	<%= tableName %> = <%= tableName %>FromLookup;
+      	              		   			fromLookup_<%= tableName %> = (<%= tableName %>Struct) <%= tableName %>Array[i<%= tableName %>];
+		                    		  	    	<%= tableName %> = fromLookup_<%= tableName %>;
       	              		   		}
       	              		   	<%
-      	              		   	} // 11
+      	              		   	} // T 11
                     		  	    	%>
                     		  	    
                     		  	  	   <%
@@ -304,9 +345,9 @@
 					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
 					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
 					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
-						  	  		  			) { //16
+						  	  		  			) { // G 16
                     		  	  		  
-  		                    		  	    	<%= tableName %>FromLookup = null;
+  		                    		  	    	fromLookup_<%= tableName %> = null;
                     		  	  		  		
 	  												<%
 				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
@@ -319,20 +360,20 @@
 				  									<%
 				  									} else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
 				  									%>
-					                    		  	   	if(size<%= tableName %>ListFromLookup != -1 
-					                    		  	   		&& i<%= tableName %> == size<%= tableName %>ListFromLookup - 1 
+					                    		  	   	if(sizeResultsFromLookup_<%= tableName %> != -1 
+					                    		  	   		&& i<%= tableName %> == sizeResultsFromLookup_<%= tableName %> - 1 
 					                    		  	   		&& !hasAtLeastOneValidLookup_<%= tableName %>) 
-					                    		  	   	{ // 15
+					                    		  	   	{ // G 15
 			     	  	            		  	  			<%= rejectedInnerJoin %> = true;
-					                    		  	   	} //15
+					                    		  	   	} // G 15
 														<%
 				  									}
 				  									%>
-     	               		  	  	  } // 16
+     	               		  	  	  } // G 16
      	               		  	  	  <%
     	               		  	  	  if(aKeysValues.length == 0){
      	               		  	  	  %>
-			                    		  	 if(<%= tableName %>FromLookup == null && !<%= rejectedInnerJoin %>) 
+			                    		  	 if(fromLookup_<%= tableName %> == null && !<%= rejectedInnerJoin %>) 
 			                    		  	 { // 17
 				  										continue;
 				                    		 } // 17
@@ -353,13 +394,16 @@
      	               		  	  	  
                     		  	  		  
 	                    		  	   <%
-	                    		  	   } // 12
+	                    		  	   } // T 12
 	                    		  	   
 	                    		  	%>	
 	                    		  	
-	                    		  	} // 46
+		                        <%if(isMultipleResultMode) { // T 70 %>
+	                    		  	} // G 46
 	                    		  	
 									 	forceLoop<%= tableName %> = false;
+									 	
+								<% } // T 70 %>
 	                    		  	
 	  									<%
                 } // if(externalTable != null) {
@@ -516,18 +560,19 @@
         // write conditions for inner join reject
         if (validLookupTables.size() > 0 && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
             sb.append(cr + gm.indent(indent) + "if(");
-            String and = null;
-            for (ExternalMapperTable validLookupTable : validLookupTables) {
-                if (validLookupTable.isInnerJoin()) {
-                    if (and == null) {
-                        and = "";
-                    } else {
-                        and = " &&";
-                    }
-                    sb.append(and + " " + validLookupTable.getName() + "FromLookup != null");
-                }
-            }
-            sb.append(" && !" + rejectedInnerJoin);
+//            String and = null;
+//            for (ExternalMapperTable validLookupTable : validLookupTables) {
+//                if (validLookupTable.isInnerJoin()) {
+//                    if (and == null) {
+//                        and = "";
+//                    } else {
+//                        and = " &&";
+//                    }
+//                    sb.append(and + " " + validLookupTable.getName() + "FromLookup != null");
+//                }
+//            }
+//            sb.append(" && !" + rejectedInnerJoin);
+            sb.append("!" + rejectedInnerJoin);
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
             indent++;

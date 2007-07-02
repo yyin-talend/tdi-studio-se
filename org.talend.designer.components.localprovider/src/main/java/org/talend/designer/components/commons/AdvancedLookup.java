@@ -102,8 +102,7 @@ public class AdvancedLookup<V> {
      * @param keepAllValues keep all identical values (with same key values) in each list of each key
      * @param countValuesForEachKey force internal count of values
      */
-    public AdvancedLookup(MATCHING_MODE matchingMode, boolean keepAllValues,
-            boolean countValuesForEachKey) {
+    public AdvancedLookup(MATCHING_MODE matchingMode, boolean keepAllValues, boolean countValuesForEachKey) {
         super();
         this.keepAllValues = keepAllValues;
         this.countValuesForEachKey = countValuesForEachKey;
@@ -291,6 +290,16 @@ public class AdvancedLookup<V> {
      */
     public boolean isUniqueMatch() {
         return matchingMode == MATCHING_MODE.UNIQUE_MATCH;
+    }
+
+    /**
+     * Getter for uniqueMatch.
+     * 
+     * @return the uniqueMatch
+     */
+    public boolean isOnlyOneMatchResult() {
+        return matchingMode == MATCHING_MODE.UNIQUE_MATCH || matchingMode == MATCHING_MODE.FIRST_MATCH
+                || matchingMode == MATCHING_MODE.LAST_MATCH;
     }
 
     public int getCount(V key) {
