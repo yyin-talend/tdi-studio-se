@@ -30,7 +30,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -54,11 +55,15 @@ public final class ImportProjectWizardDialog extends WizardDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+
         Button nextButton = getButton(IDialogConstants.NEXT_ID);
         if (nextButton != null) {
             nextButton.setText(Messages.getString("ImportProjectsAction.actionTitle")); //$NON-NLS-1$
             nextButton.setToolTipText(Messages.getString(
-                    "ImportProjectsAction.actionTooltip", BrandingService.getInstance().getShortProductName())); //$NON-NLS-1$
+                    "ImportProjectsAction.actionTooltip", brandingService.getShortProductName())); //$NON-NLS-1$
             Point point = nextButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
             GridData data = new GridData(point.x, point.y);
             nextButton.setLayoutData(data);
@@ -68,7 +73,7 @@ public final class ImportProjectWizardDialog extends WizardDialog {
         if (backButton != null) {
             backButton.setText(Messages.getString("ImportProjectAsAction.actionTitle")); //$NON-NLS-1$
             backButton.setToolTipText(Messages.getString(
-                    "ImportProjectAsAction.actionTooltip", BrandingService.getInstance().getShortProductName())); //$NON-NLS-1$
+                    "ImportProjectAsAction.actionTooltip", brandingService.getShortProductName())); //$NON-NLS-1$
             Point point = backButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
             GridData data = new GridData(point.x, point.y);
             backButton.setLayoutData(data);

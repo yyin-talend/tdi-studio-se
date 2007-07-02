@@ -26,7 +26,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.wizards.newproject.ImportProjectAsWizard;
@@ -42,8 +43,8 @@ public final class ImportProjectAsAction extends Action {
 
     private static final String ACTION_TITLE = Messages.getString("ImportProjectAsAction.actionTitle"); //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = Messages.getString(
-            "ImportProjectAsAction.actionTooltip", BrandingService.getInstance().getShortProductName()); //$NON-NLS-1$
+    private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectAsAction.actionTooltip",
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     private static ImportProjectAsAction singleton;
 

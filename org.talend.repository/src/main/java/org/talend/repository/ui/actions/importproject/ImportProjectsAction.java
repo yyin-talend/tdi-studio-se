@@ -32,7 +32,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.wizards.datatransfer.ExternalProjectImportWizard;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
@@ -46,8 +47,8 @@ public final class ImportProjectsAction extends Action implements IWorkbenchWind
 
     private static final String ACTION_TITLE = Messages.getString("ImportProjectsAction.actionTitle"); //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = Messages.getString(
-            "ImportProjectsAction.actionTooltip", BrandingService.getInstance().getShortProductName()); //$NON-NLS-1$
+    private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectsAction.actionTooltip",
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID"; //$NON-NLS-1$
 

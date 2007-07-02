@@ -43,7 +43,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
@@ -59,8 +60,8 @@ public class RegisterWizardPage extends WizardPage {
     /**
      * 
      */
-    private static final String DESCRIPTION = Messages.getString(
-            "RegisterWizardPage.description", BrandingService.getInstance().getShortProductName()); //$NON-NLS-1$
+    private static final String DESCRIPTION = Messages.getString("RegisterWizardPage.description",
+            ((IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class)).getShortProductName()); //$NON-NLS-1$
 
     /** EMail field. */
     private Text emailText;
@@ -244,8 +245,9 @@ public class RegisterWizardPage extends WizardPage {
         localComposite.setLayoutData(gd);
 
         Label legalInfos = new Label(localComposite, SWT.NONE);
-        legalInfos.setText(Messages
-                .getString("RegisterWizardPage.legalinfos", BrandingService.getInstance().getCorporationName())); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        legalInfos.setText(Messages.getString("RegisterWizardPage.legalinfos", brandingService.getCorporationName())); //$NON-NLS-1$
     }
 
     protected void createHttpProxy(Composite composite, int columnSpan) {

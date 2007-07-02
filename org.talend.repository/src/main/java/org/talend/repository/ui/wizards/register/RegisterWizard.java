@@ -23,7 +23,8 @@ package org.talend.repository.ui.wizards.register;
 
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
@@ -65,7 +66,9 @@ public class RegisterWizard extends Wizard {
     public void addPages() {
         mainPage = new RegisterWizardPage();
         addPage(mainPage);
-        setWindowTitle(Messages.getString("RegisterWizard.windowTitle", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        setWindowTitle(Messages.getString("RegisterWizard.windowTitle", brandingService.getFullProductName())); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.REGISTER_WIZ));
     }
 

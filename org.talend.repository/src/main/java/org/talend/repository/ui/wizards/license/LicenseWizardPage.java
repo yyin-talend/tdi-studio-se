@@ -28,9 +28,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -39,10 +36,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.ui.branding.BrandingService;
-import org.talend.repository.RepositoryPlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -78,7 +74,7 @@ public class LicenseWizardPage extends WizardPage {
 
         GridLayout layout = new GridLayout(1, false);
         container.setLayout(layout);
- 
+
         Label subTitleLabel = new Label(container, SWT.NONE);
         subTitleLabel.setText(Messages.getString("LicenseWizard.subtitle")); //$NON-NLS-1$
 
@@ -109,7 +105,9 @@ public class LicenseWizardPage extends WizardPage {
     private String getLicense() {
         String license = ""; //$NON-NLS-1$
         try {
-            final URL url = BrandingService.getInstance().getLicenseFile();
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            final URL url = brandingService.getLicenseFile();
 
             FileReader fileReader = new FileReader(new File(url.getPath()));
             BufferedReader in = new BufferedReader(fileReader);

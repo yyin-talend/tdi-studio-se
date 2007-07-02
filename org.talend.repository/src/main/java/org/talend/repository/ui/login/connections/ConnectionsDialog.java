@@ -32,8 +32,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -63,7 +64,9 @@ public class ConnectionsDialog extends TitleAreaDialog {
     public ConnectionsDialog(Shell parentShell) {
         super(parentShell);
 
-        ImageDescriptor imgDesc = BrandingService.getInstance().getLoginHImage();
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        ImageDescriptor imgDesc = brandingService.getLoginHImage();
         if (imgDesc != null) {
             setTitleImage(imgDesc.createImage());
         }
@@ -74,7 +77,9 @@ public class ConnectionsDialog extends TitleAreaDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("LoginDialog.title", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        newShell.setText(Messages.getString("LoginDialog.title", brandingService.getFullProductName())); //$NON-NLS-1$
     }
 
     @Override

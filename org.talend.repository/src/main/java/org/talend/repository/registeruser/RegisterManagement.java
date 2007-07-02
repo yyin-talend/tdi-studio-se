@@ -27,11 +27,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.PreferenceManipulator;
-import org.talend.core.ui.branding.BrandingService;
-import org.talend.repository.i18n.Messages;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
 
 /**
@@ -64,8 +64,9 @@ public class RegisterManagement {
         RegisterUserPortTypeProxy proxy = new RegisterUserPortTypeProxy();
         proxy.setEndpoint("http://www.talend.com/TalendRegisterWS/registerws.php"); //$NON-NLS-1$
         try {
-            result = proxy.registerUserWithProductName(email, country, designerVersion, BrandingService.getInstance()
-                    .getShortProductName());
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            result = proxy.registerUserWithProductName(email, country, designerVersion, brandingService.getShortProductName());
             if (result) {
                 PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1); //$NON-NLS-1$
                 PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()

@@ -44,15 +44,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
-import org.talend.core.ui.branding.BrandingService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
@@ -82,8 +82,9 @@ public class LoginDialog extends TitleAreaDialog {
      */
     public LoginDialog(Shell parentShell) {
         super(parentShell);
-
-        ImageDescriptor imgDesc = BrandingService.getInstance().getLoginHImage();
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        ImageDescriptor imgDesc = brandingService.getLoginHImage();
         if (imgDesc != null) {
             setTitleImage(imgDesc.createImage());
         }
@@ -98,7 +99,9 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("LoginDialog.title", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        newShell.setText(Messages.getString("LoginDialog.title", brandingService.getFullProductName())); //$NON-NLS-1$
     }
 
     /**
@@ -120,7 +123,9 @@ public class LoginDialog extends TitleAreaDialog {
         container.setLayout(layout);
         container.setBackground(new Color(null, 0, 0, 0));
 
-        new ImageCanvas(container, BrandingService.getInstance().getLoginVImage()); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
 
         try {
             if (!LicenseManagement.isLicenseValidated()) {
@@ -193,6 +198,7 @@ public class LoginDialog extends TitleAreaDialog {
         try {
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
+
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().logOnProject(project);
@@ -204,16 +210,16 @@ public class LoginDialog extends TitleAreaDialog {
                     }
                 };
                 new ProgressMonitorDialog(getShell()).run(true, false, op);
-             } catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 if (e.getTargetException() instanceof PersistenceException) {
                     throw (PersistenceException) e.getTargetException();
                 }
                 if (e.getTargetException() instanceof LoginException) {
                     throw (LoginException) e.getTargetException();
                 }
-             } catch (InterruptedException e) {
-                 //
-             }
+            } catch (InterruptedException e) {
+                //
+            }
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return;

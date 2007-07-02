@@ -9,7 +9,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.temp.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
-		org.talend.core.ui.branding.BrandingService
+		org.talend.core.ui.branding.IBrandingService
+		org.talend.core.GlobalServiceRegister
 		java.util.List
 		java.util.Vector
 	"
@@ -29,7 +30,8 @@
 //
 // <%=Messages.getString("generatedcode.copyright.title")%>
 //
-// <%=Messages.getString("generatedcode.copyright.body1", BrandingService.getInstance().getFullProductName()) %>
+// <%=Messages.getString("generatedcode.copyright.body1", ((IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class)).getFullProductName()) %>
 // <%=Messages.getString("generatedcode.copyright.body2", version) %>
 // <%=Messages.getString("generatedcode.copyright.body3") %>
 // <%=Messages.getString("generatedcode.copyright.body4") %>
