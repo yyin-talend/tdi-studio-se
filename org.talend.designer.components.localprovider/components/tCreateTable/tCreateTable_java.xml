@@ -276,7 +276,7 @@
       <DEFAULT IF="DBTYPE=='MSSQL'">MSODBC</DEFAULT>
       <DEFAULT IF="DBTYPE=='MYSQL'">mysql_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='DBORACLE'">oracle_id</DEFAULT>
-      <DEFAULT IF="DBTYPE=='POSTGRES'">postgres_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='POSTGRE'">postgres_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='SQLITE'">sqlite_id</DEFAULT>
       <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>

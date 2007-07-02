@@ -150,8 +150,8 @@ class Transfer{
 			 	//column type
 				 		sql=sql+column.getType();
 			 	//column DataDefine
-			 		if(column.getTalendType().equals("id_String")){
-			 			if(column.getLength()==null){
+			 		if((column.getType().equals("VARCHAR"))||(column.getType().equals("VARCHAR2"))||(column.getType().equals("RAW"))||(column.getType().equals("VARGRAPHIC"))){
+			 			if((column.getLength()==null)||(column.getLength()<1)){
 			 				sql=sql+"(100)";
 			 			}else{
 			 				sql=sql+"("+column.getLength()+") ";
