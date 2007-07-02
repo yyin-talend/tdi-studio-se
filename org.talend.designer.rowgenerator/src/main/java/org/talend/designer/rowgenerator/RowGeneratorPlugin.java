@@ -27,7 +27,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -57,7 +56,6 @@ public class RowGeneratorPlugin extends Plugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        new FunctionManagerExt();
     }
 
     /*
