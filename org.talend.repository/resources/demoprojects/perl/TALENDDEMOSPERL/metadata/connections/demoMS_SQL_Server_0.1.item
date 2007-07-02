@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="ASCII"?>
+<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org" DatabaseType="Microsoft SQL Server (Odbc driver)" URL="jdbc:odbc:mydatasource" Port="" Username="login" Password="pass" ServerName="" DatasourceName="mydatasource" FileFieldName="" Schema="" SID="" SqlSynthax="SQL Syntax"/>

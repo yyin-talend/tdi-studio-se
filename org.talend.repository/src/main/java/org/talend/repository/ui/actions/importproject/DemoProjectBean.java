@@ -33,17 +33,19 @@ public class DemoProjectBean {
 
     private ECodeLanguage language;
 
-    private String archiveFilePath;
+    private String demoProjectFilePath;
 
     private String descriptionFilePath;
+
+    private EDemoProjectFileType demoProjectFileType;
 
     /**
      * Getter for archiveFilePath.
      * 
      * @return the archiveFilePath
      */
-    public String getArchiveFilePath() {
-        return archiveFilePath;
+    public String getDemoProjectFilePath() {
+        return demoProjectFilePath;
     }
 
     /**
@@ -51,8 +53,8 @@ public class DemoProjectBean {
      * 
      * @param archiveFilePath the archiveFilePath to set
      */
-    public void setArchiveFilePath(String archiveFilePath) {
-        this.archiveFilePath = archiveFilePath;
+    public void setDemoProjectFilePath(String archiveFilePath) {
+        this.demoProjectFilePath = archiveFilePath;
     }
 
     /**
@@ -99,4 +101,21 @@ public class DemoProjectBean {
         this.descriptionFilePath = descriptionFilePath;
     }
 
+    /**
+     * Getter for demoProjectFileType.
+     * 
+     * @return the demoProjectFileType
+     */
+    public EDemoProjectFileType getDemoProjectFileType() {
+        return demoProjectFileType;
+    }
+
+    /**
+     * Sets the demoProjectFileType.
+     * 
+     * @param demoProjectFileType the demoProjectFileType to set
+     */
+    public void setDemoProjectFileType(EDemoProjectFileType demoProjectFileType) {
+        this.demoProjectFileType = demoProjectFileType;
+    }
 }

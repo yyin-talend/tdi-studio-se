@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tELTOracleInput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tELTOracleInput_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value="_hQn1UObQEduime_uRsW-6Q - OWNERS"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata label="owners" name="tELTOracleInput_1">
+        <column comment="" defaultValue="" key="true" length="11" name="ID_OWNER" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_CUSTOMER" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="ID_INSURANCE" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+      </metadata>
+    </node>
+    <node componentName="tELTOracleInput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tELTOracleInput_2"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value="_hQn1UObQEduime_uRsW-6Q - CARS"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata label="" name="tELTOracleInput_2">
+        <column comment="" defaultValue="" key="true" length="10" name="ID_OWNERS" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="true" length="255" name="REG_CAR" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="MAKE" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="COLOR" nullable="true" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="10" name="ID_RESELLER" nullable="true" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+      </metadata>
+    </node>
+    <node componentName="tELTOracleInput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="192">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tELTOracleInput_3"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value="_hQn1UObQEduime_uRsW-6Q - RESELLERS"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata label="resellers" name="tELTOracleInput_3">
+        <column comment="" defaultValue="" key="true" length="11" name="ID_RESELLER" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_RESELLER" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="ADDRESS_RESELLER" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="11" name="ZIPCODE" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="CITY" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+      </metadata>
+    </node>
+    <node componentName="tELTOracleOutput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="544" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tELTOracleOutput_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="CLOSED_LIST" name="TABLE_ACTION" value="DROP_CREATE"/>
+      <elementParameter field="CLOSED_LIST" name="DATA_ACTION" value="INSERT"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="MEMO" name="WHERE_CLAUSE" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tELTOracleOutput_1">
+        <column comment="" defaultValue="" key="true" length="11" name="ID_OWNER" nullable="false" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_CUSTOMER" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="ID_INSURANCE" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="true" length="10" name="ID_OWNERS" nullable="false" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="true" length="255" name="REG_CAR" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="MAKE" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="COLOR" nullable="true" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="10" name="ID_RESELLER" nullable="true" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_RESELLER" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="CITY" nullable="false" precision="0" sourceType="VARCHAR2" type="String"/>
+      </metadata>
+    </node>
+    <node binaryData="" stringData="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xA;&lt;external-db-map-data>&lt;ui-properties shell-maximized=&quot;true&quot;>&lt;weights-main-sash-form>700&lt;/weights-main-sash-form>&lt;weights-main-sash-form>300&lt;/weights-main-sash-form>&lt;weights-datas-flow-view-sash-form>450&lt;/weights-datas-flow-view-sash-form>&lt;weights-datas-flow-view-sash-form>100&lt;/weights-datas-flow-view-sash-form>&lt;weights-datas-flow-view-sash-form>450&lt;/weights-datas-flow-view-sash-form>&lt;/ui-properties>&lt;output-tables xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; minimized=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapTable&quot;>&lt;custom-conditions-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>newFilter2&lt;/name>&lt;expression>resellers.CITY =&amp;apos;West Coast City&amp;apos;&lt;/expression>&lt;/custom-conditions-entries>&lt;table-name>results&lt;/table-name>&lt;name>table4&lt;/name>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_OWNER&lt;/name>&lt;expression>owners.ID_OWNER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>NAME_CUSTOMER&lt;/name>&lt;expression>owners.NAME_CUSTOMER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_INSURANCE&lt;/name>&lt;expression>owners.ID_INSURANCE&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_OWNERS&lt;/name>&lt;expression>cars.ID_OWNERS&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>REG_CAR&lt;/name>&lt;expression>cars.REG_CAR&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>MAKE&lt;/name>&lt;expression>cars.MAKE&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>COLOR&lt;/name>&lt;expression>cars.COLOR&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_RESELLER&lt;/name>&lt;expression>cars.ID_RESELLER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>NAME_RESELLER&lt;/name>&lt;expression>resellers.NAME_RESELLER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>CITY&lt;/name>&lt;expression>resellers.CITY&lt;/expression>&lt;/metadata-table-entries>&lt;/output-tables>&lt;input-tables xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; minimized=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapTable&quot;>&lt;table-name>owners&lt;/table-name>&lt;name>owners&lt;/name>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_OWNER&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>NAME_CUSTOMER&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_INSURANCE&lt;/name>&lt;/metadata-table-entries>&lt;join-type>NO_JOIN&lt;/join-type>&lt;/input-tables>&lt;input-tables xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; minimized=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapTable&quot;>&lt;table-name>cars&lt;/table-name>&lt;name>cars&lt;/name>&lt;metadata-table-entries join=&quot;true&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;operator>=&lt;/operator>&lt;name>ID_OWNERS&lt;/name>&lt;expression>owners.ID_OWNER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>REG_CAR&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>MAKE&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>COLOR&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ID_RESELLER&lt;/name>&lt;/metadata-table-entries>&lt;join-type>INNER_JOIN&lt;/join-type>&lt;/input-tables>&lt;input-tables xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; minimized=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapTable&quot;>&lt;table-name>resellers&lt;/table-name>&lt;name>resellers&lt;/name>&lt;metadata-table-entries join=&quot;true&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;operator>=&lt;/operator>&lt;name>ID_RESELLER&lt;/name>&lt;expression>cars.ID_RESELLER&lt;/expression>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>NAME_RESELLER&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ADDRESS_RESELLER&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>ZIPCODE&lt;/name>&lt;/metadata-table-entries>&lt;metadata-table-entries join=&quot;false&quot; xsi:type=&quot;java:org.talend.designer.dbmap.external.data.ExternalDbMapEntry&quot;>&lt;name>CITY&lt;/name>&lt;/metadata-table-entries>&lt;join-type>INNER_JOIN&lt;/join-type>&lt;/input-tables>&lt;/external-db-map-data>" componentName="tELTOracleMap" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="288" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tELTOracleMap_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="EXTERNAL" name="MAP" value=""/>
+      <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value="BUILT_IN"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g"/>
+      <elementParameter field="PROPERTY_TYPE" name="PROPERTY" value=""/>
+      <elementParameter field="TEXT" name="HOST" value="'talend-dbms'"/>
+      <elementParameter field="TEXT" name="PORT" value="'1521'"/>
+      <elementParameter field="TEXT" name="DBNAME" value="'TALEND'"/>
+      <elementParameter field="TEXT" name="USER" value="'root'"/>
+      <elementParameter field="TEXT" name="PASS" value="'toor'"/>
+      <elementParameter field="TEXT" name="ENCODING" value="'ISO-8859-15'"/>
+      <elementParameter field="IMAGE" name="PREVIEW" value="_WcEQoOgPEduZJ44BK9HCMg-tELTOracleMap_1-PREVIEW.bmp"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata label="results" name="table4">
+        <column comment="" defaultValue="" key="true" length="11" name="ID_OWNER" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_CUSTOMER" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="ID_INSURANCE" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="true" length="10" name="ID_OWNERS" nullable="false" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="true" length="255" name="REG_CAR" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="MAKE" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="COLOR" nullable="true" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="10" name="ID_RESELLER" nullable="true" pattern="" precision="0" sourceType="NUMBER" type="double"/>
+        <column comment="" defaultValue="" key="false" length="255" name="NAME_RESELLER" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="CITY" nullable="false" pattern="" precision="0" sourceType="VARCHAR2" type="String"/>
+      </metadata>
+    </node>
+    <connection label="owners" lineStyle="9" metaname="tELTOracleInput_1" offsetLabelX="0" offsetLabelY="0" source="tELTOracleInput_1" target="tELTOracleMap_1"/>
+    <connection label="cars" lineStyle="9" metaname="tELTOracleInput_2" offsetLabelX="0" offsetLabelY="0" source="tELTOracleInput_2" target="tELTOracleMap_1"/>
+    <connection label="resellers" lineStyle="9" metaname="tELTOracleInput_3" offsetLabelX="0" offsetLabelY="0" source="tELTOracleInput_3" target="tELTOracleMap_1"/>
+    <connection label="results" lineStyle="9" metaname="table4" offsetLabelX="0" offsetLabelY="0" outputId="0" source="tELTOracleMap_1" target="tELTOracleOutput_1"/>
+  </process>
+</talendfile:DocumentRoot>

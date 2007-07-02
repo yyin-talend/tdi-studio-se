@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default"/>
+</talendfile:DocumentRoot>

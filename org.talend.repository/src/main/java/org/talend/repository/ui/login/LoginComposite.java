@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -130,6 +129,8 @@ public class LoginComposite extends Composite {
     private Button importDemoProjectButton;
 
     private Project[] projects;
+
+    private ImportDemoProjectAction importDemoProjectAction;
 
     // private Button importProjectAsButton;
 
@@ -269,10 +270,10 @@ public class LoginComposite extends Composite {
         importProjectsButton.setLayoutData(formData);
 
         importDemoProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        ImportDemoProjectAction idpa = ImportDemoProjectAction.getInstance();
-        importDemoProjectButton.setText(idpa.getText());
-        importDemoProjectButton.setToolTipText(idpa.getToolTipText());
-        importDemoProjectButton.setImage(ImageProvider.getImage(idpa.getImageDescriptor()));
+        importDemoProjectAction = ImportDemoProjectAction.getInstance();
+        importDemoProjectButton.setText(importDemoProjectAction.getText());
+        importDemoProjectButton.setToolTipText(importDemoProjectAction.getToolTipText());
+        importDemoProjectButton.setImage(ImageProvider.getImage(importDemoProjectAction.getImageDescriptor()));
         formData = new FormData();
         formData.left = new FormAttachment(importProjectsButton, HORIZONTAL_SPACE_BUTTONS);
         formData.top = new FormAttachment(0);
@@ -438,7 +439,7 @@ public class LoginComposite extends Composite {
                 NewProjectWizard newPrjWiz = new NewProjectWizard();
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
-                if (newProjectDialog.open() == WizardDialog.OK) {
+                if (newProjectDialog.open() == Window.OK) {
                     project = newPrjWiz.getProject();
                     populateProjectList();
                     selectProject(project);
@@ -533,10 +534,11 @@ public class LoginComposite extends Composite {
                 .getRepositoryId()));
 
         boolean initialized = false;
-        
+
         try {
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
+
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().initialize();
@@ -546,13 +548,13 @@ public class LoginComposite extends Composite {
                     }
                 };
                 new ProgressMonitorDialog(getShell()).run(true, false, op);
-             } catch (InvocationTargetException e) {
-                throw (Exception) e.getTargetException();
-             } catch (InterruptedException e) {
-             }
-            
+            } catch (InvocationTargetException e) {
+                throw (PersistenceException) e.getTargetException();
+            } catch (InterruptedException e) {
+            }
+
             initialized = true;
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             projects = new Project[0];
 
             MessageDialog.openError(getShell(),
@@ -575,6 +577,8 @@ public class LoginComposite extends Composite {
             }
         }
         projectViewer.setInput(projects);
+
+        importDemoProjectAction.setExistingProjects(projects);
 
         if (projects.length > 0) {
             // Try to select the last recently used project

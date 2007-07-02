@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tJava" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tJava_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="MEMO_JAVA" name="CODE" value="System.out.println(&quot;jobChildren is done!&quot;);"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tJava_1"/>
+    </node>
+    <note opaque="true" posX="32" posY="128" sizeHeight="64" sizeWidth="417" text="tJava write &quot;jobChildren is done!&quot; on the console (view Run)."/>
+  </process>
+</talendfile:DocumentRoot>

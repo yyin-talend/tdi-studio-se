@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tRowGenerator" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="96" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tRowGenerator_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <metadata name="tRowGenerator_1">
+        <column comment="" defaultValue="" key="true" length="-1" name="ID_Owner" nullable="false" pattern="" precision="-1" sourceType="" type="int"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="Name_Customer" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="ID_Insurance" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+      </metadata>
+    </node>
+    <node componentName="tMysqlOutput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="448" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMysqlOutput_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <metadata name="tMysqlOutput_1">
+        <column comment="" defaultValue="" key="true" length="-1" name="ID_Owner" nullable="false" pattern="" precision="-1" sourceType="" type="int"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="Name_Customer" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="ID_Insurance" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+      </metadata>
+    </node>
+    <node componentName="tLogRow" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="288" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tLogRow_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <metadata name="tLogRow_1">
+        <column comment="" defaultValue="" key="true" length="-1" name="ID_Owner" nullable="false" pattern="" precision="-1" sourceType="" type="int"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="Name_Customer" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+        <column comment="" defaultValue="" key="false" length="-1" name="ID_Insurance" nullable="false" pattern="" precision="-1" sourceType="" type="String"/>
+      </metadata>
+    </node>
+    <connection label="row1" lineStyle="0" metaname="tRowGenerator_1" offsetLabelX="0" offsetLabelY="0" source="tRowGenerator_1" target="tLogRow_1"/>
+    <connection label="row2" lineStyle="0" metaname="tLogRow_1" offsetLabelX="0" offsetLabelY="0" source="tLogRow_1" target="tMysqlOutput_1"/>
+  </process>
+</talendfile:DocumentRoot>

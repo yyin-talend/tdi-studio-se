@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <note opaque="true" posX="64" posY="32" sizeHeight="64" sizeWidth="289" text="no example for the moment..."/>
+  </process>
+</talendfile:DocumentRoot>

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="ASCII"?>
+<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org" DatabaseType="Oracle with SID" URL="jdbc:oracle:thin:@myserver:1521:mysid" Port="1521" Username="login" Password="pass" ServerName="myserver" DatasourceName="" FileFieldName="" Schema="mydb" SID="mysid" SqlSynthax="SQL Syntax"/>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default">
+      <contextParameter name="path" prompt="Define a path for the tempory file:" promptNeeded="true" type="" value="'C:\temp\mysql_data.txt'"/>
+    </context>
+    <node componentName="tMysqlBulkExec" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="288" posY="256">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMysqlBulkExec_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value="REPOSITORY"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g"/>
+      <elementParameter field="PROPERTY_TYPE" name="PROPERTY" value=""/>
+      <elementParameter field="TEXT" name="HOST" value="'localhost'"/>
+      <elementParameter field="TEXT" name="PORT" value="'3306'"/>
+      <elementParameter field="TEXT" name="DBNAME" value="'test'"/>
+      <elementParameter field="TEXT" name="USER" value="'root'"/>
+      <elementParameter field="TEXT" name="PASS" value="''"/>
+      <elementParameter field="TEXT" name="TABLE" value="'demotable'"/>
+      <elementParameter field="FILE" name="FILENAME" value="$_context{path}"/>
+      <elementParameter field="TEXT" name="FIELDS_TERMINATED_BY" value="';'"/>
+      <elementParameter field="TECHNICAL" name="ENCODING_TYPE" value="ISO-8859-15"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_ENCODING_TYPE" value="''"/>
+      <elementParameter field="ENCODING_TYPE" name="ENCODING" value="'ISO-8859-15'"/>
+      <elementParameter field="TEXT" name="LABEL" value="LOAD DATA INFILE"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tMysqlBulkExec_1"/>
+    </node>
+    <node componentName="tMsgBox" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="64" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMsgBox_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="TITLE" value="'Talend Open Studio'"/>
+      <elementParameter field="CLOSED_LIST" name="BUTTONS" value="0"/>
+      <elementParameter field="CLOSED_LIST" name="ICON" value="Win32::MB_ICONINFORMATION"/>
+      <elementParameter field="MEMO" name="MESSAGE" value="'Cannot perform the database connection !'&#xD;&#xA;.&quot;\nOn your left, expand the node Metadata/Db_Connections and edit demoConnection 0.1.&quot;&#xD;&#xA;.&quot;\n\n## Technical message: ##\n\nERROR_MESSAGE: &quot;&#xD;&#xA;.$_globals{tDBSQLRow_2}{ERROR_MESSAGE}&#xD;&#xA;.&quot;\n\nPERL_ERROR_MESSAGE: &quot;&#xD;&#xA;.$_globals{tDBSQLRow_2}{PERL_ERROR_MESSAGE}&#xD;&#xA;"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__MESSAGE__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tMsgBox_1"/>
+    </node>
+    <node componentName="tDBSQLRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="288" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tDBSQLRow_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value="REPOSITORY"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g"/>
+      <elementParameter field="PROPERTY_TYPE" name="PROPERTY" value=""/>
+      <elementParameter field="CLOSED_LIST" name="TYPE" value="mysql;mysql"/>
+      <elementParameter field="TEXT" name="HOST" value="'localhost'"/>
+      <elementParameter field="TEXT" name="PORT" value="'3306'"/>
+      <elementParameter field="TEXT" name="DBNAME" value="'test'"/>
+      <elementParameter field="TEXT" name="SCHEMA_DB" value="''"/>
+      <elementParameter field="TEXT" name="USER" value="'root'"/>
+      <elementParameter field="TEXT" name="PASS" value="''"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="CLOSED_LIST" name="QUERYSTORE_TYPE" value="BUILT_IN"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_QUERYSTORE_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g - test"/>
+      <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="''"/>
+      <elementParameter field="MEMO_SQL" name="QUERY" value="'CREATE TABLE demotable (id int(11) NOT NULL default 0,  name varchar(30) NOT NULL default &quot;&quot;,  quantity int(4) NOT NULL default 0,  flag int(1) NOT NULL default 0,  creation varchar(10) NOT NULL default &quot;&quot;,  delivery varchar(10) NOT NULL default &quot;&quot;,  PRIMARY KEY  (id)) TYPE=MyISAM;'"/>
+      <elementParameter field="TECHNICAL" name="ENCODING_TYPE" value="ISO-8859-15"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_ENCODING_TYPE" value="''"/>
+      <elementParameter field="ENCODING_TYPE" name="ENCODING" value="'ISO-8859-15'"/>
+      <elementParameter field="TEXT" name="LABEL" value="CREATE TABLE"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tDBSQLRow_1"/>
+    </node>
+    <node componentName="tDBSQLRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="32">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tDBSQLRow_2"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value="REPOSITORY"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g"/>
+      <elementParameter field="PROPERTY_TYPE" name="PROPERTY" value=""/>
+      <elementParameter field="CLOSED_LIST" name="TYPE" value="mysql;mysql"/>
+      <elementParameter field="TEXT" name="HOST" value="'localhost'"/>
+      <elementParameter field="TEXT" name="PORT" value="'3306'"/>
+      <elementParameter field="TEXT" name="DBNAME" value="'test'"/>
+      <elementParameter field="TEXT" name="SCHEMA_DB" value="''"/>
+      <elementParameter field="TEXT" name="USER" value="'root'"/>
+      <elementParameter field="TEXT" name="PASS" value="''"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="CLOSED_LIST" name="QUERYSTORE_TYPE" value="BUILT_IN"/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_QUERYSTORE_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g - test"/>
+      <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="''"/>
+      <elementParameter field="MEMO_SQL" name="QUERY" value="'DROP TABLE IF EXISTS demotable;'"/>
+      <elementParameter field="TECHNICAL" name="ENCODING_TYPE" value="ISO-8859-15"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_ENCODING_TYPE" value="''"/>
+      <elementParameter field="ENCODING_TYPE" name="ENCODING" value="'ISO-8859-15'"/>
+      <elementParameter field="TEXT" name="LABEL" value="DROP TABLE IF EXISTS"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tDBSQLRow_2"/>
+    </node>
+    <connection label="RunBefore" lineStyle="1" metaname="tDBSQLRow_1" offsetLabelX="0" offsetLabelY="0" source="tDBSQLRow_1" target="tMysqlBulkExec_1"/>
+    <connection label="RunBefore" lineStyle="1" metaname="tDBSQLRow_2" offsetLabelX="0" offsetLabelY="0" source="tDBSQLRow_2" target="tDBSQLRow_1"/>
+    <connection label="OnError" lineStyle="5" metaname="tDBSQLRow_2" offsetLabelX="0" offsetLabelY="0" source="tDBSQLRow_2" target="tMsgBox_1"/>
+  </process>
+</talendfile:DocumentRoot>

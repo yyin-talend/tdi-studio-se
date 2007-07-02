@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tMsgBox" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="448" posY="160">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMsgBox_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="TITLE" value="&quot;Talend Open Studio&quot;"/>
+      <elementParameter field="CLOSED_LIST" name="BUTTONS" value="0"/>
+      <elementParameter field="CLOSED_LIST" name="ICON" value="INFORMATION_MESSAGE"/>
+      <elementParameter field="MEMO" name="MESSAGE" value="&quot;Hello world!&quot;"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tMsgBox_1"/>
+    </node>
+    <node componentName="tRowGenerator" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="224" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tRowGenerator_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="NB_ROWS" value="Integer.parseInt(context.getProperty(&quot;rowLength&quot;))"/>
+      <elementParameter field="TABLE" name="VALUES">
+        <elementValue elementRef="SCHEMA_COLUMN" value="number"/>
+        <elementValue elementRef="ARRAY" value="1,2,3,4,5,6,7,8,9,10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="txt"/>
+        <elementValue elementRef="ARRAY" value="&quot;text1&quot;, &quot;text2&quot;, &quot;text3&quot;, &quot;text4&quot;, &quot;text5&quot;, &quot;text6&quot;, &quot;text7&quot;, &quot;text8&quot;, &quot;text9&quot;, &quot;text10&quot;"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="date"/>
+        <elementValue elementRef="ARRAY" value="&quot;2007-01-21&quot;, &quot;2007-02-22&quot;, &quot;2007-03-23&quot;, &quot;2006-04-24&quot;, &quot;2006-05-25&quot;, &quot;2006-06-26&quot;, &quot;2005-07-27&quot;, &quot;2005-08-28&quot;, &quot;2005-08-29&quot;, &quot;2004-11-21&quot;"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="flag"/>
+        <elementValue elementRef="ARRAY" value="1"/>
+      </elementParameter>
+      <elementParameter field="EXTERNAL" name="MAP" value=""/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata comment="" name="tRowGenerator_1">
+        <column comment="" key="false" length="3" name="number" nullable="false" pattern="" precision="-1" sourceType="" type="id_Integer"/>
+        <column comment="" key="false" length="20" name="txt" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="10" name="date" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="5" name="flag" nullable="false" pattern="" precision="-1" sourceType="" type="id_Boolean"/>
+      </metadata>
+    </node>
+    <connection label="OnOk" lineStyle="4" metaname="tRowGenerator_1" offsetLabelX="0" offsetLabelY="0" source="tRowGenerator_1" target="tMsgBox_1"/>
+  </process>
+</talendfile:DocumentRoot>

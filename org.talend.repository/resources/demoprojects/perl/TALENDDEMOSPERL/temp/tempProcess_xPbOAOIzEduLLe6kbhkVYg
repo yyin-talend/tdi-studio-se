@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <note opaque="true" posX="96" posY="64" sizeHeight="64" sizeWidth="257" text="Dans Componant/misc tContextLoad à corriger"/>
+  </process>
+</talendfile:DocumentRoot>

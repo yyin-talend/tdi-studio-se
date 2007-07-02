@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="ASCII"?>
+<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org" DatabaseType="IBM DB2" URL="jdbc:db2://myserver:50000/mydb" Port="50000" Username="login" Password="pass" ServerName="myserver" DatasourceName="" FileFieldName="" Schema="" SID="mydb" SqlSynthax="SQL Syntax"/>

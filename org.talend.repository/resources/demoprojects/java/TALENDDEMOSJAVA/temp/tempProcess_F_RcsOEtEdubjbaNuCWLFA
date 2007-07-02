@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tExternalSortOutput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="576" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tExternalSortOutput_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="FILE" name="FILENAME" value="&quot;D:/TOS-Win32-r2848-V2.0.0M4/workspace/sorted.txt&quot;"/>
+      <elementParameter field="TEXT" name="FIELDSEPARATOR" value="&quot;;&quot;"/>
+      <elementParameter field="TABLE" name="CRITERIA">
+        <elementValue elementRef="COLNAME" value="number"/>
+        <elementValue elementRef="SORT" value="num"/>
+        <elementValue elementRef="ORDER" value="asc"/>
+        <elementValue elementRef="COLNAME" value="txt"/>
+        <elementValue elementRef="SORT" value="alpha"/>
+        <elementValue elementRef="ORDER" value="asc"/>
+      </elementParameter>
+      <elementParameter field="TEXT" name="MAX_MEMORY" value="&quot;200M&quot;"/>
+      <elementParameter field="DIRECTORY" name="TEMP_DIR" value="&quot;C:/TEMP&quot;"/>
+      <elementParameter field="FILE" name="SORT_CMDPATH" value=""/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tExternalSortOutput_1">
+        <column comment="" key="false" length="3" name="number" nullable="false" pattern="" precision="-1" sourceType="" type="id_Integer"/>
+        <column comment="" key="false" length="20" name="txt" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="10" name="date" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="5" name="flag" nullable="false" pattern="" precision="-1" sourceType="" type="id_Boolean"/>
+      </metadata>
+    </node>
+    <node componentName="tRowGenerator" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tRowGenerator_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="TEXT" name="NB_ROWS" value="100"/>
+      <elementParameter field="TABLE" name="VALUES">
+        <elementValue elementRef="SCHEMA_COLUMN" value="number"/>
+        <elementValue elementRef="ARRAY" value="1,2,3,4,5,6,7,8,9,10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="txt"/>
+        <elementValue elementRef="ARRAY" value="&quot;text1&quot;, &quot;text2&quot;, &quot;text3&quot;, &quot;text4&quot;, &quot;text5&quot;, &quot;text6&quot;, &quot;text7&quot;, &quot;text8&quot;, &quot;text9&quot;, &quot;text10&quot;"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="date"/>
+        <elementValue elementRef="ARRAY" value="&quot;2007-01-21&quot;, &quot;2007-02-22&quot;, &quot;2007-03-23&quot;, &quot;2006-04-24&quot;, &quot;2006-05-25&quot;, &quot;2006-06-26&quot;, &quot;2005-07-27&quot;, &quot;2005-08-28&quot;, &quot;2005-08-29&quot;, &quot;2004-11-21&quot;"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="flag"/>
+        <elementValue elementRef="ARRAY" value="true,false"/>
+      </elementParameter>
+      <elementParameter field="TECHNICAL" name="ENCODING_TYPE" value="ISO-8859-15"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_ENCODING_TYPE" value="&quot;&quot;"/>
+      <elementParameter field="ENCODING_TYPE" name="ENCODING" value="&quot;ISO-8859-15&quot;"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tRowGenerator_1">
+        <column comment="" key="false" length="3" name="number" nullable="false" pattern="" precision="-1" sourceType="" type="id_Integer"/>
+        <column comment="" key="false" length="20" name="txt" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="10" name="date" nullable="false" pattern="" precision="-1" sourceType="" type="id_String"/>
+        <column comment="" key="false" length="5" name="flag" nullable="false" pattern="" precision="-1" sourceType="" type="id_Boolean"/>
+      </metadata>
+    </node>
+    <connection label="row1" lineStyle="0" metaname="tRowGenerator_1" offsetLabelX="0" offsetLabelY="0" source="tRowGenerator_1" target="tExternalSortOutput_1"/>
+    <note opaque="true" posX="32" posY="32" sizeHeight="64" sizeWidth="641" text="If you used an external command line to sort your files, you can design your jobs with the tExternalSortRow componant."/>
+  </process>
+</talendfile:DocumentRoot>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ASCII"?>
+<talendfile:ProcessType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" defaultContext="Default">
+  <context confirmationNeeded="false" name="Default"/>
+  <node componentName="tFileUnarchive" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tFileUnarchive_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="FILE" name="ZIPFILE" value="&quot;c:/test.zip&quot;"/>
+    <elementParameter field="DIRECTORY" name="DIRECTORY" value="&quot;c:/unzip&quot;"/>
+    <elementParameter field="CHECK" name="ROOTNAME" value="true"/>
+    <elementParameter field="CHECK" name="EXTRACTPATH" value="true"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tFileUnarchive_1"/>
+  </node>
+  <note opaque="true" posX="160" posY="32" sizeHeight="97" sizeWidth="225" text="tFileUnzip"/>
+</talendfile:ProcessType>

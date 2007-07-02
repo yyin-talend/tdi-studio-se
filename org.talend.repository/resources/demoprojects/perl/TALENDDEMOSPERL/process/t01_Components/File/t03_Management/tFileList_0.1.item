@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ASCII"?>
+<talendfile:ProcessType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" defaultContext="Default">
+  <context confirmationNeeded="false" name="Default">
+    <contextParameter name="rootFolder" prompt="Define your Root Folder (or another path):" promptNeeded="true" type="STRING" value="'\\'"/>
+  </context>
+  <node componentName="tFileList" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tFileList_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="DIRECTORY" name="DIRECTORY" value="$_context{rootFolder}"/>
+    <elementParameter field="TEXT" name="FILEMASK" value="'*.*'"/>
+    <elementParameter field="CLOSED_LIST" name="CASE_SENSITIVE" value="YES"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tFileList_1"/>
+  </node>
+  <node componentName="tPerl" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="288" posY="64">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tPerl_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="MEMO_PERL" name="CODE" value="# print an integer to count the iteration&#xD;&#xA;print &quot;#&quot;.$i++.&quot;: &quot;;&#xD;&#xA;&#xD;&#xA;# print the global var describing the iterate's file &#xD;&#xA;print $_globals{tFileList_1}{CURRENT_FILE};&#xD;&#xA;&#xD;&#xA;# print return to the line&#xD;&#xA;print &quot;\n&quot;;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__COMMENT__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value="# print an integer to count the iteration&#xD;&#xA;print &quot;#&quot;.$i++.&quot;: &quot;;&#xD;&#xA;&#xD;&#xA;# print the global var describing the iterate's file &#xD;&#xA;print $_globals{tFileList_1}{CURRENT_FILE};&#xD;&#xA;&#xD;&#xA;# print return to the line&#xD;&#xA;print &quot;\n&quot;;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;"/>
+    <metadata name="tPerl_1"/>
+  </node>
+  <connection label="Iterate" lineStyle="7" metaname="tFileList_1" offsetLabelX="0" offsetLabelY="0" source="tFileList_1" target="tPerl_1"/>
+</talendfile:ProcessType>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ASCII"?>
+<talendfile:ProcessType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" defaultContext="Default">
+  <context confirmationNeeded="false" name="Default"/>
+  <node componentName="tLogRow" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="512" posY="32">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tLogRow_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TEXT" name="FIELDSEPARATOR" value="'|'"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tLogRow_1">
+      <column comment="" key="true" length="1" name="language" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_count" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_avg" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_max" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_min" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_sum" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_first" nullable="false" precision="-1" type="int"/>
+      <column comment="" key="false" length="4" name="col_last" nullable="false" precision="-1" type="int"/>
+    </metadata>
+  </node>
+  <node componentName="tRowGenerator" componentVersion="0.102" offsetLabelX="0" offsetLabelY="2" posX="64" posY="32">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tRowGenerator_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+    <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+    <elementParameter field="SCHEMA_TYPE" name="SCHEMA" value=""/>
+    <elementParameter field="TEXT" name="NB_ROWS" value="'1000'"/>
+    <elementParameter field="TABLE" name="VALUES">
+      <elementValue elementRef="SCHEMA_COLUMN" value="id"/>
+      <elementValue elementRef="ARRAY" value="sub{$i++}"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="language"/>
+      <elementValue elementRef="ARRAY" value="'English','Chineese','French'"/>
+      <elementValue elementRef="SCHEMA_COLUMN" value="quantity"/>
+      <elementValue elementRef="ARRAY" value="1..1000"/>
+    </elementParameter>
+    <elementParameter field="TEXT" name="ENCODING" value="'ISO-8859-15'"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__VALUES__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata comment="" name="tRowGenerator_1">
+      <column comment="" key="true" length="11" name="id" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="25" name="language" nullable="false" precision="0" type="String"/>
+      <column comment="" key="false" length="4" name="quantity" nullable="false" precision="0" type="int"/>
+    </metadata>
+  </node>
+  <node componentName="tAggregateRow" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="288" posY="32">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tAggregateRow_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+    <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+    <elementParameter field="SCHEMA_TYPE" name="SCHEMA" value=""/>
+    <elementParameter field="TABLE" name="GROUPBYS">
+      <elementValue elementRef="OUTPUT_COLUMN" value="flag"/>
+      <elementValue elementRef="INPUT_COLUMN" value="language"/>
+    </elementParameter>
+    <elementParameter field="TABLE" name="OPERATIONS">
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_count"/>
+      <elementValue elementRef="FUNCTION" value="count"/>
+      <elementValue elementRef="INPUT_COLUMN" value="id"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_avg"/>
+      <elementValue elementRef="FUNCTION" value="avg"/>
+      <elementValue elementRef="INPUT_COLUMN" value="quantity"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_max"/>
+      <elementValue elementRef="FUNCTION" value="max"/>
+      <elementValue elementRef="INPUT_COLUMN" value="quantity"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_min"/>
+      <elementValue elementRef="FUNCTION" value="min"/>
+      <elementValue elementRef="INPUT_COLUMN" value="quantity"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_sum"/>
+      <elementValue elementRef="FUNCTION" value="sum"/>
+      <elementValue elementRef="INPUT_COLUMN" value="quantity"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_first"/>
+      <elementValue elementRef="FUNCTION" value="first"/>
+      <elementValue elementRef="INPUT_COLUMN" value="id"/>
+      <elementValue elementRef="OUTPUT_COLUMN" value="col_last"/>
+      <elementValue elementRef="FUNCTION" value="last"/>
+      <elementValue elementRef="INPUT_COLUMN" value="id"/>
+    </elementParameter>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="GROUPBY: __GROUPBYS__  &lt;br>__OPERATIONS__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value="Group by Flag"/>
+    <metadata name="tAggregateRow_1">
+      <column comment="" key="true" length="1" name="language" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_count" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_avg" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_max" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_min" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_sum" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="4" name="col_first" nullable="false" precision="-1" type="int"/>
+      <column comment="" key="false" length="4" name="col_last" nullable="false" precision="-1" type="int"/>
+    </metadata>
+  </node>
+  <connection label="row1" lineStyle="0" metaname="tRowGenerator_1" offsetLabelX="0" offsetLabelY="0" source="tRowGenerator_1" target="tAggregateRow_1"/>
+  <connection label="row2" lineStyle="0" metaname="tAggregateRow_1" offsetLabelX="0" offsetLabelY="0" source="tAggregateRow_1" target="tLogRow_1"/>
+</talendfile:ProcessType>

@@ -330,14 +330,16 @@ public class ImportProjectsUtilities {
         }
 
         Element demoProjectsInfo = doc.getRootElement();
-        
+
         for (Iterator<DemoProjectBean> i = demoProjectsInfo.elementIterator("project"); i.hasNext();) {
             Element demoProjectElement = (Element) i.next();
             demoProject = new DemoProjectBean();
             demoProject.setProjectName(demoProjectElement.attributeValue("name"));
             String language = demoProjectElement.attributeValue("language");
             demoProject.setLanguage(ECodeLanguage.getCodeLanguage(language));
-            demoProject.setArchiveFilePath(demoProjectElement.attributeValue("archiveFilePath"));
+            String demoProjectFileType = demoProjectElement.attributeValue("demoProjectFileType");
+            demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
+            demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath"));
             demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath"));
             demoProjectList.add(demoProject);
         }

@@ -1,0 +1,153 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <parameters>
+      <elementParameter field="DIRECTORY" name="COMP_DEFAULT_FILE_DIR" value="D:\Mes Documents\Developpement\runtime-talend.product-test"/>
+      <elementParameter field="CHECK" name="ON_CONSOLE_FLAG" value="false"/>
+      <elementParameter field="CHECK" name="ON_FILE_FLAG" value="false"/>
+      <elementParameter field="DIRECTORY" name="FILE_PATH" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="FILENAME_STATS" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="FILENAME_LOGS" value="&quot;&quot;"/>
+      <elementParameter field="CHECK" name="ON_DATABASE_FLAG" value="false"/>
+      <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value=""/>
+      <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_kzcEgOHdEdukdY77b0GbRg"/>
+      <elementParameter field="CLOSED_LIST" name="DB_TYPE" value=""/>
+      <elementParameter field="TEXT" name="HOST" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="PORT" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="DBNAME" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="SCHEMA_DB" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="USER" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="PASS" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="TABLE_STATS" value="&quot;&quot;"/>
+      <elementParameter field="TEXT" name="TABLE_LOGS" value="&quot;&quot;"/>
+      <elementParameter field="CHECK" name="CATCH_RUNTIME_ERRORS" value="false"/>
+      <elementParameter field="CHECK" name="CATCH_USER_ERRORS" value="false"/>
+      <elementParameter field="CHECK" name="CATCH_USER_WARNING" value="false"/>
+      <elementParameter field="CHECK" name="CATCH_REALTIME_STATS" value="false"/>
+    </parameters>
+    <node componentName="tSleep" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="32">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tSleep_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="true"/>
+      <elementParameter field="TEXT" name="PAUSE" value="5"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tSleep_1"/>
+    </node>
+    <node componentName="tSleep" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="224">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tSleep_2"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="PAUSE" value="2"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tSleep_2"/>
+    </node>
+    <node componentName="tLogRow" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="320" posY="192">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tLogRow_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+      <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+      <elementParameter field="CHECK" name="TABLE_PRINT" value="false"/>
+      <elementParameter field="TEXT" name="FIELDSEPARATOR" value="&quot;|&quot;"/>
+      <elementParameter field="CHECK" name="PRINT_HEADER" value="false"/>
+      <elementParameter field="CHECK" name="PRINT_UNIQUE_NAME" value="false"/>
+      <elementParameter field="CHECK" name="PRINT_COLNAMES" value="false"/>
+      <elementParameter field="CHECK" name="USE_FIXED_LENGTH" value="false"/>
+      <elementParameter field="TABLE" name="LENGTHS">
+        <elementValue elementRef="SCHEMA_COLUMN" value="master_pid"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="moment"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="pid"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="root_pid"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="father_pid"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="project"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="job"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="context"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="origin"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="message"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="system_pid"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="job_repository_id"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="job_version"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="message_type"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+        <elementValue elementRef="SCHEMA_COLUMN" value="duration"/>
+        <elementValue elementRef="LENGTH" value="10"/>
+      </elementParameter>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tLogRow_1">
+        <column comment="" defaultValue="" key="false" length="0" name="moment" nullable="true" pattern="&quot;yyyy-MM-dd HH:mm:ss&quot;" precision="0" sourceType="" type="id_Date"/>
+        <column comment="" defaultValue="" key="false" length="20" name="pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="20" name="father_pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="20" name="root_pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="0" name="system_pid" nullable="true" precision="0" sourceType="" type="id_Long"/>
+        <column comment="" defaultValue="" key="false" length="50" name="project" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="50" name="job" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="job_repository_id" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="job_version" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="50" name="context" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="origin" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="message_type" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="message" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="0" name="duration" nullable="true" precision="0" sourceType="" type="id_Long"/>
+      </metadata>
+    </node>
+    <node componentName="tStatCatcher" componentVersion="0.1" offsetLabelX="0" offsetLabelY="0" posX="224" posY="128">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tStatCatcher_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.1 (BETA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="false"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tStatCatcher_1">
+        <column comment="" defaultValue="" key="false" length="0" name="moment" nullable="true" pattern="&quot;yyyy-MM-dd HH:mm:ss&quot;" precision="0" sourceType="" type="id_Date"/>
+        <column comment="" defaultValue="" key="false" length="20" name="pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="20" name="father_pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="20" name="root_pid" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="0" name="system_pid" nullable="true" precision="0" sourceType="" type="id_Long"/>
+        <column comment="" defaultValue="" key="false" length="50" name="project" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="50" name="job" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="job_repository_id" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="job_version" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="50" name="context" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="origin" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="message_type" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="255" name="message" nullable="true" precision="0" sourceType="" type="id_String"/>
+        <column comment="" defaultValue="" key="false" length="0" name="duration" nullable="true" precision="0" sourceType="" type="id_Long"/>
+      </metadata>
+    </node>
+    <connection label="RunBefore" lineStyle="1" metaname="tSleep_1" offsetLabelX="0" offsetLabelY="0" source="tSleep_1" target="tSleep_2"/>
+    <connection label="row1" lineStyle="0" metaname="tStatCatcher_1" offsetLabelX="0" offsetLabelY="0" source="tStatCatcher_1" target="tLogRow_1"/>
+    <note opaque="false" posX="160" posY="32" sizeHeight="224" sizeWidth="257" text="tStatCatcher->tLogRow write on the console&#xD;&#xA;the start and end of each componants tSleep.&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;"/>
+  </process>
+</talendfile:DocumentRoot>

@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:TalendProperties="http://www.talend.org/properties">
+  <TalendProperties:Project xmi:id="_VQhFmr20EduGqKfvfKhEhg" label="TALENDDEMOSPERL" description="To describe the components of the Job Designer." language="perl" technicalLabel="TALENDDEMOSPERL" local="true" author="_VQhFx720EduGqKfvfKhEhg">
+    <folders xmi:id="_P-ilU-H1EduXp8DZ5RbHBQ" property="_P-ilUuH1EduXp8DZ5RbHBQ" state="_P-ilUeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QEVrU-H1EduXp8DZ5RbHBQ" property="_QEVrUuH1EduXp8DZ5RbHBQ" state="_QEVrUeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_P-ilV-H1EduXp8DZ5RbHBQ" property="_P-ilVuH1EduXp8DZ5RbHBQ" state="_P-ilVeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_P-ilW-H1EduXp8DZ5RbHBQ" property="_P-ilWuH1EduXp8DZ5RbHBQ" state="_P-ilWeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QIDtu-H1EduXp8DZ5RbHBQ" property="_QIDtuuH1EduXp8DZ5RbHBQ" state="_QIDtueH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_P-ilX-H1EduXp8DZ5RbHBQ" property="_P-ilXuH1EduXp8DZ5RbHBQ" state="_P-ilXeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QIDtv-H1EduXp8DZ5RbHBQ" property="_QIDtvuH1EduXp8DZ5RbHBQ" state="_QIDtveH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_P_JCQ-H1EduXp8DZ5RbHBQ" property="_P_JCQuH1EduXp8DZ5RbHBQ" state="_P_JCQeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QINesuH1EduXp8DZ5RbHBQ" property="_QINeseH1EduXp8DZ5RbHBQ" state="_QINesOH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_P_JCR-H1EduXp8DZ5RbHBQ" property="_P_JCRuH1EduXp8DZ5RbHBQ" state="_P_JCReH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QINetuH1EduXp8DZ5RbHBQ" property="_QINeteH1EduXp8DZ5RbHBQ" state="_QINetOH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_P_JCS-H1EduXp8DZ5RbHBQ" property="_P_JCSuH1EduXp8DZ5RbHBQ" state="_P_JCSeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QINeuuH1EduXp8DZ5RbHBQ" property="_QINeueH1EduXp8DZ5RbHBQ" state="_QINeuOH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QIDts-H1EduXp8DZ5RbHBQ" property="_QIDtsuH1EduXp8DZ5RbHBQ" state="_QIDtseH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QIDtt-H1EduXp8DZ5RbHBQ" property="_QIDttuH1EduXp8DZ5RbHBQ" state="_QIDtteH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      </children>
+    </folders>
+    <folders xmi:id="_QIWoo-H1EduXp8DZ5RbHBQ" property="_QIWoouH1EduXp8DZ5RbHBQ" state="_QIWooeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QIWop-H1EduXp8DZ5RbHBQ" property="_QIWopuH1EduXp8DZ5RbHBQ" state="_QIWopeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAB-H1EduXp8DZ5RbHBQ" property="_QRuABuH1EduXp8DZ5RbHBQ" state="_QRuABeH1EduXp8DZ5RbHBQ"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAC-H1EduXp8DZ5RbHBQ" property="_QRuACuH1EduXp8DZ5RbHBQ" state="_QRuACeH1EduXp8DZ5RbHBQ"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAD-H1EduXp8DZ5RbHBQ" property="_QRuADuH1EduXp8DZ5RbHBQ" state="_QRuADeH1EduXp8DZ5RbHBQ">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAE-H1EduXp8DZ5RbHBQ" property="_QRuAEuH1EduXp8DZ5RbHBQ" state="_QRuAEeH1EduXp8DZ5RbHBQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAF-H1EduXp8DZ5RbHBQ" property="_QRuAFuH1EduXp8DZ5RbHBQ" state="_QRuAFeH1EduXp8DZ5RbHBQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAG-H1EduXp8DZ5RbHBQ" property="_QRuAGuH1EduXp8DZ5RbHBQ" state="_QRuAGeH1EduXp8DZ5RbHBQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAH-H1EduXp8DZ5RbHBQ" property="_QRuAHuH1EduXp8DZ5RbHBQ" state="_QRuAHeH1EduXp8DZ5RbHBQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAI-H1EduXp8DZ5RbHBQ" property="_QRuAIuH1EduXp8DZ5RbHBQ" state="_QRuAIeH1EduXp8DZ5RbHBQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAJ-H1EduXp8DZ5RbHBQ" property="_QRuAJuH1EduXp8DZ5RbHBQ" state="_QRuAJeH1EduXp8DZ5RbHBQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAK-H1EduXp8DZ5RbHBQ" property="_QRuAKuH1EduXp8DZ5RbHBQ" state="_QRuAKeH1EduXp8DZ5RbHBQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAL-H1EduXp8DZ5RbHBQ" property="_QRuALuH1EduXp8DZ5RbHBQ" state="_QRuALeH1EduXp8DZ5RbHBQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAM-H1EduXp8DZ5RbHBQ" property="_QRuAMuH1EduXp8DZ5RbHBQ" state="_QRuAMeH1EduXp8DZ5RbHBQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAN-H1EduXp8DZ5RbHBQ" property="_QRuANuH1EduXp8DZ5RbHBQ" state="_QRuANeH1EduXp8DZ5RbHBQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAO-H1EduXp8DZ5RbHBQ" property="_QRuAOuH1EduXp8DZ5RbHBQ" state="_QRuAOeH1EduXp8DZ5RbHBQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAP-H1EduXp8DZ5RbHBQ" property="_QRuAPuH1EduXp8DZ5RbHBQ" state="_QRuAPeH1EduXp8DZ5RbHBQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAQ-H1EduXp8DZ5RbHBQ" property="_QRuAQuH1EduXp8DZ5RbHBQ" state="_QRuAQeH1EduXp8DZ5RbHBQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAR-H1EduXp8DZ5RbHBQ" property="_QRuARuH1EduXp8DZ5RbHBQ" state="_QRuAReH1EduXp8DZ5RbHBQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAS-H1EduXp8DZ5RbHBQ" property="_QRuASuH1EduXp8DZ5RbHBQ" state="_QRuASeH1EduXp8DZ5RbHBQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_b2Y9E-H1EduXp8DZ5RbHBQ" property="_b2Y9EuH1EduXp8DZ5RbHBQ" state="_b2Y9EeH1EduXp8DZ5RbHBQ"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAT-H1EduXp8DZ5RbHBQ" property="_QRuATuH1EduXp8DZ5RbHBQ" state="_QRuATeH1EduXp8DZ5RbHBQ"/>
+    </folders>
+    <folders xmi:id="_QLVEI-H1EduXp8DZ5RbHBQ" property="_QLVEIuH1EduXp8DZ5RbHBQ" state="_QLVEIeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QLVEJ-H1EduXp8DZ5RbHBQ" property="_QLVEJuH1EduXp8DZ5RbHBQ" state="_QLVEJeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QLVEK-H1EduXp8DZ5RbHBQ" property="_QLVEKuH1EduXp8DZ5RbHBQ" state="_QLVEKeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAW-H1EduXp8DZ5RbHBQ" property="_QRuAWuH1EduXp8DZ5RbHBQ" state="_QRuAWeH1EduXp8DZ5RbHBQ"/>
+      </children>
+    </folders>
+    <folders xmi:id="_QLVEL-H1EduXp8DZ5RbHBQ" property="_QLVELuH1EduXp8DZ5RbHBQ" state="_QLVELeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QLVEM-H1EduXp8DZ5RbHBQ" property="_QLVEMuH1EduXp8DZ5RbHBQ" state="_QLVEMeH1EduXp8DZ5RbHBQ" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_QRuAA-H1EduXp8DZ5RbHBQ" property="_QRuAAuH1EduXp8DZ5RbHBQ" state="_QRuAAeH1EduXp8DZ5RbHBQ"/>
+    <folders xmi:id="_QRuAU-H1EduXp8DZ5RbHBQ" property="_QRuAUuH1EduXp8DZ5RbHBQ" state="_QRuAUeH1EduXp8DZ5RbHBQ">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_QRuAV-H1EduXp8DZ5RbHBQ" property="_QRuAVuH1EduXp8DZ5RbHBQ" state="_QRuAVeH1EduXp8DZ5RbHBQ"/>
+    </folders>
+    <folders xmi:id="_702Do-IqEduAZ7y5YhbIRQ" property="_702DouIqEduAZ7y5YhbIRQ" state="_702DoeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_71cgk-IqEduAZ7y5YhbIRQ" property="_71cgkuIqEduAZ7y5YhbIRQ" state="_71cgkeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_702Dp-IqEduAZ7y5YhbIRQ" property="_702DpuIqEduAZ7y5YhbIRQ" state="_702DpeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_71cgl-IqEduAZ7y5YhbIRQ" property="_71cgluIqEduAZ7y5YhbIRQ" state="_71cgleIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_70_0o-IqEduAZ7y5YhbIRQ" property="_70_0ouIqEduAZ7y5YhbIRQ" state="_70_0oeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_70_0p-IqEduAZ7y5YhbIRQ" property="_70_0puIqEduAZ7y5YhbIRQ" state="_70_0peIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lqi-IqEduAZ7y5YhbIRQ" property="_71lqiuIqEduAZ7y5YhbIRQ" state="_71lqieIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_70_0q-IqEduAZ7y5YhbIRQ" property="_70_0quIqEduAZ7y5YhbIRQ" state="_70_0qeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lqj-IqEduAZ7y5YhbIRQ" property="_71lqjuIqEduAZ7y5YhbIRQ" state="_71lqjeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_70_0r-IqEduAZ7y5YhbIRQ" property="_70_0ruIqEduAZ7y5YhbIRQ" state="_70_0reIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lqk-IqEduAZ7y5YhbIRQ" property="_71lqkuIqEduAZ7y5YhbIRQ" state="_71lqkeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_70_0s-IqEduAZ7y5YhbIRQ" property="_70_0suIqEduAZ7y5YhbIRQ" state="_70_0seIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lql-IqEduAZ7y5YhbIRQ" property="_71lqluIqEduAZ7y5YhbIRQ" state="_71lqleIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_70_0t-IqEduAZ7y5YhbIRQ" property="_70_0tuIqEduAZ7y5YhbIRQ" state="_70_0teIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_72MHc-IqEduAZ7y5YhbIRQ" property="_72MHcuIqEduAZ7y5YhbIRQ" state="_72MHceIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lqg-IqEduAZ7y5YhbIRQ" property="_71lqguIqEduAZ7y5YhbIRQ" state="_71lqgeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_71lqh-IqEduAZ7y5YhbIRQ" property="_71lqhuIqEduAZ7y5YhbIRQ" state="_71lqheIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+      </children>
+    </folders>
+    <folders xmi:id="_72MHd-IqEduAZ7y5YhbIRQ" property="_72MHduIqEduAZ7y5YhbIRQ" state="_72MHdeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_72MHe-IqEduAZ7y5YhbIRQ" property="_72MHeuIqEduAZ7y5YhbIRQ" state="_72MHeeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_72MHf-IqEduAZ7y5YhbIRQ" property="_72MHfuIqEduAZ7y5YhbIRQ" state="_72MHfeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-YaI-IqEduAZ7y5YhbIRQ" property="_7-YaIuIqEduAZ7y5YhbIRQ" state="_7-YaIeIqEduAZ7y5YhbIRQ"/>
+      </children>
+    </folders>
+    <folders xmi:id="_72MHg-IqEduAZ7y5YhbIRQ" property="_72MHguIqEduAZ7y5YhbIRQ" state="_72MHgeIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_72MHh-IqEduAZ7y5YhbIRQ" property="_72MHhuIqEduAZ7y5YhbIRQ" state="_72MHheIqEduAZ7y5YhbIRQ" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_7-PQM-IqEduAZ7y5YhbIRQ" property="_7-PQMuIqEduAZ7y5YhbIRQ" state="_7-PQMeIqEduAZ7y5YhbIRQ"/>
+    <folders xmi:id="_7-PQN-IqEduAZ7y5YhbIRQ" property="_7-PQNuIqEduAZ7y5YhbIRQ" state="_7-PQNeIqEduAZ7y5YhbIRQ">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQO-IqEduAZ7y5YhbIRQ" property="_7-PQOuIqEduAZ7y5YhbIRQ" state="_7-PQOeIqEduAZ7y5YhbIRQ"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQP-IqEduAZ7y5YhbIRQ" property="_7-PQPuIqEduAZ7y5YhbIRQ" state="_7-PQPeIqEduAZ7y5YhbIRQ"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQQ-IqEduAZ7y5YhbIRQ" property="_7-PQQuIqEduAZ7y5YhbIRQ" state="_7-PQQeIqEduAZ7y5YhbIRQ">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQR-IqEduAZ7y5YhbIRQ" property="_7-PQRuIqEduAZ7y5YhbIRQ" state="_7-PQReIqEduAZ7y5YhbIRQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQS-IqEduAZ7y5YhbIRQ" property="_7-PQSuIqEduAZ7y5YhbIRQ" state="_7-PQSeIqEduAZ7y5YhbIRQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQT-IqEduAZ7y5YhbIRQ" property="_7-PQTuIqEduAZ7y5YhbIRQ" state="_7-PQTeIqEduAZ7y5YhbIRQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQU-IqEduAZ7y5YhbIRQ" property="_7-PQUuIqEduAZ7y5YhbIRQ" state="_7-PQUeIqEduAZ7y5YhbIRQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQV-IqEduAZ7y5YhbIRQ" property="_7-PQVuIqEduAZ7y5YhbIRQ" state="_7-PQVeIqEduAZ7y5YhbIRQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQW-IqEduAZ7y5YhbIRQ" property="_7-PQWuIqEduAZ7y5YhbIRQ" state="_7-PQWeIqEduAZ7y5YhbIRQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQX-IqEduAZ7y5YhbIRQ" property="_7-PQXuIqEduAZ7y5YhbIRQ" state="_7-PQXeIqEduAZ7y5YhbIRQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQY-IqEduAZ7y5YhbIRQ" property="_7-PQYuIqEduAZ7y5YhbIRQ" state="_7-PQYeIqEduAZ7y5YhbIRQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQZ-IqEduAZ7y5YhbIRQ" property="_7-PQZuIqEduAZ7y5YhbIRQ" state="_7-PQZeIqEduAZ7y5YhbIRQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQa-IqEduAZ7y5YhbIRQ" property="_7-PQauIqEduAZ7y5YhbIRQ" state="_7-PQaeIqEduAZ7y5YhbIRQ"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQb-IqEduAZ7y5YhbIRQ" property="_7-PQbuIqEduAZ7y5YhbIRQ" state="_7-PQbeIqEduAZ7y5YhbIRQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQc-IqEduAZ7y5YhbIRQ" property="_7-PQcuIqEduAZ7y5YhbIRQ" state="_7-PQceIqEduAZ7y5YhbIRQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQd-IqEduAZ7y5YhbIRQ" property="_7-PQduIqEduAZ7y5YhbIRQ" state="_7-PQdeIqEduAZ7y5YhbIRQ"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQe-IqEduAZ7y5YhbIRQ" property="_7-PQeuIqEduAZ7y5YhbIRQ" state="_7-PQeeIqEduAZ7y5YhbIRQ"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQf-IqEduAZ7y5YhbIRQ" property="_7-PQfuIqEduAZ7y5YhbIRQ" state="_7-PQfeIqEduAZ7y5YhbIRQ">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_YTD3E-IzEduLLe6kbhkVYg" property="_YTD3EuIzEduLLe6kbhkVYg" state="_YTD3EeIzEduLLe6kbhkVYg"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_Zvc8k-IzEduLLe6kbhkVYg" property="_Zvc8kuIzEduLLe6kbhkVYg" state="_Zvc8keIzEduLLe6kbhkVYg"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_agBd4-IzEduLLe6kbhkVYg" property="_agBd4uIzEduLLe6kbhkVYg" state="_agBd4eIzEduLLe6kbhkVYg"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_bFuL8-IzEduLLe6kbhkVYg" property="_bFuL8uIzEduLLe6kbhkVYg" state="_bFuL8eIzEduLLe6kbhkVYg"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_cLT7A-IzEduLLe6kbhkVYg" property="_cLT7AuIzEduLLe6kbhkVYg" state="_cLT7AeIzEduLLe6kbhkVYg"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_dQc-I-IzEduLLe6kbhkVYg" property="_dQc-IuIzEduLLe6kbhkVYg" state="_dQc-IeIzEduLLe6kbhkVYg"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_48-VY-gOEduM8cQST5gLvg" property="_48-VYugOEduM8cQST5gLvg" state="_48-VYegOEduM8cQST5gLvg"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_rKlYA-gYEduM8cQST5gLvg" property="_rKlYAugYEduM8cQST5gLvg" state="_rKlYAegYEduM8cQST5gLvg">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_IJrq8-ghEduM8cQST5gLvg" property="_IJrq8ughEduM8cQST5gLvg" state="_IJrq8eghEduM8cQST5gLvg"/>
+        </children>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQg-IqEduAZ7y5YhbIRQ" property="_7-PQguIqEduAZ7y5YhbIRQ" state="_7-PQgeIqEduAZ7y5YhbIRQ"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQh-IqEduAZ7y5YhbIRQ" property="_7-PQhuIqEduAZ7y5YhbIRQ" state="_7-PQheIqEduAZ7y5YhbIRQ"/>
+    </folders>
+    <folders xmi:id="_7-PQi-IqEduAZ7y5YhbIRQ" property="_7-PQiuIqEduAZ7y5YhbIRQ" state="_7-PQieIqEduAZ7y5YhbIRQ">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_7-PQj-IqEduAZ7y5YhbIRQ" property="_7-PQjuIqEduAZ7y5YhbIRQ" state="_7-PQjeIqEduAZ7y5YhbIRQ"/>
+    </folders>
+    <folders xmi:id="_Uw3yUwNnEdyNmJCWIT8ouw" property="_Uw3yUgNnEdyNmJCWIT8ouw" state="_Uw3yUQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjZwNnEdyNmJCWIT8ouw" property="_UxBjZgNnEdyNmJCWIT8ouw" state="_UxBjZQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_Uw3yVwNnEdyNmJCWIT8ouw" property="_Uw3yVgNnEdyNmJCWIT8ouw" state="_Uw3yVQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjawNnEdyNmJCWIT8ouw" property="_UxBjagNnEdyNmJCWIT8ouw" state="_UxBjaQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_Uw3yWwNnEdyNmJCWIT8ouw" property="_Uw3yWgNnEdyNmJCWIT8ouw" state="_Uw3yWQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjUwNnEdyNmJCWIT8ouw" property="_UxBjUgNnEdyNmJCWIT8ouw" state="_UxBjUQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjdwNnEdyNmJCWIT8ouw" property="_UxBjdgNnEdyNmJCWIT8ouw" state="_UxBjdQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjVwNnEdyNmJCWIT8ouw" property="_UxBjVgNnEdyNmJCWIT8ouw" state="_UxBjVQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjewNnEdyNmJCWIT8ouw" property="_UxBjegNnEdyNmJCWIT8ouw" state="_UxBjeQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjWwNnEdyNmJCWIT8ouw" property="_UxBjWgNnEdyNmJCWIT8ouw" state="_UxBjWQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUUwNnEdyNmJCWIT8ouw" property="_UxLUUgNnEdyNmJCWIT8ouw" state="_UxLUUQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjXwNnEdyNmJCWIT8ouw" property="_UxBjXgNnEdyNmJCWIT8ouw" state="_UxBjXQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUVwNnEdyNmJCWIT8ouw" property="_UxLUVgNnEdyNmJCWIT8ouw" state="_UxLUVQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjYwNnEdyNmJCWIT8ouw" property="_UxBjYgNnEdyNmJCWIT8ouw" state="_UxBjYQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUWwNnEdyNmJCWIT8ouw" property="_UxLUWgNnEdyNmJCWIT8ouw" state="_UxLUWQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjbwNnEdyNmJCWIT8ouw" property="_UxBjbgNnEdyNmJCWIT8ouw" state="_UxBjbQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxBjcwNnEdyNmJCWIT8ouw" property="_UxBjcgNnEdyNmJCWIT8ouw" state="_UxBjcQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      </children>
+    </folders>
+    <folders xmi:id="_UxLUXwNnEdyNmJCWIT8ouw" property="_UxLUXgNnEdyNmJCWIT8ouw" state="_UxLUXQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUYwNnEdyNmJCWIT8ouw" property="_UxLUYgNnEdyNmJCWIT8ouw" state="_UxLUYQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7KWygNnEdyNmJCWIT8ouw" property="_U7KWyQNnEdyNmJCWIT8ouw" state="_U7KWyANnEdyNmJCWIT8ouw"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7KWzgNnEdyNmJCWIT8ouw" property="_U7KWzQNnEdyNmJCWIT8ouw" state="_U7KWzANnEdyNmJCWIT8ouw"/>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7KW0gNnEdyNmJCWIT8ouw" property="_U7KW0QNnEdyNmJCWIT8ouw" state="_U7KW0ANnEdyNmJCWIT8ouw">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7KW1gNnEdyNmJCWIT8ouw" property="_U7KW1QNnEdyNmJCWIT8ouw" state="_U7KW1ANnEdyNmJCWIT8ouw">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7KW2gNnEdyNmJCWIT8ouw" property="_U7KW2QNnEdyNmJCWIT8ouw" state="_U7KW2ANnEdyNmJCWIT8ouw"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgswNnEdyNmJCWIT8ouw" property="_U7TgsgNnEdyNmJCWIT8ouw" state="_U7TgsQNnEdyNmJCWIT8ouw">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgtwNnEdyNmJCWIT8ouw" property="_U7TgtgNnEdyNmJCWIT8ouw" state="_U7TgtQNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TguwNnEdyNmJCWIT8ouw" property="_U7TgugNnEdyNmJCWIT8ouw" state="_U7TguQNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgvwNnEdyNmJCWIT8ouw" property="_U7TgvgNnEdyNmJCWIT8ouw" state="_U7TgvQNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgwwNnEdyNmJCWIT8ouw" property="_U7TgwgNnEdyNmJCWIT8ouw" state="_U7TgwQNnEdyNmJCWIT8ouw"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgxwNnEdyNmJCWIT8ouw" property="_U7TgxgNnEdyNmJCWIT8ouw" state="_U7TgxQNnEdyNmJCWIT8ouw"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgywNnEdyNmJCWIT8ouw" property="_U7TgygNnEdyNmJCWIT8ouw" state="_U7TgyQNnEdyNmJCWIT8ouw"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7TgzwNnEdyNmJCWIT8ouw" property="_U7TgzgNnEdyNmJCWIT8ouw" state="_U7TgzQNnEdyNmJCWIT8ouw"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg0wNnEdyNmJCWIT8ouw" property="_U7Tg0gNnEdyNmJCWIT8ouw" state="_U7Tg0QNnEdyNmJCWIT8ouw">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg1wNnEdyNmJCWIT8ouw" property="_U7Tg1gNnEdyNmJCWIT8ouw" state="_U7Tg1QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg2wNnEdyNmJCWIT8ouw" property="_U7Tg2gNnEdyNmJCWIT8ouw" state="_U7Tg2QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg3wNnEdyNmJCWIT8ouw" property="_U7Tg3gNnEdyNmJCWIT8ouw" state="_U7Tg3QNnEdyNmJCWIT8ouw"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg4wNnEdyNmJCWIT8ouw" property="_U7Tg4gNnEdyNmJCWIT8ouw" state="_U7Tg4QNnEdyNmJCWIT8ouw">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg5wNnEdyNmJCWIT8ouw" property="_U7Tg5gNnEdyNmJCWIT8ouw" state="_U7Tg5QNnEdyNmJCWIT8ouw"/>
+        </children>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg6wNnEdyNmJCWIT8ouw" property="_U7Tg6gNnEdyNmJCWIT8ouw" state="_U7Tg6QNnEdyNmJCWIT8ouw"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg7wNnEdyNmJCWIT8ouw" property="_U7Tg7gNnEdyNmJCWIT8ouw" state="_U7Tg7QNnEdyNmJCWIT8ouw">
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg8wNnEdyNmJCWIT8ouw" property="_U7Tg8gNnEdyNmJCWIT8ouw" state="_U7Tg8QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg9wNnEdyNmJCWIT8ouw" property="_U7Tg9gNnEdyNmJCWIT8ouw" state="_U7Tg9QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg-wNnEdyNmJCWIT8ouw" property="_U7Tg-gNnEdyNmJCWIT8ouw" state="_U7Tg-QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7Tg_wNnEdyNmJCWIT8ouw" property="_U7Tg_gNnEdyNmJCWIT8ouw" state="_U7Tg_QNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7ThAwNnEdyNmJCWIT8ouw" property="_U7ThAgNnEdyNmJCWIT8ouw" state="_U7ThAQNnEdyNmJCWIT8ouw"/>
+          <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7ThBwNnEdyNmJCWIT8ouw" property="_U7ThBgNnEdyNmJCWIT8ouw" state="_U7ThBQNnEdyNmJCWIT8ouw"/>
+        </children>
+      </children>
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7ThCwNnEdyNmJCWIT8ouw" property="_U7ThCgNnEdyNmJCWIT8ouw" state="_U7ThCQNnEdyNmJCWIT8ouw"/>
+    </folders>
+    <folders xmi:id="_UxLUZwNnEdyNmJCWIT8ouw" property="_UxLUZgNnEdyNmJCWIT8ouw" state="_UxLUZQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUawNnEdyNmJCWIT8ouw" property="_UxLUagNnEdyNmJCWIT8ouw" state="_UxLUaQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUbwNnEdyNmJCWIT8ouw" property="_UxLUbgNnEdyNmJCWIT8ouw" state="_UxLUbQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+        <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7ThFwNnEdyNmJCWIT8ouw" property="_U7ThFgNnEdyNmJCWIT8ouw" state="_U7ThFQNnEdyNmJCWIT8ouw"/>
+      </children>
+    </folders>
+    <folders xmi:id="_UxLUcwNnEdyNmJCWIT8ouw" property="_UxLUcgNnEdyNmJCWIT8ouw" state="_UxLUcQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_UxLUdwNnEdyNmJCWIT8ouw" property="_UxLUdgNnEdyNmJCWIT8ouw" state="_UxLUdQNnEdyNmJCWIT8ouw" type="SYSTEM_FOLDER"/>
+    </folders>
+    <folders xmi:id="_U7KWxgNnEdyNmJCWIT8ouw" property="_U7KWxQNnEdyNmJCWIT8ouw" state="_U7KWxANnEdyNmJCWIT8ouw"/>
+    <folders xmi:id="_U7ThDwNnEdyNmJCWIT8ouw" property="_U7ThDgNnEdyNmJCWIT8ouw" state="_U7ThDQNnEdyNmJCWIT8ouw">
+      <children xsi:type="TalendProperties:FolderItem" xmi:id="_U7ThEwNnEdyNmJCWIT8ouw" property="_U7ThEgNnEdyNmJCWIT8ouw" state="_U7ThEQNnEdyNmJCWIT8ouw"/>
+    </folders>
+    <migrationTasks>org.talend.repository.localprovider.RemoveRoutineFolderTask</migrationTasks>
+    <migrationTasks>org.talend.repository.localprovider.model.migration.ChangeXmiSerialization</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametRunProcess</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametMysqlOutputBulkExec</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametCatcher</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.upgradetUniqRow</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametDbInputToOracle</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametDbInputToMySQL</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametDbInputToPostgresql</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametDbInputToMssql</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.updatetRowGenerator</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.upgradetWarntDiePriority</migrationTasks>
+    <migrationTasks>org.talend.repository.migration.renametFileZipUnzip</migrationTasks>
+  </TalendProperties:Project>
+  <TalendProperties:User xmi:id="_VQhFx720EduGqKfvfKhEhg" id="2" login="ocarbone@talend.com" password=""/>
+  <TalendProperties:ItemState xmi:id="_P-ilUeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P-ilUuH1EduXp8DZ5RbHBQ" id="_P-ilUOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.301+0800" version="0.1" item="_P-ilU-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P-ilVeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P-ilVuH1EduXp8DZ5RbHBQ" id="_P-ilVOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.301+0800" version="0.1" item="_P-ilV-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P-ilWeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P-ilWuH1EduXp8DZ5RbHBQ" id="_P-ilWOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.301+0800" version="0.1" item="_P-ilW-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P-ilXeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P-ilXuH1EduXp8DZ5RbHBQ" id="_P-ilXOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.301+0800" version="0.1" item="_P-ilX-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P_JCQeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P_JCQuH1EduXp8DZ5RbHBQ" id="_P_JCQOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.364+0800" version="0.1" item="_P_JCQ-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P_JCReH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P_JCRuH1EduXp8DZ5RbHBQ" id="_P_JCROH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.364+0800" version="0.1" item="_P_JCR-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_P_JCSeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_P_JCSuH1EduXp8DZ5RbHBQ" id="_P_JCSOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.364+0800" version="0.1" item="_P_JCS-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QEVrUeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QEVrUuH1EduXp8DZ5RbHBQ" id="_QEVrUOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:08:59.909+0800" version="0.1" item="_QEVrU-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIDtseH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIDtsuH1EduXp8DZ5RbHBQ" id="_QIDtsOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.299+0800" version="0.1" item="_QIDts-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIDtteH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIDttuH1EduXp8DZ5RbHBQ" id="_QIDttOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.299+0800" version="0.1" item="_QIDtt-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIDtueH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIDtuuH1EduXp8DZ5RbHBQ" id="_QIDtuOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.299+0800" version="0.1" item="_QIDtu-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIDtveH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIDtvuH1EduXp8DZ5RbHBQ" id="_QIDtvOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.299+0800" version="0.1" item="_QIDtv-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QINesOH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QINeseH1EduXp8DZ5RbHBQ" id="_QIDtwOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.299+0800" version="0.1" item="_QINesuH1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QINetOH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QINeteH1EduXp8DZ5RbHBQ" id="_QINes-H1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.315+0800" version="0.1" item="_QINetuH1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QINeuOH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QINeueH1EduXp8DZ5RbHBQ" id="_QINet-H1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.315+0800" version="0.1" item="_QINeuuH1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIWooeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIWoouH1EduXp8DZ5RbHBQ" id="_QIWooOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.330+0800" version="0.1" item="_QIWoo-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QIWopeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QIWopuH1EduXp8DZ5RbHBQ" id="_QIWopOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.330+0800" version="0.1" item="_QIWop-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QLVEIeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QLVEIuH1EduXp8DZ5RbHBQ" id="_QLVEIOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.642+0800" version="0.1" item="_QLVEI-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QLVEJeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QLVEJuH1EduXp8DZ5RbHBQ" id="_QLVEJOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.642+0800" version="0.1" item="_QLVEJ-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QLVEKeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QLVEKuH1EduXp8DZ5RbHBQ" id="_QLVEKOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.642+0800" version="0.1" item="_QLVEK-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QLVELeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QLVELuH1EduXp8DZ5RbHBQ" id="_QLVELOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.642+0800" version="0.1" item="_QLVEL-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QLVEMeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QLVEMuH1EduXp8DZ5RbHBQ" id="_QLVEMOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:00.642+0800" version="0.1" item="_QLVEM-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAAeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAAuH1EduXp8DZ5RbHBQ" id="_QRuAAOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAA-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuABeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuABuH1EduXp8DZ5RbHBQ" id="_QRuABOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAB-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuACeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuACuH1EduXp8DZ5RbHBQ" id="_QRuACOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAC-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuADeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuADuH1EduXp8DZ5RbHBQ" id="_QRuADOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAD-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAEeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAEuH1EduXp8DZ5RbHBQ" id="_QRuAEOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAE-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAFeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAFuH1EduXp8DZ5RbHBQ" id="_QRuAFOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAF-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAGeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAGuH1EduXp8DZ5RbHBQ" id="_QRuAGOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAG-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAHeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAHuH1EduXp8DZ5RbHBQ" id="_QRuAHOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAH-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAIeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAIuH1EduXp8DZ5RbHBQ" id="_QRuAIOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAI-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAJeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAJuH1EduXp8DZ5RbHBQ" id="_QRuAJOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAJ-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAKeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAKuH1EduXp8DZ5RbHBQ" id="_QRuAKOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAK-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuALeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuALuH1EduXp8DZ5RbHBQ" id="_QRuALOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAL-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAMeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAMuH1EduXp8DZ5RbHBQ" id="_QRuAMOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAM-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuANeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuANuH1EduXp8DZ5RbHBQ" id="_QRuANOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAN-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAOeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAOuH1EduXp8DZ5RbHBQ" id="_QRuAOOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAO-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAPeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAPuH1EduXp8DZ5RbHBQ" id="_QRuAPOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAP-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAQeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAQuH1EduXp8DZ5RbHBQ" id="_QRuAQOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAQ-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAReH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuARuH1EduXp8DZ5RbHBQ" id="_QRuAROH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAR-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuASeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuASuH1EduXp8DZ5RbHBQ" id="_QRuASOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAS-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuATeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuATuH1EduXp8DZ5RbHBQ" id="_QRuATOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAT-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAUeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAUuH1EduXp8DZ5RbHBQ" id="_QRuAUOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAU-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAVeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAVuH1EduXp8DZ5RbHBQ" id="_QRuAVOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAV-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_QRuAWeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_QRuAWuH1EduXp8DZ5RbHBQ" id="_QRuAWOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:09:01.312+0800" version="0.1" item="_QRuAW-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_b2Y9EeH1EduXp8DZ5RbHBQ"/>
+  <TalendProperties:Property xmi:id="_b2Y9EuH1EduXp8DZ5RbHBQ" id="_b2Y9EOH1EduXp8DZ5RbHBQ" label="TALENDDEMOSPERL" creationDate="2007-04-03T23:10:18.977+0800" version="0.1" item="_b2Y9E-H1EduXp8DZ5RbHBQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_702DoeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_702DouIqEduAZ7y5YhbIRQ" id="_702DoOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.890+0800" version="0.1" item="_702Do-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_702DpeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_702DpuIqEduAZ7y5YhbIRQ" id="_702DpOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.890+0800" version="0.1" item="_702Dp-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0oeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0ouIqEduAZ7y5YhbIRQ" id="_70_0oOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0o-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0peIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0puIqEduAZ7y5YhbIRQ" id="_70_0pOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0p-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0qeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0quIqEduAZ7y5YhbIRQ" id="_70_0qOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0q-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0reIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0ruIqEduAZ7y5YhbIRQ" id="_70_0rOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0r-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0seIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0suIqEduAZ7y5YhbIRQ" id="_70_0sOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0s-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_70_0teIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_70_0tuIqEduAZ7y5YhbIRQ" id="_70_0tOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.906+0800" version="0.1" item="_70_0t-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71cgkeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71cgkuIqEduAZ7y5YhbIRQ" id="_71cgkOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.953+0800" version="0.1" item="_71cgk-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71cgleIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71cgluIqEduAZ7y5YhbIRQ" id="_71cglOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.953+0800" version="0.1" item="_71cgl-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqgeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqguIqEduAZ7y5YhbIRQ" id="_71lqgOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lqg-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqheIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqhuIqEduAZ7y5YhbIRQ" id="_71lqhOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lqh-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqieIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqiuIqEduAZ7y5YhbIRQ" id="_71lqiOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lqi-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqjeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqjuIqEduAZ7y5YhbIRQ" id="_71lqjOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lqj-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqkeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqkuIqEduAZ7y5YhbIRQ" id="_71lqkOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lqk-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_71lqleIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_71lqluIqEduAZ7y5YhbIRQ" id="_71lqlOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:16.968+0800" version="0.1" item="_71lql-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHceIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHcuIqEduAZ7y5YhbIRQ" id="_72MHcOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHc-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHdeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHduIqEduAZ7y5YhbIRQ" id="_72MHdOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHd-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHeeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHeuIqEduAZ7y5YhbIRQ" id="_72MHeOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHe-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHfeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHfuIqEduAZ7y5YhbIRQ" id="_72MHfOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHf-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHgeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHguIqEduAZ7y5YhbIRQ" id="_72MHgOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHg-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_72MHheIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_72MHhuIqEduAZ7y5YhbIRQ" id="_72MHhOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.031+0800" version="0.1" item="_72MHh-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQMeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQMuIqEduAZ7y5YhbIRQ" id="_7-PQMOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQM-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQNeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQNuIqEduAZ7y5YhbIRQ" id="_7-PQNOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQN-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQOeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQOuIqEduAZ7y5YhbIRQ" id="_7-PQOOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQO-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQPeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQPuIqEduAZ7y5YhbIRQ" id="_7-PQPOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQP-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQQeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQQuIqEduAZ7y5YhbIRQ" id="_7-PQQOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQQ-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQReIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQRuIqEduAZ7y5YhbIRQ" id="_7-PQROIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQR-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQSeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQSuIqEduAZ7y5YhbIRQ" id="_7-PQSOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQS-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQTeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQTuIqEduAZ7y5YhbIRQ" id="_7-PQTOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQT-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQUeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQUuIqEduAZ7y5YhbIRQ" id="_7-PQUOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQU-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQVeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQVuIqEduAZ7y5YhbIRQ" id="_7-PQVOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQV-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQWeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQWuIqEduAZ7y5YhbIRQ" id="_7-PQWOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQW-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQXeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQXuIqEduAZ7y5YhbIRQ" id="_7-PQXOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQX-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQYeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQYuIqEduAZ7y5YhbIRQ" id="_7-PQYOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQY-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQZeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQZuIqEduAZ7y5YhbIRQ" id="_7-PQZOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQZ-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQaeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQauIqEduAZ7y5YhbIRQ" id="_7-PQaOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQa-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQbeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQbuIqEduAZ7y5YhbIRQ" id="_7-PQbOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQb-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQceIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQcuIqEduAZ7y5YhbIRQ" id="_7-PQcOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQc-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQdeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQduIqEduAZ7y5YhbIRQ" id="_7-PQdOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQd-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQeeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQeuIqEduAZ7y5YhbIRQ" id="_7-PQeOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQe-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQfeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQfuIqEduAZ7y5YhbIRQ" id="_7-PQfOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQf-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQgeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQguIqEduAZ7y5YhbIRQ" id="_7-PQgOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQg-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQheIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQhuIqEduAZ7y5YhbIRQ" id="_7-PQhOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQh-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQieIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQiuIqEduAZ7y5YhbIRQ" id="_7-PQiOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQi-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-PQjeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-PQjuIqEduAZ7y5YhbIRQ" id="_7-PQjOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.875+0800" version="0.1" item="_7-PQj-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_7-YaIeIqEduAZ7y5YhbIRQ"/>
+  <TalendProperties:Property xmi:id="_7-YaIuIqEduAZ7y5YhbIRQ" id="_7-YaIOIqEduAZ7y5YhbIRQ" label="TALENDDEMOSPERL" creationDate="2007-04-04T05:33:17.890+0800" version="0.1" item="_7-YaI-IqEduAZ7y5YhbIRQ" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_YTD3EeIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_YTD3EuIzEduLLe6kbhkVYg" id="_YTD3EOIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:33:43.937+0800" version="0.1" item="_YTD3E-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_Zvc8keIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_Zvc8kuIzEduLLe6kbhkVYg" id="_Zvc8kOIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:33:53.625+0800" version="0.1" item="_Zvc8k-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_agBd4eIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_agBd4uIzEduLLe6kbhkVYg" id="_agBd4OIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:33:58.718+0800" version="0.1" item="_agBd4-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_bFuL8eIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_bFuL8uIzEduLLe6kbhkVYg" id="_bFuL8OIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:34:02.671+0800" version="0.1" item="_bFuL8-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_cLT7AeIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_cLT7AuIzEduLLe6kbhkVYg" id="_cLT7AOIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:34:09.968+0800" version="0.1" item="_cLT7A-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_dQc-IeIzEduLLe6kbhkVYg"/>
+  <TalendProperties:Property xmi:id="_dQc-IuIzEduLLe6kbhkVYg" id="_dQc-IOIzEduLLe6kbhkVYg" label="TALENDDEMOSPERL" creationDate="2007-04-04T06:34:17.218+0800" version="0.1" item="_dQc-I-IzEduLLe6kbhkVYg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:User xmi:id="_xsqf0OKEEdu0cpdFV7EhTQ" login="stef@talend.com" password="D41D8CD98F00B204E9800998ECF8427E"/>
+  <TalendProperties:ItemState xmi:id="_48-VYegOEduM8cQST5gLvg"/>
+  <TalendProperties:Property xmi:id="_48-VYugOEduM8cQST5gLvg" id="_48-VYOgOEduM8cQST5gLvg" label="TALENDDEMOSPERL" creationDate="2007-04-11T17:27:38.678+0800" version="0.1" item="_48-VY-gOEduM8cQST5gLvg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_rKlYAegYEduM8cQST5gLvg"/>
+  <TalendProperties:Property xmi:id="_rKlYAugYEduM8cQST5gLvg" id="_rKlYAOgYEduM8cQST5gLvg" label="TALENDDEMOSPERL" creationDate="2007-04-11T18:37:41.120+0800" version="0.1" item="_rKlYA-gYEduM8cQST5gLvg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:ItemState xmi:id="_IJrq8eghEduM8cQST5gLvg"/>
+  <TalendProperties:Property xmi:id="_IJrq8ughEduM8cQST5gLvg" id="_IJrq8OghEduM8cQST5gLvg" label="TALENDDEMOSPERL" creationDate="2007-04-11T19:38:11.615+0800" version="0.1" item="_IJrq8-ghEduM8cQST5gLvg" author="_VQhFx720EduGqKfvfKhEhg"/>
+  <TalendProperties:User xmi:id="_N_JSAALGEdy6tNHnT4V4uQ" login="a@b.c" password="D41D8CD98F00B204E9800998ECF8427E"/>
+  <TalendProperties:ItemState xmi:id="_Uw3yUQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_Uw3yUgNnEdyNmJCWIT8ouw" id="_Uw3yUANnEdyNmJCWIT8ouw" label="businessProcess" creationDate="2007-05-16T12:38:42.421+0800" version="0.1" item="_Uw3yUwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_Uw3yVQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_Uw3yVgNnEdyNmJCWIT8ouw" id="_Uw3yVANnEdyNmJCWIT8ouw" label="documentations" creationDate="2007-05-16T12:38:42.421+0800" version="0.1" item="_Uw3yVwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_Uw3yWQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_Uw3yWgNnEdyNmJCWIT8ouw" id="_Uw3yWANnEdyNmJCWIT8ouw" label="metadata" creationDate="2007-05-16T12:38:42.421+0800" version="0.1" item="_Uw3yWwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjUQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjUgNnEdyNmJCWIT8ouw" id="_UxBjUANnEdyNmJCWIT8ouw" label="fileDelimited" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjUwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjVQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjVgNnEdyNmJCWIT8ouw" id="_UxBjVANnEdyNmJCWIT8ouw" label="filePositional" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjVwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjWQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjWgNnEdyNmJCWIT8ouw" id="_UxBjWANnEdyNmJCWIT8ouw" label="fileRegex" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjWwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjXQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjXgNnEdyNmJCWIT8ouw" id="_UxBjXANnEdyNmJCWIT8ouw" label="fileXml" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjXwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjYQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjYgNnEdyNmJCWIT8ouw" id="_UxBjYANnEdyNmJCWIT8ouw" label="fileLdif" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjYwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjZQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjZgNnEdyNmJCWIT8ouw" id="_UxBjZANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjZwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjaQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjagNnEdyNmJCWIT8ouw" id="_UxBjaANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjawNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjbQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjbgNnEdyNmJCWIT8ouw" id="_UxBjbANnEdyNmJCWIT8ouw" label="connections" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjbwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjcQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjcgNnEdyNmJCWIT8ouw" id="_UxBjcANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjcwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjdQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjdgNnEdyNmJCWIT8ouw" id="_UxBjdANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjdwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxBjeQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxBjegNnEdyNmJCWIT8ouw" id="_UxBjeANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.437+0800" version="0.1" item="_UxBjewNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUUQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUUgNnEdyNmJCWIT8ouw" id="_UxLUUANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUUwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUVQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUVgNnEdyNmJCWIT8ouw" id="_UxLUVANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUVwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUWQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUWgNnEdyNmJCWIT8ouw" id="_UxLUWANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUWwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUXQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUXgNnEdyNmJCWIT8ouw" id="_UxLUXANnEdyNmJCWIT8ouw" label="process" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUXwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUYQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUYgNnEdyNmJCWIT8ouw" id="_UxLUYANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUYwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUZQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUZgNnEdyNmJCWIT8ouw" id="_UxLUZANnEdyNmJCWIT8ouw" label="code" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUZwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUaQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUagNnEdyNmJCWIT8ouw" id="_UxLUaANnEdyNmJCWIT8ouw" label="routines" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUawNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUbQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUbgNnEdyNmJCWIT8ouw" id="_UxLUbANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUbwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUcQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUcgNnEdyNmJCWIT8ouw" id="_UxLUcANnEdyNmJCWIT8ouw" label="context" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUcwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_UxLUdQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_UxLUdgNnEdyNmJCWIT8ouw" id="_UxLUdANnEdyNmJCWIT8ouw" label="bin" creationDate="2007-05-16T12:38:42.453+0800" version="0.1" item="_UxLUdwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KWxANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KWxQNnEdyNmJCWIT8ouw" id="_U7KWwwNnEdyNmJCWIT8ouw" label="temp" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KWxgNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KWyANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KWyQNnEdyNmJCWIT8ouw" id="_U7KWxwNnEdyNmJCWIT8ouw" label="t03_Routines" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KWygNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KWzANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KWzQNnEdyNmJCWIT8ouw" id="_U7KWywNnEdyNmJCWIT8ouw" label="t02_Concatening" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KWzgNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KW0ANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KW0QNnEdyNmJCWIT8ouw" id="_U7KWzwNnEdyNmJCWIT8ouw" label="t01_Components" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KW0gNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KW1ANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KW1QNnEdyNmJCWIT8ouw" id="_U7KW0wNnEdyNmJCWIT8ouw" label="System" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KW1gNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7KW2ANnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7KW2QNnEdyNmJCWIT8ouw" id="_U7KW1wNnEdyNmJCWIT8ouw" label="tRunJob" creationDate="2007-05-16T12:38:43.500+0800" version="0.1" item="_U7KW2gNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgsQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgsgNnEdyNmJCWIT8ouw" id="_U7TgsANnEdyNmJCWIT8ouw" label="Processing" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgswNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgtQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgtgNnEdyNmJCWIT8ouw" id="_U7TgtANnEdyNmJCWIT8ouw" label="tPerlRow" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgtwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TguQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgugNnEdyNmJCWIT8ouw" id="_U7TguANnEdyNmJCWIT8ouw" label="tPerlFlex" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TguwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgvQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgvgNnEdyNmJCWIT8ouw" id="_U7TgvANnEdyNmJCWIT8ouw" label="tPerl" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgvwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgwQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgwgNnEdyNmJCWIT8ouw" id="_U7TgwANnEdyNmJCWIT8ouw" label="tMap" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgwwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgxQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgxgNnEdyNmJCWIT8ouw" id="_U7TgxANnEdyNmJCWIT8ouw" label="Misc" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgxwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgyQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgygNnEdyNmJCWIT8ouw" id="_U7TgyANnEdyNmJCWIT8ouw" label="Log-Error" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgywNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7TgzQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7TgzgNnEdyNmJCWIT8ouw" id="_U7TgzANnEdyNmJCWIT8ouw" label="Internet" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7TgzwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg0QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg0gNnEdyNmJCWIT8ouw" id="_U7Tg0ANnEdyNmJCWIT8ouw" label="File" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg0wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg1QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg1gNnEdyNmJCWIT8ouw" id="_U7Tg1ANnEdyNmJCWIT8ouw" label="t03_Management" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg1wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg2QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg2gNnEdyNmJCWIT8ouw" id="_U7Tg2ANnEdyNmJCWIT8ouw" label="t02_Input" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg2wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg3QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg3gNnEdyNmJCWIT8ouw" id="_U7Tg3ANnEdyNmJCWIT8ouw" label="t01_Output" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg3wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg4QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg4gNnEdyNmJCWIT8ouw" id="_U7Tg4ANnEdyNmJCWIT8ouw" label="ELT" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg4wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg5QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg5gNnEdyNmJCWIT8ouw" id="_U7Tg5ANnEdyNmJCWIT8ouw" label="how_used_an_alias" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg5wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg6QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg6gNnEdyNmJCWIT8ouw" id="_U7Tg6ANnEdyNmJCWIT8ouw" label="Database_Bulk" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg6wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg7QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg7gNnEdyNmJCWIT8ouw" id="_U7Tg7ANnEdyNmJCWIT8ouw" label="Database" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg7wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg8QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg8gNnEdyNmJCWIT8ouw" id="_U7Tg8ANnEdyNmJCWIT8ouw" label="Sybase" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg8wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg9QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg9gNnEdyNmJCWIT8ouw" id="_U7Tg9ANnEdyNmJCWIT8ouw" label="PostgreSQL" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg9wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg-QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg-gNnEdyNmJCWIT8ouw" id="_U7Tg-ANnEdyNmJCWIT8ouw" label="Oracle" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg-wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7Tg_QNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7Tg_gNnEdyNmJCWIT8ouw" id="_U7Tg_ANnEdyNmJCWIT8ouw" label="MySQL" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7Tg_wNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThAQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThAgNnEdyNmJCWIT8ouw" id="_U7ThAANnEdyNmJCWIT8ouw" label="MS_SQL_Server" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThAwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThBQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThBgNnEdyNmJCWIT8ouw" id="_U7ThBANnEdyNmJCWIT8ouw" label="DB2" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThBwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThCQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThCgNnEdyNmJCWIT8ouw" id="_U7ThCANnEdyNmJCWIT8ouw" label="t00_Prior_Test" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThCwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThDQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThDgNnEdyNmJCWIT8ouw" id="_U7ThDANnEdyNmJCWIT8ouw" label="images" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThDwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThEQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThEgNnEdyNmJCWIT8ouw" id="_U7ThEANnEdyNmJCWIT8ouw" label="job_outlines" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThEwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+  <TalendProperties:ItemState xmi:id="_U7ThFQNnEdyNmJCWIT8ouw"/>
+  <TalendProperties:Property xmi:id="_U7ThFgNnEdyNmJCWIT8ouw" id="_U7ThFANnEdyNmJCWIT8ouw" label="system" creationDate="2007-05-16T12:38:43.515+0800" version="0.1" item="_U7ThFwNnEdyNmJCWIT8ouw" author="_N_JSAALGEdy6tNHnT4V4uQ"/>
+</xmi:XMI>

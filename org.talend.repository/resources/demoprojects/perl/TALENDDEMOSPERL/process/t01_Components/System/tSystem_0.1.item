@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ASCII"?>
+<talendfile:ProcessType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" defaultContext="Default">
+  <context confirmationNeeded="false" name="Default"/>
+  <node componentName="tSystem" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="224" posY="96">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tSystem_2"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TEXT" name="COMMAND" value="'echo PID='.$$"/>
+    <elementParameter field="CLOSED_LIST" name="OUTPUT" value="OUTPUT_TO_CONSOLE"/>
+    <elementParameter field="TEXT" name="LABEL" value="__COMMAND__"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tSystem_2"/>
+  </node>
+</talendfile:ProcessType>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:DocumentRoot xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd">
+  <process defaultContext="Default">
+    <context confirmationNeeded="false" name="Default"/>
+    <node componentName="tMsgBox" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+      <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMsgBox_1"/>
+      <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+      <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+      <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+      <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+      <elementParameter field="TEXT" name="TITLE" value="'Talend Open Studio'"/>
+      <elementParameter field="CLOSED_LIST" name="BUTTONS" value="0"/>
+      <elementParameter field="CLOSED_LIST" name="ICON" value="Win32::MB_ICONINFORMATION"/>
+      <elementParameter field="MEMO" name="MESSAGE" value="'The PID of jobChildren is '.$$"/>
+      <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+      <elementParameter field="TEXT" name="HINT" value="__MESSAGE__"/>
+      <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+      <elementParameter field="MEMO" name="COMMENT" value=""/>
+      <metadata name="tMsgBox_1"/>
+    </node>
+  </process>
+</talendfile:DocumentRoot>

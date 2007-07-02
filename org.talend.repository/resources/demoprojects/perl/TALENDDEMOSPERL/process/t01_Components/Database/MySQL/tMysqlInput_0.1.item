@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ASCII"?>
+<talendfile:ProcessType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" defaultContext="Default">
+  <context confirmationNeeded="false" name="Default"/>
+  <node componentName="tMysqlInput" componentVersion="0.102" offsetLabelX="0" offsetLabelY="0" posX="64" posY="64">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMysqlInput_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.102 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="CLOSED_LIST" name="PROPERTY_TYPE" value="REPOSITORY"/>
+    <elementParameter field="CLOSED_LIST" name="REPOSITORY_PROPERTY_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g"/>
+    <elementParameter field="PROPERTY_TYPE" name="PROPERTY" value=""/>
+    <elementParameter field="TEXT" name="HOST" value="'localhost'"/>
+    <elementParameter field="TEXT" name="PORT" value="'3306'"/>
+    <elementParameter field="TEXT" name="DBNAME" value="'test'"/>
+    <elementParameter field="TEXT" name="USER" value="'root'"/>
+    <elementParameter field="TEXT" name="PASS" value="''"/>
+    <elementParameter field="TECHNICAL" name="SCHEMA_TYPE" value="BUILT_IN"/>
+    <elementParameter field="TECHNICAL" name="REPOSITORY_SCHEMA_TYPE" value=""/>
+    <elementParameter field="SCHEMA_TYPE" name="SCHEMA" value="''"/>
+    <elementParameter field="CLOSED_LIST" name="QUERYSTORE_TYPE" value="BUILT_IN"/>
+    <elementParameter field="CLOSED_LIST" name="REPOSITORY_QUERYSTORE_TYPE" value="_OzxJgJwTEdugTPNlYfcc1g - test"/>
+    <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="''"/>
+    <elementParameter field="MEMO_SQL" name="QUERY" value="'select * from demotable'"/>
+    <elementParameter field="TEXT" name="ENCODING" value="'ISO-8859-15'"/>
+    <elementParameter field="TEXT" name="LABEL" value="SELECT"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tMysqlInput_1">
+      <column comment="" key="true" length="11" name="id" nullable="true" precision="0" type="int"/>
+      <column comment="" key="false" length="30" name="name" nullable="false" precision="0" type="String"/>
+      <column comment="" key="false" length="4" name="quantity" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="1" name="flag" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="10" name="creation" nullable="false" precision="0" type="Day"/>
+      <column comment="" key="false" length="10" name="delivery" nullable="false" precision="0" type="Day"/>
+    </metadata>
+  </node>
+  <node componentName="tMsgBox" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="64" posY="192">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tMsgBox_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TEXT" name="TITLE" value="'Talend Open Studio'"/>
+    <elementParameter field="CLOSED_LIST" name="BUTTONS" value="0"/>
+    <elementParameter field="CLOSED_LIST" name="ICON" value="Win32::MB_ICONINFORMATION"/>
+    <elementParameter field="MEMO" name="MESSAGE" value="'Cannot perform the database connection !'&#xD;&#xA;.&quot;\nOn your left, expand the node Metadata/Db_Connections and edit demoConnection 0.1.&quot;&#xD;&#xA;.&quot;\To create the table \&quot;demotable\&quot;, please use the job &lt;tDBOutput>.&quot;&#xD;&#xA;.&quot;\n\n## Technical message: ##\n\nERROR_MESSAGE: &quot;&#xD;&#xA;.$_globals{tMysqlInput_1}{ERROR_MESSAGE}&#xD;&#xA;.&quot;\n\nPERL_ERROR_MESSAGE: &quot;&#xD;&#xA;.$_globals{tMysqlInput_1}{PERL_ERROR_MESSAGE}&#xD;&#xA;"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__MESSAGE__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tMsgBox_1"/>
+  </node>
+  <node componentName="tLogRow" componentVersion="0.101" offsetLabelX="0" offsetLabelY="0" posX="320" posY="64">
+    <elementParameter field="TEXT" name="UNIQUE_NAME" value="tLogRow_1"/>
+    <elementParameter field="TEXT" name="VERSION" value="0.101 (ALPHA)"/>
+    <elementParameter field="CLOSED_LIST" name="LOG" value=""/>
+    <elementParameter field="CHECK" name="ACTIVATE" value="true"/>
+    <elementParameter field="CHECK" name="TSTATCATCHER_STATS" value="false"/>
+    <elementParameter field="TEXT" name="FIELDSEPARATOR" value="'|'"/>
+    <elementParameter field="TEXT" name="LABEL" value="__UNIQUE_NAME__"/>
+    <elementParameter field="TEXT" name="HINT" value="__UNIQUE_NAME__"/>
+    <elementParameter field="CHECK" name="SHOW_HINT" value="true"/>
+    <elementParameter field="MEMO" name="COMMENT" value=""/>
+    <metadata name="tLogRow_1">
+      <column comment="" key="true" length="11" name="id" nullable="true" precision="0" type="int"/>
+      <column comment="" key="false" length="30" name="name" nullable="false" precision="0" type="String"/>
+      <column comment="" key="false" length="4" name="quantity" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="1" name="flag" nullable="false" precision="0" type="int"/>
+      <column comment="" key="false" length="10" name="creation" nullable="false" precision="0" type="Day"/>
+      <column comment="" key="false" length="10" name="delivery" nullable="false" precision="0" type="Day"/>
+    </metadata>
+  </node>
+  <connection label="OnError" lineStyle="5" metaname="tMysqlInput_1" offsetLabelX="0" offsetLabelY="0" source="tMysqlInput_1" target="tMsgBox_1"/>
+  <connection label="row1" lineStyle="0" metaname="tMysqlInput_1" offsetLabelX="0" offsetLabelY="0" source="tMysqlInput_1" target="tLogRow_1"/>
+</talendfile:ProcessType>

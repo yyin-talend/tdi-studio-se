@@ -40,6 +40,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.core.model.general.Project;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.resources.ResourcesPlugin;
@@ -69,6 +70,8 @@ public final class ImportDemoProjectAction extends Action {
 
     private Shell shell;
 
+    private Project[] projects;
+
     private ImportDemoProjectAction() {
         super();
         this.setText(ACTION_TITLE);
@@ -76,6 +79,7 @@ public final class ImportDemoProjectAction extends Action {
         this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
     }
 
+    @Override
     public void run() {
 
         final List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
@@ -96,17 +100,30 @@ public final class ImportDemoProjectAction extends Action {
 
                     try {
                         DemoProjectBean demoProjectBean = demoProjectList.get(selectedDemoProjectIndex);
-                        String archivePath = demoProjectBean.getArchiveFilePath();
                         String techName = demoProjectBean.getProjectName();
 
+                        if (checkProjectIsExisting(techName)) {
+                            boolean reImportFlag = MessageDialog.openQuestion(shell, "message",
+                                    "Demo project is existing, do you want to re-import it?");
+                            if (!reImportFlag) {
+                                return;
+                            }
+                        }
+
+                        String demoFilePath = demoProjectBean.getDemoProjectFilePath();
+                        EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
                         Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
 
-                        URL url = FileLocator.resolve(bundle.getEntry(archivePath));
+                        URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
 
-                        String archiveFilePath = new Path(url.getFile()).toOSString();
+                        String filePath = new Path(url.getFile()).toOSString();
 
-                        ImportProjectsUtilities.importArchiveProject(shell, techName, archiveFilePath, monitorWrap);
+                        if (demoProjectFileType.getName().equalsIgnoreCase("folder")) {
+                            ImportProjectsUtilities.importProjectAs(shell, techName, techName, filePath, monitorWrap);
+                        } else {// type.equalsIgnoreCase("archive")
+                            ImportProjectsUtilities.importArchiveProject(shell, techName, filePath, monitorWrap);
 
+                        }
                         lastImportedName = techName;
 
                     } catch (IOException e) {
@@ -122,7 +139,6 @@ public final class ImportDemoProjectAction extends Action {
                                     Messages
                                             .getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
                 }
-
             };
 
             try {
@@ -141,5 +157,21 @@ public final class ImportDemoProjectAction extends Action {
 
     public void setShell(Shell shell) {
         this.shell = shell;
+    }
+
+    public void setExistingProjects(Project[] projects) {
+        this.projects = projects;
+    }
+
+    private boolean checkProjectIsExisting(String techName) {
+        if (this.projects == null || this.projects.length == 0) {
+            return false;
+        }
+        for (Project project : projects) {
+            if (project.getTechnicalLabel().equalsIgnoreCase(techName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

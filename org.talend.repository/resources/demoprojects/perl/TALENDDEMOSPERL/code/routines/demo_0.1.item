@@ -1,0 +1,137 @@
+use Exporter;
+
+use vars qw(@EXPORT @ISA);
+
+@ISA = qw(Exporter);
+@EXPORT = qw(
+    printDemoRoutine
+    demo2Routine
+    getRandomInt
+    getRandomElement
+);
+
+##
+# Just a demo : print a log trace
+#
+sub printDemoRoutine {
+    print " ####################################################################\n";
+    print " ########################## printDemoRoutine ########################\n";
+    print " ####################################################################\n";
+    print " ##\n";
+    print " ## On your left, expand the node Code/Routines and edit \"demo 0.1\"\n";
+    print " ##\n";
+}
+
+
+##
+# Just a demo : return a String
+#
+sub demo2Routine {
+    my($inputValue) = @_;
+    
+    if($inputValue < 100) {
+    	return "(" . $inputValue . " < 100)";
+    } else {
+    	return "(" . $inputValue . " >= 100)";    
+    }
+}
+
+
+##
+# return a random integer
+#
+# {talendTypes} int
+#
+# {param} int(100) min : minimum 
+# {param} int(250) max : maximum (superior to min)
+#
+# {example} getRandomInt(0, 10)
+# {example} getRandomInt(1000, 1500)
+sub getRandomInt {
+    my %params;
+    @params{min, max} = @_;
+	return ($params{min} + int rand ($params{max}-$params{min}));
+}
+
+
+##
+# return current PID
+#
+# {talendTypes} int
+#
+# {param} list(undef) notused : nothing
+#
+# {example} getPID(undef)
+sub getPID {
+    
+    return $$;
+}
+
+# format : (optional) string representing the wished format of the
+#          date. This string contains fixed strings and variables related
+#          to the date. By default, the format string is DD/MM/CCYY. Here
+#          is the list of date variables:
+#
+#    + CC for century
+#    + YY for year
+#    + MM for month
+#    + DD for day
+#    + hh for hour
+#    + mm for minute
+#    + ss for second
+
+##
+# return return the current datetime with the given display format
+#
+# {talendTypes} Day
+#
+# {param} string(format) 'CCYY-MM-DD' : string representing the wished format of the date 
+#
+# {example} getCurrentDate('CCYY-MM-DD')
+# {example} getCurrentDate('DD/MM/CCYY')
+# {example} getCurrentDate(undef)
+sub getCurrentDate {
+    my ($format) = @_;
+    $format = 'DD/MM/CCYY' if not defined $format;
+
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
+        localtime(time);
+
+    my %fields = (
+        CC => int(($year + 1900) / 100),
+        YY => $year % 100,
+        MM => $mon + 1,
+        DD => $mday,
+        hh => $hour,
+        mm => $min,
+        ss => $sec
+    );
+
+    %fields = map {$_ => sprintf('%02u', $fields{$_})} keys %fields;
+
+    foreach my $field (keys %fields) {
+        $format =~ s/$field/$fields{$field}/g;
+    }
+
+    return $format;
+}
+
+##
+# return a random element of a list
+#
+# {talendTypes} String
+#
+# {param} string('one;two;tree;four;five') elements : string representing a list of elements
+# {param} string(';') separator : string representing the separator
+#
+# {example} getRandomElement('one;two;tree;four;five', ';')
+# {example} getRandomElement('aeuio', undef)
+sub getRandomElement {
+    my ($elements, $separator) = @_;
+    $separator = '' if not defined $separator;
+
+	@tmp = split($separator, $elements);
+	return $tmp[int rand scalar @tmp];
+}
+
+1;
