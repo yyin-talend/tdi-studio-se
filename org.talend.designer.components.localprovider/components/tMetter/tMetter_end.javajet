@@ -42,11 +42,11 @@
                 node,"__METTERLABEL__");
         } 
                
-        Boolean absolute = (Boolean)ElementParameterParser.getObjectValue(
+        String absolute = (String)ElementParameterParser.getObjectValue(
                 node,"__ABSOLUTE__");  
            
         String reference = null;     
-        if(absolute.equals(Boolean.FALSE))
+        if(absolute.equals("Absolute"))
         { 
         	reference = (String)ElementParameterParser.getObjectValue(
                       node,"__CONNECTIONS__");  
