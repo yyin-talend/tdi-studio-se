@@ -150,33 +150,28 @@ final Process ps_<%=cid %> = runtime_<%=cid %>.exec(sb_<%=cid %>.toString());
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE || javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT) {
 					} else if(javaType == JavaTypesManager.BOOLEAN){
 %>re_out_<%=cid %>.write("false");
-<%
-					}else if(javaType == JavaTypesManager.BYTE){
+<%					}else if(javaType == JavaTypesManager.BYTE){
 %>re_out_<%=cid %>.write(String.valueOf(Byte.MIN_VALUE));
-<%
-					}else if(javaType == JavaTypesManager.CHARACTER){
+<%					}else if(javaType == JavaTypesManager.CHARACTER){
 %>re_out_<%=cid %>.write("T");
-<%
-					}else if(javaType == JavaTypesManager.INTEGER){
+<%					}else if(javaType == JavaTypesManager.INTEGER){
 %>re_out_<%=cid %>.write(String.valueOf(Integer.MIN_VALUE));
-<%
-					}else if(javaType == JavaTypesManager.LONG){
+<%					}else if(javaType == JavaTypesManager.LONG){
 %>re_out_<%=cid %>.write(String.valueOf(Long.MIN_VALUE));
-<%
-					}else if(javaType == JavaTypesManager.SHORT){
+<%					}else if(javaType == JavaTypesManager.SHORT){
 %>re_out_<%=cid %>.write(String.valueOf(Short.MIN_VALUE));
-<%
-					}else if(javaType == JavaTypesManager.FLOAT){
+<%					}else if(javaType == JavaTypesManager.FLOAT){
 %>re_out_<%=cid %>.write(String.valueOf(Float.MIN_VALUE));
-<%
-					}else if(javaType == JavaTypesManager.DOUBLE){
+<%					}else if(javaType == JavaTypesManager.DOUBLE){
 %>re_out_<%=cid %>.write(String.valueOf(Double.MIN_VALUE));
+<%					}
+					if(i != sizeColumns - 1) {
+%>re_out_<%=cid %>.write(OUT_DELIM_<%=cid %>);
 <%
-					}
-%>re_out_<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
-<%
+    				}
 				}
-%>re_out_<%=cid %>.close();
+%>re_out_<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+re_out_<%=cid %>.close();
 <%
     		}
     	}%><%

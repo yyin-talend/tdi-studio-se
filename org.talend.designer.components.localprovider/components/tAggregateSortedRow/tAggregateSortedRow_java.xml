@@ -10,7 +10,6 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
-    VISIBLE="false"
     HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE></SIGNATURE>
