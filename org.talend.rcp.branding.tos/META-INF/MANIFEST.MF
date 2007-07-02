@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tos Branding Plug-in
+Bundle-Name: Tos branding plugin
 Bundle-SymbolicName: org.talend.rcp.branding.tos;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.talend.rcp.branding.tos.Activator

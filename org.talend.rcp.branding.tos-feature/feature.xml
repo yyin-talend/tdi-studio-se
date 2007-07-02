@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.talend.rcp.branding.tos_feature"
-      label="Tos Branding Feature"
+      label="Tos branding feature"
       version="1.0.0"
       provider-name=".Talend SA.">
 
@@ -21,7 +21,6 @@
          id="org.talend.rcp.branding.tos"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>
