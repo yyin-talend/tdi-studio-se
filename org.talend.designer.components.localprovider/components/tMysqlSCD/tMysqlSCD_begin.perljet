@@ -45,9 +45,17 @@ if (metadatas != null && metadatas.size() > 0) {
 if (inMetadata != null && metadata != null) {
     String inConnName = inConnection.getName();
 
+    String debugString = ElementParameterParser.getValue(node, "__DEBUG__");
     boolean debug = false;
+    if (debugString.equals("true")) {
+        debug = true;
+    }
 
-    String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+    String useExistingConnection = ElementParameterParser.getValue(
+        node,
+        "__USE_EXISTING_CONNECTION__"
+    );
+
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -58,75 +66,81 @@ if (inMetadata != null && metadata != null) {
         "__ENCODING__"
     );
 
+    String dbh = "dbh_";
+
+    if (useExistingConnection.equals("true")) {
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        dbh+= connection;
+    }
+    else {
+        dbh+= cid;
+    }
+
+    String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+
     List<Map<String, String>> sourceKeys =
         (List<Map<String,String>>)ElementParameterParser.getObjectValue(
             node,
             "__SOURCE_KEYS__"
     );
 
-    List<Map<String, String>> l1fields =
-        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-            node,
-            "__L1_FIELDS__"
-    );
 
-    List<Map<String, String>> l2fields =
-        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-            node,
-            "__L2_FIELDS__"
-    );
+    String useL1 = ElementParameterParser.getValue(node, "__USE_L1__");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
 
+    if (useL1.equals("true")) {
+        l1fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L1_FIELDS__"
+        );
+    }
 
     String useL2 = ElementParameterParser.getValue(node, "__USE_L2__");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
 
-    String activeField = ElementParameterParser.getValue(
-        node,
-        "__L2_ACTIVE_FIELD__"
-    );
-
-    String useVersion = ElementParameterParser.getValue(
-        node,
-        "__USE_L2_VERSION__"
-    );
-
-    String versionField = ElementParameterParser.getValue(
-        node,
-        "__L2_VERSION_FIELD__"
-    );
-
-    String useDates = ElementParameterParser.getValue(
-        node,
-        "__USE_L2_DATES__"
-    );
+    if (useL2.equals("true")) {
+        l2fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L2_FIELDS__"
+        );
+    }
 
     String startdateField = ElementParameterParser.getValue(
         node,
         "__L2_STARTDATE_FIELD__"
     );
-
+    
     String enddateField = ElementParameterParser.getValue(
         node,
         "__L2_ENDDATE_FIELD__"
     );
 
-
-    String useExistingConnection = ElementParameterParser.getValue(
+    String useActive = ElementParameterParser.getValue(
         node,
-        "__USE_EXISTING_CONNECTION__"
+        "__USE_L2_ACTIVE__"
+    );
+    
+    String activeField = ElementParameterParser.getValue(
+        node,
+        "__L2_ACTIVE_FIELD__"
+    );
+    
+    String useVersion = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_VERSION__"
+    );
+    
+    String versionField = ElementParameterParser.getValue(
+        node,
+        "__L2_VERSION_FIELD__"
     );
 
-    String connection = ElementParameterParser.getValue(
-        node,
-        "__CONNECTION__"
-    );
-
-    String dbh = "dbh_";
-    if (useExistingConnection.equals("true")) {
-        dbh+= connection;
-    }
-    else {
-        dbh+= cid;
-    }
 
     Map<String, String> typeOfColumn = new HashMap();
 
@@ -194,22 +208,28 @@ if (<%=encoding%> =~ m/utf-?8/i) {
 %>
 
 <%
+    // building the cache comparison load query
     List selectColumns = new ArrayList();
     List keyColPositions = new ArrayList();
     int colPosition = 0;
 
+    // first we iterate on the input schema columns...
     for (IMetadataColumn column: inMetadata.getListColumns()) {
-        selectColumns.add(column.getLabel());
+        selectColumns.add("`" + column.getLabel() + "`");
 
-        if (column.isKey()) {
-          keyColPositions.add(colPosition);
+        String colname = column.getLabel();
+        
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyColPositions.add(colPosition);
+            }
         }
 
         colPosition++;
     }
 
     if (useVersion.equals("true")) {
-        selectColumns.add(versionField);
+        selectColumns.add("`" + versionField + "`");
     }
 
     String selectColumnsString = StringUtils.join(
@@ -229,7 +249,7 @@ SELECT <%=selectColumnsString%>
 <%
     if (useL2.equals("true")) {
 %>
-    WHERE `<%=activeField%>` = 'true'
+    WHERE `<%=enddateField%>` IS NULL
 <%
     }
 %>
@@ -254,27 +274,37 @@ print "[<%=cid%>] comparison cache loaded\n";
 %>
 
 <%
+    // insert query generation
     List colnames = new ArrayList();
     List parameters = new ArrayList();
 
-    for (IMetadataColumn column: metadata.getListColumns()) {
-        String currentParameter = "?";
-        String currentColname = "`" + column.getLabel() + "`";
+    // first we iterate on the input schema columns...
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        // ... and we add each column only if it was chosen to be in the
+        // output, ie if its type was defined.
+        if (typeOfColumn.containsKey(column.getLabel())) {
+            colnames.add("`" + column.getLabel() + "`");
+            parameters.add("?");
+        }
+    }
 
-        if (column.getLabel().equals(activeField)) {
-            currentParameter = "'true'";
+    // then we add L2 dedicated columns to store historical informations
+    if (useL2.equals("true")) {
+        colnames.add("`" + startdateField + "`");
+        parameters.add("'$_globals{job_execution_datetime}'");
+
+        colnames.add("`" + enddateField + "`");
+        parameters.add("NULL");
+
+        if (useActive.equals("true")) {
+            colnames.add("`" + activeField + "`");
+            parameters.add("'true'");
         }
 
-        if (column.getLabel().equals(startdateField)) {
-            currentParameter = "'$_globals{job_execution_datetime}'";
+        if (useVersion.equals("true")) {
+            colnames.add("`" + versionField + "`");
+            parameters.add("?");
         }
-
-        if (column.getLabel().equals(enddateField)) {
-            currentParameter = "NULL";
-        }
-
-        colnames.add(currentColname);
-        parameters.add(currentParameter);
     }
 
     String colnamesString = StringUtils.join(colnames.toArray(), ", ");
@@ -305,7 +335,7 @@ my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
 
     String keyClausesString = StringUtils.join(
         keyClauses.toArray(),
-        ",   AND "
+        "\n    AND "
     );
 %>
 
@@ -318,19 +348,19 @@ UPDATE '.<%=dbtable%>.'
 <%
     if (useL2.equals("true")) {
 %>
-# <%=useDates%>
+
 my $l2_query = '
 UPDATE '.<%=dbtable%>."
-  SET `<%=activeField%>` = 'false'
+  SET `<%=enddateField%>` = '$_globals{job_execution_datetime}'
 <%
-    if (useDates.equals("true")) {
+    if (useActive.equals("true")) {
 %>
-    , `<%=enddateField%>` = '$_globals{job_execution_datetime}'
+    , `<%=activeField%>` = 'false'
 <%
     }
 %>
   WHERE <%=keyClausesString%>
-    AND `<%=activeField%>` = 'true'
+    AND `<%=enddateField%>` IS NULL
 ";
 my $l2sth_<%=cid%> = $<%=dbh%>->prepare($l2_query);
 <%

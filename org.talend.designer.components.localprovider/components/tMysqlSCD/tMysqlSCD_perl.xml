@@ -140,8 +140,7 @@
       NB_LINES="2"
     >
       <ITEMS>
-        <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
-        <ITEM NAME="INCOMING_COLUMN" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
 
@@ -161,7 +160,7 @@
       SHOW_IF="USE_L1 == 'true'"
     >
       <ITEMS>
-        <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
+        <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
 
@@ -181,12 +180,12 @@
       SHOW_IF="USE_L2 == 'true'"
     >
       <ITEMS>
-        <ITEM NAME="NAME" FIELD="COLUMN_LIST" />
+        <ITEM NAME="NAME" FIELD="PREV_COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
 
     <PARAMETER
-      NAME="L2_ACTIVE_FIELD"
+      NAME="L2_STARTDATE_FIELD"
       FIELD="COLUMN_LIST"
       NUM_ROW="82"
       SHOW_IF="USE_L2 == 'true'"
@@ -194,45 +193,53 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="USE_L2_VERSION"
+      NAME="L2_ENDDATE_FIELD"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="82"
+      SHOW_IF="USE_L2 == 'true'"
+    >
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_L2_ACTIVE"
       FIELD="CHECK"
       NUM_ROW="83"
       SHOW_IF="USE_L2 == 'true'"
     >
-      <DEFAULT>true</DEFAULT>
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L2_ACTIVE_FIELD"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="83"
+      SHOW_IF="USE_L2_ACTIVE == 'true'"
+    >
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_L2_VERSION"
+      FIELD="CHECK"
+      NUM_ROW="84"
+      SHOW_IF="USE_L2 == 'true'"
+    >
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
-      NUM_ROW="83"
+      NUM_ROW="84"
       SHOW_IF="USE_L2_VERSION == 'true'"
     >
     </PARAMETER>
 
     <PARAMETER
-      NAME="USE_L2_DATES"
+      NAME="DEBUG"
       FIELD="CHECK"
-      NUM_ROW="84"
-      SHOW_IF="USE_L2 == 'true'"
+      NUM_ROW="90"
     >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="L2_STARTDATE_FIELD"
-      FIELD="COLUMN_LIST"
-      NUM_ROW="84"
-      SHOW_IF="USE_L2_DATES == 'true'"
-    >
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="L2_ENDDATE_FIELD"
-      FIELD="COLUMN_LIST"
-      NUM_ROW="84"
-      SHOW_IF="USE_L2_DATES == 'true'"
-    >
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

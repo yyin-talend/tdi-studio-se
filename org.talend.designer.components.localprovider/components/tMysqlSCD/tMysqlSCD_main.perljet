@@ -43,7 +43,12 @@ if (metadatas != null && metadatas.size() > 0) {
 if (inMetadata != null && metadata != null) {
     String inConnName = inConnection.getName();
 
+    String debugString = ElementParameterParser.getValue(node, "__DEBUG__");
     boolean debug = false;
+    if (debugString.equals("true")) {
+        debug = true;
+    }
+
 
     String useExistingConnection = ElementParameterParser.getValue(
         node,
@@ -62,22 +67,6 @@ if (inMetadata != null && metadata != null) {
     else {
         dbh+= cid;
     }
-
-    List keyColPositions = new ArrayList();
-    int colPosition = 0;
-
-    for (IMetadataColumn column: inMetadata.getListColumns()) {
-        if (column.isKey()) {
-          keyColPositions.add(colPosition);
-        }
-
-        colPosition++;
-    }
-
-    String keyColPositionsString = StringUtils.join(
-        keyColPositions.toArray(),
-        ", "
-    );
 
     List<Map<String, String>> sourceKeys =
         (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -120,6 +109,26 @@ if (inMetadata != null && metadata != null) {
     for (Map<String, String> l2field : l2fields) {
         typeOfColumn.put(l2field.get("NAME"), "L2");
     }
+
+    List keyColPositions = new ArrayList();
+    int colPosition = 0;
+
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyColPositions.add(colPosition);
+            }
+        }
+
+        colPosition++;
+    }
+
+    String keyColPositionsString = StringUtils.join(
+        keyColPositions.toArray(),
+        ", "
+    );
 %>
 {
     my $cache_key = join $;, @<%=inConnName%>[<%=keyColPositionsString%>];
