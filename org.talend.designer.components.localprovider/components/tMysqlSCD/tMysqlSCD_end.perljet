@@ -1,0 +1,54 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+
+        if (useExistingConnection.equals("false")) {
+%>
+$<%=dbh%>->commit();
+$<%=dbh%>->disconnect();
+<%
+        }
+%>
+
+$_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_UPDATED}  = $nb_line_updated_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_INSERTED} = $nb_line_inserted_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_DELETED}  = $nb_line_deleted_<%=cid %>;
+<%
+    }
+}
+%>
