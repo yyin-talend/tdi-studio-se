@@ -1,0 +1,125 @@
+<!-- $Id: tFileOutputDelimited_perl.xml 3521 2007-05-23 02:07:47Z yzhang $ -->
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+    DATA_AUTO_PROPAGATE="false"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+   <PARAMETERS>
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONDITIONS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="2"
+      NB_LINES="3"
+    >
+      <ITEMS>
+        <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="VALUE_OF">
+            <ITEM NAME="VALUE_OF"    VALUE=""/>
+            <ITEM NAME="ABS_VALUE"    VALUE="abs"/>
+            <ITEM NAME="LC"    VALUE="lc"/>
+            <ITEM NAME="UC"    VALUE="uc"/>
+            <ITEM NAME="LCFIRST"    VALUE="lcfirst"/>
+            <ITEM NAME="UCFIRST"    VALUE="ucfirst"/>
+            <ITEM NAME="LENGTH"  VALUE="length"/>
+          </ITEMS>
+        </ITEM>
+
+        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+
+        <ITEM NAME="OPERATOR" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="STR_EQ">
+            <ITEM NAME="STR_EQ"  VALUE="eq"/>
+            <ITEM NAME="STR_NE"    VALUE="ne"/>
+            <ITEM NAME="STR_GT"    VALUE="gt"/>
+            <ITEM NAME="STR_LT"    VALUE="lt"/>
+            <ITEM NAME="STR_GE"    VALUE="ge"/>
+            <ITEM NAME="STR_LE"    VALUE="le"/>
+            <ITEM NAME="MATCH"    VALUE="=~"/>
+            <ITEM NAME="NMATCH"    VALUE="!~"/>
+            <ITEM NAME="NUM_EQ"    VALUE="=="/>
+            <ITEM NAME="NUM_NE"    VALUE="!="/>
+            <ITEM NAME="NUM_GT"    VALUE="&gt;"/>
+            <ITEM NAME="NUM_LT"    VALUE="&lt;"/>
+            <ITEM NAME="NUM_GE"    VALUE="&gt;="/>
+            <ITEM NAME="NUM_LE"    VALUE="&lt;="/>
+
+          </ITEMS>
+        </ITEM>
+        <ITEM NAME="RVALUE" FIELD="String" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_ADVANCED"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="3"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER
+      NAME="ADVANCED_COND"
+      FIELD="MEMO"
+      NUM_ROW="4"
+      NB_LINES="4"
+      NOT_SHOW_IF="(USE_ADVANCED=='false')"
+    >
+      <DEFAULT>## code sample : use $input_row to define the condition.
+# substr( lc $input_row[firstname], 0, 3) eq "foo" or uc($input_row[name]) =~ /BAR/</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LOGICAL_OP"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="5"      
+      REQUIRED="true"
+    >
+      <ITEMS DEFAULT="OR">
+	  <ITEM NAME="OR"   VALUE="||" />
+	  <ITEM NAME="AND"   VALUE="&amp;&amp;" />
+
+      </ITEMS>
+    </PARAMETER>
+
+
+   </PARAMETERS>
+
+   <CODEGENERATION/>
+
+   <RETURNS>
+     <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+     <RETURN NAME="NB_LINE_OK" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+   </RETURNS>
+</COMPONENT>

@@ -1,0 +1,95 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        List<Map<String, String>> conditions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONDITIONS__");
+%>
+my %desc_<%=cid %> = (
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+    conditions    => [
+<%
+        for (int i=0; i<conditions.size(); i++) {
+            Map<String, String> condition = conditions.get(i);
+%>
+        {
+            function => '<%= condition.get("FUNCTION") %>',
+            input    => '<%= condition.get("INPUT_COLUMN") %>',
+            operator => '<%= condition.get("OPERATOR") %>',
+            rvalue => '<%= condition.get("RVALUE") %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+<%
+        int column_number = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=cid%>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+            column_number++;
+        }
+
+
+
+        List<? extends IConnection> inConns = node.getIncomingConnections();
+
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
+            IMetadataTable inMetadata = inConn.getMetadataTable();
+            String inputRowName = inConn.getName();
+
+            int j = 0;
+            for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inputRowName%>__<%=column.getLabel() %> => <%=j%>;
+<%
+                j++;
+            }
+        }
+%>
+
+my $nb_line_<%=cid%> = 0;
+my $nb_line_ok_<%=cid%> = 0;
+
+<%
+    }
+}
+%>
