@@ -1,0 +1,69 @@
+<%@ jet 
+	imports="
+                org.talend.core.model.process.IConnection
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+                org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+                java.util.HashMap
+	"
+%>
+
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+
+
+        String inputRowName = "" ;
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {
+
+            HashMap<String, Integer> hInputColNameToNumber = new HashMap<String, Integer>();
+            List<? extends IConnection> inConns = node.getIncomingConnections();
+            if (inConns != null && !inConns.isEmpty()) {
+                IConnection inConn = inConns.get(0);
+                IMetadataTable inMetadata = inConn.getMetadataTable();
+                inputRowName = inConn.getName();
+                int column_number = 0;
+                for (IMetadataColumn column: inMetadata.getListColumns()) {
+                    hInputColNameToNumber.put(column.getLabel(), column_number);
+                    column_number++;
+                }
+            }
+
+            String cid = metadata.getTableName();
+            int column_number = 0;
+            StringBuffer outputString = new StringBuffer();
+            outputString.append("@");
+            outputString.append(cid);
+            outputString.append(" = ( ");
+            
+            column_number = 0;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+            	Integer in_column_number = hInputColNameToNumber.get( column.getLabel() );
+                if(  in_column_number != null ) {
+                    outputString.append("$");
+                    outputString.append(inputRowName);
+                    outputString.append("[");
+                    outputString.append(in_column_number);
+                    outputString.append("],");
+                }
+                else {
+                    outputString.append("undef,");
+                }
+            }
+            outputString.append( " ) " );
+            
+
+
+%>
+my @<%=cid%> = () ;
+<%=outputString%> ;
+    
+<%
+        }
+    }
+%>
