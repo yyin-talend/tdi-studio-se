@@ -87,7 +87,7 @@ public class SaveJobBeforeRunAction extends Action {
             String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__");
             System.out.println(process);
             String editorName = editor.getProcess().getName();
-            if (process.indexOf(editorName) > -1 && saveBeforeRun) {
+            if (saveBeforeRun&&process.indexOf(editorName) > -1 ) {
                 editor.doSave(new NullProgressMonitor());
             }
         }
