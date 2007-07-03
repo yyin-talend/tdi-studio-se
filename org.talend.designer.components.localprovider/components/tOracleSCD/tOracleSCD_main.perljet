@@ -1,0 +1,284 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+// searching the incoming schema
+IMetadataTable inMetadata = null;
+IConnection inConnection = null;
+
+List<? extends IConnection> incomingConnections
+    = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    inConnection = incomingConnections.get(0);
+    inMetadata = inConnection.getMetadataTable();
+}
+
+// searching the outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    metadata = metadatas.get(0);
+}
+
+// we only generate output if incoming and outgoing schema are defined
+if (inMetadata != null && metadata != null) {
+    String inConnName = inConnection.getName();
+
+    String debugString = ElementParameterParser.getValue(node, "__DEBUG__");
+    boolean debug = false;
+    if (debugString.equals("true")) {
+        debug = true;
+    }
+
+
+    String useExistingConnection = ElementParameterParser.getValue(
+        node,
+        "__USE_EXISTING_CONNECTION__"
+    );
+    
+    String connection = ElementParameterParser.getValue(
+        node,
+        "__CONNECTION__"
+    );
+
+    String dbh = "dbh_";
+    if (useExistingConnection.equals("true")) {
+        dbh+= connection;
+    }
+    else {
+        dbh+= cid;
+    }
+
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__SOURCE_KEYS__"
+    );
+
+    List<Map<String, String>> l1fields =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__L1_FIELDS__"
+    );
+
+    List<Map<String, String>> l2fields =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__L2_FIELDS__"
+    );
+
+    String useVersion = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_VERSION__"
+    );
+
+    String versionField = ElementParameterParser.getValue(
+        node,
+        "__L2_VERSION_FIELD__"
+    );
+
+    Map<String, String> typeOfColumn = new HashMap();
+
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+
+    for (Map<String, String> l1field : l1fields) {
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+
+    List keyColPositions = new ArrayList();
+    int colPosition = 0;
+
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyColPositions.add(colPosition);
+            }
+        }
+
+        colPosition++;
+    }
+
+    String keyColPositionsString = StringUtils.join(
+        keyColPositions.toArray(),
+        ", "
+    );
+%>
+
+{
+    my $cache_key = join $;, @<%=inConnName%>[<%=keyColPositionsString%>];
+
+    if (not exists $cache_<%=cid%>{$cache_key}) {
+        $isth_<%=cid%>->execute(
+<%
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+            $<%=inConnName%>[<%=inConnName%>__<%=column.getLabel()%>],
+<%
+    }
+
+    if (useVersion.equals("true")) {
+%>
+            1,
+<%
+    }
+%>
+        )
+            or die "[<%=cid%>] cannot insert new source id";
+<%
+    if (debug) {
+%>
+
+        print "[<%=cid%>] new source id inserted\n";
+<%
+    }
+%>
+    }
+    else {
+        my @comparison_row = @{ $cache_<%=cid%>{$cache_key} };
+
+        # use Data::Dumper;
+        # print "==========\ncomparison row:\n";
+        # print Dumper(\@comparison_row);
+        # print "==========\ncurrent row:\n";
+        # print Dumper(\@<%=inConnName%>);
+        # print "==========\n";
+
+<%
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("L1")) {
+                String index = inConnName + "__" + column.getLabel();
+%>
+        # printf(
+        #     '"%s" Vs "%s"'."\n",
+        #     $<%=inConnName%>[<%=index%>],
+        #     $comparison_row[<%=index%>],
+        # );
+
+        if ($<%=inConnName%>[<%=index%>] ne $comparison_row[<%=index%>]) {
+            my $l1sth_<%=cid %> = $<%=dbh%>->prepare(
+                sprintf($l1_query, '<%=column.getLabel()%>')
+            );
+
+            # printf($l1_query."\n", '<%=column.getLabel()%>');
+
+            $l1sth_<%=cid %>->execute(
+                $<%=inConnName%>[<%=index%>],
+<%
+                for (Map<String, String> sk : sourceKeys) {
+%>
+                $<%=inConnName%>[<%=inConnName%>__<%=sk.get("NAME")%>],
+<%
+                }
+%>
+            );
+<%
+    if (debug) {
+%>
+            print "[<%=cid%>] l1 update done\n";
+<%
+    }
+%>
+        }
+<%
+            }
+        }
+    }
+
+    if (l2fields.size() > 0) {
+        boolean isFirstL2 = true;
+%>
+
+        if (
+<%
+        for (IMetadataColumn column: inMetadata.getListColumns()) {
+            String colname = column.getLabel();
+
+            if (typeOfColumn.containsKey(colname)) {
+                if (typeOfColumn.get(colname).equals("L2")) {
+                    String index = inConnName + "__" + column.getLabel();
+
+                    String or = new String("or ");
+                    if (isFirstL2) {
+                        or = "";
+                        isFirstL2 = false;
+                    }
+%>
+            <%=or%> $<%=inConnName%>[<%=index%>] ne $comparison_row[<%=index%>]
+<%
+                }
+            }
+        }
+%>
+        ) {
+            $l2sth_<%=cid%>->execute(
+<%
+        for (Map<String, String> sk : sourceKeys) {
+%>
+                $<%=inConnName%>[<%=inConnName%>__<%=sk.get("NAME")%>],
+<%
+        }
+%>
+            )
+                or die '[<%=cid%>] cannot update previous line';
+    
+            $isth_<%=cid%>->execute(
+<%
+        for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+                $<%=inConnName%>[<%=inConnName%>__<%=column.getLabel()%>],
+<%
+        }
+
+        if (useVersion.equals("true")) {
+%>
+                $comparison_row[-1] + 1,
+<%
+        }
+%>
+            )
+                or die "[<%=cid%>] cannot insert new history line";
+<%
+    if (debug) {
+%>
+
+            print "[<%=cid%>] new history line\n";
+<%
+    }
+%>
+        }
+    }
+}
+<%
+    }
+}
+%>

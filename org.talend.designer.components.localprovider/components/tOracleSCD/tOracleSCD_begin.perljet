@@ -1,0 +1,393 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.Set
+    java.util.HashMap
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+
+// searching the incoming schema
+IMetadataTable inMetadata = null;
+IConnection inConnection = null;
+
+List<? extends IConnection> incomingConnections
+    = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    inConnection = incomingConnections.get(0);
+    inMetadata = inConnection.getMetadataTable();
+}
+
+// searching the outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && !metadatas.isEmpty()) {
+    metadata = metadatas.get(0);
+}
+
+// we only generate output if incoming and outgoing schema are defined
+if (inMetadata != null && metadata != null) {
+    String inConnName = inConnection.getName();
+
+    String debugString = ElementParameterParser.getValue(node, "__DEBUG__");
+    boolean debug = false;
+    if (debugString.equals("true")) {
+        debug = true;
+    }
+
+    String useExistingConnection = ElementParameterParser.getValue(
+        node,
+        "__USE_EXISTING_CONNECTION__"
+    );
+
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String encoding = ElementParameterParser.getValue(
+        node,
+        "__ENCODING__"
+    );
+
+    String dbh = "dbh_";
+
+    if (useExistingConnection.equals("true")) {
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+    
+        dbh+= connection;
+    }
+    else {
+        dbh+= cid;
+    }
+
+    String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__SOURCE_KEYS__"
+    );
+
+
+    String useL1 = ElementParameterParser.getValue(node, "__USE_L1__");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
+
+    if (useL1.equals("true")) {
+        l1fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L1_FIELDS__"
+        );
+    }
+
+    String useL2 = ElementParameterParser.getValue(node, "__USE_L2__");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
+
+    if (useL2.equals("true")) {
+        l2fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L2_FIELDS__"
+        );
+    }
+
+    String startdateField = ElementParameterParser.getValue(
+        node,
+        "__L2_STARTDATE_FIELD__"
+    );
+    
+    String enddateField = ElementParameterParser.getValue(
+        node,
+        "__L2_ENDDATE_FIELD__"
+    );
+
+    String dateFormat = ElementParameterParser.getValue(
+        node,
+        "__DATE_FORMAT__"
+    );
+
+    String useActive = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_ACTIVE__"
+    );
+    
+    String activeField = ElementParameterParser.getValue(
+        node,
+        "__L2_ACTIVE_FIELD__"
+    );
+    
+    String useVersion = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_VERSION__"
+    );
+    
+    String versionField = ElementParameterParser.getValue(
+        node,
+        "__L2_VERSION_FIELD__"
+    );
+
+
+    Map<String, String> typeOfColumn = new HashMap();
+
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+
+    for (Map<String, String> l1field : l1fields) {
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+
+    for (String key : typeOfColumn.keySet()) {
+%>
+# <%=key%> : <%=typeOfColumn.get(key)%>
+<%
+    }
+%>
+
+use DBI;
+
+<%
+    int column_number = 0;
+
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inConnName %>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+        column_number++;
+    }
+%>
+
+my $sth_<%=cid %>;
+my $query;
+
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+if (<%=encoding%> =~ m/^utf-?8$/i) {
+    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
+}
+elsif (<%=encoding%> =~ m/^iso-?8859-?1$/i) {
+    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
+}
+
+my $<%=dbh%> = DBI->connect(
+    sprintf(
+        'dbi:Oracle:host=%s;sid=%s;port=%s',
+        <%=dbhost %>,
+        <%=dbname %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+        PrintError => 1,
+    }
+)
+    or die "[<%=cid%>] can't connect to database";
+<%
+    }
+%>
+
+<%
+    // building the cache comparison load query
+    List selectColumns = new ArrayList();
+    List keyColPositions = new ArrayList();
+    int colPosition = 0;
+
+    // first we iterate on the input schema columns...
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        selectColumns.add(column.getLabel());
+
+        String colname = column.getLabel();
+        
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyColPositions.add(colPosition);
+            }
+        }
+
+        colPosition++;
+    }
+
+    if (useVersion.equals("true")) {
+        selectColumns.add(versionField);
+    }
+
+    String selectColumnsString = StringUtils.join(
+        selectColumns.toArray(),
+        ", "
+    );
+
+    String keyColPositionsString = StringUtils.join(
+        keyColPositions.toArray(),
+        ", "
+    );
+%>
+
+my $query = "
+SELECT <%=selectColumnsString%>
+  FROM ".<%=dbtable%>."
+<%
+    if (useL2.equals("true")) {
+%>
+    WHERE <%=enddateField%> IS NULL
+<%
+    }
+%>
+";
+
+my %cache_<%=cid %> = ();
+
+$sth_<%=cid %> = $<%=dbh%>->prepare($query);
+$sth_<%=cid %>->execute()
+    or die "[<%=cid%>] cannot load comparison cache";
+
+while (my @row = $sth_<%=cid %>->fetchrow_array()) {
+    $cache_<%=cid %>{join $;, @row[<%=keyColPositionsString%>]} = \@row;
+}
+
+<%
+    if (debug) {
+%>
+print "[<%=cid%>] comparison cache loaded\n";
+<%
+    }
+%>
+
+<%
+    // insert query generation
+    List colnames = new ArrayList();
+    List parameters = new ArrayList();
+
+    // first we iterate on the input schema columns...
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
+        // ... and we add each column only if it was chosen to be in the
+        // output, ie if its type was defined.
+        if (typeOfColumn.containsKey(column.getLabel())) {
+            colnames.add(column.getLabel());
+            parameters.add("?");
+        }
+    }
+
+    // then we add L2 dedicated columns to store historical informations
+    if (useL2.equals("true")) {
+        colnames.add(startdateField);
+        parameters.add(
+            "to_date('"
+            + "$_globals{job_execution_datetime}"
+            + "', "
+            + dateFormat
+            + ")"
+        );
+
+        colnames.add(enddateField);
+        parameters.add("NULL");
+
+        if (useActive.equals("true")) {
+            colnames.add(activeField);
+            parameters.add("'1'");
+        }
+
+        if (useVersion.equals("true")) {
+            colnames.add(versionField);
+            parameters.add("?");
+        }
+    }
+
+    String colnamesString = StringUtils.join(colnames.toArray(), ", ");
+    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+%>
+
+$query = '
+INSERT
+  INTO '.<%=dbtable%>."
+  (<%=colnamesString%>)
+  VALUES
+  (<%=parametersString%>)
+";
+my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
+
+<%
+    List keyClauses = new ArrayList();
+
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        String colname = column.getLabel();
+
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyClauses.add("" + colname + " = ?");
+            }
+        }
+    }
+
+    String keyClausesString = StringUtils.join(
+        keyClauses.toArray(),
+        "\n    AND "
+    );
+%>
+
+$l1_query = '
+UPDATE '.<%=dbtable%>.'
+  SET %s = ?
+  WHERE <%=keyClausesString%>
+';
+
+<%
+    if (useL2.equals("true")) {
+%>
+
+my $l2_query = '
+UPDATE '.<%=dbtable%>."
+  SET <%=enddateField%> = to_date('$_globals{job_execution_datetime}', <%=dateFormat%>)
+<%
+    if (useActive.equals("true")) {
+%>
+    , <%=activeField%> = '0'
+<%
+    }
+%>
+  WHERE <%=keyClausesString%>
+    AND <%=enddateField%> IS NULL
+";
+my $l2sth_<%=cid%> = $<%=dbh%>->prepare($l2_query);
+<%
+    }
+%>
+
+my $nb_line_<%=cid%> = 0;
+my $nb_line_updated_<%=cid%>  = 0;
+my $nb_line_inserted_<%=cid%> = 0;
+
+<%
+}
+else {
+%>
+# no code generated until input and output schema defined
+<%
+}
+%>
