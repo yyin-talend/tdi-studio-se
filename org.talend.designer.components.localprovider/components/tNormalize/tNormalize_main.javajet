@@ -1,0 +1,80 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);    
+    if (metadata!=null) {//2
+       
+        String cid = node.getUniqueName();
+        String colname = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
+        String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+
+        String inputRowName = new String("input_row");
+        String outputRowName = new String("output_row");
+
+        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
+            inputRowName = inConn.getName();
+        }else {
+            return "";//if no input, stop here, nothing in CodeViewer
+        }
+        
+        List< ? extends IConnection> outConns = node.getOutgoingConnections();
+        if (outConns != null && !outConns.isEmpty()) {
+            IConnection outConn = outConns.get(0);
+            outputRowName = outConn.getName();
+        }else {
+            return "";//if no output, stop here, nothing in CodeViewer
+        }
+%>
+////////////////////////
+
+String [] splitResult = null;
+if(<%=inputRowName %>.<%=colname %> == null) {
+   splitResult = new String[]{null};
+} else {
+   splitResult = <%=inputRowName %>.<%=colname %>.split(<%=separator %>);
+}
+
+for (int i = 0; i < splitResult.length; i++) {
+
+////
+<% 
+    //output
+	for (IMetadataColumn column : metadata.getListColumns()) {
+	  if (column.getLabel().equals(colname)) {
+%> 
+     <%=outputRowName %>.<%=column.getLabel() %> = splitResult[i];      
+<%     
+    } else {
+%>
+	 <%=outputRowName %>.<%=column.getLabel() %> = <%=inputRowName %>.<%=column.getLabel() %>;
+<%    
+    }  
+  }
+%>
+////
+	nb_line_<%=cid%>++;
+	
+////////////////////////
+<%
+    }//2    
+}//1
+%>
