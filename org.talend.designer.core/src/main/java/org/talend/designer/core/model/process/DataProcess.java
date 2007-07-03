@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
@@ -82,6 +83,9 @@ public class DataProcess {
             IElementParameter dataNodeParam = newNode.getElementParameter(curParam.getName());
             if (dataNodeParam != null) {
                 dataNodeParam.setValue(curParam.getValue());
+                if (dataNodeParam.getField() == EParameterFieldType.TABLE) {
+                    dataNodeParam.setListItemsValue(curParam.getListItemsValue());
+                }
             }
         }
     }
