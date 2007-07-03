@@ -58,7 +58,6 @@ import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.actions.SaveAsSQLAction;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
@@ -458,12 +457,14 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                             if (meditor != null) {
                                 RepositoryNode node = null;
                                 node = meditor.getActivePageRepositoryNode();
-                                if (item.getData() instanceof Query) {
-                                    Query q = (Query) item.getData();
-                                    q.setValue(meditor.getActivePageSqlString());
-                                    qs.add(q);
-                                    if (node != null && q != null) {
-                                        manager.saveQuery(node, q);
+                                if (text.startsWith(AbstractSQLEditorComposite.QUERY_PREFIX)) {
+                                    if (item.getData() instanceof Query) {
+                                        Query q = (Query) item.getData();
+                                        q.setValue(meditor.getActivePageSqlString());
+                                        qs.add(q);
+                                        if (node != null && q != null) {
+                                            manager.saveQuery(node, q);
+                                        }
                                     }
                                 } else {
                                     meditor.getActivePageSaveSQLAction().run();
