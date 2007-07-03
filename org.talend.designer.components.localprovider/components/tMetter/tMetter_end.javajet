@@ -46,7 +46,7 @@
                 node,"__ABSOLUTE__");  
            
         String reference = null;     
-        if(absolute.equals("Absolute"))
+        if(absolute.equals("Relative"))
         { 
         	reference = (String)ElementParameterParser.getObjectValue(
                       node,"__CONNECTIONS__");  
