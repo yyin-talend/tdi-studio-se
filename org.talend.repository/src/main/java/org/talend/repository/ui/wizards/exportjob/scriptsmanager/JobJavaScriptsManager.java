@@ -287,7 +287,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         File[] files = file.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") ? true : false;
+                return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties")
+                        || name.toLowerCase().endsWith(".zip") ? true : false;
             }
         });
         // Lists all the needed jar files
