@@ -309,7 +309,7 @@
 			        			        }
             						    String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
                     		  	  	   %>
-							   	  		  if(
+							   	  		  if( !<%= rejectedInnerJoin %> && 
 			 				  		  			!(<%= expressionFilterWithPrefixs%>)
 						  	  		  			) { # 16
                     		  	  		  

@@ -341,7 +341,7 @@
                     		  	  	   %>
                     		  	  		
                     		  	  		
-							   	  		  if(
+							   	  		  if( !<%= rejectedInnerJoin %> && 
 					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
 					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
 					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
