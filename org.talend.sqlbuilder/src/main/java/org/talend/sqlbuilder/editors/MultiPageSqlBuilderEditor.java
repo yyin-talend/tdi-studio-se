@@ -37,6 +37,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.actions.SaveAsSQLAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
@@ -367,12 +368,12 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         }
     }
 
-    public SaveSQLAction getActivePageSaveSQLAction() {
+    public SaveAsSQLAction getActivePageSaveAsSQLAction() {
         switch (getActivePage()) {
         case 0:
-            return sqlEdit.getSaveSQLAction();
+            return sqlEdit.getSaveAsSQLAction();
         case 1:
-            return sqlDesigner.getSaveSQLAction();
+            return sqlDesigner.getSaveAsSQLAction();
         default:
             return null;
         }

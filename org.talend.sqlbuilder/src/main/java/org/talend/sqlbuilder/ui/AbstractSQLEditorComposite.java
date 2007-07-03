@@ -235,7 +235,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     protected AbstractEditorAction exportAction;
 
-    protected AbstractEditorAction saveAsSQLAction;
+    protected SaveAsSQLAction saveAsSQLAction;
 
     protected SaveSQLAction saveSQLAction;
 
@@ -322,6 +322,11 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
     }
 
     public abstract StyledText getColorText();
+
+    
+    public SaveAsSQLAction getSaveAsSQLAction() {
+        return this.saveAsSQLAction;
+    }
 
     
     public SaveSQLAction getSaveSQLAction() {

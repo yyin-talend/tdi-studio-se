@@ -467,7 +467,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                         }
                                     }
                                 } else {
-                                    meditor.getActivePageSaveSQLAction().run();
+                                    meditor.getActivePageSaveAsSQLAction().run();
                                 }
                             }
                         }
