@@ -41,7 +41,7 @@ import org.talend.repository.model.migration.filters.PropertyComponentFilter;
  */
 public class RenametDBInputToMySQLMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
@@ -60,10 +60,10 @@ public class RenametDBInputToMySQLMigrationTask extends AbstractMigrationTask im
             ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(
                     renameComponentConversion, removePropertyComponentConversion));
 
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 }

@@ -34,14 +34,14 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  */
 public class RenametFileZipUnzipMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             ModifyComponentsAction.searchAndRename("tFileZip", "tFileArchive"); //$NON-NLS-1$ //$NON-NLS-2$
             ModifyComponentsAction.searchAndRename("tFileUnzip", "tFileUnarchive"); //$NON-NLS-3$ //$NON-NLS-4$
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 

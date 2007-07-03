@@ -34,13 +34,13 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  */
 public class MigratetRowGeneratorMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             ModifyComponentsAction.searchAndRename("tRowGenerator2", "tRowGenerator"); //$NON-NLS-1$ //$NON-NLS-2$
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 }

@@ -42,7 +42,7 @@ import org.talend.repository.model.migration.filters.PropertyComponentFilter;
  */
 public class RenametFTPToFTPGetMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
 
             if (project.getLanguage().equals(ECodeLanguage.JAVA)) {
@@ -67,14 +67,14 @@ public class RenametFTPToFTPGetMigrationTask extends AbstractMigrationTask imple
                 IComponentFilter filter4 = new PropertyComponentFilter("tFTP", "ACTION", "rename"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 ModifyComponentsAction.searchAndModify(filter4, Arrays.<IComponentConversion> asList(
                         renameComponentConversion, removePropertyComponentConversion));
-                return true;
+                return ExecutionResult.SUCCESS_WITH_ALERT;
             } else {
                 // do nothing
-                return false;
+                return ExecutionResult.SKIPPED;
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 }

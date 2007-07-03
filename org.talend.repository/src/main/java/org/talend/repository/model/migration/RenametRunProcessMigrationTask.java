@@ -34,13 +34,13 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  */
 public class RenametRunProcessMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             ModifyComponentsAction.searchAndRename("tRunProcess", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 

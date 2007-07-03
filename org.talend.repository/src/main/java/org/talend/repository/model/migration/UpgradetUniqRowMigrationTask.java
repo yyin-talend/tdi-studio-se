@@ -42,9 +42,9 @@ import org.talend.repository.model.migration.filters.NameComponentFilter;
  */
 public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         if (project.getLanguage() != ECodeLanguage.PERL) {
-            return true;
+            return ExecutionResult.NOTHING_TO_DO;
         }
         try {
             IComponentFilter filter1 = new NameComponentFilter("tUniqRow"); //$NON-NLS-1$
@@ -54,10 +54,10 @@ public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implemen
 
             ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(removeProperty, addProperty));
 
-            return true;
+            return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 }

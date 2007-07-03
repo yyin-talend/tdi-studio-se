@@ -48,13 +48,13 @@ public class AddProductAndMappingInDBConnectionEMFMigrationTask extends Abstract
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             addProductAndMapping();
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 

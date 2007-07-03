@@ -40,7 +40,7 @@ import org.talend.repository.model.migration.filters.NameComponentFilter;
  */
 public class UpgradetWarntDiePriorityMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    public boolean execute(Project project) {
+    public ExecutionResult execute(Project project) {
         try {
             // 1. tWarn:
             IComponentFilter filter1 = new NameComponentFilter("tWarn"); //$NON-NLS-1$
@@ -52,10 +52,10 @@ public class UpgradetWarntDiePriorityMigrationTask extends AbstractMigrationTask
             setPriorityProperty = new UpdatePropertyComponentConversion("PRIORITY", "5"); //$NON-NLS-1$
             ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(setPriorityProperty));
 
-            return true;
+            return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
-            return false;
+            return ExecutionResult.FAILURE;
         }
     }
 }
