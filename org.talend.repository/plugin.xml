@@ -442,8 +442,8 @@
             name="%migrationtask.upgradetWarntDiePriority.title"/>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.RenametFileZipUnzipMigrationTask"
-            description="%migrationtask.renametFileZipUnzip.description"
+            class="org.talend.repository.model.migration.RenametNormalizeMigrationTask"
+            description="%migrationtask.renametFileZipUnzip.desciption"
             id="org.talend.repository.migration.renametFileZipUnzip"
             name="%migrationtask.renametFileZipUnzip.title"/>
       <projecttask
@@ -470,6 +470,12 @@
             description="%migrationtask.renametFTPtoFTP.description"
             id="org.talend.repository.migration.renametFTPToFTP"
             name="Rename tFTP to tFTPGet-Put-Rename-Delete"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametNormalizeMigrationTask"
+            description="%migrationtask.renameNormalize.description"
+            id="org.talend.repository.migration.renametNormalize"
+            name="%migrationtask.renameNormalize.title"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
