@@ -30,9 +30,12 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
@@ -124,8 +127,11 @@ public class JavaTestShadow {
             String javaInterpreter = CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.JAVA_INTERPRETER);
 
-            String[] str = new String[] { javaInterpreter, "-cp", "D:/dev/workspace/runtime-tos/.Java/classes",
-                    "routines.ExpressionVariableTest" };
+            IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+            IResource javaProject = workSpaceRoot.findMember(".Java");
+            IPath path = javaProject.getLocation().append("classes");
+
+            String[] str = new String[] { javaInterpreter, "-cp", path.toOSString(), "routines.ExpressionVariableTest" };
 
             InputStreamReader reader = null;
 
