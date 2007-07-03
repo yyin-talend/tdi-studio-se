@@ -116,7 +116,7 @@ groupby_new_<%=cid %> = 0;
 	if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
 		for(int i = 0; i < groupby.length; i++){
-%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%=conn.getName() %>.<%=groupby[i][0] %>+"\">";
+%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>))+"\">";
 
 if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
 	
@@ -167,7 +167,7 @@ if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
 
 <%
 for(int i = 0; i < attribute.length; i++){
-%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%=conn.getName()%>.<%=attribute[i][0] %>+"\"");
+%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName()%>.<%=attribute[i][0] %>))+"\"");
 
 <%
 }
@@ -187,7 +187,7 @@ out_<%=cid %>.newLine();
 
 <%
 for(int i = 0; i < tag.length; i++){
-%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%=conn.getName()%>.<%=tag[i][0] %>+"</<%=tag[i][1]%>>");
+%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName()%>.<%=tag[i][0] %>))+"</<%=tag[i][1]%>>");
 
 out_<%=cid %>.newLine();
 
