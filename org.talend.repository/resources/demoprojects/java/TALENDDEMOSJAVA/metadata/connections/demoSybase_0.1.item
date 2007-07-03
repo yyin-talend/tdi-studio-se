@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org" DatabaseType="Sybase ASE" URL="jdbc:sybase:Tds:myserver:5001/mydb" Port="5001" Username="login" Password="pass" ServerName="myserver" DatasourceName="" FileFieldName="" Schema="" SID="mydb" SqlSynthax="SQL Syntax"/>

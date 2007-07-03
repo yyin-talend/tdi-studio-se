@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<talendfile:ContextType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" confirmationNeeded="false" name="Default">
-  <contextParameter comment="" name="sampleString" prompt="sampleString:" promptNeeded="true" type="String" value="'this is a sample'"/>
-</talendfile:ContextType>

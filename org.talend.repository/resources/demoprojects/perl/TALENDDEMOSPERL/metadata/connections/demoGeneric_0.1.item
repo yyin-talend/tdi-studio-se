@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<TalendMetadata:DatabaseConnection xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:TalendMetadata="http://www.talend.org" DatabaseType="MySQL" URL="jdbc:mysql://localhost:3306/test" Port="3306" Username="root" Password="" ServerName="localhost" DatasourceName="" FileFieldName="" Schema="" SID="test" SqlSynthax="SQL Syntax">
-  <queries>
-    <query label="test" comment="" value="select * from demotable"/>
-  </queries>
-</TalendMetadata:DatabaseConnection>
