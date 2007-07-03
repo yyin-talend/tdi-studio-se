@@ -52,6 +52,11 @@ our $dbh_<%=cid %> = DBI->connect(
 <%
 if (printError.equals("true")) {
 %>
+        PrintError => 1,
+<%
+}
+else {
+%>
         PrintError => 0,
 <%
 }
