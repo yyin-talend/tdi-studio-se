@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="TOS Talend testing update site for milestones" url="http://talendforge.org/tos/updatesite/testing/"/>
+   </url>
+
    <plugin
          id="org.talend.rcp.branding.tos"
          download-size="0"
