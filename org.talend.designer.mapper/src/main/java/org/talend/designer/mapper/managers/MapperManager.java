@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.managers;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -126,6 +127,9 @@ public class MapperManager extends AbstractMapperManager {
     public void removeTablePair(DataMapTableView view) {
         IDataMapTable dataTable = tableManager.getData(view);
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
+        if (isAdvancedMap() && dataTable instanceof AbstractInOutTable) {
+            tableEntriesManager.removeAll(Arrays.asList(((AbstractInOutTable) dataTable).getExpressionFilter()));
+        }
         tableEntriesManager.removeAll(dataMapTableEntries);
         if (dataTable instanceof OutputTable) {
             List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
