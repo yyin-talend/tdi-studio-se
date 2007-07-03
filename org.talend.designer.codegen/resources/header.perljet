@@ -118,6 +118,7 @@ $_globals{job_version} = '<%=process.getVersion() %>';
 $_globals{system_pid} = $$;
 $_globals{project_name} = '<%=codeGenArgument.getCurrentProjectName() %>';
 $_globals{start} = [gettimeofday];
+$_globals{job_execution_datetime} = getDate('CCYY-MM-DD hh:mm:ss');
 
 if (defined $opt{context}) {
     my $context_filename =
