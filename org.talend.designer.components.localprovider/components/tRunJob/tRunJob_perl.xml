@@ -34,11 +34,7 @@
       REQUIRED="true"
     />
 
-	 <PARAMETER
-      NAME="SAVE_BEFORE_RUN"
-      FIELD="CHECK"
-      NUM_ROW="2"
-    />
+	
 	
     <PARAMETER
       NAME="CONTEXTPARAMS"

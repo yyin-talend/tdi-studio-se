@@ -38,11 +38,7 @@ COMPATIBILITY="ALL"
       <DEFAULT>'Default'</DEFAULT>
     </PARAMETER>
     -->
-     <PARAMETER
-      NAME="SAVE_BEFORE_RUN"
-      FIELD="CHECK"
-      NUM_ROW="2"
-    />
+    
     
     <PARAMETER NAME="PROCESS" FIELD="PROCESS_TYPE" NUM_ROW="1"/>
        <PARAMETER
