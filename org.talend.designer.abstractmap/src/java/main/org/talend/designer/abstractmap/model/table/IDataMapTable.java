@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.abstractmap.model.table;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;

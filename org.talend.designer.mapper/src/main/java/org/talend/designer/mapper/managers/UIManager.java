@@ -1640,14 +1640,14 @@ public class UIManager extends AbstractUIManager {
         mapperManager.getProblemsManager().checkProblemsForAllEntries(previousTableView, true);
     }
 
-    private void moveSelectedTableDown(DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
+    private void moveSelectedTableDown(final DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
             int indexStartMovedAuthorized) {
         int indexCurrentTable = tablesView.indexOf(currentSelectedTableView);
 
         if (indexCurrentTable < indexStartMovedAuthorized || indexCurrentTable == tablesView.size() - 1) {
             return;
         }
-        DataMapTableView nextTableView = tablesView.get(indexCurrentTable + 1);
+        final DataMapTableView nextTableView = tablesView.get(indexCurrentTable + 1);
 
         FormData formDataCurrent = (FormData) currentSelectedTableView.getLayoutData();
         formDataCurrent.top.control = nextTableView;
@@ -1671,8 +1671,24 @@ public class UIManager extends AbstractUIManager {
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(nextTableView, false);
 
-        mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
-        mapperManager.getProblemsManager().checkProblemsForAllEntries(nextTableView, true);
+        new Thread() {
+
+            /* (non-Javadoc)
+             * @see java.lang.Thread#run()
+             */
+            @Override
+            public void run() {
+                display.asyncExec(new Runnable() {
+
+                    public void run() {
+                        mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
+                        mapperManager.getProblemsManager().checkProblemsForAllEntries(nextTableView, false);
+                    }
+                    
+                });
+            }
+            
+        }.start();
     }
 
     public void minimizeAllTables(Zone zone, boolean minimize, ToolItem minimizeButton) {

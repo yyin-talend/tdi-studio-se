@@ -1952,6 +1952,8 @@ public abstract class DataMapTableView extends Composite {
                     styledTextHandler.getStyledText().setEditable(true);
                     ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler
                             .getContentProposalAdapter();
+                    expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
+                            .getExpressionFilter());
                     expressionProposalStyledText
                             .setContentProposalProvider(expressionProposalProviderForExpressionFilter);
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
@@ -2185,8 +2187,6 @@ public abstract class DataMapTableView extends Composite {
             if (this.expressionProposalProviderForExpressionFilter == null) {
                 this.expressionProposalProviderForExpressionFilter = createExpressionProposalProvider();
             }
-            expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
-                    .getExpressionFilter());
             table.getExpressionFilter().setName(EXPRESSION_FILTER_ENTRY);
             this.proposalForExpressionFilterText = ProposalUtils.getCommonProposal(expressionFilterText,
                     expressionProposalProviderForExpressionFilter);
