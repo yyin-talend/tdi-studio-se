@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
-import org.talend.core.CorePlugin;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.rcp.branding.tos.i18n.Messages;
 
@@ -60,7 +59,7 @@ public class TosBrandingService implements IBrandingService {
     }
 
     public URL getLicenseFile() throws IOException {
-        final Bundle b = Platform.getBundle(CorePlugin.PLUGIN_ID);
+        final Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
         final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/license.txt"), null)); //$NON-NLS-1$
         return url;
     }
