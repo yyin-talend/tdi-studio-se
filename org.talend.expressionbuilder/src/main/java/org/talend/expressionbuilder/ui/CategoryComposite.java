@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.talend.designer.rowgenerator.data.Function;
-import org.talend.designer.rowgenerator.data.TalendType;
+import org.talend.expressionbuilder.model.Category;
 import org.talend.expressionbuilder.model.CategoryManager;
 
 public class CategoryComposite extends Composite {
@@ -69,11 +69,11 @@ public class CategoryComposite extends Composite {
         categoryLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         categoryLabel.setText("Category");
 
-        final ListViewer categoryViewer = new ListViewer(composite, SWT.NONE);
+        final ListViewer categoryViewer = new ListViewer(composite, SWT.V_SCROLL | SWT.H_SCROLL);
         categoryViewer.setLabelProvider(new LabelProvider() {
 
             public String getText(Object element) {
-                return ((TalendType) element).getCategory();
+                return ((Category) element).getName();
             }
         });
         categoryViewer.setContentProvider(new ArrayContentProvider());
@@ -92,7 +92,7 @@ public class CategoryComposite extends Composite {
         functionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         functionLabel.setText("Functions");
 
-        final ListViewer functionViewer = new ListViewer(composite_1, SWT.NONE);
+        final ListViewer functionViewer = new ListViewer(composite_1, SWT.V_SCROLL | SWT.H_SCROLL);
         functionViewer.setContentProvider(new ArrayContentProvider());
         functionViewer.setLabelProvider(new LabelProvider() {
 
@@ -146,8 +146,7 @@ public class CategoryComposite extends Composite {
                 public void selectionChanged(SelectionChangedEvent event) {
 
                     try {
-                        TalendType category = (TalendType) ((IStructuredSelection) event.getSelection())
-                                .getFirstElement();
+                        Category category = (Category) ((IStructuredSelection) event.getSelection()).getFirstElement();
                         functionViewer.setInput(category.getFunctions());
                         if (category.getFunctions().isEmpty()) {
                             docDisplayer.setText("");
@@ -176,7 +175,6 @@ public class CategoryComposite extends Composite {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             });
         }
