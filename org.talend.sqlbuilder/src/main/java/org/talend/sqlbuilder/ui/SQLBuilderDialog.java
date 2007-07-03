@@ -58,6 +58,7 @@ import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.actions.SaveAsSQLAction;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
@@ -428,7 +429,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
             SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
             List<Query> qs = new ArrayList<Query>();
-            List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
             boolean isInfo = false;
             final CTabFolder tabFolder = getEditorComposite().getTabFolder();
             final CTabItem[] items = tabFolder.getItems();
@@ -436,24 +436,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             for (int i = 0; i < items.length; i++) {
                 CTabItem item = items[i];
                 final String text = item.getText();
-                boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*")
-                        && text.substring(1).startsWith(AbstractSQLEditorComposite.QUERY_PREFIX);
-                isInfo2 = isInfo2 && item.getData() instanceof Query;
+                boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
                 if (isInfo2) {
                     isInfo = true;
-                    Query q = (Query) item.getData();
-                    RepositoryNode node = null;
-                    MultiPageSqlBuilderEditor meditor = null;
-                    Object control = item.getData("KEY");
-                    if (control instanceof MultiPageSqlBuilderEditor) {
-                        meditor = (MultiPageSqlBuilderEditor) control;
-                    }
-                    if (meditor != null) {
-                        q.setValue(meditor.getActivePageSqlString());
-                        node = meditor.getActivePageRepositoryNode();
-                    }
-                    qs.add(q);
-                    nodes.add(node);
                 }
             }
             if (isInfo) {
@@ -461,11 +446,29 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                 String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
                 boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
                 if (openQuestion) {
-                    for (int i = 0; i < nodes.size(); i++) {
-                        RepositoryNode n = nodes.get(i);
-                        Query q = qs.get(i);
-                        if (q != null && n != null) {
-                            manager.saveQuery(n, q);
+                    for (CTabItem item : items) {
+                        final String text = item.getText();
+                        boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
+                        if (isInfo2) {
+                            MultiPageSqlBuilderEditor meditor = null;
+                            Object control = item.getData("KEY");
+                            if (control instanceof MultiPageSqlBuilderEditor) {
+                                meditor = (MultiPageSqlBuilderEditor) control;
+                            }
+                            if (meditor != null) {
+                                RepositoryNode node = null;
+                                node = meditor.getActivePageRepositoryNode();
+                                if (item.getData() instanceof Query) {
+                                    Query q = (Query) item.getData();
+                                    q.setValue(meditor.getActivePageSqlString());
+                                    qs.add(q);
+                                    if (node != null && q != null) {
+                                        manager.saveQuery(node, q);
+                                    }
+                                } else {
+                                    meditor.getActivePageSaveSQLAction().run();
+                                }
+                            }
                         }
                     }
                 }

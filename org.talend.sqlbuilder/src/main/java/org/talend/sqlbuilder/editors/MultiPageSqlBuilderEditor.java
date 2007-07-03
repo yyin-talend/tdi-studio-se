@@ -34,13 +34,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
-import org.talend.sqlbuilder.actions.AbstractEditorAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
-import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
@@ -368,4 +367,18 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         }
     }
 
+    public SaveSQLAction getActivePageSaveSQLAction() {
+        switch (getActivePage()) {
+        case 0:
+            return sqlEdit.getSaveSQLAction();
+        case 1:
+            return sqlDesigner.getSaveSQLAction();
+        default:
+            return null;
+        }
+    }
+    
+    public void setItemData(Query query) {
+        this.tabItem.setData(query);
+    }
 }

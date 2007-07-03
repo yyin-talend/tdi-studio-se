@@ -543,10 +543,12 @@ public class DBStructureComposite extends Composite {
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
-                ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
-                treeViewer.refresh(rootNode, true);
-                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
-                treeViewer.update(rootNode, null);
+                if (treeViewer != null && treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
+                    ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
+                    treeViewer.refresh(rootNode, true);
+                    ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
+                    treeViewer.update(rootNode, null);
+                }
             }
 
         });

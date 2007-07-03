@@ -189,6 +189,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
                 return query2;
             }
         }
+        SQLPropertyDialog.setDialogTitle(getMultiPageEditor().getTitle());
         SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
         saveSQLDialog.setSql(getSQLToBeExecuted());
         // saveSQLDialog.setQuery(connParam.getQueryObject());
@@ -198,6 +199,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
             dialog.refreshNode(getRepositoryNode());
             getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query.getLabel());
             getMultiPageEditor().getDeactivePageSaveSQLAction().setQuery(query);
+            getMultiPageEditor().setItemData(query);
             return query;
         }
         return null;

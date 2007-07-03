@@ -45,9 +45,12 @@ import org.talend.sqlbuilder.Messages;
  * This class is used for creating a dialog for saving current editor's sql texts. <br/>
  * 
  * $Id: SaveSQLDialog.java,v 1.0 2006/11/15 05:38:28 ftang Exp $
+ * 
  * @author ftang
  */
 public class SQLPropertyDialog extends TitleAreaDialog {
+
+    private static String dialogTitle = "";
 
     private Text commentText;
 
@@ -180,7 +183,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         // Set the title bar text
-        shell.setText(Messages.getString("SQLEditor.SaveSQLDialog.Title")); //$NON-NLS-1$
+        shell.setText(dialogTitle); //$NON-NLS-1$
     }
 
     /**
@@ -243,5 +246,13 @@ public class SQLPropertyDialog extends TitleAreaDialog {
                 }
             }
         });
+    }
+
+    public static void setDialogTitle(String dialogTitle) {
+        if (dialogTitle.substring(0, 1).equals("*")) {
+            dialogTitle = dialogTitle.substring(1);
+        }
+        SQLPropertyDialog.dialogTitle = "\"" + dialogTitle + "\" ";
+        SQLPropertyDialog.dialogTitle += Messages.getString("SQLEditor.SaveSQLDialog.Title");
     }
 }
