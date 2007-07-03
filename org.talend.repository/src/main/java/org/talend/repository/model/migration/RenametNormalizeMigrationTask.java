@@ -27,9 +27,9 @@ import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
 
 /**
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
- * 
+ * Migration task use to rename tNormalizer components in tNormalize.
  */
+
 public class RenametNormalizeMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
     public ExecutionResult execute(Project project) {
