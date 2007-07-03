@@ -239,7 +239,7 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * 
-     * Call finalizeInitialization(...) after instanciate this class.
+     * Call loaded() method after instanciate this class.
      * 
      * @param parent
      * @param style
@@ -2187,6 +2187,8 @@ public abstract class DataMapTableView extends Composite {
             if (this.expressionProposalProviderForExpressionFilter == null) {
                 this.expressionProposalProviderForExpressionFilter = createExpressionProposalProvider();
             }
+            expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
+                    .getExpressionFilter());
             table.getExpressionFilter().setName(EXPRESSION_FILTER_ENTRY);
             this.proposalForExpressionFilterText = ProposalUtils.getCommonProposal(expressionFilterText,
                     expressionProposalProviderForExpressionFilter);
@@ -2236,6 +2238,9 @@ public abstract class DataMapTableView extends Composite {
         return toolTip;
     }
 
+    /**
+     * This method must be called when all widgets has been created.
+     */
     public abstract void loaded();
 
     /**

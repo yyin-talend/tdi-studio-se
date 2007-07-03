@@ -741,7 +741,6 @@ public class MapperUI {
 
             OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, outputTable,
                     outputTablesZoneView);
-            dataMapTableView.loaded();
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));

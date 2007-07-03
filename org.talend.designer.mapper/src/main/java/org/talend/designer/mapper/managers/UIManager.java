@@ -1301,6 +1301,7 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+        dataMapTableView.loaded();
         return dataMapTableView;
     }
 
@@ -1636,8 +1637,7 @@ public class UIManager extends AbstractUIManager {
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(previousTableView, false);
 
-        mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
-        mapperManager.getProblemsManager().checkProblemsForAllEntries(previousTableView, true);
+        checkProblemsForMovedTables(currentSelectedTableView, previousTableView);
     }
 
     private void moveSelectedTableDown(final DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
@@ -1671,6 +1671,15 @@ public class UIManager extends AbstractUIManager {
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(nextTableView, false);
 
+        checkProblemsForMovedTables(currentSelectedTableView, nextTableView);
+    }
+
+    /**
+     * DOC amaumont Comment method "checkProblemsForMovedTables".
+     * @param currentSelectedTableView
+     * @param nextTableView
+     */
+    private void checkProblemsForMovedTables(final DataMapTableView currentSelectedTableView, final DataMapTableView nextTableView) {
         new Thread() {
 
             /* (non-Javadoc)
