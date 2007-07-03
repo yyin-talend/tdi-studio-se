@@ -105,7 +105,7 @@ public enum EParameterName {
     PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
     TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
     TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
-    TABLE_METTER("Metter Table"),
+    TABLE_METTER(Messages.getString("EParameterName.tableMetter")), //$NON-NLS-1$
     CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
     CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
     CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
