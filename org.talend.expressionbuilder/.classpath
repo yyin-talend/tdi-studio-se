@@ -3,5 +3,5 @@
 	<classpathentry path="src/main/java" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
 	<classpathentry path="org.eclipse.pde.core.requiredPlugins" kind="con"/>
-	<classpathentry path="bin" kind="output"/>
+	<classpathentry path="class" kind="output"/>
 </classpath>
