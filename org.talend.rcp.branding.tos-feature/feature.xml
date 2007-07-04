@@ -3,7 +3,8 @@
       id="org.talend.rcp.branding.tos_feature"
       label="Tos branding feature"
       version="2.1.0.qualifier"
-      provider-name=".Talend SA.">
+      provider-name=".Talend SA."
+      plugin="org.talend.rcp.branding.tos">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
