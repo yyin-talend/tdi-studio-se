@@ -1,0 +1,43 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+	
+    String cid = node.getUniqueName();
+	String javaDbDriver = "oracle.jdbc.driver.OracleDriver";
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+%>
+java.lang.Class.forName("<%=javaDbDriver %>");
+<%
+	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+	if(connectionType.equals("ORACLE_SID")) {
+%>
+String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+<%
+	} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+%>
+String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+<%
+	}
+%>
+
+String dbUser_<%=cid %> = <%=dbuser%>;
+String dbPwd_<%=cid %> = <%=dbpass%>;
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+conn_<%=cid%>.setAutoCommit(false);
+
+globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
