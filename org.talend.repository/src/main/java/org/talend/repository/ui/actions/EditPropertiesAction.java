@@ -21,27 +21,49 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
+import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
+import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
+import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.IUIRefresher;
@@ -49,6 +71,7 @@ import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -86,23 +109,25 @@ public class EditPropertiesAction extends AContextualAction {
             IEditorPart part = getCorrespondingEditor(node);
             if (part != null && part instanceof IUIRefresher) {
                 ((IUIRefresher) part).refreshName();
+            }else{
+                processRoutineRenameOperation(originalName, node, path);
             }
-            processRoutineRenameOperation(originalName, node, path);
         }
     }
 
     /**
-     * delete the used routine java file if the routine is renamed.
+     * delete the used routine java file if the routine is renamed. This method is added for solving bug 1321, only
+     * supply to talend java version.
      * 
      * @param path
      * @param node
      * @param originalName
      */
     private void processRoutineRenameOperation(String originalName, RepositoryNode node, IPath path) {
-        if(LanguageManager.getCurrentLanguage()!=ECodeLanguage.JAVA){
+        if (LanguageManager.getCurrentLanguage() != ECodeLanguage.JAVA) {
             return;
         }
-        
+
         if (node.getObjectType() != ERepositoryObjectType.ROUTINES) {
             return;
         }
@@ -112,24 +137,71 @@ public class EditPropertiesAction extends AContextualAction {
 
         try {
             IJavaProject javaProject = CorePlugin.getDefault().getRunProcessService().getJavaProject();
-            if (javaProject != null) {
-                IProject project = javaProject.getProject();
-                IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-                IFile file = srcFolder.getFolder(JavaUtils.JAVA_ROUTINES_DIRECTORY).getFile(
-                        originalName + "."+LanguageManager.getCurrentLanguage().getExtension());
-                if (file.exists()) {
-                    file.delete(true, null);
-                }
+            if (javaProject == null) {
+                return;
             }
+
+            IProject project = javaProject.getProject();
+            IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+            IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(srcFolder);
+            IPackageFragment routinesPkg = root.getPackageFragment(JavaUtils.JAVA_ROUTINES_DIRECTORY);
+
+            ICompilationUnit unit = routinesPkg.getCompilationUnit(originalName + SuffixConstants.SUFFIX_STRING_java);
+            if (unit == null) {
+                return;
+            }
+            String newName = node.getObject().getLabel();
+
+            JavaRenameProcessor processor = new RenameCompilationUnitProcessor(unit);
+            processor.setNewElementName(newName + SuffixConstants.SUFFIX_STRING_java);
+            RenameRefactoring ref = new JavaRenameRefactoring(processor);
+            final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
+                    CheckConditionsOperation.ALL_CONDITIONS);
+
+            IRunnableWithProgress r = new IRunnableWithProgress() {
+
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    try {
+                        operation.run(monitor);
+                    } catch (CoreException e) {
+                        throw new InvocationTargetException(e);
+                    }
+                }
+            };
+            PlatformUI.getWorkbench().getProgressService().run(true, true, r);
+            RefactoringStatus conditionStatus = operation.getConditionStatus();
+            if (conditionStatus.hasError()) {
+                String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!";
+                RefactoringStatusEntry[] entries = conditionStatus.getEntries();
+                for (int i = 0; i < entries.length; i++) {
+                    RefactoringStatusEntry entry = entries[i];
+                    errorMessage += "\n>>>" + entry.getMessage();
+                }
+                MessageDialog.openError(this.getViewPart().getViewSite().getShell(), "Warning", errorMessage);
+                return;
+            }
+
+            ICompilationUnit newUnit = routinesPkg.getCompilationUnit(newName + SuffixConstants.SUFFIX_STRING_java);
+            if (newUnit == null) {
+                return;
+            }
+            RoutineItem item = (RoutineItem) node.getObject().getProperty().getItem();
+            IFile javaFile = (IFile) newUnit.getAdapter(IResource.class);
+            try {
+                ByteArray byteArray = item.getContent();
+                byteArray.setInnerContentFromFile(javaFile);
+                IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+                IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+                repFactory.save(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } catch (Exception e) {
-            // do nothing.
+            e.printStackTrace();
         }
     }
 
-    
-    
-    
-    
     /**
      * Find the editor that is related to the node.
      * 
