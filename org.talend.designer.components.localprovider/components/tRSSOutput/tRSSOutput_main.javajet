@@ -88,7 +88,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				{
  	%>
  				
- 				<%=coluLabel%>Element.setText(<%=conn.getName() %>.<%=column.getLabel() %> ==null ? "" : String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
+ 				<%=coluLabel%>Element.setText(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
  				
 <%						}
 					}
