@@ -34,11 +34,15 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -221,18 +225,27 @@ public class MapperUI {
         this.mapperUIParent = mapperShell;
         
         final Shell mapperShellFinal = mapperShell;
+        mapperShell.addTraverseListener(new TraverseListener() {
 
+            public void keyTraversed(TraverseEvent e) {
+                if(e.keyCode == 27) {
+                    e.doit = false;
+                }
+            }
+            
+        });
         mapperShell.addShellListener(new ShellListener() {
 
             public void shellActivated(ShellEvent e) {
             }
 
             public void shellClosed(ShellEvent e) {
-                if (mapperManager.getUiManager().isCloseWithoutPrompt()) {
-                    e.doit = true;
-                } else {
-                    e.doit = false;
-                }
+//                if (mapperManager.getUiManager().isCloseWithoutPrompt()) {
+//                    e.doit = true;
+//                } else {
+//                    e.doit = false;
+//                }
+//                System.out.println();
             }
 
             public void shellDeactivated(ShellEvent e) {
