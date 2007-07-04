@@ -87,8 +87,8 @@ public class LicenseWizardPage extends WizardPage {
         GridData data = new GridData(450, 300);
         clufText.setLayoutData(data);
 
-        Label footerLabel = new Label(container, SWT.NONE);
-        footerLabel.setText(Messages.getString("LicenseWizard.footer")); //$NON-NLS-1$
+        // Label footerLabel = new Label(container, SWT.NONE);
+        // footerLabel.setText(Messages.getString("LicenseWizard.footer")); //$NON-NLS-1$
 
         setControl(container);
         setPageComplete(true);
