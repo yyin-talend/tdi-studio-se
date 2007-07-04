@@ -36,6 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
       int nb_line_<%=cid%> = 0;
        org.aspcfs.utils.CRMConnection crm<%=cid%> = new org.aspcfs.utils.CRMConnection();
+       System.out.println(crm<%=cid%>.getDescription());
        crm<%=cid%>.setUrl(<%=url%>);
        crm<%=cid%>.setId(<%=server%>);
        crm<%=cid%>.setCode(<%=password%>);
@@ -65,6 +66,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 	%>      
         crm<%=cid%>.load(<%=modulename%><%=cid%>);
+        if(crm<%=cid%>.getStatus()==1)
+        {
+       		System.out.println(crm<%=cid%>.getLastResponse());
+       	}
         java.util.Iterator iter<%=cid%> = crm<%=cid%>.getRecords(<%=classname%>.class.getName()).iterator();
          while (iter<%=cid%>.hasNext()) {
        		Object o = iter<%=cid%>.next();

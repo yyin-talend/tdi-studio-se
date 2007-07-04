@@ -33,7 +33,7 @@
     <PARAMETER
       NAME="CENTRIC-URL"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="1"
       REQUIRED="true"
     >
       <DEFAULT>"http://127.0.0.1:8080/centric"</DEFAULT>
@@ -66,7 +66,7 @@
       <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+    <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="2" REQUIRED="true">
        <ITEMS DEFAULT="Contact">
       <ITEM NAME="Account"   VALUE="accountList" />
 	  <ITEM NAME="Contact"   VALUE="contactList" />
@@ -83,7 +83,22 @@
 	    <ITEM NAME="CustomFieldData"   VALUE="customFieldDataList" />
        </ITEMS>
     </PARAMETER>
-    
+    <PARAMETER NAME="CLASSNAME" FIELD="TEXT" NUM_ROW="3" REQUIRED="true" SHOW="true">
+      <DEFAULT IF="MODULENAME=='Contact'">org.aspcfs.modules.contacts.base.Contact</DEFAULT>
+      <DEFAULT IF="MODULENAME=='Account'">org.aspcfs.modules.accounts.base.Organization</DEFAULT>
+      <DEFAULT IF="MODULENAME=='ContactAddress'">org.aspcfs.modules.contacts.base.ContactAddress</DEFAULT>
+      <DEFAULT IF="MODULENAME=='ContactEmailAddress'">org.aspcfs.modules.contacts.base.ContactEmailAddress</DEFAULT>
+      <DEFAULT IF="MODULENAME=='ContactPhoneNumber'">org.aspcfs.modules.contacts.base.ContactPhoneNumber</DEFAULT>
+      <DEFAULT IF="MODULENAME=='OrganizationAddress'">org.aspcfs.modules.accounts.base.OrganizationAddress</DEFAULT>
+      <DEFAULT IF="MODULENAME=='OrganizationEmailAddress'">org.aspcfs.modules.accounts.base.OrganizationEmailAddress</DEFAULT>
+      <DEFAULT IF="MODULENAME=='OrganizationPhoneNumber'">org.aspcfs.modules.accounts.base.OrganizationPhoneNumber</DEFAULT>
+      <DEFAULT IF="MODULENAME=='Call'">org.aspcfs.modules.contacts.base.Call</DEFAULT>
+      <DEFAULT IF="MODULENAME=='Ticket'">org.aspcfs.modules.troubletickets.base.Ticket</DEFAULT>
+      <DEFAULT IF="MODULENAME=='CustomFieldCategory'">org.aspcfs.modules.base.CustomFieldCategory</DEFAULT>
+      <DEFAULT IF="MODULENAME=='CustomField'">org.aspcfs.modules.base.CustomField</DEFAULT>
+      <DEFAULT IF="MODULENAME=='CustomFieldData'">org.aspcfs.modules.base.CustomFieldData</DEFAULT>
+    </PARAMETER>
+<!--    
     <PARAMETER NAME="CLASSNAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
       <ITEMS DEFAULT="ContactClass">
       <ITEM  NAME="AccountClass"   VALUE="org.aspcfs.modules.accounts.base.Organization" />
@@ -101,6 +116,7 @@
       <ITEM  NAME="CustomFieldDataClass"   VALUE="org.aspcfs.modules.base.CustomFieldData" />
 </ITEMS>
     </PARAMETER>
+-->    
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
