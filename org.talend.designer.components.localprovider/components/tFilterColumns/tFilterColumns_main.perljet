@@ -35,34 +35,26 @@
             }
 
             String cid = metadata.getTableName();
-            int column_number = 0;
-            StringBuffer outputString = new StringBuffer();
-            outputString.append("@");
-            outputString.append(cid);
-            outputString.append(" = ( ");
-            
-            column_number = 0;
+%>
+my @<%=cid%> = () ;
+@<%=cid%> = (
+<%
             for (IMetadataColumn column: metadata.getListColumns()) {
             	Integer in_column_number = hInputColNameToNumber.get( column.getLabel() );
                 if(  in_column_number != null ) {
-                    outputString.append("$");
-                    outputString.append(inputRowName);
-                    outputString.append("[");
-                    outputString.append(in_column_number);
-                    outputString.append("],");
-                }
-                else {
-                    outputString.append("undef,");
-                }
-            }
-            outputString.append( " ) " );
-            
-
 
 %>
-my @<%=cid%> = () ;
-<%=outputString%> ;
-    
+    $<%=inputRowName%>[<%=in_column_number%>],
+<%
+                }
+                else {
+%>
+    undef,
+<%
+                }
+            }
+%>
+);
 <%
         }
     }
