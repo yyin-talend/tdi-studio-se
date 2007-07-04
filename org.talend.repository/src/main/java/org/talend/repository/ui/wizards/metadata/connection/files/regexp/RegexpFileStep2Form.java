@@ -715,19 +715,20 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Boolean quoteIsEscape = false;
-                if ((e.character) == Character.valueOf('"')) {
-                    Point selection = fieldSeparatorText.getSelection();
-                    if (selection.x > 0) {
-                        if (fieldSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
-                            quoteIsEscape = true;
-                        }
-                    }
-                    if (!quoteIsEscape) {
-                        updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
-                    }
-                    e.doit = quoteIsEscape;
-                }
+                // Boolean quoteIsEscape = false;
+                // if ((e.character) == Character.valueOf('"')) {
+                // Point selection = fieldSeparatorText.getSelection();
+                // if (selection.x > 0) {
+                // if (fieldSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) {
+                // //$NON-NLS-1$
+                // quoteIsEscape = true;
+                // }
+                // }
+                // if (!quoteIsEscape) {
+                // updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
+                // }
+                // e.doit = quoteIsEscape;
+                // }
             }
         });
 
@@ -742,19 +743,19 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Boolean quoteIsEscape = false;
-                if ((e.character) == Character.valueOf('"')) {
-                    Point selection = rowSeparatorText.getSelection();
-                    if (selection.x > 0) {
-                        if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
-                            quoteIsEscape = true;
-                        }
-                    }
-                    if (!quoteIsEscape) {
-                        updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
-                    }
-                    e.doit = quoteIsEscape;
-                }
+                // Boolean quoteIsEscape = false;
+                // if ((e.character) == Character.valueOf('"')) {
+                // Point selection = rowSeparatorText.getSelection();
+                // if (selection.x > 0) {
+                // if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
+                // quoteIsEscape = true;
+                // }
+                // }
+                // if (!quoteIsEscape) {
+                // updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
+                // }
+                // e.doit = quoteIsEscape;
+                // }
             }
         });
 

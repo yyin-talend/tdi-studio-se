@@ -783,19 +783,19 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Boolean quoteIsEscape = false;
-                if ((e.character) == Character.valueOf('"')) {
-                    Point selection = rowSeparatorText.getSelection();
-                    if (selection.x > 0) {
-                        if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
-                            quoteIsEscape = true;
-                        }
-                    }
-                    if (!quoteIsEscape) {
-                        updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteTip")); //$NON-NLS-1$
-                    }
-                    e.doit = quoteIsEscape;
-                }
+                // Boolean quoteIsEscape = false;
+                // if ((e.character) == Character.valueOf('"')) {
+                // Point selection = rowSeparatorText.getSelection();
+                // if (selection.x > 0) {
+                // if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
+                // quoteIsEscape = true;
+                // }
+                // }
+                // if (!quoteIsEscape) {
+                // updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteTip")); //$NON-NLS-1$
+                // }
+                // e.doit = quoteIsEscape;
+                // }
             }
         });
 

@@ -77,7 +77,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
     private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
             TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
- 
+
     private static final String[] STRING_NUMBERS_DATA = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
@@ -881,19 +881,20 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Boolean quoteIsEscape = false;
-                if ((e.character) == Character.valueOf('"')) {
-                    Point selection = fieldSeparatorText.getSelection();
-                    if (selection.x > 0) {
-                        if (fieldSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
-                            quoteIsEscape = true;
-                        }
-                    }
-                    if (!quoteIsEscape) {
-                        updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
-                    }
-                    e.doit = quoteIsEscape;
-                }
+                // Boolean quoteIsEscape = false;
+                // if ((e.character) == Character.valueOf('"')) {
+                // Point selection = fieldSeparatorText.getSelection();
+                // if (selection.x > 0) {
+                // if (fieldSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) {
+                // //$NON-NLS-1$
+                // quoteIsEscape = true;
+                // }
+                // }
+                // if (!quoteIsEscape) {
+                // updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
+                // }
+                // e.doit = quoteIsEscape;
+                // }
             }
         });
 
@@ -908,19 +909,19 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Boolean quoteIsEscape = false;
-                if ((e.character) == Character.valueOf('"')) {
-                    Point selection = rowSeparatorText.getSelection();
-                    if (selection.x > 0) {
-                        if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
-                            quoteIsEscape = true;
-                        }
-                    }
-                    if (!quoteIsEscape) {
-                        updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
-                    }
-                    e.doit = quoteIsEscape;
-                }
+                // Boolean quoteIsEscape = false;
+                // if ((e.character) == Character.valueOf('"')) {
+                // Point selection = rowSeparatorText.getSelection();
+                // if (selection.x > 0) {
+                // if (rowSeparatorText.getText().substring(selection.x - 1, selection.x).equals("\\")) { //$NON-NLS-1$
+                // quoteIsEscape = true;
+                // }
+                // }
+                // if (!quoteIsEscape) {
+                // updateStatus(IStatus.ERROR, Messages.getString("FileStep2.quoteDelimitedTip")); //$NON-NLS-1$
+                // }
+                // e.doit = quoteIsEscape;
+                // }
             }
         });
 
@@ -976,10 +977,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                 fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ";" + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             case 1:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "," + TalendTextUtils.QUOTATION_MARK ); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + "," + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             case 2:
-                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ("\\t") + TalendTextUtils.QUOTATION_MARK ); //$NON-NLS-1$
+                fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + ("\\t") + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
                 break;
             case 3:
                 fieldSeparatorText.setText(TalendTextUtils.QUOTATION_MARK + " " + TalendTextUtils.QUOTATION_MARK); //$NON-NLS-1$
