@@ -171,6 +171,10 @@ public class UIManager extends AbstractUIManager {
 
     private Display display;
 
+    private boolean loseWithoutPrompt;
+
+    private boolean closeWithoutPrompt;
+
     /**
      * DOC amaumont UIManager constructor comment.
      * 
@@ -642,6 +646,7 @@ public class UIManager extends AbstractUIManager {
             mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
 
             if (parent instanceof Shell) {
+                closeWithoutPrompt = true;
                 ((Shell) parent).close();
             }
         }
@@ -1943,6 +1948,10 @@ public class UIManager extends AbstractUIManager {
             }
         }
         return false;
+    }
+
+    public boolean isCloseWithoutPrompt() {
+        return closeWithoutPrompt;
     }
 
 }

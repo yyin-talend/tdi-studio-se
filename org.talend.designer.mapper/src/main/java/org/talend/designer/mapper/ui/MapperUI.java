@@ -37,6 +37,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -217,6 +219,32 @@ public class MapperUI {
         }
 
         this.mapperUIParent = mapperShell;
+        
+        final Shell mapperShellFinal = mapperShell;
+
+        mapperShell.addShellListener(new ShellListener() {
+
+            public void shellActivated(ShellEvent e) {
+            }
+
+            public void shellClosed(ShellEvent e) {
+                if (mapperManager.getUiManager().isCloseWithoutPrompt()) {
+                    e.doit = true;
+                } else {
+                    e.doit = false;
+                }
+            }
+
+            public void shellDeactivated(ShellEvent e) {
+            }
+
+            public void shellDeiconified(ShellEvent e) {
+            }
+
+            public void shellIconified(ShellEvent e) {
+            }
+
+        });
 
         MapperComponent component = (MapperComponent) mapperManager.getAbstractMapComponent();
         ImageDescriptor imageDescriptor = component.getComponent().getIcon32();
