@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="TOS Talend testing update site for milestones" url="http://talendforge.org/tos/updatesite/testing/"/>
+      <update label="TOS Talend testing update site for milestones" url="http://talendforge.org/core/updatesite/testing/"/>
    </url>
 
    <plugin
