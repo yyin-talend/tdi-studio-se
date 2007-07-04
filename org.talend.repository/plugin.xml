@@ -482,6 +482,12 @@
             description="%migrationtask.renameFlowMeter.description"
             id="org.talend.repository.migration.renametFlowMeter"
             name="%migrationtask.renameFlowMeter.title"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddQuoteMarkMigrationTask"
+            description="Add quote marks to separator after feature 1192 added to trunk."
+            id="org.talend.repository.model.migration.addQuot"
+            name="Add quote marks to separator after feature 1192 added to trunk."/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
