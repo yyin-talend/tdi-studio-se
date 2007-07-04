@@ -203,10 +203,16 @@ class Transfer{
 	String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
 	if((dbType.equals("MySQL"))&&(useExistingConn.equals("true")))
 	{
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION_MYSQL__");
 		String conn = "conn_" + connection;
 %>
 		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%		
+	}else if((dbType.equals("Oracle"))&&(useExistingConn.equals("true"))){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION_ORACLE__");
+		String conn = "conn_" + connection;
+%>
+		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");		
 <%  }else if((dbType.equals("Access"))||(dbType.equals("SQLite"))){%>
 		url<%=cid%> = <%=tr.url(node)%>;
 		con<%=cid%> = java.sql.DriverManager.getConnection(url<%=cid %>);

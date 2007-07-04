@@ -21,16 +21,16 @@ imports="
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 <%
-	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-	if(connectionType.equals("ORACLE_SID")) {
+String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+if(connectionType.equals("ORACLE_SID")) {
 %>
-String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+	String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
 <%
-	} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
 %>
-String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+	String url_<%=cid %> = url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
 <%
-	}
+}
 %>
 
 String dbUser_<%=cid %> = <%=dbuser%>;
