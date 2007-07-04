@@ -33,17 +33,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>= it.sauronsoftware.feed4j.FeedParser.parse(url<%=cid%> );
    	String row<%=cid%>[]=new String [4];
   	 int items<%=cid%>=feed<%=cid%>.getItemCount();
-  	 if(<%=isAmount%> && aMount<%=cid%>< feed<%=cid%>.getItemCount() ){
-  	   		items<%=cid%>=aMount<%=cid%>;
+  	 
+  	 <%
+  	 if(isAmount){
+  	 %>
+  	   		if(aMount<%=cid%>< items<%=cid%>)
+  	   		{
+  	   			items<%=cid%>=aMount<%=cid%>;
+  	   		}
+  	 
+  	 <%
   	  }
+  	 %>
       for (int i = 0; i < items<%=cid%>; i++) {
          it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i);
           row<%=cid%>[0]=itm<%=cid%>.getTitle();
           row<%=cid%>[1]=itm<%=cid%>.getDescriptionAsText();
           row<%=cid%>[2]=(itm<%=cid%>.getPubDate()==null ? "" :itm<%=cid%>.getPubDate().toString());
           row<%=cid%>[3]=(itm<%=cid%>.getLink()==null ? "" :itm<%=cid%>.getLink().toString());
-          if(<%=isDate%>)
+  <%        if(isDate)
           {
+  %>       	
           	java.util.Date d<%=cid%>=new java.util.Date();
           	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
           	d<%=cid%>=formatterDate<%=cid%>.parse(<%=dateTime%>);
@@ -53,8 +63,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          	 {
          	 	continue;
          	 }
-          	
+  <%       	
           }
+  %>        
 
 <%
 	if(conns!=null){
