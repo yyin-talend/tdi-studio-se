@@ -26,6 +26,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 %>
 
 <%
@@ -169,6 +170,13 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 %>
 
 public void <%=subTree.getName() %>Process() throws TalendException {
+<%
+	if(isRunInMultiThread){
+%>
+	String currentComponent = "";
+<%
+	}
+%>				
 	try {
 <%
 	// Call for RUN AFTER links

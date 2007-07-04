@@ -12,6 +12,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 %>
 
 <%
@@ -59,6 +60,16 @@
 
 	
 	} catch(Exception e) {
+<%
+	if(isRunInMultiThread){
+%>
+	throw new TalendException(this, e, currentComponent);
+<%
+	}else{
+%>	
 		throw new TalendException(this, e);
+<%
+	}
+%>		
 	}
 }
