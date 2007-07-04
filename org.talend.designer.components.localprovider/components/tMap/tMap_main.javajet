@@ -100,7 +100,7 @@
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
-        Set<ExternalMapperTable> validLookupTables = new HashSet<ExternalMapperTable>();
+        boolean hasValidLookupTables = false;
 
 		  int closeBracketCounter = 0;
 		%>
@@ -169,9 +169,9 @@
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
     		           
-    		           String className = tableName + "Struct";
+    		        String className = tableName + "Struct";
 
-                    validLookupTables.add(externalTable);
+                    hasValidLookupTables = true;
                     
                     if (aKeysValues.length > 0 || checkingSyntax) {
                         sb.append(cr
@@ -187,6 +187,13 @@
 
                      sb = new StringBuilder();
                      String matchingMode = externalTable.getMatchingMode();
+					if(matchingMode == null) {
+						if(aKeysValues.length > 0) {
+							matchingMode = "UNIQUE_MATCH";
+						} else {
+							matchingMode = "ALL_ROWS";
+						}
+					}
                      boolean isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
                      %>
                             
@@ -558,25 +565,12 @@
         }
 
         // write conditions for inner join reject
-        if (validLookupTables.size() > 0 && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
+        if (hasValidLookupTables && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
             sb.append(cr + gm.indent(indent) + "if(");
-//            String and = null;
-//            for (ExternalMapperTable validLookupTable : validLookupTables) {
-//                if (validLookupTable.isInnerJoin()) {
-//                    if (and == null) {
-//                        and = "";
-//                    } else {
-//                        and = " &&";
-//                    }
-//                    sb.append(and + " " + validLookupTable.getName() + "FromLookup != null");
-//                }
-//            }
-//            sb.append(" && !" + rejectedInnerJoin);
             sb.append("!" + rejectedInnerJoin);
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
             indent++;
-
         }
 
         // ///////////////////////////////////////////////////////////////////
