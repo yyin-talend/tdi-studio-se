@@ -97,7 +97,11 @@
       NOT_SHOW_IF="(USE_ADVANCED=='false')"
     >
       <DEFAULT>## code sample : use $input_row to define the condition.
-# substr( lc $input_row[firstname], 0, 3) eq "foo" or uc($input_row[name]) =~ /BAR/</DEFAULT>
+# substr( lc $input_row[firstname], 0, 3) eq "foo" or uc($input_row[name]) =~ /BAR/
+
+# replace the following expression by your own filter condition
+$input_row[0] eq $input_row[0]
+    </DEFAULT>
     </PARAMETER>
 
     <PARAMETER
