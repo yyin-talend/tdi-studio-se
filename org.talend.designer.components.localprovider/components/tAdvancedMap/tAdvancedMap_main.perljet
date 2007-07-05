@@ -1,47 +1,47 @@
 <%@ jet 
-	imports="
-	java.util.ArrayList
-	java.util.Collections
-	java.util.Comparator
-	java.util.List
-	java.util.HashMap
-	java.util.Map
-	java.util.HashSet
-	java.util.Set
-	org.talend.designer.codegen.config.CodeGeneratorArgument
+    imports="
+    java.util.ArrayList
+    java.util.Collections
+    java.util.Comparator
+    java.util.List
+    java.util.HashMap
+    java.util.Map
+    java.util.HashSet
+    java.util.Set
+    org.talend.designer.codegen.config.CodeGeneratorArgument
 
-	org.talend.designer.mapper.MapperMain
-	org.talend.designer.mapper.MapperComponent
-	org.talend.designer.mapper.external.data.ExternalMapperData
-	org.talend.designer.mapper.external.data.ExternalMapperTable
-	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
-	org.talend.designer.mapper.language.ILanguage
-	org.talend.designer.mapper.language.generation.GenerationManagerFactory
-	org.talend.designer.mapper.language.generation.PerlGenerationManager
-	org.talend.designer.mapper.language.LanguageProvider
-	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
-	org.talend.designer.mapper.model.tableentry.TableEntryLocation
-	org.talend.designer.mapper.utils.DataMapExpressionParser
-	org.talend.core.model.process.IConnection
-	org.talend.core.model.process.EConnectionType
-	org.talend.designer.mapper.language.generation.TableType
-	org.talend.core.model.metadata.IMetadataTable
-	org.talend.core.model.metadata.IMetadataColumn
-	org.talend.core.model.process.BlockCode
-	org.talend.core.model.process.IHashableInputConnections
-	org.talend.core.model.process.IHashConfiguration
-	org.talend.core.model.process.IHashableColumn
-	org.talend.core.model.process.IMatchingMode
-	" 
+    org.talend.designer.mapper.MapperMain
+    org.talend.designer.mapper.MapperComponent
+    org.talend.designer.mapper.external.data.ExternalMapperData
+    org.talend.designer.mapper.external.data.ExternalMapperTable
+    org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+    org.talend.designer.mapper.language.ILanguage
+    org.talend.designer.mapper.language.generation.GenerationManagerFactory
+    org.talend.designer.mapper.language.generation.PerlGenerationManager
+    org.talend.designer.mapper.language.LanguageProvider
+    org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
+    org.talend.designer.mapper.model.tableentry.TableEntryLocation
+    org.talend.designer.mapper.utils.DataMapExpressionParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.mapper.language.generation.TableType
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.BlockCode
+    org.talend.core.model.process.IHashableInputConnections
+    org.talend.core.model.process.IHashConfiguration
+    org.talend.core.model.process.IHashableColumn
+    org.talend.core.model.process.IMatchingMode
+    " 
 %>
 <%
 
 
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+    
         String uniqueNameComponent = null;
         ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
         List<IConnection> inputConnections;
@@ -99,11 +99,11 @@
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
         Set<ExternalMapperTable> validLookupTables = new HashSet<ExternalMapperTable>();
 
-		  int closeBracketCounter = 0;
-		%>
-		  $<%= rejectedInnerJoin %> = false;
-            				    								  
-		<%
+          int closeBracketCounter = 0;
+        %>
+          $<%= rejectedInnerJoin %> = false;
+                                                                  
+        <%
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
@@ -115,24 +115,24 @@
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
             
-			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
-			  	  	   		String expressionFilter = externalTable.getExpressionFilter();
-   			                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-			                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-    			            for (TableEntryLocation location : entryLocations) {
-	                        	listCoupleForAddTablePrefix.add(location);
-        			        }
-            			    String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
-			  	  	   
-				  	  	 %>
-			   	  		  if(
- 				  		  			!(<%= expressionFilterWithPrefixs%>)
-	  	  		  				) {
-		      	  					next;
-		    		  	  	   }
-		    	  	  	  
-				 	  	   <%
-			 	  	   }
+                           if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
+                                   String expressionFilter = externalTable.getExpressionFilter();
+                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
+                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+                            for (TableEntryLocation location : entryLocations) {
+                                listCoupleForAddTablePrefix.add(location);
+                            }
+                            String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+                           
+                             %>
+                               if(
+                                         !(<%= expressionFilterWithPrefixs%>)
+                                      ) {
+                                        next;
+                                   }
+                              
+                              <%
+                          }
                   continue;
                   
             } else if (connectionType == EConnectionType.FLOW_REF) {
@@ -169,204 +169,185 @@
 
                     validLookupTables.add(externalTable);
 
-                   	%><%= sb.toString()%><%
+                       %><%= sb.toString()%><%
 
-					IHashConfiguration hashConfiguration = node.getHashConfiguration(tableName);
-					List<IHashableColumn> hashableColumns = null;
-					IMatchingMode matchingMode = null;
-					if(hashConfiguration == null) {
-						hashableColumns = new ArrayList<IHashableColumn>(0);
-					} else {
-						hashableColumns = hashConfiguration.getHashableColumns();
-						matchingMode = hashConfiguration.getMatchingMode();
-					}
-					String matchingModeStr = null;
-					if(matchingMode == null) {
-						if(hashableColumns.size() > 0) {
-							matchingModeStr = "UNIQUE_MATCH";
-						} else {
-							matchingModeStr = "ALL_ROWS";
-						}
-					} else {
-						matchingModeStr = matchingMode.toString();
-					}
-                   	%>
-				   	$prmMatchingMode_<%= tableName %> = "<%= matchingModeStr %>";
-                   	
-                   	<%
-                   	
-                    String keys = "+"; //$NON-NLS-1$
-                    
-                    if (aKeysValues.length > 0) {
-                        
-				        for (int i = 0; i < aKeysValues.length; i++) {
-				            if (i > 0) {
-				                keys += ".'|'.";
-    				        }
-				            keys += "(" + aKeysValues[i] + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    IHashConfiguration hashConfiguration = node.getHashConfiguration(tableName);
+                    List<IHashableColumn> hashableColumns = null;
+                    IMatchingMode matchingMode = null;
+                    if(hashConfiguration == null) {
+                        hashableColumns = new ArrayList<IHashableColumn>(0);
+                    } else {
+                        hashableColumns = hashConfiguration.getHashableColumns();
+                        matchingMode = hashConfiguration.getMatchingMode();
+                    }
+                    String matchingModeStr = null;
+                    if(matchingMode == null) {
+                        if(hashableColumns.size() > 0) {
+                            matchingModeStr = "UNIQUE_MATCH";
+                        } else {
+                            matchingModeStr = "ALL_ROWS";
                         }
-                     }
+                    } else {
+                        matchingModeStr = matchingMode.toString();
+                    }
+                       
+                    StringBuffer keys = new StringBuffer();
+                    
+                    keys.append("join( $;, ");
+                    for(int i = 0; i < aKeysValues.length ; i++) {
+                       keys.append(aKeysValues[i]);
+                       keys.append(", ");
+                    }
+                    keys.append(" ) ");
 
                      sb = new StringBuilder();
                      %>
                           
-	 					  $forceLoop<%= tableName %> = false;
-           		  	      <%
+                           $forceLoop<%= tableName %> = false;
+                               <%
                           if(aKeysValues.length > 0) { // 1
                           %>
-		           		  	    if(!$<%= rejectedInnerJoin %>)
-		           		  	    { # 20
-		           		  	    
-	  									   $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>{ <%= keys %> };
+                                     if(!$<%= rejectedInnerJoin %>)
+                                     { # 20
+                                     
+                                             $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
 
-	  									  if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
-		  										<%
-		  										if(externalTable.isInnerJoin()) {
-		  										%>
-		  										  $<%= rejectedInnerJoin %> = true;
-		  										<%
-	  											}
-	  											%>
-	  											$forceLoop<%= tableName %> = true;
-	  										}
-	  								
-			           		  	    } # 20
-			           		  	    else { # 21
-   										 $forceLoop<%= tableName %> = true;
-			           		  	    } # 21 
-			           		  	    
-									$size<%= tableName %>ArrayFromLookup = @$ref_<%= tableName %>_ArrayFromLookup > 0 ? @$ref_<%= tableName %>_ArrayFromLookup : -1;
-                    		  	 <%
-                    		  	 } // 1 
-                    		  	 else { // 2
-                    		  	 %>
-                    		  	 
-		                      	 $hasAtLeastOneValidLookup_<%= tableName %> = false;
-		                      	 $<%= tableName %>ArrayFromLookup = ();
-		                      	 
-			           		  	    if(!<%= rejectedInnerJoin %>)
-			           		  	    { # 35
-	  									   $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>{ <%= keys %> };
-									   
-										   if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
-			  									<%
-			  									if(externalTable.isInnerJoin()) {
-			  									%>
-			  									  $<%= rejectedInnerJoin %> = true;
-			  									<%
-		  										}
-		  										%>
-		  										$forceLoop<%= tableName %> = true;
-											}
-										} # 35
-										else { # 36
-	  										$forceLoop<%= tableName %> = true;
-										} # 36
-									   $size<%= tableName %>ArrayFromLookup = @$ref_<%= tableName %>_ArrayFromLookup > 0 ? @$ref_<%= tableName %>_ArrayFromLookup : -1;
-                    		  	 <%
-                    		  	 } // 2
-                    		  	 %>
-                    		  	
-                    		  	  for($i<%= tableName %> = 0; $size<%= tableName %>ArrayFromLookup != -1 && $i<%= tableName %> < $size<%= tableName %>ArrayFromLookup || $forceLoop<%= tableName %> ;$i<%= tableName %>++) { 
+                                            if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
+                                                  <%
+                                                  if(externalTable.isInnerJoin()) {
+                                                  %>
+                                                    $<%= rejectedInnerJoin %> = true;
+                                                  <%
+                                                  }
+                                                  %>
+                                                  $forceLoop<%= tableName %> = true;
+                                              }
+                                      
+                                         } # 20
+                                         else { # 21
+                                            $forceLoop<%= tableName %> = true;
+                                         } # 21 
+                                         
+                                    $size<%= tableName %>ArrayFromLookup = @$ref_<%= tableName %>_ArrayFromLookup > 0 ? @$ref_<%= tableName %>_ArrayFromLookup : -1;
+                                   <%
+                                   } // 1 
+                                   else { // 2
+                                   %>
+                                   
+                                   $hasAtLeastOneValidLookup_<%= tableName %> = false;
+                                   $<%= tableName %>ArrayFromLookup = ();
+                                   
+                                         if(!<%= rejectedInnerJoin %>)
+                                         { # 35
+                                             $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
+                                       
+                                           if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
+                                                  <%
+                                                  if(externalTable.isInnerJoin()) {
+                                                  %>
+                                                    $<%= rejectedInnerJoin %> = true;
+                                                  <%
+                                                  }
+                                                  %>
+                                                  $forceLoop<%= tableName %> = true;
+                                            }
+                                        } # 35
+                                        else { # 36
+                                              $forceLoop<%= tableName %> = true;
+                                              if("<%= matchingModeStr %>" eq "ALL_ROWS"){
+                                                 $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
+                                              	
+                                              }
+                                        } # 36
+                                       $size<%= tableName %>ArrayFromLookup = @$ref_<%= tableName %>_ArrayFromLookup > 0 ? @$ref_<%= tableName %>_ArrayFromLookup : -1;
+                                   <%
+                                   } // 2
+                                   %>
+                                  
+                                    for($i<%= tableName %> = 0; $size<%= tableName %>ArrayFromLookup != -1 && $i<%= tableName %> < $size<%= tableName %>ArrayFromLookup || $forceLoop<%= tableName %> ;$i<%= tableName %>++) { 
 
-										<%
-										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
-									  	%>
-                    		  	    
-		                         	my @<%= tableName %> = ();
-										 
-										 if(!$forceLoop<%= tableName %>) { # 46
-                    		  	    	<%
-		                          	if(aKeysValues.length > 0) { // 10
-		                          	%>
-			  									if($size<%= tableName %>ArrayFromLookup > 0) {
-			  										$ref_<%= tableName %>FromLookup = @$ref_<%= tableName %>_ArrayFromLookup[$i<%= tableName %>];
-		                    		  	    		@<%= tableName %> = @$ref_<%= tableName %>FromLookup;
-	      	              		   	}
-      	              		   	<%
-      	              		   	} // 10
-      	              		   	else { // 11
-      	              		   	%>
-      	              		   		if($i<%= tableName %> < @$<%= tableName %>ArrayFromLookup) {
-			  										$ref_<%= tableName %>FromLookup = @$ref_<%= tableName %>_ArrayFromLookup[$i<%= tableName %>];
-		                    		  	    		@<%= tableName %> = @$ref_<%= tableName %>FromLookup;
-      	              		   		}
-      	              		   	<%
-      	              		   	} // 11
-                    		  	    	%>
-                    		  	    
-                    		  	  	   <%
-						  	  	   		String expressionFilter = externalTable.getExpressionFilter();
-                    		  	  	   if(
-                    		  	  	   		externalTable.isActivateExpressionFilter() 
-                    		  	  	   		&& expressionFilter != null 
-                    		  	  	   		&& !expressionFilter.trim().equals("")
-                    		  	  	   ) { // 12 
-			   			                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-						                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-			    			            for (TableEntryLocation location : entryLocations) {
-				                        	listCoupleForAddTablePrefix.add(location);
-			        			        }
-            						    String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
-                    		  	  	   %>
-							   	  		  if( !<%= rejectedInnerJoin %> && 
-			 				  		  			!(<%= expressionFilterWithPrefixs%>)
-						  	  		  			) { # 16
-                    		  	  		  
-	  												<%
-				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
-				  									%>
-    		     	            		  	  			$<%= rejectedInnerJoin %> = true;
-													<%
-				  									} else if(!externalTable.isInnerJoin() && aKeysValues.length > 0){
-													%>				  									
-														@<%= tableName %> = ();	
-				  									<%
-				  									} else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
-				  									%>
-					                    		  	   	if($size<%= tableName %>ArrayFromLookup != -1 
-					                    		  	   		&& $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
-					                    		  	   		&& !$hasAtLeastOneValidLookup_<%= tableName %>) 
-					                    		  	   	{ # 15
-			     	  	            		  	  			<%= rejectedInnerJoin %> = true;
-					                    		  	   	} # 15
-														<%
-				  									}
-				  									%>
-     	               		  	  	  } # 16
-     	               		  	  	  <%
-    	               		  	  	  if(aKeysValues.length == 0){
-     	               		  	  	  %>
-			                    		  	 if(@$ref_<%= tableName %>FromLookup == 0 && !$<%= rejectedInnerJoin %>) 
-			                    		  	 { # 17
-				  										next;
-				                    		 } # 17
-				                    		 <%
-			  									 if(externalTable.isInnerJoin()) {
-					  							 %>
-					  								# 17
-				                    		 	else if(!$<%= rejectedInnerJoin %>)
-				                    		 	{ # 18
-					                    	   		$hasAtLeastOneValidLookup_<%= tableName %> = true;
-					                    		} # 18
-				                    		 <%
-				                    		 }
-				                    		 %>	
-     	               		  	  	  <%
-     	               		  	  	  }
-     	               		  	  	  %>
-     	               		  	  	  
-                    		  	  		  
-	                    		  	   <%
-	                    		  	   } // 12
-	                    		  	   
-	                    		  	%>	
-	                    		  	
-	                    		  	} # 46
-	                    		  	
-									 	$forceLoop<%= tableName %> = false;
-	                    		  	
-	  									<%
+                                        <%
+                                        gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
+                                          %>
+                                      
+                                         my @<%= tableName %> = ();
+                                         
+                                         if( (!$forceLoop<%= tableName %> ) or ( "<%= matchingModeStr %>" eq "ALL_ROWS" ) ) { # 46
+                                             $ref_<%= tableName %>FromLookup = @$ref_<%= tableName %>_ArrayFromLookup[$i<%= tableName %>];
+                                             @<%= tableName %> = @$ref_<%= tableName %>FromLookup;
+                                      
+                                           <%
+                                               String expressionFilter = externalTable.getExpressionFilter();
+                                           if(
+                                                   externalTable.isActivateExpressionFilter() 
+                                                   && expressionFilter != null 
+                                                   && !expressionFilter.trim().equals("")
+                                           ) { // 12 
+                                            TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
+                                        ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+                                        for (TableEntryLocation location : entryLocations) {
+                                            listCoupleForAddTablePrefix.add(location);
+                                        }
+                                        String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+                                           %>
+                                               if( !<%= rejectedInnerJoin %> && 
+                                                     !(<%= expressionFilterWithPrefixs%>)
+                                                      ) { # 16
+                                              
+                                                      <%
+                                                      if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
+                                                      %>
+                                                             $<%= rejectedInnerJoin %> = true;
+                                                    <%
+                                                      } else if(!externalTable.isInnerJoin() && aKeysValues.length > 0){
+                                                    %>                                                      
+                                                        @<%= tableName %> = ();    
+                                                      <%
+                                                      } else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
+                                                      %>
+                                                             if($size<%= tableName %>ArrayFromLookup != -1 
+                                                                 && $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
+                                                                 && !$hasAtLeastOneValidLookup_<%= tableName %>) 
+                                                             { # 15
+                                                                   <%= rejectedInnerJoin %> = true;
+                                                             } # 15
+                                                        <%
+                                                      }
+                                                      %>
+                                              } # 16
+                                              <%
+                                             if(aKeysValues.length == 0){
+                                              %>
+                                               if(@$ref_<%= tableName %>FromLookup == 0 && !$<%= rejectedInnerJoin %>) 
+                                               { # 17
+                                                          next;
+                                             } # 17
+                                             <%
+                                                   if(externalTable.isInnerJoin()) {
+                                                   %>
+                                                      # 17
+                                                 else if(!$<%= rejectedInnerJoin %>)
+                                                 { # 18
+                                                       $hasAtLeastOneValidLookup_<%= tableName %> = true;
+                                                } # 18
+                                             <%
+                                             }
+                                             %>    
+                                              <%
+                                              }
+                                              %>
+                                              
+                                              
+                                         <%
+                                         } // 12
+                                         
+                                      %>    
+                                      
+                                      } # 46
+                                      
+                                         $forceLoop<%= tableName %> = false;
+                                      
+                                          <%
 
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
@@ -477,7 +458,7 @@
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable) 
-            	|| outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
+                || outputTable.isActivateExpressionFilter() && outputTable.getExpressionFilter() != null && !outputTable.getExpressionFilter().trim().equals("");
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
                     allNotRejectTablesHaveFilter = false;
@@ -565,13 +546,13 @@
                     closeTestInnerJoinConditionsBracket = false;
                 }
 
-	            // No connection matching and no checking errors
-	            if (!connectionExists) {
-	                continue;
-	            }
-	            if (rejectValueHasJustChanged) {
-	                sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
-    	        }
+                // No connection matching and no checking errors
+                if (!connectionExists) {
+                    continue;
+                }
+                if (rejectValueHasJustChanged) {
+                    sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
+                }
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSizeOutputs; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
@@ -583,8 +564,8 @@
 
             // write filters conditions and code to execute
             if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
-					&& oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter 
-					|| currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
+                    && oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter 
+                    || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
 
                 boolean closeFilterOrRejectBracket = false;
                 if (currentIsReject || currentIsRejectInnerJoin) {
@@ -611,16 +592,16 @@
                     if (hasFilters && !hasExpressionFilter || hasExpressionFilter) {
                         String filtersConditions = null;
                         if(hasExpressionFilter) {
-			  	  	   		String expressionFilter = outputTable.getExpressionFilter();
-   			                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-			                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-    			            for (TableEntryLocation location : entryLocations) {
-	                        	listCoupleForAddTablePrefix.add(location);
-        			        }
-	                     	filtersConditions = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
-	                     } else {
-	                        filtersConditions = gm.buildConditions(filters, expressionParser);
-	                     }
+                                   String expressionFilter = outputTable.getExpressionFilter();
+                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
+                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+                            for (TableEntryLocation location : entryLocations) {
+                                listCoupleForAddTablePrefix.add(location);
+                            }
+                             filtersConditions = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+                         } else {
+                            filtersConditions = gm.buildConditions(filters, expressionParser);
+                         }
                         if (rejectedTests == null) {
                             sb.append(filtersConditions);
                         } else {
@@ -680,4 +661,4 @@
 
 %>
 <%= sb.toString()%>
-	
+    
