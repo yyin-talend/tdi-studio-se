@@ -60,29 +60,54 @@
 					List<IHashableColumn> hashableColumns = null;
 					IMatchingMode matchingMode = null;
 					if(hashConfiguration == null) {
-						hashableColumns = new ArrayList<IHashableColumn>(0);
+						hashableColumns = new ArrayList(0);
 					} else {
 						hashableColumns = hashConfiguration.getHashableColumns();
+						matchingMode = hashConfiguration.getMatchingMode();
 					}
-					
-					%>$strHashKey = <%
+
+					String matchingModeStr = null;
+					if(matchingMode == null) {
+						if(hashableColumns.size() > 0) {
+							matchingModeStr = "UNIQUE_MATCH";
+						} else {
+							matchingModeStr = "ALL_ROWS";
+						}
+					} else {
+						matchingModeStr = matchingMode.toString();
+					}
+					StringBuffer hashKey = new StringBuffer();
+					hashKey.append("join( $;, ");
+
 					int size = hashableColumns.size();
 					for(int i = 0; i < size; i++) {
 						Integer columnIndice = hashableColumns.get(i).getIndex();
-						if(i > 0){%>.'|'.<%}
-						%>$<%= connectionName %>[<%=columnIndice%>]<%
+                                                hashKey.append("$");
+                                                hashKey.append(connectionName);
+                                                hashKey.append("[");
+                                                hashKey.append(columnIndice);
+                                                hashKey.append("], ");
 					}
-					%>;
+					hashKey.append(" ) ");
 					
-					$ref_arrayOfRows_<%= connectionName %> = $tHash_Lookup_<%= connectionName %>{ $strHashKey };
-					if( @$ref_arrayOfRows_<%= connectionName %> ) {
-						push @$ref_arrayOfRows_<%= connectionName %>, \@<%= connectionName %>;
-					} else {
-						my @array = ( \@<%= connectionName %> );
-						$tHash_Lookup_<%= connectionName %>{ $strHashKey } = \@array;
-					}
-					
+					if( matchingModeStr.equals("ALL_ROWS") || matchingModeStr.equals("ALL_MATCHES")){
+					%>
+# <%= matchingModeStr %> key => [ [ ], [ ],... ]
+push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> ;
 					<%
+				        } else if ( matchingModeStr.equals("FIRST_MATCH") ){
+					%>
+# <%= matchingModeStr %> key => [[]]
+push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> unless exists $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ;
+					<%
+					} else {
+					%>
+# <%= matchingModeStr %> key => [[]] 
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } &&= [] ;
+push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> ;
+
+					<%
+					}
 			} else { 
 				// System.out.println(connectionName + " ######## Valid target not found" );
 			}
