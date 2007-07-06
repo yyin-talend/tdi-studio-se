@@ -43,6 +43,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.genhtml.HTMLDocUtils;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -395,6 +396,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             Map<String, Object> line = map.get(i);
             if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
                 arrayValue = (String) line.get(ARRAY);
+                break;
             }
         }
         return arrayValue;
@@ -442,21 +444,56 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
         List<Map<String, Object>> oldMap = getMapList();
         List<Map<String, Object>> newMap = new ArrayList<Map<String, Object>>();
-        IMetadataTable metadataTable = dataComponent.getTable();
-        if (!oldMap.isEmpty() && metadataTable.getListColumns().size() == oldMap.size()) {
-            for (IMetadataColumn column : metadataTable.getListColumns()) {
+
+        List<Map<String, Object>> notuseMap = new ArrayList<Map<String, Object>>();
+        notuseMap.addAll(oldMap);
+
+        List<ColumnNameChanged> newColumns = dataComponent.getNewMetadataColumns();
+        for (ColumnNameChanged changed : newColumns) {
+            if ("".equals(changed.getOldName())) {
+                Map<String, Object> map2 = new HashMap<String, Object>();
+                map2.put(COLUMN_NAME, changed.getNewName());
+                newMap.add(map2);
+            }
+        }
+
+        List<ColumnNameChanged> removeColumns = dataComponent.getRemoveMetadataColumns();
+        for (ColumnNameChanged changed : removeColumns) {
+            if ("".equals(changed.getNewName())) {
                 for (Map<String, Object> map : oldMap) {
-                    if (column.getLabel().equals(map.get(COLUMN_NAME))) {
-                        Map<String, Object> map2 = new HashMap<String, Object>();
-                        map2.put(COLUMN_NAME, column.getLabel());
-                        map2.put(ARRAY, map.get(ARRAY));
-                        newMap.add(map2);
+                    if (changed.getOldName().equals(map.get(COLUMN_NAME))) {
+                        notuseMap.remove(map);
                         break;
                     }
                 }
             }
-            setTableElementParameter(newMap);
         }
+
+        List<ColumnNameChanged> columnNameChanged = dataComponent.getColumnNameChanged();
+        for (ColumnNameChanged changed : columnNameChanged) {
+            for (Map<String, Object> map : oldMap) {
+                if (changed.getOldName().equals(map.get(COLUMN_NAME))) {
+                    Map<String, Object> map2 = new HashMap<String, Object>();
+                    map2.put(COLUMN_NAME, changed.getNewName());
+                    map2.put(ARRAY, map.get(ARRAY));
+                    newMap.add(map2);
+                    notuseMap.remove(map);
+                    break;
+                }
+            }
+        }
+        newMap.addAll(notuseMap);
+        // for (IMetadataColumn column : metadataTable.getListColumns()) {
+        // for (Map<String, Object> map : oldMap) {
+        // if (column.getLabel().equals(map.get(COLUMN_NAME))) {
+        // Map<String, Object> map2 = new HashMap<String, Object>();
+        // map2.put(COLUMN_NAME, column.getLabel());
+        // map2.put(ARRAY, map.get(ARRAY));
+        // newMap.add(map2);
+        // }
+        // }
+        // }
+        setTableElementParameter(newMap);
     }
 
     /*
