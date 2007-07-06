@@ -313,6 +313,14 @@ if ((dataAction.equals("UPDATE"))
         }
     }
 
+    if (keyCols.isEmpty()) {
+%>
+# We know there is a problem, but we cannot make it obvious yet in
+# the GUI, so we make it obvious during execution.
+die "[<%=cid%>] For update or delete, at least one key is required";
+<%
+    }
+
     String keyString = StringUtils.join(keyCols.toArray(), " AND ");
     String updateString = StringUtils.join(updateCols.toArray(), ", ");
 

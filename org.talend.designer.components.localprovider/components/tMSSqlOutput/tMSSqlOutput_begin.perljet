@@ -199,7 +199,7 @@ $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 $sth_<%=cid %>->execute()
     or die "can't clear table";
 $dbh_<%=cid %>->commit();
-$sth_<%=cid %>->finish()
+$sth_<%=cid %>->finish();
 <%
         }
 %>
@@ -270,6 +270,14 @@ if ((dataAction.equals("UPDATE"))
         }
     }
 
+    if (keyCols.isEmpty()) {
+%>
+# We know there is a problem, but we cannot make it obvious yet in
+# the GUI, so we make it obvious during execution.
+die "[<%=cid%>] For update or delete, at least one key is required";
+<%
+    }
+
     String keyString = StringUtils.join(keyCols.toArray(), " AND ");
     String updateString = StringUtils.join(updateCols.toArray(), ", ");
 
@@ -282,13 +290,7 @@ if ((dataAction.equals("UPDATE"))
 $query_upd = '
 UPDATE '.<%=dbtable%>.'
   SET <%=updateString%>
-<%
-if(keyString.trim().length() > 0){
-%>
   WHERE <%=keyString%>
-<%
-}
-%>
 ';
 
 
