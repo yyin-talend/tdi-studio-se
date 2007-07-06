@@ -216,6 +216,17 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private boolean isInitialized = false;
 
+    
+    
+    
+    /**
+     * Sets the isInitialized.
+     * @param isInitialized the isInitialized to set
+     */
+    public void setInitialized(boolean isInitialized) {
+        this.isInitialized = isInitialized;
+    }
+
     private void initialize(RepositoryNode treeRoot) {
         if (!connectionParameters.isRepository()) {
             addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject(), true,

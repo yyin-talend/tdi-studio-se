@@ -228,14 +228,15 @@ public class DBStructureComposite extends Composite {
             DatabaseConnectionItem originalConnection = getDisplayedConnection();
             DatabaseConnectionItem newConnection = (DatabaseConnectionItem) event.getDelta().getRepositoryObject().getProperty()
                     .getItem();
-            if (originalConnection != newConnection) {
+            if (!originalConnection.getProperty().getId().equals(newConnection.getProperty().getId())) {
                 return;
             }
-
-            String newRepositoryName = newConnection.getProperty().getLabel();
-            this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+            if (!originalConnection.getProperty().getLabel().equals(newConnection.getProperty().getLabel())) {
+                String newRepositoryName = newConnection.getProperty().getLabel();
+                this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+            }
         }
-
+        ((DBTreeProvider) treeViewer.getContentProvider()).setInitialized(false);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
     }
 
