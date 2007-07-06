@@ -134,8 +134,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 EParameterName.ON_STATCATCHER_FLAG.getDisplayName(), titlePart);
         onLogCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName(),
                 EParameterName.ON_LOGCATCHER_FLAG.getDisplayName(), titlePart);
-        onMetterCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_METTERCATCHER_FLAG.getName(),
-                EParameterName.ON_METTERCATCHER_FLAG.getDisplayName(), titlePart);
+        onMetterCatcherField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName(),
+                EParameterName.ON_METERCATCHER_FLAG.getDisplayName(), titlePart);
 
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 4;
@@ -205,8 +205,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(),
                 EParameterName.TABLE_LOGS.getDisplayName(), parent);
 
-        metterTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_METTER.getName(),
-                EParameterName.TABLE_METTER.getDisplayName(), parent);
+        metterTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_METER.getName(),
+                EParameterName.TABLE_METER.getDisplayName(), parent);
 
         finalPart = new Composite(parent, SWT.None);
         finalPart.setLayout(new GridLayout());
@@ -266,7 +266,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 + EParameterName.ON_STATCATCHER_FLAG.getName());
         boolean onLogCatcher = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName());
         boolean onMetterCatcher = preferenceStore.getBoolean(languagePrefix
-                + EParameterName.ON_METTERCATCHER_FLAG.getName());
+                + EParameterName.ON_METERCATCHER_FLAG.getName());
         boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
         boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
         String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());

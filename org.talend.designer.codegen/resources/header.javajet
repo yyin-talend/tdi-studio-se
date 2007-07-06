@@ -108,7 +108,7 @@ private static RunTrace runTrace = new RunTrace();
 <%
 	}
 	
-	for (INode metterCatcher : process.getNodesOfType("tMetterCatcher")) {
+	for (INode metterCatcher : process.getNodesOfType("tFlowMeterCatcher")) {
 %>
 	MetterCatcherUtils <%=metterCatcher.getUniqueName() %> = new MetterCatcherUtils("<%=process.getId() %>", "<%=process.getVersion() %>"); 
 <%

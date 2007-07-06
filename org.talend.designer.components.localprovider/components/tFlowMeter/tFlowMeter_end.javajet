@@ -72,11 +72,11 @@
             } 
         } 
         
-	    if (node.getProcess().getNodesOfType("tMetterCatcher").size() > 0) {
-			List<INode> metterCatchers = (List<INode>)node.getProcess().getNodesOfType("tMetterCatcher");
-			for (INode metterCatcher : metterCatchers) {
+	    if (node.getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0) {
+			List<INode> meterCatchers = (List<INode>)node.getProcess().getNodesOfType("tFlowMeterCatcher");
+			for (INode meterCatcher : meterCatchers) {
 %>
-	<%=metterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), "<%=reference%>", "<%=shreshlods_str%>", "<%=cid%>");
+	<%=meterCatcher.getUniqueName() %>.addMessage(<%=label%>, new Integer(count_<%=cid%>), "<%=reference%>", "<%=shreshlods_str%>", "<%=cid%>");
 <%      
 				}
 			}

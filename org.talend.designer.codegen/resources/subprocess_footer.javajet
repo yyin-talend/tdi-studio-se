@@ -23,10 +23,10 @@
 <%
 	}
 	
-	if (subTree.getRootNode().getProcess().getNodesOfType("tMetterCatcher").size() > 0 
-		&& subTree.getRootNode().getProcess().getNodesOfType("tMetter").size() >0 ) {
-		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tMetterCatcher");
-		List<INode> metters = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tMetter");
+	if (subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0 
+		&& subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter").size() >0 ) {
+		List<INode> metterCatchers = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeterCatcher");
+		List<INode> metters = (List<INode>)subTree.getRootNode().getProcess().getNodesOfType("tFlowMeter");
 		List<INode> nodes = (List<INode>)subTree.getNodes();
 		
 		boolean hasMetterProcess = false;

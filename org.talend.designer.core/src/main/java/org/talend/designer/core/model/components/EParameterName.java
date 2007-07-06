@@ -88,7 +88,7 @@ public enum EParameterName {
      */
     ON_STATCATCHER_FLAG("Use statistics (tStatCatcher)"),
     ON_LOGCATCHER_FLAG("Use logs (tLogCatcher)"),
-    ON_METTERCATCHER_FLAG("Use volumetrics (tMetterCatcher)"),
+    ON_METERCATCHER_FLAG("Use volumetrics (tMeterCatcher)"),
     ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag")), //$NON-NLS-1$
     ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
     FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
@@ -105,7 +105,7 @@ public enum EParameterName {
     PASS(Messages.getString("EParameterName.password")), //$NON-NLS-1$
     TABLE_STATS(Messages.getString("EParameterName.tableStats")), //$NON-NLS-1$
     TABLE_LOGS(Messages.getString("EParameterName.tableLogs")), //$NON-NLS-1$
-    TABLE_METTER(Messages.getString("EParameterName.tableMetter")), //$NON-NLS-1$
+    TABLE_METER(Messages.getString("EParameterName.tableMeter")), //$NON-NLS-1$
     CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
     CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
     CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$

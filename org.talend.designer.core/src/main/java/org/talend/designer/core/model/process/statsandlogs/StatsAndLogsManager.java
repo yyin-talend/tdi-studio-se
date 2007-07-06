@@ -53,7 +53,7 @@ public class StatsAndLogsManager {
 
     private static final String STAT_UNIQUE_NAME = "talendStats"; //$NON-NLS-1$
 
-    private static final String METTER_UNIQUE_NAME = "talendMetter"; //$NON-NLS-1$
+    private static final String METER_UNIQUE_NAME = "talendMeter"; //$NON-NLS-1$
 
     public static boolean isStatsAndLogsActivated(IProcess process) {
         String dbOutput = null;
@@ -122,9 +122,9 @@ public class StatsAndLogsManager {
                 && process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName()).isShow(
                         process.getElementParameters());
 
-        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METTERCATCHER_FLAG.getName())
+        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName())
                 .getValue()) //$NON-NLS-1$
-                && process.getElementParameter(EParameterName.ON_METTERCATCHER_FLAG.getName()).isShow(
+                && process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).isShow(
                         process.getElementParameters());
 
         String basePath = (String) process.getElementParameter(EParameterName.FILE_PATH.getName()).getValue();
@@ -202,7 +202,7 @@ public class StatsAndLogsManager {
             statsNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
             statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
-                    process.getElementParameter(EParameterName.TABLE_METTER.getName()).getValue());
+                    process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
 
             statsNode.setProcess(process);
             nodeList.add(statsNode);
@@ -268,15 +268,15 @@ public class StatsAndLogsManager {
 
     private static DataNode createMetterNode(boolean useFile, boolean console, String dbOutput) {
         JobMetterComponent statsComponent = new JobMetterComponent(useFile, console, dbOutput);
-        DataNode statsNode = new DataNode(statsComponent, METTER_UNIQUE_NAME);
+        DataNode statsNode = new DataNode(statsComponent, METER_UNIQUE_NAME);
         statsNode.setStart(true);
         statsNode.setSubProcessStart(true);
         statsNode.setActivate(true);
 
         statsNode.getMetadataList().clear();
 
-        // load the tMetterCatcher to get the schema.
-        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tMetterCatcher"); //$NON-NLS-1$
+        // load the tFlowMeterCatcher to get the schema.
+        IComponent tmpComponent = ComponentsFactoryProvider.getInstance().get("tFlowMeterCatcher"); //$NON-NLS-1$
         DataNode tmpNode = new DataNode(tmpComponent, "tmp"); //$NON-NLS-1$
         boolean found = false;
         for (int k = 0; k < tmpNode.getElementParameters().size() && !found; k++) {
@@ -285,7 +285,7 @@ public class StatsAndLogsManager {
                 Object value = currentParam.getValue();
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
-                    table.setTableName(METTER_UNIQUE_NAME);
+                    table.setTableName(METER_UNIQUE_NAME);
                     statsNode.getMetadataList().add(table);
                 }
                 found = true;
@@ -341,9 +341,9 @@ public class StatsAndLogsManager {
         paramList.add(param);
 
         param = new ElementParameter(process);
-        param.setName(EParameterName.ON_METTERCATCHER_FLAG.getName());
-        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METTERCATCHER_FLAG.getName()));
-        param.setDisplayName(EParameterName.ON_METTERCATCHER_FLAG.getDisplayName());
+        param.setName(EParameterName.ON_METERCATCHER_FLAG.getName());
+        param.setValue(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName()));
+        param.setDisplayName(EParameterName.ON_METERCATCHER_FLAG.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(1);
@@ -607,13 +607,13 @@ public class StatsAndLogsManager {
 
         // Metter table
         param = new ElementParameter(process);
-        param.setName(EParameterName.TABLE_METTER.getName()); //$NON-NLS-1$
-        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METTER.getName())));
-        param.setDisplayName(EParameterName.TABLE_METTER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setName(EParameterName.TABLE_METER.getName()); //$NON-NLS-1$
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METER.getName())));
+        param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
+       param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
-        param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METTERCATCHER_FLAG == 'true')");
+        param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
     }
 

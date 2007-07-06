@@ -35,7 +35,7 @@ public class JobMetterComponent extends AbstractStatsLogsComponent {
         this.useFile = useFile;
         this.useConsole = useConsole;
         this.componentId = "METTER"; //$NON-NLS-1$
-        this.subComponent = "tMetterCatcher"; //$NON-NLS-1$
+        this.subComponent = "tFlowMeterCatcher"; //$NON-NLS-1$
 
         loadMultipleComponentManager();
     }
