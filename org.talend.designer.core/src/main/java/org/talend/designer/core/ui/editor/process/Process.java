@@ -203,6 +203,8 @@ public class Process extends Element implements IProcess {
             setVersion(property.getVersion());
             setAuthor(property.getAuthor());
             setStatusCode(property.getStatusCode());
+            setDescription(property.getDescription());
+            setPurpose(property.getPurpose());
             if (getStatusCode() == null) {
                 setStatusCode(""); //$NON-NLS-1$
             }
@@ -255,7 +257,7 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * crate parameters for tabbed page 'Stats & Logs'.
+     * create parameters for tabbed page 'Stats & Logs'.
      */
     private void createStatsAndLogsParameters() {
         StatsAndLogsManager.createStatsAndLogsParameters(this);
@@ -276,6 +278,60 @@ public class Process extends Element implements IProcess {
         param.setShow(false);
         param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setReadOnly(true);
+        addElementParameter(param);
+                
+        param = new ElementParameter(this);
+        param.setName(EParameterName.AUTHOR.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.AUTHOR.getDisplayName());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.STATUS.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.STATUS.getDisplayName());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.NAME.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.NAME.getDisplayName());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.VERSION.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.VERSION.getDisplayName());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.PURPOSE.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.PURPOSE.getDisplayName());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.DESCRIPTION.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.DESCRIPTION.getDisplayName());
+        param.setShow(false);
         param.setReadOnly(true);
         addElementParameter(param);
     }
@@ -1292,6 +1348,7 @@ public class Process extends Element implements IProcess {
         if (!getProperty().getAuthor().equals(author)) {
             getProperty().setAuthor(author);
         }
+        setPropertyValue(EParameterName.AUTHOR.getName(), author.toString());
     }
 
     /*
@@ -1314,6 +1371,7 @@ public class Process extends Element implements IProcess {
         if (!getProperty().getLabel().equals(label)) {
             getProperty().setLabel(label);
         }
+        setPropertyValue(EParameterName.NAME.getName(), label);
     }
 
     /*
@@ -1322,6 +1380,9 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setStatus(org.talend.core.model.process.EProcessStatus)
      */
     public void setStatusCode(String statusCode) {
+        if (!getProperty().getStatusCode().equals(statusCode)) {
+            getProperty().setStatusCode(statusCode);
+        }
         setPropertyValue(EParameterName.STATUS.getName(), statusCode);
     }
 
@@ -1334,6 +1395,7 @@ public class Process extends Element implements IProcess {
         if (!getProperty().getVersion().equals(version)) {
             getProperty().setVersion(version);
         }
+        setPropertyValue(EParameterName.VERSION.getName(), version);
     }
 
     // private InputStream content;
@@ -1683,7 +1745,8 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * 
+     * fffff gfg gf
+     * gfg hgh h
      * DOC check the problems of node.compare with the checkProblems(),this method can't refresh problems view.
      */
     public void checkNodeProblems() {
@@ -1731,12 +1794,20 @@ public class Process extends Element implements IProcess {
     }
 
     public void setDescription(String value) {
+        if (getProperty().getDescription() == null || !getProperty().getDescription().equals(value)) {
+            getProperty().setDescription(value);
+        }
+        setPropertyValue(EParameterName.DESCRIPTION.getName(), value);
     }
 
     public void setModificationDate(Date value) {
     }
 
     public void setPurpose(String value) {
+        if (getProperty().getPurpose() == null || !getProperty().getPurpose().equals(value)) {
+            getProperty().setPurpose(value);
+        }
+        setPropertyValue(EParameterName.PURPOSE.getName(), value);
     }
 
     @Override
