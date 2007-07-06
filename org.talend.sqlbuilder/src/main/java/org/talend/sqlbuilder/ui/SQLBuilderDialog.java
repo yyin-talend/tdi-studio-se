@@ -457,7 +457,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                             if (meditor != null) {
                                 RepositoryNode node = null;
                                 node = meditor.getActivePageRepositoryNode();
-                                if (text.startsWith(AbstractSQLEditorComposite.QUERY_PREFIX)) {
+                                if (text.substring(1).startsWith(AbstractSQLEditorComposite.QUERY_PREFIX)) {
                                     if (item.getData() instanceof Query) {
                                         Query q = (Query) item.getData();
                                         q.setValue(meditor.getActivePageSqlString());

@@ -202,7 +202,9 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         if (query == null) {
             return;
         }
-        query += ";\n";
+        if (!query.endsWith(";")) {
+            query += ";\n";
+        }
         String targetSql = "";
         boolean isfirst = true;
         QueryTokenizer qt = new QueryTokenizer(currentSql, queryDelimiter, alternateDelimiter, commentDelimiter);

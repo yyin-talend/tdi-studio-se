@@ -31,6 +31,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -72,6 +74,8 @@ public class ErDiagramComposite extends SashForm {
     private StyledText sqlText;
 
     private final String language = "tsql"; //$NON-NLS-1$
+
+    private String sqlString = "";
 
     /**
      * admin ErDiagramComposite constructor comment.
@@ -127,21 +131,18 @@ public class ErDiagramComposite extends SashForm {
         sqlText.setLayoutData(gridData);
         sqlText.setText("");
         sqlText.setBackground(getBackground());
-        // sqlText.addMouseListener(new MouseAdapter() {
-        //
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
-        // */
-        // @Override
-        // public void mouseDown(MouseEvent e) {
-        // super.mouseDown(e);
-        // sqlText.setText(getSqlStatement());
-        // isModified = true;
-        // }
-        //
-        // });
+        sqlText.addModifyListener(new ModifyListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                sqlString = sqlText.getText();
+            }
+
+        });
 
     }
 
@@ -151,18 +152,18 @@ public class ErDiagramComposite extends SashForm {
      * @return the sqlText
      */
     public String getSqlText() {
-        String text = sqlText.getText();
-        if ("".equals(text)) {
+        if ("".equals(sqlString)) {
             if (!"".equals(getSqlStatement())) {
-                return getSqlStatement();
+                sqlString = getSqlStatement();
             }
         }
-        return text;
+        return sqlString;
     }
 
     public StyledText getStyledText() {
         return this.sqlText;
     }
+
     /**
      * Sets the sqlText.
      * 

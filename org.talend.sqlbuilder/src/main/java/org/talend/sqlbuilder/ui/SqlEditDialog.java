@@ -28,8 +28,8 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -96,7 +96,7 @@ public class SqlEditDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite control = (Composite) super.createDialogArea(parent);
-        
+
         // create text viewer
         GridData gid = new GridData();
         gid.grabExcessHorizontalSpace = true;
@@ -120,14 +120,14 @@ public class SqlEditDialog extends Dialog {
         GridData gd = new GridData(GridData.FILL_BOTH);
         colorText.setLayoutData(gd);
         colorText.setText(sql);
-        colorText.addDisposeListener(new DisposeListener() {
+        colorText.addModifyListener(new ModifyListener() {
 
             /*
              * (non-Javadoc)
              * 
-             * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
-            public void widgetDisposed(DisposeEvent e) {
+            public void modifyText(ModifyEvent e) {
                 sql = colorText.getText();
             }
         });
