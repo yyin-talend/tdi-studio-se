@@ -191,7 +191,6 @@ for (Map<String, String> addCol:addCols) {//5
 		if(column.getTalendType().equals("id_Date")){
 	%>
 		stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=count%>, new java.sql.Date(<%=incomingConnName %>.<%=column.getLabel() %>.getTime()));
-System.out.println(new java.sql.Date(<%=incomingConnName %>.<%=column.getLabel() %>.getTime()).toString());
 <%		
 		}else{
 %>
@@ -204,19 +203,15 @@ System.out.println(new java.sql.Date(<%=incomingConnName %>.<%=column.getLabel()
    }//5
 	
 %> 
-
-			   try{		    			      
+	    			      
 				    stmt<%=cid%>.executeQuery();	
-				   }
-				   catch(java.sql.SQLException ex){
-				    System.err.println(ex.getMessage()+"Error on Connecting Database!");
-				   }				   
+			   
 
 <%
 int outNum=1;
 String outColumnType=null;
 List< ? extends IConnection> outConns = node.getOutgoingConnections();
-if((outConns!=null && outConns.size()>0)&&(addCols.size()>0)){ //if1
+if((outConns!=null && outConns.size()>0)&&(addCols.size()>0)&&(!(outpara.equals("")))){ //if1
 		IConnection conn2 = outConns.get(0);
 		String firstConnName = conn2.getName();
 		IMetadataTable outputMetadata = conn2.getMetadataTable();
@@ -264,16 +259,15 @@ else{
 for(int i=0;i<0;i++){
 <%
 }
-%>
 
 
-<%
-System.out.println("outpara ="+outpara);
-if((outConns.size()==0)||(outpara.equals(""))){%>
-for(int i=0;i<0;i++){
+
+if(outConns.size()<1){%>
+		}
 <%
 }
 %>
+
 	
 
 
