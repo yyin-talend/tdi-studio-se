@@ -193,7 +193,7 @@ my $<%=dbh%> = DBI->connect(
     <%=dbpass %>,
     {
         AutoCommit => 0,
-        PrintError => 0,
+        PrintError => 1,
     }
 )
     or die "can't connect to database";
@@ -215,21 +215,25 @@ if (<%=encoding%> =~ m/utf-?8/i) {
 
     // first we iterate on the input schema columns...
     for (IMetadataColumn column: inMetadata.getListColumns()) {
-        selectColumns.add("`" + column.getLabel() + "`");
-
         String colname = column.getLabel();
-        
+
         if (typeOfColumn.containsKey(colname)) {
+            selectColumns.add(
+                StringUtils.getMysqlProtectedColumnName(colname)
+            );
+
             if (typeOfColumn.get(colname).equals("SK")) {
                 keyColPositions.add(colPosition);
             }
-        }
 
-        colPosition++;
+            colPosition++;
+        }
     }
 
     if (useVersion.equals("true")) {
-        selectColumns.add("`" + versionField + "`");
+        selectColumns.add(
+            StringUtils.getMysqlProtectedColumnName(versionField)
+        );
     }
 
     String selectColumnsString = StringUtils.join(
@@ -283,26 +287,32 @@ print "[<%=cid%>] comparison cache loaded\n";
         // ... and we add each column only if it was chosen to be in the
         // output, ie if its type was defined.
         if (typeOfColumn.containsKey(column.getLabel())) {
-            colnames.add("`" + column.getLabel() + "`");
+            colnames.add(
+                StringUtils.getMysqlProtectedColumnName(column.getLabel())
+            );
             parameters.add("?");
         }
     }
 
     // then we add L2 dedicated columns to store historical informations
     if (useL2.equals("true")) {
-        colnames.add("`" + startdateField + "`");
+        colnames.add(StringUtils.getMysqlProtectedColumnName(startdateField));
         parameters.add("'$_globals{job_execution_datetime}'");
 
-        colnames.add("`" + enddateField + "`");
+        colnames.add(StringUtils.getMysqlProtectedColumnName(enddateField));
         parameters.add("NULL");
 
         if (useActive.equals("true")) {
-            colnames.add("`" + activeField + "`");
+            colnames.add(
+                StringUtils.getMysqlProtectedColumnName(activeField)
+            );
             parameters.add("'true'");
         }
 
         if (useVersion.equals("true")) {
-            colnames.add("`" + versionField + "`");
+            colnames.add(
+                StringUtils.getMysqlProtectedColumnName(versionField)
+            );
             parameters.add("?");
         }
     }

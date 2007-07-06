@@ -138,9 +138,13 @@ if (inMetadata != null && metadata != null) {
         $isth_<%=cid%>->execute(
 <%
     for (IMetadataColumn column: inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+
+        if (typeOfColumn.containsKey(colname)) {
 %>
-            $<%=inConnName%>[<%=inConnName%>__<%=column.getLabel()%>],
+            $<%=inConnName%>[<%=inConnName%>__<%=colname%>],
 <%
+        }
     }
 
     if (useVersion.equals("true")) {
@@ -254,9 +258,13 @@ if (inMetadata != null && metadata != null) {
             $isth_<%=cid%>->execute(
 <%
         for (IMetadataColumn column: inMetadata.getListColumns()) {
+            String colname = column.getLabel();
+
+            if (typeOfColumn.containsKey(colname)) {
 %>
-                $<%=inConnName%>[<%=inConnName%>__<%=column.getLabel()%>],
+                $<%=inConnName%>[<%=inConnName%>__<%=colname%>],
 <%
+            }
         }
 
         if (useVersion.equals("true")) {

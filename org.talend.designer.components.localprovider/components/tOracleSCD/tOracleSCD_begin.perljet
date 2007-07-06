@@ -221,17 +221,19 @@ my $<%=dbh%> = DBI->connect(
 
     // first we iterate on the input schema columns...
     for (IMetadataColumn column: inMetadata.getListColumns()) {
-        selectColumns.add(column.getLabel());
-
         String colname = column.getLabel();
-        
-        if (typeOfColumn.containsKey(colname)) {
-            if (typeOfColumn.get(colname).equals("SK")) {
-                keyColPositions.add(colPosition);
-            }
-        }
 
-        colPosition++;
+        if (typeOfColumn.containsKey(colname)) {
+            selectColumns.add(colname);
+        
+            if (typeOfColumn.containsKey(colname)) {
+                if (typeOfColumn.get(colname).equals("SK")) {
+                    keyColPositions.add(colPosition);
+                }
+            }
+
+            colPosition++;
+        }
     }
 
     if (useVersion.equals("true")) {
