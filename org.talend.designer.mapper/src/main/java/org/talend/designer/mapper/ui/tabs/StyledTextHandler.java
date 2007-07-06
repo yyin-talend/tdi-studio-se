@@ -119,8 +119,8 @@ public class StyledTextHandler {
         styledText.addExtendedModifyListener(new ExtendedModifyListener() {
 
             public void modifyText(ExtendedModifyEvent event) {
+//                System.out.println("ExtendedModifyListener modify text");
                 updateCellExpression();
-                // System.out.println("ExtendedModifyListener modify text");
 
             }
 

@@ -320,6 +320,8 @@ public class ProblemsManager {
         if (tableEntry != this.checkProblemForEntryLimiter.getPreviousTableEntry()) {
             this.checkProblemForEntryLimiter.execute(false);
         } else {
+            
+            this.checkProblemForEntryLimiter.resetTimer();
             this.checkProblemForEntryLimiter.startIfExecutable(true);
         }
 

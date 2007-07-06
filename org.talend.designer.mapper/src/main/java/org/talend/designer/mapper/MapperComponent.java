@@ -154,6 +154,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         if (MapperMain.isStandAloneMode()) {
             display.dispose();
         }
+        System.out.println("end");
         return mapperMain.getMapperDialogResponse();
     }
 

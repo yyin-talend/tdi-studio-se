@@ -56,9 +56,13 @@ public class StyleLinkFactory {
 
     private IStyleLink selectedZoneToZoneStyle;
 
-    private IStyleLink selectedFilterStyle;
+    private IStyleLink selectedSameZoneFilterStyle;
+    
+    private IStyleLink unselectedSameZoneFilterStyle;
 
-    private IStyleLink unselectedFilterStyle;
+    private IStyleLink selectedZoneToZoneFilterStyle;
+
+    private IStyleLink unselectedZoneToZoneFilterStyle;
 
     private IStyleLink selectedSameInputZoneStyle;
 
@@ -90,8 +94,11 @@ public class StyleLinkFactory {
                 .getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
         unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
 
-        selectedFilterStyle = getSelectedFilterStyle();
-        unselectedFilterStyle = getUnselectedFilterStyle();
+        selectedZoneToZoneFilterStyle = getSelectedZoneToZoneFilterStyle();
+        unselectedZoneToZoneFilterStyle = getUnselectedZoneToZoneFilterStyle();
+
+        selectedSameZoneFilterStyle = getSelectedSameZoneFilterStyle();
+        unselectedSameZoneFilterStyle = getUnselectedSameZoneFilterStyle();
 
         selectedSameInputZoneStyle = getSelectedSameInputZoneStyle();
         unselectedSameInputZoneStyle = getUnselectedSameInputZoneStyle();
@@ -135,13 +142,13 @@ public class StyleLinkFactory {
         if (pointLinkDescriptorSource.getZone() != pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
                 if (targetIsConstraint) {
-                    style = selectedFilterStyle;
+                    style = selectedZoneToZoneFilterStyle;
                 } else {
                     style = selectedZoneToZoneStyle;
                 }
             } else if (linkState == LinkState.UNSELECTED) {
                 if (targetIsConstraint) {
-                    style = unselectedFilterStyle;
+                    style = unselectedZoneToZoneFilterStyle;
                 } else {
                     style = unselectedZoneToZoneStyle;
                 }
@@ -149,9 +156,17 @@ public class StyleLinkFactory {
         } else if (pointLinkDescriptorSource.getZone() == Zone.INPUTS
                 && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
-                style = selectedSameInputZoneStyle;
+                if (pointLinkDescriptorTarget.getTableEntry() instanceof ExpressionFilterEntry) {
+                    style = selectedSameZoneFilterStyle;
+                } else {
+                    style = selectedSameInputZoneStyle;
+                }
             } else if (linkState == LinkState.UNSELECTED) {
-                style = unselectedSameInputZoneStyle;
+                if (pointLinkDescriptorTarget.getTableEntry() instanceof ExpressionFilterEntry) {
+                    style = unselectedSameZoneFilterStyle;
+                } else {
+                    style = unselectedSameInputZoneStyle;
+                }
             }
         } else if (pointLinkDescriptorSource.getZone() == Zone.VARS
                 && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
@@ -169,7 +184,7 @@ public class StyleLinkFactory {
      * 
      * @return
      */
-    private IStyleLink getSelectedFilterStyle() {
+    private IStyleLink getSelectedZoneToZoneFilterStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
@@ -187,7 +202,7 @@ public class StyleLinkFactory {
      * 
      * @return
      */
-    private IStyleLink getUnselectedFilterStyle() {
+    private IStyleLink getUnselectedZoneToZoneFilterStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
@@ -265,6 +280,30 @@ public class StyleLinkFactory {
         return style;
     }
 
+    /**
+     * DOC amaumont Comment method "getSelectedSameZoneStyle".
+     * 
+     * @param foregroundColor
+     * @return
+     */
+    public IStyleLink getSelectedSameZoneFilterStyle() {
+        IStyleLink style = getSelectedSameInputZoneStyle();
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_FILTER_LINK));
+        return style;
+    }
+
+    /**
+     * DOC amaumont Comment method "getSelectedSameZoneStyle".
+     * 
+     * @param foregroundColor
+     * @return
+     */
+    public IStyleLink getUnselectedSameZoneFilterStyle() {
+        IStyleLink style = getSelectedSameInputZoneStyle();
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
+        return style;
+    }
+    
     /**
      * DOC amaumont Comment method "getNotSelectedSameZoneStyle".
      * 

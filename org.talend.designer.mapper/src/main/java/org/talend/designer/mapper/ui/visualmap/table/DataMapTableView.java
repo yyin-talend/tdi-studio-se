@@ -1192,7 +1192,7 @@ public abstract class DataMapTableView extends Composite {
                     new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
 
                         public void run() {
-                            checkProblemsForExpressionFilter();
+                            checkProblemsForExpressionFilter(false);
                         }
 
                     }).start();
@@ -1965,7 +1965,7 @@ public abstract class DataMapTableView extends Composite {
                     if ("".equals(ControlUtils.getText(text).trim())) {
                         ControlUtils.setText(text, defaultText);
                     }
-                    checkProblemsForExpressionFilter();
+                    checkProblemsForExpressionFilter(false);
                 }
 
             });
@@ -2109,14 +2109,11 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "checkProblemsForExpressionFilter".
-     * 
-     * @param table
-     * @param forceRecompile TODO
      */
-    public void checkProblemsForExpressionFilterWithDelay(final AbstractInOutTable table, boolean forceRecompile) {
+    public void checkProblemsForExpressionFilterWithDelay() {
         if (this.executionLimiterForCheckProblemsExpressionFilter == null) {
 
-            this.executionLimiterForCheckProblemsExpressionFilter = new ExecutionLimiter(750, true) {
+            this.executionLimiterForCheckProblemsExpressionFilter = new ExecutionLimiter(2000, true) {
 
                 /*
                  * (non-Javadoc)
@@ -2129,7 +2126,7 @@ public abstract class DataMapTableView extends Composite {
                         expressionFilterText.getDisplay().asyncExec(new Runnable() {
 
                             public void run() {
-                                checkProblemsForExpressionFilter();
+                                checkProblemsForExpressionFilter(true);
                             }
 
                         });
@@ -2139,18 +2136,19 @@ public abstract class DataMapTableView extends Composite {
 
             };
         }
+        executionLimiterForCheckProblemsExpressionFilter.resetTimer();
         executionLimiterForCheckProblemsExpressionFilter.startIfExecutable(true);
 
     }
 
-    public void checkProblemsForExpressionFilter() {
+    public void checkProblemsForExpressionFilter(boolean forceRecompile) {
         if (this.getDataMapTable() instanceof AbstractInOutTable) {
             AbstractInOutTable table = (AbstractInOutTable) this.getDataMapTable();
             List<Problem> problems = null;
             if (table.isActivateExpressionFilter() && !DEFAULT_EXPRESSION_FILTER.equals(expressionFilterText.getText())) {
                 String nextText = expressionFilterText.getText();
                 if (nextText != null && previousTextForExpressionFilter != null
-                        && !nextText.trim().equals(previousTextForExpressionFilter.trim())) {
+                        && !nextText.trim().equals(previousTextForExpressionFilter.trim()) || forceRecompile) {
                     mapperManager.getProblemsManager().checkProblemsForTableEntry(table.getExpressionFilter(), true);
                 } else {
                     mapperManager.getProblemsManager().checkProblemsForTableEntry(table.getExpressionFilter(), false);
@@ -2206,7 +2204,7 @@ public abstract class DataMapTableView extends Composite {
                 }
 
             });
-            checkProblemsForExpressionFilter();
+            checkProblemsForExpressionFilter(false);
         }
     }
 
