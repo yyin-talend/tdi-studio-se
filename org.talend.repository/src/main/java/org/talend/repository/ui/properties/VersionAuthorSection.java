@@ -122,7 +122,7 @@ public class VersionAuthorSection extends AbstractSection {
         data.right = new FormAttachment(versionText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionText, 0, SWT.CENTER);
         versionLabel.setLayoutData(data);
-        
+
         addFocusListenerToChildren(composite);
     }
 
@@ -133,7 +133,12 @@ public class VersionAuthorSection extends AbstractSection {
      */
     @Override
     public void refresh() {
-        authorText.setText(getAuthor() != null ? getAuthor().getLogin() : ""); //$NON-NLS-1$
+        if (getAuthor() != null && getAuthor().getLogin() != null) {
+            authorText.setText(getAuthor().getLogin()); //$NON-NLS-1$
+        } else {
+            authorText.setText(""); //$NON-NLS-1$
+        }
+
         versionText.setText(getVersion() == null ? "" : getVersion()); //$NON-NLS-1$
     }
 
