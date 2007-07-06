@@ -52,7 +52,6 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -65,8 +64,6 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.ModuleNeeded;
@@ -92,7 +89,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -121,7 +117,6 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
-import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
@@ -196,18 +191,22 @@ public class Process extends Element implements IProcess {
         init();
     }
 
+    public void updateProperties() {
+        setId(property.getId());
+        setLabel(property.getLabel());
+        setVersion(property.getVersion());
+        setAuthor(property.getAuthor());
+        setStatusCode(property.getStatusCode());
+        setDescription(property.getDescription());
+        setPurpose(property.getPurpose());
+        if (getStatusCode() == null) {
+            setStatusCode(""); //$NON-NLS-1$
+        }
+    }
+
     private void init() {
         if (!initDone) {
-            setId(property.getId());
-            setLabel(property.getLabel());
-            setVersion(property.getVersion());
-            setAuthor(property.getAuthor());
-            setStatusCode(property.getStatusCode());
-            setDescription(property.getDescription());
-            setPurpose(property.getPurpose());
-            if (getStatusCode() == null) {
-                setStatusCode(""); //$NON-NLS-1$
-            }
+            updateProperties();
             initDone = true;
         }
     }
@@ -280,7 +279,7 @@ public class Process extends Element implements IProcess {
                 TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         param.setReadOnly(true);
         addElementParameter(param);
-                
+
         param = new ElementParameter(this);
         param.setName(EParameterName.AUTHOR.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
@@ -1745,9 +1744,8 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * fffff gfg gf
-     * gfg hgh h
-     * DOC check the problems of node.compare with the checkProblems(),this method can't refresh problems view.
+     * check the problems of node.compare with the checkProblems(),this method can't refresh
+     * problems view.
      */
     public void checkNodeProblems() {
         if (isActivate()) {
@@ -1794,8 +1792,14 @@ public class Process extends Element implements IProcess {
     }
 
     public void setDescription(String value) {
-        if (getProperty().getDescription() == null || !getProperty().getDescription().equals(value)) {
-            getProperty().setDescription(value);
+        if (getProperty().getDescription() == null) {
+            if (value != null) {
+                getProperty().setDescription(value);
+            }
+        } else {
+            if (!getProperty().getDescription().equals(value)) {
+                getProperty().setDescription(value);
+            }
         }
         setPropertyValue(EParameterName.DESCRIPTION.getName(), value);
     }
@@ -1804,8 +1808,14 @@ public class Process extends Element implements IProcess {
     }
 
     public void setPurpose(String value) {
-        if (getProperty().getPurpose() == null || !getProperty().getPurpose().equals(value)) {
-            getProperty().setPurpose(value);
+        if (getProperty().getPurpose() == null) {
+            if (value != null) {
+                getProperty().setPurpose(value);
+            }
+        } else {
+            if (!getProperty().getPurpose().equals(value)) {
+                getProperty().setPurpose(value);
+            }
         }
         setPropertyValue(EParameterName.PURPOSE.getName(), value);
     }

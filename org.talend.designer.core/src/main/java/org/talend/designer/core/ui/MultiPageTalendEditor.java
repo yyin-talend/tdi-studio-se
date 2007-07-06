@@ -106,6 +106,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
+                getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
+                process.updateProperties();
+                getTalendEditor().getProperty().eAdapters().add(dirtyListener);
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }
         }
@@ -121,7 +124,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private boolean alreadyGenerated = false;
 
-    private IProcess process;
+    private Process process;
 
     private IProcessor processor;
 
