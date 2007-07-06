@@ -24,6 +24,7 @@ package org.talend.designer.abstractmap.managers;
 import java.util.List;
 
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 
 
@@ -35,6 +36,9 @@ import org.talend.designer.abstractmap.AbstractMapComponent;
 public abstract class AbstractMapperManager {
 
     private AbstractMapComponent mapperComponent;
+    private boolean mapperChanged;
+    
+    private IExternalData data;
 
 
     /**
@@ -64,4 +68,24 @@ public abstract class AbstractMapperManager {
 
     public abstract ILinkManager getLinkManager();
 
+    /**
+     * Getter for mapperChanged.
+     * @return the mapperChanged
+     */
+    public abstract boolean isDataChanged();
+    
+    /**
+     * DOC amaumont Comment method "setOriginalExternalData".
+     * @param data
+     */
+    public void setOriginalExternalData(IExternalData data) {
+        this.data = data;
+    }
+
+    public IExternalData getOriginalExternalData() {
+        return this.data;
+    }
+    
+    
+    
 }

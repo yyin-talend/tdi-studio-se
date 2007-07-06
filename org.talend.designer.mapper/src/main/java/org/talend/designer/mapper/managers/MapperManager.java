@@ -42,6 +42,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.abstractmap.managers.AbstractMapperManager;
@@ -863,6 +864,26 @@ public class MapperManager extends AbstractMapperManager {
     @Override
     public ILinkManager getLinkManager() {
         return linkManager;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.abstractmap.managers.AbstractMapperManager#isMapperChanged()
+     */
+    @Override
+    public boolean isDataChanged() {
+        getAbstractMapComponent().refreshMapperConnectorData();
+        IExternalData originalExternalData = getOriginalExternalData();
+        IExternalData currentExternalData = getAbstractMapComponent().getExternalData();
+        if (originalExternalData == null && currentExternalData == null) {
+            return false;
+        }
+        if (originalExternalData == null && currentExternalData != null) {
+            return true;
+        }
+
+        return !originalExternalData.equals(currentExternalData);
     }
 
 }

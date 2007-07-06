@@ -870,6 +870,14 @@ public class MapperManager extends AbstractMapperManager {
         return linkManager;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.abstractmap.managers.AbstractMapperManager#isMapperChanged()
+     */
+    @Override
+    public boolean isDataChanged() {
+        return false;
+    }
+
     
     
 }

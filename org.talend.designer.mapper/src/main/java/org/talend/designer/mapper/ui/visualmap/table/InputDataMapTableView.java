@@ -80,6 +80,10 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private boolean previousStateAtLeastOneHashKey;
 
+    private ToolItem rejectConstraintCheck;
+
+    private boolean previousInnerJoinSelection;
+
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
     }
@@ -237,7 +241,7 @@ public class InputDataMapTableView extends DataMapTableView {
             }
 
             // Inner join button
-            final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
+            rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
             rejectConstraintCheck.setEnabled(!mapperManager.componentIsReadOnly());
             realToolbarSize.x += 70;
             rejectConstraintCheck.setToolTipText(Messages
@@ -421,8 +425,16 @@ public class InputDataMapTableView extends DataMapTableView {
 
     public void refreshLabelForLookupTypeDropDown() {
         ILookupType matchingMode = getInputTable().getMatchingMode();
-        if (matchingMode != TMAP_MATCHING_MODE.ALL_ROWS) {
+        if (matchingMode == TMAP_MATCHING_MODE.ALL_ROWS) {
+            if (rejectConstraintCheck != null) {
+                rejectConstraintCheck.setEnabled(false);
+            }
+        } else {
             previousMultipleModeSelected = matchingMode;
+            previousInnerJoinSelection = getInputTable().isInnerJoin();
+            if (rejectConstraintCheck != null) {
+                rejectConstraintCheck.setEnabled(true);
+            }
         }
         String text = matchingMode.getLabel();
         dropDownItem.setText(text);
@@ -454,11 +466,15 @@ public class InputDataMapTableView extends DataMapTableView {
                     dropDownItem.setToolTipText(previousMultipleModeSelected.getLabel());
                     getInputTable().setMatchingMode(previousMultipleModeSelected);
                     selectMenuItem(previousMultipleModeSelected);
+                    getInputTable().setInnerJoin(previousInnerJoinSelection);
+                    rejectConstraintCheck.setEnabled(true);
                 } else {
                     dropDownItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     dropDownItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     getInputTable().setMatchingMode(TMAP_MATCHING_MODE.ALL_ROWS);
                     selectMenuItem(TMAP_MATCHING_MODE.ALL_ROWS);
+                    getInputTable().setInnerJoin(false);
+                    rejectConstraintCheck.setEnabled(false);
                 }
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
             }

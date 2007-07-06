@@ -1929,7 +1929,7 @@ public abstract class DataMapTableView extends Composite {
             expressionFilterText.addFocusListener(new FocusListener() {
 
                 public void focusGained(FocusEvent e) {
-                    onExpressionFilterTextResized();
+                    redrawExpressionFilter();
                     Control text = (Control) e.getSource();
                     if (defaultText.equals(ControlUtils.getText(text))) {
                         ControlUtils.setText(text, "");
@@ -1952,8 +1952,8 @@ public abstract class DataMapTableView extends Composite {
                     styledTextHandler.getStyledText().setEditable(true);
                     ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler
                             .getContentProposalAdapter();
-                    expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(), table
-                            .getExpressionFilter());
+                    expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
+                            table.getExpressionFilter());
                     expressionProposalStyledText
                             .setContentProposalProvider(expressionProposalProviderForExpressionFilter);
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
@@ -1961,16 +1961,6 @@ public abstract class DataMapTableView extends Composite {
                 }
 
                 public void focusLost(FocusEvent e) {
-                    Control text = (Control) e.getSource();
-                    if ("".equals(ControlUtils.getText(text).trim())) {
-                        ControlUtils.setText(text, defaultText);
-                    }
-                    String currentContent = ControlUtils.getText(text);
-                    if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
-                        table.getExpressionFilter().setExpression(null);
-                    } else {
-                        table.getExpressionFilter().setExpression(currentContent);
-                    }
                     checkProblemsForExpressionFilter();
                 }
 
@@ -2026,11 +2016,11 @@ public abstract class DataMapTableView extends Composite {
             expressionFilterText.addControlListener(new ControlListener() {
 
                 public void controlMoved(ControlEvent e) {
-                    onExpressionFilterTextResized();
+                    redrawExpressionFilter();
                 }
 
                 public void controlResized(ControlEvent e) {
-                    onExpressionFilterTextResized();
+                    redrawExpressionFilter();
                 }
 
             });
@@ -2038,7 +2028,7 @@ public abstract class DataMapTableView extends Composite {
             ControlListener listenerForCorrectWrapBug = new ControlListener() {
 
                 public void controlMoved(ControlEvent e) {
-                    onExpressionFilterTextResized();
+                    redrawExpressionFilter();
                 }
 
                 public void controlResized(ControlEvent e) {
@@ -2060,7 +2050,7 @@ public abstract class DataMapTableView extends Composite {
                 }
 
                 public void widgetSelected(SelectionEvent e) {
-                    onExpressionTextVerticalBarSelection(e);
+                    redrawExpressionFilter();
                 }
 
             };
@@ -2077,6 +2067,17 @@ public abstract class DataMapTableView extends Composite {
                  * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
                  */
                 public void keyPressed(KeyEvent e) {
+
+                    Control text = (Control) e.getSource();
+                    if ("".equals(ControlUtils.getText(text).trim())) {
+                        ControlUtils.setText(text, defaultText);
+                    }
+                    String currentContent = ControlUtils.getText(text);
+                    if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
+                        table.getExpressionFilter().setExpression(null);
+                    } else {
+                        table.getExpressionFilter().setExpression(currentContent);
+                    }
 
                     StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                             .getStyledTextHandler();
@@ -2096,20 +2097,13 @@ public abstract class DataMapTableView extends Composite {
     }
 
     /**
-     * DOC amaumont Comment method "onExpressionTextVerticalBarSelection".
-     * 
-     * @param e
-     */
-    private void onExpressionTextVerticalBarSelection(SelectionEvent e) {
-        expressionFilterText.redraw();
-    }
-
-    /**
      * DOC amaumont Comment method "onExpressionFilterTextResized".
      */
-    private void onExpressionFilterTextResized() {
+    private void redrawExpressionFilter() {
         // System.out.println("Filter text resized" + System.currentTimeMillis());
-        expressionFilterText.redraw();
+        if (!expressionFilterText.isDisposed()) {
+            expressionFilterText.redraw();
+        }
     }
 
     /**
@@ -2266,7 +2260,7 @@ public abstract class DataMapTableView extends Composite {
             public void run() {
                 // System.out.println("scrolledCompositeView.addControlListener(new ControlListener()"
                 // + System.currentTimeMillis());
-                onExpressionFilterTextResized();
+                redrawExpressionFilter();
             }
 
         }).start();

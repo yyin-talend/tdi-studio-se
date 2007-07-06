@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -41,8 +42,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -211,7 +210,7 @@ public class MapperUI {
      * 
      * @param display
      */
-    public Shell createWindow(Display display, MapperModel model) {
+    public Shell createWindow(final Display display, MapperModel model) {
 
         Shell activeShell = display.getActiveShell();
         Shell mapperShell = null;
@@ -223,29 +222,25 @@ public class MapperUI {
         }
 
         this.mapperUIParent = mapperShell;
-        
         final Shell mapperShellFinal = mapperShell;
-        mapperShell.addTraverseListener(new TraverseListener() {
 
-            public void keyTraversed(TraverseEvent e) {
-                if(e.keyCode == 27) {
-                    e.doit = false;
-                }
-            }
-            
-        });
         mapperShell.addShellListener(new ShellListener() {
 
             public void shellActivated(ShellEvent e) {
             }
 
             public void shellClosed(ShellEvent e) {
-//                if (mapperManager.getUiManager().isCloseWithoutPrompt()) {
-//                    e.doit = true;
-//                } else {
-//                    e.doit = false;
-//                }
-//                System.out.println();
+                if (mapperManager.isDataChanged() && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
+                    boolean closeWindow = MessageDialog.openConfirm(mapperShellFinal, Messages
+                            .getString("MapperUI.CancelWithoutSaveModifications.Title"), //$NON-NLS-1$
+                            Messages.getString("MapperUI.CancelWithoutSaveModifications.Message")); //$NON-NLS-1$
+                    if (!closeWindow) {
+                        e.doit = false;
+                    } else {
+                        mapperManager.getUiManager().prepareClosing(SWT.CANCEL);
+                    }
+
+                }
             }
 
             public void shellDeactivated(ShellEvent e) {
@@ -466,18 +461,18 @@ public class MapperUI {
             @Override
             public void execute(final boolean isFinalExecution) {
 
-                    display.asyncExec(new Runnable() {
+                display.asyncExec(new Runnable() {
 
-                        public void run() {
+                    public void run() {
 
-                            if (mouseMoveScrollZoneHelper.mouseDownOnScroll && mouseMoveScrollZoneHelper.scrolling) {
-                                updateBackground(false, false);
-                            } else {
-                                updateBackground(false, true);
-                            }
+                        if (mouseMoveScrollZoneHelper.mouseDownOnScroll && mouseMoveScrollZoneHelper.scrolling) {
+                            updateBackground(false, false);
+                        } else {
+                            updateBackground(false, true);
                         }
+                    }
 
-                    });
+                });
 
             }
         };

@@ -171,8 +171,6 @@ public class UIManager extends AbstractUIManager {
 
     private Display display;
 
-    private boolean loseWithoutPrompt;
-
     private boolean closeWithoutPrompt;
 
     /**
@@ -628,28 +626,38 @@ public class UIManager extends AbstractUIManager {
 
         boolean save = true;
         if (response == SWT.OK && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
-            save = MessageDialog.openConfirm(getMapperContainer().getShell(), "Errors exist",
-                    "Are you sure to save data in tMap although errors");
+            save = MessageDialog.openConfirm(getMapperContainer().getShell(), Messages
+                    .getString("UIManager.SaveDespiteErrors.Title"), //$NON-NLS-1$
+                    Messages.getString("UIManager.SaveDespiteErrors.Message")); //$NON-NLS-1$
         }
         if (save) {
-            setMapperResponse(response);
-
-            mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
-
             Composite parent = mapperUI.getMapperUIParent();
-            saveCurrentUIProperties();
 
-            if (response == SWT.OK) {
-                createVisualMapImage();
-            }
-
-            mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
+            prepareClosing(response);
 
             if (parent instanceof Shell) {
-                closeWithoutPrompt = true;
                 ((Shell) parent).close();
             }
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "saveDataBeforeClose".
+     * @param response
+     */
+    public void prepareClosing(int response) {
+        setMapperResponse(response);
+
+        mapperManager.getAbstractMapComponent().refreshMapperConnectorData();
+
+        saveCurrentUIProperties();
+
+        if (response == SWT.OK) {
+            createVisualMapImage();
+            closeWithoutPrompt = true;
+        }
+
+        mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
     }
 
     /**
@@ -1645,8 +1653,8 @@ public class UIManager extends AbstractUIManager {
         checkProblemsForMovedTables(currentSelectedTableView, previousTableView);
     }
 
-    private void moveSelectedTableDown(final DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
-            int indexStartMovedAuthorized) {
+    private void moveSelectedTableDown(final DataMapTableView currentSelectedTableView,
+            List<DataMapTableView> tablesView, int indexStartMovedAuthorized) {
         int indexCurrentTable = tablesView.indexOf(currentSelectedTableView);
 
         if (indexCurrentTable < indexStartMovedAuthorized || indexCurrentTable == tablesView.size() - 1) {
@@ -1681,13 +1689,17 @@ public class UIManager extends AbstractUIManager {
 
     /**
      * DOC amaumont Comment method "checkProblemsForMovedTables".
+     * 
      * @param currentSelectedTableView
      * @param nextTableView
      */
-    private void checkProblemsForMovedTables(final DataMapTableView currentSelectedTableView, final DataMapTableView nextTableView) {
+    private void checkProblemsForMovedTables(final DataMapTableView currentSelectedTableView,
+            final DataMapTableView nextTableView) {
         new Thread() {
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see java.lang.Thread#run()
              */
             @Override
@@ -1698,10 +1710,10 @@ public class UIManager extends AbstractUIManager {
                         mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
                         mapperManager.getProblemsManager().checkProblemsForAllEntries(nextTableView, false);
                     }
-                    
+
                 });
             }
-            
+
         }.start();
     }
 
@@ -1950,8 +1962,15 @@ public class UIManager extends AbstractUIManager {
         return false;
     }
 
+    
+    /**
+     * Getter for closeWithoutPrompt.
+     * @return the closeWithoutPrompt
+     */
     public boolean isCloseWithoutPrompt() {
-        return closeWithoutPrompt;
+        return this.closeWithoutPrompt;
     }
 
+    
+    
 }

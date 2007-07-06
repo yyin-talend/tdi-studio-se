@@ -34,6 +34,8 @@ import org.talend.designer.abstractmap.managers.ILinkManager;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
+import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
@@ -54,19 +56,21 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
     public void registerLevelForNewLink(IMapperLink link, Set<IMapperLink> graphicalLinksFromTarget) {
         boolean hasAlreadyInputTarget = false;
         boolean hasAlreadyVarTarget = false;
+        ITableEntry sourceEntry = link.getPointLinkDescriptor1().getTableEntry();
         ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
-        boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
+        boolean hasSameZone = sourceEntry.getParent().getClass() == targetEntry.getParent().getClass();
 
         if (hasSameZone) {
-            boolean isInput = targetEntry instanceof InputColumnTableEntry;
-            boolean isVar = targetEntry instanceof VarTableEntry;
+            boolean isInputTarget = targetEntry instanceof InputColumnTableEntry
+                    || targetEntry instanceof ExpressionFilterEntry && targetEntry.getParent() instanceof InputTable;
+            boolean isVarTarget = targetEntry instanceof VarTableEntry;
 
             List<List<IMapperLink>> leveledLinks = null;
-            if (isInput) {
+            if (isInputTarget) {
                 leveledLinks = getInputLinksForLevels();
             }
 
-            if (isVar) {
+            if (isVarTarget) {
                 leveledLinks = getVarLinksForLevels();
             }
 
@@ -80,7 +84,8 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
                     if (targetEntry == targetTableEntry) {
 
                         if (sourceTableEntry instanceof InputColumnTableEntry
-                                && targetTableEntry instanceof InputColumnTableEntry) {
+                                && (targetTableEntry instanceof InputColumnTableEntry || targetEntry instanceof ExpressionFilterEntry
+                                        && targetEntry.getParent() instanceof InputTable)) {
                             hasAlreadyInputTarget = true;
                         }
                         if (sourceTableEntry instanceof VarTableEntry && targetTableEntry instanceof VarTableEntry) {
@@ -95,7 +100,7 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
                 }
             }
 
-            if (isInput && !hasAlreadyInputTarget || isVar && !hasAlreadyVarTarget) {
+            if (isInputTarget && !hasAlreadyInputTarget || isVarTarget && !hasAlreadyVarTarget) {
                 ArrayList<IMapperLink> list = new ArrayList<IMapperLink>();
                 int firstEmptyIndex = searchFirstEmptyIndexLeveledList(leveledLinks);
                 link.setLevel(firstEmptyIndex + 1);
@@ -108,7 +113,6 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
             }
         }
     }
-
 
     /**
      * DOC amaumont Comment method "unregisterLevelForRemovedLink".
@@ -161,4 +165,4 @@ public class LinkManager extends org.talend.designer.abstractmap.managers.LinkMa
 
     } // method
 
-    }
+}

@@ -237,7 +237,7 @@
                                    $hasAtLeastOneValidLookup_<%= tableName %> = false;
                                    $<%= tableName %>ArrayFromLookup = ();
                                    
-                                         if(!<%= rejectedInnerJoin %>)
+                                         if(!$<%= rejectedInnerJoin %>)
                                          { # 35
                                              $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
                                        
@@ -290,7 +290,7 @@
                                         }
                                         String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
                                            %>
-                                               if( !<%= rejectedInnerJoin %> && 
+                                               if( !$<%= rejectedInnerJoin %> && 
                                                      !(<%= expressionFilterWithPrefixs%>)
                                                       ) { # 16
                                               
@@ -309,7 +309,7 @@
                                                                  && $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
                                                                  && !$hasAtLeastOneValidLookup_<%= tableName %>) 
                                                              { # 15
-                                                                   <%= rejectedInnerJoin %> = true;
+                                                                   $<%= rejectedInnerJoin %> = true;
                                                              } # 15
                                                         <%
                                                       }

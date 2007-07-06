@@ -252,4 +252,82 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         return cloned;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.activateExpressionFilter ? 1231 : 1237);
+        result = prime * result + ((this.constraintTableEntries == null) ? 0 : this.constraintTableEntries.hashCode());
+        result = prime * result + ((this.expressionFilter == null) ? 0 : this.expressionFilter.hashCode());
+        result = prime * result + (this.innerJoin ? 1231 : 1237);
+        result = prime * result + ((this.matchingMode == null) ? 0 : this.matchingMode.hashCode());
+        result = prime * result + ((this.metadataTableEntries == null) ? 0 : this.metadataTableEntries.hashCode());
+        result = prime * result + (this.minimized ? 1231 : 1237);
+        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + (this.reject ? 1231 : 1237);
+        result = prime * result + (this.rejectInnerJoin ? 1231 : 1237);
+        result = prime * result + ((this.sizeState == null) ? 0 : this.sizeState.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ExternalMapperTable other = (ExternalMapperTable) obj;
+        if (this.activateExpressionFilter != other.activateExpressionFilter)
+            return false;
+        if (this.constraintTableEntries == null) {
+            if (other.constraintTableEntries != null)
+                return false;
+        } else if (!this.constraintTableEntries.equals(other.constraintTableEntries))
+            return false;
+        if (this.expressionFilter == null) {
+            if (other.expressionFilter != null)
+                return false;
+        } else if (!this.expressionFilter.equals(other.expressionFilter))
+            return false;
+        if (this.innerJoin != other.innerJoin)
+            return false;
+        if (this.matchingMode == null) {
+            if (other.matchingMode != null)
+                return false;
+        } else if (!this.matchingMode.equals(other.matchingMode))
+            return false;
+        if (this.metadataTableEntries == null) {
+            if (other.metadataTableEntries != null)
+                return false;
+        } else if (!this.metadataTableEntries.equals(other.metadataTableEntries))
+            return false;
+        if (this.minimized != other.minimized)
+            return false;
+        if (this.name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!this.name.equals(other.name))
+            return false;
+        if (this.reject != other.reject)
+            return false;
+        if (this.rejectInnerJoin != other.rejectInnerJoin)
+            return false;
+        if (this.sizeState == null) {
+            if (other.sizeState != null)
+                return false;
+        } else if (!this.sizeState.equals(other.sizeState))
+            return false;
+        return true;
+    }
+
+    
+    
 }

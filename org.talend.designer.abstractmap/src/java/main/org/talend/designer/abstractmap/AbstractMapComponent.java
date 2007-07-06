@@ -66,6 +66,7 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
     public void refreshMapperConnectorData() {
+        
     }
 
 

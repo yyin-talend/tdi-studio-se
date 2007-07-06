@@ -107,4 +107,49 @@ public class ExternalMapperData implements IExternalData {
         return cloned;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.inputTables == null) ? 0 : this.inputTables.hashCode());
+        result = prime * result + ((this.outputTables == null) ? 0 : this.outputTables.hashCode());
+        result = prime * result + ((this.varsTables == null) ? 0 : this.varsTables.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final ExternalMapperData other = (ExternalMapperData) obj;
+        if (this.inputTables == null) {
+            if (other.inputTables != null)
+                return false;
+        } else if (!this.inputTables.equals(other.inputTables))
+            return false;
+        if (this.outputTables == null) {
+            if (other.outputTables != null)
+                return false;
+        } else if (!this.outputTables.equals(other.outputTables))
+            return false;
+        if (this.varsTables == null) {
+            if (other.varsTables != null)
+                return false;
+        } else if (!this.varsTables.equals(other.varsTables))
+            return false;
+        return true;
+    }
+
+    
+    
 }

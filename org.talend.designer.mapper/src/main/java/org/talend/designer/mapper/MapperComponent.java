@@ -132,6 +132,12 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         Shell shell = mapperMain.createUI(display);
         // TimeMeasure.display = true;
         // TimeMeasure.end("Total open");
+        try {
+            refreshMapperConnectorData();
+            mapperMain.getMapperManager().setOriginalExternalData(externalData.clone());
+        } catch (CloneNotSupportedException e1) {
+            ExceptionHandler.process(e1);
+        }
         while (!shell.isDisposed()) {
             try {
                 if (!display.readAndDispatch()) {
