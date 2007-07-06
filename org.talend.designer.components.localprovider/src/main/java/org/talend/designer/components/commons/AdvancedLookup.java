@@ -105,13 +105,13 @@ public class AdvancedLookup<V> {
     public AdvancedLookup(MATCHING_MODE matchingMode, boolean keepAllValues, boolean countValuesForEachKey) {
         super();
         this.keepAllValues = keepAllValues;
-        this.countValuesForEachKey = countValuesForEachKey;
         this.matchingMode = matchingMode == null ? MATCHING_MODE.UNIQUE_MATCH : matchingMode;
+        this.countValuesForEachKey = countValuesForEachKey || this.matchingMode == MATCHING_MODE.UNIQUE_MATCH;
         if (matchingMode != MATCHING_MODE.ALL_ROWS) {
             if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
                 uniqueHash = new HashMap<V, V>();
             }
-            if (countValuesForEachKey) {
+            if (this.countValuesForEachKey) {
                 counterHash = new HashMap<V, Integer>();
             }
             mapOfCol = new MultiLazyValuesMap(new HashMap()) {

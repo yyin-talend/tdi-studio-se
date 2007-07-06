@@ -126,7 +126,11 @@
 		              
 			   	  		  if(
  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
- 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+ 				  		  			!(
+ 				  		  			<%// keep this line to allow comments in filter %>
+ 				  		  			<%= externalTable.getExpressionFilter()%>
+ 				  		  			<%// keep this line to allow comments in filter %>
+ 				  		  			)
   				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
 	  	  		  				) {
 		      	  				continue;
@@ -218,6 +222,8 @@
 
 	  									  if(tHash_Lookup_<%= tableName %>.hasResult()) { // G 90
   									  
+  									  		
+  									  
   									  		<%if(isMultipleResultMode) { // T 50 %>
   									  		
 		  									  if(tHash_Lookup_<%= tableName %>.resultIsObject()) { // G 49
@@ -236,7 +242,8 @@
 													sizeResultsFromLookup_<%= tableName %> = listFromLookup_<%= tableName %> != null ? listFromLookup_<%= tableName %>.size() : -1;
 	  									  
 	  										  }
-		  								 <% } // T 51 %>
+		  								 <% } // T 51 
+		  								 %>
 		  								  
 		  									} // G 90
 		  									else { // G 91
@@ -260,6 +267,23 @@
 			           		  	    } // G 21
                     		  	   <%
                     		  	   } // T 57
+
+				           		  	  if(matchingMode.equals("UNIQUE_MATCH")) { // T 52 
+				           		  	  %>
+				           		  	   	if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) {
+			  							<%
+			  								StringBuilder sbMoreOneResult = new StringBuilder("\"WARNING: UNIQUE MATCH is configured for the lookup '"+ tableName +"' and it contains more one result from keys : ");
+			  								for(int iKeys = 0; iKeys < aKeysNames.length; iKeys++) {
+			  									if(iKeys > 0) {
+					  								sbMoreOneResult.append(",");
+			  								 	}
+				  								sbMoreOneResult.append( " " + tableName + "."+ aKeysNames[iKeys] + " = \" + " + "\"'\" + " + tableName + "HashKey."+ aKeysNames[iKeys] + " + \"'\"");
+									 		}
+									 		%>
+									 		System.err.println(<%= sbMoreOneResult.toString()%>);
+									 	}
+									 <% 
+									 } // T 52 
                     		  	 } // T 1 
                     		  	 else { // T 2
                     		  	 %>
@@ -350,7 +374,11 @@
                     		  	  		
 							   	  		  if( !<%= rejectedInnerJoin %> && 
 					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
-					 				  		  			!(<%= externalTable.getExpressionFilter()%>)
+					 				  		  			!(
+					 				  		  			<%// keep this line to allow comments in filter %>
+					 				  		  			<%= externalTable.getExpressionFilter()%>
+					 				  		  			<%// keep this line to allow comments in filter %>
+					 				  		  			)
 					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
 						  	  		  			) { // G 16
                     		  	  		  
@@ -628,9 +656,9 @@
 
                 boolean closeFilterOrRejectBracket = false;
                 if (currentIsReject || currentIsRejectInnerJoin) {
-                    sb.append(cr + cr + gm.indent(indent) + "// # Output reject table: '" + outputTableName + "'");
+                    sb.append(cr + cr + gm.indent(indent) + "// # Output rejectz table: '" + outputTableName + "'");
                 } else {
-                    sb.append(cr + cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
+                    sb.append(cr + cr + gm.indent(indent) + "// # Output tablez: '" + outputTableName + "'");
                 }
                 if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
@@ -663,9 +691,9 @@
 	                        filtersConditions = gm.buildConditions(filters, expressionParser);
 	                     }
                         if (rejectedTests == null) {
-                            ifConditions += filtersConditions;
+                            ifConditions += cr + cr + filtersConditions  + cr + cr;
                         } else {
-                            ifConditions += rejectedTests + " && (" + filtersConditions + ")";
+                            ifConditions += rejectedTests + " && (" + cr + cr + filtersConditions + cr + cr +")";
                         }
                     } else {
                         ifConditions += rejectedTests;
