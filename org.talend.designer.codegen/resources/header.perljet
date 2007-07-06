@@ -29,7 +29,7 @@
 #!/usr/bin/perl
 
 =head1 <%=ElementParameterParser.getValue(process, "__NAME__") %>
-Process <%=ElementParameterParser.getValue(process, "__NAME__") %>, version <%=ElementParameterParser.getValue(process, "__VERSION__") %>, status <%=ElementParameterParser.getValue(process, "__STATUS__") %>.
+Job <%=ElementParameterParser.getValue(process, "__NAME__") %>, version <%=ElementParameterParser.getValue(process, "__VERSION__") %>, status <%=ElementParameterParser.getValue(process, "__STATUS__") %>.
 Author: <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
 Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %>
 <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %>

@@ -2,7 +2,7 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.IProcess
-		org.talend.core.model.process.INode 
+		org.talend.core.model.process.INode
 		org.talend.core.model.process.IConnection 
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser
@@ -54,10 +54,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * <%=process.getName() %> <%=process.getPurpose() %>
- * <%=process.getDescription() %> 
+ * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
+ * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
  * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
- * @version <%=process.getVersion() %>
+ * @version <%=ElementParameterParser.getValue(process, "__VERSION__") %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */
  public class <%=process.getName() %> {    
