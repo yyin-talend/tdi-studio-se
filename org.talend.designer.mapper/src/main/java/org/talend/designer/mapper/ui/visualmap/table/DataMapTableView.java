@@ -237,6 +237,8 @@ public abstract class DataMapTableView extends Composite {
 
     private ExecutionLimiter executionLimiterForExpressionFilterSetText = null;
 
+    private ContentProposalAdapterExtended expressionProposalStyledText;
+
     /**
      * 
      * Call loaded() method after instanciate this class.
@@ -1950,14 +1952,14 @@ public abstract class DataMapTableView extends Composite {
                     expressionFilterText.setToolTipText(null);
                     styledTextHandler.getStyledText().setEnabled(true);
                     styledTextHandler.getStyledText().setEditable(true);
-                    ContentProposalAdapterExtended expressionProposalStyledText = styledTextHandler
-                            .getContentProposalAdapter();
+                    expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
                     expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
                             table.getExpressionFilter());
                     expressionProposalStyledText
                             .setContentProposalProvider(expressionProposalProviderForExpressionFilter);
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
                             Arrays.<ITableEntry> asList(currentExpressionFilterEntry), true, false);
+                    colorExpressionFilterFromProblems(table, false);
                 }
 
                 public void focusLost(FocusEvent e) {
@@ -1965,6 +1967,7 @@ public abstract class DataMapTableView extends Composite {
                     if ("".equals(ControlUtils.getText(text).trim())) {
                         ControlUtils.setText(text, defaultText);
                     }
+                    setExpressionFilterFromStyledText(table, text);
                     checkProblemsForExpressionFilter(false);
                 }
 
@@ -2073,13 +2076,7 @@ public abstract class DataMapTableView extends Composite {
                 public void keyPressed(KeyEvent e) {
 
                     Control text = (Control) e.getSource();
-                    String currentContent = ControlUtils.getText(text);
-                    if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
-                        table.getExpressionFilter().setExpression(null);
-                    } else {
-                        table.getExpressionFilter().setExpression(currentContent);
-                    }
-
+                    setExpressionFilterFromStyledText(table, text);
                     StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                             .getStyledTextHandler();
                     styledTextHandler.setTextWithoutNotifyListeners(expressionFilterText.getText());
@@ -2144,7 +2141,6 @@ public abstract class DataMapTableView extends Composite {
     public void checkProblemsForExpressionFilter(boolean forceRecompile) {
         if (this.getDataMapTable() instanceof AbstractInOutTable) {
             AbstractInOutTable table = (AbstractInOutTable) this.getDataMapTable();
-            List<Problem> problems = null;
             if (table.isActivateExpressionFilter() && !DEFAULT_EXPRESSION_FILTER.equals(expressionFilterText.getText())) {
                 String nextText = expressionFilterText.getText();
                 if (nextText != null && previousTextForExpressionFilter != null
@@ -2153,22 +2149,31 @@ public abstract class DataMapTableView extends Composite {
                 } else {
                     mapperManager.getProblemsManager().checkProblemsForTableEntry(table.getExpressionFilter(), false);
                 }
-                problems = table.getExpressionFilter().getProblems();
             } else {
                 table.getExpressionFilter().setProblems(null);
             }
-            if (problems != null) {
-                expressionFilterText.setBackground(ColorProviderMapper
-                        .getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
-                expressionFilterText.setForeground(ColorProviderMapper
-                        .getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
-            } else {
-                expressionFilterText.setBackground(null);
-                expressionFilterText.setForeground(null);
-            }
+            colorExpressionFilterFromProblems(table, true);
 
         }
 
+    }
+
+    /**
+     * DOC amaumont Comment method "colorExpressionFilterFromProblems".
+     * @param table
+     * @param colorAllowed TODO
+     */
+    private void colorExpressionFilterFromProblems(AbstractInOutTable table, boolean colorAllowed) {
+        List<Problem> problems = table.getExpressionFilter().getProblems();
+        if (problems != null && colorAllowed) {
+            expressionFilterText.setBackground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
+            expressionFilterText.setForeground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
+        } else {
+            expressionFilterText.setBackground(null);
+            expressionFilterText.setForeground(null);
+        }
     }
 
     /**
@@ -2263,6 +2268,21 @@ public abstract class DataMapTableView extends Composite {
             }
 
         }).start();
+    }
+
+    /**
+     * DOC amaumont Comment method "setExpressionFilterFromStyledText".
+     * 
+     * @param table
+     * @param text
+     */
+    private void setExpressionFilterFromStyledText(final AbstractInOutTable table, Control text) {
+        String currentContent = ControlUtils.getText(text);
+        if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
+            table.getExpressionFilter().setExpression(null);
+        } else {
+            table.getExpressionFilter().setExpression(currentContent);
+        }
     }
 
 }

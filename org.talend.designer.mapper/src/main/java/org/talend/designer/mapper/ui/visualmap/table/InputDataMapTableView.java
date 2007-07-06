@@ -329,7 +329,6 @@ public class InputDataMapTableView extends DataMapTableView {
         private boolean visible;
 
         public void widgetSelected(SelectionEvent event) {
-            System.out.println("widgetSelected");
             // Create the menu if it has not already been created
             if (menu == null) {
                 // Lazy create the menu.
