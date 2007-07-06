@@ -610,7 +610,6 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_METTER.getName()); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METTER.getName())));
         param.setDisplayName(EParameterName.TABLE_METTER.getDisplayName());
-        // param.setDisplayName(StatsAndLogsConstants.TABLE_LOGS[languageType].getDisplayName()); // "Log Table");
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);

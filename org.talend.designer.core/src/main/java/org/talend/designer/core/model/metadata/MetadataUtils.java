@@ -51,6 +51,10 @@ public class MetadataUtils {
                         }
                     }
                     metadataTable.setReadOnly(table.isReadOnly());
+                    // if all the table is read only then remove all columns to set the one defined in the emf component
+                    if (metadataTable.isReadOnly()) {
+                        metadataTable.getListColumns().clear();
+                    }
                     for (int k = 0; k < table.getListColumns().size(); k++) {
                         IMetadataColumn newColumn = table.getListColumns().get(k);
                         IMetadataColumn oldColumn = metadataTable.getColumn(newColumn.getLabel());

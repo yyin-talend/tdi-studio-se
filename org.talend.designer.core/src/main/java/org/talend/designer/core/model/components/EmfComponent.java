@@ -758,9 +758,13 @@ public class EmfComponent implements IComponent {
             List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
             IMetadataColumn talendColumn;
 
-            boolean isReadOnly = tableType.isSetREADONLY();
-            if (isReadOnly) {
-                defaultTable.setReadOnly(isReadOnly);
+            boolean isReadOnly;
+            if (tableType.isSetREADONLY()) {
+                defaultTable.setReadOnly(tableType.isREADONLY());
+                isReadOnly = tableType.isREADONLY();
+            } else {
+                defaultTable.setReadOnly(param.isReadOnly());
+                isReadOnly = param.isReadOnly();
             }
 
             for (int i = 0; i < xmlColumnList.size(); i++) {

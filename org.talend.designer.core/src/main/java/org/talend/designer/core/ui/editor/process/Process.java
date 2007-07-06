@@ -1190,7 +1190,11 @@ public class Process extends Element implements IProcess {
         String defaultContextToLoad;
         defaultContextToLoad = process.getDefaultContext();
 
-        contextManager = new JobContextManager(process.getContext(), defaultContextToLoad);
+        if (process.getContext() == null) {
+            contextManager = new JobContextManager();
+        } else {
+            contextManager = new JobContextManager(process.getContext(), defaultContextToLoad);
+        }
     }
 
     public boolean isReadOnly() {
