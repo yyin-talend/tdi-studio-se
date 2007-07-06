@@ -97,14 +97,13 @@ push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connecti
 					<%
 				        } else if ( matchingModeStr.equals("FIRST_MATCH") ){
 					%>
-# <%= matchingModeStr %> key => [[]]
-push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> unless exists $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ;
+# <%= matchingModeStr %> key => []
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ||= \@<%= connectionName %>  ;
 					<%
 					} else {
 					%>
-# <%= matchingModeStr %> key => [[]] 
-$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } &&= [] ;
-push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> ;
+# <%= matchingModeStr %> key => [] 
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } = \@<%= connectionName %> ;
 
 					<%
 					}

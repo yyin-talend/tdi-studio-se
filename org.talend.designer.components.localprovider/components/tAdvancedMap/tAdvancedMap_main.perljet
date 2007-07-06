@@ -16,7 +16,6 @@
     org.talend.designer.mapper.external.data.ExternalMapperTable
     org.talend.designer.mapper.external.data.ExternalMapperTableEntry
     org.talend.designer.mapper.language.ILanguage
-    org.talend.designer.mapper.language.generation.GenerationManagerFactory
     org.talend.designer.mapper.language.generation.PerlGenerationManager
     org.talend.designer.mapper.language.LanguageProvider
     org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
@@ -101,7 +100,7 @@
 
           int closeBracketCounter = 0;
         %>
-          $<%= rejectedInnerJoin %> = false;
+    $<%= rejectedInnerJoin %> = false;
                                                                   
         <%
 
@@ -200,39 +199,130 @@
                     }
                     keys.append(" ) ");
 
-                     sb = new StringBuilder();
-                     %>
-                          
-                           $forceLoop<%= tableName %> = false;
-                               <%
-                          if(aKeysValues.length > 0) { // 1
-                          %>
-                                     if(!$<%= rejectedInnerJoin %>)
-                                     { # 20
-                                     
-                                             $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
+                    sb = new StringBuilder();
+                    %>
+    $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
+    $forceLoop<%= tableName %> = false;
 
-                                            if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
-                                                  <%
-                                                  if(externalTable.isInnerJoin()) {
-                                                  %>
-                                                    $<%= rejectedInnerJoin %> = true;
-                                                  <%
-                                                  }
-                                                  %>
-                                                  $forceLoop<%= tableName %> = true;
-                                              }
-                                      
-                                         } # 20
-                                         else { # 21
-                                            $forceLoop<%= tableName %> = true;
-                                         } # 21 
-                                         
-                                    $size<%= tableName %>ArrayFromLookup = @$ref_<%= tableName %>_ArrayFromLookup > 0 ? @$ref_<%= tableName %>_ArrayFromLookup : -1;
+                    <%
+                    if(matchingModeStr.equals("ALL_ROWS") ||matchingModeStr.equals("ALL_MATCHES")){
+                    %>                                             
+    $size<%= tableName %>ArrayFromLookup = scalar( @$ref_<%= tableName %>_ArrayFromLookup );
+                    <%
+                    }
+                    else {
+                    %>
+    $size<%= tableName %>ArrayFromLookup = exists $tHash_Lookup_<%= tableName %>->{ <%= keys %> } ;
+                    <%
+                    }
+                    if( !matchingModeStr.equals("ALL_ROWS")) { // UNIQUE_MATCH, ALL_MATCHES, FIRST_MATCH, LAST_MATCH
+                    %>
+    # <%= matchingModeStr %>
+    if(!$<%= rejectedInnerJoin %>)
+    { # 20
+        unless(exists $tHash_Lookup_<%= tableName %>->{ <%= keys %> }) {
+        <%
+        if(externalTable.isInnerJoin()) {
+        %>
+        $<%= rejectedInnerJoin %> = true;
+        <%
+        }
+        %>
+            $forceLoop<%= tableName %> = true;
+        }
+    } # 20
+    else { # 21
+        $forceLoop<%= tableName %> = true;
+    } # 21 
+                    <%
+                    } // 1 
+                    else { // ALL_ROWS
+                              %>
+    # <%= matchingModeStr %>
+    $hasAtLeastOneValidLookup_<%= tableName %> = false;
+                                       
+    if(!$<%= rejectedInnerJoin %>)
+    { # 35
+                                           
+        if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
                                    <%
-                                   } // 1 
-                                   else { // 2
+                                   if(externalTable.isInnerJoin()) {
                                    %>
+<<<<<<< .mine
+        $<%= rejectedInnerJoin %> = true;
+                                   <%
+                                   }
+                                   %>
+        $forceLoop<%= tableName %> = true;
+        }
+    } # 35
+    else { # 36
+        $forceLoop<%= tableName %> = true;
+        if("<%= matchingModeStr %>" eq "ALL_ROWS"){
+            $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
+        }
+    } # 36
+                    <%
+                    } // 2
+                    %>
+    for($i<%= tableName %> = 0; $i<%= tableName %> < $size<%= tableName %>ArrayFromLookup || $forceLoop<%= tableName %> ;$i<%= tableName %>++) {
+                    <%
+                    gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
+                    %>
+        my @<%= tableName %> = ();
+                                             
+        if( (!$forceLoop<%= tableName %> ) or ( "<%= matchingModeStr %>" eq "ALL_ROWS" ) ) { # 46
+
+                    <%
+                    if(matchingModeStr.equals("ALL_ROWS") ||matchingModeStr.equals("ALL_MATCHES")){
+                    %>                                             
+            $ref_<%= tableName %>FromLookup = $ref_<%= tableName %>_ArrayFromLookup->[$i<%= tableName %>];
+                    <%
+                    }
+                    else {
+                    %>                                             
+            $ref_<%= tableName %>FromLookup = $ref_<%= tableName %>_ArrayFromLookup ;
+                    <%
+                    }
+                    %>                                             
+            @<%= tableName %> = @$ref_<%= tableName %>FromLookup;
+                                               <%
+                                                   String expressionFilter = externalTable.getExpressionFilter();
+                                               if(
+                                                       externalTable.isActivateExpressionFilter() 
+                                                       && expressionFilter != null 
+                                                       && !expressionFilter.trim().equals("")
+                                               ) { // 12 
+                                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
+                                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+                                            for (TableEntryLocation location : entryLocations) {
+                                                listCoupleForAddTablePrefix.add(location);
+                                            }
+                                            String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+                                               %>
+            if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # 16
+                                                          <%
+                                                          if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
+                                                          %>
+                $<%= rejectedInnerJoin %> = true;
+                                                        <%
+                                                          } else if(!externalTable.isInnerJoin() && aKeysValues.length > 0){
+                                                        %>                                                      
+                @<%= tableName %> = ();    
+                                                          <%
+                                                          } else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
+                                                          %>
+                if($size<%= tableName %>ArrayFromLookup != -1 
+                && $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
+                && !$hasAtLeastOneValidLookup_<%= tableName %>) 
+                { # 15
+                    $<%= rejectedInnerJoin %> = true;
+                } # 15
+                                                            <%
+                                                          }
+                                                          %>
+        } # 16
+=======
                                    
                                    $hasAtLeastOneValidLookup_<%= tableName %> = false;
                                    $<%= tableName %>ArrayFromLookup = ();
@@ -242,13 +332,30 @@
                                              $ref_<%= tableName %>_ArrayFromLookup = $tHash_Lookup_<%= tableName %>->{ <%= keys %> };
                                        
                                            if(@$ref_<%= tableName %>_ArrayFromLookup == 0) {
+>>>>>>> .r4305
                                                   <%
-                                                  if(externalTable.isInnerJoin()) {
+                                                 if(aKeysValues.length == 0){
                                                   %>
-                                                    $<%= rejectedInnerJoin %> = true;
+                if(@$ref_<%= tableName %>FromLookup == 0 && !$<%= rejectedInnerJoin %>) 
+                { # 17
+                    next;
+                } # 17
+                                                 <%
+                                                       if(externalTable.isInnerJoin()) {
+                                                 %>
+                # 17
+                else if(!$<%= rejectedInnerJoin %>)
+                { # 18
+                    $hasAtLeastOneValidLookup_<%= tableName %> = true;
+                } # 18
+                                                 <%
+                                                 }
+                                                 %>    
                                                   <%
                                                   }
                                                   %>
+<<<<<<< .mine
+=======
                                                   $forceLoop<%= tableName %> = true;
                                             }
                                         } # 35
@@ -322,30 +429,13 @@
                                                { # 17
                                                           next;
                                              } # 17
+>>>>>>> .r4305
                                              <%
-                                                   if(externalTable.isInnerJoin()) {
-                                                   %>
-                                                      # 17
-                                                 else if(!$<%= rejectedInnerJoin %>)
-                                                 { # 18
-                                                       $hasAtLeastOneValidLookup_<%= tableName %> = true;
-                                                } # 18
-                                             <%
-                                             }
-                                             %>    
-                                              <%
-                                              }
-                                              %>
-                                              
-                                              
-                                         <%
-                                         } // 12
-                                         
-                                      %>    
-                                      
-                                      } # 46
-                                      
-                                         $forceLoop<%= tableName %> = false;
+                                             } // 12
+                                          %>    
+        } # 46
+    
+        $forceLoop<%= tableName %> = false;
                                       
                                           <%
 
