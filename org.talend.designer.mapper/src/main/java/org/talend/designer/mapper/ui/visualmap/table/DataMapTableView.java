@@ -1961,6 +1961,10 @@ public abstract class DataMapTableView extends Composite {
                 }
 
                 public void focusLost(FocusEvent e) {
+                    Control text = (Control) e.getSource();
+                    if ("".equals(ControlUtils.getText(text).trim())) {
+                        ControlUtils.setText(text, defaultText);
+                    }
                     checkProblemsForExpressionFilter();
                 }
 
@@ -2069,9 +2073,6 @@ public abstract class DataMapTableView extends Composite {
                 public void keyPressed(KeyEvent e) {
 
                     Control text = (Control) e.getSource();
-                    if ("".equals(ControlUtils.getText(text).trim())) {
-                        ControlUtils.setText(text, defaultText);
-                    }
                     String currentContent = ControlUtils.getText(text);
                     if (DEFAULT_EXPRESSION_FILTER.equals(currentContent)) {
                         table.getExpressionFilter().setExpression(null);
