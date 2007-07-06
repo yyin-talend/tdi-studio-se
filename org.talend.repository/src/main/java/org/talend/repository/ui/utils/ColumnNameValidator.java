@@ -61,4 +61,32 @@ public class ColumnNameValidator {
         return columnName;
     }
 
+    private static int tempIndex;
+
+    /**
+     * Validates column name to avoid special characters.
+     * 
+     * @param columnName
+     */
+    public String validateColumnNameFormat(String columnName) {
+        org.apache.oro.text.regex.Pattern validPatternColumnNameRegexp = null;
+        PatternCompiler compiler = new Perl5Compiler();
+
+        if (validPatternColumnNameRegexp == null) {
+            try {
+                validPatternColumnNameRegexp = compiler.compile(VALIDATE_PATTERN_COLUMN_NAME);
+            } catch (MalformedPatternException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        Perl5Matcher matcher = new Perl5Matcher();
+        boolean match = matcher.matches(columnName, validPatternColumnNameRegexp);
+        if (!match) {
+            columnName = "Column" + tempIndex;
+            tempIndex++;
+        }
+        
+        return columnName;
+    }
+
 }
