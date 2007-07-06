@@ -150,6 +150,7 @@ Thread normal_<%=cid %> = new Thread() {
 };
 normal_<%=cid %>.start();
 
+final StringBuffer errorMsg_<%=cid %> = new StringBuffer();
 Thread error_<%=cid %> = new Thread() {
 	public void run() {
 		try {
@@ -157,7 +158,8 @@ Thread error_<%=cid %> = new Thread() {
 			String line = "";
 			try {
 				while((line = reader.readLine()) != null) {
-					System.err.println(line);
+//					System.err.println(line);
+					errorMsg_<%=cid %>.append(line).append("\n");
 				}
 			} finally {
 				reader.close();
@@ -172,3 +174,7 @@ error_<%=cid %>.start();
 ps_<%=cid %>.waitFor();
 normal_<%=cid %>.interrupt();
 error_<%=cid %>.interrupt();
+if(errorMsg_<%=cid %>.length() != 0)
+{
+	throw new Exception(errorMsg_<%=cid %>.toString());
+}
