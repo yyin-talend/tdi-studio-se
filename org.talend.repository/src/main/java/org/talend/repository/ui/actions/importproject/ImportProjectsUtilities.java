@@ -81,7 +81,7 @@ public class ImportProjectsUtilities {
 
     public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        IImportStructureProvider provider = FileSystemStructureProvider.INSTANCE;
+        IImportStructureProvider provider = FilterFileSystemStructureProvider.INSTANCE;
 
         importProject(shell, provider, new File(sourcePath), new Path(technicalName), true, false, monitor);
 
@@ -187,7 +187,7 @@ public class ImportProjectsUtilities {
      * @param entry The root directory of the project
      * @return A list of all files in the project
      */
-    public static boolean getFilesForProject(Collection files, IImportStructureProvider provider, Object entry) {
+    public static void getFilesForProject(Collection files, IImportStructureProvider provider, Object entry) {
         List children = provider.getChildren(entry);
         Iterator childrenEnum = children.iterator();
 
@@ -202,7 +202,6 @@ public class ImportProjectsUtilities {
                 getFilesForProject(files, provider, child);
             }
         }
-        return true;
     }
 
     /**
