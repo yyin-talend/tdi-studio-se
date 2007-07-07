@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -61,6 +64,8 @@ public class RestoreAction extends AContextualAction {
     }
 
     public void run() {
+        //used to store the database connection object that are used to notify the sqlBuilder.
+        List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
@@ -73,6 +78,7 @@ public class RestoreAction extends AContextualAction {
                         AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) node.getObject()).getAbstractMetadataObject();
                         SubItemHelper.setDeleted(abstractMetadataObject, false);
                         factory.save(item);
+                        connections.add(node.getObject());
                     } else {
                         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
                         restoreObjectAction.execute(node, null);
@@ -83,6 +89,7 @@ public class RestoreAction extends AContextualAction {
                 }
             }
         }
+        notifySQLBuilder(connections);
     }
 
     /*

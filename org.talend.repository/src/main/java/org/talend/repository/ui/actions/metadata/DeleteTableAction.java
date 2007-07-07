@@ -21,21 +21,20 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -46,10 +45,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -78,6 +74,9 @@ public class DeleteTableAction extends AContextualAction {
 
         Boolean confirm = null;
 
+        //used to store the database connection object that are used to notify the sqlBuilder.
+        List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
+        
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -106,6 +105,7 @@ public class DeleteTableAction extends AContextualAction {
                             SubItemHelper.setDeleted(abstractMetadataObject, true);
                         }
                         factory.save(item);
+                        connections.add(node.getObject());
                         refresh();
                     } catch (PersistenceException e) {
                         e.printStackTrace();
@@ -113,9 +113,10 @@ public class DeleteTableAction extends AContextualAction {
                 }
             }
         }
-        IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                RepositoryView.VIEW_ID);
-        IRepositoryView repositoryView = (IRepositoryView) viewPart;
+        notifySQLBuilder(connections);
+        // IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+        // RepositoryView.VIEW_ID);
+        // IRepositoryView repositoryView = (IRepositoryView) viewPart;
 
         // // Find Metadata node
         // RepositoryNode recycleBinNode = repositoryView.getRoot().getChildren().get(8);
