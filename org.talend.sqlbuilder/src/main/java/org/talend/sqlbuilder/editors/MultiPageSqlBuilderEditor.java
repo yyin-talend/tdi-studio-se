@@ -105,6 +105,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
             int index = addPage(sqlEdit);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.EditTab.Text")); //$NON-NLS-1$
+            EMFRepositoryNodeManager.getInstance().setPrompt(false);
             sqlDesigner = new SQLBuilderDesignerComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode,
                     dialog, nodes);
             sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
@@ -115,7 +116,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             sqlDesigner.setIfLimit(sqlEdit.getIfLimit());
             sqlDesigner.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
             sqlDesigner.setMultiPageEditor(this);
-
+            EMFRepositoryNodeManager.getInstance().setPrompt(true);
             erDiagramComposite = sqlDesigner.getErDiagramComposite();
             index = addPage(sqlDesigner);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
@@ -218,8 +219,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             if ("".equals(sqlEdit.getSQLToBeExecuted())) {
                 return true;
             } else {
-                String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(sqlEdit.getSQLToBeExecuted(), false);
-                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(erDiagramComposite.getSqlText(), false);
+                EMFRepositoryNodeManager.getInstance().setPrompt(false);
+                String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(sqlEdit.getSQLToBeExecuted());
+                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(erDiagramComposite.getSqlText());
+                EMFRepositoryNodeManager.getInstance().setPrompt(true);
                 if (sqlText == null) {
                     return orginSql != null;
                 } else {

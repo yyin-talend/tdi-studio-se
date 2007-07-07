@@ -231,7 +231,9 @@ public final class EMFRepositoryNodeManager {
 
     private List<String[]> relations = new ArrayList<String[]>();
 
-    public String initSqlStatement(String currentSql, boolean isPrompt) {
+    private boolean isPrompt;
+
+    public String initSqlStatement(String currentSql) {
         QueryTokenizer qt = new QueryTokenizer(currentSql, queryDelimiter, alternateDelimiter, commentDelimiter);
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {
@@ -262,7 +264,6 @@ public final class EMFRepositoryNodeManager {
                 MessageDialog.openWarning(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
                         .getString("EMFRepositoryNodeManager.Notice.info3"));
             }
-            return null;
         }
         if (isForce != null && !isForce.booleanValue()) {
             return null;
@@ -289,17 +290,18 @@ public final class EMFRepositoryNodeManager {
 
             List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
             if (nodeSel == null || nodeSel.isEmpty()) {
-                return;
+                editor.setSqlText(toSql);
+            } else {
+                editor.updateNodes(nodeSel, toSql);
             }
-            editor.updateNodes(nodeSel, toSql);
         }
         editor.setModified(false);
     }
 
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
-        sql = initSqlStatement(sql, true);
-        if (sql == null || "".equals(sql)) {
+        sql = initSqlStatement(sql);
+        if (sql == null || "".equals(sql) || !sql.startsWith("select ")) {
             return Collections.EMPTY_LIST;
         }
         List<String> tableNames = new ArrayList<String>();
@@ -434,7 +436,7 @@ public final class EMFRepositoryNodeManager {
             }
             String[] tables = fromStr.split(",");
             String[] rel = whereStr.split(" and ");
-            
+
             for (String string : columns) {
                 int dotIndex = string.indexOf(".");
                 if (dotIndex != -1) {
@@ -459,7 +461,7 @@ public final class EMFRepositoryNodeManager {
                     relations.add(strs);
                 }
             }
-            
+
             // add column's name of relations to column names.
             for (String[] string : relations) {
                 if (!columnsNames.contains(string[0])) {
@@ -471,16 +473,16 @@ public final class EMFRepositoryNodeManager {
             }
             // fixed table Names when contains alias.
             fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
-            
+
             // fixed column Names when contains alias.
             fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
-            
+
             // replace table's alias with table real name in columnsNames.
             for (int i = 0; i < columnsNames.size(); i++) {
                 String string = columnsNames.get(i);
                 if (string.contains(".")) {
                     columnsNames.set(i, string.substring(string.indexOf(".") + 1));
-                    
+
                 }
             }
             // fixed relations ,when contans alias.
@@ -560,6 +562,14 @@ public final class EMFRepositoryNodeManager {
 
     public static EMFRepositoryNodeManager getInstance() {
         return instance;
+    }
+
+    public boolean isPrompt() {
+        return this.isPrompt;
+    }
+
+    public void setPrompt(boolean isPrompt) {
+        this.isPrompt = isPrompt;
     }
 
 }

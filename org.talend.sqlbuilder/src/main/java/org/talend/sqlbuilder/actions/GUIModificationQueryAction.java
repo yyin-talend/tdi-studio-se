@@ -202,7 +202,7 @@ public class GUIModificationQueryAction extends AbstractEditorAction {
         if (query == null) {
             return;
         }
-        if (!query.endsWith(";")) {
+        if (!query.endsWith(";\n") && !query.endsWith(";")) {
             query += ";\n";
         }
         String targetSql = "";

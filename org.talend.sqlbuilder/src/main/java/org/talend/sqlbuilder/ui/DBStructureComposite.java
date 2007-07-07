@@ -508,7 +508,7 @@ public class DBStructureComposite extends Composite {
 
                     try {
                         RepositoryNode root = (RepositoryNode) treeViewer.getInput();
-                        refreshChildren(root);
+                        refreshChildren(null);
                     } finally {
                         monitor.done();
                     }
@@ -522,12 +522,19 @@ public class DBStructureComposite extends Composite {
     }
 
     private void refreshChildren(RepositoryNode root) {
-        List<RepositoryNode> repositoryNodes = root.getChildren();
-        for (RepositoryNode node : repositoryNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                refreshChildren(node);
-            } else {
-                doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+        if (root == null) {
+           List<RepositoryNode> dnodes=  repositoryNodeManager.getAllDisplayedConnection();
+           for (RepositoryNode node : dnodes) {
+               doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+        }
+        } else {
+            List<RepositoryNode> repositoryNodes = root.getChildren();
+            for (RepositoryNode node : repositoryNodes) {
+                if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+                    refreshChildren(node);
+                } else {
+                    doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+                }
             }
         }
     }
