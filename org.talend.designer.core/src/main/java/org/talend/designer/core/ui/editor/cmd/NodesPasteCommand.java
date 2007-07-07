@@ -277,7 +277,8 @@ public class NodesPasteCommand extends Command {
                         }
                         pastedNode.getElementParameter(param.getName()).setValue(newValues);
                     } else {
-                        pastedNode.getElementParameter(param.getName()).setValue(param.getValue());
+                        // pastedNode.getElementParameter(param.getName()).setValue(param.getValue());
+                        pastedNode.setPropertyValue(param.getName(), param.getValue());
                     }
                 }
             }
@@ -320,18 +321,20 @@ public class NodesPasteCommand extends Command {
                         newConnectionName = connection.getName();
                     }
 
-                    if (pastedSourceNode.getExternalNode() == null) {
-                        metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
-                    } else {
-                        metaTableName = connection.getMetaName();
-                    }
                     String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
                             + connection.getMetaName());
                     if (meta != null) {
-                        if (!connection.getLineStyle().equals(EConnectionType.TABLE)) {
+                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()
+                                && !connection.getLineStyle().equals(EConnectionType.TABLE)) {
                             newConnectionName = meta;
                         }
                         metaTableName = meta;
+                    } else {
+                        if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()) {
+                            metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
+                        } else {
+                            metaTableName = connection.getMetaName();
+                        }
                     }
                     Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
                             .getLineStyle(), connection.getConnectorName(), metaTableName, newConnectionName);
