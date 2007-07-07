@@ -40,15 +40,17 @@
         <ITEM NAME="ACCESS"        VALUE="Access" />
         <ITEM NAME="DB2"           VALUE="DB2"/>
         <ITEM NAME="FIREBIRD"      VALUE="Firebird"/>
+        <ITEM NAME="HSQLDB"      VALUE="HSQLdb"/>
         <ITEM NAME="INFORMIX"      VALUE="Informix"/>
         <ITEM NAME="INGRES"      VALUE="Ingres"/>
+        <ITEM NAME="INTERBASE"      VALUE="Interbase"/>
         <ITEM NAME="JAVADB"      VALUE="JavaDB"/>
         <ITEM NAME="MSSQL" 		   VALUE="MSSQL"/>
         <ITEM NAME="MYSQL"         VALUE="MySQL"/>
         <ITEM NAME="DBORACLE"      VALUE="Oracle"/>
         <ITEM NAME="POSTGRE"      VALUE="Postgre"/>
         <ITEM NAME="SQLITE"      VALUE="SQLite"/>
-        <ITEM NAME="SYBASE"      VALUE="Sybase"/>
+        <ITEM NAME="SYBASE"      VALUE="Sybase"/>       
       </ITEMS>
     </PARAMETER>
     
@@ -276,8 +278,10 @@
       <DEFAULT IF="DBTYPE=='ACCESS'">access_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='DB2'">ibmdb2_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='FIREBIRD'">firebird_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='HSQLDB'">hsqldb_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INFORMIX'">informix_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='INTERBASE'">interbase_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='JAVADB'">javadb_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='MSSQL'">MSODBC</DEFAULT>
       <DEFAULT IF="DBTYPE=='MYSQL'">mysql_id</DEFAULT>
