@@ -67,11 +67,11 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
     public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", //$NON-NLS-1$
             "*.sql", "*.*" };
 
-    protected ISQLBuilderDialog dialog;
+    public ISQLBuilderDialog dialog;
 
     protected ConnectionParameters connParam;
 
-   public static final String QUERY_PREFIX = Messages.getString("SQLBuilderEditorComposite.titleQuery");
+    public static final String QUERY_PREFIX = Messages.getString("SQLBuilderEditorComposite.titleQuery");
 
     /**
      * qzhang AbstractSQLEditorComposite constructor comment.
@@ -186,6 +186,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
                 repositoryNodeManager.saveQuery(getRepositoryNode(), query2);
                 dialog.refreshNode(getRepositoryNode());
                 getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query2.getLabel());
+                getDialog().notifySQLBuilder(getRepositoryNode().getObject());
                 return query2;
             }
         }
@@ -200,6 +201,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
             getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query.getLabel());
             getMultiPageEditor().getDeactivePageSaveSQLAction().setQuery(query);
             getMultiPageEditor().setItemData(query);
+            getDialog().notifySQLBuilder(getRepositoryNode().getObject());
             return query;
         }
         return null;
@@ -269,10 +271,9 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
         saveSQLAction = new SaveSQLAction(getRepositoryNode(), connParam);
         saveSQLAction.setEditor(this);
-        
+
         saveAsSQLAction = new SaveAsSQLAction(getRepositoryNode(), connParam);
         saveAsSQLAction.setEditor(this);
-
 
         exportAction = new SaveFileAsAction();
         exportAction.setEditor(this);
@@ -323,13 +324,20 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     public abstract StyledText getColorText();
 
-    
     public SaveAsSQLAction getSaveAsSQLAction() {
         return this.saveAsSQLAction;
     }
 
-    
     public SaveSQLAction getSaveSQLAction() {
         return this.saveSQLAction;
+    }
+
+    /**
+     * Getter for dialog.
+     * 
+     * @return the dialog
+     */
+    public ISQLBuilderDialog getDialog() {
+        return this.dialog;
     }
 }

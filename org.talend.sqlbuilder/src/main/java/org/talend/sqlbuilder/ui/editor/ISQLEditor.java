@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 
 /**
  * This interface is responsible for defining methods for SQLBuilderEditorComposite class.
@@ -114,5 +115,11 @@ public interface ISQLEditor {
     void setRepositoryNode(RepositoryNode node);
     
     MultiPageSqlBuilderEditor getMultiPageEditor();
+
+    /**
+     * Getter for dialog.
+     * @return the dialog
+     */
+    public ISQLBuilderDialog getDialog();
     
 }

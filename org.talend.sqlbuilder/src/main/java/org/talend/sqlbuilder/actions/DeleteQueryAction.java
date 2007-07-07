@@ -92,5 +92,6 @@ public class DeleteQueryAction extends SelectionProviderAction {
         repositoryNodeManager.deleteQueries(node, queries);
 
         dialog.refreshNode(node);
+        dialog.notifySQLBuilder(node.getObject());
     }
 }

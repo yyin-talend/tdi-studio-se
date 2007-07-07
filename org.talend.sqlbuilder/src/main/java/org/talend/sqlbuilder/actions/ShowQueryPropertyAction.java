@@ -101,6 +101,7 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
             query = saveSQLDialog.getQuery();
             repositoryNodeManager.saveQuery(node, query);
             dialog.refreshNode(node);
+            dialog.notifySQLBuilder(node.getObject());
         }
     }
 }

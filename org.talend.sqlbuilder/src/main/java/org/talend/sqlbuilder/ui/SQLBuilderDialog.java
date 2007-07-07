@@ -52,9 +52,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
+import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -561,6 +564,12 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
         structureComposite.updateStructureView(event);
+    }
+
+    public void notifySQLBuilder(IRepositoryObject o) {
+        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+        CorePlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(o));
+        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
 
     /*

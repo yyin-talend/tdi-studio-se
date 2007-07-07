@@ -40,7 +40,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -50,7 +49,6 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -62,6 +60,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -75,7 +74,6 @@ import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -226,14 +224,17 @@ public class DBStructureComposite extends Composite {
     protected void updateStructureView(RepositoryChangedEvent event) {
         if (!isShowAllConnections) {
             DatabaseConnectionItem originalConnection = getDisplayedConnection();
-            DatabaseConnectionItem newConnection = (DatabaseConnectionItem) event.getDelta().getRepositoryObject().getProperty()
-                    .getItem();
-            if (!originalConnection.getProperty().getId().equals(newConnection.getProperty().getId())) {
-                return;
-            }
-            if (!originalConnection.getProperty().getLabel().equals(newConnection.getProperty().getLabel())) {
-                String newRepositoryName = newConnection.getProperty().getLabel();
-                this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+            IRepositoryObject repositoryObject = event.getDelta().getRepositoryObject();
+            if (repositoryObject != null) {
+                DatabaseConnectionItem newConnection = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+
+                if (!originalConnection.getProperty().getId().equals(newConnection.getProperty().getId())) {
+                    return;
+                }
+                if (!originalConnection.getProperty().getLabel().equals(newConnection.getProperty().getLabel())) {
+                    String newRepositoryName = newConnection.getProperty().getLabel();
+                    this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+                }
             }
         }
         ((DBTreeProvider) treeViewer.getContentProvider()).setInitialized(false);

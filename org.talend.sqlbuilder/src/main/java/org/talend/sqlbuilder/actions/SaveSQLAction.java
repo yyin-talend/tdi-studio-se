@@ -60,7 +60,7 @@ public class SaveSQLAction extends AbstractEditorAction {
      */
     @Override
     public String getText() {
-        
+
         return "Save";
     }
 
@@ -71,14 +71,14 @@ public class SaveSQLAction extends AbstractEditorAction {
      */
     @Override
     public void run() {
-        
+
         Query query2 = editor.doSaveSQL(query, false);
         if (query2 != null) {
             query = query2;
         }
+        this.getEditor().getDialog().notifySQLBuilder(repositoryNode.getObject());
     }
 
-    
     public void setQuery(Query query) {
         this.query = query;
     }

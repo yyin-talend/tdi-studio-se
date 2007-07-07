@@ -25,6 +25,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -58,4 +61,6 @@ public interface ISQLBuilderDialog {
     public Shell getShell();
 
     public IProgressMonitor getProgressMonitor();
+
+    public void notifySQLBuilder(IRepositoryObject o);
 }
