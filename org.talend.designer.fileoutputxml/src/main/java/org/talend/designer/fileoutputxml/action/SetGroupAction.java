@@ -80,7 +80,7 @@ public class SetGroupAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
-        if (node instanceof Attribute) {
+        if ((node instanceof Attribute) || node.hasLink()) {
             this.setEnabled(false);
             return;
         }
