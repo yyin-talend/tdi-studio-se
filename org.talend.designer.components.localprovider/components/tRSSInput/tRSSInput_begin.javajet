@@ -49,7 +49,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i);
           row<%=cid%>[0]=itm<%=cid%>.getTitle();
           row<%=cid%>[1]=itm<%=cid%>.getDescriptionAsText();
-          row<%=cid%>[2]=(itm<%=cid%>.getPubDate()==null ? "" :itm<%=cid%>.getPubDate().toString());
+          row<%=cid%>[2]=(itm<%=cid%>.getPubDate()==null ? "" :itm<%=cid%>.getPubDate().toGMTString());
           row<%=cid%>[3]=(itm<%=cid%>.getLink()==null ? "" :itm<%=cid%>.getLink().toString());
   <%        if(isDate)
           {
