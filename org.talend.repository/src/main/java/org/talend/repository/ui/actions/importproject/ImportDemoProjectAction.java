@@ -24,6 +24,7 @@ package org.talend.repository.ui.actions.importproject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -103,8 +104,9 @@ public final class ImportDemoProjectAction extends Action {
                         String techName = demoProjectBean.getProjectName();
 
                         if (checkProjectIsExisting(techName)) {
-                            boolean reImportFlag = MessageDialog.openQuestion(shell, "message",
-                                    "Demo project is existing, do you want to re-import it?");
+                            boolean reImportFlag = MessageDialog.openQuestion(shell, Messages
+                                    .getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages
+                                    .getString("ImportDemoProjectAction.alertDialog.message"));
                             if (!reImportFlag) {
                                 return;
                             }
