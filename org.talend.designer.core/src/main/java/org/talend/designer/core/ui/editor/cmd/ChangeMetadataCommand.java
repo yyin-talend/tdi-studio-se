@@ -218,7 +218,6 @@ public class ChangeMetadataCommand extends Command {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
                 DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
                 if (currentSection.getElement().equals(node)) {
-                    ColumnListController.updateColumnList(node, columnNameChanged);
                     currentSection.refresh();
                 }
             }
@@ -276,23 +275,21 @@ public class ChangeMetadataCommand extends Command {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).isExternalNode() && getPropagate()
+                            if (((Node) targetNode).getComponent().isSchemaAutoPropagated() && getPropagate()
                                     && targetNode.getMetadataList().size() > 0) {
-                                if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
-                                    IMetadataTable toCopy = newOutputMetadata.clone();
-                                    IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
-                                    MetadataTool.copyTable(toCopy, copy);
-                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, copy);
-                                    if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
-                                                .get(0).getColumnNameChanged();
-                                        for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
-                                            dataComp.setColumnNameChanged(columnNameChanged);
-                                        }
+                                IMetadataTable toCopy = newOutputMetadata.clone();
+                                IMetadataTable copy = targetNode.getMetadataList().get(0).clone(true);
+                                MetadataTool.copyTable(toCopy, copy);
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, copy);
+                                if (outputdataContainer.getOuputs().size() > 0) {
+                                    List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
+                                            .getColumnNameChanged();
+                                    for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
+                                        dataComp.setColumnNameChanged(columnNameChanged);
                                     }
-                                    cmd.execute(true);
-                                    propagatedChange.add(cmd);
                                 }
+                                cmd.execute(true);
+                                propagatedChange.add(cmd);
                             }
                         }
                         currentIO.setTable(oldOutputMetadata);
@@ -327,7 +324,7 @@ public class ChangeMetadataCommand extends Command {
                 outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
             }
         }
-        
+
         if (inputdataContainer != null) {
             for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
@@ -374,6 +371,10 @@ public class ChangeMetadataCommand extends Command {
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
         }
+        
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
+        ColumnListController.updateColumnList(node, columnNameChanged);
+
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
@@ -401,6 +402,10 @@ public class ChangeMetadataCommand extends Command {
         for (ChangeMetadataCommand cmd : propagatedChange) {
             cmd.undo();
         }
+        
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+        ColumnListController.updateColumnList(node, columnNameChanged);
+
         if (!internal) {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
