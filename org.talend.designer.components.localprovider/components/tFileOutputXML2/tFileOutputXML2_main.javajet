@@ -7,7 +7,8 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     java.util.List
     java.util.Map
-    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnection    
+	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 "
@@ -26,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__MAPPING__"
             );
-         if(tree.size() > 0){ 
+         String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
          boolean[][] nodeInfo = new boolean[tree.size()][2];//for tag: [][0]noAtt[][1]noChild; for Att: [][0]isLastAtt [][1]tagNoChild
          int[] nodeDepth = new int[tree.size()];
          for(int i = 0; i < nodeInfo.length; i++){
@@ -100,6 +101,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          	}
         }
         List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+        List<Map<String, String>> group_tree = 
+    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUPING__"
+            );
+    	int group = 0;
+    	for(int i = 0; i < group_tree.size(); i++){
+    		if(group_tree.get(i).get("ATTRIBUTE").equals("false")){
+    			group ++;
+    		}
+    	}
+    	String[] group_element = new String[group];
+    	int[] group_index = new int[group];
+    	StringBuilder group_margin = new StringBuilder();
+    	for(int i = 0, j=0; i < group; i++){
+       		while(j < group_tree.size() && !group_tree.get(j).get("ATTRIBUTE").equals("false")){
+       			j++;
+       		}
+       		group_index[i] = j+1;
+       		group_element[i] = group_tree.get(j).get("LABEL");
+       		j++;
+       		group_margin.append("  ");
+    	}
         StringBuilder margin = new StringBuilder();
         for(int i = 1; i < rootTags.size(); i++){
         	margin.append("  ");
@@ -108,24 +132,94 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
-		
-		
-		for(IMetadataColumn column:metadata.getListColumns()) {
-			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){
-%>if(<%=conn.getName() %>.<%=column.getLabel() %> != null){
-	<%=conn.getName() %>.<%=column.getLabel() %> = TalendString.replaceSpecialCharForXML(<%=conn.getName() %>.<%=column.getLabel() %>);
-}
+	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
+		///group begin
+	if(group>0){
+%>String tempSt_<%=cid %> = null;
+
+boolean flag_<%=cid %> = true;
+ 
+groupby_new_<%=cid %> = 0;
+
 <%
-			}
-		}
+	}
+	for(int i = 0; i< group; i++){
+%>tempSt_<%=cid %> = "<%=margin %><%for(int ii=0; ii <= i; ii++){%>  <%}%><<%=group_element[i] %>"+<%
+						int ii = 0;
+						while(group_index[i]+ii < group_tree.size() && group_tree.get(group_index[i]+ii).get("ATTRIBUTE").equals("true")){
+							boolean needReplace = false;
+							for(IMetadataColumn column:metadata.getListColumns()) {
+								if(column.getLabel().equals(group_tree.get(group_index[i]+ii).get("COLUMN"))){
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+										needReplace = true;
+									}
+									break;
+								}
+							}
+						%>" <%=group_tree.get(group_index[i]+ii).get("LABEL") %>=\"<%
+							if(group_tree.get(group_index[i]+ii).get("COLUMN") != null && !group_tree.get(group_index[i]+ii).get("COLUMN").equals("")){
+						%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%
+							}%>\""+<%ii++;
+						}%>">";
+
+if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
+	
+	if(flag_<%=cid %>){
+	
+		groupby_new_<%=cid %> = <%=i %>;
+
+		flag_<%=cid %> = false;
 		
+		for(int i_<%=cid %> = <%=group - 1 %>; i_<%=cid %> >= groupby_new_<%=cid %> && start_<%=cid %>; i_<%=cid %>--){
+
+			out_<%=cid %>.write(groupby_<%=cid %>[i_<%=cid %>][1]);
+	
+			out_<%=cid %>.newLine();
+	
+		}	
+	}
+
+	groupby_<%=cid %>[<%=i %>][0] = tempSt_<%=cid %>;
+	
+	out_<%=cid %>.write(tempSt_<%=cid %>);
+
+	out_<%=cid %>.newLine();
+	
+	if(!start_<%=cid %>){
+			
+		start_<%=cid %> = true;
+			
+	}
 		
-		
-		
+}else if(!flag_<%=cid %>){
+	
+	out_<%=cid %>.write(tempSt_<%=cid %>);
+	
+	out_<%=cid %>.newLine();
+	
+	if(!start_<%=cid %>){
+			
+		start_<%=cid %> = true;
+			
+	}
+	
+}
+<%		}
+		///group end
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if(tree.size() > 0){ 
 		for(int i = 0; i < tree.size(); i++){
 			Map<String, String> treeNode = tree.get(i);
+			boolean needReplace = false;
+			for(IMetadataColumn column:metadata.getListColumns()) {
+				if(column.getLabel().equals(treeNode.get("COLUMN"))){
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+						needReplace = true;
+					}
+					break;
+				}
+			}
 			if(treeNode.get("ATTRIBUTE")==null || treeNode.get("ATTRIBUTE").equals("false")){//is tag
 				int flag = Integer.MAX_VALUE;
 				int j = i - 1;
@@ -142,7 +236,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 						if(nodeDepth[i] <= nodeDepth[j] && nodeDepth[j] < flag){
 							if(!nodeInfo[j][1]){//have child, close tag.
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
+%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 							}
@@ -159,49 +253,58 @@ out_<%=cid%>.newLine();
 				if(nodeInfo[i][0]){//tag have no att
 					if(nodeInfo[i][1]){//tag have no child
 						if( relatedColumn[i]== null){
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>/>");
+%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>/>");
 out_<%=cid%>.newLine();
 <%
 						}else{
 %>
-out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"</<%=treeNode.get("LABEL") %>>");
+out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"</<%=treeNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 						}
 					}else{
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>");
+%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 					}
 				}else{
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>");
+%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>");
 <%
 				}
 			}else{//is attribute
 				if(nodeInfo[i][0]){//is tag's last att
 					if(nodeInfo[i][1]){//tag have no child
 						if( relatedColumn[i]== null){
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\"/>");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\"/>");
 out_<%=cid%>.newLine();
 <%
 						}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">"+<%=conn.getName() %>.<%=relatedColumn[i] %>+"</<%=attributeTagLabel[i] %>>");
+							boolean replace = false;
+							for(IMetadataColumn column:metadata.getListColumns()) {
+								if(column.getLabel().equals(relatedColumn[i])){
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+										replace = true;
+									}
+									break;
+								}
+							}
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\">"+<%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=relatedColumn[i] %><%if(replace){%>)<%}%>+"</<%=attributeTagLabel[i] %>>");
 out_<%=cid%>.newLine();
 <%
 						}
 					}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\">");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\">");
 out_<%=cid%>.newLine();
 <%
 					}
 				}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>+"<%}%>\"");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\"");
 <%
 				}
 			}
 		}
 		int i = nodeInfo.length-1;
-		while(true){
+		while(i >= 0){
 			if(tree.get(i).get("ATTRIBUTE")==null || tree.get(i).get("ATTRIBUTE").equals("false")){//found the last tag in the tree
 				break;
 			}
@@ -219,7 +322,7 @@ out_<%=cid%>.newLine();
 			}else{
 				if(nodeDepth[j] < flag){
 					if(!nodeInfo[j][1]){//have child, close tag.
-%>out_<%=cid%>.write("<%=margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
+%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 					}
@@ -233,16 +336,74 @@ out_<%=cid%>.newLine();
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	
-	
-	
-	
-	
-	}
-%>
+}
+	//for split begin
+	if(rootTags.size()>0 && (group_tree.size() > 0 || tree.size() > 0)){
+	String split = ElementParameterParser.getValue(node, "__SPLIT__");
+	if(split.equals("true")){
+		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>currentRowCount_<%=cid %>++;
 
+if(currentRowCount_<%=cid %> == <%=ElementParameterParser.getValue(node, "__SPLIT_EVERY__") %>){
+	
+<%
+	for(int i = group - 1; i >=0; i--){
+%>	out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
+
+	out_<%=cid%>.newLine();
+		
+<%
+}
+%><%
+	for(int i = rootTags.size() - 1; i >= 0; i--){
+%>	out_<%=cid%>.write("<%for(int j = 0; j < i; j++){%>  <%}%></<%=rootTags.get(i).get("TAG") %>>");
+
+	out_<%=cid%>.newLine();
+	
+<%
+	}
+%>	out_<%=cid %>.close();
+	
+	currentFileCount_<%=cid %>++;
+	
+	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+	
+	out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
+
+	out_<%=cid%>.newLine();
+
+<%	String rmargin="";
+	for (int i=0; i<rootTags.size(); i++){
+		Map<String, String> rootTag = rootTags.get(i);
+%>out_<%=cid%>.write("<%=rmargin %><<%=rootTag.get("TAG") %>>");
+
+out_<%=cid%>.newLine();
+<%
+		rmargin+="  ";
+	}
+%><%
+	if(group > 0){
+%>	start_<%=cid %> = false;  
+
+<%	}
+	for(int i = 0; i < group; i++){
+%>	groupby_<%=cid %>[<%=i %>][0] = "";
 
 <%
+	}
+%>	currentRowCount_<%=cid %> = 0;
+	
+}
+<%
+	}
+	}
+	
+	
+	
+	//for split end
+%><%
+	}
 	}
 	}
 }

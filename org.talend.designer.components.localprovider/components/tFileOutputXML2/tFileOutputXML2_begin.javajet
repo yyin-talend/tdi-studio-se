@@ -3,7 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataTable
     java.util.List
     java.util.Map
 "
@@ -16,16 +16,56 @@ String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-    List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
-    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    String margin = "";
 %>int nb_line_<%=cid%> = 0;
 
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
+<%
+    List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+    if (metadata!=null && rootTags.size() > 0) {
+    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+    String split = ElementParameterParser.getValue(node, "__SPLIT__");
+    List<Map<String, String>> group_tree = 
+    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUPING__"
+            );
+    int group = 0;
+    for(int i = 0; i < group_tree.size(); i++){
+    	if(group_tree.get(i).get("ATTRIBUTE").equals("false")){
+    		group ++;
+    	}
+    }
+    String[] group_element = new String[group];
+    for(int i = 0, j=0; i < group; i++){
+       	while(j < group_tree.size() && !group_tree.get(j).get("ATTRIBUTE").equals("false")){
+       		j++;
+       	}
+       	group_element[i] = group_tree.get(j).get("LABEL");
+       	j++;
+    }
+    String margin = "";
+    if(group > 0){
+%>String[][] groupby_<%=cid %> = new String[<%=group %>][2];
 
-out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?>");
+int groupby_new_<%=cid %> = 0;
+
+boolean start_<%=cid %> = false;
+
+<%
+}
+if(!split.equals("true")){
+%>java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
+
+<%}else{
+%>int currentRowCount_<%=cid %> = 0;
+
+int currentFileCount_<%=cid %> = 0;
+
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+
+<%
+}%>out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
 
 out_<%=cid%>.newLine();
 
@@ -40,5 +80,12 @@ out_<%=cid%>.newLine();
 		margin+="  ";
 	}
 %><%
+	for(int i = 0; i < group; i++){
+%>groupby_<%=cid %>[<%=i %>][0] = "";
+
+groupby_<%=cid %>[<%=i %>][1] = "<%=margin %><%for(int ii=0; ii < i; ii++){%>  <%}%></<%=group_element[i] %>>";
+
+<%
+	}
     }
 }%>

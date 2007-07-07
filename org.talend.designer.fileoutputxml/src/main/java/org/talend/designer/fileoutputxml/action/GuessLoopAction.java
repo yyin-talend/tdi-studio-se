@@ -57,7 +57,9 @@ public class GuessLoopAction extends SelectionProviderAction {
     @Override
     public void run() {
         TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-        TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        if (!TreeUtil.guessLoopWithGroup((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
+            TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        }
         xmlViewer.refresh();
     }
 

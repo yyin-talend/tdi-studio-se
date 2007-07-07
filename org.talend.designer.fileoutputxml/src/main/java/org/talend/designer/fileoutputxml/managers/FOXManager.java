@@ -109,9 +109,6 @@ public class FOXManager {
                 current = temp;
             }
         }
-        List<Map<String, String>> mapping = (List<Map<String, String>>) foxComponent
-                .getTableList(FileOutputXMLComponent.MAPPING);
-        int depth = 0;
         List<IMetadataColumn> columns = null;
         if (foxComponent.getMetadataTable() != null) {
             columns = foxComponent.getMetadataTable().getListColumns();
@@ -119,6 +116,41 @@ public class FOXManager {
         if (columns == null) {
             columns = new ArrayList<IMetadataColumn>();
         }
+        // add grouping begin
+        List<Map<String, String>> grouping = (List<Map<String, String>>) foxComponent
+                .getTableList(FileOutputXMLComponent.GROUPING);
+        for (int i = 0; i < grouping.size();) {
+            Map<String, String> group = grouping.get(i);
+            FOXTreeNode gtag = new Element(group.get(FileOutputXMLComponent.LABEL));
+            if (i == 0) {
+                gtag.setGroup(true);
+            }
+            i++;
+            while (i < grouping.size()) {
+                group = grouping.get(i);
+                if (!Boolean.parseBoolean(group.get(FileOutputXMLComponent.ATTRIBUTE))) {
+                    break;
+                }
+                String columnLabel = group.get(FileOutputXMLComponent.COLUMN);
+                IMetadataColumn column = null;
+                for (IMetadataColumn tc : columns) {
+                    if (tc.getLabel().equals(columnLabel)) {
+                        column = tc;
+                        break;
+                    }
+                }
+                FOXTreeNode gatt = new Attribute(group.get(FileOutputXMLComponent.LABEL));
+                gatt.setColumn(column);
+                gtag.addChild(gatt);
+                i++;
+            }
+            current.addChild(gtag);
+            current = gtag;
+        }
+        // add grouping end
+        List<Map<String, String>> mapping = (List<Map<String, String>>) foxComponent
+                .getTableList(FileOutputXMLComponent.MAPPING);
+        int depth = 0;
         for (Map<String, String> map : mapping) {
             String columnLabel = map.get(FileOutputXMLComponent.COLUMN);
             IMetadataColumn column = null;
@@ -197,6 +229,34 @@ public class FOXManager {
         return result;
     }
 
+    public List<Map<String, String>> getGrouping() {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+        Element loopNode = (Element) TreeUtil.getGroupNode(this.treeData.get(0));
+        if (loopNode != null) {
+            Element tempNode = loopNode;
+            Map<String, String> newMap = null;
+            while (!tempNode.isLoop() && tempNode.getElementChildren().size() <= 1) {
+                newMap = new HashMap<String, String>();
+                newMap.put(FileOutputXMLComponent.LABEL, tempNode.getLabel());
+                newMap.put(FileOutputXMLComponent.COLUMN, ""); //$NON-NLS-1$
+                newMap.put(FileOutputXMLComponent.ATTRIBUTE, "false"); //$NON-NLS-1$
+                result.add(newMap);
+                for (FOXTreeNode att : tempNode.getAttributeChildren()) {
+                    newMap = new HashMap<String, String>();
+                    newMap.put(FileOutputXMLComponent.LABEL, att.getLabel());
+                    newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel()); //$NON-NLS-1$
+                    newMap.put(FileOutputXMLComponent.ATTRIBUTE, "true"); //$NON-NLS-1$
+                    result.add(newMap);
+                }
+                if (tempNode.getElementChildren().size() == 0) {
+                    break;
+                }
+                tempNode = (Element) tempNode.getElementChildren().get(0);
+            }
+        }
+        return result;
+    }
+
     public List<Map<String, String>> getRootTags() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
 
@@ -217,7 +277,7 @@ public class FOXManager {
 
             node = (Element) node.getElementChildren().get(0);
 
-            if (node.isLoop()) {
+            if (node.isLoop() || node.isGroup()) {
                 return result;
             }
 
@@ -239,6 +299,9 @@ public class FOXManager {
             result = true;
         }
         if (foxComponent.setTableElementParameter(getMapping(), FileOutputXMLComponent.MAPPING)) {
+            result = true;
+        }
+        if (foxComponent.setTableElementParameter(getGrouping(), FileOutputXMLComponent.GROUPING)) {
             result = true;
         }
         return result;

@@ -81,7 +81,7 @@ public class SchemaTableViewerProvider extends LabelProvider implements ITableLa
             // return metaTable.get
         }
 
-        return "<none>";
+        return "<none>"; //$NON-NLS-1$
     }
 
 }

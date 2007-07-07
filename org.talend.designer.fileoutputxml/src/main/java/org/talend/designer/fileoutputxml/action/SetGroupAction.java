@@ -21,29 +21,23 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
-import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.i18n.Messages;
-import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.designer.fileoutputxml.util.StringUtil;
+import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
  * 
- * $Id: CreateAttributeAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
+ * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
  * 
  */
-public class CreateAttributeAction extends SelectionProviderAction {
+public class SetGroupAction extends SelectionProviderAction {
 
     // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
-
-    private FOXUI foxui;
 
     /**
      * CreateNode constructor comment.
@@ -51,15 +45,9 @@ public class CreateAttributeAction extends SelectionProviderAction {
      * @param provider
      * @param text
      */
-    public CreateAttributeAction(TreeViewer xmlViewer, String text) {
+    public SetGroupAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
-    }
-
-    public CreateAttributeAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
-        super(xmlViewer, text);
-        this.xmlViewer = xmlViewer;
-        this.foxui = foxui;
     }
 
     /*
@@ -70,34 +58,14 @@ public class CreateAttributeAction extends SelectionProviderAction {
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (node != null) {
-            createChildNode(node);
+        if (node.isGroup()) {
+            return;
         }
-    }
-
-    /**
-     * Create the child node of the input node
-     * 
-     * @param node
-     */
-    private void createChildNode(FOXTreeNode node) {
-        String label = ""; //$NON-NLS-1$
-        while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null, Messages.getString("CreateAttributeAction.1"), //$NON-NLS-1$
-                    Messages.getString("CreateAttributeAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
-            int status = dialog.open();
-            if (status == InputDialog.OK) {
-                label = dialog.getValue().trim();
-            }
-            if (status == InputDialog.CANCEL) {
-                return;
-            }
-        }
-        FOXTreeNode child = new Attribute(label);
-        node.addChild(child);
-        this.xmlViewer.refresh(node);
-        xmlViewer.expandAll();
-        foxui.redrawLinkers();
+        TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        node.setGroup(true);
+        TreeUtil.guessLoopWithGroup(node);
+        xmlViewer.refresh();
     }
 
     /*
@@ -108,14 +76,14 @@ public class CreateAttributeAction extends SelectionProviderAction {
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (node != null && node.getClass() != Element.class) {
+        if (node == null) {
             this.setEnabled(false);
-        } else {
-            if (node == null || node.getParent() == null) {
-                this.setEnabled(false);
-            } else {
-                this.setEnabled(true);
-            }
+            return;
         }
+        if (node instanceof Attribute) {
+            this.setEnabled(false);
+            return;
+        }
+        this.setEnabled(TreeUtil.checkTreeGoupNode(node));
     }
 }

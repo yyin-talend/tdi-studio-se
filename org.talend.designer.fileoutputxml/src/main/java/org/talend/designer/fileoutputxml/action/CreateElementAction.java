@@ -29,6 +29,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.StringUtil;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
@@ -71,11 +72,12 @@ public class CreateElementAction extends SelectionProviderAction {
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        createChildNode(node);
-        if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
-            xmlViewer.refresh();
+        if (createChildNode(node)) {
+            if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
+                xmlViewer.refresh();
+            }
+            foxui.redrawLinkers();
         }
-        foxui.redrawLinkers();
     }
 
     /**
@@ -83,31 +85,32 @@ public class CreateElementAction extends SelectionProviderAction {
      * 
      * @param node
      */
-    private void createChildNode(FOXTreeNode node) {
+    private boolean createChildNode(FOXTreeNode node) {
         if (node.getColumn() != null) {
-            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), "Warning",
-                    "Do you want to disconnect the existing linker and then add an sub element for the selected element \""
-                            + node.getLabel() + "\"?")) {
-                return;
+            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                    Messages.getString("CreateElementAction.1") //$NON-NLS-1$
+                            + node.getLabel() + "\"?")) { //$NON-NLS-1$
+                return false;
             }
             node.setColumn(null);
         }
-        String label = "";
+        String label = ""; //$NON-NLS-1$
         while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null, "Input element's label", "Input the new element's valid label",
-                    "", null);
+            InputDialog dialog = new InputDialog(null, Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
+                    "", null); //$NON-NLS-1$
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
             }
             if (status == InputDialog.CANCEL) {
-                return;
+                return false;
             }
         }
         FOXTreeNode child = new Element(label);
         node.addChild(child);
         this.xmlViewer.refresh(node);
         this.xmlViewer.expandAll();
+        return true;
     }
 
     /*

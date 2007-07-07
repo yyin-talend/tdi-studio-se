@@ -16,9 +16,29 @@ String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+    List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+    if (metadata!=null && rootTags.size() > 0) {
+    List<Map<String, String>> group_tree = 
+    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUPING__"
+            );
+    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    String split = ElementParameterParser.getValue(node, "__SPLIT__");
+    int group = 0;
+    for(int i = 0; i < group_tree.size(); i++){
+    	if(group_tree.get(i).get("ATTRIBUTE").equals("false")){
+    		group ++;
+    	}
+    }
 %><%
+	for(int i = group - 1; i >= 0; i--){
+%>out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
+
+out_<%=cid%>.newLine();
+
+<%
+	}
 	for(int i = rootTags.size() - 1; i >= 0; i--){
 %>	out_<%=cid%>.write("<%for(int j = 0; j < i; j++){%>  <%}%></<%=rootTags.get(i).get("TAG") %>>");
 
@@ -27,7 +47,25 @@ List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterP
 <%
 	}
 %>out_<%=cid %>.close();
-globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+
+<%
+if(split.equals("true")){
+	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>if(currentRowCount_<%=cid %> == 0){
+	
+	java.io.File file_<%=cid %> = new java.io.File(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml");
+	
+	file_<%=cid %>.delete();
+	
+}
+
+<%
+}%>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+
+<%
+	}else if(metadata!=null && rootTags.size() == 0){
+%>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+
 <%
 	}
 }

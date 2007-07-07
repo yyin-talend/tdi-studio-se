@@ -59,6 +59,18 @@ public class Attribute extends FOXTreeNode {
      */
     @Override
     public String getLabelForViewer() {
-        return "@" + super.getLabel();
+        return "@" + super.getLabel(); //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isGroup() {
+        return false;
+    }
+
+    @Override
+    public boolean isLoop() {
+        return false;
+    }
+    
+    
 }

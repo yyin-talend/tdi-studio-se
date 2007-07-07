@@ -66,8 +66,11 @@ import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.action.DisconnectAction;
 import org.talend.designer.fileoutputxml.action.GuessLoopAction;
 import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
+import org.talend.designer.fileoutputxml.action.RemoveGroupAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
+import org.talend.designer.fileoutputxml.action.SetGroupAction;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.edit.FOXTargetTreeViewerProvider;
 import org.talend.designer.fileoutputxml.ui.edit.Schema2XMLLinker;
@@ -105,13 +108,15 @@ public class FOXUI {
 
     private IAction createAttributeAction;
 
-    // private IAction editAction;
-
     private IAction importFromXMLAction;
 
     private IAction guessLoopAction;
 
     private IAction setLoopAction;
+
+    private IAction setGroupAction;
+
+    private IAction removeGroupAction;
 
     private String selectedText;
 
@@ -219,7 +224,7 @@ public class FOXUI {
     private void addXMLViewer(final Composite mainComposite, final int width, final int height) {
 
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, "Linker Target", height);
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.0"), height); //$NON-NLS-1$
         // group.setBackgroundMode(SWT.INHERIT_FORCE);
 
         xmlViewer = new TreeViewer(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
@@ -230,15 +235,15 @@ public class FOXUI {
         tree.setLinesVisible(true);
         tree.setBackground(tree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-        column1.setText("XML Tree");
+        column1.setText(Messages.getString("FOXUI.1")); //$NON-NLS-1$
         column1.setWidth(250);
 
         TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
-        column2.setText("Related Column");
+        column2.setText(Messages.getString("FOXUI.2")); //$NON-NLS-1$
         column2.setWidth(110);
 
         TreeColumn column3 = new TreeColumn(tree, SWT.CENTER);
-        column3.setText("Node Status");
+        column3.setText(Messages.getString("FOXUI.3")); //$NON-NLS-1$
         column3.setWidth(90);
 
         tree.setHeaderVisible(true);
@@ -249,7 +254,7 @@ public class FOXUI {
         xmlViewer.setCellModifier(new ICellModifier() {
 
             public boolean canModify(Object element, String property) {
-                if (property.equals("C1")) {
+                if (property.equals("C1")) { //$NON-NLS-1$
                     return true;
                 }
                 return false;
@@ -257,7 +262,7 @@ public class FOXUI {
 
             public Object getValue(Object element, String property) {
                 FOXTreeNode node = (FOXTreeNode) element;
-                if (property.equals("C1")) {
+                if (property.equals("C1")) { //$NON-NLS-1$
                     return node.getLabel();
                 }
                 return null;
@@ -266,13 +271,13 @@ public class FOXUI {
             public void modify(Object element, String property, Object value) {
                 TreeItem treeItem = (TreeItem) element;
                 FOXTreeNode node = (FOXTreeNode) treeItem.getData();
-                if (property.equals("C1")) {
+                if (property.equals("C1")) { //$NON-NLS-1$
                     node.setLabel((String) value);
                 }
                 xmlViewer.refresh(node);
             }
         });
-        xmlViewer.setColumnProperties(new String[] { "C1", "C2", "C3" });
+        xmlViewer.setColumnProperties(new String[] { "C1", "C2", "C3" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         CellEditor editor = new TextCellEditor(xmlViewer.getTree());
 
         editor.addListener(new DialogErrorXMLLabelCellEditor(editor));
@@ -319,27 +324,32 @@ public class FOXUI {
         manager.add(guessLoopAction);
         manager.add(setLoopAction);
         manager.add(new Separator());
+        manager.add(setGroupAction);
+        manager.add(removeGroupAction);
+        manager.add(new Separator());
         manager.add(importFromXMLAction);
     }
 
     private void createAction() {
-        createAction = new CreateElementAction(xmlViewer, this, "Add Sub-element");
-        createAttributeAction = new CreateAttributeAction(xmlViewer, this, "Add Attribute");
+        createAction = new CreateElementAction(xmlViewer, this, Messages.getString("FOXUI.10")); //$NON-NLS-1$
+        createAttributeAction = new CreateAttributeAction(xmlViewer, this, Messages.getString("FOXUI.11")); //$NON-NLS-1$
         // editAction = new EditLabelAction(xmlViewer, "Edit Label");
-        deleteAction = new DeleteNodeAction(xmlViewer, this, "Delete");
-        disconnectAction = new DisconnectAction(xmlViewer, this, "Disconnect Linker");
+        deleteAction = new DeleteNodeAction(xmlViewer, this, Messages.getString("FOXUI.12")); //$NON-NLS-1$
+        disconnectAction = new DisconnectAction(xmlViewer, this, Messages.getString("FOXUI.13")); //$NON-NLS-1$
         // disconnectAction.setToolTipText("Disconnect the linker of the current tree node.");
-        importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, "Import XML Tree");
+        importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, Messages.getString("FOXUI.14")); //$NON-NLS-1$
         // importFromXMLAction
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
-        guessLoopAction = new GuessLoopAction(xmlViewer, "Guess Loop Element");
-        setLoopAction = new SetForLoopAction(xmlViewer, "Set As Loop Element");
+        guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
+        setLoopAction = new SetForLoopAction(xmlViewer, Messages.getString("FOXUI.16")); //$NON-NLS-1$
+        setGroupAction = new SetGroupAction(xmlViewer, Messages.getString("FOXUI.17")); //$NON-NLS-1$
+        removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$
 
     }
 
     private void addSchemaViewer(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1, "Linker Source", height);
+        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("FOXUI.19"), height); //$NON-NLS-1$
         // group.setBackgroundMode(SWT.INHERIT_FORCE);
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
@@ -368,7 +378,7 @@ public class FOXUI {
         // table.setLinesVisible(true);
         table.setHeaderVisible(true);
         TableColumn column1 = new TableColumn(table, SWT.CENTER);
-        column1.setText("Schema List");
+        column1.setText(Messages.getString("FOXUI.20")); //$NON-NLS-1$
         column1.setWidth(100);
         table.setLayoutData(data2);
 
@@ -420,7 +430,7 @@ public class FOXUI {
             String errorMessage = null;
 
             if (!StringUtil.validateLabelForXML(text.getText())) {
-                errorMessage = "Invalid string for XML Label. Label was not changed.";
+                errorMessage = Messages.getString("FOXUI.21"); //$NON-NLS-1$
             }
 
             if (errorMessage == null) {

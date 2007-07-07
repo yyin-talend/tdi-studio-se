@@ -23,13 +23,15 @@ package org.talend.designer.fileoutputxml.ui.edit;
 
 import java.util.List;
 
-import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
+import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.i18n.Messages;
+import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * bqian Label provider and content provider for FOX target tree viewer. <br/>
@@ -113,10 +115,20 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
         case 1:
             return treeNode.getColumnLabel();
         case 2:
-            return treeNode.isLoop() ? "loop node" : "";
+            if (treeNode instanceof Attribute) {
+                return "-"; //$NON-NLS-1$
+            } else if (treeNode.isGroup()) {
+                return Messages.getString("FOXTargetTreeViewerProvider.1"); //$NON-NLS-1$
+            } else if (treeNode.isLoop()) {
+                return Messages.getString("FOXTargetTreeViewerProvider.2"); //$NON-NLS-1$
+            } else if (TreeUtil.isSubLoopNode(treeNode)) {
+                return Messages.getString("FOXTargetTreeViewerProvider.3"); //$NON-NLS-1$
+            } else {
+                return ""; //$NON-NLS-1$
+            }
+        default:
+            return ""; //$NON-NLS-1$
         }
-
-        return "<none>";
     }
 
 }

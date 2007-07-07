@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.managers.FOXManager;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
@@ -74,8 +75,8 @@ public class FOXMain {
         if (inConn != null) {
             if (!inConn.getMetadataTable().sameMetadataAs(connector.getMetadataList().get(0))) {
                 MessageBox messageBox = new MessageBox(parent.getShell(), SWT.APPLICATION_MODAL | SWT.OK);
-                messageBox.setText("Error in schema");
-                messageBox.setMessage("Please synchronize columns first.");
+                messageBox.setText(Messages.getString("FOXMain.0")); //$NON-NLS-1$
+                messageBox.setMessage(Messages.getString("FOXMain.1")); //$NON-NLS-1$
                 if (messageBox.open() == SWT.OK) {
                     ((Shell) parent).close();
                     return;

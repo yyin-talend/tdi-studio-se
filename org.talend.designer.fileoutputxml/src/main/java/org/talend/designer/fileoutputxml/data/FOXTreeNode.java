@@ -44,6 +44,8 @@ public abstract class FOXTreeNode {
 
     private boolean isLoopNode = false;
 
+    private boolean isGroupNode = false;
+
     public boolean hasLink() {
         return column != null;
     }
@@ -97,7 +99,7 @@ public abstract class FOXTreeNode {
      */
     public String getColumnLabel() {
         if (column == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         } else {
             return this.column.getLabel();
         }
@@ -194,6 +196,24 @@ public abstract class FOXTreeNode {
      */
     public void setLoop(boolean b) {
         this.isLoopNode = b;
+    }
+
+    /**
+     * DOC ke Comment method "isGroup".
+     * 
+     * @return
+     */
+    public boolean isGroup() {
+        return this.isGroupNode;
+    }
+
+    /**
+     * DOC ke Comment method "setGroup".
+     * 
+     * @param b
+     */
+    public void setGroup(boolean b) {
+        this.isGroupNode = b;
     }
 
 }

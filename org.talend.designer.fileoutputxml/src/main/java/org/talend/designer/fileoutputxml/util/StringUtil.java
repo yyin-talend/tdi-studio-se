@@ -38,7 +38,7 @@ public class StringUtil {
         if (!Character.isLetter(firstChar)) {
             return false;
         }
-        if (label.toLowerCase().startsWith("xml")) {
+        if (label.toLowerCase().startsWith("xml")) { //$NON-NLS-1$
             return false;
         }
         char[] array = label.toCharArray();
