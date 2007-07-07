@@ -37,6 +37,8 @@ import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -44,6 +46,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyComposite;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -695,7 +698,31 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
             heightSize += maxRowSize;
         }
-        composite.pack();
+        
+        resizeScrolledComposite();
+    }
+
+    /**
+     * added to fix the bugs 1107 & 1434.
+     * This code is added because the function resizeScrolledComposite is
+     * set as private in TabbedPropertySheetPage.
+     * So the code bellow will do the same operation but will access to 
+     * specific eclipse functions.
+     */
+    private void resizeScrolledComposite() {
+        Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        TabbedPropertyComposite tabbedPropertyComposite = null;
+        Composite tmpComposite = composite;
+        while (tabbedPropertyComposite == null) { // to retrieve the main composite of the TabbedProperties
+            if (tmpComposite.getParent() instanceof TabbedPropertyComposite) {
+                tabbedPropertyComposite = (TabbedPropertyComposite) tmpComposite.getParent();
+            } else {
+                tmpComposite = tmpComposite.getParent();
+            }
+        }
+        compositeSize.y += tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);//  .setMinHeight(height);
     }
 
     /*
