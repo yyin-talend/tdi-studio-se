@@ -37,6 +37,8 @@ import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
  */
 public class FilterFileSystemStructureProvider implements IImportStructureProvider {
 
+    private static final String SVN_FOLDER = ".svn";
+
     /**
      * Holds a singleton instance of this class.
      */
@@ -54,20 +56,17 @@ public class FilterFileSystemStructureProvider implements IImportStructureProvid
      */
     public List getChildren(Object element) {
         File folder = (File) element;
-        String[] children = folder.list(new FilenameFilter() {
+
+        File[] files = folder.listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
-                if (name.startsWith(".")) {
-                    return false;
-                }
-                return true;
+                return name.lastIndexOf(SVN_FOLDER) == -1 ? true : false;
             }
         });
-        int childrenLength = children == null ? 0 : children.length;
-        List result = new ArrayList(childrenLength);
-
+        int childrenLength = files == null ? 0 : files.length;
+        List<File> result = new ArrayList(childrenLength);
         for (int i = 0; i < childrenLength; i++) {
-            result.add(new File(folder, children[i]));
+            result.add(files[i]);
         }
 
         return result;
