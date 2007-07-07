@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.util;
 
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.sqlbuilder.Messages;
 
 /**
  * Text handling utility.
@@ -29,6 +30,8 @@ import org.talend.core.model.utils.TalendTextUtils;
  * @author qzhang
  */
 public class TextUtil {
+
+    private static int num = 0;
 
     public static final int DEFAULT_WRAPLENGTH = 150;
 
@@ -46,6 +49,10 @@ public class TextUtil {
      * qzhang TextUtil constructor comment.
      */
     public TextUtil() {
+    }
+
+    public static String getNewQueryLabel() {
+        return Messages.getString("GenerateSelectSQLAction.NewQuery") + num++;
     }
 
     /**

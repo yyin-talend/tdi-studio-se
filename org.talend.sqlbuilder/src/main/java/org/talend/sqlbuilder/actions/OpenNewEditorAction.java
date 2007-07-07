@@ -38,6 +38,7 @@ import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * This class is responsible for opening new editor. <br/>
@@ -105,8 +106,6 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         init();
     }
 
-    private int num = 0;
-
     @Override
     public void run() {
         IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
@@ -121,7 +120,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
             selectReveal(provider.getSelectQuery());
             isQuery = false;
         } else {
-            connParam.setEditorTitle("New Editor " + num++);
+            connParam.setEditorTitle(TextUtil.getNewQueryLabel());
         }
         dialog.openEditor(firstNode, repositoryNames, connParam, false);
     }

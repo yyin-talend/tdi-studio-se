@@ -44,6 +44,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * Detailled comment for this class. <br/> $Id: GenerateSelectSQLAction.java,v 1.13 2006/11/09 07:24:13 tangfn Exp $
@@ -64,8 +65,6 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     private ISQLBuilderDialog dialog;
 
     private boolean isDefaultEditor;
-
-    private int num = 0;
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public GenerateSelectSQLAction(ISelectionProvider provider, ISQLBuilderDialog dialog, boolean isDefaultEditor) {
@@ -137,7 +136,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             connParam.setQuery("");
             connParam.setNeedTakePrompt(false);
             connParam.setShowDesignerPage(true);
-            connParam.setEditorTitle("new Query " + num++);
+            connParam.setEditorTitle(TextUtil.getNewQueryLabel()); //$NON-NLS-1$
             dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
                     isDefaultEditor, selectedNodes);
         } catch (Throwable e) {
