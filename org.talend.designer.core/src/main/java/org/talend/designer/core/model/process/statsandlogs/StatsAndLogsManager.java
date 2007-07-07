@@ -358,7 +358,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
         param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
     }
 
@@ -378,7 +378,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(10);
         param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // file path
@@ -390,7 +390,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param
-                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_FILES_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         param.setNumRow(11);
         paramList.add(param);
 
@@ -422,7 +422,7 @@ public class StatsAndLogsManager {
         param.setDisplayName(EParameterName.FILENAME_METTER.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setShowIf("(ON_FILES_FLAG == 'true' and ON_METTERCATCHER_FLAG == 'true')");
+        param.setShowIf("(ON_FILES_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
         param.setNumRow(14);
         paramList.add(param);
     }
@@ -450,7 +450,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(50);
         param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         param = new ElementParameter(process);
@@ -465,7 +465,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
 
         paramList.add(param);
 
@@ -481,7 +481,7 @@ public class StatsAndLogsManager {
         param.setShow(false);
         param.setRequired(true);
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
 
         paramList.add(param);
 
@@ -500,7 +500,7 @@ public class StatsAndLogsManager {
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // host
@@ -513,7 +513,7 @@ public class StatsAndLogsManager {
         param.setNumRow(52);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // port
@@ -526,7 +526,7 @@ public class StatsAndLogsManager {
         param.setNumRow(52);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // dbName
@@ -539,7 +539,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // schema
@@ -552,7 +552,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
         param
-                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // username
@@ -566,7 +566,7 @@ public class StatsAndLogsManager {
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // password
@@ -580,7 +580,7 @@ public class StatsAndLogsManager {
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METTERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // Stats table
