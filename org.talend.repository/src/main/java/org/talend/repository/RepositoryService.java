@@ -21,14 +21,20 @@
 // ============================================================================
 package org.talend.repository;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -76,6 +82,18 @@ public class RepositoryService implements IRepositoryService {
         changeProcessor.repositoryChanged(delta);
     }
 
+    // This method is used for the Action in RepositoryView to synchronize the sqlBuilder.
+    // see DataBaseWizard, DatabaseTableWizard, AContextualAction
+    public void notifySQLBuilder(List<IRepositoryObject> list) {
+        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryView.show();
+        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(listener);
+        for (Iterator<IRepositoryObject> iter = list.iterator(); iter.hasNext();) {
+            IRepositoryObject element = iter.next();
+            repositoryChanged(new RepositoryElementDelta(element));
+        }
+        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(listener);
+    }
+    
     public String validateColumnName(String columnName, int index) {
         return ColumnNameValidator.validateColumnNameFormat(columnName,index);
     }

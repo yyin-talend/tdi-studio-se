@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -31,13 +32,10 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -145,7 +143,10 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         if (tableWizardpage.isPageComplete()) {
             saveMetaData();
             closeLockStrategy();
-            RepositoryPlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(repositoryObject));
+
+            List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
+            list.add(repositoryObject);
+            RepositoryPlugin.getDefault().getRepositoryService().notifySQLBuilder(list);
             return true;
         } else {
             return false;

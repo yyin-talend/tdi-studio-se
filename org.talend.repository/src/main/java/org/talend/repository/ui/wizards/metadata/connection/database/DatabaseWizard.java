@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,6 +44,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.RepositoryPlugin;
@@ -178,7 +182,9 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
-            RepositoryPlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(repositoryObject));
+            List<IRepositoryObject> list = new ArrayList<IRepositoryObject>();
+            list.add(repositoryObject);
+            RepositoryPlugin.getDefault().getRepositoryService().notifySQLBuilder(list);
 
             return true;
         } else {

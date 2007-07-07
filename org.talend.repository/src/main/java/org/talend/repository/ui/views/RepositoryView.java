@@ -22,8 +22,6 @@
 package org.talend.repository.ui.views;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -61,6 +59,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
@@ -73,6 +72,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -82,6 +82,8 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.IRepositoryChangedListener;
+import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -102,7 +104,8 @@ import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
  * $Id$
  * 
  */
-public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor {
+public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
+        IRepositoryChangedListener {
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
@@ -119,6 +122,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Listener dragDetectListener;
 
     public RepositoryView() {
+    }
+
+    public static IRepositoryView show() {
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
+        if (part == null) {
+            try {
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return (IRepositoryView) part;
     }
 
     @Override
@@ -183,6 +198,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
         });
+        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
 
     IContextActivation ca;
@@ -365,10 +381,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void refresh() {
         Timer timer = Timer.getTimer("repositoryView"); //$NON-NLS-1$
         timer.start();
-        
+
         try {
             try {
                 IRunnableWithProgress op = new IRunnableWithProgress() {
+
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().initialize();
@@ -378,12 +395,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     }
                 };
                 new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(true, false, op);
-             } catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 throw (PersistenceException) e.getTargetException();
-             } catch (InterruptedException e) {
-                 //
-             }
-            
+            } catch (InterruptedException e) {
+                //
+            }
+
             root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
             viewer.refresh();
             // unsetting the selection will prevent the propertyView from displaying dirty data
@@ -391,9 +408,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         } catch (PersistenceException exception) {
             MessageBoxExceptionHandler.process(exception);
         }
-        
+
         timer.stop();
-//        timer.print();
+        // timer.print();
     }
 
     public void refresh(Object object) {
@@ -449,4 +466,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         return super.getAdapter(adapter);
     }
 
+    public void repositoryChanged(RepositoryChangedEvent event) {
+        refresh();
+    }
 }
