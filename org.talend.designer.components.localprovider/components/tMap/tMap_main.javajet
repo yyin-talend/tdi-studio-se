@@ -277,8 +277,9 @@
 			  									if(iKeys > 0) {
 					  								sbMoreOneResult.append(",");
 			  								 	}
-				  								sbMoreOneResult.append( " " + tableName + "."+ aKeysNames[iKeys] + " = \" + " + "\"'\" + " + tableName + "HashKey."+ aKeysNames[iKeys] + " + \"'\"");
+				  								sbMoreOneResult.append( " " + tableName + "."+ aKeysNames[iKeys] + " = '\" + " + tableName + "HashKey."+ aKeysNames[iKeys] + " + \"'");
 									 		}
+			  								sbMoreOneResult.append( "\"");
 									 		%>
 									 		System.err.println(<%= sbMoreOneResult.toString()%>);
 									 	}
