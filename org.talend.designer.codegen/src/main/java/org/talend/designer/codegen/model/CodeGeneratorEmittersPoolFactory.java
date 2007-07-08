@@ -350,28 +350,36 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static List<JetBean> loadEmfPersistentData(List<LightJetBean> datas, List<JetBean> completeJetBeanList)
             throws BusinessException {
         List<JetBean> toReturn = new ArrayList<JetBean>();
-        for (JetBean unit : completeJetBeanList) {
-            for (LightJetBean lightBean : datas) {
-                if ((lightBean.getTemplateRelativeUri().compareTo(unit.getTemplateFullUri()) == 0)
-                        && (lightBean.getVersion().compareTo(unit.getVersion()) == 0)
-                        && (lightBean.getCrc() == extractTemplateHashCode(unit))) {
-                    unit.setClassName(lightBean.getClassName());
-                    try {
-                        Method method = loadMethod(lightBean.getMethodName(), unit);
-                        if (method != null) {
-                            unit.setMethod(method);
-                            toReturn.add(unit);
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject project = workspace.getRoot().getProject(".JETEmitters");
+        URL url;
+        try {
+            url = new File(project.getLocation() + "/runtime").toURL();
+            for (JetBean unit : completeJetBeanList) {
+                String unitTemplateFullURI = unit.getTemplateFullUri();
+                long unitTemplateHashCode = extractTemplateHashCode(unit);
+                for (LightJetBean lightBean : datas) {
+                    if ((lightBean.getTemplateRelativeUri().compareTo(unitTemplateFullURI) == 0)
+                            && (lightBean.getVersion().compareTo(unit.getVersion()) == 0)
+                            && (lightBean.getCrc() == unitTemplateHashCode)) {
+                        unit.setClassName(lightBean.getClassName());
+                        try {
+                            Method method = loadMethod(url, lightBean.getMethodName(), unit);
+                            if (method != null) {
+                                unit.setMethod(method);
+                                toReturn.add(unit);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit
+                                    .getClassName()));
                         }
-                    } catch (MalformedURLException e) {
-                        log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.JETEmitters.NoPresent")); //$NON-NLS-1$
-                        throw new BusinessException(e);
-                    } catch (ClassNotFoundException e) {
-                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit
-                                .getClassName()));
-                    }
 
+                    }
                 }
             }
+        } catch (MalformedURLException e) {
+            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.JETEmitters.NoPresent")); //$NON-NLS-1$
+            throw new BusinessException(e);
         }
         return toReturn;
     }
@@ -384,12 +392,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @throws MalformedURLException
      * @throws ClassNotFoundException
      */
-    private static Method loadMethod(String methodName, JetBean unit) throws MalformedURLException,
-            ClassNotFoundException {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IProject project = workspace.getRoot().getProject(".JETEmitters");
-
-        URL url = new File(project.getLocation() + "/runtime").toURL();
+    private static Method loadMethod(URL url, String methodName, JetBean unit) throws ClassNotFoundException {
         URLClassLoader theClassLoader = new URLClassLoader(new URL[] { url }, unit.getClassLoader());
         Class theClass = theClassLoader.loadClass(unit.getClassName());
         Method[] methods = theClass.getDeclaredMethods();
