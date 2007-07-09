@@ -71,7 +71,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
+import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -1172,7 +1172,7 @@ public abstract class DataMapTableView extends Composite {
                 if (e.character == '\0' || ctrl && !altgr) {
                     highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
                 } else {
-                    MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) styledTextHandler
+                    UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) styledTextHandler
                             .getStyledText();
                     Point selection = expressionTextEditor.getSelection();
                     if (e.character == '\r' || e.character == '\u001b') {

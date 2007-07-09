@@ -624,7 +624,7 @@ public class MapperManager extends AbstractMapperManager {
             }
             tableViewer.refresh(currentEntry);
         } else if (currentEntry instanceof ExpressionFilterEntry) {
-            dataMapTableView.getExpressionFilterText().setText(text);
+            dataMapTableView.getExpressionFilterText().setTextWithoutNotifyListeners(text);
             if (!dataMapTableView.getExpressionFilterText().isFocusControl()) {
                 dataMapTableView.checkProblemsForExpressionFilterWithDelay();
             }

@@ -22,12 +22,12 @@
 package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -71,7 +71,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -79,7 +78,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
+import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
+import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
@@ -103,6 +103,8 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.CorePlugin;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -112,7 +114,6 @@ import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
@@ -131,9 +132,6 @@ import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvider;
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
-
-import com.sybase.jdbc3.utils.CheckPureConverter;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -225,7 +223,7 @@ public abstract class DataMapTableView extends Composite {
 
     private ExpressionProposalProvider expressionProposalProviderForExpressionFilter;
 
-    private StyledText expressionFilterText;
+    private UnnotifiableColorStyledText expressionFilterText;
 
     public static final String DEFAULT_EXPRESSION_FILTER = "<Type your filter expression>";
 
@@ -1844,9 +1842,12 @@ public abstract class DataMapTableView extends Composite {
 
             final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
 
+            IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+            ColorManager colorManager = new ColorManager(preferenceStore);
+
             // expressionFilterText = new Text(scrolledComposite, SWT.MULTI | SWT.WRAP | SWT.BORDER);
-            expressionFilterText = new StyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
-                    | SWT.V_SCROLL);
+            expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
+                    | SWT.V_SCROLL, colorManager, LanguageManager.getCurrentLanguage().getName());
             GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
             gridData.minimumHeight = 10;
             // gridData.grabExcessVerticalSpace = true;
@@ -2204,7 +2205,7 @@ public abstract class DataMapTableView extends Composite {
      * 
      * @return the expressionFilterText
      */
-    public StyledText getExpressionFilterText() {
+    public UnnotifiableColorStyledText getExpressionFilterText() {
         return this.expressionFilterText;
     }
 
@@ -2281,7 +2282,7 @@ public abstract class DataMapTableView extends Composite {
                 highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
             } else {
                 modifyListenerAllowed = false;
-                MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) textTarget.getStyledText();
+                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
                 Point selection = ControlUtils.getSelection(textWidget);
                 if (e.character == '\r' || e.character == '\u001b') {
                     textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
@@ -2380,7 +2381,7 @@ public abstract class DataMapTableView extends Composite {
             if (e.character == '\0' || ctrl && !altgr) {
                 highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
             } else {
-                MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) textTarget.getStyledText();
+                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
                 Point selection = ControlUtils.getSelection(textWidget);
                 if (e.character == '\r' || e.character == '\u001b') {
                     e.doit = false;

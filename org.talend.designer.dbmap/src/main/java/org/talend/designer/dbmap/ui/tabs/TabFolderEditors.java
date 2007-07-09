@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
-import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
+import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.dbmap.MapperMain;
@@ -156,7 +156,7 @@ public class TabFolderEditors extends CTabFolder {
         } else {
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
             ColorManager colorManager = new ColorManager(preferenceStore);
-            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
+            styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
                     colorManager, "tsql");
         }
         styledText.setEnabled(false);
