@@ -46,15 +46,15 @@ imports="
 %>
 
 <%
-	if(!commitEvery.equals("") && !commitEvery.equals("0"))
-	{
-		%>
-		conn_<%=cid%>.commit();
-		<%
-	}
 	if(!useExistingConn.equals("true"))
 	{
-    	%>	
+		if(!commitEvery.equals("") && !commitEvery.equals("0"))
+		{
+%>
+		conn_<%=cid%>.commit();
+<%
+		}
+%>	
     	conn_<%=cid%> .close();
     	<%
 	}

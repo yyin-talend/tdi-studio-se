@@ -31,6 +31,8 @@ imports="
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
             
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+    
+    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	
 	String incomingConnName = null;
 	List<IMetadataColumn> columnList = null;
@@ -512,7 +514,9 @@ nb_line_deleted_<%=cid%>++;
 	<%
 	}
 ////////////commit every////////////
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+	if(!useExistingConn.equals("true"))
+	{
+		if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 	%>
 commitCounter_<%=cid%>++;
 
@@ -524,6 +528,7 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 	
 }	
 	<%
+		}
 	}
 }
 %>
