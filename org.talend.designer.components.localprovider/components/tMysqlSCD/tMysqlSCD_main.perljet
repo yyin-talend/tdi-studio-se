@@ -164,11 +164,11 @@ if (inMetadata != null && metadata != null) {
 %>
     }
     else {
-        my @comparison_row = @{ $cache_<%=cid%>{$cache_key} };
+        my @cache_row = @{ $cache_<%=cid%>{$cache_key} };
 
         # use Data::Dumper;
-        # print "==========\ncomparison row:\n";
-        # print Dumper(\@comparison_row);
+        # print "==========\ncache comparison row:\n";
+        # print Dumper(\@cache_row);
         # print "==========\ncurrent row:\n";
         # print Dumper(\@<%=inConnName%>);
         # print "==========\n";
@@ -179,15 +179,16 @@ if (inMetadata != null && metadata != null) {
 
         if (typeOfColumn.containsKey(colname)) {
             if (typeOfColumn.get(colname).equals("L1")) {
-                String index = inConnName + "__" + column.getLabel();
+                String indexInput = inConnName + "__" + column.getLabel();
+                String indexCache = cid + "_cache_" + column.getLabel();
 %>
         # printf(
         #     '"%s" Vs "%s"'."\n",
-        #     $<%=inConnName%>[<%=index%>],
-        #     $comparison_row[<%=index%>],
+        #     $<%=inConnName%>[<%=indexInput%>],
+        #     $cache_row[<%=indexCache%>],
         # );
 
-        if ($<%=inConnName%>[<%=index%>] ne $comparison_row[<%=index%>]) {
+        if ($<%=inConnName%>[<%=indexInput%>] ne $cache_row[<%=indexCache%>]) {
             my $l1sth_<%=cid %> = $<%=dbh%>->prepare(
                 sprintf($l1_query, '<%=column.getLabel()%>')
             );
@@ -195,7 +196,7 @@ if (inMetadata != null && metadata != null) {
             # printf($l1_query."\n", '<%=column.getLabel()%>');
 
             $l1sth_<%=cid %>->execute(
-                $<%=inConnName%>[<%=index%>],
+                $<%=inConnName%>[<%=indexInput%>],
 <%
                 for (Map<String, String> sk : sourceKeys) {
 %>
@@ -228,7 +229,8 @@ if (inMetadata != null && metadata != null) {
 
             if (typeOfColumn.containsKey(colname)) {
                 if (typeOfColumn.get(colname).equals("L2")) {
-                    String index = inConnName + "__" + column.getLabel();
+                    String indexInput = inConnName + "__" + column.getLabel();
+                    String indexCache = cid + "_cache_" + column.getLabel();
 
                     String or = new String("or ");
                     if (isFirstL2) {
@@ -236,7 +238,7 @@ if (inMetadata != null && metadata != null) {
                         isFirstL2 = false;
                     }
 %>
-            <%=or%> $<%=inConnName%>[<%=index%>] ne $comparison_row[<%=index%>]
+            <%=or%>$<%=inConnName%>[<%=indexInput%>] ne $cache_row[<%=indexCache%>]
 <%
                 }
             }
@@ -268,7 +270,7 @@ if (inMetadata != null && metadata != null) {
 
         if (useVersion.equals("true")) {
 %>
-                $comparison_row[-1] + 1,
+                $cache_row[<%=cid%>_cache_<%=versionField%>] + 1,
 <%
         }
 %>

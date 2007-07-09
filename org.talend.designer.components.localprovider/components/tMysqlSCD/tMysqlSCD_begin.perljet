@@ -221,6 +221,9 @@ if (<%=encoding%> =~ m/utf-?8/i) {
             selectColumns.add(
                 StringUtils.getMysqlProtectedColumnName(colname)
             );
+%>
+use constant <%=cid%>_cache_<%=colname%> => <%=colPosition%>;
+<%
 
             if (typeOfColumn.get(colname).equals("SK")) {
                 keyColPositions.add(colPosition);
@@ -234,6 +237,10 @@ if (<%=encoding%> =~ m/utf-?8/i) {
         selectColumns.add(
             StringUtils.getMysqlProtectedColumnName(versionField)
         );
+%>
+use constant <%=cid%>_cache_<%=versionField%> => <%=colPosition%>;
+<%
+        colPosition++;
     }
 
     String selectColumnsString = StringUtils.join(
