@@ -64,6 +64,18 @@
     </PARAMETER>
 
     <PARAMETER
+       NAME="Style"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="45"
+    >
+          <ITEMS DEFAULT="RPC">
+            <ITEM NAME="wrapped" VALUE="wrapped"/>
+            <ITEM NAME="document" VALUE="document"/>
+            <ITEM NAME="RPC" VALUE="RPC"/>         
+          </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"

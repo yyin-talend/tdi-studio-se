@@ -32,6 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
 		String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 		String wsdl_uri = ElementParameterParser.getValue(node,"__WSDL__");
+		String style = ElementParameterParser.getValue(node,"__Style__");
 %>
 
         String endpoint_<%=cid %> = <%=ElementParameterParser.getValue(node,"__ENDPOINT__") %>;
@@ -52,7 +53,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 for (int i = 0; i < params.size(); i++) {
                                     Map<String, String> line = params.get(i);
                         %>
-                        org.apache.axis.description.ParameterDesc param<%=i %> = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, <%= line.get("NAME") %>), org.apache.axis.description.ParameterDesc.IN, org.apache.axis.Constants.XSD_ANYTYPE, <%= line.get("CLASS") %>, false, false);
+                        org.apache.axis.description.ParameterDesc param<%=i %> = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, <%= line.get("NAME") %>), org.apache.axis.description.ParameterDesc.IN, 
+                        
+                        <% if(style.equals("RPC")) { %>
+                           org.apache.axis.Constants.XSD_ANYTYPE, 
+                        <%}else {%>
+                           new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, "<%= line.get("CLASS") %>"),                        
+                        <%
+                          }
+                        %>
+                        
+                        <%= line.get("CLASS") %>, false, false);
                         param<%=i %>.setOmittable(true);
                         oper.addParameter(param<%=i %>);
                         <%
@@ -67,15 +78,39 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						<%
 						  } else {
 						%>
-						oper.setReturnType(org.apache.axis.Constants.XSD_ANYTYPE);
+						
+						<% if(style.equals("RPC")) { %>
+                            oper.setReturnType(org.apache.axis.Constants.XSD_ANYTYPE);
+                        <%}else {%>
+                            oper.setReturnType(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, "<%=ElementParameterParser.getValue(node,"__RETURN_CLASS__") %>"));                        
+                        <%
+                          }
+                        %>
+                        
 						<%
 							}
 						%>
                         
                         oper.setReturnClass(<%=ElementParameterParser.getValue(node,"__RETURN_CLASS__") %>);
                         
+                        <%
+                           if(style.equals("wrapped")) {
+                        %>
                         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
                         oper.setUse(org.apache.axis.constants.Use.LITERAL);
+                        <%
+                        	} else if(style.equals("document")) {
+                        %>
+                        oper.setStyle(org.apache.axis.constants.Style.DOCUMENT);
+                        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+                        <%
+                        	} else if(style.equals("RPC")) {
+                        %>
+                        oper.setStyle(org.apache.axis.constants.Style.RPC);
+                        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+                        <%
+                          }
+                        %>
                         
                         return oper;                
                     }
