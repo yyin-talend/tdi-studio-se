@@ -100,6 +100,12 @@ push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connecti
 # <%= matchingModeStr %> key => []
 $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ||= \@<%= connectionName %>  ;
 					<%
+				        } else if ( matchingModeStr.equals("UNIQUE_MATCH") ){
+					%>
+# <%= matchingModeStr %> key => []
+warn "[tHash_Lookup_<%= connectionName %>] key <%=hashKey%> is not unique" if exists $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ;
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ||= \@<%= connectionName %>  ;
+					<%
 					} else {
 					%>
 # <%= matchingModeStr %> key => [] 
