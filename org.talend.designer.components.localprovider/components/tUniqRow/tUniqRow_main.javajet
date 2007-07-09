@@ -39,7 +39,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if (keyColumn.get("KEY_ATTRIBUTE").equals("true")) {
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType()); 
 %>
-	+ <%=connName %>.<%=column.getLabel() %><% if (!javaType.isPrimitive()) { %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%><% } %>
+	+ <% 
+		if (!javaType.isPrimitive()) { 
+	%>
+		((<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null)
+	<% 
+		} else {
+	%>
+		<%=connName %>.<%=column.getLabel() %>
+	<% 
+		}
+	%>
 <%
 			}
 			i++;
