@@ -122,13 +122,10 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
         if (editorPart instanceof MultiPageTalendEditor) {
             MultiPageTalendEditor multiPageTalendEditor = ((MultiPageTalendEditor) editorPart);
             TalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
-            // TalendJavaEditor.getProblems();
             TalendJavaEditor codeEditor = (TalendJavaEditor) multiPageTalendEditor.getCodeEditor();
             org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor
                     .getUnit();
 
-            ProposalUtils.initializeJavaProposal(compilationUnit);
-            
             IProcess process = talendEditor.getProcess();
 
             String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();
