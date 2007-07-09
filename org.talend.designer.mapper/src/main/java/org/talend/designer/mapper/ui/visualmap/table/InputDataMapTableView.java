@@ -27,6 +27,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -40,6 +42,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -548,6 +551,9 @@ public class InputDataMapTableView extends DataMapTableView {
      * DOC amaumont Comment method "init".
      */
     public void loaded() {
+        
+        super.loaded();
+        
         if (mapperManager.isAdvancedMap()) {
             configureExpressionFilter();
             if (!getInputTable().isMainConnection()) {
@@ -557,4 +563,5 @@ public class InputDataMapTableView extends DataMapTableView {
 
     }
 
+    
 }

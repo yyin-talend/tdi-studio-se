@@ -608,11 +608,10 @@ public class MapperManager extends AbstractMapperManager {
     public void changeEntryExpression(final ITableEntry currentEntry, String text) {
         currentEntry.setExpression(text);
 
-
         DataMapTableView dataMapTableView = retrieveDataMapTableView(currentEntry);
         TableViewer tableViewer = null;
         if (currentEntry instanceof IColumnEntry || currentEntry instanceof FilterTableEntry) {
-            
+
             getProblemsManager().checkProblemsForTableEntryWithDelayLimiter(currentEntry);
 
             if (currentEntry instanceof IColumnEntry) {
@@ -626,7 +625,9 @@ public class MapperManager extends AbstractMapperManager {
             tableViewer.refresh(currentEntry);
         } else if (currentEntry instanceof ExpressionFilterEntry) {
             dataMapTableView.getExpressionFilterText().setText(text);
-            dataMapTableView.checkProblemsForExpressionFilterWithDelay();
+            if (!dataMapTableView.getExpressionFilterText().isFocusControl()) {
+                dataMapTableView.checkProblemsForExpressionFilterWithDelay();
+            }
         }
 
         uiManager.parseNewExpression(text, currentEntry, false);

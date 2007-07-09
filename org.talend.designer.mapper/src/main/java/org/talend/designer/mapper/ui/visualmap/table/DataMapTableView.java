@@ -36,6 +36,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ExtendedModifyEvent;
+import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ControlEvent;
@@ -1332,80 +1334,8 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-        expressionTextEditor.addKeyListener(new KeyListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-             */
-            public void keyPressed(KeyEvent e) {
-                // System.out.println("e.character=" + e.character);
-                // System.out.println("keyCode=" + e.keyCode);
-
-                boolean ctrl = (e.stateMask & SWT.CTRL) != 0;
-                boolean altgr = (e.stateMask & SWT.ALT) != 0;
-                if (e.character == '\0' || ctrl && !altgr) {
-                    highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
-                } else {
-                    MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) styledTextHandler
-                            .getStyledText();
-                    Point selection = expressionTextEditor.getSelection();
-                    if (e.character == '\r' || e.character == '\u001b') {
-                        e.doit = false;
-                        styledTextHandler.setTextWithoutNotifyListeners(expressionTextEditor.getText());
-                        highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
-                    } else {
-                        if (e.character == SWT.BS || e.character == SWT.DEL) {
-                            if (selection.x == selection.y) {
-
-                                if (e.character == SWT.BS) {
-                                    if (selection.x - 1 > 0) {
-                                        char previousChar = mapperColorStyledText.getText().charAt(selection.x - 1);
-                                        if (previousChar == '\n') {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(
-                                                    selection.x - 2, 2, ""); //$NON-NLS-1$
-                                        } else {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(
-                                                    selection.x - 1, 1, ""); //$NON-NLS-1$
-                                        }
-                                    }
-                                } else {
-                                    if (selection.x < mapperColorStyledText.getText().length()) {
-                                        char nextChar = mapperColorStyledText.getText().charAt(selection.x);
-                                        if (nextChar == '\r') {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x,
-                                                    2, ""); //$NON-NLS-1$
-                                        } else {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x,
-                                                    1, ""); //$NON-NLS-1$
-                                        }
-                                    }
-                                }
-
-                            } else {
-                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
-                                        - selection.x, ""); //$NON-NLS-1$
-                                highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
-                            }
-                        } else {
-                            // System.out.println("selection.x="+selection.x);
-                            // System.out.println("selection.y="+selection.y);
-                            // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
-                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
-                                    - selection.x, String.valueOf(e.character));
-                            highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
-                        }
-                    }
-
-                }
-            }
-
-            public void keyReleased(KeyEvent e) {
-                // highlightLineOfCursorPosition();
-            }
-
-        });
+        expressionTextEditor.addKeyListener(new TextCellEditorToMapperStyledTextKeyListener(expressionTextEditor,
+                styledTextHandler));
 
         expressionTextEditor.addMouseListener(new MouseListener() {
 
@@ -1426,6 +1356,16 @@ public abstract class DataMapTableView extends Composite {
     }
 
     private void highlightLineAndSetSelectionOfStyledText(final Text expressionTextEditor) {
+        highlightLineAndSetSelectionOfStyledTextFromTextControl(expressionTextEditor);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "highlightLineAndSetSelectionOfStyledText".
+     * 
+     * @param expressionTextEditor
+     */
+    protected void highlightLineAndSetSelectionOfStyledTextFromTextControl(final Control textWidget) {
         final StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                 .getStyledTextHandler();
 
@@ -1438,15 +1378,16 @@ public abstract class DataMapTableView extends Composite {
                     return;
                 }
 
-                String text = expressionTextEditor.getText();
-                Point selection = expressionTextEditor.getSelection();
+                String text = ControlUtils.getText(textWidget);
+                Point selection = ControlUtils.getSelection(textWidget);
+                String lineDelimiter = ControlUtils.getLineDelimiter(textWidget);
                 if (selection.x - 1 > 0) {
-                    while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.x - 1))) {
+                    while (lineDelimiter.equals(text.charAt(selection.x - 1))) {
                         selection.x++;
                     }
                 }
                 if (selection.y - 1 > 0) {
-                    while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.y - 1))) {
+                    while (lineDelimiter.equals(text.charAt(selection.y - 1))) {
                         selection.y++;
                     }
                 }
@@ -1469,7 +1410,6 @@ public abstract class DataMapTableView extends Composite {
             }
         };
         new AsynchronousThreading(50, true, DataMapTableView.this.getDisplay(), runnable).start();
-
     }
 
     /**
@@ -2066,30 +2006,45 @@ public abstract class DataMapTableView extends Composite {
 
             expressionFilterText.getVerticalBar().addSelectionListener(selectionListenerToCorrectWrapBug);
 
-            expressionFilterText.addKeyListener(new KeyListener() {
+            // expressionFilterText.addExtendedModifyListener(new ExtendedModifyListener() {
+            //
+            // public void modifyText(ExtendedModifyEvent event) {
+            // StyledTextHandler styledTextHandler =
+            // mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
+            // styledTextHandler.getStyledText().replaceTextRange(event.start, event.length, event.replacedText);
+            // }
+            //                
+            // });
 
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-                 */
-                public void keyPressed(KeyEvent e) {
+            ExpressionEditorToMapperStyledTextKeyListener keyAndModifyListener = new ExpressionEditorToMapperStyledTextKeyListener(
+                    expressionFilterText, mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler());
+            expressionFilterText.addExtendedModifyListener(keyAndModifyListener);
+//            expressionFilterText.addKeyListener(keyAndModifyListener);
 
-                    Control text = (Control) e.getSource();
-                    setExpressionFilterFromStyledText(table, text);
-                    StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
-                            .getStyledTextHandler();
-                    styledTextHandler.setTextWithoutNotifyListeners(expressionFilterText.getText());
-
-                }
-
-                public void keyReleased(KeyEvent e) {
-
-                    mapperManager.getUiManager().parseNewExpression(expressionFilterText.getText(),
-                            table.getExpressionFilter(), false);
-
-                }
-            });
+            // expressionFilterText.addKeyListener(new KeyListener() {
+            //
+            // /*
+            // * (non-Javadoc)
+            // *
+            // * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
+            // */
+            // public void keyPressed(KeyEvent e) {
+            //
+            // Control text = (Control) e.getSource();
+            // setExpressionFilterFromStyledText(table, text);
+            // StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
+            // .getStyledTextHandler();
+            // styledTextHandler.getStyledText().setText(expressionFilterText.getText());
+            //
+            // }
+            //
+            // public void keyReleased(KeyEvent e) {
+            //
+            // mapperManager.getUiManager().parseNewExpression(expressionFilterText.getText(),
+            // table.getExpressionFilter(), false);
+            //
+            // }
+            // });
 
         }
     }
@@ -2160,6 +2115,7 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "colorExpressionFilterFromProblems".
+     * 
      * @param table
      * @param colorAllowed TODO
      */
@@ -2239,7 +2195,9 @@ public abstract class DataMapTableView extends Composite {
     /**
      * This method must be called when all widgets has been created.
      */
-    public abstract void loaded();
+    public void loaded() {
+
+    }
 
     /**
      * Getter for expressionFilterText.
@@ -2283,6 +2241,201 @@ public abstract class DataMapTableView extends Composite {
         } else {
             table.getExpressionFilter().setExpression(currentContent);
         }
+    }
+
+    /**
+     * 
+     * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>
+     * 
+     */
+    class ExpressionEditorToMapperStyledTextKeyListener implements ExtendedModifyListener, KeyListener {
+
+        private Control textWidget;
+
+        private StyledTextHandler textTarget;
+
+        private boolean modifyListenerAllowed;
+
+        /**
+         * DOC amaumont TextKeyListener constructor comment.
+         */
+        public ExpressionEditorToMapperStyledTextKeyListener(StyledText textWidgetSrc, StyledTextHandler textTarget) {
+            super();
+            this.textWidget = textWidgetSrc;
+            this.textTarget = textTarget;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
+         */
+        public void keyPressed(KeyEvent e) {
+            // System.out.println("e.character=" + e.character);
+            // System.out.println("keyCode=" + e.keyCode);
+
+            boolean ctrl = (e.stateMask & SWT.CTRL) != 0;
+            boolean altgr = (e.stateMask & SWT.ALT) != 0;
+            if (e.character == '\0' || ctrl && !altgr) {
+                modifyListenerAllowed = true;
+                highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            } else {
+                modifyListenerAllowed = false;
+                MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) textTarget.getStyledText();
+                Point selection = ControlUtils.getSelection(textWidget);
+                if (e.character == '\r' || e.character == '\u001b') {
+                    textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+                    highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                } else {
+                    if (e.character == SWT.BS || e.character == SWT.DEL) {
+                        if (selection.x == selection.y) {
+
+                            if (e.character == SWT.BS) {
+                                if (selection.x + 1 < mapperColorStyledText.getText().length()
+                                        && mapperColorStyledText.getText().charAt(selection.x + 1) == '\n') {
+                                    mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
+                                } else {
+                                    mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
+                                }
+                            } else {
+                                if (selection.x < mapperColorStyledText.getText().length()) {
+                                    char nextChar = mapperColorStyledText.getText().charAt(selection.x);
+                                    if (nextChar == '\r') {
+                                        mapperColorStyledText
+                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
+                                    } else {
+                                        mapperColorStyledText
+                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
+                                    }
+                                }
+                            }
+
+                        } else {
+                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+                                    - selection.x, ""); //$NON-NLS-1$
+                            highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                        }
+                    } else {
+                        // System.out.println("selection.x="+selection.x);
+                        // System.out.println("selection.y="+selection.y);
+                        // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
+                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1, selection.y
+                                - selection.x, String.valueOf(e.character));
+                        highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                    }
+                }
+
+            }
+        }
+
+        public void keyReleased(KeyEvent e) {
+            // highlightLineOfCursorPosition();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.custom.ExtendedModifyListener#modifyText(org.eclipse.swt.custom.ExtendedModifyEvent)
+         */
+        public void modifyText(ExtendedModifyEvent event) {
+            // if (modifyListenerAllowed) {
+            textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+            highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            // }
+        }
+
+    }
+
+    /**
+     * 
+     * DOC amaumont InputDataMapTableView class global comment. Detailled comment <br/>
+     * 
+     */
+    class TextCellEditorToMapperStyledTextKeyListener implements KeyListener {
+
+        private Control textWidget;
+
+        private StyledTextHandler textTarget;
+
+        /**
+         * DOC amaumont TextKeyListener constructor comment.
+         */
+        public TextCellEditorToMapperStyledTextKeyListener(Text textWidgetSrc, StyledTextHandler textTarget) {
+            super();
+            this.textWidget = textWidgetSrc;
+            this.textTarget = textTarget;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
+         */
+        public void keyPressed(KeyEvent e) {
+            // System.out.println("e.character=" + e.character);
+            // System.out.println("keyCode=" + e.keyCode);
+
+            boolean ctrl = (e.stateMask & SWT.CTRL) != 0;
+            boolean altgr = (e.stateMask & SWT.ALT) != 0;
+            if (e.character == '\0' || ctrl && !altgr) {
+                highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            } else {
+                MapperColorStyledText mapperColorStyledText = (MapperColorStyledText) textTarget.getStyledText();
+                Point selection = ControlUtils.getSelection(textWidget);
+                if (e.character == '\r' || e.character == '\u001b') {
+                    e.doit = false;
+                    textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+                    highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                } else {
+                    if (e.character == SWT.BS || e.character == SWT.DEL) {
+                        if (selection.x == selection.y) {
+
+                            if (e.character == SWT.BS) {
+                                if (selection.x - 1 > 0) {
+                                    char previousChar = mapperColorStyledText.getText().charAt(selection.x - 1);
+                                    if (previousChar == '\n') {
+                                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 2,
+                                                2, ""); //$NON-NLS-1$
+                                    } else {
+                                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1,
+                                                1, ""); //$NON-NLS-1$
+                                    }
+                                }
+                            } else {
+                                if (selection.x < mapperColorStyledText.getText().length()) {
+                                    char nextChar = mapperColorStyledText.getText().charAt(selection.x);
+                                    if (nextChar == '\r') {
+                                        mapperColorStyledText
+                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
+                                    } else {
+                                        mapperColorStyledText
+                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
+                                    }
+                                }
+                            }
+
+                        } else {
+                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+                                    - selection.x, ""); //$NON-NLS-1$
+                            highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                        }
+                    } else {
+                        // System.out.println("selection.x="+selection.x);
+                        // System.out.println("selection.y="+selection.y);
+                        // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
+                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+                                - selection.x, String.valueOf(e.character));
+                        highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+                    }
+                }
+
+            }
+        }
+
+        public void keyReleased(KeyEvent e) {
+            // highlightLineOfCursorPosition();
+        }
+
     }
 
 }

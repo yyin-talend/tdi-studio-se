@@ -362,6 +362,7 @@ public class OutputDataMapTableView extends DataMapTableView {
      */
     @Override
     public void loaded() {
+        super.loaded();
         configureExpressionFilter();
         checkChangementsAfterEntryModifiedOrAdded(false);
     }

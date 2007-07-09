@@ -477,7 +477,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      */
     @Override
     public void loaded() {
-        
+        super.loaded();
     }
 
     
