@@ -277,7 +277,6 @@ class Transfer{
 <%	}else if(specialAction.equals("CreateOnly")){%>
 		try{
 			stmt<%=cid%>.execute("select * from "+<%=tableName%>);
-			System.out.println("This table already exists. Can not be created");
 		}catch(Exception e){//create only if it doesn't exist
 			sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 			stmt<%=cid%>.execute(sql<%=cid%>);	
