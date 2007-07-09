@@ -25,14 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.javaeditor.WorkingCopyManager;
-import org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy;
-import org.eclipse.jdt.internal.ui.text.JavaReconciler;
-import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
@@ -56,10 +52,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
 
     private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
 
-    private boolean closing = false;
-
-    // private boolean isLatestCodeInFile;
-
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
      */
@@ -76,24 +68,15 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-        addComplier();
+        addCompiler();
     }
 
     /**
      * Add complier for error check in this Java editor.
      * 
-     * DOC yzhang Comment method "addComplier".
+     * DOC yzhang Comment method "addCompiler".
      */
-    private void addComplier() {
-        JavaCompositeReconcilingStrategy strategy = new JavaCompositeReconcilingStrategy(this,
-                IDocumentExtension3.DEFAULT_PARTITIONING);
-        JavaReconciler reconciler = new JavaReconciler(this, strategy, false);
-        reconciler.setIsIncrementalReconciler(false);
-        reconciler.setIsAllowedToModifyDocument(false);
-        reconciler.setProgressMonitor(new NullProgressMonitor());
-        reconciler.setDelay(500);
-        reconciler.install(getViewer());
-
+    private void addCompiler() {
         unit = (org.eclipse.jdt.core.ICompilationUnit) getInputJavaElement();
 
         WorkingCopyManager fManager = JavaPlugin.getDefault().getWorkingCopyManager();
@@ -207,12 +190,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     @Override
     public void doSave(IProgressMonitor progressMonitor) {
-        // if (!isLatestCodeInFile) {
-        // isLatestCodeInFile = true;
-        // for (MultiPageTalendEditor element : this.editPartListener) {
-        // element.codeSync();
-        // }
-        // }
         super.doSave(progressMonitor);
     }
 
