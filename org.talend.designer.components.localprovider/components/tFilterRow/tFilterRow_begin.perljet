@@ -50,7 +50,7 @@ my %desc_<%=cid %> = (
             function => '<%= condition.get("FUNCTION") %>',
             input    => '<%= condition.get("INPUT_COLUMN") %>',
             operator => '<%= condition.get("OPERATOR") %>',
-            rvalue => '<%= condition.get("RVALUE") %>',
+            rvalue => <%= condition.get("RVALUE") %>,
         },
 <%
         }
