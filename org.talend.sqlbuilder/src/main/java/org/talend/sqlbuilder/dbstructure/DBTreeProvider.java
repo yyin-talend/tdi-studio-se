@@ -216,11 +216,9 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private boolean isInitialized = false;
 
-    
-    
-    
     /**
      * Sets the isInitialized.
+     * 
      * @param isInitialized the isInitialized to set
      */
     public void setInitialized(boolean isInitialized) {
@@ -326,13 +324,12 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                 parent.getChildren().add(index.intValue(), node);
             }
             repositoryNodeManager.addRepositoryNode(node);
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
+            createTables(node, repositoryObject, metadataConnection, isBuildIn);
+            createQueries(node, repositoryObject, metadataConnection, isBuildIn);
         }
 
-        DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
-                .getConnection();
-        createTables(node, repositoryObject, metadataConnection, isBuildIn);
-
-        createQueries(node, repositoryObject, metadataConnection, isBuildIn);
     }
 
     private void createQueries(RepositoryNode node, final IRepositoryObject repObj, DatabaseConnection metadataConnection,
@@ -353,15 +350,17 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
             Query query = (Query) iter.next();
-            QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
-            repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
-            repositoryObject.setSourceName(query.getLabel());
-            RepositoryNode node = new RepositoryNodeExt(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
-            node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
-            queriesConnectionNode.getChildren().add(node);
-            if (connectionParameters.getQueryObject() != null
-                    && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
-                this.selectQuery = node;
+            if (!TableHelper.isDeleted(query)) {
+                QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
+                repositoryObject.setImage(IMAGES_SQL_EDITOR_ICON);
+                repositoryObject.setSourceName(query.getLabel());
+                RepositoryNode node = new RepositoryNodeExt(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
+                node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
+                queriesConnectionNode.getChildren().add(node);
+                if (connectionParameters.getQueryObject() != null
+                        && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
+                    this.selectQuery = node;
+                }
             }
         }
     }

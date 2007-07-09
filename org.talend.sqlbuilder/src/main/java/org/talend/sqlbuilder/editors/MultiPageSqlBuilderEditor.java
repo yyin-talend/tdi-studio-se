@@ -41,6 +41,7 @@ import org.talend.sqlbuilder.actions.SaveAsSQLAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
@@ -381,8 +382,19 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             return null;
         }
     }
-    
+
     public void setItemData(Query query) {
         this.tabItem.setData(query);
+    }
+
+    public AbstractSQLEditorComposite getActiveEditors() {
+        switch (getActivePage()) {
+        case 0:
+            return sqlEdit;
+        case 1:
+            return sqlDesigner;
+        default:
+            return null;
+        }
     }
 }

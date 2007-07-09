@@ -45,6 +45,8 @@ public class TextUtil {
 
     private static String dialogTitle;
 
+    public static final String KEY = "KEY";
+
     /**
      * qzhang TextUtil constructor comment.
      */

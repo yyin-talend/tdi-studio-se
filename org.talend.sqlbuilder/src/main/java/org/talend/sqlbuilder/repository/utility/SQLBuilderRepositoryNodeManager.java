@@ -32,6 +32,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
@@ -70,7 +73,11 @@ import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
+import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
+import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * dev class global comment. Detailled comment <br/>
@@ -85,7 +92,6 @@ public class SQLBuilderRepositoryNodeManager {
 
     private static List<RepositoryNode> repositoryNodes2 = new ArrayList<RepositoryNode>();
 
-    
     /**
      * dev Comment method "isChangeElementColor".
      * 
@@ -186,7 +192,7 @@ public class SQLBuilderRepositoryNodeManager {
         repositoryNodes.add(node);
         repositoryNodes2.add(node);
     }
-    
+
     public void addAllRepositoryNodes() {
         repositoryNodes.clear();
         repositoryNodes.addAll(repositoryNodes2);
@@ -638,7 +644,7 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setProductId(product);
         final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
         connection.setDbmsId(mapping);
-        
+
         if (parameters.getSchema() != null && isSchemaNeed) {
             connection.setSchema(parameters.getSchema().replaceAll("\'", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -769,14 +775,14 @@ public class SQLBuilderRepositoryNodeManager {
      * @param query need to save Query
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void saveEMFQuery(String id, Query query) {
-        DatabaseConnectionItem item = getEMFItem(id);   
+    private void saveEMFQuery(String id, Query query, String oldQuery) {
+        DatabaseConnectionItem item = getEMFItem(id);
         if (query != null) {
             Query query3 = ConnectionFactory.eINSTANCE.createQuery();
             query3.setComment(query.getComment());
             query3.setLabel(query.getLabel());
             query3.setValue(query.getValue());
-            
+
             Connection connection = (Connection) item.getConnection();
             QueriesConnection queriesConnection = connection.getQueries();
             if (queriesConnection == null) {
@@ -788,10 +794,11 @@ public class SQLBuilderRepositoryNodeManager {
                 List<Query> queries = queriesConnection.getQuery();
                 boolean isModify = false;
                 for (Query query2 : queries) {
-                    if (query2.getLabel().equals(query3.getLabel())) {
+                    if (oldQuery != null && (query2.getLabel().equals(oldQuery)) || query2.getLabel().equals(query3.getLabel())) {
                         query2.setComment(query3.getComment());
                         query2.setId(query3.getId());
                         query2.setValue(query3.getValue());
+                        query2.setLabel(query3.getLabel());
                         isModify = true;
                     }
                     assignQueryId(query2, queriesConnection); // assign id to old query without id
@@ -807,8 +814,8 @@ public class SQLBuilderRepositoryNodeManager {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void saveQuery(RepositoryNode repositoryNode, Query query) {
-        saveEMFQuery(repositoryNode.getObject().getId(), query);
+    public void saveQuery(RepositoryNode repositoryNode, Query query, String oldQuery) {
+        saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
             Connection connection = (Connection) item.getConnection();
@@ -1216,6 +1223,52 @@ public class SQLBuilderRepositoryNodeManager {
         }
         return getRoot(repositoryNode.getParent());
     }
+
+    public void synchronizeAllSqlEditors() {
+        Shell[] shells = Display.getDefault().getShells();
+        final Shell activeShell = Display.getDefault().getActiveShell();
+        Object data = activeShell.getData();
+        Query activeQuery = null;
+        if (data instanceof SQLBuilderDialog) {
+            SQLBuilderDialog dialog2 = (SQLBuilderDialog) data;
+            CTabItem selection = dialog2.getEditorComposite().getTabFolder().getSelection();
+            if (selection.getData() instanceof Query) {
+                activeQuery = (Query) selection.getData();
+            }
+        }
+        for (Shell shell : shells) {
+            if (shell != null && shell != activeShell && !shell.isDisposed()) {
+                data = shell.getData();
+                if (data instanceof SQLBuilderDialog) {
+                    SQLBuilderDialog dialog = (SQLBuilderDialog) data;
+                    CTabItem[] items = dialog.getEditorComposite().getTabFolder().getItems();
+                    for (CTabItem item : items) {
+                        final boolean b = (item.getData() instanceof Query)
+                                && item.getData(TextUtil.KEY) instanceof MultiPageSqlBuilderEditor && activeQuery != null;
+                        Query data2 = (Query) item.getData();
+                        if (b && data2.getLabel().equals(activeQuery.getLabel())) {
+                            data2.setValue(activeQuery.getValue());
+                            data2.setComment(activeQuery.getComment());
+                            data2.setLabel(activeQuery.getLabel());
+                            updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY"));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * qzhang Comment method "updateEditor".
+     * 
+     * @param activeQuery
+     * @param editor
+     */
+    private void updateEditor(Query activeQuery, MultiPageSqlBuilderEditor editor) {
+        AbstractSQLEditorComposite activeEditors = editor.getActiveEditors();
+        activeEditors.setEditorContent(activeQuery.getValue());
+    }
+
 }
 
 /**

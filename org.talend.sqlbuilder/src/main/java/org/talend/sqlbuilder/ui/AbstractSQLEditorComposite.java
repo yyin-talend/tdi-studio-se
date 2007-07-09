@@ -183,7 +183,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         if (!as) {
             if (query2 != null && existingName.contains(query2.getLabel())) {
                 query2.setValue(getSQLToBeExecuted());
-                repositoryNodeManager.saveQuery(getRepositoryNode(), query2);
+                repositoryNodeManager.saveQuery(getRepositoryNode(), query2,null);
                 dialog.refreshNode(getRepositoryNode());
                 getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query2.getLabel());
                 getDialog().notifySQLBuilder(getRepositoryNode().getObject());
@@ -196,7 +196,7 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
         // saveSQLDialog.setQuery(connParam.getQueryObject());
         if (Window.OK == saveSQLDialog.open()) {
             Query query = saveSQLDialog.getQuery();
-            repositoryNodeManager.saveQuery(getRepositoryNode(), query);
+            repositoryNodeManager.saveQuery(getRepositoryNode(), query,null);
             dialog.refreshNode(getRepositoryNode());
             getMultiPageEditor().updateEditorTitle(QUERY_PREFIX + query.getLabel());
             getMultiPageEditor().getDeactivePageSaveSQLAction().setQuery(query);

@@ -88,7 +88,7 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
 
         QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
         Query query = object.getQuery();
-
+        String oldQuery = query.getLabel();
         // Finds the root
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
 
@@ -99,7 +99,7 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
 
         if (Window.OK == saveSQLDialog.open()) {
             query = saveSQLDialog.getQuery();
-            repositoryNodeManager.saveQuery(node, query);
+            repositoryNodeManager.saveQuery(node, query, oldQuery);
             dialog.refreshNode(node);
             dialog.notifySQLBuilder(node.getObject());
         }

@@ -44,6 +44,7 @@ import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * This class is responsible for creating tab composite. <br/>
@@ -195,7 +196,7 @@ public class SQLBuilderTabComposite extends Composite {
                 node, dialog);
         builderEditor.createPartControl(tabFolder);
         tabItem.setControl(builderEditor.getContainer());
-        tabItem.setData("KEY", builderEditor);
+        tabItem.setData(TextUtil.KEY, builderEditor);
         if (connParam.isFromRepository() && connParam.getQueryObject() != null) {
             queryStr = connParam.getQueryObject().getValue();
         }

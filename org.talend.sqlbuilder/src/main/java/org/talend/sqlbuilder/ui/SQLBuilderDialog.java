@@ -108,6 +108,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
 
+    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+
     /**
      * Internal progress monitor implementation.
      */
@@ -429,7 +431,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
         connParameters.setQuery(sql);
         if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
-            SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
             List<Query> qs = new ArrayList<Query>();
             boolean isInfo = false;
             final CTabFolder tabFolder = getEditorComposite().getTabFolder();
@@ -466,7 +467,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                                         q.setValue(meditor.getActivePageSqlString());
                                         qs.add(q);
                                         if (node != null && q != null) {
-                                            manager.saveQuery(node, q);
+                                            manager.saveQuery(node, q, null);
                                         }
                                     }
                                 } else {
@@ -564,6 +565,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
         structureComposite.updateStructureView(event);
+        manager.synchronizeAllSqlEditors();
     }
 
     public void notifySQLBuilder(IRepositoryObject o) {
