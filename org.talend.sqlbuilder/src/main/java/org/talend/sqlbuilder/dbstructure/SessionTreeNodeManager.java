@@ -78,9 +78,7 @@ public class SessionTreeNodeManager {
             return sessionTreeNode;
         }
         // If the node is not existent,creates one and cache it.
-        sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode("Repository name", connection.getDatabaseType(),
-                connection.getURL(), connection.getUsername(), connection.getPassword(),
-                connection.getSID().length() == 0 ? connection.getDatasourceName() : connection.getSID(), root);
+        sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(connection, root);
         map.put(connection, sessionTreeNode);
         return sessionTreeNode;
     }
@@ -114,10 +112,12 @@ public class SessionTreeNodeManager {
             nodes = dn.getChildNodes();
             CatalogNode cn = (CatalogNode) nodes[0];
             nodes = cn.getChildNodes();
-            for (INode node : nodes) {
-                TableNode tableNode = (TableNode) node;
-                if (tableNode.getName().equals(realName)) {
-                    return node;
+            if (nodes != null && nodes.length > 0) {
+                for (INode node : nodes) {
+                    TableNode tableNode = (TableNode) node;
+                    if (tableNode.getName().equals(realName)) {
+                        return node;
+                    }
                 }
             }
         } else if (nodeType.equals(RepositoryNodeType.COLUMN)) {

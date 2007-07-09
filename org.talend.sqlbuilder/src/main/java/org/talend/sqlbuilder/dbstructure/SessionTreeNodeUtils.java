@@ -34,6 +34,9 @@ import net.sourceforge.sqlexplorer.SQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -91,23 +94,16 @@ public class SessionTreeNodeUtils {
         disposeConnections();
     }
 
-    /**
-     * @param name RepositoryName
-     * @param url Connection Url
-     * @param userName DB username
-     * @param password DB password
-     * @param databaseName databaseName
-     * @param repositoryNode RepositoryNode
-     * @param dbType dbType
-     * @return SessionTreeNode SessionTreeNode.
-     */
-    public static SessionTreeNode getSessionTreeNode(String name, String dbType, String url, String userName, String password,
-            String databaseName, RepositoryNode repositoryNode) throws Exception {
-        SQLConnection connection = createSQLConnection(dbType, url, userName, password);
-        ISQLAlias alias = createSQLAlias(name, url, userName, password, databaseName);
+    public static SessionTreeNode getSessionTreeNode(DatabaseConnection dbconnection, RepositoryNode repositoryNode)
+            throws Exception {
+        SQLConnection connection = createSQLConnection(dbconnection);
+        ISQLAlias alias = createSQLAlias("Repository Name", dbconnection.getURL(), dbconnection.getUsername(), dbconnection
+                .getPassword(),  dbconnection.getSID().length() == 0 ? dbconnection
+                        .getDatasourceName() : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, "root", //$NON-NLS-1$
+        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, dbconnection
+                .getPassword(), //$NON-NLS-1$
                 repositoryNode);
         return session;
     }
@@ -145,11 +141,20 @@ public class SessionTreeNodeUtils {
      * @return SQLConnection
      * @throws Exception Exception
      */
-    private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
+    protected static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
             throws Exception {
         Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
         Connection connection = DriverManager.getConnection(url, userName, password);
         SQLConnection sqlConnection = new SQLConnection(connection, null);
+        return sqlConnection;
+    }
+
+    private static SQLConnection createSQLConnection(DatabaseConnection con) throws Exception {
+        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(con);
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
+                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
+                .getSchema());
+        SQLConnection sqlConnection = new SQLConnection(ExtractMetaDataUtils.conn, null);
         return sqlConnection;
     }
 

@@ -32,6 +32,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.sqlbuilder.Messages;
@@ -206,7 +207,7 @@ public class CatalogNode extends AbstractNode {
         if (schema != null && schema.length() == 0) {
             return null;
         }
-        return schema;
+        return ExtractMetaDataUtils.schema;
     }
 
     /**
