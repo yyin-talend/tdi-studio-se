@@ -15,6 +15,8 @@ sub getTableCreationQuery {
         String  => 'VARCHAR',
     );
 
+    my @dont_need_length_types = qw/DATE DATETIME/;
+
     # In $param{schema}, each column looks like this:
     #
     # {
@@ -46,13 +48,6 @@ sub getTableCreationQuery {
     foreach my $column_href (@{ $param{schema} }) {
         $column_href->{dbtype} = $talendtype_to_dbtype{$column_href->{type}};
 
-        if (lc $column_href->{type} eq 'string') {
-            if (not defined $column_href->{len}
-                or $column_href->{len} == -1) {
-                $column_href->{len} = 255;
-            }
-        }
-
         if ($column_num++ > 1) {
             $query.= ', ';
         }
@@ -60,16 +55,27 @@ sub getTableCreationQuery {
         $query.= $column_href->{name};
         $query.= ' '.$column_href->{dbtype};
 
-        if (defined $column_href->{len} and $column_href->{len} > 0) {
-            $query.= '(';
-            $query.= $column_href->{len};
-
-            if (grep /^$column_href->{type}$/, qw/float double/) {
-                # REAL, DOUBLE, FLOAT, DECIMAL, NUMERIC
-                $query.= ','.$column_href->{precision};
+        if (not grep /^$column_href->{dbtype}$/, @dont_need_length_types) {
+            if ($column_href->{dbtype} eq 'VARCHAR') {
+                if (not defined $column_href->{len}
+                    or $column_href->{len} <= 0) {
+                    $column_href->{len} = 255;
+                }
             }
 
-            $query.= ')';
+            if (defined $column_href->{len}
+                and $column_href->{len} > 0) {
+
+                $query.= '(';
+                $query.= $column_href->{len};
+
+                if (grep /^$column_href->{dbtype}$/, qw/FLOAT DOUBLE/) {
+                    # REAL, DOUBLE, FLOAT, DECIMAL, NUMERIC
+                    $query.= ','.$column_href->{precision};
+                }
+
+                $query.= ')';
+            }
         }
 
         if (not $column_href->{null}) {
@@ -101,9 +107,9 @@ sub getTableCreationQuery {
 
     $query.= ')';
 
-#     use Data::Dumper;
-#     print Dumper($param{schema});
-#     print $query; exit();
+#    use Data::Dumper;
+#    print Dumper($param{schema});
+#    print $query; exit();
 
     return $query;
 }
