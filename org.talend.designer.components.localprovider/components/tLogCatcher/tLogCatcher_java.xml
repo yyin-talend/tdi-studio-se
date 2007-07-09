@@ -39,7 +39,7 @@ COMPATIBILITY="ALL"
         <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="priority" TYPE="id_Integer" LENGTH="3"/>
-        <COLUMN NAME="type" TYPE="id_String" LENGTH="10"/>
+        <COLUMN NAME="type" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="code" TYPE="id_Integer" LENGTH="3"/>
