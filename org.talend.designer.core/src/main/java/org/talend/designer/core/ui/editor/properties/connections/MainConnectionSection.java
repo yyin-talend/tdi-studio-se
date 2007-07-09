@@ -24,13 +24,8 @@ package org.talend.designer.core.ui.editor.properties.connections;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -39,7 +34,6 @@ import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.metadata.dialog.CustomTableManager;
@@ -47,7 +41,6 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Main Section of the property for the connections. <br/>
@@ -133,6 +126,9 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             composite.layout();
         } else if (conIf()) {
             super.addComponents(forceRedraw);
+            if (forceRedraw) {
+                refresh();
+            }
         } else {
             disposeChildren();
         }
