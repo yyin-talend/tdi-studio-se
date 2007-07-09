@@ -2123,13 +2123,17 @@ public abstract class DataMapTableView extends Composite {
     private void colorExpressionFilterFromProblems(AbstractInOutTable table, boolean colorAllowed) {
         List<Problem> problems = table.getExpressionFilter().getProblems();
         if (problems != null && colorAllowed) {
+            expressionFilterText.setColoring(false);
             expressionFilterText.setBackground(ColorProviderMapper
                     .getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL));
             expressionFilterText.setForeground(ColorProviderMapper
                     .getColor(ColorInfo.COLOR_FOREGROUND_ERROR_EXPRESSION_CELL));
         } else {
-            expressionFilterText.setBackground(null);
-            expressionFilterText.setForeground(null);
+            expressionFilterText.setColoring(true);
+            expressionFilterText.setBackground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL));
+            expressionFilterText.setForeground(ColorProviderMapper
+                    .getColor(ColorInfo.COLOR_FOREGROUND_VALID_EXPRESSION_CELL));
         }
     }
 
