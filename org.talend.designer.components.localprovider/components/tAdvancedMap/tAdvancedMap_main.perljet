@@ -212,7 +212,6 @@
                     }
                     else {
                     %>
-                    // 1 or 0
     $size<%= tableName %>ArrayFromLookup = exists $tHash_Lookup_<%= tableName %>->{ <%= keys %> } ;
                     <%
                     }
