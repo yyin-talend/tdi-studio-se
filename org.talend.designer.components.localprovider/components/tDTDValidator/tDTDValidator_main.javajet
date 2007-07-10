@@ -27,76 +27,83 @@ String invalidMessage = ElementParameterParser.getValue(node, "__INVALID_MESSAGE
 String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 %>
 
-String message<%=cid %> = "";
-int validate<%=cid %> = 0;
-
-java.io.InputStream is<%=cid %>=null;
-javax.xml.parsers.DocumentBuilderFactory dbf<%=cid %>=null;
-javax.xml.parsers.DocumentBuilder db<%=cid %>=null;
-message<%=cid%>=<%=validMessage%>;
-is<%=cid %>=new java.io.FileInputStream(<%=xmlfile%>);
-java.io.File xmlfile<%=cid %>=new java.io.File(<%=xmlfile%>);
-java.io.BufferedReader br<%=cid %>=new java.io.BufferedReader(new java.io.FileReader(xmlfile<%=cid %>));
-java.lang.StringBuffer sb<%=cid %>=new java.lang.StringBuffer("");
-char[] xml<%=cid %>=new char[(int) xmlfile<%=cid %>.length()];
-br<%=cid %>.read(xml<%=cid %>);
-sb<%=cid %>.append(xml<%=cid %>);//read xml document		
-dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
-dbf<%=cid %>.setValidating(false);
-db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
-org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.File(<%=xmlfile%>));
-String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
+		String message<%=cid %> = "";
+		int validate<%=cid %> = 0;
+		
+		java.io.InputStream is<%=cid %>=null;
+		javax.xml.parsers.DocumentBuilderFactory dbf<%=cid %>=null;
+		javax.xml.parsers.DocumentBuilder db<%=cid %>=null;
+		message<%=cid%>=<%=validMessage%>;
+		is<%=cid %>=new java.io.FileInputStream(<%=xmlfile%>);
+		java.io.File xmlfile<%=cid %>=new java.io.File(<%=xmlfile%>);
+		java.io.BufferedReader br<%=cid %>=new java.io.BufferedReader(new java.io.FileReader(xmlfile<%=cid %>));
+		java.lang.StringBuffer sb<%=cid %>=new java.lang.StringBuffer("");
+		char[] xml<%=cid %>=new char[(int) xmlfile<%=cid %>.length()];
+		br<%=cid %>.read(xml<%=cid %>);
+		sb<%=cid %>.append(xml<%=cid %>);//read xml document	
 	
-String DTDpath<%=cid %>=<%=dtdfile%>;		
-String reference<%=cid %>="<!DOCTYPE "+rootnode<%=cid %>+" PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' '"+DTDpath<%=cid %>+"'>";
+		int start<%=cid%>=sb<%=cid%>.indexOf("<!DOCTYPE");
+		if(start<%=cid%>!=-1){
+			int end<%=cid%>=sb<%=cid%>.indexOf(">", start<%=cid%>);
+			sb<%=cid%>.replace(start<%=cid %>, end<%=cid %>+1, "");	
+		}	
 	
-int offset<%=cid %>=sb<%=cid %>.indexOf(rootnode<%=cid %>);
-sb<%=cid %>.insert(offset<%=cid %>-1,reference<%=cid %>);//insert reference
-is<%=cid %>=new java.io.StringBufferInputStream(sb<%=cid %>.toString());
-
-class MyHandler<%=cid %> extends org.xml.sax.helpers.DefaultHandler{
-    String errorMessage = null;
-    public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
-    	errorMessage = e.getMessage();
-    }
-    public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
-    	errorMessage = e.getMessage();
-    }
-}
-
-MyHandler<%=cid %> handler<%=cid %> = new MyHandler<%=cid %>();
-dbf<%=cid %>.setValidating(true);
-db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
-db<%=cid %>.setErrorHandler(handler<%=cid %>);
-doc<%=cid %> = db<%=cid %>.parse(is<%=cid %>);
-
-if (handler<%=cid %>.errorMessage == null) {
-	message<%=cid %>= <%=validMessage%>;
-	validate<%=cid %> = 1;
-} else {
-	message<%=cid %>= <%=invalidMessage%>;
-}				
-
-globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
-
-<%
-if (print) {
-%>
-   System.out.println(message<%=cid %>);
-<%
-}
-
-for (IConnection conn : node.getOutgoingConnections()) {
-	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%>
-		<%=conn.getName() %>.dtdfile = <%=dtdfile %>;
-		<%=conn.getName() %>.xmlfile = <%=xmlfile %>;	
-    	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
-    	<%=conn.getName() %>.job = jobName;
-		<%=conn.getName() %>.component = currentComponent;
-		<%=conn.getName() %>.validate = validate<%=cid %>;
-		<%=conn.getName() %>.message = message<%=cid %>;
-<%
-	}
-}
-%>
+		dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+		dbf<%=cid %>.setValidating(false);
+		db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
+		org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.StringBufferInputStream(sb<%=cid%>.toString()));
+		String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
+			
+		String DTDpath<%=cid %>=<%=dtdfile%>;
+		String encoding=null;
+		if(doc<%=cid%>.getXmlEncoding()==null)	{encoding="ISO-8859-1";}else{encoding=doc<%=cid%>.getXmlEncoding();}	
+		String reference<%=cid %>="<?xml version='"+doc<%=cid%>.getXmlVersion()+"' encoding='"+encoding+"'?>\n<!DOCTYPE "+rootnode<%=cid %>+" SYSTEM '"+DTDpath<%=cid %>+"'>\n";
+			
+		int offsetRoot<%=cid %>=sb<%=cid %>.indexOf("<"+rootnode<%=cid %>+">");
+		sb<%=cid%>.replace(0, offsetRoot<%=cid %>, reference<%=cid %>);		
+		is<%=cid %>=new java.io.StringBufferInputStream(sb<%=cid %>.toString());
+		
+		class MyHandler<%=cid %> extends org.xml.sax.helpers.DefaultHandler{
+		    String errorMessage = null;
+		    public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+		    	errorMessage = e.getMessage();
+		    }
+		    public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
+		    	errorMessage = e.getMessage();
+		    }
+		}
+		
+		MyHandler<%=cid %> handler<%=cid %> = new MyHandler<%=cid %>();
+		dbf<%=cid %>.setValidating(true);
+		db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
+		db<%=cid %>.setErrorHandler(handler<%=cid %>);
+		doc<%=cid %> = db<%=cid %>.parse(is<%=cid %>);
+		
+		if (handler<%=cid %>.errorMessage == null) {
+			message<%=cid %>= <%=validMessage%>;
+			validate<%=cid %> = 1;
+		} else {
+			message<%=cid %>= <%=invalidMessage%>;
+		}					
+		globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);	
+		<%
+		if (print) {
+		%>
+		   System.out.println(message<%=cid %>);
+		<%
+		}
+		
+		for (IConnection conn : node.getOutgoingConnections()) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		%>
+				<%=conn.getName() %>.dtdfile = <%=dtdfile %>;
+				<%=conn.getName() %>.xmlfile = <%=xmlfile %>;	
+		    	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
+		    	<%=conn.getName() %>.job = jobName;
+				<%=conn.getName() %>.component = currentComponent;
+				<%=conn.getName() %>.validate = validate<%=cid %>;
+				<%=conn.getName() %>.message = message<%=cid %>;
+		<%
+			}
+		}
+		%>
