@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,7 +51,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -81,6 +84,8 @@ public class ComboController extends AbstractElementPropertySectionController {
     private Map<String, List<String>> tablesmap;
 
     private Map<String, List<String>> queriesmap;
+
+    private Map<IElementParameter, Button> queryButton = new HashMap<IElementParameter, Button>();;
 
     private static final String GUESS_QUERY_NAME = "Guess Query";
 
@@ -122,9 +127,8 @@ public class ComboController extends AbstractElementPropertySectionController {
                 if (!(ctrl instanceof CCombo)) {
                     continue;
                 }
-                boolean isDisposed = ((CCombo) ctrl).isDisposed();
+                boolean isDisposed = ((CCombo) ctrl).isDisposed() || combo.isDisposed();
                 if (isDisposed) {
-                    System.out.println(data + " disposed !!!");
                     continue;
                 }
                 if (data != null && data.equals(combo.getData(PARAMETER_NAME))) {
@@ -313,6 +317,7 @@ public class ComboController extends AbstractElementPropertySectionController {
             if (param.getName().equals(EParameterName.QUERYSTORE_TYPE.getName()) && queryStoreType != null
                     && queryStoreType.equals(EmfComponent.BUILTIN)) {
                 Control lastUsedControl = combo;
+                queryButton.put(param, null);
                 addGuessQueryButton(subComposite, param, lastUsedControl, numInRow, top);
             }
         }
@@ -384,6 +389,7 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         buttonControl.setLayoutData(data1);
         guessQueryButton.addSelectionListener(listenerSelection);
+        queryButton.put(param, guessQueryButton);
 
     }
 
@@ -439,7 +445,7 @@ public class ComboController extends AbstractElementPropertySectionController {
             Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
             String paramName;
             IElementParameter repositorySchemaTypeParameter = elem
-            .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
@@ -525,6 +531,31 @@ public class ComboController extends AbstractElementPropertySectionController {
             return;
         }
         Object value = param.getValue();
+
+        Button button = queryButton.get(param);
+        if (button != null) {
+            boolean hasDbRepository = false;
+            boolean hasDbTableField = false;
+            IElementParameter schemaParam = elem.getElementParameter("SCHEMA_TYPE");
+            if (schemaParam != null) {
+                String schemaType = (String) schemaParam.getValue();
+                if (schemaType.equals("REPOSITORY")) {
+                    // repository mode
+                    String metaRepositoryName = (String) elem.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue();
+                    Connection connection = MetadataTool.getConnectionFromRepository(metaRepositoryName);
+                    if (connection instanceof DatabaseConnection) {
+                        hasDbRepository = true;
+                    }
+                }
+            }
+            if (!hasDbRepository) {
+                IElementParameter dbTableParam = elem.getElementParameterFromField(EParameterFieldType.DBTABLE);
+                if (dbTableParam != null && dbTableParam.isShow(elem.getElementParameters())) {
+                    hasDbTableField = true;
+                }
+            }
+            button.setEnabled(hasDbRepository | hasDbTableField);
+        }
 
         if (value instanceof String) {
             String strValue = ""; //$NON-NLS-1$
