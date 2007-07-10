@@ -48,12 +48,12 @@
 
     <PARAMETER
       NAME="DBNAME"
-      FIELD="FILE"
+      FIELD="TEXT"
       NUM_ROW="2"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.gdb"</DEFAULT>
+      <DEFAULT>"base.gdb"</DEFAULT>
     </PARAMETER> 
       
     <PARAMETER
@@ -63,7 +63,7 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"sa"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

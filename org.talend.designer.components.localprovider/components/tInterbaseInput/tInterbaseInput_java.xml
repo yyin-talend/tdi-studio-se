@@ -61,12 +61,12 @@
     
     <PARAMETER
       NAME="DBNAME"
-      FIELD="FILE"
+      FIELD="TEXT"
       NUM_ROW="2"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.gdb"</DEFAULT>
+      <DEFAULT>"in.gdb"</DEFAULT>
     </PARAMETER>    
 
     <PARAMETER
