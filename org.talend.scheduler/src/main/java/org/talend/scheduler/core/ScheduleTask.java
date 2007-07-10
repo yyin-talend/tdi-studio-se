@@ -113,9 +113,11 @@ public class ScheduleTask implements IJobResourceProtection {
         protectionId = "schedule_taks_" + project + "_" + absJobName; //$NON-NLS-1$
         currentResource = new JobResource(project, absJobName);
         idAndResource.put(protectionId, currentResource);
-        for (JobType subJob : subJobs) {
-            String subJobId = "sub_job_of_" + absJobName + "_" + project + "_" + subJob.getName();
-            idAndResource.put(subJobId, new JobResource(project, subJob.getName()));
+        if (subJobs != null) {
+            for (JobType subJob : subJobs) {
+                String subJobId = "sub_job_of_" + absJobName + "_" + project + "_" + subJob.getName();
+                idAndResource.put(subJobId, new JobResource(project, subJob.getName()));
+            }
         }
     }
 

@@ -304,10 +304,14 @@ public class SchedulerView extends ViewPart {
                         .getSelection();
 
                 List<ScheduleTask> list = (List<ScheduleTask>) selection.toList();
+                JobResourceManager jobResourceManager = JobResourceManager.getInstance();
 
                 for (ScheduleTask tasks : list) {
                     if (tasks.getTaskMode() == CommandModeType.TalendJob) {
-                        JobResourceManager.getInstance().removeProtection(tasks);
+                        jobResourceManager.removeProtection(tasks);
+                        for (String id : tasks.getProjectedIds()) {
+                            jobResourceManager.deleteResource(tasks.getJobResource(id));
+                        }
                     }
                 }
                 tasks.removeAll(list);

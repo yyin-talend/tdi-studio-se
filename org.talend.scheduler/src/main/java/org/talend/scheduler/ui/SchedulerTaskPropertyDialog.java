@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.scheduler.SchedulerPlugin;
 import org.talend.scheduler.core.CommandModeType;
 import org.talend.scheduler.core.ExceptionHandler;
@@ -356,10 +357,14 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
             String[] splitedJobName = taskInput.getJob().split(String.valueOf(IPath.SEPARATOR));
             List<JobType> runJobs = jobManager.getRunJobs(splitedJobName[splitedJobName.length - 1]);
-
-            taskInput.setSubJobs(runJobs.toArray(new JobType[runJobs.size()]));
-
+            if (runJobs != null) {
+                taskInput.setSubJobs(runJobs.toArray(new JobType[runJobs.size()]));
+            }
             taskInput.initProtectionIdAndResource();
+
+            // generated the code of jobs.
+            ProcessorUtilities.generateCode(splitedJobName[splitedJobName.length - 1], contextCombo.getText(), false,
+                    false);
         }
 
         /**
