@@ -325,6 +325,20 @@ public class CodeGenerator implements ICodeGenerator {
      */
     private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part)
             throws CodeGeneratorException {
+        return generateTypedComponentCode(type, argument, part, null);
+    }
+
+    /**
+     * Generate Code Part for a given Component.
+     * 
+     * @param type the internal component template
+     * @param argument the bean
+     * @param part part of code to generate
+     * @return the genrated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
+     */
+    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part,
+            String incomingName) throws CodeGeneratorException {
         CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
         codeGenArgument.setNode(argument);
         codeGenArgument.setCodePart(part);
@@ -337,6 +351,7 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setContextName(contextName);
         codeGenArgument.setJobName(jobName);
         codeGenArgument.setCheckingSyntax(checkingSyntax);
+        codeGenArgument.setIncomingName(incomingName);
         codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
                 ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
         JetBean jetBean = initializeJetBean(codeGenArgument);
@@ -508,7 +523,7 @@ public class CodeGenerator implements ICodeGenerator {
 
         StringBuffer content = new StringBuffer();
         try {
-            content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
+            content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part, incomingName));
 
             IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
             String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP
@@ -518,7 +533,7 @@ public class CodeGenerator implements ICodeGenerator {
             jetBean.setTemplateRelativeUri(templateURI);
             JetProxy proxy = new JetProxy(jetBean);
             content.append(proxy.generate());
-            content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part));
+            content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part, incomingName));
         } catch (JETException jetException) {
             log.error(jetException.getMessage(), jetException);
             throw new CodeGeneratorException(jetException);

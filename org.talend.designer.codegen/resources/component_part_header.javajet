@@ -83,7 +83,19 @@ currentComponent="<%=node.getUniqueName() %>";
 	if((codePart.equals(ECodePart.MAIN))&&(stat)&&connSet.size()>0){
 		for(IConnection con:connSet){
 %>
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1); 
+
+//<%=con.getUniqueName()%>
+//<%=(String)codeGenArgument.getIncomingName()%>
+
+
+<%if (!node.getComponent().useMerge()) {%>
+  runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1);
+<%
+	} else if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
+%>
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1);
+<%}%>
+
 <%
 		}
 	}
