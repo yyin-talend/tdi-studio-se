@@ -1846,8 +1846,8 @@ public abstract class DataMapTableView extends Composite {
             ColorManager colorManager = new ColorManager(preferenceStore);
 
             // expressionFilterText = new Text(scrolledComposite, SWT.MULTI | SWT.WRAP | SWT.BORDER);
-            expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
-                    | SWT.V_SCROLL, colorManager, LanguageManager.getCurrentLanguage().getName());
+            expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP
+                    | SWT.BORDER | SWT.V_SCROLL, colorManager, LanguageManager.getCurrentLanguage().getName());
             GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
             gridData.minimumHeight = 10;
             // gridData.grabExcessVerticalSpace = true;
@@ -2020,7 +2020,7 @@ public abstract class DataMapTableView extends Composite {
             ExpressionEditorToMapperStyledTextKeyListener keyAndModifyListener = new ExpressionEditorToMapperStyledTextKeyListener(
                     expressionFilterText, mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler());
             expressionFilterText.addExtendedModifyListener(keyAndModifyListener);
-//            expressionFilterText.addKeyListener(keyAndModifyListener);
+            // expressionFilterText.addKeyListener(keyAndModifyListener);
 
             // expressionFilterText.addKeyListener(new KeyListener() {
             //
@@ -2162,8 +2162,10 @@ public abstract class DataMapTableView extends Composite {
                          * @see java.lang.Runnable#run()
                          */
                         public void run() {
-                            mapperManager.getUiManager().parseNewExpression(expressionFilterText.getText(),
-                                    table.getExpressionFilter(), false);
+                            if (!expressionFilterText.isDisposed()) {
+                                mapperManager.getUiManager().parseNewExpression(expressionFilterText.getText(),
+                                        table.getExpressionFilter(), false);
+                            }
                         }
 
                     }).start();
@@ -2286,7 +2288,8 @@ public abstract class DataMapTableView extends Composite {
                 highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
             } else {
                 modifyListenerAllowed = false;
-                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
+                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget
+                        .getStyledText();
                 Point selection = ControlUtils.getSelection(textWidget);
                 if (e.character == '\r' || e.character == '\u001b') {
                     textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
@@ -2385,7 +2388,8 @@ public abstract class DataMapTableView extends Composite {
             if (e.character == '\0' || ctrl && !altgr) {
                 highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
             } else {
-                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
+                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget
+                        .getStyledText();
                 Point selection = ControlUtils.getSelection(textWidget);
                 if (e.character == '\r' || e.character == '\u001b') {
                     e.doit = false;
