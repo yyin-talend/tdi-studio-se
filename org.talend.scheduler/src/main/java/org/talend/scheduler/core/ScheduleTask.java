@@ -110,12 +110,12 @@ public class ScheduleTask implements IJobResourceProtection {
     public void initProtectionIdAndResource() {
         String[] splited = job.split(String.valueOf(IPath.SEPARATOR));
         String absJobName = splited[(splited.length - 1)];
-        protectionId = "schedule_taks_" + project + "_" + absJobName; //$NON-NLS-1$
+        protectionId = "schedule_taks" + taskNo + "_" + project + "_" + absJobName; //$NON-NLS-1$
         currentResource = new JobResource(project, absJobName);
         idAndResource.put(protectionId, currentResource);
         if (subJobs != null) {
             for (JobType subJob : subJobs) {
-                String subJobId = "sub_job_of_" + absJobName + "_" + project + "_" + subJob.getName();
+                String subJobId = "sub_job_of_" + absJobName + taskNo + "_" + project + "_" + subJob.getName();
                 idAndResource.put(subJobId, new JobResource(project, subJob.getName()));
             }
         }
@@ -128,6 +128,17 @@ public class ScheduleTask implements IJobResourceProtection {
     String project;
 
     JobType[] subJobs;
+
+    int taskNo;
+
+    /**
+     * Sets the taksNo.
+     * 
+     * @param taksNo the taksNo to set
+     */
+    public void setTaskNo(int taskNo) {
+        this.taskNo = taskNo;
+    }
 
     /**
      * Sets the subJobs.

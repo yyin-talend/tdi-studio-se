@@ -422,9 +422,12 @@ public class SchedulerView extends ViewPart {
                 return;
             }
             ScheduleTask newTask = d.getResult();
+            
             tasks.add(newTask);
             tableViewerCreator.getTableViewer().add(newTask);
             if (newTask.getTaskMode() == CommandModeType.TalendJob) {
+                newTask.setTaskNo(tableViewerCreator.getTableViewer().getTable().getItemCount());
+                newTask.initProtectionIdAndResource();
                 JobResourceManager.getInstance().addProtection(newTask);
             }
         } catch (Exception e) {

@@ -360,7 +360,6 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             if (runJobs != null) {
                 taskInput.setSubJobs(runJobs.toArray(new JobType[runJobs.size()]));
             }
-            taskInput.initProtectionIdAndResource();
 
             // generated the code of jobs.
             ProcessorUtilities.generateCode(splitedJobName[splitedJobName.length - 1], contextCombo.getText(), false,
