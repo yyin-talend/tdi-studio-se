@@ -2350,7 +2350,11 @@ public abstract class DataMapTableView extends Composite {
          */
         public void modifyText(ExtendedModifyEvent event) {
             // if (modifyListenerAllowed) {
-            textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+            if (DEFAULT_EXPRESSION_FILTER.equals(ControlUtils.getText(textWidget))) {
+                textTarget.setTextWithoutNotifyListeners("");
+            } else {
+                textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+            }
             highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
             // }
         }
