@@ -15,36 +15,6 @@ class="OracleSPRow"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	String dbsp= ElementParameterParser.getValue(node, "__SPNAME__");
-
-	String incomingConnName = null;
-	List<IMetadataColumn> columnList = null;
-	IConnection conn=null;
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if(conns!=null && conns.size()>0){
-		conn = conns.get(0);
-		incomingConnName = conn.getName();
-	}	
-	
-		IMetadataTable metadata = conn.getMetadataTable();
-		if(metadata != null){
-			columnList = metadata.getListColumns();
-		}		
-	int sizeColumns=columnList.size();
-%>
-
-java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
-<% for (int i = 0; i < sizeColumns; i++){
-	if(i<sizeColumns-1){
-%>?,<%}else{%>?<% }}%> )}");
-
-
-
-	<%
-	
 /////////////////Inner Class Convert///////////////////////	
 class Convert{
 	public String genConvert(String pType){
@@ -93,17 +63,43 @@ class Convert{
 	return null;
 	}
 }
+
+
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String dbsp= ElementParameterParser.getValue(node, "__SPNAME__");
+
+	String incomingConnName = null;
+	List<IMetadataColumn> columnList = null;
+	IConnection conn=null;
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if(conns!=null && conns.size()>0){
+		conn = conns.get(0);
+		incomingConnName = conn.getName();
+		IMetadataTable metadata = conn.getMetadataTable();
+		if(metadata != null){
+			columnList = metadata.getListColumns();
+		}		
+		int sizeColumns=columnList.size();	
+	%>
+
+java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
+<% for (int i = 0; i < sizeColumns; i++){
+	if(i<sizeColumns-1){
+%>?,<%}else{%>?<% }}%> )}");
+
+<%
+		
+	
+
 	
 	Convert convert=new Convert();	
     for (int i = 0; i < sizeColumns; i++) {//5  
   	IMetadataColumn column = columnList.get(i);
 	JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());	
 	boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
-
-
-
-
-
 	if(column.getTalendType().equals("id_Date")){%>
 		stmt<%=cid%>.set<%=convert.genConvert(column.getTalendType())%>(<%=i+1%>, new java.sql.Date(<%=conn.getName() %>.<%=column.getLabel()%>.getTime()));
 <%
@@ -116,7 +112,9 @@ class Convert{
 %> 
 				    stmt<%=cid%>.executeQuery();			    			    
 
-
+<%
+	}
+%>
 		
 
 

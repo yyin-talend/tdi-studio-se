@@ -13,40 +13,6 @@ class="OracleSPInput"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	String dbsp= ElementParameterParser.getValue(node, "__SPNAME__");
-	String outpara= ElementParameterParser.getValue(node, "__OUTPARA__");
-	List<Map<String, String>>  addCols =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");	
-
-	String incomingConnName = null;
-	List<IMetadataColumn> columnList = null;
-	List<IMetadataColumn> incomeColumnList = null;
-	IConnection conn=null;
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	IMetadataTable inputMetadata;
-	
-	if(conns!=null && conns.size()>0){
-		conn = conns.get(0);
-		incomingConnName = conn.getName();
-		inputMetadata = conn.getMetadataTable();
-		incomeColumnList=inputMetadata.getListColumns();
-	}	
-	
-		
-
-
-%>
-java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
-<% for (int i = 0; i < addCols.size(); i++){
-	if(i<addCols.size()-1){
-%>?,<%}else{%>?<% }}%> )}");
-
-
-	<%
-	
 /////////////////Inner Class Convert///////////////////////	
 class Convert{
 	public String genVarType(String pType){
@@ -175,8 +141,38 @@ class Convert{
 	
 	
 }
+
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String dbsp= ElementParameterParser.getValue(node, "__SPNAME__");
+	String outpara= ElementParameterParser.getValue(node, "__OUTPARA__");
+	List<Map<String, String>>  addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");	
+
+	String incomingConnName = null;
+	List<IMetadataColumn> columnList = null;
+	List<IMetadataColumn> incomeColumnList = null;
+	IConnection conn=null;
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	IMetadataTable inputMetadata;
+%>
+java.sql.CallableStatement  stmt<%=cid%> = conn_<%=cid%>.prepareCall("{call <%=dbsp%>(
+<% for (int i = 0; i < addCols.size(); i++){
+	if(i<addCols.size()-1){
+%>?,<%}else{%>?<% }}%> )}");
+
+	<%
+	Convert convert=new Convert();
+	if(conns!=null && conns.size()>0){
+		conn = conns.get(0);
+		incomingConnName = conn.getName();
+		inputMetadata = conn.getMetadataTable();
+		incomeColumnList=inputMetadata.getListColumns();	
+
 	
-	Convert convert=new Convert();	
+	
 	IMetadataColumn incomeColumn=null;	
 	int count=0;
 for (Map<String, String> addCol:addCols) {//5 
@@ -201,12 +197,11 @@ for (Map<String, String> addCol:addCols) {//5
   	 }//7
   	} //6
    }//5
-	
+	}//end if(conns!=null && conns.size()>0){	
 %> 
-	    			      
+    			      
 				    stmt<%=cid%>.executeQuery();	
-			   
-
+			  
 <%
 int outNum=1;
 String outColumnType=null;
@@ -266,6 +261,8 @@ if(outConns.size()<1){%>
 		}
 <%
 }
+
+
 %>
 
 	
