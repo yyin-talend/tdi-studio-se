@@ -216,6 +216,7 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("Interbase");
             databasePerl.remove("FireBird");
             databasePerl.remove("Informix");
+            databasePerl.remove("Access");
             String[] dbPerl = (String[]) databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
@@ -242,7 +243,7 @@ public class DatabaseForm extends AbstractForm {
         schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
         datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
 
-        String[] extensions = { "*.mdb" }; //$NON-NLS-1$
+        String[] extensions = { "*.*" }; //$NON-NLS-1$
         fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
 
         // Button Check
@@ -707,9 +708,14 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
                 sidOrDatabaseText.setEditable(visible);
             }
-            if (s.contains("<filename>")) { //$NON-NLS-1$
+            if (s.contains("<filename>")) { //&& urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
                 fileField.setEditable(visible);
+                usernameText.setEditable(false);
+                passwordText.setEditable(false);
             }
+//            if (s.contains("<filename>") && urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")) { //$NON-NLS-1$
+//                fileField.setEditable(visible);
+//            }
             if (s.contains("<datasource>")) { //$NON-NLS-1$
                 datasourceText.setEditable(visible);
             }

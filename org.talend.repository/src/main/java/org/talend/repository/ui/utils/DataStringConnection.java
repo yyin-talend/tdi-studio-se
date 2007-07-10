@@ -48,10 +48,11 @@ public class DataStringConnection {
         String word = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
+        String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
+        
+        dataConnection = new DataConnection[15];
 
-        dataConnection = new DataConnection[14];
-
-        defaultTable = new String[14];
+        defaultTable = new String[15];
 
         dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -79,17 +80,17 @@ public class DataStringConnection {
         dataConnection[7] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 ":" + port + "/" + sid, "50000"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[8] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
-                "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
+        dataConnection[8] = new DataConnection("SQLite", "jdbc:sqlite:/<filename>",
+                "jdbc:sqlite:/"+ file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
         dataConnection[9] = new DataConnection("Ingres", "jdbc:ingres://<host>:<port>/<sid>",
                 "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
         dataConnection[10] = new DataConnection("Interbase", "jdbc:interbase://<host>/<sid>",
                 "jdbc:interbase://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[11] = new DataConnection("SQLite", "jdbc:sqlite:/<sid>",
-                "jdbc:sqlite:/"+ sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
+                "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[12] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<sid>",
                 "jdbc:firebirdsql:" + host + ":" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -97,6 +98,9 @@ public class DataStringConnection {
         dataConnection[13] = new DataConnection("Informix", "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>",
                 "jdbc:informix-sqli://" + host + ":" + port + "/" + sid +":informixserver="+word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+        dataConnection[14] = new DataConnection("Access", "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
+                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
 //        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 //                + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
 
