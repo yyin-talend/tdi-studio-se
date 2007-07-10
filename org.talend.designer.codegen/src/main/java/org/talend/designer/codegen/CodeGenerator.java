@@ -198,8 +198,6 @@ public class CodeGenerator implements ICodeGenerator {
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.BEGIN, null));
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.MAIN, null));
 
-                            componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(),
-                                    ECodePart.MAIN, getIncomingNameForMerge(startNode, subTree.getMergeNode())));
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
                         }
 
@@ -279,7 +277,7 @@ public class CodeGenerator implements ICodeGenerator {
                 codeGenArgument.setJobName(jobName);
                 codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
                         ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
-                
+
                 JetBean jetBean = initializeJetBean(codeGenArgument);
 
                 jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
@@ -454,12 +452,21 @@ public class CodeGenerator implements ICodeGenerator {
 
             for (IConnection connection : node.getOutgoingConnections()) {
                 INode targetNode = (INode) connection.getTarget();
-                if ((targetNode != null) && (subProcess != null)
-                        && (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE))) {
-                    subTreeArgument.setInputSubtreeConnection(connection);
-                    code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
-                    code.append(generateComponentsCode(subProcess, targetNode, part, null));
-                    code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
+                if ((targetNode != null) && (subProcess != null)) {
+
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
+                        subTreeArgument.setInputSubtreeConnection(connection);
+                        code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
+                        code.append(generateComponentsCode(subProcess, targetNode, part, null));
+                        code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
+                    } else if (part == ECodePart.MAIN) {
+                        subTreeArgument.setInputSubtreeConnection(connection);
+                        code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
+                        code.append(generateComponentsCode(subProcess, targetNode, ECodePart.MAIN,
+                                getIncomingNameForMerge(node, targetNode)));
+                        code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
+                    }
+
                 }
             }
 
@@ -496,7 +503,7 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setIncomingName(incomingName);
         argument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
                 ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
-        
+
         JetBean jetBean = initializeJetBean(argument);
 
         StringBuffer content = new StringBuffer();
