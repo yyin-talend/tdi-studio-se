@@ -418,7 +418,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         }
                     }
                     if (!found) {
-                        newLine = new HashMap<String, Object>();
+                        newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
                     }
                     newParamValues.add(j, newLine);
