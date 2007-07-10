@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <title>Scenario: Restoring files from bin</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileCopy_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileDelete_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1323609"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1324005"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Restoring files from bin
+</b></font></h3>
+<dl><a name="wp1323631"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a job that iterates on a list of files, copies each file from the defined source directory to a target directory. It then removes the copied files from the source directory.
+</font></dd>
+</dl><a name="wp1323647"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_case_tFileCopy1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1323664"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileList</b> and a <b>tFileCopy</b>.</font></li>
+<a name="wp1323711"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link both components using an <b>Iterate</b> link.</font></li>
+<a name="wp1323688"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileList </b><b>Properties</b>, set the directory for the iteration loop.</font></li>
+</ul>
+</ul>
+<a name="wp1323737"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_case_tFileCopy2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1323761"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Filemask</b> to <i>&quot;*.txt&quot;</i> to catch all files with this extension. For this use case, the case is not sensitive.</font></li>
+<a name="wp1323794"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tFileCopy</b> to set its <b>Properties</b>.</font></li>
+</ul>
+</ul>
+<a name="wp1323814"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_case_tFileCopy3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1323834"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the File Name field, press Ctrl+Space bar to access the list of variables. </font></li>
+<a name="wp1323843"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the global variable <i>((String)globalMap.get(&quot;tFileList_1_CURRENT_FILEPATH&quot;))</i> if you work in Java, or <i>$_globals{tFileList_1}{CURRENT_FILEPATH}</i> if you work in Perl. This way, all files from the source directory can be processed.</font></li>
+<a name="wp1323923"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the<b> Remove Source file</b> box to get rid of the file that have been copied.</font></li>
+<a name="wp1323942"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Replace existing file</b> to overwrite any file possibly present in the destination directory. </font></li>
+<a name="wp1323968"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save your job and press <b>F6</b>.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1323988"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The files are copied onto the destination folder and are removed from the source folder.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFileCopy_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFileDelete_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

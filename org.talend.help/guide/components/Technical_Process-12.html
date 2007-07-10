@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
-    <title>Defining a job design context and variables</title>
+    <meta name="LASTUPDATED" content="07/06/07 15:53:42">
+    <title>Defining a job design context and related variables</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -23,21 +23,29 @@
 
     <blockquote>
 <a name="wp1038166"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
-Defining a job design context and variables
+Defining a job design context and related variables
 </b></font></h2>
 <a name="wp1004663"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Depending on the circumstances the job design is being used in, you might want to manage it differently. 
+Depending on the circumstances the job design is being used in, you might want to manage it differently for various environment (Prod and Test for example). 
 </font></p>
-<a name="wp1007312"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For instance, there might be various stages of test, you want to perform and validate before a job design is ready to go-live for production use. Therefore, <b>Talend Open Studio</b> offers you to have multiple similar environments to avoid having to fill in all properties for all components again and again. 
+<a name="wp1094034"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For instance, there might be various stages of test, you want to perform and validate before a job design is ready to go-live for production use. Therefore, <b>Talend Open Studio</b> offers you to have multiple  contexts to avoid having to fill in components properties twice or more for each context of use. 
 </font></p>
-<a name="wp1007439"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For example, one context can be dedicated to development while another is prepared to production.The only difference between both contexts, being some critical field values and the scale of use.The production context is thus a duplicate of the development context with few changes that make the difference.  
+<a name="wp1094041"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For example, one context can be dedicated to development while another is prepared to production.The only difference between both contexts, being some critical field values and the scale of use.The production context is thus a duplicate of the development context with few changes that make the difference.
 </font></p>
-<a name="wp1007816"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Click on any area of the job designer, but the components,  to display the context configuration panel. The <b>Context</b> panel fills the place of the <b>Properties</b> panel at the bottom of workspace.
+<a name="wp1094045"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click on the <b>Contexts</b> tab located next to the properties tab system, to display the context configuration view.
 </font></p>
-<a name="wp1007829"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1094058"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1094092"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If the <b>Contexts</b> view is not offered in the tab system, go to <b>Window</b> &gt; <b>Show view</b> &gt; <b>Talend</b>, and select <b>Contexts</b>.
+</font></p>
+<a name="wp1094120"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Adding or renaming a context
 </b></font></h3>
 <dl><a name="wp1007835"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -56,7 +64,7 @@ When you copy a context, the entire default context legacy is copied over to the
 </font></dd>
 </dl><a name="wp1008497"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/Context3.png" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center"><img src="images/Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
 <dl><a name="wp1008500"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -68,9 +76,6 @@ You can switch Default context by simply selecting the new default context on th
 <a name="wp1008418"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Note that the Default context can never be deleted. There should always be a context to run the job. This context being called Default or any other name.
 </font></dd>
-<a name="wp1008512"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></dd>
 </dl><a name="wp1007880"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Defining the context parameters
 </b></font></h3>
@@ -78,7 +83,7 @@ Defining the context parameters
 A context is characterized by parameters. These parameters are mostly context-sensitive variables which will be added to the list of variables available for reuse in the component-specific properties through the Ctrl+Space keystrokes.
 </font></dd>
 <a name="wp1007907"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Add a parameter line to the table by clicking on <b>Add</b>, and fill the job&#39;s common data.You can add as many entries as you need. The <b>Script code</b> field points out the corresponding variable created. It follows a script standard such as $_context{YourParameterName}. 
+Add a parameter line to the table by clicking on <b>Add</b>, and fill the job&#39;s common data.You can add as many entries as you need. The <b>Script code</b> field points out the corresponding variable created. It follows a script standard which depends on the <b>Generation language</b> you selected (Java or Perl) such as in Perl:  $_context{YourParameterName}
 </font></dd>
 <a name="wp1008022"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Check the <b>Ask for confirmation? </b>box, if you want to be prompted for confirmation before running a job. This can be of use at the go-live stage, when the job is ready to switch from Development to Production context, for instance.
@@ -158,7 +163,7 @@ Script code
 </font></div>
 </td>
     <td><a name="wp1008002"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-This field is read-only. A script code is generated according to the parameter name entered. This is the variable format as it shows on the Ctrl+Space list.
+This field is read-only. A script code is generated according to the parameter name entered. This is the variable format as it shows on the Ctrl+Space bar list.
 </font></div>
 </td>
 </tr>
@@ -167,7 +172,7 @@ This field is read-only. A script code is generated according to the parameter n
 
 </font></p>
 <a name="wp1008569"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note that the variable or parameter name should follow some typing rules and should not contain any forbidden characters, such as spaces. 
+Note that the variable or parameter name should follow some typing rules and should not contain any forbidden characters, such as space char. 
 </font></dd>
 </dl><a name="wp1062174"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Variables and aliases  
@@ -182,7 +187,7 @@ Press <b>Ctrl+Space</b> to display the whole list of global and context variable
 The list grows along with new user (aka context) variable creations.
 </font></dd>
 <a name="wp1062196"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="Technical_Process-12.html"><i>Defining a job design context and variables</i></a>
+Related topic: <a href="Technical_Process-12.html"><i>Defining a job design context and related variables</i></a>
 </font></dd>
 </dl><a name="wp1062202"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
 Short creation of context variables 

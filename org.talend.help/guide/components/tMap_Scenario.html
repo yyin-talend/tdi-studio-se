@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
-    <title>Scenario 1: Simple mapping</title>
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <title>Scenario 1: Mapping with filter and simple explicit join (Perl) </title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -22,14 +22,17 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1190029"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1190029"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
 <a name="wp1294464"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Scenario 1: Simple mapping
+Scenario 1: Mapping with filter and simple explicit join (Perl) 
 </b></font></h3>
 <dl><a name="wp1287847"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The job described below aims at reading data from a csv file stored in the Repository, looking up at a reference file also stored remotely, then extracting data from these two files based on defined filters to an output file or a reject file.
+The job described below aims at reading data from a csv file stored in the Repository, looking up at a reference file also stored remotely, then extracting data from these two files based on defined filters to an output file or a reject file. 
+</font></dd>
+<a name="wp1346033"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This job is presented in Perl but could also be carried out in Java.
 </font></dd>
 <ul>
 <a name="wp1190044"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on <b>File</b> in the Palette of components, select  <b>tFileInputCSV</b> and drop it on the design area. Rename the Label to <i>Cars</i>, either by double-clicking on the label in the workspace or via the <b>View</b> tab of the Properties panel.</font></li>
@@ -86,7 +89,7 @@ For further information regarding Metadata creation in the Repository, see <a hr
 <ul>
 <ul>
 <a name="wp1190182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop Input content to fill in the first output schema. For more information regarding data mapping<a href="Technical_Process-10.html">, see&#160;<i>Mapping data flows in a job.</i></a></font></li>
-<a name="wp1190189"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the plus arrow button to add a filter row. In the Insured table, will be gathered cars and owners data which include an Insurance ID.  </font></li>
+<a name="wp1190189"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the plus arrow button to add a filter row. In the Insured table, will be gathered cars and owners data which include an Insurance ID.</font></li>
 </ul>
 </ul>
 <a name="wp1190198"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -142,7 +145,7 @@ For further information regarding Metadata creation in the Repository, see <a hr
 
 </font></div>
 <a name="wp1190301"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Scenario 2: Advanced mapping
+Scenario 2: Mapping with Inner join rejection (Perl)
 </b></font></h3>
 <dl><a name="wp1294490"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario, based on scenario 1, adds one input file containing Resellers details and extra fields in the main Output table. Two filters on Inner Joins are added to gather specific rejections.
@@ -254,6 +257,185 @@ As third advanced use scenario, based on the scenario 2, add a new Input table c
 </font></dd>
 <a name="wp1190536"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Set up an Inner Join between two lookup input tables (Owners and Insurance) in the Mapper to create a cascade lookup and hence retrieve Insurance details via the Owners table data.
+</font></dd>
+</dl><a name="wp1342213"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 4: Advanced mapping with filters, explicit joins and Inner join rejection (Java) 
+</b></font></h3>
+<dl><a name="wp1346154"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario introduces a job in Java tMap which allows to find the reseller&#39;s customer leads who are owners of a defined make, and have between 2 and 6 children (inclusive), for upsale purpose for example.
+</font></dd>
+</dl><a name="wp1346210"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1346232"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components from the Palette: <b>tFileInputDelimited</b> (x3), <b>tMap</b>, <b>tFileOutputDelimited</b> (x2)</font></li>
+<a name="wp1346263"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the input flow components to the tMap using a <b>Main row</b> connection. Pay attention to the file you connect first as it will automatically be set as <b>Main</b> flow. And all other connections will thus become <b>Lookup</b> flows.</font></li>
+<a name="wp1346324"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Properties</b> of each of the Input components. For example, define the <i>Resellers</i> file path used as <b>Main </b>flow in the job.</font></li>
+</ul>
+</ul>
+<a name="wp1346354"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1346759"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the delimited file to be used, the Row and the Field Separator, the Header and Footer rows if any.</font></li>
+<a name="wp1346769"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Edit the Schema</b> if it hasn&#39;t been stored in the <b>Repository</b>. You will retrieve this schema in the <b>Main</b> table at the top of the <b>Input</b> area of the mapper.</font></li>
+<a name="wp1346783"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Carry out these previous steps for the other Input components: <i>Cars</i> and <i>Owners</i>. These two <b>Lookup</b> flows will fill in secondary (lookup) tables in the Input area of the Mapper.</font></li>
+<a name="wp1346917"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on the <b>tMap</b> component to launch the Mapper and define the mapping and filters.</font></li>
+</ul>
+</ul>
+<a name="wp1346953"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1346986"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First set the explicite joins between the <b>Main</b> flow and the <b>Lookup</b> flows.</font></li>
+<a name="wp1347014"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Simply drag &amp; drop the <i>ID_Resellers</i> <b>column</b> towards the corresponding column and this way fill in the <b>Expression key</b> field of the <b>Lookup</b> table.</font></li>
+</ul>
+</ul>
+<a name="wp1347022"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1347112"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The explicit join displays in color along with a hash key.</font></li>
+<a name="wp1347124"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then in thr <b>Expr. Key</b> of the <i>Make</i> column, type in (in Java) the filter. In this use case, simply type in <i>&quot;BMW&quot;</i> as the search  is focused on the Owners of this particular Make. </font></li>
+<a name="wp1347166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Implement a cascading join between the two lookup tables <i>Cars</i> and <i>Owners</i>, in order to retrieve owners information regarding the number of children they have. </font></li>
+</ul>
+</ul>
+<a name="wp1347200"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1347244"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Simply drag and drop the <i>ID_Owners</i> column from the <i>Cars</i> table towards the <b>Expr. Key</b> field of the <i>id_owner</i> column from the <i>Owners</i> table.</font></li>
+<a name="wp1347292"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the <b>Filter</b> button next to the <b>Inner Join</b> button to display the <b>Filter</b> expression area.</font></li>
+<a name="wp1347338"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the <b>Filter</b> statement to narrow down the number of rows loaded in the <b>Lookup</b> flows. In this use case, the statement reads: <code>Owners.Children_Nr &gt; 1 &amp;&amp; Owners.Children_Nr &lt; 6</code> </font></li>
+<a name="wp1347435"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then, as you want to reject the null values into a separate table and exclude them from the standard output, check the <b>Inner Join</b> box for each of the filtered <b>Lookup</b> tables.</font></li>
+</ul>
+</ul>
+<a name="wp1347472"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1347510"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Inner join, you can then choose to include only a <b>Unique match, the First or Last match or All Matches</b>. In this use case, the <b>All matches</b> option is selected. Thus if several matchs are found in the Inner Join, i.e. rows matching the explicit join as well as the filter, all of them will be added to the output flow (either in Rejection or the regular output). </font></li>
+<a name="wp1348114"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then on the <b>Output</b> area of the <b>Mapper</b>, add two tables, one for the full matches and  one for the rejections.</font></li>
+<a name="wp1347576"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the plus button to add the tables and give a name to the outputs.</font></li>
+</ul>
+</ul>
+<a name="wp1347680"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1347715"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop data from the <b>Main</b> and <b>Lookup</b> tables in the Input area, towards the respective output tables, following the type of information you want to fetch.</font></li>
+<a name="wp1347740"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the rejection table used to direct the non-matches from the external join or the filter, click the <b>Inner Join Reject </b>button (violet arrow) to activate it.</font></li>
+<a name="wp1347782"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Designer</b> space, right-click on the <b>tMap</b> and pull the respective output link to the relevant components.</font></li>
+<a name="wp1347819"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Properties</b> of the <b>Output</b> components. </font></li>
+</ul>
+</ul>
+<a name="wp1347855"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1347872"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the filepath, the expected Row and Field separator. And for this use case, check the Include Header box.</font></li>
+<a name="wp1347904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema</b> should be automatically propagated from the <b>Mapper</b>.</font></li>
+<a name="wp1347928"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save you job, then go to the <b>Run Job</b> tab and check the <b>Statistics</b> box to follow the processing thread.</font></li>
+</ul>
+</ul>
+<a name="wp1347951"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap4-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1347970"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The statistics show that several matches were found and therefore the sum of the output rows (Main + rejected) exceeds the <b>Main</b> flow input rows.
+</font></dd>
+</dl><a name="wp1348316"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario 5: Advanced mapping with filters and a check of all rows  
+</b></font></h3>
+<dl><a name="wp1348360"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario is a modfied version of the preceding scenario. It describes a job that apply filters and then check each row of loaded lookup rows. 
+</font></dd>
+</dl><a name="wp1348384"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1348406"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Take the same job as in <a href="tMap_Scenario.html#wp1342213"><i>Scenario 4: Advanced mapping with filters, explicit joins and Inner join rejection (Java)</i></a>.</font></li>
+<a name="wp1348431"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No changes are required in the Input delimited files.</font></li>
+<a name="wp1348452"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Launch the Mapper to change the mapping and the filters.</font></li>
+</ul>
+</ul>
+<a name="wp1348463"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1348532"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove all explicit joins between the <b>Main</b> table and the <i>Cars</i> <b>Lookup</b> table.</font></li>
+<a name="wp1348767"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice that the <b>All Matches</b> setting changes automatically to <b>All Rows</b>. In fact, as no explicit join is declared (no hash keys), all lookup rows need to be loaded and checked  against all main flow rows.</font></li>
+<a name="wp1348546"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove the <b>Expr. key</b> filter (<i>&quot;BMW&quot;</i>) from the <i>Cars</i> table.</font></li>
+</ul>
+</ul>
+<a name="wp1348602"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1348645"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And click the <b>Filters</b> button to display the <b>Filter</b> area. Then type in the new filter to narrow down the search to <i>BMW</i> or <i>Mercedes</i> car makes. The statement reads as follows: <code>Cars.Make.equals(&quot;BMW&quot;) ||  Cars.Make.equals(&quot;Mercedes&quot;) </code> </font></li>
+<a name="wp1348741"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The filter on the <i>Owners</i> <b>Lookup</b> table doesn&#39;t change from the previous scenario.</font></li>
+<a name="wp1348871"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define new file paths for the respective outputs.</font></li>
+<a name="wp1348885"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and enable the <b>Statistics</b> on the Run Job tab before executing the job.</font></li>
+</ul>
+</ul>
+<a name="wp1348907"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1348940"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Statistics show that a cartesian product has been carried out between the Main flow rows with the  filtered Lookup rows.
+</font></dd>
+</dl><a name="wp1348968"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1348991"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The content of the main output flow shows that the filtered rows have correctly been passed on.
+</font></dd>
+</dl><a name="wp1349023"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/UseCase_tmap5-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1349059"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Whereas, the Reject result clearly shows the rows that didn&#39;t match one of the filter. 
 </font></dd>
 </dl>
     </blockquote>

@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <title>Scenario: Extracting images through a Webservice</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tWebServiceInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tXSDValidator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1305803"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1306337"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Extracting images through a Webservice
+</b></font></h3>
+<dl><a name="wp1307392"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a two-component job aiming at using a Webservice method and display the output on the standard view.  
+</font></dd>
+<a name="wp1306346"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The method takes a full url as an input string and returns a string array of images from a given web page.
+</font></dd>
+</dl><a name="wp1306409"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tWebServiceInput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1306475"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tWebServiceInput</b> component and a <b>tLogRow</b> component.</font></li>
+<a name="wp1306444"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Properties</b> view of the <b>tWebServiceInput</b> component, define the WSDL specifications, such as <b>End Point URI</b>, <b>WSDL</b> and <b>SOAPAction URI</b> where required.</font></li>
+<a name="wp1306543"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If the Web service you invoked requires authentication details, check the box and provide the relevant authentication information.</font></li>
+</ul>
+</ul>
+<a name="wp1306621"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tWebServiceInput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1306708"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Method Name</b> field, type in the method name as defined in the Web Service description. The name and the case of the method entered must match exactly the corresponding Web service method. </font></li>
+<a name="wp1306712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>return class</b> corresponding to the expected value type.</font></li>
+<a name="wp1306682"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Parameters area, click the plus (+) button to add a line to the table.</font></li>
+<a name="wp1306754"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then type in the exact parameters&#39; name as expected by the method.</font></li>
+</ul>
+</ul>
+<a name="wp1306721"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tWebServiceInput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1306774"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Value</b> column, type in the URL of the Website, the images are to be extracted from.</font></li>
+<a name="wp1306817"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Class</b> column is automatically filled in with the return class type selected earlier.</font></li>
+<a name="wp1306835"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the tWebServiceInput component to the standard output component, <b>tLogRow</b>. </font></li>
+<a name="wp1306861"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job.</font></li>
+</ul>
+</ul>
+<a name="wp1306885"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tWebServiceInput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1306905"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All images extracted from the given website are returned as a list of URLs on the <b>Run Job</b> view.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tWebServiceInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tXSDValidator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

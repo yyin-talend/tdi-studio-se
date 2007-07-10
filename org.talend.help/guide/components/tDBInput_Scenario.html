@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
     <title>Scenario 1: Displaying selected data from DB table</title>
   </head>
 
@@ -22,9 +22,9 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1187740"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1187740"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
 <a name="wp1287208"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 1: Displaying selected data from DB table
 </b></font></h3>
@@ -77,7 +77,7 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 </font></dd>
 <ul>
 <a name="wp1187883"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the same scenario as scenario 1 above and add a third component, <b>tPerl</b>.</font></li>
-<a name="wp1187886"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect tDBInput component to tPerl component using a trigger connection. In this case, we want the tDBInput to <b>Run before </b>the tPerl component.</font></li>
+<a name="wp1187886"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect <b>tDBInput</b> component to <b>tPerl</b> component using a trigger connection of <b>ThenRun</b> type. In this case, we want the <b>tDBInput</b> to run before the <b>tPerl</b> component.</font></li>
 </ul>
 </dl><a name="wp1187898"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
@@ -86,10 +86,10 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 </font></div>
 <ul>
 <ul>
-<a name="wp1187904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set both tDBInput and tLogRow component as in tDBInput scenario 1.</font></li>
+<a name="wp1187904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set both <b>tDBInput</b> and <b>tLogRow</b> component as in <b>tDBInput</b> scenario 1.</font></li>
 <a name="wp1187911"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click anywhere on the design workspace to display the <b>Context</b> property panel.</font></li>
-<a name="wp1187917"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create a new parameter called explicitly <b>StoreSQLQuery</b>. Enter a default value of 1. This value of 1 means the StoreSQLQuery is &quot;true&quot; for a use in the QUERY global variable.</font></li>
-<a name="wp1187921"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the tPerl component to display the Properties. Enter the command Print to display the query content, press Ctrl+Space to access the variable list and select the global variable QUERY.</font></li>
+<a name="wp1187917"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create a new parameter called explicitly <b>StoreSQLQuery</b>. Enter a default value of 1. This value of 1 means the <b>StoreSQLQuery</b> is &quot;true&quot; for a use in the QUERY global variable.</font></li>
+<a name="wp1187921"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>tPerl</b> component to display the Properties. Enter the command Print to display the query content, press <b>Ctrl+Space bar</b> to access the variable list and select the global variable QUERY.</font></li>
 </ul>
 </ul>
 <a name="wp1187930"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -99,8 +99,8 @@ StoreSQLQuery is a variable that can be used to debug a tDBInput scenario which 
 </font></div>
 <ul>
 <ul>
-<a name="wp1187936"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Go to your Run tab and execute the job. </font></li>
-<a name="wp1187941"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The query entered in the tDBInput component shows at the end of the job results, on the log:</font></li>
+<a name="wp1187936"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Go to your <b>Run tab</b> and execute the job. </font></li>
+<a name="wp1187941"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The query entered in the <b>tDBInput</b> component shows at the end of the job results, on the log:</font></li>
 </ul>
 </ul>
 <a name="wp1187950"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">

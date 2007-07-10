@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
     <title>Scenario: Regex to Positional file</title>
   </head>
 
@@ -22,9 +22,9 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1186697"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1186697"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
 <a name="wp1294984"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Regex to Positional file
 </b></font></h3>
@@ -55,14 +55,25 @@ The following scenario creates a two-component job, reading data from an Input f
 <a name="wp1186765"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in a path to the file in <b>File Name</b> field. This field is mandatory.</font></li>
 <a name="wp1186772"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row separator</b> identifying the end of a row. </font></li>
 <a name="wp1186778"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>Regular expression</b> in order to delimit fields of a row, which are to be passed on to the next component. You can type in a regular expression using Perl code, and on mutiple lines if needed. </font></li>
-<a name="wp1186783"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this expression, make sure you include all subpatterns matching the fields to be extracted.</font></li>
-<a name="wp1186787"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, ignore the header, footer and limit fields.  </font></li>
-<a name="wp1186799"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select a local (<b>Built-in</b>) <b>Schema type</b> to define the data to pass on to the <b>tFileOutputPositional</b> component. </font></li>
-<a name="wp1186807"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can load or create the schema through the <b>Edit Schema</b> function. </font></li>
-<a name="wp1186812"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the second component properties:</font></li>
 </ul>
 </ul>
-<a name="wp1186819"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1349410"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1349418"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl.
+</font></dd>
+<ul>
+<a name="wp1349433"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this expression, make sure you include all subpatterns matching the fields to be extracted.</font></li>
+<a name="wp1349413"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, ignore the header, footer and limit fields.  </font></li>
+<a name="wp1349404"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select a local (<b>Built-in</b>) <b>Schema type</b> to define the data to pass on to the <b>tFileOutputPositional</b> component. </font></li>
+<a name="wp1349391"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can load or create the schema through the <b>Edit Schema</b> function. </font></li>
+<a name="wp1349371"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the second component properties:</font></li>
+<a name="wp1349358"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"></font></li>
+</ul>
+</dl><a name="wp1349322"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
 <div align="center"><img src="images/Use_Case_tFileInputRegex2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 

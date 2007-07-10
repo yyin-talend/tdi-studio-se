@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:02">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:42">
     <title>Connecting components together</title>
   </head>
 
@@ -132,17 +132,22 @@ Note that the <b>Iterate</b> link name is read-only unlike the other connections
 </dl></dl><a name="wp1012765"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
 Trigger connections
 </b></font></h4>
-<dl><dl><a name="wp1013102"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<dl><dl><a name="wp1088537"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The trigger connections define the processing sequence. No data is handled through trigger connections.
 </font></dd>
-<a name="wp1013146"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1088541"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The connection in use will create a dependency between jobs or sub-jobs which therefore will trigger one after the other according to the trigger nature.
 </font></dd>
-<a name="wp1013132"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-There are two kinds of triggers: chronological triggers and contextual triggers.
+</dl></dl><a name="wp1088546"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ConnectTrigger_Popup.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1094589"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There are two kinds of triggers: chronological trigger and contextual triggers.
 </font></dd>
-<a name="wp1013217"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Run Before</b> and <b>Run After</b> are chronological triggers, in the sense, that the target component runs before or after the source component execution ended. Both connections are to be used only with Start components. 
+<a name="wp1088557"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>ThenRun</b>  (previously Run Before and Run after) is a chronological trigger, in the way, that you run the first component and then run the next component. This connection is to be used only with Start components. 
 </font></p>
 <a name="wp1084975"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Related topic: <a href="Technical_Process-07.html"><i>Defining the Start component</i></a>.
@@ -153,9 +158,14 @@ Related topic: <a href="Technical_Process-07.html"><i>Defining the Start compone
 <ul>
 <a name="wp1013712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if OK</b> will only trigger the target component once the execution of the source component is complete. Its main use could be to trigger notification sub-jobs for example. </font></li>
 <a name="wp1013724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if Error</b> will trigger the sub-job or component as soon as an error is encountered in the primary job.</font></li>
-<a name="wp1014200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if </b>triggers a sub-job or component in case the condition defined is met.</font></li>
+<a name="wp1014200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if </b>triggers a sub-job or component in case the condition defined is met. Click on the connection to display the <b>If </b>trigger <b>Properties</b> panel and set the condition in Perl or in Java according to the generation language you selected. The <b>Ctrl+Space bar</b> allows to access all global and contect variables.</font></li>
 </ul>
-</dl></dl><a name="wp1078496"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+</dl></dl><a name="wp1088567"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ConnectTrigger_RunIf.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1078496"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
 Link connection
 </b></font></h4>
 <dl><dl><a name="wp1078511"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -174,7 +184,7 @@ When right-clicking on the ELT component to be connected, select <b>Link &gt; Ne
 WARNING-Be aware that the name you provide to the link MUST reflect the actual table name.
 </font></p>
 <a name="wp1078828"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-In fact, the link name will be used in the SQL statement generated through the ETL Mapper, therefore the same name should never be used twice. 
+In fact, the link name will be used in the SQL statement generated through the ETL Mapper, therefore the same name should never be used twice.
 </font></dd>
 </dl></dl><a name="wp1078769"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Multiple Input/Output job

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <title>Scenario: Filtering SQlite data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSQLite_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSQLiteOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1337357"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1338493"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Filtering SQlite data
+</b></font></h3>
+<dl><a name="wp1338496"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a rather simple job which uses a select statement based on a filter to extract rows from a source SQLite Database and feed an output SQLite table. 
+</font></dd>
+</dl><a name="wp1338503"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSQLite1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1338589"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop from the <b>Palette</b>, a <b>tSQLiteInput</b> and a <b>tSQLiteOutput</b> component.</font></li>
+<a name="wp1338628"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the input to the output using a row main link.</font></li>
+<a name="wp1338642"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tSQLiteInput</b> properties, type in or browse to the SQLite Database input file.</font></li>
+</ul>
+</ul>
+<a name="wp1338677"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSQLite2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1338700"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The file contains hundreds of lines and includes an <b>ip</b> column which the select statement will based on</font></li>
+<a name="wp1338727"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tSQLite</b> Properties, edit the schema for it to match the table structure.</font></li>
+</ul>
+</ul>
+<a name="wp1338765"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSQLite3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1338785"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Query</b> field, type in your select statement based on the <i>ip</i> column.</font></li>
+<a name="wp1338844"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the right encoding parameter.</font></li>
+<a name="wp1338853"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tSQLiteOutput</b> component <b>Properties</b> panel, select the <b>Database </b>filepath.</font></li>
+</ul>
+</ul>
+<a name="wp1338964"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSQLite4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1338989"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the <b>Table</b> to be fed with the selected data.</font></li>
+<a name="wp1339006"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Action on table</b> and <b>Action on Data</b>. In this use case, the action on table is <i>Drop and create </i>and the action on data is <i>Insert</i>. </font></li>
+<a name="wp1339049"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema should be synchronized with the input schema.</font></li>
+<a name="wp1339061"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the encoding and define the threshold to commit.</font></li>
+<a name="wp1339077"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and run it.</font></li>
+</ul>
+</ul>
+<a name="wp1339091"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSQLite5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1339413"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The queried data are returned in the defined SQLite file.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSQLite_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSQLiteOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

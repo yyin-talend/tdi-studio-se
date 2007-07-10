@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="05/29/07 18:46:12">
+    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
     <title>Scenario: Inserting transformed data in MySQL database</title>
   </head>
 
@@ -22,9 +22,9 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1288321"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1288321"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
 <a name="wp1295411"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Inserting transformed data in MySQL database
 </b></font></h3>
@@ -40,7 +40,7 @@ This scenario describes a four-component job which aims at fueling a database wi
 <ul>
 <a name="wp1288346"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop a <b>tRowGenerator</b>, a <b>tMap</b>, a <b>tMysqlOutputBulk</b> as well as a <b>tMysqlBulkExec</b> component.</font></li>
 <a name="wp1288357"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the main flow using <b>row main</b> links.</font></li>
-<a name="wp1288366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect the start component (<b>tRowgenerator</b> in this example) to the <b>tMysqlBulkExec</b> using a <b>trigger</b> connection, of type <b>Run Before</b>.</font></li>
+<a name="wp1288366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect the start component (<b>tRowgenerator</b> in this example) to the <b>tMysqlBulkExec</b> using a <b>trigger</b> connection, of type <b>ThenRun</b>.</font></li>
 <a name="wp1288382"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">A <b>tRowGenerator</b> is used to generate random data. Double-click on the <b>tRowGenerator </b>component to launch the editor.</font></li>
 <a name="wp1288386"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the schema of the rows to be generated and the nature of data to generate. In this example, the <i>clients</i> file to be produced will contain the following columns: <i>ID</i>, <i>First Name</i>, <i>Last Name</i>, <i>Address</i>, <i>City</i> which all are defined as string data but the ID that is of integer type.</font></li>
 </ul>
