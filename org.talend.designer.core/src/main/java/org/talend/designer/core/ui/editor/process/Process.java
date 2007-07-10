@@ -178,8 +178,6 @@ public class Process extends Element implements IProcess {
 
     private IProcessor processor;
 
-    private boolean closed;
-
     public Process() {
         contextManager = new JobContextManager();
         createProcessParameters();
@@ -1744,8 +1742,7 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * check the problems of node.compare with the checkProblems(),this method can't refresh
-     * problems view.
+     * check the problems of node.compare with the checkProblems(),this method can't refresh problems view.
      */
     public void checkNodeProblems() {
         if (isActivate()) {
@@ -1970,26 +1967,6 @@ public class Process extends Element implements IProcess {
         this.processor = processor;
     }
 
-    /**
-     * Called by Talend editor when editor disposed.
-     * 
-     * yzhang Comment method "closed".
-     */
-    public void closed() {
-        closed = true;
-    }
-
-    /**
-     * To see if the job had been closed yet or not.
-     * 
-     * yzhang Comment method "isClosed".
-     * 
-     * @return
-     */
-    public boolean isClosed() {
-        return closed;
-    }
-
     public Set<String> getNeededLibraries(boolean withChildrens) {
         Set<String> neededLibraries = new HashSet<String>();
         List<? extends INode> nodeList = getGeneratingNodes();
@@ -2018,5 +1995,25 @@ public class Process extends Element implements IProcess {
             }
         }
         return neededLibraries;
+    }
+
+    /**
+     * Get sub jobs under this process, if none return null else return the names wihtin a string arrry..
+     * 
+     * yzhang Comment method "getSubJobs".
+     * 
+     * @return
+     */
+    public String[] getSubJobs() {
+        
+        List<String> strList = new ArrayList<String>();
+        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+            Node node = (Node) iter.next();
+            if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
+                strList.add(((String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName())).replaceAll(
+                        "'", ""));
+            }
+        }
+        return strList.size() > 0 ? strList.toArray(new String[1]) : null;
     }
 }

@@ -572,7 +572,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             FileEditorInput oldInput = (FileEditorInput) codeEditor.getEditorInput();
             // delete package and java file.
-            designerEditor.getDeletion().deleteRelatedJobs(oldInput.getFile());
+            //designerEditor.getDeletion().deleteRelatedJobs(oldInput.getFile());
             FileEditorInput input = createFileEditorInput();
             // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);

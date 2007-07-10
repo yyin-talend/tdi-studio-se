@@ -22,23 +22,22 @@
 package org.talend.designer.core.ui.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EventObject;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
@@ -66,9 +65,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.palette.PaletteListener;
 import org.eclipse.gef.palette.PaletteRoot;
-import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
@@ -85,7 +82,6 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
-import org.eclipse.gef.ui.views.palette.PaletteView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -108,8 +104,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -121,11 +115,9 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
@@ -136,9 +128,6 @@ import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
-import org.talend.designer.core.ui.editor.job.deletion.IJobDeletion;
-import org.talend.designer.core.ui.editor.job.deletion.JavaJobDeletion;
-import org.talend.designer.core.ui.editor.job.deletion.PerlJobDeletion;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -147,6 +136,9 @@ import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
+import org.talend.repository.job.deletion.IJobResourceProtection;
+import org.talend.repository.job.deletion.JobResource;
+import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
@@ -158,9 +150,7 @@ import org.talend.repository.model.RepositoryConstants;
  * 
  */
 public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements ITabbedPropertySheetPageContributor,
-        IResourceChangeListener, ITalendEditorService {
-
-    private static List<TalendEditor> editors = new ArrayList<TalendEditor>();
+        IJobResourceProtection {
 
     private boolean savePreviouslyNeeded;
 
@@ -184,11 +174,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private boolean dirtyState = false;
 
-    private IWorkspace workspace;
+    private JobResource currentJobResource;
 
-    private IJobDeletion deletion;
+    private String projectName;
 
-    private IPath srcPath;
+    private Map<String, JobResource> protectedJobs;
 
     public TalendEditor() {
         this(false);
@@ -196,33 +186,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     public TalendEditor(boolean readOnly) {
 
-        editors.add(this);
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
         setEditDomain(new DefaultEditDomain(this));
         this.readOnly = readOnly;
 
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-
-        try {
-            workspace = CorePlugin.getDefault().getRunProcessService().getProject(language).getWorkspace();
-        } catch (CoreException e) {
-            RuntimeExceptionHandler.process(e);
-        }
-        workspace.addResourceChangeListener(this);
-
-        switch (language) {
-        case PERL:
-            srcPath = new Path(".Perl");
-            deletion = new PerlJobDeletion(this.process);
-            break;
-        case JAVA:
-            srcPath = new Path(".Java/src");
-            deletion = new JavaJobDeletion(this.process);
-            break;
-
-        }
+        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLabel();
+        currentJobResource = new JobResource();
+        protectedJobs = new HashMap<String, JobResource>();
 
     }
 
@@ -236,24 +208,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     public Property getProperty() {
         return this.property;
-    }
-
-    /**
-     * To see if the process is opend or not within editor.
-     * 
-     * yzhang Comment method "isProcessOpend".
-     * 
-     * @param processName
-     * @return
-     */
-    public static Process isProcessOpend(String processName) {
-        for (TalendEditor editor : editors) {
-            Process process = editor.getProcess();
-            if (process != null && process.getLabel().equalsIgnoreCase(processName) && !process.isClosed()) {
-                return process;
-            }
-        }
-        return null;
     }
 
     /**
@@ -532,6 +486,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             e.printStackTrace();
             process = new Process();
         }
+        currentJobResource.setJobName(process.getLabel());
+        currentJobResource.setProjectName(projectName);
+
+        JobResourceManager.getInstance().addProtection(this);
+
     }
 
     // ------------------------------------------------------------------------
@@ -836,13 +795,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     @Override
     public void dispose() {
-        workspace.removeResourceChangeListener(this);
 
-        process.closed();
-        deletion.deleteJobs();
-
-        editors.remove(this);
-
+        JobResourceManager manager = JobResourceManager.getInstance();
+        manager.removeProtection(this);
+        for (JobResource r : protectedJobs.values()) {
+            manager.deleteResource(r);
+        }
         super.dispose();
     }
 
@@ -851,49 +809,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return new TalendPaletteViewerProvider(getEditDomain());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-     */
-    public void resourceChanged(IResourceChangeEvent event) {
-
-        if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
-            return;
-        }
-
-        IResourceDelta rootDelta = event.getDelta().findMember(srcPath);
-        if (rootDelta != null && ((rootDelta.getKind() & IResourceDelta.ADDED) == 0)) {
-            deletion.storeResource(rootDelta, this.process);
-        }
-
-    }
-
-    /**
-     * Getter for deletion.
-     * 
-     * @return the deletion
-     */
-    public IJobDeletion getDeletion() {
-        return this.deletion;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.ITalendEditorService#isProcessAlive(java.lang.String)
-     */
-    public boolean isProcessAlive(String processName) {
-        for (TalendEditor editor : editors) {
-            Process process = editor.getProcess();
-            if (process != null && process.getLabel().equalsIgnoreCase(processName) && !process.isClosed()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     public void savePaletteState() {
         PaletteViewer paletteViewer = getPaletteViewerProvider().getEditDomain().getPaletteViewer();
         if (paletteViewer != null) {
@@ -901,4 +816,44 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IResourceProtection#getProtectedIds()
+     */
+    public String[] calculateProtectedIds() {
+        String[] subJobs = process.getSubJobs();
+        List<String> subjobNames = Arrays.asList(subJobs == null ? new String[0] : subJobs);
+
+        for (String protectedJobName : subjobNames) {
+            String jobName = protectedJobName;
+            protectedJobName = "subjob_of_" + process.getLabel() + "_" + projectName + "_" + protectedJobName; //$NON-NLS-1$
+            protectedJobs.put(protectedJobName, new JobResource(projectName, jobName));
+        }
+        String currentJobId = "talend_editor_" + projectName + "_" + process.getLabel(); //$NON-NLS-1$
+        protectedJobs.put(currentJobId, currentJobResource);
+
+        Set<String> set = protectedJobs.keySet();
+
+        return set.toArray(new String[set.size()]); //$NON-NLS-1$
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IResourceProtection#getProjectedIds()
+     */
+    public String[] getProjectedIds() {
+        Set<String> set = protectedJobs.keySet();
+        return (String[]) set.toArray(new String[set.size()]);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IResourceProtection#getJobResource()
+     */
+    public JobResource getJobResource(String id) {
+        return protectedJobs.get(id);
+    }
 }
