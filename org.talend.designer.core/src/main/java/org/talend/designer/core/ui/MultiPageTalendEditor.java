@@ -86,6 +86,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -485,8 +486,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
@@ -553,6 +554,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     /**
      * Getter for process.
+     * 
      * @return the process
      */
     public IProcess getProcess() {
@@ -566,13 +568,21 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void refreshName() {
         try {
+            // remove the old job resources.
+            JobResourceManager jobResourceManager = JobResourceManager.getInstance();
+            jobResourceManager.removeProtection(designerEditor);
+            for (String id : designerEditor.getProjectedIds()) {
+                jobResourceManager.deleteResource(designerEditor.getJobResource(id));
+            }
+            designerEditor.resetJobResources();
+
             setName();
+            designerEditor.getCurrentJobResource().setJobName(getEditorInput().getName());
+            jobResourceManager.addProtection(designerEditor);
+
             processor.initPath();
             processor.setProcessorStates(IProcessor.STATES_EDIT);
 
-            FileEditorInput oldInput = (FileEditorInput) codeEditor.getEditorInput();
-            // delete package and java file.
-            //designerEditor.getDeletion().deleteRelatedJobs(oldInput.getFile());
             FileEditorInput input = createFileEditorInput();
             // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);

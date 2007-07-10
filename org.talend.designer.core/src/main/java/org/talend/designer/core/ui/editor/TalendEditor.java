@@ -856,4 +856,25 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public JobResource getJobResource(String id) {
         return protectedJobs.get(id);
     }
+
+    /**
+     * Remove all the protected resources.
+     * 
+     * yzhang Comment method "resetJobResources".
+     */
+    public void resetJobResources() {
+        String[] ids = getProjectedIds();
+        for (String id : ids) {
+            protectedJobs.remove(id);
+        }
+    }
+
+    /**
+     * Getter for currentJobResource.
+     * 
+     * @return the currentJobResource
+     */
+    public JobResource getCurrentJobResource() {
+        return this.currentJobResource;
+    }
 }
