@@ -56,6 +56,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -160,12 +161,17 @@ public class EditPropertiesAction extends AContextualAction {
 
             IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        operation.run(monitor);
-                    } catch (CoreException e) {
-                        throw new InvocationTargetException(e);
-                    }
+                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            try {
+                                operation.run(monitor);
+                            } catch (CoreException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    });
                 }
             };
             PlatformUI.getWorkbench().getProgressService().run(true, true, r);
