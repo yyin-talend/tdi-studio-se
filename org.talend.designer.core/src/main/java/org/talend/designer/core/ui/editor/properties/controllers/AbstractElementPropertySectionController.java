@@ -107,9 +107,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
-//    protected static final String PROPERTY = TypedTextCommandExecutor.PROPERTY; //$NON-NLS-1$
-
-    protected static final String PARAMETER_NAME = "PARAMETER_NAME"; //$NON-NLS-1$
+    //PTODO qzhang use PARAMETER_NAME it for bug 853. 
+    protected static final String PARAMETER_NAME = TypedTextCommandExecutor.PARAMETER_NAME; //$NON-NLS-1$
 
     protected static final int MAX_PERCENT = 100;
 
