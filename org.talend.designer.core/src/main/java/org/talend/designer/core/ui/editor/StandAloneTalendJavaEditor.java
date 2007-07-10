@@ -43,11 +43,11 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
@@ -215,16 +215,24 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
             RenameRefactoring ref = new JavaRenameRefactoring(processor);
             final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
                     CheckConditionsOperation.ALL_CONDITIONS);
+            
             IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        operation.run(monitor);
-                    } catch (CoreException e) {
-                        throw new InvocationTargetException(e);
-                    }
+                public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        public void run() {
+                            try {
+                                operation.run(monitor);
+                            } catch (CoreException e) {
+                                ExceptionHandler.process(e);
+                            }
+                        }
+                    });
+
                 }
             };
+            
             PlatformUI.getWorkbench().getProgressService().run(true, true, r);
             RefactoringStatus conditionStatus = operation.getConditionStatus();
             if (conditionStatus.hasError()) {
