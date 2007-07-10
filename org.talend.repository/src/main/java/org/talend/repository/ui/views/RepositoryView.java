@@ -53,6 +53,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -394,7 +395,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                         }
                     }
                 };
-                new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(true, false, op);
+                new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, op);
             } catch (InvocationTargetException e) {
                 throw (PersistenceException) e.getTargetException();
             } catch (InterruptedException e) {
