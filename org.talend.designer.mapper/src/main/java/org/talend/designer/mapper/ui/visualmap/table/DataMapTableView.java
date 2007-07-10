@@ -2020,7 +2020,7 @@ public abstract class DataMapTableView extends Composite {
             ExpressionEditorToMapperStyledTextKeyListener keyAndModifyListener = new ExpressionEditorToMapperStyledTextKeyListener(
                     expressionFilterText, mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler());
             expressionFilterText.addExtendedModifyListener(keyAndModifyListener);
-            // expressionFilterText.addKeyListener(keyAndModifyListener);
+            expressionFilterText.addKeyListener(keyAndModifyListener);
 
             // expressionFilterText.addKeyListener(new KeyListener() {
             //
@@ -2281,63 +2281,66 @@ public abstract class DataMapTableView extends Composite {
             // System.out.println("e.character=" + e.character);
             // System.out.println("keyCode=" + e.keyCode);
 
-            boolean ctrl = (e.stateMask & SWT.CTRL) != 0;
-            boolean altgr = (e.stateMask & SWT.ALT) != 0;
-            if (e.character == '\0' || ctrl && !altgr) {
-                modifyListenerAllowed = true;
-                highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
-            } else {
-                modifyListenerAllowed = false;
-                UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget
-                        .getStyledText();
-                Point selection = ControlUtils.getSelection(textWidget);
-                if (e.character == '\r' || e.character == '\u001b') {
-                    textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
-                    highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
-                } else {
-                    if (e.character == SWT.BS || e.character == SWT.DEL) {
-                        if (selection.x == selection.y) {
-
-                            if (e.character == SWT.BS) {
-                                if (selection.x + 1 < mapperColorStyledText.getText().length()
-                                        && mapperColorStyledText.getText().charAt(selection.x + 1) == '\n') {
-                                    mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
-                                } else {
-                                    mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
-                                }
-                            } else {
-                                if (selection.x < mapperColorStyledText.getText().length()) {
-                                    char nextChar = mapperColorStyledText.getText().charAt(selection.x);
-                                    if (nextChar == '\r') {
-                                        mapperColorStyledText
-                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
-                                    } else {
-                                        mapperColorStyledText
-                                                .replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
-                                    }
-                                }
-                            }
-
-                        } else {
-                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
-                                    - selection.x, ""); //$NON-NLS-1$
-                            highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
-                        }
-                    } else {
-                        // System.out.println("selection.x="+selection.x);
-                        // System.out.println("selection.y="+selection.y);
-                        // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
-                        mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1, selection.y
-                                - selection.x, String.valueOf(e.character));
-                        highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
-                    }
-                }
-
-            }
+            // boolean ctrl = (e.stateMask & SWT.CTRL) != 0;
+            // boolean altgr = (e.stateMask & SWT.ALT) != 0;
+            // if (e.character == '\0' || ctrl && !altgr) {
+            // modifyListenerAllowed = true;
+            // highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            // } else {
+            // modifyListenerAllowed = false;
+            // UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget
+            // .getStyledText();
+            // Point selection = ControlUtils.getSelection(textWidget);
+            // if (e.character == '\r' || e.character == '\u001b') {
+            // textTarget.setTextWithoutNotifyListeners(ControlUtils.getText(textWidget));
+            // highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            // } else {
+            // if (e.character == SWT.BS || e.character == SWT.DEL) {
+            // if (selection.x == selection.y) {
+            //
+            // if (e.character == SWT.BS) {
+            // if (selection.x + 1 < mapperColorStyledText.getText().length()
+            // && mapperColorStyledText.getText().charAt(selection.x + 1) == '\n') {
+            // mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
+            // } else {
+            // mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
+            // }
+            // } else {
+            // if (selection.x < mapperColorStyledText.getText().length()) {
+            // char nextChar = mapperColorStyledText.getText().charAt(selection.x);
+            // if (nextChar == '\r') {
+            // mapperColorStyledText
+            // .replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
+            // } else {
+            // mapperColorStyledText
+            // .replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
+            // }
+            // }
+            // }
+            //
+            // } else {
+            // mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+            // - selection.x, ""); //$NON-NLS-1$
+            // highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            // }
+            // } else {
+            // // System.out.println("selection.x="+selection.x);
+            // // System.out.println("selection.y="+selection.y);
+            // // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
+            // mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1, selection.y
+            // - selection.x, String.valueOf(e.character));
+            // highlightLineAndSetSelectionOfStyledTextFromTextControl(textWidget);
+            // }
+            // }
+            //
+            // }
         }
 
         public void keyReleased(KeyEvent e) {
             // highlightLineOfCursorPosition();
+            mapperManager.getUiManager().parseNewExpression(textTarget.getStyledText().getText(),
+                    textTarget.getCurrentEntry(), false);
+
         }
 
         /*
