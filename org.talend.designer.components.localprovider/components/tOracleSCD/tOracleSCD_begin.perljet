@@ -232,12 +232,19 @@ my $<%=dbh%> = DBI->connect(
                 }
             }
 
+%> 
+use constant <%=cid%>_cache_<%=colname%> => <%=colPosition%>; 
+<% 
             colPosition++;
         }
     }
 
     if (useVersion.equals("true")) {
         selectColumns.add(versionField);
+%>
+use constant <%=cid%>_cache_<%=versionField%> => <%=colPosition%>; 
+<%
+        colPosition++;
     }
 
     String selectColumnsString = StringUtils.join(
