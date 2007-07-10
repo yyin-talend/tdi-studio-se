@@ -74,6 +74,10 @@ public class RepositoryService implements IRepositoryService {
         changeProcessor.addRepositoryChangedListener(listener);
     }
 
+    public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
+        changeProcessor.registerRepositoryChangedListenerAsFirst(listener);
+    }
+
     public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
         changeProcessor.removeRepositoryChangedListener(listener);
     }
@@ -86,16 +90,16 @@ public class RepositoryService implements IRepositoryService {
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
     public void notifySQLBuilder(List<IRepositoryObject> list) {
         IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryView.show();
-        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(listener);
+        removeRepositoryChangedListener(listener);
         for (Iterator<IRepositoryObject> iter = list.iterator(); iter.hasNext();) {
             IRepositoryObject element = iter.next();
             repositoryChanged(new RepositoryElementDelta(element));
         }
-        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(listener);
+        registerRepositoryChangedListenerAsFirst(listener);
     }
-    
+
     public String validateColumnName(String columnName, int index) {
-        return ColumnNameValidator.validateColumnNameFormat(columnName,index);
+        return ColumnNameValidator.validateColumnNameFormat(columnName, index);
     }
 
 }

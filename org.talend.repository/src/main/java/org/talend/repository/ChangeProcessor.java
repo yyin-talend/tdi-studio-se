@@ -60,4 +60,17 @@ public class ChangeProcessor {
         }
     }
 
+    /**
+     * qzhang Comment method "registerRepositoryChangedListenerAsFirst".
+     * 
+     * @param listener
+     */
+    public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(0, listener);
+
+    }
+
 }

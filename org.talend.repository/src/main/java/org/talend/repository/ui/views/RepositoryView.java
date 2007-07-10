@@ -198,7 +198,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
         });
-        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
+        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListenerAsFirst(this);
     }
 
     IContextActivation ca;
