@@ -38,6 +38,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -172,6 +173,14 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                     connectionProperty.setId(nextId);
                     factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
                 } else {
+                    if (connectionItem.getConnection() instanceof DatabaseConnection) {
+                        DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
+                        final boolean equals = EDatabaseTypeName.getTypeFromDbType(c.getDatabaseType()).getProduct().equals(
+                                EDatabaseTypeName.ORACLEFORSID.getProduct());
+                        if (equals) {
+                            c.setSchema(c.getSchema().toUpperCase());
+                        }
+                    }
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }
