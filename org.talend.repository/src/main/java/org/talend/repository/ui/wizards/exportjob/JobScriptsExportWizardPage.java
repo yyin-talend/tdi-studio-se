@@ -49,24 +49,20 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.ui.editor.ITalendEditorService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.job.deletion.JobResource;
+import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.exportjob.deletion.AbstractJobDeletionAfterExported;
-import org.talend.repository.ui.wizards.exportjob.deletion.DeleteJavaJobAfterExport;
-import org.talend.repository.ui.wizards.exportjob.deletion.DeletePerlScriptAfterExport;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
@@ -103,8 +99,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private IWorkspace workspace;
 
-    private AbstractJobDeletionAfterExported deletion;
-
     /**
      * Create an instance of this class.
      * 
@@ -112,17 +106,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-
-        switch (language) {
-        case PERL:
-            deletion = new DeletePerlScriptAfterExport(language);
-            break;
-        case JAVA:
-            deletion = new DeleteJavaJobAfterExport(language);
-        }
 
         manager = createJobScriptsManager();
 
@@ -438,30 +421,39 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
 
-        ITalendEditorService talendEditorService = (ITalendEditorService) GlobalServiceRegister.getDefault()
-                .getService(ITalendEditorService.class);
+        String projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLabel();
+
+        List<JobResource> jobResources = new ArrayList<JobResource>();
+
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            String processItemLabel = processItem.getProperty().getLabel();
-            if (talendEditorService.isProcessAlive(processItemLabel)) {
-                ProcessorUtilities.generateCode(processItemLabel, processItem.getProcess().getDefaultContext(), false,
-                        false);
-            } else {
-                List<NodeType> list = processItem.getProcess().getNode();
-                for (NodeType nodeType : list) {
-                    if (nodeType.getComponentName().equals("tRunJob")) {//$NON-NLS-1$
-                        for (Object obj : nodeType.getElementParameter()) {
-                            ElementParameterType element = (ElementParameterType) obj;
-                            if ("PROCESS_TYPE_PROCESS".equals(element.getName())) {
-                                String str = element.getValue().replaceAll("'", "");
-                                if (!talendEditorService.isProcessAlive(str)) {
-                                    deletion.removeJobResource(str);
-                                }
-                            }
+            String jobName = processItem.getProperty().getLabel();
+
+            jobResources.add(new JobResource(projectName, jobName));
+
+            List<NodeType> list = processItem.getProcess().getNode();
+            for (NodeType nodeType : list) {
+                if (nodeType.getComponentName().equals("tRunJob")) { //$NON-NLS-1$
+                    for (Object obj : nodeType.getElementParameter()) {
+                        ElementParameterType element = (ElementParameterType) obj;
+                        if ("PROCESS_TYPE_PROCESS".equals(element.getName())) {
+                            String subJobName = element.getValue().replaceAll("'", "");
+                            jobResources.add(new JobResource(projectName, subJobName));
                         }
                     }
                 }
-                deletion.removeJobResource(processItemLabel);
+
+            }
+
+            JobResourceManager reManager = JobResourceManager.getInstance();
+            for (JobResource r : jobResources) {
+                if (reManager.isProtected(r)) {
+                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(),
+                            false, false);
+                } else {
+                    reManager.deleteResource(r);
+                }
             }
 
         }
