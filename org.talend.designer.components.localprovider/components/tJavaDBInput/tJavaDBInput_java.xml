@@ -105,6 +105,7 @@
       FIELD="DIRECTORY"
       NUM_ROW="5"
       REQUIRED="true"
+      SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
