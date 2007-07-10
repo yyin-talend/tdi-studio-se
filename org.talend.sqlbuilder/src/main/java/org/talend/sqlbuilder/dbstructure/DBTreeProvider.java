@@ -21,8 +21,10 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ITableColorProvider;
@@ -332,6 +334,8 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     }
 
+    private List<Query> displayQueries = new ArrayList<Query>();
+
     private void createQueries(RepositoryNode node, final IRepositoryObject repObj, DatabaseConnection metadataConnection,
             boolean isBuildIn) {
         QueriesConnection queriesConnection = metadataConnection.getQueries();
@@ -348,6 +352,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
     }
 
     private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
+        displayQueries.clear();
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
             Query query = (Query) iter.next();
             if (!TableHelper.isDeleted(query)) {
@@ -361,6 +366,7 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
                         && query.getLabel().equals(connectionParameters.getQueryObject().getLabel())) {
                     this.selectQuery = node;
                 }
+                displayQueries.add(query);
             }
         }
     }
@@ -638,6 +644,11 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     public RepositoryNode getSelectQuery() {
         return this.selectQuery;
+    }
+
+    
+    public List<Query> getDisplayQueries() {
+        return this.displayQueries;
     }
 
 }

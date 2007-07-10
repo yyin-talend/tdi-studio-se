@@ -565,7 +565,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
         structureComposite.updateStructureView(event);
-        manager.synchronizeAllSqlEditors();
+        manager.synchronizeAllSqlEditors(this);
     }
 
     public void notifySQLBuilder(IRepositoryObject o) {
@@ -584,5 +584,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
         editorComposite.setNodesSel(nodeSel);
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
+    }
+
+    
+    public DBStructureComposite getStructureComposite() {
+        return this.structureComposite;
     }
 }

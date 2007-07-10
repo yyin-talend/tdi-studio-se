@@ -75,6 +75,7 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepository
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.TextUtil;
@@ -1224,35 +1225,19 @@ public class SQLBuilderRepositoryNodeManager {
         return getRoot(repositoryNode.getParent());
     }
 
-    public void synchronizeAllSqlEditors() {
-        Shell[] shells = Display.getDefault().getShells();
-        final Shell activeShell = Display.getDefault().getActiveShell();
-        Object data = activeShell.getData();
-        Query activeQuery = null;
-        if (data instanceof SQLBuilderDialog) {
-            SQLBuilderDialog dialog2 = (SQLBuilderDialog) data;
-            CTabItem selection = dialog2.getEditorComposite().getTabFolder().getSelection();
-            if (selection.getData() instanceof Query) {
-                activeQuery = (Query) selection.getData();
-            }
-        }
-        for (Shell shell : shells) {
-            if (shell != null && shell != activeShell && !shell.isDisposed()) {
-                data = shell.getData();
-                if (data instanceof SQLBuilderDialog) {
-                    SQLBuilderDialog dialog = (SQLBuilderDialog) data;
-                    CTabItem[] items = dialog.getEditorComposite().getTabFolder().getItems();
-                    for (CTabItem item : items) {
-                        final boolean b = (item.getData() instanceof Query)
-                                && item.getData(TextUtil.KEY) instanceof MultiPageSqlBuilderEditor && activeQuery != null;
-                        Query data2 = (Query) item.getData();
-                        if (b && data2.getLabel().equals(activeQuery.getLabel())) {
-                            data2.setValue(activeQuery.getValue());
-                            data2.setComment(activeQuery.getComment());
-                            data2.setLabel(activeQuery.getLabel());
-                            updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY"));
-                        }
-                    }
+    public void synchronizeAllSqlEditors(SQLBuilderDialog builderDialog) {
+        List<Query> displayQueries = builderDialog.getStructureComposite().getTreeLabelProvider().getDisplayQueries();
+        for (Query activeQuery : displayQueries) {
+            CTabItem[] items = builderDialog.getEditorComposite().getTabFolder().getItems();
+            for (CTabItem item : items) {
+                final boolean b = (item.getData() instanceof Query)
+                        && item.getData(TextUtil.KEY) instanceof MultiPageSqlBuilderEditor && activeQuery != null;
+                Query data2 = (Query) item.getData();
+                if (b && data2.getLabel().equals(activeQuery.getLabel())) {
+                    data2.setValue(activeQuery.getValue());
+                    data2.setComment(activeQuery.getComment());
+                    data2.setLabel(activeQuery.getLabel());
+                    updateEditor(activeQuery, (MultiPageSqlBuilderEditor) item.getData("KEY"));
                 }
             }
         }

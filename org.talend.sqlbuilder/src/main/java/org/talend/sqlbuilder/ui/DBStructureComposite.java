@@ -667,4 +667,9 @@ public class DBStructureComposite extends Composite {
     public boolean isShowAllConnections() {
         return this.isShowAllConnections;
     }
+
+    
+    public DBTreeProvider getTreeLabelProvider() {
+        return this.treeLabelProvider;
+    }
 }
