@@ -32,13 +32,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}
     	String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String delim = delim1.substring(1,delim1.length()-1);
+    	if(delim.equals("'")){
+    		delim = "\\'";
+    	}
     	String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
+    	if(rowSeparator.equals("'")){
+    		rowSeparator = "\\'";
+    	}
     	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
     	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    	if(escapeChar.equals("'")){
+    		escapeChar = "\\'";
+    	}
     	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	if(textEnclosure.equals("'")){
+    		textEnclosure = "\\'";
+    	}
     	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
 %>		
 		int nb_line_<%=cid%> = 0;
