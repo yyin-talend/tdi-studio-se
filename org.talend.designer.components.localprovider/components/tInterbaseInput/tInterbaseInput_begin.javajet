@@ -137,11 +137,25 @@ if(conns != null && conns.size()>0){
 			 }
 			 <% 	
 			 }else{
- 	   		%>
- 			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
- 			<%
+ 	   		 %>
+ 	   		 	if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null)
+ 	   		 	{
+ 			 		<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+ 			 	}
+ 			 	else
+ 			 	{
+		 			<%
+		 			if(column.isNullable())
+		 			{
+		 			%>
+		 			<%=firstConnName%>.<%=column.getLabel()%> = null;
+		 			<%
+		 			}
+		 			%>
+ 			 	}
+ 			 <%
  			  }
- 			%>
+ 			 %>
  		}
  		
    	 <%  
