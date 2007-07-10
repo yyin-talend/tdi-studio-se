@@ -29,12 +29,19 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
+  	<PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:SQLITE"
+    />
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="FILE"
       REQUIRED="true"
     >
       <DEFAULT>''</DEFAULT>

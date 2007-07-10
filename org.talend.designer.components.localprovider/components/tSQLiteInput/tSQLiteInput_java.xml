@@ -43,7 +43,7 @@
       NAME="DBNAME"
       FIELD="FILE"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SID"
+      REPOSITORY_VALUE="FILE"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
