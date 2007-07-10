@@ -22,10 +22,17 @@
 package org.talend.scheduler.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IPath;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.repository.job.deletion.IJobResourceProtection;
+import org.talend.repository.job.deletion.JobResource;
 import org.talend.scheduler.i18n.Messages;
 
 /**
@@ -35,11 +42,17 @@ import org.talend.scheduler.i18n.Messages;
  * $Id$
  * 
  */
-public class ScheduleTask {
+public class ScheduleTask implements IJobResourceProtection {
+
+    private Map<String, JobResource> idAndResource = new HashMap<String, JobResource>();
 
     private static final int TASK_FIELD_NUMBER = 6;
 
     private static final String SPACE = " "; //$NON-NLS-1$
+
+    private String protectionId;
+
+    private JobResource currentResource;
 
     String day;
 
@@ -66,11 +79,62 @@ public class ScheduleTask {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IJobResourceProtection#calculateProtectedIds()
+     */
+    public String[] calculateProtectedIds() {
+        Set<String> set = idAndResource.keySet();
+        return set.toArray(new String[set.size()]);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IJobResourceProtection#getProjectedIds()
+     */
+    public String[] getProjectedIds() {
+        return calculateProtectedIds();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.job.deletion.IJobResourceProtection#getJobResource(java.lang.String)
+     */
+    public JobResource getJobResource(String id) {
+        return idAndResource.get(id);
+    }
+
+    public void initProtectionIdAndResource() {
+        String[] splited = job.split(String.valueOf(IPath.SEPARATOR));
+        String absJobName = splited[(splited.length - 1)];
+        protectionId = "schedule_taks_" + project + "_" + absJobName; //$NON-NLS-1$
+        currentResource = new JobResource(project, absJobName);
+        idAndResource.put(protectionId, currentResource);
+        for (JobType subJob : subJobs) {
+            String subJobId = "sub_job_of_" + absJobName + "_" + project + "_" + subJob.getName();
+            idAndResource.put(subJobId, new JobResource(project, subJob.getName()));
+        }
+    }
+
     String context;
 
     String job;
 
     String project;
+
+    JobType[] subJobs;
+
+    /**
+     * Sets the subJobs.
+     * 
+     * @param subJobs the subJobs to set
+     */
+    public void setSubJobs(JobType[] subJobs) {
+        this.subJobs = subJobs;
+    }
 
     /**
      * DOC dev Comment method "getContext".
@@ -201,6 +265,7 @@ public class ScheduleTask {
 
     /**
      * Check the command format with regex method description.
+     * 
      * @param commandInput String
      * @param pattern String
      * @param detail String
@@ -218,110 +283,108 @@ public class ScheduleTask {
 
     }
 
-   
-
-    
     /**
      * Getter for command.
+     * 
      * @return the command
      */
     public String getCommand() {
         return command;
     }
 
-    
     /**
      * Sets the command.
+     * 
      * @param command the command to set
      */
     public void setCommand(String command) {
         this.command = command;
     }
 
-    
     /**
      * Getter for day.
+     * 
      * @return the day
      */
     public String getDay() {
         return day;
     }
 
-    
     /**
      * Sets the day.
+     * 
      * @param day the day to set
      */
     public void setDay(String day) {
         this.day = day;
     }
 
-    
     /**
      * Getter for hour.
+     * 
      * @return the hour
      */
     public String getHour() {
         return hour;
     }
 
-    
     /**
      * Sets the hour.
+     * 
      * @param hour the hour to set
      */
     public void setHour(String hour) {
         this.hour = hour;
     }
 
-    
     /**
      * Getter for minute.
+     * 
      * @return the minute
      */
     public String getMinute() {
         return minute;
     }
 
-    
     /**
      * Sets the minute.
+     * 
      * @param minute the minute to set
      */
     public void setMinute(String minute) {
         this.minute = minute;
     }
 
-    
     /**
      * Getter for month.
+     * 
      * @return the month
      */
     public String getMonth() {
         return month;
     }
 
-    
     /**
      * Sets the month.
+     * 
      * @param month the month to set
      */
     public void setMonth(String month) {
         this.month = month;
     }
 
-    
     /**
      * Getter for weekly.
+     * 
      * @return the weekly
      */
     public String getWeekly() {
         return weekly;
     }
 
-    
     /**
      * Sets the weekly.
+     * 
      * @param weekly the weekly to set
      */
     public void setWeekly(String weekly) {

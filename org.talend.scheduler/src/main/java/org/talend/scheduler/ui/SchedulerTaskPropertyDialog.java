@@ -23,6 +23,8 @@ package org.talend.scheduler.ui;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -42,6 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.scheduler.SchedulerPlugin;
 import org.talend.scheduler.core.CommandModeType;
 import org.talend.scheduler.core.ExceptionHandler;
@@ -350,6 +353,13 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             taskInput.setJob(jobCombo.getText());
             taskInput.setContext(contextCombo.getText());
             taskInput.setProject(projectCombo.getText());
+
+            String[] splitedJobName = taskInput.getJob().split(String.valueOf(IPath.SEPARATOR));
+            List<JobType> runJobs = jobManager.getRunJobs(splitedJobName[splitedJobName.length - 1]);
+
+            taskInput.setSubJobs(runJobs.toArray(new JobType[runJobs.size()]));
+
+            taskInput.initProtectionIdAndResource();
         }
 
         /**

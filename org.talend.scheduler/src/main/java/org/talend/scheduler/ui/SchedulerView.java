@@ -24,6 +24,7 @@ package org.talend.scheduler.ui;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -62,7 +63,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.scheduler.SchedulerPlugin;
+import org.talend.scheduler.core.CommandModeType;
 import org.talend.scheduler.core.ScheduleTask;
 import org.talend.scheduler.i18n.Messages;
 
@@ -299,14 +302,20 @@ public class SchedulerView extends ViewPart {
             if (sure) {
                 StructuredSelection selection = (StructuredSelection) tableViewerCreator.getTableViewer()
                         .getSelection();
-                List list = selection.toList();
+
+                List<ScheduleTask> list = (List<ScheduleTask>) selection.toList();
+
+                for (ScheduleTask tasks : list) {
+                    if (tasks.getTaskMode() == CommandModeType.TalendJob) {
+                        JobResourceManager.getInstance().removeProtection(tasks);
+                    }
+                }
                 tasks.removeAll(list);
                 tableViewerCreator.getTableViewer().remove(list.toArray());
             } else {
                 return;
             }
         }
-
     }
 
     /**
@@ -411,6 +420,9 @@ public class SchedulerView extends ViewPart {
             ScheduleTask newTask = d.getResult();
             tasks.add(newTask);
             tableViewerCreator.getTableViewer().add(newTask);
+            if (newTask.getTaskMode() == CommandModeType.TalendJob) {
+                JobResourceManager.getInstance().addProtection(newTask);
+            }
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -422,14 +434,25 @@ public class SchedulerView extends ViewPart {
      * Edits a scheduler task in scheduler viewer.
      */
     protected void editSelectedTaskProperty() {
+        JobResourceManager reManager = JobResourceManager.getInstance();
+
         ScheduleTask task = getSelectedTask();
+        if (task.getTaskMode() == CommandModeType.TalendJob) {
+            reManager.removeProtection(task);
+        }
         SchedulerTaskPropertyDialog d = new SchedulerTaskPropertyDialog(getViewSite().getShell(), task);
 
         if (d.open() != IDialogConstants.OK_ID) {
+            if (task.getTaskMode() == CommandModeType.TalendJob) {
+                reManager.addProtection(task);
+            }
             return;
         }
 
         ScheduleTask newTask = d.getResult();
+        if (newTask.getTaskMode() == CommandModeType.TalendJob) {
+            reManager.addProtection(newTask);
+        }
         tableViewerCreator.getTableViewer().refresh(newTask);
     }
 
@@ -450,8 +473,8 @@ public class SchedulerView extends ViewPart {
         tableViewerCreator.getTableViewer().addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
-//                new ModifyTaskAction(tableViewerCreator.getTableViewer(), Messages
-//                        .getString("SchedulerView.modifyTaskTitle")).run(); //$NON-NLS-1$
+                // new ModifyTaskAction(tableViewerCreator.getTableViewer(), Messages
+                // .getString("SchedulerView.modifyTaskTitle")).run(); //$NON-NLS-1$
                 editTaskAction.run();
             }
         });
