@@ -53,7 +53,7 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
-      <DEFAULT>"sa"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
