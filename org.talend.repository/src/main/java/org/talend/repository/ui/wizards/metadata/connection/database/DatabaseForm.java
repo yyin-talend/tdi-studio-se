@@ -217,6 +217,11 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("FireBird");
             databasePerl.remove("Informix");
             databasePerl.remove("Access");
+
+//            databasePerl.remove("JavaDB Embeded");
+//            databasePerl.remove("JavaDB JCCJDBC");
+//            databasePerl.remove("JavaDB DerbyClient");
+            
             String[] dbPerl = (String[]) databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
@@ -713,7 +718,7 @@ public class DatabaseForm extends AbstractForm {
                 usernameText.setEditable(false);
                 passwordText.setEditable(false);
             }
-//            if (s.contains("<filename>") && urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")) { //$NON-NLS-1$
+//            if (s.contains("<filename>")) { //$NON-NLS-1$
 //                fileField.setEditable(visible);
 //            }
             if (s.contains("<datasource>")) { //$NON-NLS-1$

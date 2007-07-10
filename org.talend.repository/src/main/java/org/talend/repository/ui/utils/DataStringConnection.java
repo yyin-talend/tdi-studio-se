@@ -49,19 +49,22 @@ public class DataStringConnection {
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
-        
+
         dataConnection = new DataConnection[15];
 
         defaultTable = new String[15];
 
-        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
+        dataConnection[0] = new DataConnection(
+                "MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[1] = new DataConnection(
+                "PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + host + ":" + port + ":" + sid, "1521"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[2] = new DataConnection(
+                "Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + host + ":" + port + ":" + sid, "1521"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[3] = new DataConnection(
                 "Oracle with service name", //$NON-NLS-1$
@@ -71,21 +74,22 @@ public class DataStringConnection {
 
         dataConnection[4] = new DataConnection("Generic ODBC", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + word);
+        dataConnection[5] = new DataConnection(
+                "Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + word);
 
-        dataConnection[6] = new DataConnection("Sybase ASE", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "/" + sid, "5001"); //$NON-NLS-1$ //$NON-NLS-2$
+        dataConnection[6] = new DataConnection(
+                "Sybase ASE", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "/" + sid, "5001"); //$NON-NLS-1$ //$NON-NLS-2$
 
         dataConnection[7] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 ":" + port + "/" + sid, "50000"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[8] = new DataConnection("SQLite", "jdbc:sqlite:/<filename>",
-                "jdbc:sqlite:/"+ file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+        dataConnection[8] = new DataConnection("SQLite", "jdbc:sqlite:/<filename>", "jdbc:sqlite:/" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         dataConnection[9] = new DataConnection("Ingres", "jdbc:ingres://<host>:<port>/<sid>",
                 "jdbc:ingres://" + host + ":" + port + "/" + sid, "II7"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
+
         dataConnection[10] = new DataConnection("Interbase", "jdbc:interbase://<host>/<sid>",
                 "jdbc:interbase://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
@@ -95,14 +99,26 @@ public class DataStringConnection {
         dataConnection[12] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<sid>",
                 "jdbc:firebirdsql:" + host + ":" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[13] = new DataConnection("Informix", "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>",
-                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid +":informixserver="+word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[13] = new DataConnection("Informix",
+                "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>",
+                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[14] = new DataConnection("Access", "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
+        dataConnection[14] = new DataConnection("Access",
+                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+//      dataConnection[15] = new DataConnection("JavaDB Embeded", "jdbc:derby:<datasource>", "jdbc:derby:" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
-//        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//                + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
+//        dataConnection[16] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
+//                "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+//        dataConnection[17] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
+//                "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        
+        // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
+        // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        // + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
         // dataConnection[3] = new DataConnection("Oracle Thin", "jdbc:oracle:thin:@<host>:<port>:<sid>",
@@ -193,7 +209,7 @@ public class DataStringConnection {
         String s = init;
 
         if (after != null) {
-            //s = init.replaceFirst(before, after);
+            // s = init.replaceFirst(before, after);
             s = init.replace(before, after);
         }
         return s;
@@ -252,7 +268,8 @@ public class DataStringConnection {
         String startStringConnection;
         String startTemplateString;
         for (int i = 0; i < dataConnection.length; i++) {
-            startTemplateString = dataConnection[i].getString().substring(0, dataConnection[i].getString().indexOf("<")); //$NON-NLS-1$
+            startTemplateString = dataConnection[i].getString()
+                    .substring(0, dataConnection[i].getString().indexOf("<")); //$NON-NLS-1$
             if (startTemplateString.length() <= stringConnection.length()) {
                 startStringConnection = stringConnection.substring(0, startTemplateString.length());
                 if (stringConnection.contains("(description=(address=(protocol=tcp)")) { //$NON-NLS-1$
