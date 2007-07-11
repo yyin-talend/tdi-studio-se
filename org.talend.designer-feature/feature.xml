@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="CORE Talend testing update site for milestones" url="http://talendforge.org/core/updatesite/testing/"/>
+      <update label="CORE Talend update site for stables" url="http://talendforge.org/core/updatesite/stable/"/>
       <discovery label="Talend web site" url="http://www.talend.com"/>
    </url>
 
