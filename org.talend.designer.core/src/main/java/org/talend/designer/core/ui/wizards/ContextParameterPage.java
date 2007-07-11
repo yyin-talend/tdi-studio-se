@@ -50,8 +50,8 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.ContextParameterJavaTypeManager;
 import org.talend.core.model.metadata.types.JavaType;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -155,7 +155,7 @@ public class ContextParameterPage extends WizardPage {
         typeViewer = new ComboViewer(container, SWT.BORDER | SWT.READ_ONLY);
         typeViewer.setContentProvider(new ArrayContentProvider());
         typeViewer.setLabelProvider(new LabelProvider());
-        typeViewer.setInput(MetadataTalendType.getTalendTypesLabels());
+        typeViewer.setInput(MetadataTalendType.getCxtParameterTalendTypesLabels());
         typeViewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // Prompt
@@ -195,8 +195,7 @@ public class ContextParameterPage extends WizardPage {
                     nameStatus = new Status(IStatus.ERROR, DesignerPlugin.ID, IStatus.OK, Messages
                             .getString("ContextParameterPage.nameExists"), null); //$NON-NLS-1$
                 } else if (!contextManager.checkValidParameterName(nameText.getText())) {
-                    nameStatus = new Status(IStatus.ERROR, DesignerPlugin.ID, IStatus.OK,
-                            "Parameter name is not valid.", null); //$NON-NLS-1$
+                    nameStatus = new Status(IStatus.ERROR, DesignerPlugin.ID, IStatus.OK, "Parameter name is not valid.", null); //$NON-NLS-1$
                 } else {
                     nameStatus = createOkStatus();
                 }
@@ -263,7 +262,7 @@ public class ContextParameterPage extends WizardPage {
     private String getJavaDisplayedType(String originalTypedValue) {
         JavaType javaType;
 
-        javaType = JavaTypesManager.getJavaTypeFromLabel(originalTypedValue);
+        javaType = ContextParameterJavaTypeManager.getJavaTypeFromLabel(originalTypedValue);
 
         String type;
 
@@ -302,8 +301,7 @@ public class ContextParameterPage extends WizardPage {
     }
 
     private void updatePageComplete() {
-        setPageComplete(getErrorMessage() == null && StringUtils.isNotEmpty(parameter.getName())
-                && parameter.getType() != null
+        setPageComplete(getErrorMessage() == null && StringUtils.isNotEmpty(parameter.getName()) && parameter.getType() != null
                 && (!parameter.isPromptNeeded() || StringUtils.isNotEmpty(parameter.getPrompt())));
     }
 
@@ -364,7 +362,7 @@ public class ContextParameterPage extends WizardPage {
             } else {
                 promptStatus = createOkStatus();
             }
-            parameter.setPrompt(StringUtils.trimToNull(promptText.getText()));
+            parameter.setPrompt(StringUtils.trimToEmpty(promptText.getText()));
             parameter.setPromptNeeded(promptBtn.getSelection());
             updatePageStatus();
         }
