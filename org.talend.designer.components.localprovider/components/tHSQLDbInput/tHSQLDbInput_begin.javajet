@@ -74,13 +74,7 @@ else if(runningMode.equals("HSQLDB_WEBSERVER"))
 else if(runningMode.equals("HSQLDB_INPROGRESS_PERSISTENT"))
 {
 	%>
-	url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%>;
-	<%
-}
-else
-{
-	%>
-	url_<%=cid %> = "jdbc:hsqldb:mem:" + <%=dbalias%>;
+	url_<%=cid %> = "jdbc:hsqldb:file:" + <%=dbpath%> + "/" + <%=dbname%> + ";ifexists=true";
 	<%
 }
 %>
