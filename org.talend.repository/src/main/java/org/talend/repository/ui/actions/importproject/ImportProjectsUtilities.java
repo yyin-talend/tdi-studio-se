@@ -21,8 +21,14 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -110,14 +116,36 @@ public class ImportProjectsUtilities {
             if (file3 == null || !file3.exists()) {
                 file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
             }
-            FilesUtils.replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            FilesUtils.replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
+            replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
                     + technicalName + "\""); //$NON-NLS-1$
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         }
     }
 
+    private static void replaceInFile(String regex, String fileName, String replacement) throws IOException {
+        InputStream in = new FileInputStream(fileName);
+        StringBuffer buffer = new StringBuffer();
+        try {
+            InputStreamReader inR = new InputStreamReader(in);
+            BufferedReader buf = new BufferedReader(inR);
+            String line;
+            while ((line = buf.readLine()) != null) {
+                if (line.contains("<TalendProperties:Project")) {
+                    line = line.replaceAll(regex, replacement);
+                }
+                buffer.append(line).append("\n");
+            }
+        } finally {
+            in.close();
+        }
+
+        OutputStream os = new FileOutputStream(fileName);
+        os.write(buffer.toString().getBytes());
+        os.close();
+    }
+    
     public static void importArchiveProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
         importArchiveProject(shell, technicalName, sourcePath, monitor);
