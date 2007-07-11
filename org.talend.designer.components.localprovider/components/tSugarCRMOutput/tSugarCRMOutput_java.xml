@@ -2106,6 +2106,8 @@
       <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="false" />
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="false" />      
     </IMPORTS>
   </CODEGENERATION>
 
