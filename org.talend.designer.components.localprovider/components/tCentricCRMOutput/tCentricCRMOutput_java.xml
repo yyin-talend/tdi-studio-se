@@ -836,8 +836,8 @@
          <COLUMN KEY="false" LENGTH="1" NAME="EmploymentType" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="50" NAME="StartOfDay" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="EndOfDay" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="false" TYPE="id_Boolean"/>
