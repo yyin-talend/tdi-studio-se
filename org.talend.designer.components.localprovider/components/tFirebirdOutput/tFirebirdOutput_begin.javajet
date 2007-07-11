@@ -49,25 +49,6 @@ imports="
 	String javaDbDriver   = "org.firebirdsql.jdbc.FBDriver";  
 
 %>
-// Reset the "sys_paths" field of the ClassLoader to null.
-Class clazz_<%=cid%> = ClassLoader.class;
-java.lang.reflect.Field field_<%=cid%> = clazz_<%=cid%>.getDeclaredField("sys_paths");
-boolean accessible_<%=cid%> = field_<%=cid%>.isAccessible();
-if (!accessible_<%=cid%>)
-	field_<%=cid%>.setAccessible(true);
-	Object original_<%=cid%> = field_<%=cid%>.get(clazz_<%=cid%>);
-// Reset it to null so that whenever "System.loadLibrary" is called, it will be reconstructed with the changed
-// value.
-	field_<%=cid%>.set(clazz_<%=cid%>, null);
-try {
-// Change the value and load the library.
-	System.setProperty("java.library.path", <%=dbjnilib%>);
-	System.loadLibrary("jaybird21");
-} finally {
-// Revert back the changes.
-	field_<%=cid%>.set(clazz_<%=cid%>, original_<%=cid%>);
-	field_<%=cid%>.setAccessible(accessible_<%=cid%>);
-}
 
 java.lang.Class.forName("<%=javaDbDriver %>");
 

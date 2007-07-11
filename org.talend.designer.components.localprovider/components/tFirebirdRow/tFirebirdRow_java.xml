@@ -44,15 +44,6 @@
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
 
-     <PARAMETER
-      NAME="JNI_LIB"
-      FIELD="DIRECTORY"
-      NUM_ROW="3"
-      REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
@@ -153,10 +144,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-2.1.1.jar" REQUIRED="true" />
-       <IMPORT NAME="Driver-FireBird" MODULE="jaas.jar" REQUIRED="true" />
-       <IMPORT NAME="Driver-FireBird" MODULE="log4j-core.jar" REQUIRED="true" />
-       <IMPORT NAME="Driver-FireBird" MODULE="mini-j2ee.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-FireBird" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
