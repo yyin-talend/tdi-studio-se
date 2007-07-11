@@ -56,11 +56,13 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		while ((length<%=cid %> = br<%=cid %>.read(buffer<%=cid %>)) != -1)
 			sb<%=cid %>.append(buffer<%=cid %>, 0, length<%=cid %>);//read xml document
 		
+		String doctype<%=cid%> = null;
 		int start<%=cid%>=sb<%=cid%>.indexOf("<!DOCTYPE");
 		if(start<%=cid%>!=-1){
 			int end<%=cid%>=sb<%=cid%>.indexOf(">", start<%=cid%>);
+			doctype<%=cid%> = sb<%=cid%>.substring(start<%=cid %>, end<%=cid %>+1);
 			sb<%=cid%>.replace(start<%=cid %>, end<%=cid %>+1, "");	
-		}	
+		}
 		
 		dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 		dbf<%=cid %>.setValidating(false);
@@ -68,14 +70,23 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.StringBufferInputStream(sb<%=cid%>.toString()));
 		String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
 		
-		String DTDpath<%=cid %>=<%=dtdfile%>;
 		String encoding=null;
 		if(doc<%=cid%>.getXmlEncoding()==null) {
 			encoding="ISO-8859-1";
 		} else {
 			encoding=doc<%=cid%>.getXmlEncoding();
 		}
-		String reference<%=cid %>="<?xml version='"+doc<%=cid%>.getXmlVersion()+"' encoding='"+encoding+"'?>\n<!DOCTYPE "+rootnode<%=cid %>+" SYSTEM '"+DTDpath<%=cid %>+"'>\n";
+		<%
+		if (dtdfile.length() > 2) {
+		%>
+		String reference<%=cid %>="<?xml version='"+doc<%=cid%>.getXmlVersion()+"' encoding='"+encoding+"'?>\n<!DOCTYPE "+rootnode<%=cid %>+" SYSTEM '"+<%=dtdfile%>+"'>\n";
+		<%
+		} else {
+		%>
+		String reference<%=cid %>="<?xml version='"+doc<%=cid%>.getXmlVersion()+"' encoding='"+encoding+"'?>\n"+doctype<%=cid%>+"\n";
+		<%
+		}
+		%>
 		
 		int offsetRoot<%=cid %>=sb<%=cid %>.indexOf("<"+rootnode<%=cid %>);
 		sb<%=cid%>.replace(0, offsetRoot<%=cid %>, reference<%=cid %>);		
