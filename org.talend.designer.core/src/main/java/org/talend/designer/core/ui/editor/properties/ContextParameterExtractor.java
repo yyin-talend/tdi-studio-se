@@ -164,6 +164,7 @@ public final class ContextParameterExtractor {
             parameter.setType(JavaTypesManager.getDefaultJavaType().getId());
         }
         parameter.setPrompt(parameterName + "?"); //$NON-NLS-1$
+        parameter.setComment("");
         parameter.setValue(value);
         return parameter;
     }

@@ -200,7 +200,7 @@ public class ContextParameterPage extends WizardPage {
                 } else {
                     nameStatus = createOkStatus();
                 }
-                parameter.setName(StringUtils.trimToNull(nameText.getText()));
+                parameter.setName(StringUtils.trimToEmpty(nameText.getText()));
                 updatePageStatus();
             }
         });
@@ -254,7 +254,7 @@ public class ContextParameterPage extends WizardPage {
                 } else {
                     defaultStatus = createOkStatus();
                 }
-                parameter.setValue(StringUtils.trimToNull(defaultText.getText()));
+                parameter.setValue(StringUtils.trimToEmpty(defaultText.getText()));
                 updatePageStatus();
             }
         });
