@@ -12,6 +12,7 @@
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
     IS_MULTIPLYING_OUTPUTS="true"
+    VISIBLE="false"
   >
     <SIGNATURE/>
   </HEADER>

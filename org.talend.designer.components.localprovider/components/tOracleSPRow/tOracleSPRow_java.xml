@@ -10,6 +10,7 @@
     RELEASE_DATE="20070314A"
     SCHEMA_AUTO_PROPAGATE="false"
     STARTABLE="false"
+    VISIBLE="false"
   >
     <SIGNATURE/>
   </HEADER>
