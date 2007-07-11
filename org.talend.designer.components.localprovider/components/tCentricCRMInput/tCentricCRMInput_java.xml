@@ -83,7 +83,7 @@
 	    <ITEM NAME="CustomFieldData"   VALUE="customFieldDataList" />
        </ITEMS>
     </PARAMETER>
-    <PARAMETER NAME="CLASSNAME" FIELD="TEXT" NUM_ROW="3" REQUIRED="true" SHOW="true">
+    <PARAMETER NAME="CLASSNAME" FIELD="TEXT" NUM_ROW="3" REQUIRED="true" SHOW="false">
       <DEFAULT IF="MODULENAME=='Contact'">org.aspcfs.modules.contacts.base.Contact</DEFAULT>
       <DEFAULT IF="MODULENAME=='Account'">org.aspcfs.modules.accounts.base.Organization</DEFAULT>
       <DEFAULT IF="MODULENAME=='ContactAddress'">org.aspcfs.modules.contacts.base.ContactAddress</DEFAULT>
