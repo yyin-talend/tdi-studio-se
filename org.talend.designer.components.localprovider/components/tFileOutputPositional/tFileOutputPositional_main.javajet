@@ -10,6 +10,7 @@
 		java.util.List
 		java.util.Map
 		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 	"
 %>
 <%
@@ -46,7 +47,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (int i = 0; i < sizeColumns; i++) {
 				IMetadataColumn column = columns.get(i);
 				Map<String,String> format=formats.get(i);
-				
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				%>
 				
 				
@@ -56,7 +58,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%					
 				} else {%>
 					(<%=conn.getName() %>.<%=column.getLabel() %> == null) ? 
-					"": String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
+					"": <%
+					if(javaType == JavaTypesManager.DATE && patternValue!=null){
+					%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= patternValue %>)<%
+					}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+					%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()<%
+					}else if(javaType == JavaTypesManager.STRING){
+					%><%=conn.getName() %>.<%=column.getLabel() %><%
+					}else{
+					%>String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
+					}
 				}%> ;
     			tempLengthM<%=cid %>=tempStringM<%=cid %>.length();
     			
@@ -108,10 +119,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     <%
                     } %>       
                 }
-                //get  and format output String end
-				
-				
-				
+                //get  and format output String end				
 				<%
 			}
 			%>
