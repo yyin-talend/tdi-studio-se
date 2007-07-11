@@ -43,6 +43,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
 
@@ -116,16 +117,10 @@ public final class ContextParameterExtractor {
      * @param replaceCode
      */
     public static void saveContext(final String parameterName, final Element elem, String replaceCode) {
-        List<? extends IElementParameter> params = elem.getElementParameters();
-        boolean end = false;
-        for (int i = 0; i < params.size() && !end; i++) {
-            IElementParameter parameter2 = params.get(i);
-            if (parameter2.getName().equals(parameterName)) {
-                parameter2.setValue(replaceCode);
-                end = true;
-            }
-
-        }
+        PropertyChangeCommand cmd = new PropertyChangeCommand(elem, parameterName, replaceCode);
+        cmd.execute();
+        
+        // note that no undo will be available
     }
 
     private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager,

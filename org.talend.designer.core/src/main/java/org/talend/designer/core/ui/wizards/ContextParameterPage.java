@@ -215,7 +215,7 @@ public class ContextParameterPage extends WizardPage {
                 } else {
                     commentStatus = createOkStatus();
                 }
-                parameter.setComment(StringUtils.trimToNull(commentText.getText()));
+                parameter.setComment(StringUtils.trimToEmpty(commentText.getText()));
                 updatePageStatus();
             }
         });
