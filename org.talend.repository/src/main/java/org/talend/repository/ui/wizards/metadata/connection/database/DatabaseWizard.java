@@ -175,8 +175,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 } else {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
-                        final boolean equals = EDatabaseTypeName.getTypeFromDbType(c.getDatabaseType()).getProduct().equals(
-                                EDatabaseTypeName.ORACLEFORSID.getProduct());
+                        final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
                         if (equals) {
                             c.setSchema(c.getSchema().toUpperCase());
                         }
