@@ -198,6 +198,7 @@ DELETE
 ';
 
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %>->execute()
     or die "can't clear table";
 <%
         }
