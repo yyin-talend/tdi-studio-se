@@ -73,21 +73,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			for (int i = 0; i < sizeColumns; i++) {
     			IMetadataColumn column = columns.get(i);
     			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				if(javaType == JavaTypesManager.STRING )
-				{
-					
- %>
- 				row<%=cid%>[<%=i%>]=<%=conn.getName() %>.<%=column.getLabel() %>;
- <%   			
-    			
-  		    	}else{
-  		    	
-  	%>	  
-  				row<%=cid%>[<%=i%>] =String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
-  	<% 	
-  		    	}
-  		    			
-    			}
+    			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    			if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+%>row<%=cid%>[<%=i%>] =String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>); 
+<%
+    			}else { 
+ %>if(<%=conn.getName() %>.<%=column.getLabel() %> == null){
+ row<%=cid%>[<%=i%>]="";
+ }else{
+<%					if(javaType == JavaTypesManager.STRING ){
+%>row<%=cid%>[<%=i%>] = <%=conn.getName() %>.<%=column.getLabel() %>;
+<%
+					}else if(javaType == JavaTypesManager.DATE && pattern != null){
+%>row<%=cid%>[<%=i%>] = FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+<%
+					}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>row<%=cid%>[<%=i%>] = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
+<%
+					}else{
+%>row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+ 					}
+%>}
+ <%   			}
+ 				} 
     			if(split){
  %>
  				
