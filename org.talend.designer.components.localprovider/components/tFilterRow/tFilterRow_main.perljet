@@ -60,110 +60,50 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             prevComponentName = inConn.getMetadataTable().getTableName();
         }
 
-        StringBuffer conditionsExpr = new StringBuffer();
-        String beginExpr = "" ;
-        StringBuffer conditionSeparator = new StringBuffer();
-        StringBuffer endExpr = new StringBuffer();
-        StringBuffer blockExpr = new StringBuffer();
-        String lastBlock = "" ;
-        String beginExprAdvanced = "" ;
 
-        StringBuffer copyRow = new StringBuffer();
+%>
 
-        copyRow.append("\n@");
-        copyRow.append(cid);
-        copyRow.append(" = @");
-        copyRow.append(inputRowName);
-        copyRow.append(" ; \n");
+$branch_<%=cid%>_is_active = false;
 
 
-        boolean isOrExpr = false ;
-        boolean isAndExpr = false ;
-        if(logical.equals("&&")){
-            isAndExpr = true ;
-            beginExpr = "\nnext unless( " ;
-            conditionSeparator.append(" ) ; ");
-            beginExprAdvanced = "\nnext unless ( " ;
-
-        } 
-        else {
-            isOrExpr = true ;
-            conditionSeparator.append(" ) ");
-            blockExpr.append(" {");
-            blockExpr.append(copyRow);
-            blockExpr.append("\n}");
-
-            lastBlock = "\n else { next ; } \n" ;
-        }
-
-
+if (
+<%
         boolean isFirst = true ;
         boolean atLeastOneSimpleCondition = false ;
         for(int i=0; i<conditions.size(); i++) {
             atLeastOneSimpleCondition = true ;
             Map<String, String> condition = conditions.get(i);
-            if(isFirst ){
-                if(isOrExpr){
-                    beginExpr = "\nif( " ;
-            	    beginExprAdvanced = "\nelsif( " ;
-            	}
-            }
-            else{
-            	if(isOrExpr) {
-            	    beginExpr = "\nelsif( " ;
-            	}
-            }
-            conditionsExpr.append(beginExpr);
-            conditionsExpr.append(condition.get("FUNCTION"));
-
-            conditionsExpr.append(" $");
-            conditionsExpr.append(inputRowName);
-            conditionsExpr.append("[");
-            conditionsExpr.append(inputRowName);
-            conditionsExpr.append("__");
-            conditionsExpr.append(condition.get("INPUT_COLUMN"));
-            conditionsExpr.append("] ");
-
-            conditionsExpr.append(condition.get("OPERATOR"));
-            conditionsExpr.append(" ");
-            conditionsExpr.append(condition.get("RVALUE"));
-            conditionsExpr.append(conditionSeparator);
-
-            conditionsExpr.append(blockExpr);
-            
+%>
+        <%
+        if(!isFirst){
+        %>
+        <%=logical%>
+        <%
+        }
+        %>
+    <%=condition.get("FUNCTION")%>($<%=inputRowName%>[<%=inputRowName%>__<%=condition.get("INPUT_COLUMN")%>])
+        <%=condition.get("OPERATOR")%> <%=condition.get("RVALUE")%>
+<%
             isFirst = false ;
         }//for
 
-        if(isOrExpr){
-            if(!atLeastOneSimpleCondition){
-                lastBlock = copyRow.toString() ;
-            }
-        }
-        else {
-            lastBlock = copyRow.toString() ;
-        }
-        
-        
+%>
+        <%
         if(use_advanced.equals("true")){
-
-            if(isOrExpr){
-                if(!atLeastOneSimpleCondition){
-                    beginExprAdvanced = "\nif( " ;
-                    lastBlock = "\nelse { next ; }" ;
-                }
-            }
-
-
+            if(atLeastOneSimpleCondition){
+        %>
+        <%=logical%>
+        <%  }
             LocationUtils locationUtils = new LocationUtils();
-            
+                
             //replace column label by column position constant
             List<EntryLocation> locations = new ArrayList<EntryLocation>();
-
     
+        
             if (inConns != null && !inConns.isEmpty()) {
                 IConnection inConn = inConns.get(0);
                 IMetadataTable inMetadata = inConn.getMetadataTable();
-   
+       
                 List<IMetadataColumn> columns = inMetadata.getListColumns();
                 for(IMetadataColumn column : columns) {
                     locations.add(
@@ -174,44 +114,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     );
                 }
             }
-    
-            
+        
+                
             advanced = advanced.replaceAll(
                 "\\$input_row\\[",
                 "\\$"+ inputRowName +"["
             );
-            
+                
             advanced = locationUtils.replaceColumnNameToConstantName(
                 advanced,
                 (EntryLocation[])locations.toArray(new EntryLocation[0])
             );
-    
+        
             // In case the user would make some tricky Perl things, he can use
             // the arrays as a whole.
             advanced = advanced.replaceAll(
                 "@input_row",
                 "@" + inputRowName
             );
-    
-
-
-            conditionsExpr.append(beginExprAdvanced);
-            conditionsExpr.append("\n");
-            conditionsExpr.append(advanced);
-            conditionsExpr.append(conditionSeparator);
-            conditionsExpr.append(blockExpr);
-
+            %>
+            <%=advanced%>,
+        <%
         }
-        
-        conditionsExpr.append(lastBlock);
+        %>
+) {
+    $branch_<%=cid%>_is_active = true ;
+}
 
-
+<%
+        for (IConnection outConn: node.getOutgoingConnections()) {
+            String connName = outConn.getName();
 %>
-
-$nb_line_<%=cid%>++;
-<%=conditionsExpr%>
-$nb_line_ok_<%=cid%>++;
-
+$branch_<%=connName%>_is_active = $branch_<%=cid%>_is_active;
+<%
+        }
+%>
 
 <%
     }
