@@ -49,7 +49,7 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 		}
 	}
 	if(codePart.equals(ECodePart.MAIN)) {
-	    if ((node.getProcess().getNodesOfType("tMetter").size() > 0))
+	    if ((node.getProcess().getNodesOfType("tFlowMeter").size() > 0))
 	    {
         	Iterator it_conn = (Iterator)connSet.iterator();
         	while(it_conn.hasNext())
