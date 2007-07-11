@@ -660,7 +660,7 @@ public class DatabaseForm extends AbstractForm {
 
     private String getStringConnection() {
         String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText
-                .getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText(),
+                .getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText().toLowerCase(),
                 datasourceText.getText());
         return s;
     }
