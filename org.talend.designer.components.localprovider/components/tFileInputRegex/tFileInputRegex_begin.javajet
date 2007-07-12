@@ -150,6 +150,10 @@
 								/** end **/
 								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= patternValue %>);<%
 								/** begin **/
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
+								/** end **/
+								%><%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>].getBytes();<%
+								/** begin **/
 							} else {
 								/** end **/
 								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);<%
