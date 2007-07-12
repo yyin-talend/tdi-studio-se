@@ -88,10 +88,13 @@ if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%
 if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-					} else if(javaType == JavaTypesManager.DATE) { 
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%><%=conn.getName() %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+<%
+					}else if(javaType == JavaTypesManager.DATE) { 
 %><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
 <%
-					} else {
+					} else { 
 %><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
 <%
 					}
