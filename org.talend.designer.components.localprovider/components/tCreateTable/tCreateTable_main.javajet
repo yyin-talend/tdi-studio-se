@@ -73,6 +73,8 @@ class Transfer{
 			return "org.sqlite.JDBC";
 		}else if(dbType.equals("Sybase")){
 			return "com.sybase.jdbc3.jdbc.SybDriver";
+		}else if(dbType.equals("ODBC")){
+			return "sun.jdbc.odbc.JdbcOdbcDriver";
 		}
 		return null;
 	}
@@ -128,6 +130,8 @@ class Transfer{
 			return "\"jdbc:sqlite:/\"+" +sqliteDB.toLowerCase();
 		}else if(dbType.equals("Sybase")){
 			return "\"jdbc:sybase:Tds:\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
+		}else if(dbType.equals("ODBC")){
+			return "\"jdbc:odbc:\" + " + dbname;
 		}
 		return null;
 	}
