@@ -1,11 +1,13 @@
 <%@ jet
 imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataTable    
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
-    java.util.Map
+    java.util.Map    
+    org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.process.IConnection
 "
 %>
@@ -116,7 +118,43 @@ groupby_new_<%=cid %> = 0;
 	if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
 		for(int i = 0; i < groupby.length; i++){
-%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>))+"\">";
+			boolean needReplace = false;
+			boolean isDate = false;
+			boolean isByteArray = false;
+			String pattern = null;
+			boolean isPrimitive = false;
+			for(IMetadataColumn column:metadata.getListColumns()) {
+				if(column.getLabel().equals(groupby[i][0])){
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
+						needReplace = true;
+					}
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
+							needReplace = true;
+						}
+						isDate = true;
+					}
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+						isByteArray = true;
+					}
+					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+					break;
+				}
+			}
+%>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=groupby[i][0] %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=groupby[i][0] %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=groupby[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=groupby[i][0] %>)).toString())<%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=groupby[i][0] %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"\">";
 
 if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
 	
@@ -167,7 +205,43 @@ if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
 
 <%
 for(int i = 0; i < attribute.length; i++){
-%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName()%>.<%=attribute[i][0] %>))+"\"");
+	boolean needReplace = false;
+	boolean isDate = false;
+	boolean isByteArray = false;
+	String pattern = null;
+	boolean isPrimitive = false;
+	for(IMetadataColumn column:metadata.getListColumns()) {
+		if(column.getLabel().equals(attribute[i][0])){
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
+				needReplace = true;
+			}
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+				pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
+					needReplace = true;
+				}
+				isDate = true;
+			}
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+				isByteArray = true;
+			}
+			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+			break;
+		}
+	}
+%>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=attribute[i][0] %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=attribute[i][0] %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=attribute[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=attribute[i][0] %>)).toString())<%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=attribute[i][0] %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"\"");
 
 <%
 }
@@ -187,7 +261,43 @@ out_<%=cid %>.newLine();
 
 <%
 for(int i = 0; i < tag.length; i++){
-%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+TalendString.replaceSpecialCharForXML(String.valueOf(<%=conn.getName()%>.<%=tag[i][0] %>))+"</<%=tag[i][1]%>>");
+	boolean needReplace = false;
+	boolean isDate = false;
+	boolean isByteArray = false;
+	String pattern = null;
+	boolean isPrimitive = false;
+	for(IMetadataColumn column:metadata.getListColumns()) {
+		if(column.getLabel().equals(tag[i][0])){
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
+				needReplace = true;
+			}
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+				pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
+					needReplace = true;
+				}
+				isDate = true;
+			}
+			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+				isByteArray = true;
+			}
+			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+			break;
+		}
+	}
+%>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=tag[i][0] %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=tag[i][0] %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=tag[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=tag[i][0] %>)).toString())<%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=tag[i][0] %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"</<%=tag[i][1]%>>");
 
 out_<%=cid %>.newLine();
 
