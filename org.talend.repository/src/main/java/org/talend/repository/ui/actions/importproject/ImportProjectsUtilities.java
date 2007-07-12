@@ -181,6 +181,19 @@ public class ImportProjectsUtilities {
             TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(
                     sourcePath), shell);
             source = tarProvider.getRoot();
+            boolean ok = true;
+            for (Object o : tarProvider.getChildren(source)) {
+                String label = tarProvider.getLabel(o);
+                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME) && ok) {
+                    source = o;
+                } else {
+                    ok = false;
+                }
+            }
+            if (!ok) {
+                source = tarProvider.getRoot();
+            }
+            
             provider = tarProvider;
         } else {
             throw new IllegalArgumentException("File " + sourcePath + " is not a zip neither a tar file");
