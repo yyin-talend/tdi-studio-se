@@ -80,7 +80,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode root;
 
-    private IProxyRepositoryFactory factory;
+    private IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private TreeViewer viewer;
 
@@ -214,8 +214,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private void initialize() {
         root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
-
-        factory = ProxyRepositoryFactory.getInstance();
 
         // 0. Recycle bin
         recBinNode = new BinRepositoryNode(root);
