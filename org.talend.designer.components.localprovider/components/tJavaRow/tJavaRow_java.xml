@@ -35,7 +35,7 @@
       <DEFAULT/>
     </PARAMETER>
 
-    <PARAMETER NAME="CODE" FIELD="MEMO_PERL" NUM_ROW="2" NB_LINES="10">
+    <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" NUM_ROW="2" NB_LINES="10">
       <DEFAULT>// code sample:
 //
 // multiply by 2 the row identifier
