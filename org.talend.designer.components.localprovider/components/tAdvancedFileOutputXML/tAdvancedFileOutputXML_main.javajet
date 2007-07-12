@@ -148,17 +148,43 @@ groupby_new_<%=cid %> = 0;
 						int ii = 0;
 						while(group_index[i]+ii < group_tree.size() && group_tree.get(group_index[i]+ii).get("ATTRIBUTE").equals("true")){
 							boolean needReplace = false;
+							boolean isDate = false;
+							boolean isByteArray = false;
+							String pattern = null;
+							boolean isPrimitive = false;
 							for(IMetadataColumn column:metadata.getListColumns()) {
 								if(column.getLabel().equals(group_tree.get(group_index[i]+ii).get("COLUMN"))){
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 										needReplace = true;
 									}
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+										pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+										if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
+											needReplace = true;
+										}
+										isDate = true;
+									}
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+										isByteArray = true;
+									}
+									isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 									break;
 								}
 							}
 						%>" <%=group_tree.get(group_index[i]+ii).get("LABEL") %>=\"<%
 							if(group_tree.get(group_index[i]+ii).get("COLUMN") != null && !group_tree.get(group_index[i]+ii).get("COLUMN").equals("")){
-						%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%
+								if(isPrimitive){
+								%>"+<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>+"<%
+								}else{
+								%>"+((<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))+"<%
+								}
 							}%>\""+<%ii++;
 						}%>">";
 
@@ -212,11 +238,26 @@ if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
 		for(int i = 0; i < tree.size(); i++){
 			Map<String, String> treeNode = tree.get(i);
 			boolean needReplace = false;
+			boolean isDate = false;
+			boolean isByteArray = false;
+			String pattern = null;
+			boolean isPrimitive = false;
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if(column.getLabel().equals(treeNode.get("COLUMN"))){
-					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 						needReplace = true;
 					}
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
+							needReplace = true;
+						}
+						isDate = true;
+					}
+					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+						isByteArray = true;
+					}
+					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 					break;
 				}
 			}
@@ -258,7 +299,19 @@ out_<%=cid%>.newLine();
 <%
 						}else{
 %>
-out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"</<%=treeNode.get("LABEL") %>>");
+out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"</<%=treeNode.get("LABEL") %>>");
 out_<%=cid%>.newLine();
 <%
 						}
@@ -275,30 +328,105 @@ out_<%=cid%>.newLine();
 				if(nodeInfo[i][0]){//is tag's last att
 					if(nodeInfo[i][1]){//tag have no child
 						if( relatedColumn[i]== null){
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\"/>");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"<%}%>\"/>");
 out_<%=cid%>.newLine();
 <%
 						}else{
 							boolean replace = false;
+							boolean date = false;
+							boolean byteArray = false;
+							String ppattern = null;
+							boolean primitive = false;
 							for(IMetadataColumn column:metadata.getListColumns()) {
 								if(column.getLabel().equals(relatedColumn[i])){
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){//currently only for type of String to replace special char
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 										replace = true;
 									}
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
+										ppattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+										if(ppattern != null && (ppattern.contains("&") || ppattern.contains("<") || ppattern.contains(">") || ppattern.contains("'") || ppattern.contains("\""))){
+											replace = true;
+										}
+										date = true;
+									}
+									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
+										byteArray = true;
+									}
+									primitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 									break;
 								}
 							}
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\">"+<%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=relatedColumn[i] %><%if(replace){%>)<%}%>+"</<%=attributeTagLabel[i] %>>");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"<%}%>\">"+<%
+							if(primitive){
+								%><%=conn.getName() %>.<%=relatedColumn[i] %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=relatedColumn[i] %> == null)?"":(<%
+									if(date && ppattern != null){
+									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=relatedColumn[i] %>, <%=ppattern %>)<%if(replace){%>)<%}%><%
+									}else if(byteArray){
+									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=relatedColumn[i] %>))<%if(replace){%>)<%}%><%
+									}else{
+									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=relatedColumn[i] %><%if(replace){%>)<%}%><%
+									}%>))<%
+							}%>+"</<%=attributeTagLabel[i] %>>");
 out_<%=cid%>.newLine();
 <%
 						}
 					}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\">");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"<%}%>\">");
 out_<%=cid%>.newLine();
 <%
 					}
 				}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%>+"<%}%>\"");
+%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
+							if(isPrimitive){
+								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
+							}else{
+								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
+									if(isDate && pattern != null){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
+									}else if(isByteArray){
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
+									}else{
+									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
+									}%>))<%
+							}%>+"<%}%>\"");
 <%
 				}
 			}
