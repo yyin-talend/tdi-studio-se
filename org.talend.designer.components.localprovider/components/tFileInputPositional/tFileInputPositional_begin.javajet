@@ -159,6 +159,9 @@
 	%>
 								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
 	<%
+							}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes();
+<%
 							} else {
 	%>
 								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>].trim());
