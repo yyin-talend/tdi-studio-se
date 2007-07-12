@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -200,6 +199,21 @@ public class FileController extends AbstractElementPropertySectionController {
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
 
         return btnEdit;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     /*

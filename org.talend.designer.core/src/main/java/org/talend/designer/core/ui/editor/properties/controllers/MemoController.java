@@ -23,10 +23,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -39,6 +39,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
+import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -83,6 +86,9 @@ public class MemoController extends AbstractElementPropertySectionController {
         editionControlHelper.register(param.getName(), text, true);
 
         FormData d = (FormData) text.getLayoutData();
+        if (getAdditionalHeightSize() != 0) {
+            nbLines += this.getAdditionalHeightSize() / text.getLineHeight();
+        }
         d.height = text.getLineHeight() * nbLines;
         FormData data;
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
@@ -138,6 +144,32 @@ public class MemoController extends AbstractElementPropertySectionController {
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
+                new TextControlCreator());
+        Text text = (Text) dField.getControl();
+        FormData d = (FormData) text.getLayoutData();
+        d.height = text.getLineHeight() * param.getNbLines();
+        text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * param.getNbLines());
+        
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
+     */
+    @Override
+    public boolean hasDynamicRowSize() {
+        return true;
     }
 
     /*

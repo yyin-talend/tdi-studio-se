@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -103,6 +102,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         editionControlHelper.register(param.getName(), text, true);
 
         FormData d = (FormData) text.getLayoutData();
+        if (getAdditionalHeightSize() != 0) {
+            nbLines += this.getAdditionalHeightSize() / text.getLineHeight();
+        }
         d.height = text.getLineHeight() * nbLines;
         FormData data;
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
@@ -111,7 +113,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-        
+
         addDragAndDropTarget(text);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
@@ -157,6 +159,53 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        IControlCreator txtCtrl = new IControlCreator() {
+
+            public Control createControl(final Composite parent, final int style) {
+                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+                colorText.setFont(font);
+                return colorText;
+            }
+        };
+
+        DecoratedField dField = null;
+        if (param.getNbLines() != 1) {
+            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
+        } else {
+            dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
+        }
+
+        ColorStyledText text = (ColorStyledText) dField.getControl();
+        FormData d = (FormData) text.getLayoutData();
+        d.height = text.getLineHeight() * param.getNbLines();
+        text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * param.getNbLines());
+
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
+     */
+    @Override
+    public boolean hasDynamicRowSize() {
+        return true;
     }
 
     /*

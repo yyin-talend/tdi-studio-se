@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -161,6 +160,31 @@ public class VersionController extends AbstractElementPropertySectionController 
             // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         }
         return btnDown;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        Button btnUp, btnDown;
+
+        btnUp = getWidgetFactory().createButton(subComposite, "M", SWT.PUSH); //$NON-NLS-1$
+        Point btnUpSize = btnUp.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        btnUp.dispose();
+
+        btnDown = getWidgetFactory().createButton(subComposite, "m", SWT.PUSH); //$NON-NLS-1$
+        Point btnDownSize = btnDown.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        btnDown.dispose();
+        
+        
+        Point btnSize = new Point(Math.max(btnUpSize.x, btnDownSize.x), Math.max(btnUpSize.y, btnDownSize.y));
+        
+        return Math.max(btnSize.y, initialSize.y) + ITabbedPropertyConstants.VSPACE;
     }
 
     /*

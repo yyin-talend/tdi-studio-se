@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;
@@ -42,6 +43,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -57,6 +60,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableComm
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -552,6 +556,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
+        int estimatedHeightSize = 0, estimatedMaxRowSize = 0;
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
@@ -657,6 +662,53 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         generator.initController(this);
 
+        // System.out.println("********************** NEW ADDCOMPONENTS **********************");
+        TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
+        int compositeHeight = tabbedPropertyComposite.getClientArea().height
+                - tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
+        // System.out.println("size composite:" + compositeHeight);
+
+        int nbDynamic = 0;
+        for (int curRow = 1; curRow <= maxRow; curRow++) {
+            estimatedMaxRowSize = 0;
+            for (int i = 0; i < listParam.size(); i++) {
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                        // System.out.println("test:" + curParam.getName() + " field:"+curParam.getField());
+                        if (curParam.isShow(listParam)) {
+                            // System.out.println("show:" + curParam.getName()+ " field:"+curParam.getField());
+                            AbstractElementPropertySectionController controller = generator.getController(curParam
+                                    .getField(), this);
+
+                            if (controller == null) {
+                                break;
+                            }
+                            int estimatedSize = controller.estimateRowSize(composite, curParam);
+                            if (controller.hasDynamicRowSize()) {
+                                nbDynamic++;
+                            }
+                            // System.out.println("param:" + curParam.getName() + " - estimatedSize:" + estimatedSize);
+
+                            if (estimatedSize > estimatedMaxRowSize) {
+                                estimatedMaxRowSize = estimatedSize;
+                            }
+                        }
+                    }
+                }
+            }
+            estimatedHeightSize += estimatedMaxRowSize;
+        }
+        // System.out.println("*** ESTIMATED SIZE:" + estimatedHeightSize + " ***");
+        int emptySpace = compositeHeight - estimatedHeightSize;
+        // System.out.println("--- EMPTY SPACE:" + emptySpace);
+        int additionalHeightSize = 0;
+        if (emptySpace > 0 && nbDynamic > 0) {
+            additionalHeightSize = emptySpace / nbDynamic;
+            // System.out.println("--- DIVIDED ADDITIONAL HEIGHT (for each dynamic):" + additionalHeightSize);
+        }
+
         curRowSize = 0;
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
@@ -672,6 +724,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
             numInRow = 0;
             lastControl = null;
+
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
@@ -686,8 +739,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             if (controller == null) {
                                 break;
                             }
+                            if (controller.hasDynamicRowSize()) {
+                                controller.setAdditionalHeightSize(additionalHeightSize);
+                            }
+
                             lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
                                     lastControl);
+
+                            // System.out.println("param:" + curParam.getName() + " - curRowSize:" + curRowSize);
 
                             if (curRowSize > maxRowSize) {
                                 maxRowSize = curRowSize;
@@ -697,21 +756,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
             heightSize += maxRowSize;
+
         }
-        
+        // System.out.println("*** FINAL SIZE =" + heightSize + " ***");
+
         resizeScrolledComposite();
     }
 
-    /**
-     * added to fix the bugs 1107 & 1434.
-     * This code is added because the function resizeScrolledComposite is
-     * set as private in TabbedPropertySheetPage.
-     * So the code bellow will do the same operation but will access to 
-     * specific eclipse functions.
-     */
-    private void resizeScrolledComposite() {
-        Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
+    private TabbedPropertyComposite getTabbedPropertyComposite() {
         TabbedPropertyComposite tabbedPropertyComposite = null;
         Composite tmpComposite = composite;
         while (tabbedPropertyComposite == null) { // to retrieve the main composite of the TabbedProperties
@@ -721,8 +773,22 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 tmpComposite = tmpComposite.getParent();
             }
         }
+        return tabbedPropertyComposite;
+    }
+
+    /**
+     * added to fix the bugs 1107 & 1434. This code is added because the function resizeScrolledComposite is set as
+     * private in TabbedPropertySheetPage. So the code bellow will do the same operation but will access to specific
+     * eclipse functions.
+     */
+    private void resizeScrolledComposite() {
+        Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        lastCompositeSize = getTabbedPropertyComposite().getClientArea().height;
+
+        TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
         compositeSize.y += tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-        tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);//  .setMinHeight(height);
+        tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);
     }
 
     /*
@@ -783,6 +849,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         checkErrorsWhenViewRefreshed = false;
     }
 
+    int lastCompositeSize = 0;
+
     // private ISelection lastSelection;
     /*
      * @Override (non-Java)
@@ -836,7 +904,48 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
         currentComponent = elem.getElementName();
+
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        PropertySheet sheet = (PropertySheet) view;
+        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+            Control control = tabbedPropertySheetPage.getControl();
+            control.addListener(SWT.Resize, new Listener() {
+
+                public void handleEvent(Event event) {
+                    refreshLimiter.resetTimer();
+                    refreshLimiter.startIfExecutable(true);
+                }
+            });
+        }
     }
+
+    final ExecutionLimiter refreshLimiter = new ExecutionLimiter(250, true) {
+
+        @Override
+        public void execute(final boolean isFinalExecution) {
+            if (composite.isDisposed()) {
+                return;
+            }
+
+            composite.getDisplay().asyncExec(new Runnable() {
+
+                public void run() {
+                    int currentSize = getTabbedPropertyComposite().getClientArea().height;
+                    if (lastCompositeSize != currentSize) {
+                        // System.out.println("resize : currentSize=" + currentSize + " / lastCompositeSize="
+                        // + lastCompositeSize);
+
+                        addComponents(true);
+                        refresh();
+                    }
+                }
+
+            });
+
+        }
+    };
 
     /**
      * Set the section of the tabbed property.

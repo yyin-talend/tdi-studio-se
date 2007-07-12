@@ -125,14 +125,6 @@ public class ColorController extends AbstractElementPropertySectionController {
         cLayout.setBackground(subComposite.getBackground());
         Button colorBtn = (Button) dField.getControl();
 
-        // FormData data = new FormData();
-        // data.top = new FormAttachment(0, top);
-        // if (lastControl != null) {
-        // data.left = new FormAttachment(lastControl, 0);
-        // } else {
-        // data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-        // }
-        // cLayout.setLayoutData(data);
         hashCurControls.put(param.getName(), colorBtn);
         colorBtn.setEnabled(!param.isReadOnly());
         colorBtn.addSelectionListener(listenerSelection);
@@ -180,6 +172,24 @@ public class ColorController extends AbstractElementPropertySectionController {
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         refresh(param, false);
         return cLayout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return getWidgetFactory().createButton(parent, "", SWT.FLAT);
+            }
+
+        });
+        Button colorBtn = (Button) dField.getControl();
+        Point initialSize = colorBtn.computeSize(SIZE_X, SIZE_Y);
+        dField.getLayoutControl().dispose();
+        return initialSize.y;
     }
 
     /*

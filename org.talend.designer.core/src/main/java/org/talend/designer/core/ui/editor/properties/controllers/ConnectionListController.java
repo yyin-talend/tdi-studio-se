@@ -22,11 +22,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
@@ -50,7 +46,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -114,6 +109,14 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
         return null;
     }
+    
+    IControlCreator cbCtrl = new IControlCreator() {
+
+        public Control createControl(final Composite parent, final int style) {
+            CCombo cb = new CCombo(parent, style);
+            return cb;
+        }
+    };
 
     /*
      * (non-Javadoc)
@@ -125,13 +128,6 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
             final int nbInRow, final int top, final Control lastControl) {
         param.setDisplayName(EParameterName.CONNECTION_LIST.getDisplayName());
 
-        IControlCreator cbCtrl = new IControlCreator() {
-
-            public Control createControl(final Composite parent, final int style) {
-                CCombo cb = new CCombo(parent, style);
-                return cb;
-            }
-        };
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -193,6 +189,18 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         updateConnectionList(elem, param, param.getFilter());
         return cLayout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     /*

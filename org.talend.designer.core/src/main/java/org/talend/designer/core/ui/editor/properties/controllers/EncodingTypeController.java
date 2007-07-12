@@ -188,9 +188,24 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
 
             Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-
         }
         return lastControlUsed;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        CCombo combo = new CCombo(subComposite, SWT.BORDER);
+        IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        combo.setItems(encodingTypeParameter.getListItemsDisplayName());
+        Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        combo.dispose();
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     /**

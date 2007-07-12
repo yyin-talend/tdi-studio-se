@@ -172,6 +172,36 @@ public class TableController extends AbstractElementPropertySectionController {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
+
+        updateTableValues(param);
+
+        tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess());
+        PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
+                subComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
+        tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
+        tableEditorView.setReadOnly(param.isReadOnly());
+
+        final Table table = tableEditorView.getTable();
+        int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
+                + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
+                + 50;
+        
+        tableEditorView.getMainComposite().dispose();
+
+        int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
+        return ySize2 + ITabbedPropertyConstants.VSPACE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent arg0) {
@@ -427,7 +457,7 @@ public class TableController extends AbstractElementPropertySectionController {
             }
         }
     }
-    
+
     public static Map<String, Object> createNewLine(IElementParameter param) {
         Map<String, Object> line = new HashMap<String, Object>();
         String[] items = (String[]) param.getListItemsDisplayCodeName();

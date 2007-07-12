@@ -50,7 +50,6 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -137,6 +136,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         return null;
     }
+    
+    IControlCreator cbCtrl = new IControlCreator() {
+
+        public Control createControl(final Composite parent, final int style) {
+            CCombo cb = new CCombo(parent, style);
+            return cb;
+        }
+    };
 
     /*
      * (non-Javadoc)
@@ -156,24 +163,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             }
         }
 
-        // Button refreshBtn;
-        // refreshBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        // refreshBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        //
-        // // refreshBtn.setImage(CorePlugin.getImageDescriptor(REFRESH_BUTTON).createImage());
-        //
-        // refreshBtn.addSelectionListener(listenerSelection);
-        // refreshBtn.setData(NAME, COLUMN);
-        // refreshBtn.setData(PROPERTY, param.getName());
-        // refreshBtn.setEnabled(!param.isReadOnly());
-
-        IControlCreator cbCtrl = new IControlCreator() {
-
-            public Control createControl(final Composite parent, final int style) {
-                CCombo cb = new CCombo(parent, style);
-                return cb;
-            }
-        };
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -243,6 +232,18 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     private void updateData() {

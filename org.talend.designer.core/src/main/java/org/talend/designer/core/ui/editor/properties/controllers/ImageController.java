@@ -114,6 +114,26 @@ public class ImageController extends AbstractElementPropertySectionController {
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, (String) param.getValue()).toPortableString();
+
+        if (filePath != null) {
+            File fileOrFolder = new java.io.File(filePath);
+            if (!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
+                return 0;
+            }
+            final Image image = new Image(subComposite.getDisplay(), filePath);
+            return image.getImageData().height;
+        }
+
+        return 0;
+    }
+
     /*
      * (non-Javadoc)
      * 

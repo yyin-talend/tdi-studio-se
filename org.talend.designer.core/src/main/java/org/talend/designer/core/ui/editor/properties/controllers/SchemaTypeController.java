@@ -99,9 +99,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
 
         String paramName;
-        
+
         IElementParameter repositorySchemaTypeParameter = elem
-        .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo.equals(repositoryControl)) {
@@ -433,6 +433,29 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         return lastControlUsed;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        int comboSize, buttonSize;
+        
+        CCombo combo = new CCombo(subComposite, SWT.BORDER);
+        IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        String[] originalList = schemaTypeParameter.getListItemsDisplayName();
+        combo.setItems(originalList);
+        comboSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        combo.dispose();
+
+        Button btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        buttonSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        btn.dispose();
+        return Math.max(comboSize, buttonSize) + ITabbedPropertyConstants.VSPACE;
+    }
+
     private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
             int top) {
         Button btn;
@@ -546,7 +569,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         cLayout.setLayoutData(data);
         CCombo combo = (CCombo) dField.getControl();
         IElementParameter repositorySchemaTypeParameter = elem
-        .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         hashCurControls.put(repositorySchemaTypeParameter.getName(), dField.getControl());
         dynamicTabbedPropertySection.updateRepositoryList();
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();

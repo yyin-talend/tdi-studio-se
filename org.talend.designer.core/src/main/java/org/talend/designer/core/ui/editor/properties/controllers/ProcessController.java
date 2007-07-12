@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.swt.SWT;
@@ -86,6 +85,24 @@ public class ProcessController extends AbstractElementPropertySectionController 
         Point initialSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return getWidgetFactory().createButton(parent, EParameterName.PROCESS_TYPE.getDisplayName(), SWT.None);
+            }
+
+        });
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     public void propertyChange(PropertyChangeEvent arg0) {

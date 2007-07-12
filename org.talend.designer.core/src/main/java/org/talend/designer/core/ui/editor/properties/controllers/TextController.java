@@ -142,6 +142,18 @@ public class TextController extends AbstractElementPropertySectionController {
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+    }
+
     /*
      * (non-Javadoc)
      * 

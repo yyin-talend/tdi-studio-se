@@ -39,7 +39,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
@@ -149,6 +148,24 @@ public class CheckController extends AbstractElementPropertySectionController {
         Point initialSize = checkBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, final IElementParameter param) {
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.CHECK);
+            }
+
+        });
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+        
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     /*

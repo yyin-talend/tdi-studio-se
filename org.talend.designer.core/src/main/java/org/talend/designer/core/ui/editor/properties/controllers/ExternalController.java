@@ -158,6 +158,18 @@ public class ExternalController extends AbstractElementPropertySectionController
         return btnEdit;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        btnEdit.dispose();
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+    }
+
     /*
      * (non-Javadoc)
      * 
