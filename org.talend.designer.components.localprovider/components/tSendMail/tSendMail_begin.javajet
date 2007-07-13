@@ -17,6 +17,7 @@
 	String to          = ElementParameterParser.getValue(node, "__TO__");
 	String from        = ElementParameterParser.getValue(node, "__FROM__");
 	String cc          = ElementParameterParser.getValue(node, "__CC__");
+	String bcc          = ElementParameterParser.getValue(node, "__BCC__");
 	String subject     = ElementParameterParser.getValue(node, "__SUBJECT__");
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 	List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTACHMENTS__");
@@ -30,7 +31,8 @@
 	String smtpPort_<%=cid %> = "<%=smtpPort %>";
 	String from_<%=cid %> = <%=from %>;
     String to_<%=cid %> = <%=to %>;
-    String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc %>;
+    String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc.replace(";",",") %>;
+    String bcc_<%=cid %> = <%=(bcc==null || "".equals(bcc))?null:bcc.replace(";",",") %>;
     String subject_<%=cid %> = <%=subject %>;
     String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
 	

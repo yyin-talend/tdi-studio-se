@@ -40,16 +40,20 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="CC" FIELD="TEXT" REQUIRED="false" NUM_ROW="3">
       <DEFAULT>"carbon@example.com"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="BCC" FIELD="TEXT" REQUIRED="false" NUM_ROW="4">
+      <DEFAULT>"blindcarbon@example.com"</DEFAULT>
+    </PARAMETER>
 
-    <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="4">
+    <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="5">
       <DEFAULT>"Talend Open Studio notification"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="5">
+    <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="6">
       <DEFAULT>"Hello"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="ATTACHMENTS" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="3">
+    <PARAMETER NAME="ATTACHMENTS" FIELD="TABLE" REQUIRED="false" NUM_ROW="7" NB_LINES="3">
       <ITEMS>
         <ITEM NAME="FILE" />
       </ITEMS>
@@ -59,7 +63,7 @@ COMPATIBILITY="ALL"
       NAME="HEADERS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="7"
+      NUM_ROW="8"
       NB_LINES="3"
     >
       <ITEMS>
@@ -68,11 +72,11 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
+    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="9">
       <DEFAULT>"smtp.provider.com"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
+    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="9">
       <DEFAULT>25</DEFAULT>
     </PARAMETER>
     
@@ -80,7 +84,7 @@ COMPATIBILITY="ALL"
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -89,7 +93,7 @@ COMPATIBILITY="ALL"
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="10"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"username"</DEFAULT>
@@ -98,7 +102,7 @@ COMPATIBILITY="ALL"
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="10"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"password"</DEFAULT>

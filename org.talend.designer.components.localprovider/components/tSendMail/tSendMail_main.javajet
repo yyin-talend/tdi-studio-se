@@ -42,6 +42,7 @@
      msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>));
      msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
      if(cc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
+     if(bcc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.BCC, javax.mail.internet.InternetAddress.parse(bcc_<%=cid %>, false));
      
      msg_<%=cid %>.setSubject(subject_<%=cid %>);     
 
