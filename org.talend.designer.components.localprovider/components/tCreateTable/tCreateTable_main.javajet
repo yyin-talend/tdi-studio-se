@@ -275,7 +275,10 @@ class Transfer{
 <%//  special action / Main action
 	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
 	if(specialAction.equals("DropAndCreate")){%>//drop and then create
-		stmt<%=cid%>.execute("drop table "+<%=tableName%>);	
+		try{
+			stmt<%=cid%>.execute("drop table "+<%=tableName%>);	
+		}catch(Exception e){			
+		}		
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);	
 <%	}else if(specialAction.equals("CreateOnly")){%>
