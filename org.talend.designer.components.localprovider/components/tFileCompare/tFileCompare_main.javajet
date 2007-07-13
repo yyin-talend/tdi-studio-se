@@ -26,24 +26,33 @@ java.io.BufferedReader br1<%=cid %> = new java.io.BufferedReader (new java.io.Fi
 boolean result<%=cid %> = true;
 String str1<%=cid %> = "";
 String str2<%=cid %> = "";
-while ( ( (str1<%=cid %> = br1<%=cid %>.readLine()) !=null) && ( (str2<%=cid %> = br<%=cid %>.readLine()) !=null) ) {
-	if (str1<%=cid %>.compareTo(str2<%=cid %>)!=0) {
+while (true) {
+	str1<%=cid %> = br1<%=cid %>.readLine();
+	str2<%=cid %> = br<%=cid %>.readLine();
+	if(str1<%=cid %> == null && str2<%=cid %> == null)
+	{
+		break;
+	}
+	else if(str1<%=cid %> != null && str2<%=cid %> != null){
+		if (str1<%=cid %>.compareTo(str2<%=cid %>)!=0) {
+			result<%=cid %> = false;
+			break;
+		}
+	}else{
 		result<%=cid %> = false;
 		break;
 	}
+	
 }
 
 String message<%=cid %> = "";
-int difference<%=cid %> = 0;
 if (result<%=cid %>) {
 	message<%=cid %> = <%=noDifferMessage%>;
-	difference<%=cid %> = 0;
 	
 } else {
 	message<%=cid %> = <%=differMessage%>;
-	difference<%=cid %> = 1;
 }
-globalMap.put("<%=cid %>_DIFFERENCE",difference<%=cid %>);
+globalMap.put("<%=cid %>_DIFFERENCE",result<%=cid %>);
 
 <%
 if (print) {
