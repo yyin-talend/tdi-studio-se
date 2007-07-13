@@ -17,6 +17,7 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+            boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
 %>
 
         String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
@@ -28,16 +29,45 @@
         	fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>, java.util.regex.Pattern.CASE_INSENSITIVE);
 		}       
  		java.io.File file<%=cid %>=new java.io.File(directory<%=cid %>);
-        java.io.File[] files<%=cid %> = file<%=cid %>.listFiles();
-        for (int i<%=cid%> = 0; i<%=cid%> < files<%=cid %>.length; i<%=cid%>++){
-			if(!fileNamePattern<%=cid %>.matcher(files<%=cid %>[i<%=cid%>].getName()).find()){
-				continue;
-			}
-			String currentFileName_<%=cid%> = files<%=cid %>[i<%=cid%>].getName(); 
-            String currentFilePath_<%=cid%> = files<%=cid %>[i<%=cid%>].getAbsolutePath();
+        final java.util.List<java.io.File> list_<%=cid%>= new java.util.ArrayList<java.io.File>(); 
+ <%
+   if(incldSubdir==true)
+   {
+ %>
+        file<%=cid%>.listFiles(new java.io.FilenameFilter() {
+            public boolean accept(java.io.File dir, String name) {
+                java.io.File file = new java.io.File(dir, name);
+                if (file.isFile()) {
+                    list_<%=cid%>.add(file);
+                    return true;
+                } else {
+                
+                    file.listFiles(this);
+                }
+                return false;
+            }
+        });
+ <%}else{%> 
+ file<%=cid%>.listFiles(new java.io.FilenameFilter() {
+     public boolean accept(java.io.File dir, String name) {
+         java.io.File file = new java.io.File(dir, name);
+             list_<%=cid%>.add(file);
+             return true;
+     }
+ });
+<%}%> 
+        for (int i<%=cid%> = 0; i<%=cid%> < list_<%=cid%>.size(); i<%=cid%>++){
+            
+            java.io.File files<%=cid%> =list_<%=cid%>.get(i<%=cid%>);
+            if(!fileNamePattern<%=cid %>.matcher(files<%=cid %>.getName()).find()){
+                continue;
+            }
+            String currentFileName_<%=cid%> = files<%=cid %>.getName(); 
+            String currentFilePath_<%=cid%> = files<%=cid %>.getAbsolutePath();
             
             globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
-			globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+            globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        
 <%
 		}
 	}
