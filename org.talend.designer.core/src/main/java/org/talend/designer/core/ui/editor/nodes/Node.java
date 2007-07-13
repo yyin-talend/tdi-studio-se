@@ -33,6 +33,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -221,8 +225,9 @@ public class Node extends Element implements INode {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
 
         meta.setTableName(uniqueName);
-        IElementParameter mappingParameter = MetadataUtils.getMappingParameter((List<IElementParameter>) this.getElementParameters());
-        
+        IElementParameter mappingParameter = MetadataUtils.getMappingParameter((List<IElementParameter>) this
+                .getElementParameters());
+
         if (mappingParameter != null) {
             if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
                 meta.setDbms((String) mappingParameter.getValue());
@@ -250,7 +255,7 @@ public class Node extends Element implements INode {
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
         }
-        
+
         if (isExternalNode()) {
             getExternalNode().initialize();
         }
@@ -1332,8 +1337,8 @@ public class Node extends Element implements INode {
                     }
                 }
                 if (!isSame) {
-                    String warningMessage = "The schemas on the input links of the merge component \"" + getUniqueName()
-                            + "\" are different, they should be the same.";
+                    String warningMessage = "The schemas on the input links of the merge component \""
+                            + getUniqueName() + "\" are different, they should be the same.";
                     Problems.add(ProblemStatus.WARNING, this, warningMessage);
                 }
             }
@@ -1538,6 +1543,24 @@ public class Node extends Element implements INode {
         }
     }
 
+    private boolean valueContains(String value, String toTest) {
+        if (value.contains(toTest)) {
+            Perl5Matcher matcher = new Perl5Matcher();
+            Perl5Compiler compiler = new Perl5Compiler();
+            Pattern pattern;
+
+            try {
+                pattern = compiler.compile("(.*" + toTest + "[^0-9]+.*)"); //$NON-NLS-1$
+                if (matcher.contains(value, pattern)) {
+                    return true;
+                }
+            } catch (MalformedPatternException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
+
     public boolean useData(String name) {
         if (isExternalNode()) {
             return getExternalNode().useData(name);
@@ -1545,7 +1568,7 @@ public class Node extends Element implements INode {
         for (IElementParameter param : this.getElementParameters()) {
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
                 String value = (String) param.getValue();
-                if (value.contains(name)) {
+                if (valueContains(value, name)) {
                     return true;
                 }
             } else if (param.getValue() instanceof List) { // for TABLE
@@ -1554,7 +1577,7 @@ public class Node extends Element implements INode {
                     for (String key : line.keySet()) {
                         Object cellValue = line.get(key);
                         if (cellValue instanceof String) { // cell is text so test data
-                            if (((String) cellValue).contains(name)) {
+                            if (valueContains((String) cellValue, name)) {
                                 return true;
                             }
                         }

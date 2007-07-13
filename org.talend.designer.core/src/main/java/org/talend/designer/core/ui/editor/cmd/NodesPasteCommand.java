@@ -333,7 +333,7 @@ public class NodesPasteCommand extends Command {
                         if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()) {
                             metaTableName = pastedSourceNode.getMetadataList().get(0).getTableName();
                         } else {
-                            metaTableName = connection.getMetaName();
+                            metaTableName = pastedSourceNode.getUniqueName(); // connection.getMetaName();
                         }
                     }
                     Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
