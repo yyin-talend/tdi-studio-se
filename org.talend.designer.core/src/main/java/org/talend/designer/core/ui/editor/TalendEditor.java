@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
@@ -39,14 +41,19 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.MarginBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.SWTGraphics;
+import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.ContextMenuProvider;
@@ -93,6 +100,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -100,6 +108,7 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -188,11 +197,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
-        setEditDomain(new DefaultEditDomain(this));
+        setEditDomain(new TalendEditDomain(this));
         this.readOnly = readOnly;
 
-        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLabel();
+        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLabel();
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
 
@@ -265,10 +274,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     }
                 }
             });
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(
-                    ActionFactory.DELETE.getId()));
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(
-                    GEFActionConstants.DIRECT_EDIT));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(ActionFactory.DELETE.getId()));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0), getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
         }
         return sharedKeyHandler;
     }
@@ -333,8 +340,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         PartFactory partFactory = new PartFactory();
         // set the factory to use for creating EditParts for elements in the model
         getGraphicalViewer().setEditPartFactory(partFactory);
-        getGraphicalViewer().setKeyHandler(
-                new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
+        getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
 
         /** * Management of the context menu ** */
 
@@ -347,17 +353,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          * (manager != null) { manager.setZoom(getProcess().getZoom()); }
          */
         // Scroll-wheel Zoom
-        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
-                MouseWheelZoomHandler.SINGLETON);
+        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
         /** * Snap To Grid ** */
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(GRID_SIZE, GRID_SIZE));
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-                new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/* getProcess().isGridEnabled() */));
         // We keep grid visibility and enablement in sync
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-                new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/* getProcess().isGridEnabled() */));
         IAction showGrid = new ToggleGridAction(getGraphicalViewer());
         getActionRegistry().registerAction(showGrid);
 
@@ -366,6 +369,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 new Boolean(false/* getProcess().isSnapToGeometryEnabled() */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
+
     }
 
     /*
@@ -514,8 +518,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         try {
             if (getEditorInput() instanceof ProcessEditorInput) {
-                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(
-                        new SubProgressMonitor(monitor, 80), null);
+                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(new SubProgressMonitor(monitor, 80), null);
                 if (!saved) {
                     monitor.setCanceled(true);
                     throw new InterruptedException();
@@ -665,8 +668,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OUTLINE);
                 }
             };
-            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
-                    "/icons/outline.gif")); //$NON-NLS-1$
+            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/outline.gif")); //$NON-NLS-1$
             tbm.add(showOutlineAction);
             showOverviewAction = new Action() {
 
@@ -674,8 +676,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OVERVIEW);
                 }
             };
-            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
-                    "/icons/overview.gif")); //$NON-NLS-1$
+            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/overview.gif")); //$NON-NLS-1$
             tbm.add(showOverviewAction);
             showPage(ID_OUTLINE);
         }
@@ -727,7 +728,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             if (rep instanceof ScalableFreeformRootEditPart) {
                 ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
                 thumbnail = new ScrollableThumbnail((Viewport) root.getFigure());
-                thumbnail.setBorder(new MarginBorder(BORDER_SIZE));
+                thumbnail.setBorder(new SimpleRaisedBorder());
                 thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
                 lws.setContents(thumbnail);
                 disposeListener = new DisposeListener() {
@@ -753,7 +754,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 showOverviewAction.setChecked(false);
                 pageBook.showPage(outline);
                 if (thumbnail != null) {
-                    thumbnail.setVisible(false);
+                    thumbnail.setVisible(true);
                 }
             } else if (id == ID_OVERVIEW) {
                 if (thumbnail == null) {
@@ -876,5 +877,105 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      */
     public JobResource getCurrentJobResource() {
         return this.currentJobResource;
+    }
+
+    /**
+     * DOC bqian class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    class TalendEditDomain extends DefaultEditDomain {
+
+        /**
+         * DOC bqian TalendEditor.TalendEditDomain class global comment. Detailled comment
+         * <br/>
+         *
+         * $Id$
+         *
+         */
+        class DragProcessor {
+
+            int x;
+
+            int y;
+
+        }
+
+        DragProcessor processor = null;
+
+        /**
+         * bqian TalendEditDomain constructor comment.
+         * 
+         * @param editorPart
+         */
+        public TalendEditDomain(IEditorPart editorPart) {
+            super(editorPart);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.gef.EditDomain#mouseDown(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
+         */
+        @Override
+        public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
+            if (mouseEvent.button == 1) {
+                super.mouseDown(mouseEvent, viewer);
+            } else if (mouseEvent.button == 2) {
+                getEditor().setCursor(Cursors.HAND);
+                processor = new DragProcessor();
+                processor.x = mouseEvent.x;
+                processor.y = mouseEvent.y;
+            }
+        }
+
+        public void updateViewport(int offX, int offY) {
+            RootEditPart rep = getGraphicalViewer().getRootEditPart();
+            if (rep instanceof ScalableFreeformRootEditPart) {
+                ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                Viewport viewport = (Viewport) root.getFigure();
+
+                Point viewOriginalPosition = viewport.getViewLocation();
+                viewOriginalPosition.x -= offX;
+                viewOriginalPosition.y -= offY;
+
+                viewport.setViewLocation( viewOriginalPosition.x,viewOriginalPosition.y);
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.gef.EditDomain#mouseDrag(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
+         */
+        @Override
+        public void mouseDrag(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
+            super.mouseDrag(mouseEvent, viewer);
+
+            if (processor != null) {
+                int offX = mouseEvent.x - processor.x;
+                int offY = mouseEvent.y - processor.y;
+
+                updateViewport(offX, offY);
+                processor.x = mouseEvent.x;
+                processor.y = mouseEvent.y;
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.gef.EditDomain#mouseUp(org.eclipse.swt.events.MouseEvent, org.eclipse.gef.EditPartViewer)
+         */
+        @Override
+        public void mouseUp(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
+            if (mouseEvent.button == 1) {
+                super.mouseUp(mouseEvent, viewer);
+            } else if (mouseEvent.button == 2) {
+                getEditor().setCursor(null);
+                processor = null;
+            }
+        }
     }
 }
