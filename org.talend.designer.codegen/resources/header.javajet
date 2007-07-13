@@ -171,11 +171,17 @@ private class TalendException extends Exception {
 		} catch (java.lang.reflect.InvocationTargetException e) {
 			this.e.printStackTrace();
 		} 
-		<% if (process.getNodesOfType("tLogCatcher").size() > 0) { %>
+		<% if (process.getNodesOfType("tLogCatcher").size() > 0) {
+				for(INode node:process.getNodesOfType("tLogCatcher")){ 
+					if(ElementParameterParser.getValue(node, "__CATCH_JAVA_EXCEPTION__").equals("true")){ 
+			 %>
 			catch (TalendException e) {
 			// do nothing
 			}
-		<% } %>
+		<% 				break;
+					} 
+				} 
+			} %>
 	}
 }
 
