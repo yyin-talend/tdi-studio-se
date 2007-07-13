@@ -37,7 +37,6 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -82,7 +81,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     @Override
     public void execute() {
         // Force redraw of Commponents propoerties
-        elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+        //elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
 
         boolean allowAutoSwitch = true;
         IElementParameter elemParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());

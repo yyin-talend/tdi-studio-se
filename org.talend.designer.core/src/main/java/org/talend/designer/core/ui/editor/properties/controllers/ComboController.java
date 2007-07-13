@@ -547,7 +547,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         Object value = param.getValue();
 
         Button button = queryButton.get(param);
-        if (button != null) {
+        if (button != null && (!button.isDisposed())) {
             boolean hasDbRepository = false;
             boolean hasDbTableField = false;
             IElementParameter schemaParam = elem.getElementParameter("SCHEMA_TYPE");
