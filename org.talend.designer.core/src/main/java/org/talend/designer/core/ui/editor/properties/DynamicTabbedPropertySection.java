@@ -908,16 +908,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            Control control = tabbedPropertySheetPage.getControl();
-            control.addListener(SWT.Resize, new Listener() {
+        if (sheet != null && sheet.getCurrentPage() != null) {
+            if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+                TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+                Control control = tabbedPropertySheetPage.getControl();
+                control.addListener(SWT.Resize, new Listener() {
 
-                public void handleEvent(Event event) {
-                    refreshLimiter.resetTimer();
-                    refreshLimiter.startIfExecutable(true);
-                }
-            });
+                    public void handleEvent(Event event) {
+                        refreshLimiter.resetTimer();
+                        refreshLimiter.startIfExecutable(true);
+                    }
+                });
+            }
         }
     }
 
