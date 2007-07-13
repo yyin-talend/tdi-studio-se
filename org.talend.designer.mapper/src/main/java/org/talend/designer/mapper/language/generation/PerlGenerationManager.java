@@ -48,10 +48,11 @@ public class PerlGenerationManager extends GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String prefixEntryLocationsForOutputExpression(String outputExpression,
+    public String prefixEntryLocationsForOutputExpression(String uniqueNameComponent, String outputExpression,
             DataMapExpressionParser expressionParser, TableType[] possibleSources) {
         TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(outputExpression);
         ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
+        ArrayList<TableEntryLocation> listCoupleForAddTablePrefixWithPrefixComponentName = new ArrayList<TableEntryLocation>();
         boolean possibleSourceInputs = false;
         boolean possibleSourceVars = false;
         for (int i = 0; i < possibleSources.length; i++) {
@@ -65,22 +66,29 @@ public class PerlGenerationManager extends GenerationManager {
         }
 
         for (TableEntryLocation location : entryLocations) {
-            if (possibleSourceInputs && isInputTable(location.tableName) || possibleSourceVars
-                    && isVarsTable(location.tableName)) {
+            if (possibleSourceInputs && isInputTable(location.tableName)) {
                 listCoupleForAddTablePrefix.add(location);
+            } else if (possibleSourceVars && isVarsTable(location.tableName)) {
+                listCoupleForAddTablePrefixWithPrefixComponentName.add(location);
             }
         }
         String outputExpressionToWrite = outputExpression;
         if (listCoupleForAddTablePrefix.size() > 0) {
-            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(outputExpression,
-                    listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]));
+            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
+                    outputExpressionToWrite, listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]), false);
+
+        }
+        if (listCoupleForAddTablePrefixWithPrefixComponentName.size() > 0) {
+            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
+                    outputExpressionToWrite, listCoupleForAddTablePrefixWithPrefixComponentName
+                            .toArray(new TableEntryLocation[0]), true);
 
         }
         return outputExpressionToWrite;
     }
 
     /**
-     * DOC amaumont Comment method "buildConditions".
+     * Build conditions for tMap before 2.1 .
      * 
      * @param gm
      * 
@@ -88,7 +96,7 @@ public class PerlGenerationManager extends GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries,
+    public String buildConditions(String uniqueNameComponent, List<ExternalMapperTableEntry> constraintTableEntries,
             DataMapExpressionParser expressionParser) {
         int lstSize = constraintTableEntries.size();
         StringBuilder stringBuilder = new StringBuilder();
@@ -102,8 +110,8 @@ public class PerlGenerationManager extends GenerationManager {
             if (and != null && constraintExpression.trim().length() > 0) {
                 stringBuilder.append(and);
             }
-            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression,
-                    expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
+            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(uniqueNameComponent,
+                    constraintExpression, expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
 
             if (lstSize > 1) {
                 stringBuilder.append(" ( " + constraintExpressionToWrite + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -134,16 +142,26 @@ public class PerlGenerationManager extends GenerationManager {
      * @param name
      * @return
      */
+    public String buildNewArrayDeclaration(String uniqueNameComponent, String name, int indent) {
+        return "my @" + uniqueNameComponent + "__" + name + " = ();"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * DOC amaumont Comment method "buildNewArrayDeclaration".
+     * 
+     * @param name
+     * @return
+     */
     public String buildNewArrayDeclarationWithKeyValue(String name, String[] keysValues, int indent) {
         String string = ""; //$NON-NLS-1$
-//        string += "my @" + name + "ArrayFromLookup = $tHash_" + name + "{"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // string += "my @" + name + "ArrayFromLookup = $tHash_" + name + "{"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         for (int i = 0; i < keysValues.length; i++) {
             if (i > 0) {
                 string += ".'|'.";
             }
             string += keysValues[i]; //$NON-NLS-1$ //$NON-NLS-2$
         }
-//        string += "};"; //$NON-NLS-1$
+        // string += "};"; //$NON-NLS-1$
         return string;
     }
 

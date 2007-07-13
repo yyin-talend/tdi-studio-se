@@ -104,16 +104,18 @@ public class DataMapExpressionParser {
         }
     }
 
-    public String addTablePrefixToColumnName(String expression, TableEntryLocation[] locations) {
+    public String addTablePrefixToColumnName(String uniqueNameComponent, String expression,
+            TableEntryLocation[] locations, boolean prefixTableNameWithComponentName) {
         String returnedExpression = expression;
         for (TableEntryLocation location : locations) {
             recompilePatternIfNecessary(StringHelper.replacePrms(language.getSubstPatternForPrefixColumnName(),
                     new Object[] { location.tableName, location.columnName }));
             if (returnedExpression != null) {
                 matcher.setMultiline(true);
-                Perl5Substitution substitution = new Perl5Substitution(
-                        language.getPrefixTableRegexp() + "$1" //$NON-NLS-1$
-                                + language.getPrefixFieldRegexp() + "$1__$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp()
+                        + (prefixTableNameWithComponentName ? uniqueNameComponent + "__" : "") + "$1" //$NON-NLS-1$
+                        + language.getPrefixFieldRegexp() + uniqueNameComponent
+                        + "__$1__$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                 returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
                         Util.SUBSTITUTE_ALL);
             }

@@ -24,24 +24,20 @@ package org.talend.designer.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
-import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.MapperModel;
-import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 
@@ -54,28 +50,6 @@ import org.talend.designer.mapper.model.table.OutputTable;
 public class MapperMain {
 
     private static boolean standAloneMode;
-
-    public static void main(String[] args) {
-        AbstractExternalNode mapperConnector = new MapperComponent();
-        MapperMain.setStandAloneMode(true);
-        MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), true);
-        mapperConnector.setExternalData(testGenerator.getExternalData());
-        mapperConnector.setIncomingConnections(testGenerator.getInputConnectionsList());
-        mapperConnector.setMetadataList(testGenerator.getMetadataListOut());
-        int response = mapperConnector.open(new Display());
-        if (response == SWT.OK) {
-            // System.out.println("Response = OK");
-
-            // System.out.println("mapperConnector.getMetadataList()=");
-            // System.out.println(mapperConnector.getMetadataList());
-            // System.out.println("mapperConnector.getPersistentData()=");
-            // System.out.println(mapperConnector.getExternalData(false));
-
-        } else {
-            // System.out.println("Response = CANCEL");
-        }
-
-    }
 
     private MapperManager mapperManager;
 

@@ -16,9 +16,7 @@
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
-	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
 	org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.process.IConnection
 	" 
 %>
 

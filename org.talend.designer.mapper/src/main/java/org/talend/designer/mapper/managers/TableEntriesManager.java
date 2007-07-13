@@ -247,7 +247,7 @@ public class TableEntriesManager {
      * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
-        System.out.println(previousColumnName + " -> " + newColumnName);
+//        System.out.println(previousColumnName + " -> " + newColumnName);
         
 //        ExceptionHandler.process(new RuntimeException("test : " + previousColumnName + " -> " + newColumnName));
 //        log.info(previousColumnName + " -> " + newColumnName); //$NON-NLS-1$

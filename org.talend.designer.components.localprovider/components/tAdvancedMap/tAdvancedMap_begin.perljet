@@ -14,8 +14,7 @@
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.PerlGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
-	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
-	org.talend.core.model.process.IConnection
+ 	org.talend.core.model.process.IConnection
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
 	" 
@@ -29,18 +28,9 @@
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ExternalMapperData data;
-        List<IConnection> inputConnections = null;
-        if (node != null) {
-            data = (ExternalMapperData) node.getExternalData();
-            inputConnections = (List<IConnection>) node.getIncomingConnections();
-        } else {
-            MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
-                    false);
-            inputConnections = testGenerator.getInputConnectionsList();
-            data = (ExternalMapperData) testGenerator.getExternalData();
-        }
+        ExternalMapperData data = (ExternalMapperData) node.getExternalData();
+        List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+        String uniqueNameComponent = node.getUniqueName();
 
         List<ExternalMapperTable> inputTables = data.getInputTables();
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -99,7 +89,7 @@
                     String columnName = column.getLabel();
                     ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
                     if (externalInputTableEntry != null) {
-                        sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + columnName + " => " + i
+                        sb.append(cr + gm.indent(indent) + useConstantPerlCode + uniqueNameComponent + "__" + tableName + "__" + columnName + " => " + i
                                 + ";");
                     }
                 }
@@ -119,7 +109,7 @@
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(cr + gm.indent(indent) + useConstantPerlCode + tableName + "__" + tableEntry.getName() + " => "
+                sb.append(cr + gm.indent(indent) + useConstantPerlCode + uniqueNameComponent + "__" + tableName + "__" + tableEntry.getName() + " => "
                         + i + ";");
             }
         }

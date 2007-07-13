@@ -18,7 +18,6 @@
     org.talend.designer.mapper.language.ILanguage
     org.talend.designer.mapper.language.generation.PerlGenerationManager
     org.talend.designer.mapper.language.LanguageProvider
-    org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
     org.talend.designer.mapper.model.tableentry.TableEntryLocation
     org.talend.designer.mapper.utils.DataMapExpressionParser
     org.talend.core.model.process.IConnection
@@ -41,26 +40,11 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-        String uniqueNameComponent = null;
         ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
-        List<IConnection> inputConnections;
-        List<IConnection> outputConnections;
-        ExternalMapperData data;
-        if (node != null) {
-            // normal use
-            inputConnections = (List<IConnection>) node.getIncomingConnections();
-            outputConnections = (List<IConnection>) node.getOutgoingConnections();
-            data = (ExternalMapperData) node.getExternalData();
-            uniqueNameComponent = node.getUniqueName();
-        } else {
-            // Stand alone / tests
-            MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            inputConnections = testGenerator.getInputConnectionsList();
-            outputConnections = testGenerator.getOutputConnectionsList();
-            data = (ExternalMapperData) testGenerator.getExternalData();
-            uniqueNameComponent = "testUniqueNameNode";
-        }
+        List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+        List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+        ExternalMapperData data = (ExternalMapperData) node.getExternalData();
+        String uniqueNameComponent = node.getUniqueName();
 
         String cr = "\n";
         String rejected = "rejected_" + uniqueNameComponent;
@@ -116,12 +100,8 @@
             
                            if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
                                    String expressionFilter = externalTable.getExpressionFilter();
-                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-                            for (TableEntryLocation location : entryLocations) {
-                                listCoupleForAddTablePrefix.add(location);
-                            }
-                            String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+					               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
+		           			          new TableType[] { TableType.INPUT });
                            
                              %>
                                if(
@@ -157,7 +137,7 @@
                         if (externalInputTableEntry != null) {
                             String expressionKey = externalInputTableEntry.getExpression();
                             if (expressionKey != null && !"".equals(expressionKey.trim())) {
-                                String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(expressionKey,
+                                String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionKey,
                                         expressionParser, new TableType[] { TableType.INPUT });
 
                                 keysValues.add(outputExpressionKeyToWrite);
@@ -292,12 +272,10 @@
                                                        && expressionFilter != null 
                                                        && !expressionFilter.trim().equals("")
                                                ) { // 12 
-                                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-                                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-                                            for (TableEntryLocation location : entryLocations) {
-                                                listCoupleForAddTablePrefix.add(location);
-                                            }
-                                            String expressionFilterWithPrefixs = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+
+								               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
+		    			       			          new TableType[] { TableType.INPUT});
+
                                                %>
             if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # 16
                                                           <%
@@ -373,7 +351,7 @@
                 continue;
             }
             if (varsTableEntries.size() > 0) {
-                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
+                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(uniqueNameComponent, varsTable.getName(), indent));
             }
             String varsTableName = varsTable.getName();
             for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
@@ -382,16 +360,11 @@
                 if (varExpression == null || varExpression.trim().length() == 0) {
                     continue;
                 }
-                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
-                ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-                for (TableEntryLocation location : entryLocations) {
-                    if (gm.isInputTable(varExpression)) {
-                        listCoupleForAddTablePrefix.add(location);
-                    }
-                }
-                String varExpressionWithPrefixs = expressionParser.addTablePrefixToColumnName(varExpression, entryLocations);
-
-                sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
+                
+                String varExpressionWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, varExpression, expressionParser,
+                      new TableType[] { TableType.INPUT, TableType.VARS });
+                
+                sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, true) + " = "
                         + varExpressionWithPrefixs + ";");
 
             }
@@ -594,15 +567,11 @@
                     if (hasFilters && !hasExpressionFilter || hasExpressionFilter) {
                         String filtersConditions = null;
                         if(hasExpressionFilter) {
-                                   String expressionFilter = outputTable.getExpressionFilter();
-                                TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(expressionFilter);
-                            ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
-                            for (TableEntryLocation location : entryLocations) {
-                                listCoupleForAddTablePrefix.add(location);
-                            }
-                             filtersConditions = expressionParser.addTablePrefixToColumnName(expressionFilter, entryLocations);
+                               String expressionFilter = outputTable.getExpressionFilter();
+				               filtersConditions = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
+   			       			          new TableType[] { TableType.INPUT, TableType.VARS });
                          } else {
-                            filtersConditions = gm.buildConditions(filters, expressionParser);
+                            filtersConditions = gm.buildConditions(uniqueNameComponent, filters, expressionParser);
                          }
                         if (rejectedTests == null) {
                             sb.append(filtersConditions);
@@ -629,10 +598,10 @@
                         String outputExpression = outputTableEntry.getExpression();
                         if (outputExpression != null && outputExpression.trim().length() != 0) {
 
-                            String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression, expressionParser,
+                            String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, outputExpression, expressionParser,
                                     new TableType[] { TableType.INPUT, TableType.VARS });
 
-                            sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName)
+                            sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName, outputColumnName, false)
                                     + " = " + outputExpressionToWrite + ";");
 
                         }

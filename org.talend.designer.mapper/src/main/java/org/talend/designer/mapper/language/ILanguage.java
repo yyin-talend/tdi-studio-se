@@ -64,6 +64,8 @@ public interface ILanguage {
 
     public String getTemplateGeneratedCodeTableColumnVariable();
 
+    public String getTemplateGeneratedCodeTableColumnVariableWithComponentNamePrefix();
+
     /**
      * DOC amaumont Comment method "getAndCondition".
      * 

@@ -107,10 +107,22 @@ public class GenerationManager {
                 columnName });
     }
 
-    public String getGeneratedCodeTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] {
-                tableName, columnName });
+    public String getGeneratedCodeTableColumnVariable(String uniqueNameComponent, String tableName, String columnName,
+            boolean prefixTableNameWithComponentName) {
+        String template = null;
+        if (prefixTableNameWithComponentName) {
+            template = this.language.getTemplateGeneratedCodeTableColumnVariableWithComponentNamePrefix();
+        } else {
+            template = this.language.getTemplateGeneratedCodeTableColumnVariable();
+        }
+        return StringHelper.replacePrms(template, new Object[] { uniqueNameComponent, tableName, columnName });
     }
+
+    // public String getGeneratedCodeTableColumnVariable(String uniqueNameComponent, String tableName, String
+    // columnName) {
+    // return StringHelper.replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] {
+    // uniqueNameComponent, tableName, columnName });
+    // }
 
     public String getTableColumnVariable(TableEntryLocation location) {
         return this.language.getLocation(location.tableName, location.columnName);

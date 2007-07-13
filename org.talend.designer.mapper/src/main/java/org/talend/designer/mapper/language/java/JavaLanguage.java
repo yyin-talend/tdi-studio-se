@@ -83,13 +83,13 @@ public class JavaLanguage extends AbstractLanguage {
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = TEMPLATE_TABLE_VARIABLE + PREFIX_FIELD_NAME
-            + "{1}" + SUFFIX_FIELD_NAME; //$NON-NLS-1$
+            + "{2}" + SUFFIX_FIELD_NAME; //$NON-NLS-1$
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME
-            + "{0}" + PREFIX_FIELD_NAME + "{1}" //$NON-NLS-1$ //$NON-NLS-2$
+            + "{1}" + PREFIX_FIELD_NAME + "{2}" //$NON-NLS-1$ //$NON-NLS-2$
             + SUFFIX_FIELD_NAME;
 
     /**
@@ -195,12 +195,21 @@ public class JavaLanguage extends AbstractLanguage {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.language.ILanguage#getTEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE()
+     * @see org.talend.designer.mapper.language.ILanguage#getTemplateGeneratedCodeTableColumnVariable()
      */
     public String getTemplateGeneratedCodeTableColumnVariable() {
         return TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getTemplateGeneratedCodeTableColumnVariableWithComponentName()
+     */
+    public String getTemplateGeneratedCodeTableColumnVariableWithComponentNamePrefix() {
+        return TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE;
+    }
+    
     /*
      * (non-Javadoc)
      * 

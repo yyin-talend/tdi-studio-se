@@ -96,10 +96,10 @@ public class DataMapExpressionParserTest {
         TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
                 new TableEntryLocation("book", "id_book"), };
 
-        String result = expressionParser.addTablePrefixToColumnName("uc "
+        String result = expressionParser.addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc "
                 + gen.getTableColumnVariable("page", "content") + " + " + gen.getTableColumnVariable("book", "id_book")
                 + " - 2 * " + language.getPrefixTable() + " book " + language.getSuffixTable()
-                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations);
+                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations, true);
         assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + "
                 + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * "
                 + gen.getTableColumnVariable("book", "book__id_book"), result);

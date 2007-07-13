@@ -19,7 +19,6 @@
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
-	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
 	org.talend.designer.mapper.model.tableentry.TableEntryLocation
 	org.talend.designer.mapper.utils.DataMapExpressionParser
 	org.talend.core.model.process.IConnection
@@ -49,22 +48,11 @@
         List<IConnection> outputConnections;
         ExternalMapperData data;
         boolean checkingSyntax = false;
-        if (node != null) {
-            // normal use
-            inputConnections = (List<IConnection>) node.getIncomingConnections();
-            outputConnections = (List<IConnection>) node.getOutgoingConnections();
-            data = (ExternalMapperData) node.getExternalData();
-            uniqueNameComponent = node.getUniqueName();
-            checkingSyntax = codeGenArgument.isCheckingSyntax();
-        } else {
-            // Stand alone / tests
-            MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(currentLanguage, false);
-            inputConnections = testGenerator.getInputConnectionsList();
-            outputConnections = testGenerator.getOutputConnectionsList();
-            data = (ExternalMapperData) testGenerator.getExternalData();
-            uniqueNameComponent = "testUniqueNameNode";
-        }
+        inputConnections = (List<IConnection>) node.getIncomingConnections();
+        outputConnections = (List<IConnection>) node.getOutgoingConnections();
+        data = (ExternalMapperData) node.getExternalData();
+        uniqueNameComponent = node.getUniqueName();
+        checkingSyntax = codeGenArgument.isCheckingSyntax();
 
         String cr = "\n";
         String rejected = "rejected_" + uniqueNameComponent;
@@ -497,7 +485,7 @@
                 }
 
                 String expression = gm.indent(indent)
-                        + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = " + varExpression
+                        + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, false) + " = " + varExpression
                         + ";";
                 sb.append(cr).append(expression);
 
@@ -734,8 +722,8 @@
 
                         String assignationVar = null;
                         if (connectionExists) {
-                            assignationVar = gm.getGeneratedCodeTableColumnVariable(outputTableName + "_tmp",
-                                    outputColumnName);
+                            assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",
+                                    outputColumnName, false);
                         } else {
                             assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
                                     outputTableEntry.isNullable())

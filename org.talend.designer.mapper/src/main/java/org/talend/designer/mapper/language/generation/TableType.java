@@ -25,9 +25,6 @@ import org.talend.designer.mapper.model.table.VarsTable;
 
 /**
  * 
- * DOC amaumont MapperDataTestGenerator class global comment. Detailled comment <br/>
- * 
- * $Id$
  * 
  */
 public enum TableType {
