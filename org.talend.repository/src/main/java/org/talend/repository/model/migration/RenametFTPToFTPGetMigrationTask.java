@@ -70,7 +70,7 @@ public class RenametFTPToFTPGetMigrationTask extends AbstractMigrationTask imple
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             } else {
                 // do nothing
-                return ExecutionResult.SKIPPED;
+                return ExecutionResult.NOTHING_TO_DO;
             }
         } catch (Exception e) {
             ExceptionHandler.process(e);
