@@ -451,16 +451,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return "org.talend.repository.views.repository"; //$NON-NLS-1$
     }
 
-    IPropertySheetPage properties;
-
     public Object getAdapter(final Class type) {
 
         // this will select the TabbedPropertyPage instead of the classic property view
         // available in Eclipse 3.2
         if (type == IPropertySheetPage.class) {
-            if (properties == null) {
-                properties = new TalendTabbedPropertySheetPage(this);
-            }
+            IPropertySheetPage   properties = new TalendTabbedPropertySheetPage(this);
             return properties;
         }
 
