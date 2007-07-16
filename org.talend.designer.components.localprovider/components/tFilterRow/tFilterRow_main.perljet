@@ -65,6 +65,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 $branch_<%=cid%>_is_active = false;
 
+$nb_line_<%=cid%>++ ;
 
 if (
 <%
@@ -139,6 +140,7 @@ if (
         %>
 ) {
     $branch_<%=cid%>_is_active = true ;
+    $nb_line_ok_<%=cid %>++ ;
 }
 
 <%
