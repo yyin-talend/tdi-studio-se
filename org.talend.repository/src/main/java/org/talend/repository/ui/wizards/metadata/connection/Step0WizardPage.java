@@ -66,7 +66,9 @@ public class Step0WizardPage extends PropertiesWizardPage {
         updateContent();
         addListeners();
         // setPageComplete(false);
+        
         updatePageComplete();
+
     }
 
     /*
@@ -79,4 +81,13 @@ public class Step0WizardPage extends PropertiesWizardPage {
         return type;
     }
 
+    /*
+     * @see WizardPage#becomesVisible
+     */
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+           this.nameText.setFocus();
+        }
+    }
 }
