@@ -34,6 +34,8 @@ import org.talend.core.language.ICodeProblemsChecker;
 public abstract class AbstractLanguage implements ILanguage {
 
     public static final String CARRIAGE_RETURN = "\n"; //$NON-NLS-1$
+ 
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private ECodeLanguage codeLanguage;
 
@@ -54,7 +56,7 @@ public abstract class AbstractLanguage implements ILanguage {
      * @see org.talend.designer.mapper.language.ILanguage#getLocation(org.talend.designer.mapper.model.tableentry.TableEntryLocation)
      */
     public String getLocation(String tableName, String columnName) {
-        return StringHelper.replacePrms(getTemplateTableColumnVariable(), new Object[] { tableName, columnName });
+        return StringHelper.replacePrms(getTemplateTableColumnVariable(), new Object[] { EMPTY_STRING, tableName, columnName });
     }
 
     /*

@@ -103,8 +103,7 @@ public class GenerationManager {
     }
 
     public String getTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName,
-                columnName });
+        return this.language.getLocation(tableName, columnName);
     }
 
     public String getGeneratedCodeTableColumnVariable(String uniqueNameComponent, String tableName, String columnName,
