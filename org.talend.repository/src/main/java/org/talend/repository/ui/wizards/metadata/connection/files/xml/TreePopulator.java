@@ -66,7 +66,7 @@ public class TreePopulator {
      * populate xml tree.
      * 
      */
-    public void populateTree(String filePath, ATreeNode treeNode) {
+    public boolean populateTree(String filePath, ATreeNode treeNode) {
         availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) { //$NON-NLS-1$
@@ -80,14 +80,18 @@ public class TreePopulator {
                 ExceptionHandler.process(e);
             }
             if (treeNode == null || treeNode.getChildren().length == 0) {
-                OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree")); //$NON-NLS-1$
-                ExceptionHandler.process(ex);
+                // OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
+                // //$NON-NLS-1$
+                // ExceptionHandler.process(ex);
+                return false;
             } else {
                 Object[] childs = treeNode.getChildren();
                 populateTreeItems(availableXmlTree, childs, 0, ""); //$NON-NLS-1$
                 this.filePath = filePath;
+                return true;
             }
         }
+        return false;
     }
 
     /**

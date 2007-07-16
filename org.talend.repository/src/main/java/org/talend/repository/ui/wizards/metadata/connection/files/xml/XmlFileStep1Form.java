@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -235,9 +236,9 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
                 String str = commonNodesLimitation.getText();
 
-                if ((!str.matches("\\d+"))||(Integer.valueOf(str) < 0)) {
+                if ((!str.matches("\\d+")) || (Integer.valueOf(str) < 0)) {
                     commonNodesLimitation.setText(String.valueOf(treePopulator.getLimit()));
-                } else {                    
+                } else {
                     treePopulator.setLimit(Integer.valueOf(str));
                 }
 
@@ -298,6 +299,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         }
     }
 
+    boolean valid;
+
     /**
      * Main Fields addControls.
      */
@@ -326,8 +329,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                     String str;
-                    in = new BufferedReader(new InputStreamReader(
-                            new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
+                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
+                            guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) { //$NON-NLS-1$
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$"; //$NON-NLS-1$
@@ -344,17 +347,19 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                                     }
                                 }
                             } catch (MalformedPatternException malE) {
-
+                                ExceptionHandler.process(malE);
                             }
                         }
                     }
                 } catch (Exception ex) {
+                    ExceptionHandler.process(ex);
                 } finally {
                     try {
                         if (in != null) {
                             in.close();
                         }
                     } catch (Exception ex2) {
+                        ExceptionHandler.process(ex2);
                     }
                 }
                 getConnection().setEncoding(encoding);
@@ -363,7 +368,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 } else {
                     encodingCombo.setText("UTF-8"); //$NON-NLS-1$
                 }
-                treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                valid = treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
             }
         });
@@ -388,6 +393,10 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // The fields
         if (fileFieldXml.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
+            return false;
+        }
+        if (!valid) {
+            updateStatus(IStatus.ERROR, Messages.getString("dataset.error.populateXMLTree"));
             return false;
         }
         updateStatus(IStatus.OK, null);
