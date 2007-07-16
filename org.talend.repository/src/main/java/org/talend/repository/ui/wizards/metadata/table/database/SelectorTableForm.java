@@ -324,6 +324,7 @@ public class SelectorTableForm extends AbstractForm {
                         if (promptNeeded) {
                             tableItems.remove(tableItem);
                             tableItems.add(tableItem);
+                            tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
                             refreshTable(tableItem, -1);
                         } else {
                             tableItems.remove(tableItem);
@@ -366,7 +367,7 @@ public class SelectorTableForm extends AbstractForm {
                             if (displayMessageBox) {
                                 openInfoDialogInUIThread(getShell(),
                                         Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                                .getString("DatabaseTableForm.tableNoExist"),true);//$NON-NLS-1$
+                                                .getString("DatabaseTableForm.tableNoExist"), true);//$NON-NLS-1$
                             }
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
@@ -435,7 +436,6 @@ public class SelectorTableForm extends AbstractForm {
 
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
         boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
-
         if (!checkConnectionIsDone) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
