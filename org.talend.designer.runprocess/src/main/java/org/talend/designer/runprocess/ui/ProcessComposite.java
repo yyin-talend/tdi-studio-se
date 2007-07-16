@@ -28,24 +28,18 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchListener;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.preferences.DebugPreferencePage;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -78,7 +72,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
-import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
@@ -91,6 +84,7 @@ import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
+import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -122,6 +116,8 @@ public class ProcessComposite extends Composite {
 
     /** Clear trace & performance button. */
     private Button clearTracePerfBtn;
+
+    private Button saveJobBeforeRunButton;
 
     /** Clear log button. */
     // private Button clearLogBtn;
@@ -231,7 +227,8 @@ public class ProcessComposite extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText(Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$
         debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint")); //$NON-NLS-1$
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif") //$NON-NLS-1$
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_debug.gif") //$NON-NLS-1$
                 .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
@@ -253,8 +250,8 @@ public class ProcessComposite extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin
-                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -262,6 +259,20 @@ public class ProcessComposite extends Composite {
         formData.left = new FormAttachment(execBtn, 0, SWT.RIGHT);
         formData.right = new FormAttachment(execBtn, BUTTON_SIZE, SWT.RIGHT);
         killBtn.setLayoutData(formData);
+
+        saveJobBeforeRunButton = new Button(execHeader, SWT.CHECK);
+        saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
+        saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
+        saveJobBeforeRunButton.setEnabled(false);
+        saveJobBeforeRunButton.setSelection(true);
+        data = new GridData();
+        data.horizontalSpan = 2;
+        data.horizontalAlignment = SWT.END;
+        saveJobBeforeRunButton.setLayoutData(data);
+        formData = new FormData();
+        formData.top = new FormAttachment(execBtn, 0, SWT.BOTTOM);
+        formData.left = new FormAttachment(debugBtn, 0, SWT.LEFT);
+        saveJobBeforeRunButton.setLayoutData(formData);
 
         clearBeforeExec = new Button(execHeader, SWT.CHECK);
         clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
@@ -274,7 +285,7 @@ public class ProcessComposite extends Composite {
         clearBeforeExec.setLayoutData(data);
         formData = new FormData();
         formData.top = new FormAttachment(execBtn, 0, SWT.BOTTOM);
-        formData.left = new FormAttachment(execBtn, 0, SWT.LEFT);
+        formData.left = new FormAttachment(saveJobBeforeRunButton, 0, SWT.RIGHT);
         clearBeforeExec.setLayoutData(formData);
 
         watchBtn = new Button(execHeader, SWT.CHECK);
@@ -445,6 +456,13 @@ public class ProcessComposite extends Composite {
             }
 
         });
+        saveJobBeforeRunButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
+            }
+        });
     }
 
     /*
@@ -486,6 +504,7 @@ public class ProcessComposite extends Composite {
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
         traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
         watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
+//        saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning());
         killBtn.setEnabled(processContext != null && processContext.isRunning());
         // clearLogBtn.setEnabled(processContext != null);
@@ -501,6 +520,7 @@ public class ProcessComposite extends Composite {
         debugBtn.setEnabled(runnable);
         contextComposite.setEnabled(runnable);
         clearBeforeExec.setEnabled(runnable);
+        saveJobBeforeRunButton.setEnabled(runnable);
         watchBtn.setEnabled(runnable);
     }
 
@@ -564,6 +584,9 @@ public class ProcessComposite extends Composite {
         if (watchBtn.getSelection()) {
             processContext.switchTime();
         }
+
+        checkSaveBeforeRunSelection();
+
         processContext.setSelectedContext(contextComposite.getSelectedContext());
         processContext.exec(getShell());
     }
@@ -586,6 +609,8 @@ public class ProcessComposite extends Composite {
 
         preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, false);
 
+        checkSaveBeforeRunSelection();
+
         if (contextComposite.promptConfirmLauch()) {
             setRunnable(false);
             final IContext context = contextComposite.getSelectedContext();
@@ -605,7 +630,8 @@ public class ProcessComposite extends Composite {
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
 
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(),
+                                    Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
                                     Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
@@ -621,8 +647,8 @@ public class ProcessComposite extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
-                        .getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
+                        .getWorkspace().getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -644,24 +670,29 @@ public class ProcessComposite extends Composite {
                                 public void run() {
                                     setRunnable(true);
                                     killBtn.setEnabled(false);
-                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, oldValueConsoleOnOut);
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT,
+                                            oldValueConsoleOnOut);
 
-                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, oldValueConsoleOnErr);
+                                    preferenceStore.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR,
+                                            oldValueConsoleOnErr);
 
                                     if (isAddedStreamListener) {
-                                        process.getStreamsProxy().getOutputStreamMonitor().removeListener(streamListener);
+                                        process.getStreamsProxy().getOutputStreamMonitor().removeListener(
+                                                streamListener);
                                         isAddedStreamListener = false;
 
                                         if (processContext.isRunning()) {
-                                            final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
+                                            final String endingPattern = Messages
+                                                    .getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                                             MessageFormat mf = new MessageFormat(endingPattern);
                                             String byeMsg;
                                             try {
                                                 byeMsg = "\n"
-                                                        + mf.format(new Object[] { processContext.getProcess().getName(),
-                                                                new Date(), new Integer(process.getExitValue()) });
-                                                processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
-                                                        byeMsg));
+                                                        + mf.format(new Object[] {
+                                                                processContext.getProcess().getName(), new Date(),
+                                                                new Integer(process.getExitValue()) });
+                                                processContext.addDebugResultToConsole(new ProcessMessage(
+                                                        MsgType.CORE_OUT, byeMsg));
                                             } catch (DebugException e) {
                                                 e.printStackTrace();
                                             }
@@ -681,7 +712,8 @@ public class ProcessComposite extends Composite {
                                         processContext.setRunning(true);
                                         processContext.setDebugProcess(process);
                                         if (!isAddedStreamListener) {
-                                            process.getStreamsProxy().getOutputStreamMonitor().addListener(streamListener);
+                                            process.getStreamsProxy().getOutputStreamMonitor().addListener(
+                                                    streamListener);
                                             if (clearBeforeExec.getSelection()) {
                                                 processContext.clearMessages();
                                             }
@@ -698,10 +730,11 @@ public class ProcessComposite extends Composite {
                                             clearTraceAction.run();
                                             isAddedStreamListener = true;
 
-                                            final String startingPattern = Messages.getString("ProcessComposite.startPattern"); //$NON-NLS-1$
+                                            final String startingPattern = Messages
+                                                    .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                             MessageFormat mf = new MessageFormat(startingPattern);
-                                            String welcomeMsg = mf.format(new Object[] { processContext.getProcess().getName(),
-                                                    new Date() });
+                                            String welcomeMsg = mf.format(new Object[] {
+                                                    processContext.getProcess().getName(), new Date() });
                                             processContext.addDebugResultToConsole(new ProcessMessage(MsgType.CORE_OUT,
                                                     welcomeMsg));
                                         }
@@ -730,6 +763,16 @@ public class ProcessComposite extends Composite {
             ExceptionHandler.process(e);
             processContext.addErrorMessage(e);
             kill();
+        }
+    }
+
+    /**
+     * DOC Administrator Comment method "checkSaveBeforeRunSelection".
+     */
+    private void checkSaveBeforeRunSelection() {
+        if (saveJobBeforeRunButton.getSelection()) {
+            SaveJobBeforeRunAction action = new SaveJobBeforeRunAction(processContext.getProcess());
+            action.run();
         }
     }
 

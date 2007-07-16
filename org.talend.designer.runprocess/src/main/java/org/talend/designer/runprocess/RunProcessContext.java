@@ -126,6 +126,8 @@ public class RunProcessContext {
 
     private org.eclipse.debug.core.model.IProcess debugProcess;
 
+    private boolean saveBeforeRun;
+
     /**
      * Constrcuts a new RunProcessContext.
      * 
@@ -612,15 +614,15 @@ public class RunProcessContext {
 
             IProcessMessage msg;
             if (is.ready()) {
-//                int sizeBuffer = 1024;
-//                int currentSizeContent = 0;
+                // int sizeBuffer = 1024;
+                // int currentSizeContent = 0;
                 StringBuilder sb = new StringBuilder();
-//                while (is.ready() && (currentSizeContent < sizeBuffer)) {
-                    String dataStr = is.readLine();
-                    sb.append(dataStr + "\n");
-//                    currentSizeContent += dataStr.length();
-//                    break;
-//                }
+                // while (is.ready() && (currentSizeContent < sizeBuffer)) {
+                String dataStr = is.readLine();
+                sb.append(dataStr + "\n");
+                // currentSizeContent += dataStr.length();
+                // break;
+                // }
                 msg = new ProcessMessage(type, sb.toString());
             } else {
                 msg = null;
@@ -898,6 +900,19 @@ public class RunProcessContext {
 
     public void setDebugProcess(org.eclipse.debug.core.model.IProcess debugProcess) {
         this.debugProcess = debugProcess;
+    }
+
+    public void setSaveBeforeRun(boolean saveBeforeRun) {
+      this.saveBeforeRun =  saveBeforeRun;       
+    }
+
+    
+    /**
+     * Getter for saveBeforeRun.
+     * @return the saveBeforeRun
+     */
+    public boolean isSaveBeforeRun() {
+        return this.saveBeforeRun;
     }
 
 }
