@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -242,9 +241,8 @@ public class ExternalDataConverter {
                     externalMapperTableEntry.setType(((VarTableEntry) dataMapTableEntry).getType());
                     externalMapperTableEntry.setNullable(((VarTableEntry) dataMapTableEntry).isNullable());
                 } else {
-                    IMetadataColumn metadataColumn = ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn();
-                    externalMapperTableEntry.setType(metadataColumn.getTalendType());
-                    externalMapperTableEntry.setNullable(metadataColumn.isNullable());
+                    externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                            .getTalendType());
                 }
                 perTableEntries.add(externalMapperTableEntry);
             }
