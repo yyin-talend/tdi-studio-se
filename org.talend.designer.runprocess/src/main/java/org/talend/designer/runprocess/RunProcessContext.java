@@ -273,10 +273,7 @@ public class RunProcessContext {
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 
             try {
-                // progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
                 progressService.run(false, true, new IRunnableWithProgress() {
-
-                    // ProgressDialog progressDialog = new ProgressDialog(shell) {
 
                     public void run(final IProgressMonitor monitor) {
 
@@ -340,7 +337,7 @@ public class RunProcessContext {
                                                     kill();
                                                 }
                                             } finally {
-                                                progressMonitor.done();
+//                                                progressMonitor.done();
                                                 refreshUiAndWait[0] = false;
                                             }
                                         }
@@ -370,18 +367,13 @@ public class RunProcessContext {
                             progressMonitor.done();
                         }
                     }
-                    // };
-                    // progressDialog.executeProcess();
                 });
-                // }, null);
             } catch (InvocationTargetException e1) {
                 addErrorMessage(e1);
             } catch (InterruptedException e1) {
                 addErrorMessage(e1);
             }
 
-        } else {
-            // setRunning(false);
         }
     }
 
