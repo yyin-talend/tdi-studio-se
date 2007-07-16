@@ -1,0 +1,43 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+%>
+
+return if (not scalar @_);
+
+my %params = @_;
+
+# use Data::Dumper;
+# print Dumper(\%params);
+
+my @<%=cid %> = (
+    getDate('CCYY-MM-DD hh:mm:ss'),
+    $_globals{pid},
+    $_globals{father_pid},
+    $_globals{root_pid},
+    $_globals{system_pid},
+    $_globals{project_name},
+    $_globals{job_name},
+    $_globals{job_repository_id},
+    $_globals{job_version},
+    $opt{context},
+    $params{origin},
+    $params{label},
+    $params{count},
+    $params{reference},
+    $params{thresholds},
+);
+
+$| = 1;

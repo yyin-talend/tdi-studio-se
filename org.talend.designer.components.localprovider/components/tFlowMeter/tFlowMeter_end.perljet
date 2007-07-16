@@ -1,0 +1,104 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.EConnectionType 
+    java.util.List
+    java.util.Map
+    java.lang.StringBuffer
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+
+        Boolean useRowLabel = (Boolean)ElementParameterParser.getObjectValue(
+            node,
+            "__USEROWLABEL__"
+        );
+        
+        String label = "";
+        if(useRowLabel.equals(Boolean.TRUE)) {
+            List<IConnection> connList =
+                (List<IConnection>)node.getIncomingConnections();
+            if(connList.size()>0) {
+                IConnection conn = (IConnection)connList.get(0);
+                label = "\""+conn.getUniqueName()+"\"";
+            }
+            else {
+                label = "\"No input Connection\"";
+            }
+        }
+        else {
+            label = (String)ElementParameterParser.getObjectValue(
+                node,
+                "__METTERLABEL__"
+            );
+        } 
+               
+        String absolute = (String)ElementParameterParser.getObjectValue(
+            node,
+            "__ABSOLUTE__"
+        );
+           
+        String reference_str = "undef";
+        if (absolute.equals("Relative")) {
+            String reference = (String)ElementParameterParser.getObjectValue(
+                node,
+                "__CONNECTIONS__"
+            );
+
+            reference_str = "$_globals{count_" + reference + "}";
+        }
+
+        List<Map<String, String>> shreshlods =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__THRESHLODS__"
+            );
+                
+        StringBuffer shreshlods_str = new StringBuffer();
+        if (shreshlods.size() > 0) {
+            for(Map<String, String> map : shreshlods) {
+                if(shreshlods_str.length() > 0) {
+                    shreshlods_str.append("#");
+                }
+
+                shreshlods_str.append(map.get("LABEL") + "|");
+                shreshlods_str.append(map.get("BOTTOM")+ "|");
+                shreshlods_str.append(map.get("TOP")+ "|");
+                shreshlods_str.append(map.get("COLOR").replace(";","|"));
+            } 
+        } 
+        
+        if (node.getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0) {
+            List<INode> meterCatchers =
+                (List<INode>)node.getProcess().getNodesOfType(
+                    "tFlowMeterCatcher"
+                );
+
+            for (INode meterCatcher : meterCatchers) {
+%>
+<%=meterCatcher.getUniqueName() %>_subprocess(
+    origin => '<%=cid%>',
+    label => <%=label%>,
+    count => $count_<%=cid%>,
+    reference => <%=reference_str%>,
+    thresholds => '<%=shreshlods_str%>',
+);
+<%      
+            }
+        }
+    }
+}
+%>

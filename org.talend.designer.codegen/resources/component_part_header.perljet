@@ -59,6 +59,16 @@ $current_component="<%=node.getUniqueName() %>";
 }
 
 if (codePart.equals(ECodePart.MAIN)) {
+    for (IConnection conn : node.getIncomingConnections()) {
+        if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {
+            if (conn.isUseByMetter()) {
+%>
+$_globals{count_<%=conn.getName()%>}++;
+<%
+            }
+        }
+    }
+
     if (stat) {
         for (IConnection conn : node.getIncomingConnections()) {
             if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {

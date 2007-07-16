@@ -35,6 +35,7 @@ StartThreadStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
 <%
 	for (INode rootNode : rootNodes) {
             if (!rootNode.getUniqueName().startsWith("tLogCatcher")
+                && !rootNode.getUniqueName().startsWith("tFlowMeterCatcher")
                 && !rootNode.getUniqueName().startsWith("tStatCatcher")) {
 %>
 <%=rootNode.getUniqueName() %>_subprocess();
