@@ -37,16 +37,7 @@
     >
       <DEFAULT/>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="WSDL"
-      FIELD="TEXT"
-      NUM_ROW="20"
-      REQUIRED="true"
-    >
-      <DEFAULT>"http://www.atomic-x.com/xmlservices/ImageExtractor"</DEFAULT>
-    </PARAMETER>
-    
+   
     <PARAMETER
       NAME="ENDPOINT"
       FIELD="TEXT"
@@ -54,55 +45,7 @@
     >
       <DEFAULT>"http://www.atomic-x.com/xmlservices/imageextractorws.asmx?wsdl"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="SOAPActionURI"
-      FIELD="TEXT"
-      NUM_ROW="40"
-    >
-      <DEFAULT>"http://www.atomic-x.com/xmlservices/ImageExtractor/ExtractImages"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-       NAME="Style"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="45"
-    >
-          <ITEMS DEFAULT="RPC">
-            <ITEM NAME="wrapped" VALUE="wrapped"/>
-            <ITEM NAME="document" VALUE="document"/>
-            <ITEM NAME="RPC" VALUE="RPC"/>         
-          </ITEMS>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="NEED_AUTH"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="50"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="AUTH_USERNAME"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="50"
-      SHOW_IF="NEED_AUTH == 'true'"
-    >
-      <DEFAULT>"username"</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="AUTH_PASSWORD"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="50"
-      SHOW_IF="NEED_AUTH == 'true'"
-    >
-      <DEFAULT>"password"</DEFAULT>
-    </PARAMETER>
-
+ 
     <PARAMETER
       NAME="METHOD"
       FIELD="TEXT"
@@ -111,42 +54,6 @@
       <DEFAULT>"ExtractImages"</DEFAULT>
     </PARAMETER>  
 
-    
-    <PARAMETER
-       NAME="RETURN_CLASS"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="60"
-    >
-          <ITEMS DEFAULT="String">
-            <ITEM NAME="Integer" VALUE="java.lang.Integer.class"/>
-            <ITEM NAME="Short" VALUE="java.lang.Short.class"/>
-            <ITEM NAME="Boolean" VALUE="java.lang.Boolean.class"/>
-            <ITEM NAME="Byte" VALUE="java.lang.Byte.class"/>
-            <ITEM NAME="Long" VALUE="java.lang.Long.class"/>
-            <ITEM NAME="Double" VALUE="java.lang.Double.class"/>
-            <ITEM NAME="Float" VALUE="java.lang.Float.class"/>
-            <ITEM NAME="Character" VALUE="java.lang.Character.class"/>
-            <ITEM NAME="String" VALUE="java.lang.String.class"/>
-            <ITEM NAME="Date" VALUE="java.util.Date.class"/>
-            <ITEM NAME="Map" VALUE="java.util.Map.class"/>
-            <ITEM NAME="Object" VALUE="java.lang.Object.class"/>
-            <ITEM NAME="Integer[]" VALUE="java.lang.Integer[].class"/>
-            <ITEM NAME="Short[]" VALUE="java.lang.Short[].class"/>
-            <ITEM NAME="Boolean[]" VALUE="java.lang.Boolean[].class"/>
-            <ITEM NAME="Byte[]" VALUE="java.lang.Byte[].class"/>
-            <ITEM NAME="Long[]" VALUE="java.lang.Long[].class"/>
-            <ITEM NAME="Double[]" VALUE="java.lang.Double[].class"/>
-            <ITEM NAME="Float[]" VALUE="java.lang.Float[].class"/>
-            <ITEM NAME="Character[]" VALUE="java.lang.Character[].class"/>
-            <ITEM NAME="String[]" VALUE="java.lang.String[].class"/>
-            <ITEM NAME="Date[]" VALUE="java.util.Date[].class"/>
-            <ITEM NAME="Map[]" VALUE="java.util.Map[].class"/>
-            <ITEM NAME="Object[]" VALUE="java.lang.Object[].class"/>
-            <ITEM NAME="Schema" VALUE="org.apache.axis.types.Schema.class"/>            
-          </ITEMS>
-    </PARAMETER>
-    
-
     <PARAMETER
       NAME="PARAMS"
       FIELD="TABLE"
@@ -154,43 +61,15 @@
       NB_LINES="2"
     >
       <ITEMS>
-        <ITEM NAME="NAME"/>
-        <ITEM NAME="VALUE"/>
-        <ITEM NAME="CLASS" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="String">
-            <ITEM NAME="Integer" VALUE="java.lang.Integer.class"/>
-            <ITEM NAME="Short" VALUE="java.lang.Short.class"/>
-            <ITEM NAME="Boolean" VALUE="java.lang.Boolean.class"/>
-            <ITEM NAME="Byte" VALUE="java.lang.Byte.class"/>
-            <ITEM NAME="Long" VALUE="java.lang.Long.class"/>
-            <ITEM NAME="Double" VALUE="java.lang.Double.class"/>
-            <ITEM NAME="Float" VALUE="java.lang.Float.class"/>
-            <ITEM NAME="Character" VALUE="java.lang.Character.class"/>
-            <ITEM NAME="String" VALUE="java.lang.String.class"/>
-            <ITEM NAME="Date" VALUE="java.util.Date.class"/>
-            <ITEM NAME="Map" VALUE="java.util.Map.class"/>
-            <ITEM NAME="Object" VALUE="java.lang.Object.class"/>
-            <ITEM NAME="Integer[]" VALUE="java.lang.Integer[].class"/>
-            <ITEM NAME="Short[]" VALUE="java.lang.Short[].class"/>
-            <ITEM NAME="Boolean[]" VALUE="java.lang.Boolean[].class"/>
-            <ITEM NAME="Byte[]" VALUE="java.lang.Byte[].class"/>
-            <ITEM NAME="Long[]" VALUE="java.lang.Long[].class"/>
-            <ITEM NAME="Double[]" VALUE="java.lang.Double[].class"/>
-            <ITEM NAME="Float[]" VALUE="java.lang.Float[].class"/>
-            <ITEM NAME="Character[]" VALUE="java.lang.Character[].class"/>
-            <ITEM NAME="String[]" VALUE="java.lang.String[].class"/>
-            <ITEM NAME="Date[]" VALUE="java.util.Date[].class"/>
-            <ITEM NAME="Map[]" VALUE="java.util.Map[].class"/>
-            <ITEM NAME="Object[]" VALUE="java.lang.Object[].class"/>
-            <ITEM NAME="Schema" VALUE="org.apache.axis.types.Schema.class"/>            
-          </ITEMS>
-        </ITEM>       
+<!--    <ITEM NAME="NAME"/> -->
+        <ITEM NAME="VALUE"/>      
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
+      <IMPORT NAME="WebServiceInput" MODULE="WebServiceInput.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />

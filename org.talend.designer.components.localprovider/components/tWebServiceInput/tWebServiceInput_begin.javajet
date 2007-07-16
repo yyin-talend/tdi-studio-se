@@ -28,100 +28,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<IMetadataColumn> listColumns = metadata.getListColumns(); 
         
         List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
-        String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
-		String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
-		String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
-		String wsdl_uri = ElementParameterParser.getValue(node,"__WSDL__");
-		String style = ElementParameterParser.getValue(node,"__Style__");
 %>
-
-        String endpoint_<%=cid %> = <%=ElementParameterParser.getValue(node,"__ENDPOINT__") %>;
-        String soapAction_uri_<%=cid %> = <%=ElementParameterParser.getValue(node,"__SOAPActionURI__") %>;
-        String method_<%=cid %> = <%=ElementParameterParser.getValue(node,"__METHOD__") %>; 
-///////////////////////////////////
-		    class Util_<%=cid %>
-            {
-                    public org.apache.axis.description.OperationDesc _initOperationDesc(){
-                                            
-                        org.apache.axis.description.OperationDesc oper;
-                        ;
-                        oper = new org.apache.axis.description.OperationDesc();
-                        oper.setName(<%=ElementParameterParser.getValue(node,"__METHOD__") %>);
-                        
-                        
-                        <%
-                                for (int i = 0; i < params.size(); i++) {
-                                    Map<String, String> line = params.get(i);
-                        %>
-                        org.apache.axis.description.ParameterDesc param<%=i %> = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, <%= line.get("NAME") %>), org.apache.axis.description.ParameterDesc.IN, 
-                        
-                        <% if(style.equals("RPC")) { %>
-                           org.apache.axis.Constants.XSD_ANYTYPE, 
-                        <%}else {%>
-                           new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, "<%= line.get("CLASS") %>"),                        
-                        <%
-                          }
-                        %>
-                        
-                        <%= line.get("CLASS") %>, false, false);
-                        param<%=i %>.setOmittable(true);
-                        oper.addParameter(param<%=i %>);
-                        <%
-                                }
-                        %>
-						
-						
-						<% 
-						    if (ElementParameterParser.getValue(node,"__RETURN_CLASS__").equals("org.apache.axis.types.Schema.class")) {
-						%>
-						oper.setReturnType(org.apache.axis.Constants.XSD_SCHEMA);
-						<%
-						  } else {
-						%>
-						
-						<% if(style.equals("RPC")) { %>
-                            oper.setReturnType(org.apache.axis.Constants.XSD_ANYTYPE);
-                        <%}else {%>
-                            oper.setReturnType(new javax.xml.namespace.QName(<%=ElementParameterParser.getValue(node,"__WSDL__") %>, "<%=ElementParameterParser.getValue(node,"__RETURN_CLASS__") %>"));                        
-                        <%
-                          }
-                        %>
-                        
-						<%
-							}
-						%>
-                        
-                        oper.setReturnClass(<%=ElementParameterParser.getValue(node,"__RETURN_CLASS__") %>);
-                        
-                        <%
-                           if(style.equals("wrapped")) {
-                        %>
-                        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
-                        oper.setUse(org.apache.axis.constants.Use.LITERAL);
-                        <%
-                        	} else if(style.equals("document")) {
-                        %>
-                        oper.setStyle(org.apache.axis.constants.Style.DOCUMENT);
-                        oper.setUse(org.apache.axis.constants.Use.LITERAL);
-                        <%
-                        	} else if(style.equals("RPC")) {
-                        %>
-                        oper.setStyle(org.apache.axis.constants.Style.RPC);
-                        oper.setUse(org.apache.axis.constants.Use.ENCODED);
-                        <%
-                          }
-                        %>
-                        
-                        return oper;                
-                    }
-            } 
-            
-		   Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
-		   
-///////////////////////////////////
- 
+/////////////////////////////////// 
         
-        Object[] params_<%=cid %> = new Object[] {         
+        Object[] params_<%=cid %> = new Object[] {
+        <%=ElementParameterParser.getValue(node,"__ENDPOINT__") %>, 
+        <%=ElementParameterParser.getValue(node,"__METHOD__") %>,      
 <%
         for (int i = 0; i < params.size(); i++) {
             Map<String, String> line = params.get(i);
@@ -132,67 +44,57 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>      
         };  
         
- 
+ 		org.talend.DynamicInvoker.main(params_<%=cid %>);
+ 		java.util.Map result = org.talend.DynamicInvoker.getResult();
         
         String[] results_<%=cid %> = null;
-	    int nb_line_<%=cid %> = 0;	  
-
-		org.apache.axis.client.Service  service_<%=cid %> = new org.apache.axis.client.Service();
-		org.apache.axis.client.Call call_<%=cid %> = (org.apache.axis.client.Call) service_<%=cid %>.createCall();
-	    call_<%=cid %>.setTargetEndpointAddress(new java.net.URL(endpoint_<%=cid %>));
-<% 
-        if ("true".equals(needAuth)) {
-%> 
-        call_<%=cid %>.setProperty(org.apache.axis.client.Call.USERNAME_PROPERTY, <%=authUsername %>);
-        call_<%=cid %>.setProperty(org.apache.axis.client.Call.PASSWORD_PROPERTY, <%=authPassword %>);
-<%
-        }	
-%>
-        call_<%=cid %>.setOperation(util_<%=cid %>._initOperationDesc());
-        call_<%=cid %>.setUseSOAPAction(true);
-        call_<%=cid %>.setSOAPActionURI(soapAction_uri_<%=cid %>);
-        call_<%=cid %>.setEncodingStyle(org.apache.axis.Constants.URI_SOAP11_ENC);
-        call_<%=cid %>.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);       
-        call_<%=cid %>.setOperationName(new javax.xml.namespace.QName(<%=wsdl_uri %>, method_<%=cid %>));
- 	    
-	    
-	    
-		//get the return value;
-		Object ret_<%=cid %> = call_<%=cid %>.invoke(params_<%=cid %>);
-
-
-		//create a array to hold the map
-		Object[] tempArray_<%=cid %> = null;
-		if (ret_<%=cid %> instanceof Object[]) {			
-			tempArray_<%=cid %> = (Object[]) ret_<%=cid %>;
-		} else {
-			tempArray_<%=cid %> = new Object[1];
-			tempArray_<%=cid %>[0] = ret_<%=cid %>;
-		}
-		
-		for (int i_<%=cid %> = 0; i_<%=cid %> < tempArray_<%=cid %>.length; i_<%=cid %>++) {
-		    results_<%=cid %> = new String[<%=listColumns.size() %>];		    
-			
-			if (tempArray_<%=cid %>[i_<%=cid %>] instanceof java.util.Map) {
-				java.util.Map map_<%=cid %> = (java.util.Map)tempArray_<%=cid %>[i_<%=cid %>];
+	    int nb_line_<%=cid %> = 0;
+	
+        for (Object key : result.keySet()) {
+        
+           results_<%=cid %> = new String[<%=listColumns.size() %>];
+            
+           Object value = result.get(key);
+           if (value instanceof Object[]){
+                Object[] objArr_<%=cid %> = (Object[])value;
+                int len_<%=cid %> = Math.min(objArr_<%=cid %>.length, results_<%=cid %>.length);
+                int k_<%=cid %> = 0;
+                for (int i_<%=cid %> = 0; i_<%=cid %> < len_<%=cid %>; i_<%=cid %>++ ) {
+                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(objArr_<%=cid %>[k_<%=cid %>]);
+                }
+                
+          } else if (value instanceof java.util.List) {
+                java.util.List list_<%=cid %> = (java.util.List)value;
+                int len_<%=cid %> = Math.min(list_<%=cid %>.size(), results_<%=cid %>.length);
+                int k_<%=cid %> = 0;
+                for (java.util.Iterator iter_<%=cid %> = list_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
+                    results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
+                }
+                                
+            } else if (value instanceof java.util.Map) {                
+				java.util.Map map_<%=cid %> = (java.util.Map)value;
                 java.util.Collection values_<%=cid %> = map_<%=cid %>.values();
                 int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
                 int k_<%=cid %> = 0;
                 for (java.util.Iterator iter_<%=cid %> = values_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
                     results_<%=cid %>[k_<%=cid %>] = String.valueOf(iter_<%=cid %>.next());
-                }				
-			} else if (tempArray_<%=cid %>[i_<%=cid %>] instanceof org.apache.axis.types.Schema) {
-                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) tempArray_<%=cid %>[i_<%=cid %>];
+                }
+
+            } else if (value instanceof org.w3c.dom.Element) {
+                results_<%=cid %>[0] = org.apache.axis.utils.XMLUtils.ElementToString((org.w3c.dom.Element)value);
+                
+            }else if (value instanceof org.apache.axis.types.Schema){
+                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) value;
                 org.apache.axis.message.MessageElement[] _any_<%=cid %> = schema_<%=cid %>.get_any();
                 for (int s_<%=cid %> = 0; s_<%=cid %> < _any_<%=cid %>.length; s_<%=cid %>++) {
                     results_<%=cid %>[s_<%=cid %>] = _any_<%=cid %>[s_<%=cid %>].toString();
-                }				
-			} else {
-				results_<%=cid %>[0] = String.valueOf(tempArray_<%=cid %>[i_<%=cid %>]);
-			}
-			
+                }	
+                
+            } else {
+			    results_<%=cid %>[0] = String.valueOf(value);
+            }
 	
-        nb_line_<%=cid %>++;
+           nb_line_<%=cid %>++;
 	       
 // for output
 <%
