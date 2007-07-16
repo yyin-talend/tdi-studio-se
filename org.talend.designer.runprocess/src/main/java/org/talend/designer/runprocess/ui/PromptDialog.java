@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
@@ -217,8 +218,8 @@ public class PromptDialog extends Dialog {
                     FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
                     String open = d.open();
                     if (open != null) {
-                        open = open.replaceAll("\\\\", "/");
-                        text.setText(open);
+                        // open = open.replaceAll("\\\\", "/");
+                        text.setText(PathUtils.getPortablePath(open));
                     }
                 }
 
@@ -238,8 +239,8 @@ public class PromptDialog extends Dialog {
                     DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
                     String open = d.open();
                     if (open != null) {
-                        open = open.replaceAll("\\\\", "/");
-                        text.setText(open);
+                        // open = open.replaceAll("\\\\", "/");
+                        text.setText(PathUtils.getPortablePath(open));
                     }
                 }
 
