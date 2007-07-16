@@ -16,44 +16,45 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
-	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-conn_<%=cid%>.commit();
-<%
+	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
+    	%>
+        if(pstmtUpdate_<%=cid%> != null){
+        
+        	pstmtUpdate_<%=cid %>.close();
+        	
+        } 
+        if(pstmtInsert_<%=cid %> != null){
+        
+        	pstmtInsert_<%=cid %>.close();
+        	
+        }
+        if(pstmt_<%=cid %> != null) {
+        
+        	pstmt_<%=cid %>.close();
+        	
+        }
+		<%	
+	}else{
+		%>
+        pstmt_<%=cid %>.close();
+		<%
 	}
 %>
 
-if(pstmtUpdate_<%=cid%> != null){
-
-	pstmtUpdate_<%=cid %>.close();
-	
-} 
-if(pstmtInsert_<%=cid %> != null){
-
-	pstmtInsert_<%=cid %>.close();
-	
-}
-if(pstmt_<%=cid %> != null) {
-
-	pstmt_<%=cid %>.close();
-	
-}
-
-conn_<%=cid%> .close();
-
-<%	
-	}else{
-		if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-		%>
-conn_<%=cid%>.commit();			
-		<%
-		}
-%>
-pstmt_<%=cid %>.close();
-conn_<%=cid%> .close();
 <%
+	if(!useExistingConn.equals("true"))
+	{
+		if(!commitEvery.equals("") && !commitEvery.equals("0"))
+		{
+%>
+		conn_<%=cid%>.commit();
+<%
+		}
+%>	
+    	conn_<%=cid%> .close();
+    	<%
 	}
 %>
 

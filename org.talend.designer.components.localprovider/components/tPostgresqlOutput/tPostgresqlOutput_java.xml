@@ -37,10 +37,28 @@
     />
 
     <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tPostgresqlConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />     
+
+    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -50,6 +68,8 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"5432"</DEFAULT>
     </PARAMETER>
@@ -60,6 +80,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -68,18 +89,10 @@
       NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="SCHEMA" 
+      REPOSITORY_VALUE="SCHEMA"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
     >
       <DEFAULT>"public"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -88,6 +101,7 @@
       NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -98,14 +112,24 @@
       NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>    
+
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -119,7 +143,7 @@
     <PARAMETER
       NAME="CLEAR_TABLE"
       FIELD="CHECK"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>      
@@ -127,7 +151,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -135,7 +159,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -146,7 +170,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="9"
+      NUM_ROW="10"
       NB_LINES="3"
     >
       <ITEMS>
@@ -171,7 +195,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="11"
       REQUIRED="true"
     >
       <DEFAULT>100</DEFAULT>
