@@ -40,7 +40,6 @@
         <ITEM NAME="ACCESS"        VALUE="Access" />
         <ITEM NAME="DB2"           VALUE="DB2"/>
         <ITEM NAME="FIREBIRD"      VALUE="Firebird"/>
-        <ITEM NAME="HSQLDB"      VALUE="HSQLdb"/>
         <ITEM NAME="INFORMIX"      VALUE="Informix"/>
         <ITEM NAME="INGRES"      VALUE="Ingres"/>
         <ITEM NAME="INTERBASE"      VALUE="Interbase"/>
@@ -176,21 +175,32 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE')"
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
       NAME="DBNAME"
-      FIELD="Text"
+      FIELD="TEXT"
       NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'INTERBASE')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+     
+    
+    <PARAMETER
+      NAME="INTERBASEDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='INTERBASE')"     
+    >
+      <DEFAULT>"../test.gdb"</DEFAULT>
+    </PARAMETER> 
     
    <PARAMETER
       NAME="SQLITEDBNAME"
@@ -280,7 +290,6 @@
       <DEFAULT IF="DBTYPE=='ACCESS'">access_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='DB2'">ibmdb2_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='FIREBIRD'">firebird_id</DEFAULT>
-      <DEFAULT IF="DBTYPE=='HSQLDB'">hsqldb_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INFORMIX'">informix_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INTERBASE'">interbase_id</DEFAULT>
@@ -321,6 +330,7 @@
 		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Interbase" MODULE="interclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />

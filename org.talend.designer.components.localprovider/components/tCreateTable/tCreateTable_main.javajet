@@ -75,6 +75,10 @@ class Transfer{
 			return "com.sybase.jdbc3.jdbc.SybDriver";
 		}else if(dbType.equals("ODBC")){
 			return "sun.jdbc.odbc.JdbcOdbcDriver";
+		}else if(dbType.equals("HSQLdb")){
+			return "org.hsqldb.jdbcDriver";
+		}else if(dbType.equals("Interbase")){
+			return "interbase.interclient.Driver";
 		}
 		return null;
 	}
@@ -132,17 +136,23 @@ class Transfer{
 			return "\"jdbc:sybase:Tds:\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}else if(dbType.equals("ODBC")){
 			return "\"jdbc:odbc:\" + " + dbname;
+		}else if(dbType.equals("HSQLdb")){
+			return "org.hsqldb.jdbcDriver";
+		}else if(dbType.equals("Interbase")){
+			return "\"jdbc:interbase://\"+"+host+"+\"/\"+"+dbname;
 		}
 		return null;
 	}
 	
 	public String protectChar(String dbType, String tableName){
-		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")){
+		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")){
 			return "\\\"\"+"+tableName+"+\"\\\"";
 		}else if(dbType.equals("Access")){
 			return "[\"+"+tableName+"+\"]";
 		}else if(dbType.equals("MySQL")){
 			return "`\"+"+tableName+"+\"`";
+		}else if(dbType.equals("Sybase")){
+			return "\"+"+tableName+"+\"";
 		}
 		return null;
 	}
