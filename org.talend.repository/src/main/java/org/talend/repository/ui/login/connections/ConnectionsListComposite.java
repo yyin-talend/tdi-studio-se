@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -39,15 +39,16 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
-import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
-import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ConnectionBean;
@@ -149,9 +150,9 @@ public class ConnectionsListComposite extends Composite {
                 nameColumn.setMinimumWidth(20);
                 nameColumn.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
 
-                TableViewerCreatorColumn comleteColumn = new TableViewerCreatorColumn(tableViewerCreator);
-                comleteColumn.setTitle(Messages.getString("ConnectionsListComposite.comleteColumnTitle.complete")); //$NON-NLS-1$
-                comleteColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, Boolean>() {
+                TableViewerCreatorColumn completeColumn = new TableViewerCreatorColumn(tableViewerCreator);
+                completeColumn.setTitle(Messages.getString("ConnectionsListComposite.comleteColumnTitle.complete")); //$NON-NLS-1$
+                completeColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, Boolean>() {
 
                     public Boolean get(ConnectionBean bean) {
                         return bean.isComplete();
@@ -162,12 +163,14 @@ public class ConnectionsListComposite extends Composite {
                     }
 
                 });
-                comleteColumn.setWeight(5);
-                comleteColumn.setModifiable(true);
-                comleteColumn.setMinimumWidth(5);
-                comleteColumn.setDisplayedValue(""); //$NON-NLS-1$
-                CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
-                comleteColumn.setTableEditorContent(checkboxTableEditorContent);
+                completeColumn.setWeight(5);
+                completeColumn.setModifiable(false);
+                completeColumn.setMinimumWidth(5);
+                completeColumn.setImageProvider(new StatusImageProvider());
+                completeColumn.setDisplayedValue(""); //$NON-NLS-1$
+                // CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
+                // comleteColumn.setTableEditorContent(checkboxTableEditorContent);
+                // completeColumn.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
             }
 
         };
@@ -214,4 +217,19 @@ public class ConnectionsListComposite extends Composite {
         return this.list;
     }
 
+    /**
+     * Manage ok/nok image in second column to show is the connection is complete/uncomplete.
+     */
+    private class StatusImageProvider implements IColumnImageProvider {
+
+        public Image getImage(Object bean) {
+            ConnectionBean connectionBean = (ConnectionBean) bean;
+            if (connectionBean.isComplete()) {
+                return ImageProvider.getImage(EImage.OK);
+            } else {
+                return ImageProvider.getImage(EImage.ERROR_ICON);
+            }
+        }
+
+    }
 }
