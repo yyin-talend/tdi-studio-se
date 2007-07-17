@@ -104,7 +104,7 @@ if(conns != null && conns.size()>0){
  	%> 	
  		if(colQtyInRs_<%=cid%><<%=currentColNo%>){
  		
- 			<%=firstConnName%>.<%=column.getLabel()%>=<%=defVal%>;
+ 			<%=firstConnName%>.<%=column.getLabel()%> = <%=defVal%>;
  			
  		}else{
  	  	  <%
@@ -120,16 +120,17 @@ if(conns != null && conns.size()>0){
 		  
 			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			  %>
-			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null&&(rs_<%=cid %>.getString(<%=currentColNo%>)).length()>0){
+			  	String tmpString = rs_<%=cid %>.getString(<%=currentColNo%>);
+			  	if(tmpString != null && tmpString.length()>0){
 			  	
-			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
+			  		<%=firstConnName%>.<%=column.getLabel()%> = tmpString.charAt(0);
 			  		
 			  	}else{			  	
 			  	    <%if(typeToGenerate.equals("Character")){%>
 			  	    
-			  	   	if((rs_<%=cid %>.getString(<%=currentColNo%>))==null){
+			  	   	if((rs_<%=cid %>.getString(<%=currentColNo%>)) == null){
 			  	   	
-			  			<%=firstConnName%>.<%=column.getLabel()%>=null;
+			  			<%=firstConnName%>.<%=column.getLabel()%> = null;
 			  			
 			  		}else{
 			  		
@@ -151,21 +152,38 @@ if(conns != null && conns.size()>0){
 			  		
 			  		<%}%>
 			  	}			
-			  <%
+			 <%
 			  }else if(typeToGenerate.equals("Timestamp")){
 			 %>
-			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
-			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			 java.sql.Timestamp timestamp = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+			 if(timestamp != null){
+			 	<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp.getTime());
 			 }else{
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
 			 <% 	
 			 }else{		  
    	 		 %>
-
- 	   		 	if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null)
+				Object value = rs_<%=cid %>.getObject(<%=currentColNo%>);
+ 	   		 	if(value != null)
  	   		 	{
- 			 		<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+ 	   		 		<%
+   		 			String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
+   		 			if(javaType.equals("Integer"))
+   		 			{
+   		 				%>
+   		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType.substring(0,3)%>(value.toString()));
+   		 				<%
+   		 			}
+   		 			else if(javaType.equals("Byte") || javaType.equals("Short") || javaType.equals("Long") || 
+   		 			javaType.equals("Float") || javaType.equals("Double"))
+   		 			{
+   		 				%>
+   		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType%>(value.toString()));
+   		 				<%
+   		 			}
+ 	   		 		%>
+ 			 		<%=firstConnName%>.<%=column.getLabel()%> = (<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), true)%>)value;
  			 	}
  			 	else
  			 	{
