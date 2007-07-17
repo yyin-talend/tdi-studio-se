@@ -423,25 +423,39 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         // loop on all tables
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+
+            String expressionFilter = replaceLocation(oldLocation, newLocation, table.getExpressionFilter(),
+                    dataMapExpressionParser, tableRenamed);
+            if (expressionFilter != null) {
+                table.setExpressionFilter(expressionFilter);
+            }
+
             if (metadataTableEntries != null) {
                 // loop on all entries of current table
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    replaceLocation(oldLocation, newLocation, entry, dataMapExpressionParser, tableRenamed);
+                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(),
+                            dataMapExpressionParser, tableRenamed);
+                    if (expression != null) {
+                        entry.setExpression(expression);
+                    }
                 } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
             }
             if (table.getConstraintTableEntries() != null) {
                 for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                    replaceLocation(oldLocation, newLocation, entry, dataMapExpressionParser, tableRenamed);
+                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(),
+                            dataMapExpressionParser, tableRenamed);
+                    if (expression != null) {
+                        entry.setExpression(expression);
+                    }
                 }
             }
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
-            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
-        String currentExpression = entry.getExpression();
-        if (currentExpression == null || currentExpression.length() == 0) {
-            return;
+    public String replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            String currentExpression, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+        if (currentExpression == null || currentExpression.trim().length() == 0) {
+            return null;
         }
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
         // loop on all locations of current expression
@@ -456,7 +470,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                         newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
-        entry.setExpression(currentExpression);
+        return currentExpression;
 
     }
 
