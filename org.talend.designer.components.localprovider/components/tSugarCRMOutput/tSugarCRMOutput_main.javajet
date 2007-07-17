@@ -78,7 +78,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 				}//5	
 %> 
- 				sugarManagement_<%=cid %>.setRecord(modulename_<%=cid %>, nameValues_<%=cid %>);    			
+ 				String id_<%=cid %> = sugarManagement_<%=cid %>.setRecord(modulename_<%=cid %>, nameValues_<%=cid %>);
+ 				globalMap.put("<%=cid %>_ID",id_<%=cid %>);    			
     			nb_line_<%=cid %>++;
 ///////////////////////    			
 <%
