@@ -92,7 +92,7 @@ public class RepositoryDoubleClickAction extends Action {
             if (!(actionToRun == null)) {
                 actionToRun.init((TreeViewer) getViewPart().getViewer(), (IStructuredSelection) selection);
                 actionToRun.run();
-                showView();
+                // showView();
             }
         }
     }
@@ -105,12 +105,12 @@ public class RepositoryDoubleClickAction extends Action {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }
-// Added for v2.0.0               
+                // Added for v2.0.0
             } else if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
                 if (current.getClassForDoubleClick().equals(QueryEMFRepositoryNode.class)) {
                     return current;
                 }
-// end                
+                // end
             } else if (obj.getObject() != null
                     && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
                 return current;
