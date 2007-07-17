@@ -21,9 +21,13 @@
 // ============================================================================
 package org.talend.designer.mapper.language.generation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.commons.utils.generation.CodeGenerationUtils;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -36,6 +40,8 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  * 
  */
 public class JavaGenerationManager extends GenerationManager {
+
+    private Map<String, HashedMetadataTable> hashMetadataTable = new HashMap<String, HashedMetadataTable>();
 
     public JavaGenerationManager(ILanguage language) {
         super(language);
@@ -114,6 +120,14 @@ public class JavaGenerationManager extends GenerationManager {
 
         JavaGenerationManager manager = new JavaGenerationManager(LanguageProvider.getJavaLanguage());
         // System.out.println(manager.insertFieldKey("table:column", "\nligne1\nligne2\nligne3"));
+    }
+
+    public void hashMetadataTable(IMetadataTable metadataTable) {
+        hashMetadataTable.put(metadataTable.getTableName(), new HashedMetadataTable(metadataTable));
+    }
+
+    public HashedMetadataTable getHashedMetadataTable(String key) {
+        return hashMetadataTable.get(key);
     }
 
     /**

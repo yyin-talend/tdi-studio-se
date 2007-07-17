@@ -18,6 +18,7 @@
 	org.talend.designer.mapper.language.ILanguage
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
+	org.talend.designer.mapper.language.generation.HashedMetadataTable
 	org.talend.designer.mapper.language.LanguageProvider
 	org.talend.designer.mapper.model.tableentry.TableEntryLocation
 	org.talend.designer.mapper.utils.DataMapExpressionParser
@@ -42,17 +43,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-        String uniqueNameComponent = null;
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
-        List<IConnection> inputConnections;
-        List<IConnection> outputConnections;
-        ExternalMapperData data;
-        boolean checkingSyntax = false;
-        inputConnections = (List<IConnection>) node.getIncomingConnections();
-        outputConnections = (List<IConnection>) node.getOutgoingConnections();
-        data = (ExternalMapperData) node.getExternalData();
-        uniqueNameComponent = node.getUniqueName();
-        checkingSyntax = codeGenArgument.isCheckingSyntax();
+        
+        List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
+        List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+        ExternalMapperData data = (ExternalMapperData) node.getExternalData();
+        String uniqueNameComponent = node.getUniqueName();
+        boolean checkingSyntax = codeGenArgument.isCheckingSyntax();
 
         String cr = "\n";
         String rejected = "rejected_" + uniqueNameComponent;
@@ -598,8 +595,12 @@
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
             String outputTableName = outputTable.getName();
             boolean connectionExists = true;
-            if (outputTableEntries == null || nameToOutputConnection.get(outputTableName) == null) {
+            IConnection outputConnection = nameToOutputConnection.get(outputTableName);
+            HashedMetadataTable hashedMetadataTable = null;
+            if (outputTableEntries == null || outputConnection == null) {
                 connectionExists = false;
+            } else {
+            	hashedMetadataTable = new HashedMetadataTable(outputConnection.getMetadataTable());
             }
 
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
@@ -707,10 +708,20 @@
                         && atLeastOneInputTableWithInnerJoin || checkingSyntax) {
                     for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                         String outputColumnName = outputTableEntry.getName();
+                        IMetadataColumn metadataColumn = null;
+                        if(connectionExists) {
+	                        metadataColumn = hashedMetadataTable.getColumn(outputColumnName);
+	                    }
+                        
                         String outputExpression = outputTableEntry.getExpression();
                         if (outputExpression == null || outputExpression.trim().length() == 0) {
-                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry
-                                    .getType(), outputTableEntry.isNullable());
+                        	if(metadataColumn == null) {
+	                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry
+    	                                .getType(), outputTableEntry.isNullable());
+    	                    } else {
+	                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(metadataColumn
+    	                                .getTalendType(), metadataColumn.isNullable());
+    	                    }
                         }
 
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
@@ -725,9 +736,15 @@
                             assignationVar = gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName + "_tmp",
                                     outputColumnName, false);
                         } else {
-                            assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
+                        	if(metadataColumn == null) {
+	                            assignationVar = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(),
                                     outputTableEntry.isNullable())
                                     + " dummyVar" + (dummyVarCounter++);
+                            } else {
+	                            assignationVar = JavaTypesManager.getTypeToGenerate(metadataColumn
+    	                                .getTalendType(), metadataColumn.isNullable())
+                                    + " dummyVar" + (dummyVarCounter++);
+                            }
                         }
                         String expression = gm.indent(indent) + assignationVar + " = " + outputExpression + ";";
 
