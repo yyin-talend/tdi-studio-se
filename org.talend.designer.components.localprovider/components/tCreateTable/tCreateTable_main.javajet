@@ -136,9 +136,20 @@ class Transfer{
 		return null;
 	}
 	
+	public String protectChar(String dbType, String tableName){
+		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")){
+			return "\\\"\"+"+tableName+"+\"\\\"";
+		}else if(dbType.equals("Access")){
+			return "[\"+"+tableName+"+\"]";
+		}else if(dbType.equals("MySQL")){
+			return "`\"+"+tableName+"+\"`";
+		}
+		return null;
+	}
+	
 	
 	public String sql(String dbType,String tableName,INode node){
-	String sql="create table \"+"+tableName+"+\"(";
+	String sql="create table "+protectChar(dbType, tableName)+" (";
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		List PKey=new ArrayList();	
 		if ((metadatas!=null)&&(metadatas.size()>0)) {

@@ -315,10 +315,7 @@
 		<IMPORT NAME="Driver-ORACLE" MODULE="ojdbc14.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-ACCESS" MODULE="Access_JDBC30.jar" REQUIRED="true" />	
-		<IMPORT NAME="Driver-FIREBIRD-JAAS" MODULE="jaas.jar" REQUIRED="true" />	
-		<IMPORT NAME="Driver-FIREBIRD-JAYBIRD" MODULE="jaybird-2.1.1.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-FIREBIRD-LOG4J" MODULE="log4j-core.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-FIREBIRD-MINI-J2EE" MODULE="mini-j2ee.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" REQUIRED="true" />
