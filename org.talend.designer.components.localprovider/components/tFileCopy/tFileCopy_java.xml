@@ -66,6 +66,15 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    <PARAMETER
+      NAME="CREATE_DIRECTORY"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="CREATE_DIRECTORY"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
   <CODEGENERATION/>
 <RETURNS/>

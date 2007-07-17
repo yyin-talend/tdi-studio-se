@@ -14,6 +14,7 @@
 	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
 	boolean reFile=ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
 	boolean rpFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
+    boolean creatDir=ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
 %>     
         String directory_<%=cid%>=<%=destination%>;
         java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
@@ -28,6 +29,12 @@
         }else
         {
             java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(file_<%=cid %>));
+            <%if(creatDir==true){%>
+            java.io.File creatFile<%=cid%>=new java.io.File(<%=destination%>);
+            if (!creatFile<%=cid%>.exists()) {
+               (new java.io.File(<%=destination%>)).mkdirs();
+            }
+            <%}%>
             java.io.BufferedOutputStream out_<%=cid %> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(dirfile_<%=cid%>));
             byte[] buf_<%=cid %>=new byte[1024];
             int readLen_<%=cid %>;
