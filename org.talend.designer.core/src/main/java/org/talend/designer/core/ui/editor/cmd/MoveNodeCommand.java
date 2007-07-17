@@ -21,11 +21,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -54,15 +59,29 @@ public class MoveNodeCommand extends Command {
         setLabel(Messages.getString("MoveNodeCommand.Label")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public boolean canExecute() {
         for (Node currentNode : (List<Node>) node.getProcess().getGraphicalNodes()) {
-            if ((currentNode.getLocation().x == newPos.x) && (currentNode.getLocation().y == newPos.y)) {
+            if ((currentNode.getLocation().x == newPos.x) && (currentNode.getLocation().y == newPos.y)
+                    && (!isSelected(currentNode))) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean isSelected(Node currentNode) {
+        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
+        for (EditPart editPart : (List<EditPart>) viewer.getSelectedEditParts()) {
+            if (editPart.getModel().equals(currentNode)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void execute() {
