@@ -41,12 +41,12 @@ public class ExternalMapperTableEntry implements Serializable, Cloneable {
     private String expression;
 
     /**
-     * Talend types, used for var entries only.
+     * Talend types, used for var entries in all cases, and output entries for case : not connection attached.
      */
     private String type;
 
     /**
-     * nullable, used for var entries only.
+     * Nullable, used for var entries in all cases, and output entries for case : not connection attached.
      */
     private boolean nullable;
 
