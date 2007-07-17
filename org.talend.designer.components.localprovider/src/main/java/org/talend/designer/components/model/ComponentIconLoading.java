@@ -41,6 +41,8 @@ public class ComponentIconLoading {
 
     private File folder;
 
+    private URL folderUrl;
+
     private ImageDescriptor image32;
 
     private ImageDescriptor image24;
@@ -55,6 +57,11 @@ public class ComponentIconLoading {
     public ComponentIconLoading(File folder) {
         super();
         this.folder = folder;
+        try {
+            this.folderUrl = folder.toURL();
+        } catch (MalformedURLException e) {
+            ExceptionHandler.process(new SystemException("Cannot load component icon " + folder.getName(), e)); //$NON-NLS-1$
+        }
     }
 
     public ImageDescriptor getImage32() {
@@ -70,8 +77,8 @@ public class ComponentIconLoading {
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else {
-                //image24 = getImage32(); // Temp code
-                 image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
+                // image24 = getImage32(); // Temp code
+                image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
             }
         }
         return image24;
@@ -92,7 +99,7 @@ public class ComponentIconLoading {
     private ImageDescriptor getImage(String name) {
         URL url;
         try {
-            url = new URL(folder.toURL() + name);
+            url = new URL(folderUrl + name);
             return ImageDescriptor.createFromURL(url);
         } catch (MalformedURLException e) {
             ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e)); //$NON-NLS-1$

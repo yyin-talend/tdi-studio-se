@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -59,10 +60,14 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static List<IComponent> componentList = null;
 
+    private ECodeLanguage codeLanguage;
+
     public ComponentsFactory() {
     }
 
     public void init() {
+        TimeMeasure.measureActive = false;
+        TimeMeasure.begin("ComponentsFactory.init");
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
 
@@ -70,11 +75,14 @@ public class ComponentsFactory implements IComponentsFactory {
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
                 + IComponentsFactory.COMPONENTS_USER_INNER_FOLDER;
+        TimeMeasure.step("ComponentsFactory.init", "after system component");
+
         // 2. Retrieve user components from file system:
         ComponentsRetriever.retrieveComponents(getComponentsLocation(userPath));
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
 
+        TimeMeasure.end("ComponentsFactory.init");
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
         try {
@@ -82,9 +90,26 @@ public class ComponentsFactory implements IComponentsFactory {
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
+        TimeMeasure.measureActive = false;
     }
 
     private void loadComponentsFromFolder(String pathSource) {
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder");
+
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf1");
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1");
+
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.emf2");
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
+
+        TimeMeasure.begin("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+
+        // TimeMeasure.display=false;
+
         File source = getComponentsLocation(pathSource);
         File[] childDirectories;
 
@@ -101,28 +126,41 @@ public class ComponentsFactory implements IComponentsFactory {
         if (childDirectories != null) {
             for (File currentFolder : childDirectories) {
                 try {
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.checkFiles");
                     ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf1");
                     File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                             currentFolder.getName(), getCodeLanguageSuffix()));
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf1");
+                    TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.emf2");
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
+                    TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.emf2");
 
                     if (componentList.contains(currentComp)) {
                         log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
+                        TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.loadIcons");
                         loadIcons(currentFolder, currentComp);
+                        TimeMeasure.pause("ComponentsFactory.loadComponentsFromFolder.loadIcons");
                         componentList.add(currentComp);
                     }
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException(
-                            "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                                    + e.getMessage(), e);
+                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                            + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }
             }
         }
+        // TimeMeasure.display=true;
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.checkFiles");
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf1");
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.emf2");
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder.loadIcons");
+        TimeMeasure.end("ComponentsFactory.loadComponentsFromFolder");
     }
 
     /**
@@ -158,9 +196,11 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private String getCodeLanguageSuffix() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        if (codeLanguage == null) {
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            codeLanguage = repositoryContext.getProject().getLanguage();
+        }
         return codeLanguage.getName();
     }
 
@@ -215,8 +255,7 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public URL getComponentPath() throws IOException {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        URL url = FileLocator
-                .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
 }
