@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EventObject;
@@ -43,12 +41,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
-import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.draw2d.MouseEvent;
-import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
@@ -100,7 +95,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -108,7 +102,6 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -135,8 +128,8 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
-import org.talend.designer.core.ui.action.NodesCopyAction;
-import org.talend.designer.core.ui.action.NodesPasteAction;
+import org.talend.designer.core.ui.action.GEFCopyAction;
+import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -293,6 +286,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         super.configureGraphicalViewer();
         /** * Manage the view in the Outline ** */
         ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer) getGraphicalViewer();
+        viewer.setSelectionManager(new TalendSelectionManager());
 
         TalendScalableFreeformRootEditPart root = new TalendScalableFreeformRootEditPart(getEditorInput());
 
@@ -315,11 +309,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         getActionRegistry().registerAction(directEditAction);
         getSelectionActions().add(directEditAction.getId());
 
-        IAction copyAction = new NodesCopyAction(this);
+        IAction copyAction = new GEFCopyAction(this);
         getActionRegistry().registerAction(copyAction);
         getSelectionActions().add(copyAction.getId());
 
-        IAction pasteAction = new NodesPasteAction(this);
+        IAction pasteAction = new GEFPasteAction(this);
         getActionRegistry().registerAction(pasteAction);
         getSelectionActions().add(pasteAction.getId());
 
@@ -369,7 +363,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 new Boolean(false/* getProcess().isSnapToGeometryEnabled() */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
-
     }
 
     /*

@@ -44,8 +44,8 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.NodeSetActivateAction;
-import org.talend.designer.core.ui.action.NodesCopyAction;
-import org.talend.designer.core.ui.action.NodesPasteAction;
+import org.talend.designer.core.ui.action.GEFCopyAction;
+import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 
@@ -95,11 +95,11 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         menu.appendToGroup(GEFActionConstants.GROUP_UNDO, getAction(ActionFactory.REDO.getId()));
 
         if (part != null) {
-            action = new NodesCopyAction(part);
-            ((NodesCopyAction) action).update();
+            action = new GEFCopyAction(part);
+            ((GEFCopyAction) action).update();
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 
-            action = new NodesPasteAction(part);
+            action = new GEFPasteAction(part);
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId()));

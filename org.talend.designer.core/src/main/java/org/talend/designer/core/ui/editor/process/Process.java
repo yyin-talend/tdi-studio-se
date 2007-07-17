@@ -2016,4 +2016,13 @@ public class Process extends Element implements IProcess {
         }
         return strList.size() > 0 ? strList.toArray(new String[1]) : null;
     }
+
+    
+    /**
+     * Getter for notes.
+     * @return the notes
+     */
+    public List<Note> getNotes() {
+        return notes;
+    }
 }

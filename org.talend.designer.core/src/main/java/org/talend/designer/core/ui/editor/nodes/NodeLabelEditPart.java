@@ -239,9 +239,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             List<EditPart> listEditParts = (List<EditPart>) this.getViewer().getSelectedEditParts();
             if (listEditParts.size() != 1) {
                 getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
-                super.setSelected(SELECTED_NONE);
-                this.getViewer().deselect(this);
-                fireSelectionChanged();
+//                super.setSelected(SELECTED_NONE);
+//                this.getViewer().deselect(this);
+//                fireSelectionChanged();
             } else {
                 getParent().installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
                 super.setSelected(value);

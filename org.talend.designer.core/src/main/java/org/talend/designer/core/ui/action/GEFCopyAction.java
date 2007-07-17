@@ -32,6 +32,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
 /**
  * Action that manage to create a connection from the context menu. A connection type is used to know which kind of
@@ -40,7 +41,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id$
  * 
  */
-public class NodesCopyAction extends SelectionAction {
+public class GEFCopyAction extends SelectionAction {
 
     // public static final String ID = "org.talend.designer.core.ui.editor.action.NodesCopyAction"; //$NON-NLS-1$
 
@@ -50,7 +51,7 @@ public class NodesCopyAction extends SelectionAction {
      * @param part
      * @param connecType
      */
-    public NodesCopyAction(IWorkbenchPart part) {
+    public GEFCopyAction(IWorkbenchPart part) {
         super(part);
         setId(ActionFactory.COPY.getId());
         setText(Messages.getString("NodesCopyAction.label")); //$NON-NLS-1$
@@ -64,7 +65,7 @@ public class NodesCopyAction extends SelectionAction {
         List objects = getSelectedObjects();
         if (!objects.isEmpty()) {
             for (Object o : objects) {
-                if (!(o instanceof NodePart)) {
+                if (!(o instanceof NodePart) && !(o instanceof NoteEditPart)) {
                     return false;
                 }
             }

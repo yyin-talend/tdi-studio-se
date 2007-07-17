@@ -21,14 +21,18 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
 /**
  * Modification of the delete action to enhance the speed of the action from GEF. <br/>
@@ -63,11 +67,44 @@ public class GEFDeleteAction extends DeleteAction {
             return null;
         }
 
-        GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
-        deleteReq.setEditParts(objects);
-
         EditPart object = (EditPart) objects.get(0);
-        Command cmd = object.getCommand(deleteReq);
-        return cmd;
+
+        List nodeParts = new ArrayList();
+        List noteParts = new ArrayList();
+        List others = new ArrayList(objects);
+
+        for (Object o : objects) {
+            if (o instanceof NodePart) {
+                others.remove(o);
+                nodeParts.add(o);
+            } else if (o instanceof NoteEditPart) {
+                noteParts.add(o);
+                others.remove(o);
+            }
+        }
+
+        if (others.size() == 0) { // so notes & nodes only
+            CompoundCommand cpdCmd = new CompoundCommand();
+            cpdCmd.setLabel("Delete items");
+            if (nodeParts.size() != 0) {
+                GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
+                deleteReq.setEditParts(nodeParts);
+
+                cpdCmd.add(((NodePart) nodeParts.get(0)).getCommand(deleteReq));
+            }
+            if (noteParts.size() != 0) {
+                GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
+                deleteReq.setEditParts(noteParts);
+                cpdCmd.add(((NoteEditPart) noteParts.get(0)).getCommand(deleteReq));
+            }
+
+            return cpdCmd;
+        } else {
+            GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
+            deleteReq.setEditParts(objects);
+
+            Command cmd = object.getCommand(deleteReq);
+            return cmd;
+        }
     }
 }

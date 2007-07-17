@@ -72,6 +72,8 @@ public class NodesPasteCommand extends Command {
 
     private List<String> createdNames;
 
+    private boolean multipleCommand;
+
     public NodesPasteCommand(List<NodePart> nodeParts, Process process) {
         this.process = process;
         orderNodeParts(nodeParts);
@@ -338,6 +340,7 @@ public class NodesPasteCommand extends Command {
                     }
                     Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
                             .getLineStyle(), connection.getConnectorName(), metaTableName, newConnectionName);
+                    pastedConnection.setActivate(pastedSourceNode.isActivate());
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
@@ -391,30 +394,34 @@ public class NodesPasteCommand extends Command {
         // create the node container list to paste
         createNodeContainerList();
 
-        // save old selection
         MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
-        oldSelection = new ArrayList<EditPart>();
-        for (EditPart editPart : (List<EditPart>) viewer.getSelectedEditParts()) {
-            oldSelection.add(editPart);
-        }
 
-        // remove the old selection
-        viewer.deselectAll();
+        // save old selection
+        if (!multipleCommand) {
+            oldSelection = new ArrayList<EditPart>();
+            for (EditPart editPart : (List<EditPart>) viewer.getSelectedEditParts()) {
+                oldSelection.add(editPart);
+            }
+            // remove the old selection
+            viewer.deselectAll();
+        }
 
         // creates the different nodes
         for (NodeContainer nodeContainer : nodeContainerList) {
             process.addNodeContainer(nodeContainer);
         }
         // set the new node as the current selection
-        EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
-        if (processPart instanceof ProcessPart) { // can only be ProcessPart but still test
-            for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
-                if (editPart instanceof NodePart) {
-                    Node currentNode = (Node) editPart.getModel();
-                    if (nodeContainerList.contains(currentNode.getNodeContainer())) {
-                        viewer.appendSelection(editPart);
+        if (!multipleCommand) {
+            EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
+            if (processPart instanceof ProcessPart) { // can only be ProcessPart but still test
+                for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
+                    if (editPart instanceof NodePart) {
+                        Node currentNode = (Node) editPart.getModel();
+                        if (nodeContainerList.contains(currentNode.getNodeContainer())) {
+                            viewer.appendSelection(editPart);
+                        }
                     }
                 }
             }
@@ -430,7 +437,9 @@ public class NodesPasteCommand extends Command {
         MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
-        viewer.deselectAll();
+        if (!multipleCommand) {
+            viewer.deselectAll();
+        }
 
         for (NodeContainer nodeContainer : nodeContainerList) {
             // remove the connections name from the list
@@ -441,14 +450,43 @@ public class NodesPasteCommand extends Command {
         }
 
         // set the old selection active
-        for (EditPart editPart : oldSelection) {
-            /*
-             * if (editPart instanceof NodePart) { Node node = (Node) editPart.getModel(); }
-             */
-            viewer.appendSelection(editPart);
+        if (!multipleCommand) {
+            for (EditPart editPart : oldSelection) {
+                /*
+                 * if (editPart instanceof NodePart) { Node node = (Node) editPart.getModel(); }
+                 */
+                viewer.appendSelection(editPart);
+            }
         }
 
         process.checkStartNodes();
         process.checkProcess();
+    }
+
+    /**
+     * Getter for multipleCommand.
+     * 
+     * @return the multipleCommand
+     */
+    public boolean isMultipleCommand() {
+        return multipleCommand;
+    }
+
+    /**
+     * Sets the multipleCommand.
+     * 
+     * @param multipleCommand the multipleCommand to set
+     */
+    public void setMultipleCommand(boolean multipleCommand) {
+        this.multipleCommand = multipleCommand;
+    }
+
+    /**
+     * Getter for nodeContainerList.
+     * 
+     * @return the nodeContainerList
+     */
+    public List<NodeContainer> getNodeContainerList() {
+        return nodeContainerList;
     }
 }

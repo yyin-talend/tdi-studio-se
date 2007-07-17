@@ -64,6 +64,7 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -99,19 +100,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
         if (view != null) {
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
-        }
-
-        if (value != SELECTED_NONE) {
-            List<EditPart> listEditParts = (List<EditPart>) this.getViewer().getSelectedEditParts();
-            if (listEditParts.size() != 1) {
-                for (EditPart editPart : listEditParts) {
-                    if (!(editPart instanceof NodePart)) {
-                        this.getViewer().deselect(editPart);
-                        editPart.setSelected(SELECTED_NONE);
-                        fireSelectionChanged();
-                    }
-                }
-            }
         }
     }
 
