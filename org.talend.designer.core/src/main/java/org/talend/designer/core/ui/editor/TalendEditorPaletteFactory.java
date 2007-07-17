@@ -114,16 +114,16 @@ public final class TalendEditorPaletteFactory {
         }
 
         Collections.sort(families);
-        
+
         for (Iterator iter = families.iterator(); iter.hasNext();) {
             family = (String) iter.next();
-            
+
             componentsDrawer = ht.get(family);
             if (componentsDrawer == null) {
                 componentsDrawer = createComponentDrawer(ht, family);
             }
         }
-        
+
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
@@ -137,10 +137,17 @@ public final class TalendEditorPaletteFactory {
                 longName = xmlComponent.getLongName();
 
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
-                ImageDescriptor imageLarge = xmlComponent.getIcon24();
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                ImageDescriptor imageLarge;
+                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+                if (string.equals("24")) {
+                    imageLarge = xmlComponent.getIcon24();
+                } else {
+                    imageLarge = xmlComponent.getIcon32();
+                }
 
-                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
-                        xmlComponent), imageSmall, imageLarge);
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
+                        imageSmall, imageLarge);
                 component.setDescription(longName);
 
                 String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
@@ -156,7 +163,7 @@ public final class TalendEditorPaletteFactory {
         int index = familyToCreate.lastIndexOf(FAMILY_HIER_SEPARATOR);
         String family;
         PaletteDrawer parentPaletteDrawer = null;
-        
+
         if (index > -1) {
             family = familyToCreate.substring(index + 1);
             String parentFamily = familyToCreate.substring(0, index);
@@ -178,7 +185,7 @@ public final class TalendEditorPaletteFactory {
         }
 
         ht.put(familyToCreate, paletteDrawer);
-        
+
         return paletteDrawer;
     }
 
@@ -214,7 +221,7 @@ public final class TalendEditorPaletteFactory {
         }
         paletteItem.setInitialState(value);
         preferenceStore.setValue(PALETTE_STATE + family, value);
-        
+
         for (Iterator iter = paletteItem.getChildren().iterator(); iter.hasNext();) {
             Object object = (Object) iter.next();
             if (object instanceof PaletteDrawer) {
@@ -285,14 +292,12 @@ public final class TalendEditorPaletteFactory {
         // Add a marquee tool to the group
         // toolGroup.add(new MarqueeToolEntry());
 
-        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(
-                Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                 Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
-                new NoteCreationFactory(), 
-                ImageProvider.getImageDesc(ECoreImage.CODE_ICON), 
-                ImageProvider.getImageDesc(ECoreImage.CODE_ICON)); 
+                new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
+                        .getImageDesc(ECoreImage.CODE_ICON));
         toolGroup.add(noteCreationToolEntry);
-        
+
         // Add a (unnamed) separator to the group
         toolGroup.add(new PaletteSeparator());
 

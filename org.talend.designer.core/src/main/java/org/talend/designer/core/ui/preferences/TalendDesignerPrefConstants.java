@@ -37,13 +37,15 @@ public class TalendDesignerPrefConstants {
 
     /** Default label used for the components. */
     public static final String DEFAULT_HINT_USED = "hintUsed"; //$NON-NLS-1$
-    
+
     /** Default label used for the components. */
     public static final String DEFAULT_DISPLAY = "displayTechnicalComponents"; //$NON-NLS-1$
-    
+
     /** Path used for components for the default file directory. */
     public static final String COMP_DEFAULT_FILE_DIR = "compFileDir"; //$NON-NLS-1$
-    
+
     /** Property code check. */
-    public static final String PROPERTY_CODE_CHECK = "propertyCodeCheck"; //$NON-NLS-1$    
+    public static final String PROPERTY_CODE_CHECK = "propertyCodeCheck"; //$NON-NLS-1$
+
+    public static final String LARGE_ICONS_SIZE = "largeIconsSize"; //$NON-NLS-1$
 }

@@ -24,11 +24,13 @@ package org.talend.designer.core.ui.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.TalendEditor;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -41,15 +43,35 @@ import org.talend.designer.core.i18n.Messages;
 
 public class DesignerPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+    String oldLargeIconsSize;
+
     public DesignerPreferencePage() {
         super(GRID);
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
+    public void init(IWorkbench workbench) {
+        oldLargeIconsSize = getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+    }
+
     @Override
     protected void performApply() {
-        // TODO Auto-generated method stub
         super.performApply();
+
+        checkPropertyChanged();
+    }
+
+    @Override
+    public boolean performOk() {
+        final boolean toReturn = super.performOk();
+        checkPropertyChanged();
+        return toReturn;
+    }
+
+    private void checkPropertyChanged() {
+        if (!oldLargeIconsSize.equals(getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE))) {
+           TalendEditor.resetPaletteRoot();
+        }
     }
 
     /**
@@ -62,30 +84,34 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor showHint;
         BooleanFieldEditor displayComponent;
 
-        labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages.getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
+        labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages
+                .getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
                 getFieldEditorParent());
-        hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages.getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
+        hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages
+                .getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
-        showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages.getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
+        showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
+                .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
-        displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY,
-                Messages.getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
+        displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY, Messages
+                .getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
 
         addField(labelField);
         addField(hintField);
         addField(showHint);
         addField(displayComponent);
-        
+
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
                 Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
         addField(compDefaultFileDir);
 
-        addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK,
-                Messages.getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
+        addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
+                .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
-    }
-
-    public void init(IWorkbench workbench) {
+        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
+                Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { "24 pixels", "" + 24 },
+                        { "32 pixels", "" + 32 } }, getFieldEditorParent());
+        addField(largeIconsSizeField);
     }
 
 }

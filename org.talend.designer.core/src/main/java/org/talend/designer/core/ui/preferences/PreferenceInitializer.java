@@ -54,7 +54,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, true);
-        
+        store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
+
         // defaults for the stats preferences for java
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
