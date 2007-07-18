@@ -89,6 +89,7 @@
         <%
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
+        boolean isFirst = true ;
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
@@ -244,7 +245,14 @@
                     <%
                     } // 2
                     %>
-    for($i<%= tableName %> = 0; $size<%= tableName %>ArrayFromLookup != -1 && $i<%= tableName %> < $size<%= tableName %>ArrayFromLookup || $forceLoop<%= tableName %> ;$i<%= tableName %>++) {
+    for(
+        $i<%= tableName %> = 0 ;
+        <%if (!isFirst) {%> 
+        !$<%= rejectedInnerJoin %> &&
+        <%} else { isFirst = false ; } %> 
+        $i<%= tableName %> < $size<%= tableName %>ArrayFromLookup 
+        || $forceLoop<%= tableName %> ;
+        $i<%= tableName %>++) {
                     <%
                     gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
                     %>
@@ -289,8 +297,7 @@
                                                           <%
                                                           } else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
                                                           %>
-                if($size<%= tableName %>ArrayFromLookup != -1 
-                && $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
+                if( $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
                 && !$hasAtLeastOneValidLookup_<%= tableName %>) 
                 { # 15
                     $<%= rejectedInnerJoin %> = true;
