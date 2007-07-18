@@ -313,44 +313,19 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                             if (columnNameList.length > 0) {
                                 tmpParam.setDefaultClosedListValue(MetadataTalendType.getDbms(dbmsId)
                                         .getDefaultDbType());
-                                System.out.println("default:" + tmpParam.getDefaultClosedListValue());
                             } else {
                                 tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                             }
                         }
                     }
                 }
-            }/*
-                 * if (param.isBasedOnSchema()) { List<Map<String, Object>> paramValues = (List<Map<String,
-                 * Object>>) param.getValue(); List<Map<String, Object>> newParamValues = new ArrayList<Map<String,
-                 * Object>>(); for (int j = 0; j < columnNameList.length; j++) { String columnName = columnNameList[j];
-                 * String[] codes = param.getListItemsDisplayCodeName();
-                 * 
-                 * Map<String, Object> newLine = null; boolean found = false; ColumnNameChanged colChanged = null; if
-                 * (columnsChanged != null) { for (int k = 0; k < columnsChanged.size() && !found; k++) { colChanged =
-                 * columnsChanged.get(k); if (colChanged.getNewName().equals(columnName)) { found = true; } } } if
-                 * (found) { found = false; for (int k = 0; k < paramValues.size() && !found; k++) { Map<String,
-                 * Object> currentLine = (Map<String, Object>) paramValues.get(k); if
-                 * (currentLine.get(codes[0]).equals(colChanged.getOldName())) { currentLine.put(codes[0],
-                 * colChanged.getNewName()); found = true; } } } found = false; for (int k = 0; k < paramValues.size() &&
-                 * !found; k++) { Map<String, Object> currentLine = (Map<String, Object>) paramValues.get(k); if
-                 * (currentLine.get(codes[0]) == null) { currentLine.put(codes[0], columnName); } if
-                 * (currentLine.get(codes[0]).equals(columnName)) { found = true; newLine = currentLine; } } if (!found) {
-                 * newLine = TableController.createNewLine(param); newLine.put(codes[0], columnName); }
-                 * newParamValues.add(j, newLine); } paramValues.clear(); paramValues.addAll(newParamValues); }
-                 */
+            }
         }
     }
 
     private static String getCurrentDbms(INode node) {
         boolean hasMappingType = false;
-        // boolean hasRepositoryDbSchema = false;
         String currentDbms = null;
-
-        // if (node.getMetadataList().size() == 0) {
-        // return null;
-        // }
-        // IMetadataTable metadataTable = node.getMetadataList().get(0);
 
         for (IElementParameter currentParam : node.getElementParameters()) {
             if (currentParam.getField().equals(EParameterFieldType.MAPPING_TYPE)
@@ -367,39 +342,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                 String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue();
                 Connection connection = MetadataTool.getConnectionFromRepository(metaRepositoryName);
                 if (connection instanceof DatabaseConnection) {
-                    // hasRepositoryDbSchema = true;
-                    //
-                    // for (IMetadataColumn column : metadataTable.getListColumns()) {
-                    // if ((column.getType() == "") || (column.getType() == null)) {
-                    // hasRepositoryDbSchema = false;
-                    // }
-                    // }
-                    // String componentDbType = "";
-                    // for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-                    // if (param.getRepositoryValue() != null) {
-                    // if (param.getRepositoryValue().equals("TYPE")) {
-                    // componentDbType = (String) param.getValue();
-                    // }
-                    // }
-                    // }
-                    //
-                    // // if we don't support yet the db type for the mapping type, then don't display.
-                    // if (!EDatabaseTypeName.supportDbType(componentDbType)) {
-                    // hasRepositoryDbSchema = false;
-                    // }
-                    //                    
-                    // String componentProduct = EDatabaseTypeName.getTypeFromDbType(componentDbType).getProduct();
-                    // // String connectionDbType = ((DatabaseConnection) connection).getDatabaseType();
-                    // // String connectionProduct =
-                    // // EDatabaseTypeName.getTypeFromDisplayName(connectionDbType).getProduct();
-                    // String connectionProduct = ((DatabaseConnection) connection).getProductId();
-                    // if (!componentProduct.equals(connectionProduct)) {
-                    // hasRepositoryDbSchema = false;
-                    // // the component don't support this product so don't display.
-                    // } else {
                     currentDbms = ((DatabaseConnection) connection).getDbmsId();
-                    // }
-
                 }
             } else {
                 String componentDbType = "";
