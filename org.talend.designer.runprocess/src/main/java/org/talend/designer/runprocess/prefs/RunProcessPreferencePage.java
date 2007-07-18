@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
+import org.eclipse.debug.internal.ui.preferences.BooleanFieldEditor2;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -88,6 +90,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     private IntegerFieldEditor fClientStatPortEditor;
 
     private IntegerFieldEditor fClientTraceEditor;
+    
+    private BooleanFieldEditor fSaveBeforeRunEditor;
 
     private Group remoteServersGroup;
 
@@ -127,9 +131,9 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         clientGroup.setLayoutData(gd);
 
-        ///////////////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////////////
         // CLIENT_STATS_PORTS
-        
+
         Composite compositeStatsPorts = new Composite(clientGroup, SWT.NONE);
         compositeStatsPorts.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayout = new GridLayout(2, true);
@@ -154,16 +158,16 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
-        ///////////////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////////////
 
-        ///////////////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////////////
         // CLIENT_TRACE_PORTS
-        
+
         Composite compositeTracePorts = new Composite(clientGroup, SWT.NONE);
         compositeTracePorts.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
         compositeTracePorts.setLayout(gridLayout);
-        
+
         Composite compositeTracePorts1 = new Composite(compositeTracePorts, SWT.NONE);
         compositeTracePorts1.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
@@ -173,7 +177,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
-        
+
         Composite compositeTracePort2 = new Composite(compositeTracePorts, SWT.NONE);
         compositeTracePort2.setLayoutData(new GridData(GridData.FILL_BOTH));
         gridLayout = new GridLayout(2, true);
@@ -183,8 +187,14 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         addField(fClientStatPortEditor);
         fClientStatPortEditor.setValidRange(1024, 65535);
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
-        ///////////////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////////////
 
+        Composite compositeSaveBeforeRun = new Composite(clientGroup, SWT.NONE);
+        compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
+        compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
+        fSaveBeforeRunEditor = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN,"Save job before run" ,SWT.NONE,compositeSaveBeforeRun);
+        addField(fSaveBeforeRunEditor);
     }
 
     protected void createSpacer(Composite composite, int columnSpan) {

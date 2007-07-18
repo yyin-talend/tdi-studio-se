@@ -45,6 +45,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -72,6 +73,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
@@ -82,6 +84,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
@@ -264,7 +267,8 @@ public class ProcessComposite extends Composite {
         saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
         saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
         saveJobBeforeRunButton.setEnabled(false);
-        saveJobBeforeRunButton.setSelection(true);
+        saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSAVEBEFORERUN));
         data = new GridData();
         data.horizontalSpan = 2;
         data.horizontalAlignment = SWT.END;
@@ -504,7 +508,7 @@ public class ProcessComposite extends Composite {
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
         traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
         watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
-//        saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
+        // saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning());
         killBtn.setEnabled(processContext != null && processContext.isRunning());
         // clearLogBtn.setEnabled(processContext != null);

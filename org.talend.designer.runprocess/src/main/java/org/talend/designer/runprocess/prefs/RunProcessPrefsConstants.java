@@ -35,4 +35,5 @@ public class RunProcessPrefsConstants {
 
     public static final String CLIENT_TRACE_PORT_BOUND2 = "CLIENT_TRACE_PORT_BOUND2";
 
+    public static final String ISSAVEBEFORERUN = "saveBeforeRun";
 }
