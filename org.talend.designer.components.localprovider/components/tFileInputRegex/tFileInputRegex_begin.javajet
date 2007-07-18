@@ -37,10 +37,9 @@
         
         int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
         boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
-        
-        java.io.BufferedReader in<%=cid %> = null;
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
+        org.talend.fileprocess.delimited.RowParser in<%=cid%>=null;
+        	in<%=cid %> = new org.talend.fileprocess.delimited.RowParser( new java.io.BufferedReader(new java.io.InputStreamReader(
+                    new java.io.FileInputStream(<%=filename %>),<%= encoding%>)), <%=row_separator%>, removeEmptyRow<%=cid %>);
         String str<%=cid %>;
         int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,validRowCount<%=cid %>=0;
         int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
@@ -54,7 +53,8 @@
       		%>
     	
         if(footer_<%=cid %> > 0){
-			while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
+			while (in<%=cid %>.readRecord()) {
+                str<%=cid %> =in<%=cid %>.getRowRecord();        
 				<%if(!row_separator.equals("\"\\n\"")){%>
         			java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(),<%=row_separator %>);
         	 		while(strRowToken<%=cid %>.hasMoreTokens()){
@@ -72,13 +72,14 @@
 				lastLine<%=cid %> = lastLineTemp<%=cid %>;
 			}
 		  	in<%=cid %>.close();
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
+        	in<%=cid %> = new org.talend.fileprocess.delimited.RowParser( new java.io.BufferedReader(new java.io.InputStreamReader(
+                    new java.io.FileInputStream(<%=filename %>),<%= encoding%>)), <%=row_separator%>, removeEmptyRow<%=cid %>);
 		}
         java.util.StringTokenizer strToken<%=cid %>;
         java.util.regex.Pattern pattern<%= cid %> = java.util.regex.Pattern.compile(<%= regex %>);
         java.util.regex.Matcher matcher<%= cid %> = null;
-        while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
+        while (in<%=cid %>.readRecord()) {
+            str<%=cid %> =in<%=cid %>.getRowRecord(); 
         	<%if(!row_separator.equals("\"\\n\"")){%>
         	java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), <%=row_separator %>);
         	 while(strRowToken<%=cid %>.hasMoreTokens()){
