@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.util.Comparator;
+
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
@@ -90,6 +92,29 @@ public class RepositoryNameSorter extends ViewerSorter {
             return 30;
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ViewerSorter#getComparator()
+     */
+    @Override
+    protected Comparator<String> getComparator() {
+
+        return new Comparator<String>() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+
+            public int compare(String o1, String o2) {
+                // Replace all "_" to " " due to avoid this situation: job name "a_b_c" before "a_b" in the job list.
+                return o1.replaceAll("_", " ").compareTo(o2.replaceAll("_", " "));
+            }
+        };
     }
 
 }
