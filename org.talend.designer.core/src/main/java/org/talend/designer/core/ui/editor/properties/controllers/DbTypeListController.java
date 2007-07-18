@@ -63,6 +63,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -336,7 +337,11 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
         }
 
         if (!hasMappingType) { // if there is no mapping type, then check if a db repository schema is used
-            String schemaType = (String) node.getElementParameter("SCHEMA_TYPE").getValue();
+            IElementParameter schemaTypeParameter = node.getElementParameter("SCHEMA_TYPE");
+            if (schemaTypeParameter == null) {
+                return null;
+            }
+            String schemaType = (String) schemaTypeParameter.getValue();
             if (schemaType.equals("REPOSITORY")) {
                 // repository mode
                 String metaRepositoryName = (String) node.getElementParameter("REPOSITORY_SCHEMA_TYPE").getValue();
