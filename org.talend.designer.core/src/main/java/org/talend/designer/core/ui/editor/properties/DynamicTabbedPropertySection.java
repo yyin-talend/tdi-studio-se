@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +204,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             e.printStackTrace();
         }
 
-        Collections.sort(processNameList);
+        List<String> tempFolderList = new ArrayList<String>();
+        List<String> tempProcessNameList = new ArrayList<String>();
+        tempProcessNameList.addAll(processNameList);
+
+        for (String string : tempProcessNameList) {
+            // Put jobs which in a folder into a new list.s
+            if (string.lastIndexOf("/") != 0) {
+                tempFolderList.add(string);
+                processNameList.remove(string);
+            }
+        }
+
+        sortList(processNameList);
+        sortList(tempFolderList);
+
+        // Always put the jobs which in a folder on the top of the job list
+        tempFolderList.addAll(processNameList);
+
+        processNameList = tempFolderList;
+
         for (String name : (List<String>) processNameList) {
             IRepositoryObject process = processMap.get(name);
             processValueList.add("'" + process.getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -228,6 +248,24 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
         }
+    }
+
+    /**
+     * Sort the element order of the inputted list.
+     * 
+     * @param compareList
+     */
+    private void sortList(List<String> compareList) {
+        Collections.sort(compareList, new Comparator<String>() {
+
+            public int compare(String str1, String str2) {
+
+                // For example: avoid job name "a_b_c" before "a_b" in the job list.
+                String newStr1 = str1.replaceAll("_", " ");
+                String newStr2 = str2.replaceAll("_", " ");
+                return newStr1.compareToIgnoreCase(newStr2);
+            }
+        });
     }
 
     /**
