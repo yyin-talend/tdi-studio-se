@@ -112,7 +112,7 @@ public class RepositoryNameSorter extends ViewerSorter {
 
             public int compare(String o1, String o2) {
                 // Replace all "_" to " " due to avoid this situation: job name "a_b_c" before "a_b" in the job list.
-                return o1.replaceAll("_", " ").compareTo(o2.replaceAll("_", " "));
+                return o1.replaceAll("_", " ").compareToIgnoreCase(o2.replaceAll("_", " "));
             }
         };
     }
