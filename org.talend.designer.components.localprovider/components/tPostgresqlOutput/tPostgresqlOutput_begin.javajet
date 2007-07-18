@@ -371,15 +371,18 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \""+<%=dbschema%>
 
 	<%		
 	}
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-
-int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-int commitCounter_<%=cid%> = 0;
-
-conn_<%=cid%>.setAutoCommit(false);
-<%
+	if(!useExistingConn.equals("true"))
+	{
+    	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    	%>
+    
+            int commitEvery_<%=cid%> = <%=commitEvery%>;
+            
+            int commitCounter_<%=cid%> = 0;
+            
+            conn_<%=cid%>.setAutoCommit(false);
+    	<%
+    	}
 	}
 }
 %>

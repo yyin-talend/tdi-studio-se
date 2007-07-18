@@ -197,6 +197,7 @@
       FIELD="TEXT"
       NUM_ROW="11"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'" 
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>

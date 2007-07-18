@@ -19,10 +19,14 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid =  node.getUniqueName();
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-commitCounter_<%=cid%>++;
-<%
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(!useExistingConn.equals("true"))
+{
+    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    %>
+    commitCounter_<%=cid%>++;
+    <%
+    }
 }
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
@@ -90,16 +94,19 @@ try {
 	throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
 <% } %>
 }
-	<%
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
-if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
-
-	conn_<%=cid%>.commit();
-	
-	commitCounter_<%=cid%>=0;
-	
-}
 <%
-}
+if(!useExistingConn.equals("true"))
+{
+    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    %>
+        if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>){
+        
+        	conn_<%=cid%>.commit();
+        	
+        	commitCounter_<%=cid%>=0;
+        	
+        }
+    <%
+    }
+}   
 %>

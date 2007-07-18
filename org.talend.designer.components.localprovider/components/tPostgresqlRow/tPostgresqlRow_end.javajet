@@ -17,31 +17,21 @@ imports="
 %>	
 	pstmt_<%=cid %>.close();
 
-	<%
-	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-	%>
-        if(commitEvery_<%=cid%> > commitCounter_<%=cid%>){
-        
-			<%
-			if(!useExistingConn.equals("true"))
-			{
-				%>        
-        		conn_<%=cid%>.commit();
-        		<%
-    		}
-        	%>	
-        	
-        	commitCounter_<%=cid%>=0;
-	
-		}
-		<%
-	}
-	%>
-
 <%
 	if(!useExistingConn.equals("true"))
 	{
+    	if(!commitEvery.equals("")&&!commitEvery.equals("0")){
     	%>
+            if(commitEvery_<%=cid%> > commitCounter_<%=cid%>){
+                    
+        		conn_<%=cid%>.commit();
+    		}
+            	
+        	commitCounter_<%=cid%>=0;
+    	
+    	<%
+    	}
+    	%>    	
     	conn_<%=cid %> .close();
     	<%
 	}
