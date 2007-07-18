@@ -25,6 +25,7 @@
 	Set<IConnection> connSet =  new HashSet<IConnection>();
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
+	String incomingName = codeGenArgument.getIncomingName();
 %>
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -51,18 +52,27 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 	if(codePart.equals(ECodePart.MAIN)) {
 	    if ((node.getProcess().getNodesOfType("tFlowMeter").size() > 0))
 	    {
-        	Iterator it_conn = (Iterator)connSet.iterator();
-        	while(it_conn.hasNext())
+        	for(IConnection temp_conn : node.getIncomingConnections(EConnectionType.FLOW_MAIN))
         	{
-        	    IConnection temp_conn = (IConnection)it_conn.next();
+        	    String name_conn = temp_conn.getUniqueName();
         	    if(temp_conn.isUseByMetter())
-        	    {
-        	    	String name_conn = temp_conn.getUniqueName();
+        	    { 	    	
 %>
    MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
 <%
 				}
 			}
+			
+			for(IConnection temp_conn : node.getIncomingConnections(EConnectionType.FLOW_MERGE))
+        	{
+        	    String name_conn = temp_conn.getUniqueName();
+        	    if(name_conn == incomingName && temp_conn.isUseByMetter())
+        	    { 	    	
+%>
+   MetterCatcherUtils.addLineToRow("<%=name_conn%>_count");
+<%
+				}
+			}			
 	    }
 	}
 %>
