@@ -40,13 +40,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.model.utils.emf.component.ComponentFactory;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -264,7 +262,7 @@ public class ConfigExternalPerlModulePage extends ConfigExternalLibPage {
             desLabel.setLayoutData(data);
             desLabel.setFont(parent.getFont());
 
-            desText = new Text(composite, SWT.MULTI | SWT.BORDER);
+            desText = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
             gd = new GridData(GridData.FILL_BOTH);
             gd.heightHint = 80;
             desText.setLayoutData(gd);

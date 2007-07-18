@@ -327,7 +327,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
                 }
             };
 
-            nameText = new Text(composite, SWT.BORDER);
+            nameText = new Text(composite, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
             nameText.addModifyListener(modifyListener);
             GridDataFactory.fillDefaults().span(3, 1).applyTo(nameText);
 
@@ -370,7 +370,7 @@ public class ConfigExternalJarPage extends ConfigExternalLibPage {
             desLabel.setLayoutData(data);
             desLabel.setFont(parent.getFont());
 
-            desText = new Text(composite, SWT.MULTI | SWT.BORDER);
+            desText = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
             data = new GridData(GridData.FILL_BOTH);
             data.heightHint = 80;
             data.widthHint = 300;
