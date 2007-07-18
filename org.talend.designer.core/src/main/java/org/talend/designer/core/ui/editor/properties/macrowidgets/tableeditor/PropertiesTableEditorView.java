@@ -154,6 +154,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case LOOKUP_COLUMN_LIST:
                 case COLUMN_LIST:
                 case CONNECTION_LIST:
+                case DBTYPE_LIST:
                 case COMPONENT_LIST:
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
@@ -276,6 +277,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             case CONNECTION_LIST:
                             case LOOKUP_COLUMN_LIST:
                             case PREV_COLUMN_LIST:
+                            case DBTYPE_LIST:
                                 String[] namesSet = tmpParam.getListItemsDisplayName();
                                 if (namesSet.length == 0) {
                                     return (String) tmpParam.getDefaultClosedListValue();

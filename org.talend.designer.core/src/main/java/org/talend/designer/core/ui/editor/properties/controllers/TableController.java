@@ -225,6 +225,7 @@ public class TableController extends AbstractElementPropertySectionController {
     }
 
     private void updateTableValues(IElementParameter param) {
+        DbTypeListController.updateDbTypeList((Node) elem, null);
         updateColumnList(param);
         updateContextList(param);
         updateConnectionList(param);
@@ -471,6 +472,7 @@ public class TableController extends AbstractElementPropertySectionController {
         case COLUMN_LIST:
         case COMPONENT_LIST:
         case CONNECTION_LIST:
+        case DBTYPE_LIST:
         case LOOKUP_COLUMN_LIST:
         case PREV_COLUMN_LIST:
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
@@ -493,6 +495,7 @@ public class TableController extends AbstractElementPropertySectionController {
             switch (tmpParam.getField()) {
             case CONTEXT_PARAM_NAME_LIST:
             case CLOSED_LIST:
+            case DBTYPE_LIST:
             case COLUMN_LIST:
             case COMPONENT_LIST:
             case CONNECTION_LIST:

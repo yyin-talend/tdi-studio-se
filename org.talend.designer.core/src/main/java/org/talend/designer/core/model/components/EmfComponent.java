@@ -933,6 +933,7 @@ public class EmfComponent implements IComponent {
                 case COLUMN_LIST:
                 case COMPONENT_LIST:
                 case CONNECTION_LIST:
+                case DBTYPE_LIST:
                 case LOOKUP_COLUMN_LIST:
                 case PREV_COLUMN_LIST:
                 case CONTEXT_PARAM_NAME_LIST:

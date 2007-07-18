@@ -21,14 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 
@@ -46,14 +43,6 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
     private IElementParameter elemParameter;
 
     private Process process;
-
-//    private List<String> columnList;
-//
-//    private List<String> prevColumnList;
-
-//    private String[] columnArrayList;
-//
-//    private String[] prevColumnArrayList;
 
     private boolean dynamicData;
 
