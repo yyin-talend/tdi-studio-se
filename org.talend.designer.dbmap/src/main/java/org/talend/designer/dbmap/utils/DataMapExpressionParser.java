@@ -21,8 +21,8 @@
 // ============================================================================
 package org.talend.designer.dbmap.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.MatchResult;
@@ -49,7 +49,7 @@ public class DataMapExpressionParser {
 
     private Perl5Compiler compiler = new Perl5Compiler();
 
-    private List<TableEntryLocation> resultList = new ArrayList<TableEntryLocation>();
+    private Set<TableEntryLocation> resultList = new HashSet<TableEntryLocation>();
 
     private Pattern pattern;
 
