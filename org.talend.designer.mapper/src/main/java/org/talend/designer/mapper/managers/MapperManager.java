@@ -684,6 +684,10 @@ public class MapperManager extends AbstractMapperManager {
         Collection<IDataMapTable> tablesData = getTablesData();
         for (IDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
+            if (table instanceof AbstractInOutTable) {
+                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table,
+                        ((AbstractInOutTable) table).getExpressionFilter());
+            }
             for (IColumnEntry entry : columnEntries) {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
             }
@@ -711,6 +715,9 @@ public class MapperManager extends AbstractMapperManager {
      */
     private boolean replaceLocation(final TableEntryLocation previousLocation, final TableEntryLocation newLocation,
             DataMapExpressionParser dataMapExpressionParser, IDataMapTable table, ITableEntry entry) {
+        if (entry.getExpression() == null || entry.getExpression().trim().length() == 0) {
+            return false;
+        }
         boolean expressionHasChanged = false;
         String currentExpression = entry.getExpression();
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
@@ -727,12 +734,16 @@ public class MapperManager extends AbstractMapperManager {
             entry.setExpression(currentExpression);
             DataMapTableView dataMapTableView = retrieveAbstractDataMapTableView(table);
             TableViewerCreator tableViewerCreator = null;
-            if (entry instanceof IColumnEntry) {
-                tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
-            } else if (entry instanceof FilterTableEntry) {
-                tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
+            if (entry instanceof IColumnEntry || entry instanceof FilterTableEntry) {
+                if (entry instanceof IColumnEntry) {
+                    tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
+                } else if (entry instanceof FilterTableEntry) {
+                    tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
+                }
+                tableViewerCreator.getTableViewer().refresh(entry);
+            } else if (entry instanceof ExpressionFilterEntry) {
+                dataMapTableView.getExpressionFilterText().setText(currentExpression);
             }
-            tableViewerCreator.getTableViewer().refresh(entry);
             uiManager.parseExpression(currentExpression, entry, false, true, false);
             return true;
         }
