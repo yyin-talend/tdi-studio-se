@@ -379,7 +379,7 @@ public class ElementParameter implements IElementParameter {
             String conditionIf = defaultValue.getIfCondition();
             String conditionNotIf = defaultValue.getNotIfCondition();
 
-            if (((conditionIf != null) || (conditionNotIf != null)) && show) {
+            if ((conditionIf != null) || (conditionNotIf != null)) {
                 if (conditionIf != null) {
                     setDefaultValue = Expression.evaluate(conditionIf, listParam);
                 } else {
@@ -428,11 +428,11 @@ public class ElementParameter implements IElementParameter {
      */
     public boolean isNoCheck() {
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-        
+
         if (!preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
             // if the check has been completely disabled then no check.
             // if not disabled in the preferences, then it will depends on the next conditions.
-            return true; 
+            return true;
         }
 
         if (!(parent instanceof INode)) {
