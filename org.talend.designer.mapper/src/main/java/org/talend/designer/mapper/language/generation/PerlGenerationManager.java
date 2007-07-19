@@ -133,7 +133,7 @@ public class PerlGenerationManager extends GenerationManager {
      * @return
      */
     public String buildNewArrayDeclaration(String name, int indent) {
-        return "my @" + name + " = ();"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "my $" + name + " = [];"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -143,7 +143,7 @@ public class PerlGenerationManager extends GenerationManager {
      * @return
      */
     public String buildNewArrayDeclaration(String uniqueNameComponent, String name, int indent) {
-        return "my @" + uniqueNameComponent + "__" + name + " = ();"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "my $" + uniqueNameComponent + "__" + name + " = [];"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

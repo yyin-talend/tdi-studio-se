@@ -21,8 +21,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 push(
-     @<%=destination %>,
-     [ @<%=cid %>[0 .. $nb_fields_<%=cid %> -1] ]
+     @$<%=destination %>
+     , $<%=cid %> 
 );
     
 <%

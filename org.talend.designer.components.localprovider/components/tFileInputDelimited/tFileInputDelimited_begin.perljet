@@ -158,13 +158,15 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
 <%
   }
 %>
-    my @<%=cid %> = (
-        split(
-            INPUT_FIELD_SEPARATOR_<%=cid %>,
-            $_<%=cid %>
-            <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=cid %> + 1<% } %>
-        )
-    )<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>;
+    my $<%=cid %> = [
+        (
+            split(
+                INPUT_FIELD_SEPARATOR_<%=cid %>,
+                $_<%=cid %>
+                <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=cid %> + 1<% } %>
+            )
+        )<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %> 
+    ];
 
 <%
 		}

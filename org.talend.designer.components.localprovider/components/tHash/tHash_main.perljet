@@ -18,7 +18,7 @@
 %>
 
 eval $keys_string_<%=metadata.getTableName() %>.' =
-    [ @<%=metadata.getTableName() %>[0 .. $nb_fields_<%=metadata.getTableName() %> -1] ]';
+    $<%=metadata.getTableName() %>';
     
 <%
 		}

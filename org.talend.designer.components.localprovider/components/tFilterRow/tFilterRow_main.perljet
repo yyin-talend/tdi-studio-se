@@ -82,7 +82,7 @@ if (
         <%
         }
         %>
-    <%=condition.get("FUNCTION")%>($<%=inputRowName%>[<%=inputRowName%>__<%=condition.get("INPUT_COLUMN")%>])
+    <%=condition.get("FUNCTION")%>($<%=inputRowName%>->[<%=inputRowName%>__<%=condition.get("INPUT_COLUMN")%>])
         <%=condition.get("OPERATOR")%> <%=condition.get("RVALUE")%>
 <%
             isFirst = false ;
@@ -119,7 +119,7 @@ if (
                 
             advanced = advanced.replaceAll(
                 "\\$input_row\\[",
-                "\\$"+ inputRowName +"["
+                "\\$"+ inputRowName +"->["
             );
                 
             advanced = locationUtils.replaceColumnNameToConstantName(
@@ -131,7 +131,7 @@ if (
             // the arrays as a whole.
             advanced = advanced.replaceAll(
                 "@input_row",
-                "@" + inputRowName
+                "@\\$" + inputRowName
             );
             %>
             <%=advanced%>,

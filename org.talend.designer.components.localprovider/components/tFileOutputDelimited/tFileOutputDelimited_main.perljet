@@ -17,11 +17,10 @@
 		if (metadata!=null) {
 %>
 
-if (@<%=metadata.getTableName() %>) {
     print {$output_FH_<%=metadata.getTableName() %>} (
 	    join(
                 OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>,
-                @<%=metadata.getTableName() %><% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=metadata.getTableName() %> - 1]<% } %>
+                @$<%=metadata.getTableName() %>
             ),
 	    OUTPUT_ROW_SEPARATOR_<%=metadata.getTableName() %>
     )
@@ -29,7 +28,6 @@ if (@<%=metadata.getTableName() %>) {
 
     $nb_line_<%=metadata.getTableName() %>++;
 
-}
     
 <%
 		}

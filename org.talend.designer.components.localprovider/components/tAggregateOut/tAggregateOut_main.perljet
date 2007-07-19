@@ -57,7 +57,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
             hashKey.append("{ $");
             hashKey.append(inputRowName);
-            hashKey.append("[");
+            hashKey.append("->[");
             hashKey.append(prevComponentName);
             hashKey.append("__");
             hashKey.append(groupby.get("INPUT_COLUMN"));
@@ -87,7 +87,7 @@ my $key_href_<%=cid%> = \%{ <%=dataType%><%=destination%><%=hashKey%> };
             StringBuffer curval = new StringBuffer();
             curval.append("$");
             curval.append(inputRowName);
-            curval.append("[");
+            curval.append("->[");
             curval.append(prevComponentName);
             curval.append("__");
             curval.append(operation.get("INPUT_COLUMN"));

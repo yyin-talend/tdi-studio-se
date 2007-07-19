@@ -54,7 +54,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	            }
 	            hashKey.append("$");
 	            hashKey.append(cid);
-	            hashKey.append("[");
+	            hashKey.append("->[");
 	            hashKey.append(column_num);
 	            hashKey.append("], ");
 			}
@@ -81,10 +81,10 @@ if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1) {
             String connName = outConn.getName();
 %>
     $branch_<%=connName%>_is_active = false;
-    $nb_line_output_<%=cid %>--;
 <%
         }
 %>
+    $nb_line_output_<%=cid %>--;
 
     
 }

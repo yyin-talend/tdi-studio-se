@@ -26,14 +26,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             );
 %>
 
-if (@<%=cid %>) {
     print {$output_FH_<%=cid %>} (
 <%
         for (int i = 0; i < formats.size(); i++) {
             Map<String, String> format = formats.get(i);
 %>
         formatString(
-            string       => $<%=cid %>[<%=i%>],
+            string       => $<%=cid %>->[<%=i%>],
             size         => <%= format.get("SIZE") %>,
             padding_char => <%= format.get("PADDING_CHAR") %>,
             align        => <%= format.get("ALIGN") %>,
@@ -46,7 +45,6 @@ if (@<%=cid %>) {
     ) or die "can't write to file " . $desc_<%=cid %>{filename} . "\n";
 
     $nb_line_<%=cid %>++;
-}
 
 <%
     }

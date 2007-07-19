@@ -47,7 +47,7 @@ foreach my $row_aref (@<%=origin %>) {
     # increase number of line really splitted
     $nb_line_<%=cid %>++;
 
-    my @<%=cid %> = @{$row_aref};
+    my $<%=cid %> = $row_aref;
 <%
     }
 }

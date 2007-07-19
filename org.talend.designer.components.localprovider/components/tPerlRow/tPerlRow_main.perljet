@@ -67,12 +67,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // Here comes the substitutions!
         code = code.replaceAll(
             "\\$output_row\\[",
-            "\\$"+ tableName +"["
+            "\\$"+ tableName +"->["
         );
         
         code = code.replaceAll(
             "\\$input_row\\[",
-            "\\$"+ inputRowName +"["
+            "\\$"+ inputRowName +"->["
         );
         
         code = locationUtils.replaceColumnNameToConstantName(
@@ -84,23 +84,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // the arrays as a whole.
         code = code.replaceAll(
             "@input_row",
-            "@" + inputRowName
+            "@\\$" + inputRowName
         );
 
         code = code.replaceAll(
             "@output_row",
-            "@" + tableName
+            "@\\$" + tableName
         );
 
 %>
 
-my @<%=tableName%> = ();
+my $<%=tableName%> = [];
 
-if (@<%=inputRowName%>) {
     <%=code%>
 
     $nb_line_<%=metadata.getTableName() %>++;
-}
     
 <%
     }

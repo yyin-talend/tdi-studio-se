@@ -44,7 +44,7 @@ my %desc_<%=cid %> = (
 
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
-our @<%=destination %> = ();
+our $<%=destination %> = [];
 
 <%
     }

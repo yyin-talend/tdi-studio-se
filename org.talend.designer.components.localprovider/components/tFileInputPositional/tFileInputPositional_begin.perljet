@@ -135,11 +135,11 @@ while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName(
     # increase number of line really splitted
     $nb_line_<%=metadata.getTableName() %>++;
 
-    my @<%=metadata.getTableName() %> = unpack(
+    my $<%=metadata.getTableName() %> = [ unpack(
         $pattern_<%=metadata.getTableName() %>,
         $_<%=metadata.getTableName() %>
-    );
-
+    ) ];
+print join(', ', @$<%=metadata.getTableName() %>);
 <%
 		}
 	}

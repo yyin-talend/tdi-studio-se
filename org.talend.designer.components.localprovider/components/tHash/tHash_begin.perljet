@@ -56,7 +56,7 @@ my $keys_string_<%=metadata.getTableName() %> = join(
     '$<%=metadata.getTableName() %>',
     join(
         '',
-         map {'{ $<%=metadata.getTableName() %>['.$_.'] }'} @key_pos_<%=metadata.getTableName() %>
+         map {'{ $<%=metadata.getTableName() %>->['.$_.'] }'} @key_pos_<%=metadata.getTableName() %>
     )
 );
 

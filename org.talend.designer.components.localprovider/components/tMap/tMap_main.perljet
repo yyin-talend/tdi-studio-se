@@ -116,11 +116,11 @@
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
 				        String string = ""; //$NON-NLS-1$
-				        string += "my @" + tableName + " = @{ $tHash_" + tableName + "";
+				        string += "my $" + tableName + " = $tHash_" + tableName + "";
 				        for (int i = 0; i < aKeysValues.length; i++) {
 				            string += "{ " + aKeysValues[i] + " }";
 				        }
-				        string += "};";
+				        string += " ;";
                         sb.append(cr + gm.indent(indent) + string);
                     }
 
@@ -267,7 +267,7 @@
                 } else {
                     and = " &&";
                 }
-                sb.append(and + " scalar( @" + inputTable.getName() + ")");
+                sb.append(and + " scalar( @$" + inputTable.getName() + ")");
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
@@ -405,5 +405,5 @@
 
 
 %>
-<%= sb.toString()%>
+<%= sb.toString().replaceAll("\\b\\[", "->\\[")%>
 	

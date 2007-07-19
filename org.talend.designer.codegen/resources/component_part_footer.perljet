@@ -61,7 +61,7 @@ if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
                     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 %>
 
-my @<%=conn.getName() %> = @<%=metadata.getTableName() %>;
+my $<%=conn.getName() %> = $<%=metadata.getTableName() %>;
 
 <%
                     }

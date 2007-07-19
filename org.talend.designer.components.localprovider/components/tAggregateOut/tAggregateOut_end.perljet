@@ -54,7 +54,7 @@ our @<%=destination%>;
 <%
         }
 %>
-<%=indent%>    my @row = ();
+<%=indent%>    my $row = [];
 <%
         StringBuffer hashKey = new StringBuffer();
 
@@ -70,7 +70,7 @@ our @<%=destination%>;
             indexName.append("__");
             indexName.append(groupby.get("OUTPUT_COLUMN"));
 %>
-<%=indent%>    $row[<%=indexName%>] = $key<%=keyNum%>;
+<%=indent%>    $row->[<%=indexName%>] = $key<%=keyNum%>;
 <%
         }
 
@@ -120,12 +120,12 @@ our @<%=destination%>;
                 expression.append("{last}");
             }
 %>
-<%=indent%>    $row[<%=indexName%>] = <%=expression%>;
+<%=indent%>    $row->[<%=indexName%>] = <%=expression%>;
 <%
         }
 %>
 
-<%=indent%>    push(@<%=destination%>, \@row);
+<%=indent%>    push(@<%=destination%>, $row);
 <%
         for (int keyNum = groupbys.size(); keyNum >= 1; keyNum--) {
             indent = StringUtils.repeat("    ", keyNum - 1);
