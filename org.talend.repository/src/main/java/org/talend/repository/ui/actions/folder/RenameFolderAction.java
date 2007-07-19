@@ -47,6 +47,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.folder.FolderWizard;
@@ -77,31 +78,12 @@ public class RenameFolderAction extends AContextualAction {
         RepositoryNode node = (RepositoryNode) obj;
 
         // Check if some jobs in the folder are currently opened:
-        if (node.hasChildren()) {
-            IWorkbenchPage page = getActivePage();
-            IEditorReference[] editorReferences = page.getEditorReferences();
-            List<String> openEditor = new ArrayList<String>();
-            for (IEditorReference tmp : editorReferences) {
-                try {
-                    IEditorInput editorInput = tmp.getEditorInput();
-                    if (editorInput instanceof RepositoryEditorInput) {
-                        RepositoryEditorInput rei = (RepositoryEditorInput) editorInput;
-                        openEditor.add(rei.getItem().getProperty().getId());
-                    }
-                } catch (PartInitException e) {
-                    ExceptionHandler.process(e, Level.WARN);
-                }
-            }
-
-            List<RepositoryNode> children = node.getChildren();
-            for (RepositoryNode currentNode : children) {
-                if (openEditor.contains(currentNode.getObject().getId())) {
-                    MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.editorOpen.title"),
-                            Messages.getString("RenameFolderAction.warning.editorOpen.message", currentNode.getObject()
-                                    .getLabel()));
-                    return;
-                }
-            }
+        String firstChildOpen = getFirstOpenedChild(node);
+        if (firstChildOpen != null) {
+            MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.editorOpen.title"), Messages
+                    .getString("RenameFolderAction.warning.editorOpen.message", firstChildOpen, node
+                            .getProperties(EProperties.LABEL)));
+            return;
         }
 
         ERepositoryObjectType objectType = null;
@@ -147,4 +129,37 @@ public class RenameFolderAction extends AContextualAction {
         setEnabled(canWork);
     }
 
+    private String getFirstOpenedChild(RepositoryNode node) {
+        if (node.hasChildren()) {
+            IWorkbenchPage page = getActivePage();
+            IEditorReference[] editorReferences = page.getEditorReferences();
+            List<String> openEditor = new ArrayList<String>();
+            for (IEditorReference tmp : editorReferences) {
+                try {
+                    IEditorInput editorInput = tmp.getEditorInput();
+                    if (editorInput instanceof RepositoryEditorInput) {
+                        RepositoryEditorInput rei = (RepositoryEditorInput) editorInput;
+                        openEditor.add(rei.getItem().getProperty().getId());
+                    }
+                } catch (PartInitException e) {
+                    ExceptionHandler.process(e, Level.WARN);
+                }
+            }
+
+            List<RepositoryNode> children = node.getChildren();
+            for (RepositoryNode currentNode : children) {
+                if (currentNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                    if (openEditor.contains(currentNode.getObject().getId())) {
+                        return currentNode.getObject().getLabel();
+                    }
+                } else if (currentNode.getType() == ENodeType.SIMPLE_FOLDER) {
+                    String childOpen = getFirstOpenedChild(currentNode);
+                    if (childOpen != null) {
+                        return childOpen;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
