@@ -139,7 +139,6 @@ while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName(
         $pattern_<%=metadata.getTableName() %>,
         $_<%=metadata.getTableName() %>
     ) ];
-print join(', ', @$<%=metadata.getTableName() %>);
 <%
 		}
 	}
