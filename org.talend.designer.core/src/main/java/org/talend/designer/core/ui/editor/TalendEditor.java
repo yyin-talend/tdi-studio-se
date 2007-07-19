@@ -295,6 +295,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         zoomLevels.add(ZoomManager.FIT_WIDTH);
         zoomLevels.add(ZoomManager.FIT_HEIGHT);
         root.getZoomManager().setZoomLevelContributions(zoomLevels);
+        root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_ZOOM_IN_OUT);
+        //root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_NEVER);
 
         IAction zoomIn = new ZoomInAction(root.getZoomManager());
         IAction zoomOut = new ZoomOutAction(root.getZoomManager());
@@ -913,13 +915,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          */
         @Override
         public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
-            if (mouseEvent.button == 1) {
-                super.mouseDown(mouseEvent, viewer);
-            } else if (mouseEvent.button == 2) {
+            if (mouseEvent.button == 2) {
                 getEditor().setCursor(Cursors.HAND);
                 processor = new DragProcessor();
                 processor.x = mouseEvent.x;
                 processor.y = mouseEvent.y;
+            } else {
+                super.mouseDown(mouseEvent, viewer);
             }
         }
 
