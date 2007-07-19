@@ -21,7 +21,12 @@
 // ============================================================================
 package org.talend.repository.ui.actions.folder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -29,9 +34,15 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -64,6 +75,34 @@ public class RenameFolderAction extends AContextualAction {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
+
+        // Check if some jobs in the folder are currently opened:
+        if (node.hasChildren()) {
+            IWorkbenchPage page = getActivePage();
+            IEditorReference[] editorReferences = page.getEditorReferences();
+            List<String> openEditor = new ArrayList<String>();
+            for (IEditorReference tmp : editorReferences) {
+                try {
+                    IEditorInput editorInput = tmp.getEditorInput();
+                    if (editorInput instanceof RepositoryEditorInput) {
+                        RepositoryEditorInput rei = (RepositoryEditorInput) editorInput;
+                        openEditor.add(rei.getItem().getProperty().getId());
+                    }
+                } catch (PartInitException e) {
+                    ExceptionHandler.process(e, Level.WARN);
+                }
+            }
+
+            List<RepositoryNode> children = node.getChildren();
+            for (RepositoryNode currentNode : children) {
+                if (openEditor.contains(currentNode.getObject().getId())) {
+                    MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.editorOpen.title"),
+                            Messages.getString("RenameFolderAction.warning.editorOpen.message", currentNode.getObject()
+                                    .getLabel()));
+                    return;
+                }
+            }
+        }
 
         ERepositoryObjectType objectType = null;
         IPath path = null;
