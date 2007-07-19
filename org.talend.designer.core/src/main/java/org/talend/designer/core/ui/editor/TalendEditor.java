@@ -295,7 +295,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         zoomLevels.add(ZoomManager.FIT_WIDTH);
         zoomLevels.add(ZoomManager.FIT_HEIGHT);
         root.getZoomManager().setZoomLevelContributions(zoomLevels);
-        root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_ZOOM_IN_OUT);
         //root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_NEVER);
 
         IAction zoomIn = new ZoomInAction(root.getZoomManager());

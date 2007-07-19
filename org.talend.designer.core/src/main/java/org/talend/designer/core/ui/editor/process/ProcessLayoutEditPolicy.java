@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.process;
 
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -56,7 +57,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      */
     protected EditPolicy createChildEditPolicy(final EditPart child) {
         ProcessResizableEditPolicy policy = new ProcessResizableEditPolicy();
-        policy.setResizeDirections(0);
+        policy.setResizeDirections(PositionConstants.EAST_WEST);
         return policy;
     }
 
