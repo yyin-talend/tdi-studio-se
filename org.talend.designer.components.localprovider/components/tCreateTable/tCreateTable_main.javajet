@@ -170,7 +170,7 @@ class Transfer{
 			return "[\"+"+tableName+"+\"]";
 		}else if(dbType.equals("MySQL")){
 			return "`\"+"+tableName+"+\"`";
-		}else if(dbType.equals("Sybase") || dbType.equals("Informix")){//informix is not solved
+		}else {//Sybase and informix is included
 			return "\"+"+tableName+"+\"";
 		}
 		return null;
@@ -325,7 +325,6 @@ class Transfer{
 		}
 <%}else{%>// just create
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
-System.out.println("sql = "+sql<%=cid%>);
 		stmt<%=cid%>.execute(sql<%=cid%>);
 <%}
 //close
