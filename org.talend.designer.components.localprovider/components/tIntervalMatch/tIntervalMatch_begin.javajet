@@ -71,20 +71,15 @@ for (int i = 0; i < sizeColumns; i++) {//5
 %> 
 
 int nb_line_<%= cid %> = 0; 
-final java.util.Set<<%=lookupConName %>Struct> set_<%=cid %> = ((java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>")).keySet();
+final java.util.List<<%=lookupConName %>Struct> list_<%=cid %> = new java.util.ArrayList(((java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>")).keySet());
+java.util.Collections.sort((java.util.List<<%=lookupConName %>Struct>) list_tIntervalMatch_1, new java.util.Comparator<<%=lookupConName %>Struct>(){
 
-class Util_<%= cid %> {
-
-    public <%=returnClassName%> getLookup(<%=mainConName %>Struct row_Main) {
-    
-            for (java.util.Iterator iter = set_<%=cid %>.iterator(); iter.hasNext();) {
-            <%=lookupConName %>Struct row_Lookup = (<%=lookupConName %>Struct) iter.next();
-
-<% 
+	public int compare(<%=lookupConName %>Struct o1, <%=lookupConName %>Struct o2) {
+		
+	<% 
    if(mainjavaType == JavaTypesManager.DATE ) {
 %>
-            if ((row_Main.<%=mainName %>.after(row_Lookup.<%=minName%>)<% if (minBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=minName%>) <% } %>)
-                    && (row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>)<% if (maxBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=maxName%>) <% } %>)) 
+            if (o1.<%=minName%>.before(o2.<%=minName%>)) 
            
 <%
   } else if(mainjavaType == JavaTypesManager.BYTE || 
@@ -94,6 +89,87 @@ class Util_<%= cid %> {
             mainjavaType == JavaTypesManager.LONG ||
             mainjavaType == JavaTypesManager.INTEGER){
 %> 
+            if (o1.<%=minName%> < o2.<%=minName%>) 
+<%
+  } else {
+%>
+            String o1_min = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(o1.<%=minName%>)).toString()<%}else {%>String.valueOf(o1.<%=minName%>) <%}%>;
+            String o2_min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(o2.<%=minName%>)).toString()<%}else {%>String.valueOf(o2.<%=minName%>) <%}%>;
+            
+            if (o1_min.compareTo(o2_min) < 0) 
+
+<%
+  }
+%>         
+            {
+                return -1;
+            } else {
+                return 1;
+            }	
+	}
+	
+});
+
+final <%=lookupConName %>Struct[] array_<%=cid %> = (<%=lookupConName %>Struct[])list_<%=cid %>.toArray(new <%=lookupConName %>Struct[list_<%=cid %>.size()]);
+
+class Util_<%= cid %> {
+
+    public <%=returnClassName%> getLookup(<%=mainConName %>Struct row_Main) {
+    
+    		int binf = 0;
+    	    int bsup = array_<%=cid %>.length-1;
+    	    int current = 0;
+    	    int differ = 0;
+    		boolean forceIncrease = false;
+    		
+            for (int index=0; index <= bsup; index++){
+            differ = bsup - binf;
+			if(differ==1){
+				if(forceIncrease){
+					current = binf + differ / 2 + 1;
+				} else {
+					current = binf + differ / 2;
+					forceIncrease = true;
+				}
+			} else {
+			        current = binf + differ / 2;
+			}
+			
+            <%=lookupConName %>Struct row_Lookup = array_<%=cid %>[current];
+
+<% 
+   if(mainjavaType == JavaTypesManager.DATE ) {
+%>
+            if(row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>))
+            {
+            	bsup = current;
+            	continue;
+            }else 
+            {
+            	binf = current;
+            }
+            
+            if ((row_Main.<%=mainName %>.after(row_Lookup.<%=minName%>)<% if (minBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=minName%>) <% } %>)
+                    && (row_Main.<%=mainName %>.before(row_Lookup.<%=maxName%>)<% if (maxBounds) { %> ||row_Main.<%=mainName %>.equals(row_Lookup.<%=maxName%>) <% } %>))
+                     
+           
+<%
+  } else if(mainjavaType == JavaTypesManager.BYTE || 
+            mainjavaType == JavaTypesManager.SHORT || 
+            mainjavaType == JavaTypesManager.FLOAT ||
+            mainjavaType == JavaTypesManager.DOUBLE ||
+            mainjavaType == JavaTypesManager.LONG ||
+            mainjavaType == JavaTypesManager.INTEGER){
+%> 
+            if(row_Main.<%=mainName %> < row_Lookup.<%=minName%>)
+            {
+            	bsup = current;
+            	continue;
+            }else 
+            {
+            	binf = current;
+            }
+            
             if ((row_Main.<%=mainName %> ><%=minBounds? "=":"" %> row_Lookup.<%=minName%>)
                     && (row_Main.<%=mainName %> <<%=maxBounds? "=":"" %> row_Lookup.<%=maxName%>)) 
 <%
@@ -102,6 +178,15 @@ class Util_<%= cid %> {
             String main = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Main.<%=mainName %>)).toString()<%}else {%>String.valueOf(row_Main.<%=mainName %>) <%}%>;
             String min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=minName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=minName %>) <%}%>;
             String max =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Lookup.<%=maxName %>)).toString()<%}else {%>String.valueOf(row_Lookup.<%=maxName %>) <%}%>;
+                        
+            if(main.compareTo(min) < 0)
+            {
+            	bsup = current;
+            	continue;
+            }else 
+            {
+            	binf = current;
+            }
             
             if ((main.compareTo(min) ><%=minBounds? "=":"" %> 0)
                     && (main.compareTo(max) <<%=maxBounds? "=":"" %> 0)) 
