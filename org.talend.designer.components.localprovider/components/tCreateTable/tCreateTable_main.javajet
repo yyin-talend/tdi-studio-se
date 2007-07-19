@@ -137,7 +137,26 @@ class Transfer{
 		}else if(dbType.equals("ODBC")){
 			return "\"jdbc:odbc:\" + " + dbname;
 		}else if(dbType.equals("HSQLdb")){
-			return "org.hsqldb.jdbcDriver";
+			String runningMode=ElementParameterParser.getValue(node,"__HSQLMODE__");
+			String tls=ElementParameterParser.getValue(node,"__TLS__");
+			String dbalias=ElementParameterParser.getValue(node,"__HSQLDATABASEALIAS__");
+			if(runningMode.equals("SERVER")){
+				if(tls.equals("true")){
+					return "\"jdbc:hsqldb:hsqls://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
+				}else{
+					return "\"jdbc:hsqldb:hsql://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
+				}
+			}else if(runningMode.equals("WEBSERVER")){
+				if(tls.equals("true")){
+					return "\"jdbc:hsqldb:https://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
+				}else{
+					return  "\"jdbc:hsqldb:http://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
+				}
+			}else if(runningMode.equals("PROCESS")){
+				String dbpath=ElementParameterParser.getValue(node,"__HSQLDATABASEPATH__");
+				String hdbname=ElementParameterParser.getValue(node,"__HSQLDATABASE__");
+				return "\"jdbc:hsqldb:file:\"+" + dbpath + "+\"/\"+" + hdbname + "+\";ifexists=true\"";
+			}
 		}else if(dbType.equals("Interbase")){
 			return "\"jdbc:interbase://\"+"+host+"+\"/\"+"+dbname;
 		}
@@ -151,7 +170,7 @@ class Transfer{
 			return "[\"+"+tableName+"+\"]";
 		}else if(dbType.equals("MySQL")){
 			return "`\"+"+tableName+"+\"`";
-		}else if(dbType.equals("Sybase")){
+		}else if(dbType.equals("Sybase") || dbType.equals("Informix")){//informix is not solved
 			return "\"+"+tableName+"+\"";
 		}
 		return null;
@@ -169,8 +188,12 @@ class Transfer{
 				int colNum=1;									
 			 	for(IMetadataColumn column:columnList){	
 			 	//column name
-			 		sql=sql+column.getLabel()+" ";
-			 	//primary key(shouldn't be here)
+			 	   if(dbType.equals("MySQL") || dbType.equals("Informix")){//informix is not solved
+			 			sql=sql+column.getLabel()+" ";
+			 		}else{
+			 			sql=sql+"\\\""+column.getLabel()+"\\\" ";
+			 		}
+			 	//primary key
 					if(column.isKey()==true){PKey.add(column.getLabel());}
 			 	//column type
 				 		sql=sql+column.getType();
@@ -222,7 +245,7 @@ class Transfer{
 		java.sql.Connection con<%=cid%>=null;
 		java.sql.Statement stmt<%=cid%>=null;
 		String sql<%=cid%>=null;
-		Class.forName("<%=tr.dbDriver(node)%>");
+		
 <%
 	String useExistingConn = ElementParameterParser.getValue(node,"__EXISTINGCONNECTION__");
 	String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
@@ -231,21 +254,24 @@ class Transfer{
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION_MYSQL__");
 		String conn = "conn_" + connection;
 %>
+		Class.forName("<%=tr.dbDriver(node)%>");
 		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 <%		
 	}else if((dbType.equals("Oracle"))&&(useExistingConn.equals("true"))){
+		
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION_ORACLE__");
 		String conn = "conn_" + connection;
 %>
 		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");		
 <%  }else if((dbType.equals("Access"))||(dbType.equals("SQLite"))){%>
+		Class.forName("<%=tr.dbDriver(node)%>");
 		url<%=cid%> = <%=tr.url(node)%>;
 		con<%=cid%> = java.sql.DriverManager.getConnection(url<%=cid %>);
 <%	}else if(dbType.equals("JavaDB")){%>
 		url<%=cid%> = <%=tr.url(node)%>;
 <%		if(frameworkType.equals("Embeded")){%>
 			System.setProperty("derby.system.home",<%=ElementParameterParser.getValue(node,"__DBPATH__")%>);
-<%		}
+<%		}else{
 		String connectionFlag = ElementParameterParser.getValue(node, "__JAVADBNETSERVER__");
     	if(connectionFlag.equals("false")){%>
        		org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
@@ -264,27 +290,15 @@ class Transfer{
         	}
         	if(!isServerUp_<%=cid%>)
         	{	System.exit(1);	}
-<%		}%>
-		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
-<%	}else if(dbType.equals("Firebird")){%>
-			Class clazz_<%=cid%> = ClassLoader.class;
-			java.lang.reflect.Field field_<%=cid%> = clazz_<%=cid%>.getDeclaredField("sys_paths");
-			boolean accessible_<%=cid%> = field_<%=cid%>.isAccessible();
-			if (!accessible_<%=cid%>)
-				field_<%=cid%>.setAccessible(true);
-				Object original_<%=cid%> = field_<%=cid%>.get(clazz_<%=cid%>);
-				field_<%=cid%>.set(clazz_<%=cid%>, null);
-			try {
-				System.setProperty("java.library.path", <%=ElementParameterParser.getValue(node,"__FIREBIRJNI__")%>);
-				System.loadLibrary("jaybird21");
-			} finally {
-				field_<%=cid%>.set(clazz_<%=cid%>, original_<%=cid%>);
-				field_<%=cid%>.setAccessible(accessible_<%=cid%>);
-			}				
-		url<%=cid%>=<%=tr.url(node)%>;
-		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
-
+<%			}
+		}%>
+		java.util.Properties properties<%=cid%>=new java.util.Properties();
+		Class.forName("<%=tr.dbDriver(node)%>");
+		properties<%=cid%>.put("user",<%=user%>);
+		properties<%=cid%>.put("password",<%=pass%>);
+		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,properties<%=cid%>);
 <%	}else{%>
+		Class.forName("<%=tr.dbDriver(node)%>");
 		url<%=cid%>=<%=tr.url(node)%>;
 		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
 <%	} %>
@@ -297,22 +311,30 @@ class Transfer{
 	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
 	if(specialAction.equals("DropAndCreate")){%>//drop and then create
 		try{
-			stmt<%=cid%>.execute("drop table "+<%=tableName%>);	
-		}catch(Exception e){			
+			stmt<%=cid%>.execute("drop table "+"<%=tr.protectChar(dbType, tableName)%>");	
+		}catch(Exception e){	
 		}		
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);	
 <%	}else if(specialAction.equals("CreateOnly")){%>
 		try{
-			stmt<%=cid%>.execute("select * from "+<%=tableName%>);
+			stmt<%=cid%>.execute("select * from "+"<%=tr.protectChar(dbType, tableName)%>");
 		}catch(Exception e){//create only if it doesn't exist
 			sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 			stmt<%=cid%>.execute(sql<%=cid%>);	
 		}
 <%}else{%>// just create
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+System.out.println("sql = "+sql<%=cid%>);
 		stmt<%=cid%>.execute(sql<%=cid%>);
-<%}%>
+<%}
+//close
+	if(dbType.equals("HSQLdb")){
+%>
+		java.sql.Statement stmtClose<%=cid%>=con<%=cid%>.createStatement();
+		stmtClose<%=cid%>.execute("SHUTDOWN");
+<%	}%>
+		con<%=cid%>.close();
 
 		
 

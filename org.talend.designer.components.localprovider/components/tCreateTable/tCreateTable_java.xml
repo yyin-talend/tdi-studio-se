@@ -40,6 +40,7 @@
         <ITEM NAME="ACCESS"        VALUE="Access" />
         <ITEM NAME="DB2"           VALUE="DB2"/>
         <ITEM NAME="FIREBIRD"      VALUE="Firebird"/>
+        <ITEM NAME="HSQLDB"      VALUE="HSQLdb"/>
         <ITEM NAME="INFORMIX"      VALUE="Informix"/>
         <ITEM NAME="INGRES"      VALUE="Ingres"/>
         <ITEM NAME="INTERBASE"      VALUE="Interbase"/>
@@ -119,7 +120,7 @@
      <PARAMETER
       NAME="JAVADBNETSERVER"
       FIELD="CHECK"
-      SHOW_IF="(DBTYPE=='JAVADB')"
+      SHOW_IF="(DBTYPE=='JAVADB' and (JAVADBFRAME == 'JCCJDBC' or JAVADBFRAME == 'DERBYCLIENT'))"
       NUM_ROW="2"    
     >   
       <DEFAULT>false</DEFAULT>
@@ -144,7 +145,7 @@
       NUM_ROW="4"
       REQUIRED="true"
       SHOW_IF="(DBTYPE=='ACCESS')"
-      
+      REPOSITORY_VALUE="FILE"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
     </PARAMETER> 
@@ -161,11 +162,33 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="HSQLMODE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB')"     
+    >
+      <ITEMS DEFAULT="SERVER">
+        <ITEM NAME="SERVER"        VALUE="SERVER" />
+        <ITEM NAME="WEBSERVER"    	VALUE="WEBSERVER"/>
+        <ITEM NAME="PROCESS"    VALUE="PROCESS"/>
+      </ITEMS>
+    </PARAMETER>
+    <PARAMETER
+      NAME="TLS"
+      FIELD="CHECK"
+      NUM_ROW="4"
+      SHOW_IF="(DBTYPE == 'HSQLDB') and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
+    
+    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC')"
+      NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -175,7 +198,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
     >
       <DEFAULT>"50000"</DEFAULT>
     </PARAMETER>
@@ -186,18 +209,51 @@
       NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'INTERBASE')"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    
+    
+    <PARAMETER
+      NAME="HSQLDATABASEALIAS"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER'))"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
      
+     <PARAMETER
+      NAME="HSQLDATABASEPATH"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+     <PARAMETER
+      NAME="HSQLDATABASE"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    
     
     <PARAMETER
       NAME="INTERBASEDBNAME"
-      FIELD="FILE"
+      FIELD="TEXT"
       NUM_ROW="4"
       REQUIRED="true"
-      SHOW_IF="(DBTYPE=='INTERBASE')"     
+      SHOW_IF="(DBTYPE=='INTERBASE')" 
+      REPOSITORY_VALUE="SID"    
     >
       <DEFAULT>"../test.gdb"</DEFAULT>
     </PARAMETER> 
@@ -207,25 +263,19 @@
       FIELD="FILE"
       NUM_ROW="4"
       REQUIRED="true"
-      SHOW_IF="(DBTYPE=='SQLITE')"     
+      SHOW_IF="(DBTYPE=='SQLITE')"  
+      REPOSITORY_VALUE="FILE"   
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER> 
-    <PARAMETER
-      NAME="FIREBIRJNI"
-      FIELD="DIRECTORY"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='FIREBIRD')"     
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
+
    <PARAMETER
       NAME="FIREBIRDDBNAME"
       FIELD="FILE"
-      NUM_ROW="5"
+      NUM_ROW="4"
       REQUIRED="true"
-      SHOW_IF="(DBTYPE=='FIREBIRD')"     
+      SHOW_IF="(DBTYPE=='FIREBIRD')"   
+      REPOSITORY_VALUE="SID"  
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -236,6 +286,7 @@
       NUM_ROW="5"
       REQUIRED="true"
       SHOW_IF="(DBTYPE=='INFORMIX')"
+      REPOSITORY_VALUE="DATASOURCE"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -290,6 +341,7 @@
       <DEFAULT IF="DBTYPE=='ACCESS'">access_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='DB2'">ibmdb2_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='FIREBIRD'">firebird_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='HSQLDB'">hsqldb_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INFORMIX'">informix_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INTERBASE'">interbase_id</DEFAULT>
@@ -325,11 +377,13 @@
 		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-ACCESS" MODULE="Access_JDBC30.jar" REQUIRED="true" />	
 		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-JDBCX" MODULE="ifxjdbcx.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-LANG" MODULE="ifxlang.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-Interbase" MODULE="interclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
