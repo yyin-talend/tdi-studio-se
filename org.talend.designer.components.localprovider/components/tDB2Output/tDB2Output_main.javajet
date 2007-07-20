@@ -26,7 +26,7 @@ imports="
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
+    String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
             
@@ -342,9 +342,18 @@ if(incomingConnName != null && columnList != null){
         	counter++;
 		}
 	%>
-
+try{
 pstmt_<%=cid %>.executeUpdate();
 nb_line_inserted_<%=cid%>++;
+}catch(Exception e)
+{
+    <%  if (dieOnError.equals("true")) { %>
+    throw(e);
+    <% } else { %>
+    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+    <% } %>
+}
+
 	<%
 	}else if(dataAction.equals("UPDATE")){
 		int counterCol = 1;
@@ -376,8 +385,16 @@ nb_line_inserted_<%=cid%>++;
 		}
 
 	%>
-pstmt_<%=cid %>.executeUpdate();
+try{
+    pstmt_<%=cid %>.executeUpdate();
 nb_line_update_<%=cid%> ++;
+}catch(Exception e){
+    <%  if (dieOnError.equals("true")) { %>
+    throw(e);
+    <% } else { %>
+    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+    <% } %>
+}
 <%
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 %>
@@ -424,8 +441,18 @@ nb_line_update_<%=cid%> ++;
 				}
 			}
 			%>
-			pstmtUpdate_<%=cid %>.executeUpdate();
-			nb_line_update_<%=cid%> ++;
+            try{
+                pstmtUpdate_<%=cid %>.executeUpdate();
+                nb_line_update_<%=cid%> ++;  
+            }
+            catch(Exception e)
+            {
+                <%  if (dieOnError.equals("true")) { %>
+                throw(e);
+                <% } else { %>
+                throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                <% } %>
+            }
 		}
 		else
 		{
@@ -438,8 +465,18 @@ nb_line_update_<%=cid%> ++;
 				counterInsert++;
 			}
 			%>
-			pstmtInsert_<%=cid %>.executeUpdate();
-			nb_line_inserted_<%=cid%>++;
+            try{
+                pstmtInsert_<%=cid %>.executeUpdate();
+                nb_line_inserted_<%=cid%>++;
+            }
+            catch(Exception e)
+            {
+                <%  if (dieOnError.equals("true")) { %>
+                throw(e);
+                <% } else { %>
+                throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                <% } %>
+            }
 		}
 
 <%
@@ -475,7 +512,17 @@ nb_line_update_<%=cid%> ++;
 		}
 	%>
 	
-		int updateCount_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
+		int updateCount_<%=cid%>=0;
+        try{
+            updateCount_<%=cid%>= pstmtUpdate_<%=cid %>.executeUpdate();
+        }catch(Exception e)
+        {
+            <%  if (dieOnError.equals("true")) { %>
+            throw(e);
+            <% } else { %>
+                throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+            <% } %>
+        }
 		if(updateCount_<%=cid%> == 0)
 		{
     		<%
@@ -491,9 +538,17 @@ nb_line_update_<%=cid%> ++;
             	counter++;
     		}
     		%>
+            try{
         	pstmtInsert_<%=cid %>.executeUpdate();
-        	
-        	nb_line_inserted_<%=cid%>++;    					
+        	nb_line_inserted_<%=cid%>++; 
+            }catch(Exception e)
+            {
+                <%  if (dieOnError.equals("true")) { %>
+                throw(e);
+                <% } else { %>
+                throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                <% } %>
+            }
 		}
 		else
 		{
@@ -517,8 +572,17 @@ nb_line_update_<%=cid%> ++;
 			}
 		}
 	%>
+    try{
 pstmt_<%=cid %>.executeUpdate();
 nb_line_deleted_<%=cid%>++;
+    }catch(Exception e)
+    {
+        <%  if (dieOnError.equals("true")) { %>
+        throw(e);
+        <% } else { %>
+        throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+        <% } %>
+    }
 	<%
 	}
 ////////////commit every////////////

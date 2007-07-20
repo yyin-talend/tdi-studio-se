@@ -167,6 +167,14 @@
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
   </PARAMETERS>
 
