@@ -22,10 +22,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int nbFields = metadata.getListColumns().size() - 1;
 %>
 
-if (@<%=cid %>) {
     my $colnum = 0;
 
-    foreach my $cell (@<%=cid%>[0 .. <%=nbFields%>]) {
+    foreach my $cell (@$<%=cid%>[0 .. <%=nbFields%>]) {
         $worksheet_<%=cid %>->write(
             $nb_line_<%=cid %>,
             $colnum++,
@@ -35,7 +34,6 @@ if (@<%=cid %>) {
 
     $nb_line_<%=cid %>++;
 
-}
     
 <%
     }
