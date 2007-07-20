@@ -31,7 +31,7 @@ tFileDelete
 tFileFetch
 tFileInputCSV
 tFileInputDelimited;r4672
-tFileInputExcel
+tFileInputExcel;r4693
 tFileInputLDIF
 tFileInputMail
 tFileInputPositional;r4672
@@ -67,12 +67,12 @@ tMSSqlRow;r4688
 tMysqlBulkExec
 tMysqlCommit
 tMysqlConnection
-tMysqlInput
+tMysqlInput;r4680
 tMysqlOutputBulkExec
 tMysqlOutputBulk
-tMysqlOutput
+tMysqlOutput;r4688
 tMysqlRollback
-tMysqlRow
+tMysqlRow;r4688
 tMysqlSCD
 tNormalize
 tOracleBulkExec
