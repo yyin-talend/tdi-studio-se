@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -113,7 +113,7 @@ public class SelectorTableForm extends AbstractForm {
 
     private int count = 0;
 
-    private IWizardPage parentWizardPage;
+    private WizardPage parentWizardPage;
 
     /**
      * TableForm Constructor to use by RCP Wizard.
@@ -124,7 +124,7 @@ public class SelectorTableForm extends AbstractForm {
      * @param page
      * @param metadataTable
      */
-    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, IWizardPage page) {
+    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, WizardPage page) {
         super(parent, SWT.NONE);
         managerConnection = new ManagerConnection();
         this.connectionItem = connectionItem;
@@ -275,6 +275,7 @@ public class SelectorTableForm extends AbstractForm {
                         table.setEnabled(true);
                         if (!tableItem.getChecked()) {
                             tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                            parentWizardPage.setPageComplete(false);
                             refreshTable(tableItem, size);
                         } else {
                             updateStatus(IStatus.OK, null);
@@ -325,6 +326,7 @@ public class SelectorTableForm extends AbstractForm {
                             tableItems.remove(tableItem);
                             tableItems.add(tableItem);
                             tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                            parentWizardPage.setPageComplete(false);
                             refreshTable(tableItem, -1);
                         } else {
                             tableItems.remove(tableItem);
@@ -431,7 +433,6 @@ public class SelectorTableForm extends AbstractForm {
      * @param tableItem
      */
     protected void createTable(TableItem tableItem) {
-
         String tableString = tableItem.getText(0);
 
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
@@ -510,9 +511,22 @@ public class SelectorTableForm extends AbstractForm {
                     selectNoneTablesButton.setEnabled(true);
                     checkConnectionButton.setEnabled(true);
                 }
+                parentWizardPage.setPageComplete(nextEnable());
+            }
+
+            private boolean nextEnable() {
+                TableItem[] items = table.getItems();
+                for (TableItem item : items) {
+                    String s = item.getText(3);
+                    if (Messages.getString("SelectorTableForm.Pending").equals(s)) {
+                        return false;
+                    }
+                }
+                return true;
             }
         });
     }
+
 
     /**
      * DOC ocarbone Comment method "initExistingNames".
@@ -569,5 +583,9 @@ public class SelectorTableForm extends AbstractForm {
 
     protected DatabaseConnection getConnection() {
         return (DatabaseConnection) connectionItem.getConnection();
+    }
+
+    public Table getTable() {
+        return this.table;
     }
 }
