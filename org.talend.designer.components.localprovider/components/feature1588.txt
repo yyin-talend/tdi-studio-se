@@ -4,8 +4,8 @@ tAdvancedMap
 tAggregateOut;r4672
 tAggregateRow;r4672
 tAggregateSortedRow
-tArrayIn
-tArray
+tArrayIn;r4672
+tArray;r4672
 tContextLoad
 tDB2Input
 tDB2Output
