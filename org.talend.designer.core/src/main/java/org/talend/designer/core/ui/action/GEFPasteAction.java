@@ -87,6 +87,9 @@ public class GEFPasteAction extends SelectionAction {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void run() {
         List<EditPart> partsList = (List<EditPart>) Clipboard.getDefault().getContents();
+        if (partsList == null || partsList.isEmpty()) {
+            return;
+        }
 
         List<NodePart> nodeParts = new ArrayList<NodePart>();
         List<NoteEditPart> noteParts = new ArrayList<NoteEditPart>();
