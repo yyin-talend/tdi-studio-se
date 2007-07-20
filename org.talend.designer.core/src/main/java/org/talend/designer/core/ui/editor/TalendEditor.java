@@ -49,6 +49,8 @@ import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.ContextMenuProvider;
@@ -120,7 +122,11 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -138,6 +144,7 @@ import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
+import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
@@ -450,7 +457,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         // this will select the TabbedPropertyPage instead of the classic property view
         // available in Eclipse 3.2
         if (type == IPropertySheetPage.class) {
-            IPropertySheetPage   properties = new TalendTabbedPropertySheetPage(this);
+            IPropertySheetPage properties = new TalendTabbedPropertySheetPage(this);
             return properties;
         }
 
@@ -497,6 +504,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         getGraphicalViewer().setContents(this.process);
 
         getGraphicalViewer().addDropTargetListener(new ProcessTemplateTransferDropTargetListener(getGraphicalViewer()));
+        getGraphicalViewer().addDropTargetListener(new TalendEditorDropTargetListener(this));
     }
 
     // ------------------------------------------------------------------------
@@ -600,6 +608,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return paletteRoot;
     }
 
+    public IComponent getComponent(String name){
+        return components.get(name);
+    }
+    
     public static void resetPaletteRoot() {
         paletteRoot = null;
     }
@@ -882,11 +894,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     class TalendEditDomain extends DefaultEditDomain {
 
         /**
-         * DOC bqian TalendEditor.TalendEditDomain class global comment. Detailled comment
-         * <br/>
-         *
+         * DOC bqian TalendEditor.TalendEditDomain class global comment. Detailled comment <br/>
+         * 
          * $Id$
-         *
+         * 
          */
         class DragProcessor {
 
@@ -926,15 +937,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         public void updateViewport(int offX, int offY) {
             RootEditPart rep = getGraphicalViewer().getRootEditPart();
+
             if (rep instanceof ScalableFreeformRootEditPart) {
                 ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
                 Viewport viewport = (Viewport) root.getFigure();
-
                 Point viewOriginalPosition = viewport.getViewLocation();
                 viewOriginalPosition.x -= offX;
                 viewOriginalPosition.y -= offY;
 
-                viewport.setViewLocation( viewOriginalPosition.x,viewOriginalPosition.y);
+                viewport.setViewLocation(viewOriginalPosition.x, viewOriginalPosition.y);
             }
         }
 
