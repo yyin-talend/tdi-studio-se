@@ -22,6 +22,7 @@
 package org.talend.repository.model.migration;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;

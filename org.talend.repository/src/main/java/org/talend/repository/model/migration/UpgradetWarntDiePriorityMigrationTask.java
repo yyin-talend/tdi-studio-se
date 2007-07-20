@@ -24,13 +24,14 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.ModifyComponentsAction;
+import org.talend.core.model.components.conversions.IComponentConversion;
+import org.talend.core.model.components.conversions.UpdatePropertyComponentConversion;
+import org.talend.core.model.components.filters.IComponentFilter;
+import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
-import org.talend.repository.model.migration.conversions.IComponentConversion;
-import org.talend.repository.model.migration.conversions.UpdatePropertyComponentConversion;
-import org.talend.repository.model.migration.filters.IComponentFilter;
-import org.talend.repository.model.migration.filters.NameComponentFilter;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.

@@ -24,14 +24,15 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.ModifyComponentsAction;
+import org.talend.core.model.components.conversions.IComponentConversion;
+import org.talend.core.model.components.conversions.RemovePropertyComponentConversion;
+import org.talend.core.model.components.conversions.RenameComponentConversion;
+import org.talend.core.model.components.filters.IComponentFilter;
+import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
-import org.talend.repository.model.migration.conversions.IComponentConversion;
-import org.talend.repository.model.migration.conversions.RemovePropertyComponentConversion;
-import org.talend.repository.model.migration.conversions.RenameComponentConversion;
-import org.talend.repository.model.migration.filters.IComponentFilter;
-import org.talend.repository.model.migration.filters.PropertyComponentFilter;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tPostgresql(Input|Output|Row).
