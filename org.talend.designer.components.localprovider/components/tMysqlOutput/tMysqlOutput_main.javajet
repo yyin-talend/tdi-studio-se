@@ -308,7 +308,7 @@ if(isObject){
 		if (date_<%=cid %> < year1_<%=cid %> || date_<%=cid %> >= year10000_<%=cid %>) {
 			<%=prefix+cid%>.setString(<%=counter%>, "0000-00-00 00:00:00");
 		} else {
-			<%=prefix+cid%>.setString(<%=counter%>, new java.text.SimpleDateFormat(<%=((column.getColumn().getPattern()==null)||(column.getColumn().getPattern().equals("")))?"\"yyyy-MM-dd HH:mm:ss\"":column.getColumn().getPattern()%>).format(<%=incomingConnName%>.<%=column.getName()%>));
+			<%=prefix+cid%>.setTimestamp(<%=counter%>, new java.sql.Timestamp(date_<%=cid %>));
 		}
 	}else{
 	

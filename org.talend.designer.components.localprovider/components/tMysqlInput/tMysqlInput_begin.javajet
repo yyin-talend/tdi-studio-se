@@ -140,8 +140,8 @@ if(conns != null && conns.size()>0){
 			  %>
     			  if(rs_<%=cid %>.getString(<%=currentColNo%>) != null){
     			 	 String dateString_<%=cid%> = rs_<%=cid%>.getString(<%=currentColNo%>);
-    			 	 String pattern_<%=cid%> = <%=column.getPattern().equals("")?"\"yyyy-MM-dd HH:mm:ss\"":column.getPattern()%>;
-    			 	 java.util.Date tmpDate_<%=cid%> = new java.text.SimpleDateFormat(pattern_<%=cid%>).parse(dateString_<%=cid%>);
+    			 	 String pattern_<%=cid%> = <%=column.getPattern().equals("")?"\"yyyy-MM-dd\"":column.getPattern()%>;
+    			 	 java.util.Date tmpDate_<%=cid%> = FastDateParser.getInstance(pattern_<%=cid%>).parse(dateString_<%=cid%>);//new java.text.SimpleDateFormat(pattern_<%=cid%>).parse(dateString_<%=cid%>);
     			 	 <%=firstConnName%>.<%=column.getLabel()%> = tmpDate_<%=cid%>;
     			  }else{
     			 	 <%=firstConnName%>.<%=column.getLabel()%> =  null;
