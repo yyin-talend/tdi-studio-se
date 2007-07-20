@@ -126,7 +126,7 @@ if(tableAction.equals("true"))
 {
 %>
 java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
+stmtClear_<%=cid%>.executeUpdate("TRUNCATE TABLE " + <%=tableName%>);
 <%	
 }
 %>
