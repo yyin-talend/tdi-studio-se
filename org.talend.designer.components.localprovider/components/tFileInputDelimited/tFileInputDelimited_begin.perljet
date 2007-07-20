@@ -165,9 +165,12 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
                 $_<%=cid %>
                 <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=cid %> + 1<% } %>
             )
-        )<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %> 
+        ) 
     ];
-
+    
+    if( <%=metadata.getListColumns().size()%> != scalar(@$<%=cid%>) ){
+        @$<%=cid %> = (@$<%=cid%>)<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>;
+    }
 <%
 		}
 	}
