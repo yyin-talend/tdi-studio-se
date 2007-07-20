@@ -47,7 +47,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if (tablePrint.equals("true")) {
 %>
-$table_<%=cid%>->addRow(@<%=cid %>);
+$table_<%=cid%>->addRow(@$<%=cid %>);
 <%
         }
         else {
@@ -78,7 +78,7 @@ print STDOUT (
 <%
             }
 %>
-                @<%=cid %>
+                @$<%=cid %>
     ),
     "\n"
 )
