@@ -77,6 +77,8 @@ for (1..$desc_<%=cid %>{nb_rows}) {
         )
     }
 
+    my $<%=cid %> = \@<%=cid %>;
+
 <%
 		}
 	}

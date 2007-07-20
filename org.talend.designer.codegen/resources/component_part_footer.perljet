@@ -22,7 +22,7 @@ boolean trace = codeGenArgument.isTrace();
 %>
 
 <%
-if (!(node instanceof IExternalNode)) {
+if (node.getComponent().isDataAutoPropagated()) {
     if (codePart.equals(ECodePart.BEGIN)) {
         List<IMetadataTable> metadatas = node.getMetadataList();
         if ((metadatas!=null)&&(metadatas.size()>0)) {
