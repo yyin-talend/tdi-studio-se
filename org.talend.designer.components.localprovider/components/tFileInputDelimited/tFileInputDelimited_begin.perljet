@@ -19,6 +19,7 @@
 		if (metadata!=null) {
 
                     String cid = metadata.getTableName();
+                    int nbFields = metadata.getListColumns().size();
 %>
 
 use FileHandle;
@@ -59,7 +60,6 @@ my %desc_<%=cid %> = (
 
 use constant INPUT_FIELD_SEPARATOR_<%=cid %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
 $/ = $desc_<%=cid %>{row_separator};
-my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
 my $input_FH_<%=cid %> = new FileHandle;
 open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
@@ -163,13 +163,13 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
             split(
                 INPUT_FIELD_SEPARATOR_<%=cid %>,
                 $_<%=cid %>
-                <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=cid %> + 1<% } %>
+                <% if (nbFields>0) { %>,<%=nbFields + 1%><% } %>
             )
         ) 
     ];
     
-    if( <%=metadata.getListColumns().size()%> != scalar(@$<%=cid%>) ){
-        @$<%=cid %> = (@$<%=cid%>)<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>;
+    if( <%=nbFields%> != scalar(@$<%=cid%>) ){
+        @$<%=cid %> = (@$<%=cid%>)<% if (nbFields>0) { %>[0 .. <%=nbFields - 1%> ]<% } %>;
     }
 <%
 		}

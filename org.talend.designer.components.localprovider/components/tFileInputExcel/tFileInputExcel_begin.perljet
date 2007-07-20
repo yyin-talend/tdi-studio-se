@@ -19,6 +19,7 @@
 		if (metadata!=null) {
 			// component id
 			String cid = metadata.getTableName();
+                        int nbFields = metadata.getListColumns().size();
 %>
 
 use FileHandle;
@@ -53,7 +54,6 @@ my %desc_<%=cid%> = (
     ]
 );
 
-my $nb_fields_<%=cid%> = scalar @{ $desc_<%=cid%>{schema} };
 
 my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse($desc_<%=cid%>{filename});
 
@@ -112,8 +112,8 @@ for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
     }
     $current_row++;
 
-    if( <%=metadata.getListColumns().size()%> != scalar(@$<%=cid%>)){
-        @$<%=cid%> = (@$<%=cid%>)<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid%> - 1]<% } %>;
+    if( <%=nbFields%> != scalar(@$<%=cid%>)){
+        @$<%=cid%> = (@$<%=cid%>)<% if ( nbFields > 0) { %>[0 .. <%=nbFields -1%>]<% } %>;
     }
 <%
 		}
