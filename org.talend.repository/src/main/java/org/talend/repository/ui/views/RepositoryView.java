@@ -230,6 +230,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     protected void initDragAndDrop() {
         int ops = DND.DROP_COPY | DND.DROP_MOVE;
         Transfer[] transfers = new Transfer[] { LocalSelectionTransfer.getTransfer() };
+        
+        
         viewer.addDragSupport(ops, transfers, new DragSourceAdapter() {
 
             private static final long FFFFFFFFL = 0xFFFFFFFFL;
