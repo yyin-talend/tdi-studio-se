@@ -11,7 +11,7 @@
 	String cid = node.getUniqueName();	
 
 	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
-	String zipFile = ElementParameterParser.getValue(node, "__ZIPFILE__").toLowerCase();
+	String zipFile = ElementParameterParser.getValue(node, "__ZIPFILE__");
 	boolean rootName = ElementParameterParser.getValue(node, "__ROOTNAME__").equals("true");
 	boolean extractPath = ElementParameterParser.getValue(node, "__EXTRACTPATH__").equals("true");	
 %>      
@@ -60,13 +60,14 @@
         
 		
 <%
+	zipFile = zipFile.toLowerCase();
 	//get the zip file name
 	if (rootName==true) {
 %>        
         java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>);        
         String name_<%=cid %> = file_<%=cid %>.getName();        
 <%
-	if (zipFile.toLowerCase().endsWith(".tar.gz\""))  {
+	if (zipFile.endsWith(".tar.gz\""))  {
 %> 
 		String root_<%=cid %> = name_<%=cid %>.substring(0, name_<%=cid %>.length()-7);
 <%
