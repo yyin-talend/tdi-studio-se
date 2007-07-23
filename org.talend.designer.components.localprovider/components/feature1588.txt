@@ -48,8 +48,8 @@ tFileOutputXML;r4672
 tFileUnarchive
 tFilterColumns;r4726
 tFilterRow;r4672
-tFlowMeterCatcher
-tFlowMeter
+tFlowMeterCatcher;r4740
+tFlowMeter;no need
 tForeach
 tFor
 tFTP
@@ -57,7 +57,7 @@ tFuzzyMatch
 tGPGDecrypt
 tHash;r4672
 tIntervalMatch
-tLogCatcher
+tLogCatcher;r4740
 tLogRow;r4692
 tMap;r4672
 tMsgBox
@@ -74,7 +74,7 @@ tMysqlOutput;r4688
 tMysqlRollback
 tMysqlRow;r4688
 tMysqlSCD
-tNormalize
+tNormalize;r4739
 tOracleBulkExec
 tOracleCommit
 tOracleConnection
@@ -82,14 +82,13 @@ tOracleInput;r4695
 tOracleOutput;r4695
 tOracleRow;r4695
 tOracleSCD
-tPerlFlex
+tPerlFlex;do we do anything?
 tPerlRow;r4672
 tPerl
 tPOP
 tPostgresqlInput
 tPostgresqlOutput
 tPostgresqlRow
-tRG
 tRowGenerator;r4695
 tRunJob
 tSendMail
@@ -100,7 +99,7 @@ tSQLiteInput
 tSQLiteOutput
 tSQLiteRow
 tSSH
-tStatCatcher
+tStatCatcher;r4740
 tSVNLogInput
 tSybaseBulkExec
 tSybaseInput
