@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 %>
 
-if (not $csv_<%=cid%>->print($output_FH_<%=cid%>, \@<%=cid%>)) {
+if (not $csv_<%=cid%>->print($output_FH_<%=cid%>, $<%=cid%>)) {
     die "[<%=cid%>] failed to write row";
 }
 print {$output_FH_<%=cid%>} <%=rowSeparator%>;

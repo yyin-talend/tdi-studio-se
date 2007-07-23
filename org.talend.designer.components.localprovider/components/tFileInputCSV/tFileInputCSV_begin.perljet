@@ -19,6 +19,7 @@
 		if (metadata!=null) {
 			// component id
 			String cid = metadata.getTableName();
+                        int nbFields = metadata.getListColumns().size();
 %>
 
 use FileHandle;
@@ -141,7 +142,10 @@ while (my $_<%=cid%> = <$input_FH_<%=cid%>>) {
         warn "====\n";
         next;
     }
-    my @<%=cid%> = ($csv_<%=cid%>->fields())<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid%> - 1]<% } %>;
+    my $<%=cid%> = [ ($csv_<%=cid%>->fields()) ];
+    if( <%=nbFields%> != scalar(@$<%=cid%>) ){
+        @$<%=cid %> = (@$<%=cid%>)<% if (nbFields>0) { %>[0 .. <%=nbFields - 1%> ]<% } %>;
+    }
 
 <%
 		}

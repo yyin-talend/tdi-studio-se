@@ -19,15 +19,15 @@
         String cid = node.getUniqueName();
 %>
 
-if (@<%=cid %>) {
-    my($key, $value) = @<%=cid %> ;
+if (@$<%=cid %>) {
+    my($key, $value) = @$<%=cid %> ;
 	if(exists($_context{$key})){
 	    $_context{$key} = $value ;
 	    $<%=cid %>_keys{$key} = 1;  
 <%
     if (ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__").equals("true")) {
 %>
-        printf STDOUT "tContextLoad set key %s with value %s \n", @<%=cid %>
+        printf STDOUT "tContextLoad set key %s with value %s \n", @$<%=cid %>
             or die "can't print to STDOUT\n";
 <%
     }
