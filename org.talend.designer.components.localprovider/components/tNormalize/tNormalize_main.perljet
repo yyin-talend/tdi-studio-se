@@ -14,8 +14,15 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String colname = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
-String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+String colname = ElementParameterParser.getValue(
+    node,
+    "__NORMALIZE_COLUMN__"
+);
+
+String separator = ElementParameterParser.getValue(
+    node,
+    "__ITEMSEPARATOR__"
+);
 
 int icolsplit = 0;
 
@@ -34,6 +41,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 $nb_line_input_<%=cid %>++;
 
-foreach (split(<%=separator %>, $<%=cid%>[<%=icolsplit%>])) {
-    $<%=cid%>[<%=icolsplit%>] = $_ ;
+my @row_<%=cid%> = @$<%=cid%>;
+
+foreach (split(<%=separator %>, $row_<%=cid%>[<%=icolsplit%>])) {
+    my $<%=cid%> = [@row_<%=cid%>];
+    $<%=cid%>->[<%=icolsplit%>] = $_ ;
     $nb_line_output_<%=cid %>++;
