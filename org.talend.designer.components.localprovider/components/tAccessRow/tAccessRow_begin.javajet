@@ -29,14 +29,17 @@ imports="
     	   
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
     
-    String javaDbDriver   = "com.hxtt.sql.access.AccessDriver";  
 %>
 
-java.lang.Class.forName("<%=javaDbDriver %>");
+java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
-String url_<%=cid %> = "jdbc:access:/" + <%=dbname%> + "?user=" + <%=username%> + ";password=" + <%=password%>;
+String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+String userName_<%=cid %> = <%=username%>;
+
+String password_<%=cid %> = <%=password%>;
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid %>,password_<%=cid %>);
 
 java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 

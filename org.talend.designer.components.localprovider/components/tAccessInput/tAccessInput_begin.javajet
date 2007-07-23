@@ -17,9 +17,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
-    String javaDbDriver = "com.hxtt.sql.access.AccessDriver";    
-    
+	     
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	
 	String username = ElementParameterParser.getValue(node, "__USER__");
@@ -39,11 +37,15 @@ imports="
 %>
 
 int nb_line_<%=cid%> = 0;
-java.lang.Class.forName("<%=javaDbDriver %>");
+java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 
-String url_<%=cid %> = "jdbc:access:/" + <%=dbname%> + "?user=" + <%=username%> + ";password=" + <%=password%>;
+String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+String userName_<%=cid %> = <%=username%>;
+
+String password_<%=cid %> = <%=password%>;
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid %>,password_<%=cid %>);
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
@@ -90,9 +92,10 @@ if(conns != null && conns.size()>0){
 		  
 			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			  %>
-			  	if(rs_<%=cid %>.getString(<%=currentColNo%>)!=null&&(rs_<%=cid %>.getString(<%=currentColNo%>)).length()>0){
+			  	String tmpStr_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+			  	if(tmpStr_<%=cid%> != null && tmpStr_<%=cid%>.length()>0){
 			  	
-			  		<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
+			  		<%=firstConnName%>.<%=column.getLabel()%> = tmpStr_<%=cid%>.charAt(0);
 			  		
 			  	}else{			  	
 			  	    <%if(typeToGenerate.equals("Character")){%>
@@ -124,17 +127,36 @@ if(conns != null && conns.size()>0){
 			  <%
 			  }else if(typeToGenerate.equals("Timestamp")){
 			 %>
-			 if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>)!=null){
-			 	<%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			 java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+			 if(timestamp_<%=cid%> != null){
+			 	<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
 			 }else{
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
 			 <% 	
 			 }else{
  	   		 %>
- 	   		 	if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null)
+				Object value = rs_<%=cid %>.getObject(<%=currentColNo%>);
+ 	   		 	if(value != null)
  	   		 	{
- 			 		<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+ 	   		 		<%
+   		 			String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
+   		 			if(javaType.equals("Integer"))
+   		 			{
+   		 				%>
+   		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType.substring(0,3)%>(value.toString()));
+   		 				<%
+   		 			}
+   		 			else if(javaType.equals("Byte") || javaType.equals("Short") || javaType.equals("Long") || 
+   		 			javaType.equals("Float") || javaType.equals("Double"))
+   		 			{
+   		 				%>
+   		 				value = new <%=javaType%>(<%=javaType%>.parse<%=javaType%>(value.toString()));
+   		 				<%
+   		 			}
+ 	   		 		%>
+
+   		 			<%=firstConnName%>.<%=column.getLabel()%> = (<%=javaType%>)value;
  			 	}
  			 	else
  			 	{

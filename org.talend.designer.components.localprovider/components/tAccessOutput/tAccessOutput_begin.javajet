@@ -41,13 +41,7 @@ imports="org.talend.designer.codegen.config.CodeGeneratorArgument
 	
 	String dbjnilib = ElementParameterParser.getValue(node, "__JNI_LIB__");	
 	
-	String javaDbDriver   = "com.hxtt.sql.access.AccessDriver";  
-
 %>
-
-java.lang.Class.forName("<%=javaDbDriver %>");
-
-String url_<%=cid %> = "jdbc:access:/" + <%=dbname%> + "?user=" + <%=username%> + ";password=" + <%=password%>;
 
 <%
 List<IMetadataColumn> columnList = null;
@@ -79,9 +73,17 @@ if(!dataAction.equals("INSERT"))
     }
 <%
 }
-%>    
+%>
 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+java.lang.Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+
+String url_<%=cid %> = "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + <%=dbname%>;
+
+String userName_<%=cid %> = <%=username%>;
+
+String password_<%=cid %> = <%=password%>;    
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid %>,password_<%=cid %>);
 
 <%
 if(tableAction.equals("true"))

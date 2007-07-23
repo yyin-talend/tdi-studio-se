@@ -115,9 +115,6 @@
    </PARAMETERS>
 
    <CODEGENERATION>
-     <IMPORTS>
-		<IMPORT NAME="Driver-Access" MODULE="Access_JDBC30.jar" REQUIRED="true" />
-     </IMPORTS>
    </CODEGENERATION>
 
    <RETURNS>
