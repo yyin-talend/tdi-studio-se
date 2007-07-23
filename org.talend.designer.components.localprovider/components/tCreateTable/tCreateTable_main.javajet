@@ -173,7 +173,6 @@ class Transfer{
 		}else {//Sybase and informix is included
 			return "\"+"+tableName+"+\"";
 		}
-		return null;
 	}
 	
 	
