@@ -37,7 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 %>
 
-my @<%=cid %> = ();
+my $<%=cid %> ;
 
 # keep all "my" variables local to the block, thus we can use several
 # tFileCompare components in the same process
@@ -74,7 +74,7 @@ my @<%=cid %> = ();
 <%
         }
 %>
-    @<%=cid %> = (
+    $<%=cid %> = [(
          <%=xmlfile%>,
          <%=xsdfile%>,
          getDate('CCYY-MM-DD hh:mm:ss'),
@@ -83,7 +83,7 @@ my @<%=cid %> = ();
          $_globals{<%=cid%>}{VALID},
          $message,
          $@,
-    );
+    )];
 } # block end
 
 <%

@@ -36,8 +36,7 @@
 
             String cid = metadata.getTableName();
 %>
-my $<%=cid%> = [] ;
-@$<%=cid%> = (
+my $<%=cid%> = [
 <%
             for (IMetadataColumn column: metadata.getListColumns()) {
             	Integer in_column_number = hInputColNameToNumber.get( column.getLabel() );
@@ -54,7 +53,7 @@ my $<%=cid%> = [] ;
                 }
             }
 %>
-);
+];
 <%
         }
     }

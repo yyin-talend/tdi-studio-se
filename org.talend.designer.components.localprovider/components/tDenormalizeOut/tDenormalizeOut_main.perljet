@@ -52,7 +52,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     hashValue.append("$");
     hashValue.append(inputRowName);
-    hashValue.append("[");
+    hashValue.append("->[");
     hashValue.append(icolDenormalize);
     hashValue.append("]");
 
@@ -62,7 +62,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if( icolDenormalize != icolGroup ){
             hashKey.append("$");
             hashKey.append(inputRowName);
-            hashKey.append("[");
+            hashKey.append("->[");
             hashKey.append(icolGroup);
             hashKey.append("], ");
         }

@@ -40,28 +40,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  
 %>
 
-@<%=cid%> = @<%=inputRowName%> ;
 my $result = tFuzzyMatch::FuzzyMatch::<%=matching%>( 
     sensitive => <%=sensitive%>,
     unique => <%=ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true")%>,
     dmin => <%=dmin%>, 
     dmax => <%=dmax%>, 
-    value => $<%=cid%>[$icolmatch], 
+    value => $<%=cid%>->[$icolmatch], 
     lookup => $tLookup_<%=cid%>,
     );
     
-( $<%=cid%>[<%=metadata.getListColumns().size() - 2%>] ) = keys %$result ;
+( $<%=cid%>->[<%=metadata.getListColumns().size() - 2%>] ) = keys %$result ;
 
 <%
     if (ElementParameterParser.getValue(node, "__GET_UNIQUE__").equals("true")) {
 %>
-$<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = $result->{$<%=cid%>[<%=metadata.getListColumns().size() - 2%>]}->[0] ;
+$<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = $result->{$<%=cid%>->[<%=metadata.getListColumns().size() - 2%>]}->[0] ;
 <%
     }
     else {
 %>
 
-$<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = join(<%=separator%>, @{$result->{$<%=cid%>[<%=metadata.getListColumns().size() - 2%>]}} ) ;
+$<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = join(<%=separator%>, @{$result->{$<%=cid%>->[<%=metadata.getListColumns().size() - 2%>]}} ) ;
 
 <%
     }
