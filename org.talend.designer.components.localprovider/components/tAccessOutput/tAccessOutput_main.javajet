@@ -351,7 +351,7 @@ nb_line_inserted_<%=cid%>++;
     <%  if (dieOnError.equals("true")) { %>
     throw(e);
     <% } else { %>
-        throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+          System.err.print(e.getMessage());
     <% } %>
 }
 	<%
@@ -393,7 +393,7 @@ nb_line_inserted_<%=cid%>++;
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
         <% } else { %>
-            throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+            System.err.print(e.getMessage());
         <% } %>
     }
 <%
@@ -450,7 +450,7 @@ nb_line_inserted_<%=cid%>++;
                 <%  if (dieOnError.equals("true")) { %>
                 throw(e);
                 <% } else { %>
-                    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                    System.err.print(e.getMessage());
                 <% } %>
             }
 		}
@@ -473,7 +473,7 @@ nb_line_inserted_<%=cid%>++;
                 <%  if (dieOnError.equals("true")) { %>
                 throw(e);
                 <% } else { %>
-                    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                        System.err.print(e.getMessage());
                 <% } %>
             }
 		}
@@ -510,7 +510,7 @@ nb_line_inserted_<%=cid%>++;
 			}
 		}
 	%>
-     int updateCount_<%=cid%>=0;
+     int updateCount_<%=cid%>=-1;
          try{
 	           updateCount_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
            }catch(Exception e)
@@ -518,7 +518,7 @@ nb_line_inserted_<%=cid%>++;
                <%  if (dieOnError.equals("true")) { %>
                throw(e);
                <% } else { %>
-                   throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                   System.err.print(e.getMessage());
                <% } %>
            }
 		
@@ -545,7 +545,7 @@ nb_line_inserted_<%=cid%>++;
                 <%  if (dieOnError.equals("true")) { %>
                 throw(e);
                 <% } else { %>
-                    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                System.err.print(e.getMessage());
                 <% } %>
             }
 		}
@@ -575,12 +575,12 @@ nb_line_inserted_<%=cid%>++;
     try{
         pstmt_<%=cid %>.executeUpdate();
         nb_line_deleted_<%=cid%>++;
-    }catch(Exeption e)
+    }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
         <% } else { %>
-            throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+               System.err.print(e.getMessage());
         <% } %>
     }
 	<%
