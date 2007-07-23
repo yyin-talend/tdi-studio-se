@@ -134,8 +134,8 @@
          <COLUMN KEY="false" LENGTH="50" NAME="IndustryName" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="1" NAME="MinerOnly" NULLABLE="true" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="5" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="ContractEndDate" NULLABLE="true" TYPE="id_Date"/>
          <COLUMN KEY="false" LENGTH="20" NAME="AlertDate" NULLABLE="true" TYPE="id_Date"/>
          <COLUMN KEY="false" LENGTH="50" NAME="AlertText" NULLABLE="true" TYPE="id_String"/>
@@ -218,8 +218,8 @@
          <COLUMN KEY="false" LENGTH="1" NAME="EmploymentType" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="50" NAME="StartOfDay" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="EndOfDay" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="false" TYPE="id_Boolean"/>
@@ -297,8 +297,8 @@
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/>
       </TABLE>
       
@@ -312,8 +312,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -328,8 +328,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>   
       </TABLE>
       
@@ -344,8 +344,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>    
       </TABLE>
       
@@ -371,8 +371,8 @@
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -386,8 +386,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>  
       </TABLE>
       
@@ -402,8 +402,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -416,8 +416,8 @@
         <COLUMN KEY="false" LENGTH="50" NAME="ContactName" NULLABLE="true" TYPE="id_String"/>
         <COLUMN KEY="false" LENGTH="50" NAME="ContactCompanyName" NULLABLE="true" TYPE="id_String"/>
         <COLUMN KEY="false" LENGTH="1" NAME="AccountEnabled" NULLABLE="true" TYPE="id_Boolean"/>
-        <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-        <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+        <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+        <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
         <COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
         <COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
         <COLUMN KEY="false" LENGTH="3" NAME="Manager" NULLABLE="true" TYPE="id_Integer"/>
@@ -458,8 +458,8 @@
  		<COLUMN KEY="false" LENGTH="100" NAME="AlertDateTimeZone" NULLABLE="true" TYPE="id_String"/>
  		<COLUMN KEY="false" LENGTH="100" NAME="AlertText" NULLABLE="true" TYPE="id_String"/>
  		<COLUMN KEY="false" LENGTH="100" NAME="Notes" NULLABLE="true" TYPE="id_String"/>
- 		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
- 		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+ 		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+ 		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
  		<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
  		<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
  		<COLUMN KEY="false" LENGTH="100" NAME="CloseDateTimeZone" NULLABLE="true" TYPE="id_String"/>
@@ -519,8 +519,8 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="AlertDateTimeZone" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="Action" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="AlertDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="FollowupDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="AssignDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="CompleteDate" NULLABLE="true" TYPE="id_Date"/>
@@ -572,8 +572,8 @@
    		<COLUMN KEY="false" LENGTH="20" NAME="ResolutionDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="Closed" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="ProductId" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="StatusId" NULLABLE="true" TYPE="id_Integer"/>
@@ -653,9 +653,9 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="ShowSubtotal" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="LogoFileId" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="StatusName" NULLABLE="true" TYPE="id_String"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="TrashedDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="Name" NULLABLE="true" TYPE="id_String"/>
@@ -709,8 +709,8 @@
    		<COLUMN KEY="false" LENGTH="3" NAME="Level" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="StartDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="EndDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
       </TABLE>
       
@@ -725,8 +725,8 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="Required" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="StartDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="EndDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="Error" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="LinkItemId" NULLABLE="true" TYPE="id_Integer"/>
@@ -750,9 +750,9 @@
       
        <TABLE IF="(MODULENAME=='CustomFieldRecord') and (ACTION=='insert')">         
        	<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="LinkModuleId" NULLABLE="true" TYPE="id_Integer"/>
@@ -786,8 +786,8 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="Description" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Complete" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="DueDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="CompleteDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="DueDateTimeZone" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="TrashedDate" NULLABLE="true" TYPE="id_Date"/>
@@ -836,8 +836,8 @@
          <COLUMN KEY="false" LENGTH="1" NAME="EmploymentType" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="50" NAME="StartOfDay" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="EndOfDay" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Entered" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="Modified" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="false" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="false" TYPE="id_Boolean"/>
@@ -916,8 +916,8 @@
          <COLUMN KEY="false" LENGTH="50" NAME="IndustryName" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="1" NAME="MinerOnly" NULLABLE="true" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="5" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="10" NAME="ContractEndDate" NULLABLE="true" TYPE="id_Date"/>
          <COLUMN KEY="false" LENGTH="10" NAME="AlertDate" NULLABLE="true" TYPE="id_Date"/>
          <COLUMN KEY="false" LENGTH="50" NAME="AlertText" NULLABLE="true" TYPE="id_String"/>
@@ -994,8 +994,8 @@
         <COLUMN KEY="false" LENGTH="50" NAME="ContactName" NULLABLE="true" TYPE="id_String"/>
         <COLUMN KEY="false" LENGTH="50" NAME="ContactCompanyName" NULLABLE="true" TYPE="id_String"/>
         <COLUMN KEY="false" LENGTH="1" NAME="AccountEnabled" NULLABLE="true" TYPE="id_Boolean"/>
-        <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-        <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+        <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+        <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
         <COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
         <COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
         <COLUMN KEY="false" LENGTH="3" NAME="Manager" NULLABLE="true" TYPE="id_Integer"/>
@@ -1043,9 +1043,9 @@
    		<COLUMN KEY="false" LENGTH="20" NAME="Budget" NULLABLE="true" TYPE="id_Double"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="BudgetCurrency" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="10" NAME="Owner" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="200" NAME="RequestDateTimeZone" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="200" NAME="EstimatedCloseDateTimeZone" NULLABLE="true" TYPE="id_String"/>
@@ -1151,8 +1151,8 @@
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/>
       </TABLE>
       
@@ -1166,8 +1166,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -1182,8 +1182,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="10" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="10" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/>    
       </TABLE>
       
@@ -1209,8 +1209,8 @@
          <COLUMN KEY="false" LENGTH="2" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="2" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+         <COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
          <COLUMN KEY="false" LENGTH="1" NAME="PrimaryAddress" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -1224,8 +1224,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryEmail" NULLABLE="true" TYPE="id_Boolean"/>  
       </TABLE>
       
@@ -1240,8 +1240,8 @@
        	<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+       	<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
        	<COLUMN KEY="false" LENGTH="1" NAME="PrimaryNumber" NULLABLE="true" TYPE="id_Boolean"/> 
       </TABLE>
       
@@ -1289,8 +1289,8 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="AlertDateTimeZone" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="Action" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="AlertDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="FollowupDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="AssignDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="CompleteDate" NULLABLE="true" TYPE="id_Date"/>
@@ -1338,9 +1338,9 @@
    		<COLUMN KEY="false" LENGTH="1" NAME="ShowSubtotal" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="LogoFileId" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="StatusName" NULLABLE="true" TYPE="id_String"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="TrashedDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="Name" NULLABLE="true" TYPE="id_String"/>
@@ -1394,8 +1394,8 @@
    		<COLUMN KEY="false" LENGTH="3" NAME="Level" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="StartDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="EndDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
       </TABLE>
       
@@ -1404,9 +1404,9 @@
       
        <TABLE IF="(MODULENAME=='CustomFieldRecord') and (ACTION=='delete')">         
        	<COLUMN KEY="false" LENGTH="3" NAME="Id" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="EnteredBy" NULLABLE="true" TYPE="id_Integer"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="ModifiedBy" NULLABLE="true" TYPE="id_Integer"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Enabled" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="3" NAME="LinkModuleId" NULLABLE="true" TYPE="id_Integer"/>
@@ -1434,8 +1434,8 @@
    		<COLUMN KEY="false" LENGTH="100" NAME="Description" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="1" NAME="Complete" NULLABLE="true" TYPE="id_Boolean"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="DueDate" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date"/>
-   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Modified" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
+   		<COLUMN KEY="false" LENGTH="20" NAME="Entered" NULLABLE="true" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="CompleteDate" NULLABLE="true" TYPE="id_Date"/>
    		<COLUMN KEY="false" LENGTH="100" NAME="DueDateTimeZone" NULLABLE="true" TYPE="id_String"/>
    		<COLUMN KEY="false" LENGTH="20" NAME="TrashedDate" NULLABLE="true" TYPE="id_Date"/>
