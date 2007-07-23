@@ -6,7 +6,7 @@ tAggregateRow;r4672
 tAggregateSortedRow
 tArrayIn;r4672
 tArray;r4672
-tContextLoad
+tContextLoad;r4726
 tDB2Input
 tDB2Output
 tDB2Row
@@ -29,7 +29,7 @@ tFileCompare
 tFileCopy
 tFileDelete
 tFileFetch
-tFileInputCSV
+tFileInputCSV;r4726
 tFileInputDelimited;r4672
 tFileInputExcel;r4693
 tFileInputLDIF
@@ -38,7 +38,7 @@ tFileInputPositional;r4672
 tFileInputRegex
 tFileInputXML
 tFileList
-tFileOutputCSV
+tFileOutputCSV;r4726
 tFileOutputDelimited;r4672
 tFileOutputExcel;r4700
 tFileOutputLDIF
@@ -46,7 +46,7 @@ tFileOutputPositional;r4672
 tFileOutputShadow
 tFileOutputXML;r4672
 tFileUnarchive
-tFilterColumns
+tFilterColumns;r4726
 tFilterRow;r4672
 tFlowMeterCatcher
 tFlowMeter
