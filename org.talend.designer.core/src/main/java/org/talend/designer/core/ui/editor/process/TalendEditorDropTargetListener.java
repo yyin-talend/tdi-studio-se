@@ -354,11 +354,12 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         // DATABASES
         DBMYSQL(DatabaseConnectionItem.class, "MYSQL", "tMysqlInput", "tMysqlOutput"),
         DBPSQL(DatabaseConnectionItem.class, "POSTGRESQL", "tPostgresqlInput", "tPostgresqlOutput"),
-        DBORACLEFORSID(DatabaseConnectionItem.class, "Oracle", "tOracleInput", "tOracleOutput"),
+        DBORACLEFORSID(DatabaseConnectionItem.class, "ORACLE", "tOracleInput", "tOracleOutput"),
 
-        // DBORACLESN("Oracle with service name", "Oracle with service name", new Boolean(true), "ORACLE"),
-        DBGODBC(DatabaseConnectionItem.class, "MSODBC", "Generic ODBC", "MSODBC"),
-        MSODBC(DatabaseConnectionItem.class, "MSODBC", "", "MSODBC"),
+         DBORACLESN(DatabaseConnectionItem.class,"ORACLE", "tOracleInput","tOracleOutput"),
+         
+        DBGODBC(DatabaseConnectionItem.class, "MSODBC", "tDBInput", "tDBOutput"),
+        MSODBC(DatabaseConnectionItem.class, "MSODBC", "tDBInput", "tDBOutput"),
         IBMDB2(DatabaseConnectionItem.class, "IBMDB2", "tDB2Input", "tDB2Output"),
         SYBASEASE(DatabaseConnectionItem.class, "SYBASE", "tSybaseInput", "tSybaseOutput"),
 
