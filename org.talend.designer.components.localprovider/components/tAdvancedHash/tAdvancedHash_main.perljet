@@ -84,7 +84,7 @@
 						Integer columnIndice = hashableColumns.get(i).getIndex();
                                                 hashKey.append("$");
                                                 hashKey.append(connectionName);
-                                                hashKey.append("[");
+                                                hashKey.append("->[");
                                                 hashKey.append(columnIndice);
                                                 hashKey.append("], ");
 					}
@@ -93,23 +93,23 @@
 					if( matchingModeStr.equals("ALL_ROWS") || matchingModeStr.equals("ALL_MATCHES")){
 					%>
 # <%= matchingModeStr %> key => [ [ ], [ ],... ]
-push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , \@<%= connectionName %> ;
+push @{ $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } } , $<%= connectionName %> ;
 					<%
 				        } else if ( matchingModeStr.equals("FIRST_MATCH") ){
 					%>
 # <%= matchingModeStr %> key => []
-$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ||= \@<%= connectionName %>  ;
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ||= $<%= connectionName %>  ;
 					<%
 				        } else if ( matchingModeStr.equals("UNIQUE_MATCH") ){
 					%>
 # <%= matchingModeStr %> key => []
 warn "[tHash_Lookup_<%= connectionName %>] key <%=hashKey%> is not unique" if exists $tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } ;
-$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } = \@<%= connectionName %>  ;
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } = $<%= connectionName %>  ;
 					<%
 					} else {
 					%>
 # <%= matchingModeStr %> key => [] 
-$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } = \@<%= connectionName %> ;
+$tHash_Lookup_<%= connectionName %>->{ <%=hashKey%> } = $<%= connectionName %> ;
 
 					<%
 					}

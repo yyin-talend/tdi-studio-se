@@ -103,7 +103,7 @@
                                    String expressionFilter = externalTable.getExpressionFilter();
 					               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
 		           			          new TableType[] { TableType.INPUT });
-                           
+                                                       expressionFilterWithPrefixs = expressionFilterWithPrefixs.replaceAll("\\b\\[", "->\\[");                           
                              %>
                                if(
                                          !(<%= expressionFilterWithPrefixs%>)
@@ -141,6 +141,7 @@
                                 String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionKey,
                                         expressionParser, new TableType[] { TableType.INPUT });
 
+                                outputExpressionKeyToWrite = outputExpressionKeyToWrite.replaceAll("\\b\\[", "->\\[");
                                 keysValues.add(outputExpressionKeyToWrite);
                             }
                         }
@@ -256,7 +257,7 @@
                     <%
                     gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
                     %>
-        my @<%= tableName %> = ();
+        my $<%= tableName %> = [];
                                              
         if( (!$forceLoop<%= tableName %> ) or ( "<%= matchingModeStr %>" eq "ALL_ROWS" ) ) { # 46
 
@@ -272,7 +273,7 @@
                     <%
                     }
                     %>                                             
-            @<%= tableName %> = @$ref_<%= tableName %>FromLookup;
+            $<%= tableName %> = $ref_<%= tableName %>FromLookup;
                                                <%
                                                    String expressionFilter = externalTable.getExpressionFilter();
                                                if(
@@ -283,6 +284,7 @@
 
 								               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
 		    			       			          new TableType[] { TableType.INPUT});
+		    			       			               expressionFilterWithPrefixs = expressionFilterWithPrefixs.replaceAll("\\b\\[", "->\\[");
 
                                                %>
             if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # 16
@@ -293,7 +295,7 @@
                                                         <%
                                                           } else if(!externalTable.isInnerJoin() && aKeysValues.length > 0){
                                                         %>                                                      
-                @<%= tableName %> = ();    
+                $<%= tableName %> = [];    
                                                           <%
                                                           } else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
                                                           %>
@@ -370,6 +372,7 @@
                 
                 String varExpressionWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, varExpression, expressionParser,
                       new TableType[] { TableType.INPUT, TableType.VARS });
+                      varExpressionWithPrefixs = varExpressionWithPrefixs.replaceAll("\\b\\[", "->\\[");
                 
                 sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, true) + " = "
                         + varExpressionWithPrefixs + ";");
@@ -451,7 +454,7 @@
             }
 
             if (nameToOutputConnection.get(outputTableName) != null) {
-                sb.append(cr + gm.indent(indent) + "@" +  outputTableName + " = ();");
+                sb.append(cr + gm.indent(indent) + "$" +  outputTableName + " = [];");
             }
         }
         // ///////////////////////////////////////////////////////////////////
@@ -577,6 +580,7 @@
                                String expressionFilter = outputTable.getExpressionFilter();
 				               filtersConditions = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
    			       			          new TableType[] { TableType.INPUT, TableType.VARS });
+   			       		       filtersConditions = filtersConditions.replaceAll("\\b\\[", "->\\[");
                          } else {
                             filtersConditions = gm.buildConditions(uniqueNameComponent, filters, expressionParser);
                          }
@@ -607,6 +611,7 @@
 
                             String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, outputExpression, expressionParser,
                                     new TableType[] { TableType.INPUT, TableType.VARS });
+                            outputExpressionToWrite = outputExpressionToWrite.replaceAll("\\b\\[", "->\\[");
 
                             sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName, outputColumnName, false)
                                     + " = " + outputExpressionToWrite + ";");
@@ -638,5 +643,5 @@
 
 
 %>
-<%= sb.toString()%>
+<%= sb.toString().replaceAll("\\b\\[", "->\\[")%>
     

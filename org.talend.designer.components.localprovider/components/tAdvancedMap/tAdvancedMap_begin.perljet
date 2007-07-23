@@ -118,7 +118,7 @@
         for (ExternalMapperTable table : outputTables) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
             String tableName = table.getName();
-            sb.append(cr + cr + gm.indent(indent) + "my @colnames_" + tableName + " = (");
+            sb.append(cr + cr + gm.indent(indent) + "my $colnames_" + tableName + " = [");
             int lstSize = tableEntries.size();
             indent++;
             for (int i = 0; i < lstSize; i++) {
@@ -126,7 +126,7 @@
                 sb.append(cr + gm.indent(indent) + "'" + tableEntry.getName() + "',");
             }
             indent--;
-            sb.append(cr + gm.indent(indent) + ");");
+            sb.append(cr + gm.indent(indent) + "];");
         }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
