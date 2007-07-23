@@ -210,7 +210,7 @@
          <COLUMN KEY="false" LENGTH="50" NAME="AdditionalNames" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Nickname" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Role" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="BirthDate" NULLABLE="false" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="BirthDate" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Site" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Notes" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="2" NAME="Locale" NULLABLE="false" TYPE="id_Integer"/>
@@ -828,7 +828,7 @@
          <COLUMN KEY="false" LENGTH="50" NAME="AdditionalNames" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Nickname" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Role" NULLABLE="false" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="50" NAME="BirthDate" NULLABLE="false" TYPE="id_Date"/>
+         <COLUMN KEY="false" LENGTH="50" NAME="BirthDate" NULLABLE="false" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Site" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="50" NAME="Notes" NULLABLE="false" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="2" NAME="Locale" NULLABLE="false" TYPE="id_Integer"/>
