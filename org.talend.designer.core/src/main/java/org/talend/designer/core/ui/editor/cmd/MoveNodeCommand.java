@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
@@ -62,9 +63,10 @@ public class MoveNodeCommand extends Command {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public boolean canExecute() {
+        Rectangle movingRect = new Rectangle(newPos, node.getSize());
         for (Node currentNode : (List<Node>) node.getProcess().getGraphicalNodes()) {
-            if ((currentNode.getLocation().x == newPos.x) && (currentNode.getLocation().y == newPos.y)
-                    && (!isSelected(currentNode))) {
+            Rectangle currentRect = new Rectangle(currentNode.getLocation(), currentNode.getSize());
+            if ((currentRect.intersects(movingRect)) && (!isSelected(currentNode))) {
                 return false;
             }
         }

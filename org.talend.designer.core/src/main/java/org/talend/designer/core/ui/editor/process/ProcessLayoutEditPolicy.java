@@ -57,7 +57,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      */
     protected EditPolicy createChildEditPolicy(final EditPart child) {
         ProcessResizableEditPolicy policy = new ProcessResizableEditPolicy();
-        policy.setResizeDirections(PositionConstants.EAST_WEST);
+        policy.setResizeDirections(0);
         return policy;
     }
 

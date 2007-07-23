@@ -194,9 +194,7 @@ public class NodeContainerFigure extends Figure {
 
         Dimension nodeSize;
         Dimension labelSize;
-        nodeSize = new Dimension();
-        nodeSize.height = node.getIcon32().getImageData().height;
-        nodeSize.width = node.getIcon32().getImageData().width;
+        nodeSize = node.getSize();
         Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
 
         Rectangle statusRectangle = prepareStatus(nodeLocation, nodeSize);

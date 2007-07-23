@@ -65,6 +65,7 @@ import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.notes.NoteResizableEditPolicy;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -86,7 +87,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setSelected(final int value) {
         if (value == SELECTED) {
             super.setSelected(SELECTED_PRIMARY);
@@ -169,7 +170,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void refreshVisuals() {
         if (nodeContainerPart == null) {
             findNodeContainerPart();
@@ -180,8 +181,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         Node node = (Node) this.getModel();
         Point loc = node.getLocation();
-        Dimension size = ((NodeFigure) this.getFigure()).getNodeSize();
-        Rectangle rectangle = new Rectangle(loc, size);
+        Rectangle rectangle = new Rectangle(loc, node.getSize());
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
     }
 
@@ -191,30 +191,29 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
     protected IFigure createFigure() {
-        IFigure f;
+        NodeFigure nodeFigure;
         EditPart parentPart = getParent();
         while (!(parentPart instanceof ProcessPart)) {
             parentPart = parentPart.getParent();
         }
 
-        f = new NodeFigure(((Node) this.getModel()).getIcon32());
+        nodeFigure = new NodeFigure((Node) this.getModel());
 
-        if (((INode) getModel()).isStart() && f != null) {
-            f.setBackgroundColor(Node.START_COLOR);
-            f.setOpaque(true);
+        if (((INode) getModel()).isStart()) {
+            nodeFigure.setStart(true);
         } else {
-            f.setOpaque(false);
+            nodeFigure.setStart(false);
         }
-        if (((Node) getModel()).isSetShowHint() && f != null) {
-            ((NodeFigure) f).setHint(((Node) getModel()).getShowHintText());
+        if (((Node) getModel()).isSetShowHint()) {
+            nodeFigure.setHint(((Node) getModel()).getShowHintText());
         }
 
         if (((INode) getModel()).isActivate()) {
-            ((NodeFigure) f).setAlpha(-1);
+            nodeFigure.setAlpha(-1);
         } else {
-            ((NodeFigure) f).setAlpha(Node.ALPHA_VALUE);
+            nodeFigure.setAlpha(Node.ALPHA_VALUE);
         }
-        return f;
+        return nodeFigure;
     }
 
     // ------------------------------------------------------------------------
@@ -228,6 +227,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new NodeEditPolicy());
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new NodeGraphicalEditPolicy());
+        installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeResizableEditPolicy());
     }
 
     // ------------------------------------------------------------------------
@@ -251,9 +251,17 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             refreshTargetConnections();
         } else if (changeEvent.getPropertyName().equals(Node.OUTPUTS)) {
             refreshSourceConnections();
-        }
+        } else if (changeEvent.getPropertyName().equals(Node.SIZE)) {
+            refreshVisuals();
+            if (nodeContainerPart != null) {
+                nodeContainerPart.refresh();
+                for (EditPart editPart : (List<EditPart>) nodeContainerPart.getChildren()) {
+                    editPart.refresh();
+                }
+            }
 
-        if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
+            getParent().refresh();
+        } else if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             if (((INode) getModel()).isActivate()) {
                 ((NodeFigure) figure).setAlpha(-1);
                 ((NodeFigure) figure).repaint();
@@ -263,19 +271,17 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) figure).repaint();
                 refreshVisuals();
             }
-        }
-        if (changeEvent.getPropertyName().equals(EParameterName.START.getName())) {
+        } else if (changeEvent.getPropertyName().equals(EParameterName.START.getName())) {
             if (((INode) getModel()).isStart()) {
-                figure.setBackgroundColor(Node.START_COLOR);
-                figure.setOpaque(true);
+                ((NodeFigure) figure).setStart(true);
+                ((NodeFigure) figure).repaint();
                 refreshVisuals();
             } else {
-                figure.setBackgroundColor(figure.getParent().getBackgroundColor());
-                figure.setOpaque(false);
+                ((NodeFigure) figure).setStart(false);
+                ((NodeFigure) figure).repaint();
                 refreshVisuals();
             }
-        }
-        if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
+        } else if (changeEvent.getPropertyName().equals(EParameterName.HINT.getName())) {
             if (((Node) getModel()).isSetShowHint()) {
                 ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
             } else {
@@ -332,14 +338,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                     .getActiveEditor();
             if (externalNode != null && (part instanceof MultiPageTalendEditor)) {
-                int returnValue = externalNode.open(getViewer().getControl()
-                        .getDisplay());
+                int returnValue = externalNode.open(getViewer().getControl().getDisplay());
                 if (!node.isReadOnly()) {
                     if (returnValue == SWT.OK) {
-                        Command cmd = new ExternalNodeChangeCommand(node,
-                                externalNode);
-                        CommandStack cmdStack = (CommandStack) part
-                                .getAdapter(CommandStack.class);
+                        Command cmd = new ExternalNodeChangeCommand(node, externalNode);
+                        CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
                         cmdStack.execute(cmd);
                     } else {
                         externalNode.setExternalData(node.getExternalData());

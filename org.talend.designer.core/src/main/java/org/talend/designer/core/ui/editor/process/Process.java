@@ -112,6 +112,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -647,6 +648,10 @@ public class Process extends Element implements IProcess {
         nType.setPosY(node.getLocation().y);
         nType.setOffsetLabelX(node.getNodeLabel().getOffset().x);
         nType.setOffsetLabelY(node.getNodeLabel().getOffset().y);
+        if ((node.getSize().width != Node.DEFAULT_SIZE) || (node.getSize().height != Node.DEFAULT_SIZE)) {
+            nType.setSizeX(node.getSize().width);
+            nType.setSizeY(node.getSize().height);
+        }
         if (node.getExternalNode() != null) {
             if (node.getExternalData() != null) {
                 Data data = node.getExternalBytesData();
@@ -656,13 +661,6 @@ public class Process extends Element implements IProcess {
         }
         listParamType = nType.getElementParameter();
         paramList = node.getElementParameters();
-
-        // Added a condition to check if it is Stats and Logs.
-        // saveElementParameters(fileFact, paramList, listParamType, process);
-        {
-            List<? extends IElementParameter> paramListForStatsAndLogs = node.getNodeContainer().getElementParameters();
-
-        }
 
         saveElementParameters(fileFact, paramList, listParamType, process);
         listMetaType = nType.getMetadata();
@@ -777,6 +775,9 @@ public class Process extends Element implements IProcess {
             nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
             Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
             nc.getNodeLabel().setOffset(offset);
+            if (nType.isSetSizeX()) {
+                nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
+            }
 
             loadElementParameters(nc, listParamType);
 
@@ -2005,7 +2006,7 @@ public class Process extends Element implements IProcess {
      * @return
      */
     public String[] getSubJobs() {
-        
+
         List<String> strList = new ArrayList<String>();
         for (Iterator iter = nodes.iterator(); iter.hasNext();) {
             Node node = (Node) iter.next();
@@ -2017,9 +2018,9 @@ public class Process extends Element implements IProcess {
         return strList.size() > 0 ? strList.toArray(new String[1]) : null;
     }
 
-    
     /**
      * Getter for notes.
+     * 
      * @return the notes
      */
     public List<Note> getNotes() {

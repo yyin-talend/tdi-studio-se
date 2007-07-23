@@ -37,6 +37,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -45,7 +46,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -104,6 +104,8 @@ public class Node extends Element implements INode {
     // properties
     public static final String LOCATION = "nodeLocation"; //$NON-NLS-1$
 
+    public static final String SIZE = "nodeSize"; //$NON-NLS-1$
+
     public static final String INPUTS = "inputs"; //$NON-NLS-1$
 
     public static final String OUTPUTS = "outputs"; //$NON-NLS-1$
@@ -113,6 +115,8 @@ public class Node extends Element implements INode {
     public static final String TRACE_DATA = "traceData"; //$NON-NLS-1$
 
     public static final String UPDATE_STATUS = "addStatus"; //$NON-NLS-1$
+
+    public static final int DEFAULT_SIZE = 32;
 
     protected Point location = new Point(0, 0);
 
@@ -159,6 +163,8 @@ public class Node extends Element implements INode {
     private static final String COMPARE_STR1 = "tDBInput";
 
     private static final String COMPARE_STR2 = "_MySchema_";
+
+    private Dimension size;
 
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
@@ -259,6 +265,10 @@ public class Node extends Element implements INode {
         if (isExternalNode()) {
             getExternalNode().initialize();
         }
+
+        size = new Dimension();
+        size.height = getIcon32().getImageData().height;
+        size.width = getIcon32().getImageData().width;
     }
 
     public IProcess getProcess() {
@@ -1073,13 +1083,12 @@ public class Node extends Element implements INode {
                     }
                     break;
                 case CLOSED_LIST:
-                    if (param.getListItemsValue().length != 0) {
-                        value = (String) param.getValue();
-                        if (value.equals("")) { //$NON-NLS-1$
-                            String errorMessage = "Parameter (" + param.getDisplayName()
-                                    + ") is empty but is required.";
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        } else {
+                    value = (String) param.getValue();
+                    if (value.equals("")) { //$NON-NLS-1$
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    } else {
+                        if (param.getListItemsValue().length != 0) {
                             boolean found = false;
                             for (int i = 0; i < param.getListItemsValue().length && !found; i++) {
                                 if (param.getListItemsValue()[i].equals(value)) {
@@ -1599,5 +1608,24 @@ public class Node extends Element implements INode {
 
     public List<? extends IConnection> getIncomingConnections(EConnectionType connectionType) {
         return org.talend.core.model.utils.NodeUtil.getIncomingConnections(this, connectionType);
+    }
+
+    /**
+     * Getter for size.
+     * 
+     * @return the size
+     */
+    public Dimension getSize() {
+        return size;
+    }
+
+    /**
+     * Sets the size.
+     * 
+     * @param size the size to set
+     */
+    public void setSize(Dimension size) {
+        this.size = size;
+        firePropertyChange(SIZE, null, null);
     }
 }

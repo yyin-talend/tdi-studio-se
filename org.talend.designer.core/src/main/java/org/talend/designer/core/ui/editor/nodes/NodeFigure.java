@@ -21,12 +21,25 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodes;
 
+import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.ButtonModel;
+import org.eclipse.draw2d.Clickable;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode;
+import org.eclipse.gmf.runtime.draw2d.ui.mapmode.MapModeUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 
 /**
@@ -45,14 +58,18 @@ public class NodeFigure extends Figure {
 
     private int alpha = -1;
 
-    public NodeFigure(ImageDescriptor imageDescriptor) {
+    private NodeBorder lineBorder = new NodeBorder();
+
+    public NodeFigure(Node node) {
         fig = new ImageFigure();
-        im = imageDescriptor;
+        im = node.getIcon32();
         fig.setImage(im.createImage());
+        fig.setSize(new Dimension(Node.DEFAULT_SIZE, Node.DEFAULT_SIZE));
         add(fig);
-        this.setSize(getPreferredSize());
+        this.setSize(node.getSize());
         this.setOpaque(true);
         hint = new SimpleHtmlFigure();
+        this.setBorder(lineBorder);
     }
 
     public void setHint(String hintText) {
@@ -64,20 +81,23 @@ public class NodeFigure extends Figure {
         }
     }
 
-    public Dimension getNodeSize() {
-        Dimension size = new Dimension();
-        size.height = im.getImageData().height;
-        size.width = im.getImageData().width;
-        return size;
-    }
-
     public ImageDescriptor getImageDescriptor() {
         return im;
     }
 
     public void setBounds(final Rectangle rect) {
         super.setBounds(rect);
-        this.fig.setBounds(rect);
+
+        Point location = (new Point(rect.getCenter())).translate(new Point(-fig.getSize().width / 2,
+                -(fig.getSize().height / 2)));
+        Rectangle figBounds = new Rectangle(location, fig.getSize());
+        this.fig.setBounds(figBounds);
+
+        if (!rect.getSize().equals(fig.getSize())) {
+            lineBorder.setUseRectangle(true);
+        } else {
+            lineBorder.setUseRectangle(false);
+        }
     }
 
     @Override
@@ -95,5 +115,49 @@ public class NodeFigure extends Figure {
     public void setAlpha(int alpha) {
         this.alpha = alpha;
     }
+
+    public void setStart(boolean start) {
+        if (start) {
+            setBackgroundColor(Node.START_COLOR);
+            setOpaque(true);
+        } else {
+            setOpaque(false);
+        }
+    }
+
+    /**
+     * DOC nrousseau NodeFigure class global comment. Detailled comment <br/>
+     * 
+     */
+    class NodeBorder extends AbstractBorder {
+
+        private boolean useRectangle;
+
+        public Insets getInsets(IFigure figure) {
+            return null;
+        }
+
+        public void paint(IFigure figure, Graphics g, Insets theInsets) {
+            Rectangle r = getPaintRectangle(figure, theInsets);
+
+            if (useRectangle) {
+                g.setLineWidth(2);
+                g.setForegroundColor(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
+                g.drawRectangle(r);
+                g.drawLine(r.x, 1, r.right(), 1);
+                g.drawLine(1, r.y, 1, r.bottom());
+
+                g.setForegroundColor(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
+                g.drawLine(r.x, r.bottom() - 1, r.right(), r.bottom() - 1);
+                g.drawLine(r.right() - 1, r.y, r.right() - 1, r.bottom());
+            }
+
+        }
+
+        public void setUseRectangle(boolean useRectangle) {
+            this.useRectangle = useRectangle;
+        }
+
+    };
 
 }

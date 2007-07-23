@@ -68,7 +68,6 @@ public class CreateNodeContainerCommand extends CreateCommand {
             this.nodeContainer.getNode().setLocation(this.location);
         }
         this.process.addNodeContainer(this.nodeContainer);
-//        process.checkProcess();
         process.checkStartNodes();
         nodeContainer.getNode().checkAndRefreshNode();
     }

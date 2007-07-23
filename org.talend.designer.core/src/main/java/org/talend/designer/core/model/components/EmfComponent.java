@@ -614,7 +614,7 @@ public class EmfComponent implements IComponent {
             }
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
-            newParam.setValue("NO_PROCESS"); //$NON-NLS-1$
+            newParam.setValue(""); //$NON-NLS-1$
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
             if (xmlParam.isSetSHOW()) {

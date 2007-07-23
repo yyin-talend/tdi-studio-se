@@ -188,15 +188,15 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             String text = ((NodeLabel) getModel()).getLabelText();
             SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
             htmlFig.setText(text);
-            Point loc = ((Node) nodePart.getModel()).getLocation().getCopy();
+            Node node = (Node) nodePart.getModel();
+            Point loc = node.getLocation().getCopy();
             Point offset = ((NodeLabel) getModel()).getOffset();
             Point textOffset = new Point();
 
-            NodeFigure nodeFig = (NodeFigure) nodePart.getFigure();
             Dimension size = htmlFig.getPreferredSize();
 
-            textOffset.y = nodeFig.getNodeSize().height;
-            textOffset.x = (nodeFig.getNodeSize().width - size.width) / 2;
+            textOffset.y = node.getSize().height;
+            textOffset.x = (node.getSize().width - size.width) / 2;
             ((NodeLabel) getModel()).setTextOffset(textOffset);
             loc.translate(textOffset.x + offset.x, textOffset.y + offset.y);
             Rectangle rectangle = new Rectangle(loc, size);

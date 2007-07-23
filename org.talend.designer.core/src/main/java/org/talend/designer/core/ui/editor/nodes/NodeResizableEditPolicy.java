@@ -21,25 +21,32 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodes;
 
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.tools.DragEditPartsTracker;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.editpolicies.ResizableEditPolicy;
+import org.eclipse.gef.requests.ChangeBoundsRequest;
+import org.talend.designer.core.ui.editor.cmd.ResizeNodeCommand;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
- * Drag tracker for a node. <br/>
- * 
- * $Id$
- * 
  */
-public class NodeTracker extends DragEditPartsTracker {
+public class NodeResizableEditPolicy extends ResizableEditPolicy {
 
-    EditPart part;
+    @Override
+    protected Command getResizeCommand(ChangeBoundsRequest request) {
+        Object parent = getHost().getParent().getModel();
+        if (!(parent instanceof Process)) {
+            return null;
+        }
 
-    public NodeTracker(EditPart sourceEditPart, EditPart part) {
-        super(sourceEditPart);
-        this.part = part;
+        Node node = (Node) getHost().getModel();
+        if (node.isReadOnly()) {
+            return null;
+        }
+
+        return new ResizeNodeCommand(node, new Dimension(node.getSize().width + request.getSizeDelta().width, node
+                .getSize().height
+                + request.getSizeDelta().height));
     }
 
-    protected EditPart getTargetEditPart() {
-        return part;
-    }
 }
