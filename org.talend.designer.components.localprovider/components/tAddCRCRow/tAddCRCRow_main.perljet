@@ -31,24 +31,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__CRC_TYPE__"
         );
-
-
-        List keyCols = new ArrayList();
-
+%>
+    $<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = <%=crcType%>(
+        join(
+            $;,
+<%
         for (int i=0; i<implication.size(); i++) {
             Map<String, String> col = implication.get(i);
             if (col.get("USE_IN_CRC").equals("true")) {
-                keyCols.add(i);
+%>
+            $<%=cid%>->[<%=i%>],
+<%
             }
         }
-
-        String keyString = StringUtils.join(keyCols.toArray(), ", ");
 %>
-
-    $<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = <%=crcType%>(
-        join(
-            $;,
-            @<%=cid%>[<%=keyString%>]
         )
     );
 

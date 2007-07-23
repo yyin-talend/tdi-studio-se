@@ -62,27 +62,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 our @<%=destination%> ;
 
-while( ( $key_<%=destination%>, $value_<%=destination%> ) = each %$href_<%=destination %> ){
-    my $row_<%=destination%> = [] ;
+foreach my $key (keys %hash_<%=destination%>) {
+    push(
+        @<%=destination%>,
+        [
+            split($;, $key),
 <%
-if(deduplicate.equals("true")){
+if (deduplicate.equals("true")) {
 %>
-    ( <%=rowDestinationExpr%> $row_<%=destination%>->[<%=icolDenormalize%>]) = ( split($;, $key_<%=destination%> ), join(<%=separator%>, keys %$value_<%=destination%> ) ) ;
+            join(
+                <%=separator%>,
+                keys %{ $hash_<%=destination%>{$key} }
+            )
 <%
 }
 else {
 %>
-    ( <%=rowDestinationExpr%> $row_<%=destination%>->[<%=icolDenormalize%>]) = ( split($;, $key_<%=destination%> ), join(<%=separator%>, @$value_<%=destination%> ) ) ;
+            join(<%=separator%>, @{ $hash_<%=destination%>{$key} })
 <%
 }
 %>
-     push @<%=destination%>, $row_<%=destination%> ;
-
+        ]
+    );
 }
 
-
-#use Data::Dumper ;
-#print Dumper(\@<%=destination%>);
+# use Data::Dumper ;
+# print Dumper(\@<%=destination%>);
 
 <%
 }

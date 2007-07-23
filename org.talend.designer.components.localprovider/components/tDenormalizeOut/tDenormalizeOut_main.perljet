@@ -55,31 +55,35 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     hashValue.append("->[");
     hashValue.append(icolDenormalize);
     hashValue.append("]");
-
-
+%>
+    my $hash_key_<%=cid%> = join(
+        $;,
+<%
     int icolGroup = 0;
     for (IMetadataColumn column: metadata.getListColumns()) {
         if( icolDenormalize != icolGroup ){
-            hashKey.append("$");
-            hashKey.append(inputRowName);
-            hashKey.append("->[");
-            hashKey.append(icolGroup);
-            hashKey.append("], ");
+%>
+        $<%=inputRowName%>->[<%=icolGroup%>],
+<%
         }
         icolGroup++;
     }
-%>
+%>        
+    );
 
 <%
 if(deduplicate.equals("true")){
 %>
-    $href_<%=destination %>->{ join($;, <%=hashKey%>) }->{<%=hashValue%>}++  ;
+    $hash_<%=destination %>{$hash_key_<%=cid%>}->{ <%=hashValue%> }++;
 <%
 }
 else {
 %>
-    $href_<%=destination %>->{ join($;, <%=hashKey%>) } ||= [] ;
-    push @{ $href_<%=destination %>->{ join($;, <%=hashKey%>) } }, <%=hashValue%> ;
+    $hash_<%=destination %>{$hash_key_<%=cid%>} ||= [] ;
+    push(
+        @{ $hash_<%=destination %>{$hash_key_<%=cid%>} },
+        <%=hashValue%>
+    );
 <%
 }
 %>
