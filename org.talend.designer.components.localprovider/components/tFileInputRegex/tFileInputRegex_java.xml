@@ -132,7 +132,11 @@
 
   </PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="Talend_file" MODULE="talend_file_enhanced.jar" REQUIRED="true" />
+    </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
