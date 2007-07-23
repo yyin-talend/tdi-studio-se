@@ -22,7 +22,7 @@ my %params = @_;
 # use Data::Dumper;
 # print Dumper(\%params);
 
-my @<%=cid %> = (
+my $<%=cid %> = [
     getDate('CCYY-MM-DD hh:mm:ss'),
     $_globals{pid},
     $_globals{father_pid},
@@ -38,6 +38,6 @@ my @<%=cid %> = (
     $params{count},
     $params{reference},
     $params{thresholds},
-);
+];
 
 $| = 1;

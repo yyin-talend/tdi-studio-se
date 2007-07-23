@@ -48,7 +48,7 @@ if (not grep /^$params{type}$/, @catched_types) {
     return;
 }
 
-my @<%=cid %> = (
+my $<%=cid %> = [
     getDate('CCYY-MM-DD hh:mm:ss'),
     $_globals{pid},
     $_globals{father_pid},
@@ -61,7 +61,7 @@ my @<%=cid %> = (
     $params{origin},
     $params{message},
     $params{code},
-);
+];
 
 $| = 1;
 

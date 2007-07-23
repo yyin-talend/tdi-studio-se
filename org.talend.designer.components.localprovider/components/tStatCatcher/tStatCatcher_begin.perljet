@@ -24,7 +24,7 @@ return if (not scalar @_);
 
 my %params = @_;
 
-my @<%=cid %> = (
+my $<%=cid %> = [
     getDate('CCYY-MM-DD hh:mm:ss'),
     $_globals{pid},
     $_globals{father_pid},
@@ -39,7 +39,7 @@ my @<%=cid %> = (
     $params{message_type},
     $params{message},
     $params{duration},
-);
+];
 
 $| = 1;
 
