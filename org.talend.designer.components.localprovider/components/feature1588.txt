@@ -1,6 +1,6 @@
 tAddCRCRow
-tAdvancedHash
-tAdvancedMap
+tAdvancedHash;r4720
+tAdvancedMap;r4720
 tAggregateOut;r4672
 tAggregateRow;r4672
 tAggregateSortedRow
@@ -40,7 +40,7 @@ tFileInputXML
 tFileList
 tFileOutputCSV
 tFileOutputDelimited;r4672
-tFileOutputExcel
+tFileOutputExcel;r4700
 tFileOutputLDIF
 tFileOutputPositional;r4672
 tFileOutputShadow
