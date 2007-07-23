@@ -13,10 +13,10 @@ tDB2Row
 tDBInput
 tDBOutput
 tDBSQLRow
-tDenormalizeOut
-tDenormalize
+tDenormalizeOut;r4743
+tDenormalize;r4743
 tDie
-tDTDValidator
+tDTDValidator;r4743
 tELTMysqlInput
 tELTMysqlMap
 tELTMysqlOutput
@@ -26,8 +26,8 @@ tELTOracleOutput
 tExternalSortOutput
 tExternalSortRow
 tFileCompare
-tFileCopy
-tFileDelete
+tFileCopy;no need
+tFileDelete;no need
 tFileFetch
 tFileInputCSV;r4726
 tFileInputDelimited;r4672
@@ -53,7 +53,7 @@ tFlowMeter;no need
 tForeach
 tFor
 tFTP
-tFuzzyMatch
+tFuzzyMatch;r4743
 tGPGDecrypt
 tHash;r4672
 tIntervalMatch
@@ -109,5 +109,5 @@ tSystem
 tUniqRow;r4672
 tWarn
 tWebServiceInput
-tXSDValidator
-tXSLT
+tXSDValidator;r4743
+tXSLT;no need
