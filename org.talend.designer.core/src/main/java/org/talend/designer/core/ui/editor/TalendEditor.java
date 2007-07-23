@@ -302,7 +302,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         zoomLevels.add(ZoomManager.FIT_WIDTH);
         zoomLevels.add(ZoomManager.FIT_HEIGHT);
         root.getZoomManager().setZoomLevelContributions(zoomLevels);
-        //root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_NEVER);
+        // root.getZoomManager().setZoomAnimationStyle(ZoomManager.ANIMATE_NEVER);
 
         IAction zoomIn = new ZoomInAction(root.getZoomManager());
         IAction zoomOut = new ZoomOutAction(root.getZoomManager());
@@ -608,10 +608,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return paletteRoot;
     }
 
-    public IComponent getComponent(String name){
+    public IComponent getComponent(String name) {
+        if (components == null) {
+            components = ComponentsFactoryProvider.getInstance();
+        }
         return components.get(name);
     }
-    
+
     public static void resetPaletteRoot() {
         paletteRoot = null;
     }

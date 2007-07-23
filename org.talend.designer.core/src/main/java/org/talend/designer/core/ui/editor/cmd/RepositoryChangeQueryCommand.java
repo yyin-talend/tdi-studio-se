@@ -74,7 +74,9 @@ public class RepositoryChangeQueryCommand extends Command {
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        if (tabbedPropertySheetPage.getCurrentTab() != null) {
+            tabbedPropertySheetPage.refresh();
+        }
     }
 
     @SuppressWarnings("unchecked") //$NON-NLS-1$

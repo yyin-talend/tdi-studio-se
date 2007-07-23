@@ -30,6 +30,7 @@ import java.util.Map;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -42,6 +43,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -54,22 +56,26 @@ import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * Performs a native Drop for the talendEditor. see feature
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * $Id: TalendEditorDropTargetListener.java 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
 public class TalendEditorDropTargetListener implements TransferDropTargetListener {
@@ -132,6 +138,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         for (Object obj : selection.toArray()) {
             RepositoryNode sourceNode = (RepositoryNode) obj;
             Item item = sourceNode.getObject().getProperty().getItem();
+            if (!(item instanceof ConnectionItem)) {
+                continue;
+            }
+
             IComponent component = getCorrespondingComponent(item, isInput);
             if (component != null) {
                 TempStore store = new TempStore();
@@ -162,6 +172,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         IFigure targetFigure = part.getFigure();
         translateAbsolateToRelative(targetFigure, draw2dPosition);
 
+        // creates every node
         for (Iterator<TempStore> iter = list.iterator(); iter.hasNext();) {
             TempStore store = iter.next();
 
@@ -171,25 +182,40 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
             node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
                     .getId());
+
             NodeContainer nc = new NodeContainer(node);
 
+            // create the node on the design sheet
             new CreateNodeContainerCommand(editor.getProcess(), nc, draw2dPosition).execute();
 
-            if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
-                ConnectionItem dbItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
-                ChangeValuesFromRepository c = new ChangeValuesFromRepository(node, dbItem.getConnection(),
-                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
-                setCommandProperties(c, dbItem, node);
-                c.execute();
+            // initialize the propertiesView
+
+            List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
+            for (Command command : commands) {
+                command.execute();
             }
-            //                    
+
+            draw2dPosition = draw2dPosition.getCopy();
             draw2dPosition.x += TalendEditor.GRID_SIZE;
             draw2dPosition.y += TalendEditor.GRID_SIZE;
         }
 
     }
 
-    private void setCommandProperties(ChangeValuesFromRepository c, ConnectionItem connectionItem, Node node) {
+    /**
+     * DOC bqian Comment method "createRefreshingPropertiesCommand".
+     * 
+     * @param selectedNode
+     * @param node
+     */
+    private List<Command> createRefreshingPropertiesCommand(RepositoryNode selectedNode, Node node) {
+        List<Command> list = new ArrayList<Command>();
+        if (!(selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem)) {
+            return list;
+        }
+
+        ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
+
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         Map<String, List<String>> tablesMap = new HashMap<String, List<String>>();
 
@@ -237,8 +263,34 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             }
         }
         queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
-        c.setMaps(tablesMap, queriesMap, repositoryTableMap);
 
+        ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
+                EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+
+        command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
+        list.add(command1);
+
+        // process the tables
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
+            String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
+            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node,
+                    EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value));
+            list.add(command2);
+        }
+
+        // process the queries
+        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
+            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+            Query query = (Query) object.getAdapter(Query.class);
+            String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
+            RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query,
+                    EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+            list.add(command3);
+        }
+
+        return list;
     }
 
     private String getRepositoryAliasName(ConnectionItem connectionItem) {

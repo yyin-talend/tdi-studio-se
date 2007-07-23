@@ -54,8 +54,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private Node node;
 
-    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue,
-            IMetadataTable newOutputMetadata) {
+    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata) {
         super(node, null, newOutputMetadata);
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
@@ -70,8 +69,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
                 if (parameter.getField() == EParameterFieldType.TABLE) {
-                    if (!node.getMetadataList().isEmpty()
-                            && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
+                    if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
                         parameter.setValue(new ArrayList<Map<String, Object>>());
                     }
                 }
@@ -93,6 +91,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        if (tabbedPropertySheetPage.getCurrentTab() == null) {
+            return;
+        }
         ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
         for (int i = 0; i < sections.length; i++) {
             if (sections[i] instanceof DynamicTabbedPropertySection) {
