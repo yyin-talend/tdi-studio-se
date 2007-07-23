@@ -297,8 +297,11 @@ public class PerlProcessor extends Processor {
         } catch (CoreException e) {
             e.printStackTrace();
         }
-        return lineNumbers[0];
-
+        if (lineNumbers.length > 0) {
+            return lineNumbers[0];
+        } else {
+            return 0;
+        }
     }
 
     /**
