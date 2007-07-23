@@ -120,10 +120,10 @@ if(conns != null && conns.size()>0){
 		  
 			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			  %>
-			  	String tmpString = rs_<%=cid %>.getString(<%=currentColNo%>);
-			  	if(tmpString != null && tmpString.length()>0){
+			  	String tmpString_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+			  	if(tmpString_<%=cid%> != null && tmpString_<%=cid%>.length()>0){
 			  	
-			  		<%=firstConnName%>.<%=column.getLabel()%> = tmpString.charAt(0);
+			  		<%=firstConnName%>.<%=column.getLabel()%> = tmpString_<%=cid%>.charAt(0);
 			  		
 			  	}else{			  	
 			  	    <%if(typeToGenerate.equals("Character")){%>
@@ -155,9 +155,9 @@ if(conns != null && conns.size()>0){
 			 <%
 			  }else if(typeToGenerate.equals("Timestamp")){
 			 %>
-			 java.sql.Timestamp timestamp = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
-			 if(timestamp != null){
-			 	<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp.getTime());
+			 java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+			 if(timestamp_<%=cid%> != null){
+			 	<%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
 			 }else{
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
