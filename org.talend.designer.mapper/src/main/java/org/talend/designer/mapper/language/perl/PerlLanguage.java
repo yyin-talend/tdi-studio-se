@@ -77,13 +77,13 @@ public class PerlLanguage extends AbstractLanguage {
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_TABLE_VARIABLE = PREFIX_TABLE_NAME + "{0}"; //$NON-NLS-1$
+    private static final String TEMPLATE_TABLE_VARIABLE = PREFIX_TABLE_NAME + "{1}"; //$NON-NLS-1$
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = TEMPLATE_TABLE_VARIABLE + PREFIX_FIELD_NAME
-            + "{1}" + SUFFIX_FIELD_NAME; //$NON-NLS-1$
+            + "{2}" + SUFFIX_FIELD_NAME; //$NON-NLS-1$
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
