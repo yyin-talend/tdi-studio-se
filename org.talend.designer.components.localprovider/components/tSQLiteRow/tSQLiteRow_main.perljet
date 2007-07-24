@@ -72,7 +72,7 @@ else {
         Map<String, String> statementParam = statementParams.get(i);
         paramValues.append("$");
         paramValues.append(cid);
-        paramValues.append("[");
+        paramValues.append("->[");
         paramValues.append(indexOfColumns.get(statementParam.get("INPUT_COLUMN")));
         paramValues.append("],");
     }
