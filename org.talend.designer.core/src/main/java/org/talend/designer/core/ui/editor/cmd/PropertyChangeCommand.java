@@ -90,7 +90,9 @@ public class PropertyChangeCommand extends Command {
         PropertySheet sheet = (PropertySheet) view;
         if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            tabbedPropertySheetPage.refresh();
+            if(tabbedPropertySheetPage.getCurrentTab()!=null){
+                tabbedPropertySheetPage.refresh();
+            }
         }
     }
 

@@ -34,6 +34,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
@@ -53,6 +54,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -63,6 +65,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -112,6 +115,30 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
     }
 
     public void dragOver(DropTargetEvent event) {
+        // when the job that selected is the same one in the current editor, the drag event should be disabled.
+        IStructuredSelection selection = getSelection();
+        if (selection.size() != 1) {
+            return;
+        }
+
+        RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
+        if (equalsJobInCurrentEditor(sourceNode)) {
+            event.detail = DND.DROP_NONE;
+        }
+    }
+
+    private boolean equalsJobInCurrentEditor(RepositoryNode sourceNode) {
+        Item item = sourceNode.getObject().getProperty().getItem();
+        if (item instanceof ProcessItem) {
+            return editor.getProcess().getProperty().getItem().equals(item);
+        }
+        return false;
+    }
+
+    private IStructuredSelection getSelection() {
+        LocalSelectionTransfer transfer = (LocalSelectionTransfer) getTransfer();
+        IStructuredSelection selection = (IStructuredSelection) transfer.getSelection();
+        return selection;
     }
 
     /**
@@ -133,12 +160,15 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         boolean isInput = event1.detail == DND.DROP_MOVE;
         List<TempStore> list = new ArrayList<TempStore>();
 
-        LocalSelectionTransfer transfer = (LocalSelectionTransfer) getTransfer();
-        IStructuredSelection selection = (IStructuredSelection) transfer.getSelection();
+        IStructuredSelection selection = getSelection();
         for (Object obj : selection.toArray()) {
             RepositoryNode sourceNode = (RepositoryNode) obj;
+            if (equalsJobInCurrentEditor(sourceNode)) {
+                continue;
+            }
+
             Item item = sourceNode.getObject().getProperty().getItem();
-            if (!(item instanceof ConnectionItem)) {
+            if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem)) {
                 continue;
             }
 
@@ -179,9 +209,6 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             RepositoryNode selectedNode = store.seletetedNode;
             IComponent element = store.component;
             Node node = new Node(element);
-            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
-            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
-                    .getId());
 
             NodeContainer nc = new NodeContainer(node);
 
@@ -210,84 +237,93 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
      */
     private List<Command> createRefreshingPropertiesCommand(RepositoryNode selectedNode, Node node) {
         List<Command> list = new ArrayList<Command>();
-        if (!(selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem)) {
-            return list;
-        }
+        if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
+            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
+                    .getId());
 
-        ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
+            ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        Map<String, List<String>> tablesMap = new HashMap<String, List<String>>();
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+            Map<String, List<String>> tablesMap = new HashMap<String, List<String>>();
 
-        Map<String, List<String>> queriesMap = new HashMap<String, List<String>>();
-        Map<String, IMetadataTable> repositoryTableMap = new HashMap<String, IMetadataTable>();
+            Map<String, List<String>> queriesMap = new HashMap<String, List<String>>();
+            Map<String, IMetadataTable> repositoryTableMap = new HashMap<String, IMetadataTable>();
 
-        List<String> tableNamesList = new ArrayList<String>();
-        List<String> tableValuesList = new ArrayList<String>();
-        List<String> queryStoreNameList = new ArrayList<String>();
-        List<String> queryStoreValuesList = new ArrayList<String>();
-        Connection connection = (Connection) connectionItem.getConnection();
-        if (!connection.isReadOnly()) {
-            for (Object tableObj : connection.getTables()) {
-                org.talend.core.model.metadata.builder.connection.MetadataTable table;
+            List<String> tableNamesList = new ArrayList<String>();
+            List<String> tableValuesList = new ArrayList<String>();
+            List<String> queryStoreNameList = new ArrayList<String>();
+            List<String> queryStoreValuesList = new ArrayList<String>();
+            Connection connection = (Connection) connectionItem.getConnection();
+            if (!connection.isReadOnly()) {
+                for (Object tableObj : connection.getTables()) {
+                    org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-                table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+                    table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
 
-                if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                    if (!factory.isDeleted(table)) {
-                        String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                                + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
-                        String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-                        IMetadataTable newTable = ConvertionHelper.convert(table);
-                        repositoryTableMap.put(value, newTable);
-                        addOrderDisplayNames(tableValuesList, tableNamesList, value, name);
+                    if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                        if (!factory.isDeleted(table)) {
+                            String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                                    + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
+                            String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
+                            IMetadataTable newTable = ConvertionHelper.convert(table);
+                            repositoryTableMap.put(value, newTable);
+                            addOrderDisplayNames(tableValuesList, tableNamesList, value, name);
+                        }
                     }
                 }
             }
-        }
-        tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
-        IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                .getName());
-        repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
-        if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
-            DatabaseConnection dbConnection = (DatabaseConnection) connection;
-            QueriesConnection queriesConnection = dbConnection.getQueries();
-            if (queriesConnection != null) {
-                List<Query> qs = queriesConnection.getQuery();
-                for (Query query : qs) {
-                    String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                            + connectionItem.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
-                    String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
-                    addOrderDisplayNames(queryStoreValuesList, queryStoreNameList, value, name);
+            tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
+            IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                    .getName());
+            repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
+            if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
+                DatabaseConnection dbConnection = (DatabaseConnection) connection;
+                QueriesConnection queriesConnection = dbConnection.getQueries();
+                if (queriesConnection != null) {
+                    List<Query> qs = queriesConnection.getQuery();
+                    for (Query query : qs) {
+                        String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                                + connectionItem.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
+                        String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
+                        addOrderDisplayNames(queryStoreValuesList, queryStoreNameList, value, name);
+                    }
                 }
             }
-        }
-        queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
+            queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
 
-        ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
-                EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+            // command used to set property type
+            ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
+                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
 
-        command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
-        list.add(command1);
+            command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
+            list.add(command1);
 
-        // process the tables
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
-            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
-            String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
-            RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node,
-                    EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value));
-            list.add(command2);
-        }
+            // command used to set metadata
+            if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+                RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+                MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
+                String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
+                RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node,
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value));
+                list.add(command2);
+            }
 
-        // process the queries
-        if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
-            RepositoryObject object = (RepositoryObject) selectedNode.getObject();
-            Query query = (Query) object.getAdapter(Query.class);
-            String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
-            RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query,
-                    EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
-            list.add(command3);
+            // command used to set query
+            if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
+                RepositoryObject object = (RepositoryObject) selectedNode.getObject();
+                Query query = (Query) object.getAdapter(Query.class);
+                String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
+                RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query,
+                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+                list.add(command3);
+            }
+        } else if (selectedNode.getObject().getProperty().getItem() instanceof ProcessItem) {
+            ProcessItem processItem = (ProcessItem) selectedNode.getObject().getProperty().getItem();
+            // command used to set job
+            String value = "'" + processItem.getProperty().getLabel() + "'";
+            PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
+            list.add(command4);
         }
 
         return list;
@@ -356,8 +392,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         DBPSQL(DatabaseConnectionItem.class, "POSTGRESQL", "tPostgresqlInput", "tPostgresqlOutput"),
         DBORACLEFORSID(DatabaseConnectionItem.class, "ORACLE", "tOracleInput", "tOracleOutput"),
 
-         DBORACLESN(DatabaseConnectionItem.class,"ORACLE", "tOracleInput","tOracleOutput"),
-         
+        DBORACLESN(DatabaseConnectionItem.class, "ORACLE", "tOracleInput", "tOracleOutput"),
+
         DBGODBC(DatabaseConnectionItem.class, "MSODBC", "tDBInput", "tDBOutput"),
         MSODBC(DatabaseConnectionItem.class, "MSODBC", "tDBInput", "tDBOutput"),
         IBMDB2(DatabaseConnectionItem.class, "IBMDB2", "tDB2Input", "tDB2Output"),
@@ -380,7 +416,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
         FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
         FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null),
-        FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML");
+        FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML"),
+
+        // RunJob
+        RunJob(ProcessItem.class, "tRunJob", "tRunJob");
 
         // DBORACLESN("ORACLE", "Oracle with service name", new Boolean(true), "ORACLE"),
         // DBGODBC(DatabaseConnectionItem.class,"MSODBC", "Generic ODBC", new Boolean(false), "MSODBC"),
