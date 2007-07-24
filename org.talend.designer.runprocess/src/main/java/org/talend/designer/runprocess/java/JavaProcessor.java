@@ -683,7 +683,7 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        Set<String> neededLibraries = process.getNeededLibraries(false);
+        Set<String> neededLibraries = process.getNeededLibraries(true);
 
         if (neededLibraries == null) {
             neededLibraries = new HashSet<String>();
