@@ -95,9 +95,9 @@ tSendMail
 tSleep
 tSortIn;r4672
 tSortRow;r4672
-tSQLiteInput
-tSQLiteOutput
-tSQLiteRow
+tSQLiteInput;r4759
+tSQLiteOutput;r4759
+tSQLiteRow;r4759
 tSSH
 tStatCatcher;r4740
 tSVNLogInput
