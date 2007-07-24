@@ -164,15 +164,16 @@ class Transfer{
 	}
 	
 	public String protectChar(String dbType, String tableName){
-		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")){
+		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")||dbType.equals("Informix")){
 			return "\\\"\"+"+tableName+"+\"\\\"";
 		}else if(dbType.equals("Access")){
 			return "[\"+"+tableName+"+\"]";
 		}else if(dbType.equals("MySQL")){
 			return "`\"+"+tableName+"+\"`";
-		}else {//Sybase and informix is included
+		}else if(dbType.equals("Sybase")){
 			return "\"+"+tableName+"+\"";
 		}
+		return null;
 	}
 	
 	
@@ -187,7 +188,7 @@ class Transfer{
 				int colNum=1;									
 			 	for(IMetadataColumn column:columnList){	
 			 	//column name
-			 	   if(dbType.equals("MySQL") || dbType.equals("Informix")){//informix is not solved
+			 	   if(dbType.equals("MySQL")){
 			 			sql=sql+column.getLabel()+" ";
 			 		}else{
 			 			sql=sql+"\\\""+column.getLabel()+"\\\" ";
