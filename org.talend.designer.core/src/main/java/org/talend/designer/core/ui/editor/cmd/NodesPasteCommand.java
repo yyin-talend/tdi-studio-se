@@ -26,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
@@ -162,33 +164,37 @@ public class NodesPasteCommand extends Command {
      * @param location
      * @return
      */
-    private Point findLocationForNode(final Point location) {
-        Point newLocation = findLocationForNodeInProcess(location);
-        newLocation = findLocationForNodeInContainerList(newLocation);
+    private Point findLocationForNode(final Point location, final Dimension size) {
+        Point newLocation = findLocationForNodeInProcess(location, size);
+        newLocation = findLocationForNodeInContainerList(newLocation, size);
         return newLocation;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private Point findLocationForNodeInProcess(final Point location) {
+    private Point findLocationForNodeInProcess(final Point location, Dimension size) {
+        Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if ((node.getLocation().x == newLocation.x) && (node.getLocation().y == newLocation.y)) {
+            Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+            if (currentRect.intersects(copiedRect)) {
                 newLocation.x += TalendEditor.GRID_SIZE;
                 newLocation.y += TalendEditor.GRID_SIZE;
-                findLocationForNodeInProcess(newLocation);
+                return findLocationForNodeInProcess(newLocation, size);
             }
         }
         return newLocation;
     }
 
-    private Point findLocationForNodeInContainerList(final Point location) {
+    private Point findLocationForNodeInContainerList(final Point location, Dimension size) {
+        Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
         for (NodeContainer nodeContainer : nodeContainerList) {
             Node node = nodeContainer.getNode();
-            if ((node.getLocation().x == newLocation.x) && (node.getLocation().y == newLocation.y)) {
+            Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+            if (currentRect.intersects(copiedRect)) {
                 newLocation.x += TalendEditor.GRID_SIZE;
                 newLocation.y += TalendEditor.GRID_SIZE;
-                findLocationForNodeInContainerList(newLocation);
+                return findLocationForNodeInContainerList(newLocation, size);
             }
         }
         return newLocation;
@@ -215,7 +221,8 @@ public class NodesPasteCommand extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNode.setLocation(findLocationForNode(location));
+            pastedNode.setLocation(findLocationForNode(location, copiedNode.getSize()));
+            pastedNode.setSize(copiedNode.getSize());
 
             if (pastedNode.getExternalNode() == null) {
                 IMetadataTable metaTable = copiedNode.getMetadataList().get(0);
