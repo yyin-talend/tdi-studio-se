@@ -74,26 +74,6 @@ public class FileOutputXmlNode extends ShadowNode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.INode#getMainOutgoingConnections()
-     */
-    public List<? extends IConnection> getMainOutgoingConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#getOutgoingSortedConnections()
-     */
-    public List<? extends IConnection> getOutgoingSortedConnections() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.core.model.process.INode#isThereLinkWithHash()
      */
     public boolean isThereLinkWithHash() {
