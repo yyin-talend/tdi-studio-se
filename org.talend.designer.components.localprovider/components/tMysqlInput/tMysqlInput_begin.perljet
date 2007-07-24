@@ -125,7 +125,7 @@ if ($_context{StoreSQLQuery}) {
 while (my $_<%=cid %> = $sth_<%=cid %>->fetchrow_arrayref()) {
     my $<%=cid %> = [];
     if( <%=nbFields%> == scalar(@$_<%=cid %>) ){
-        $<%=cid %> = $_<%=cid %> ;
+        @$<%=cid %> = @$_<%=cid %> ;
     }
     else {
         @$<%=cid %> = ( @$_<%=cid%> )<% if (nbFields>0) { %>[0 .. <%=nbFields -1 %>]<% } %> ;

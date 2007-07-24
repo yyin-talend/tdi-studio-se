@@ -97,7 +97,14 @@ if ($_context{StoreSQLQuery}) {
 
 # fetch the N first columns (defined by component schema) from the SQL
 # result
-while (my @<%=cid %> = ($sth_<%=cid %>->fetchrow_array())[0 .. <%=nbFields - 1%>]) {
+while (my $_<%=cid %> = $sth_<%=cid %>->fetchrow_arrayref()) {
+    my $<%=cid %> = [];
+    if (<%=nbFields%> == scalar @$_<%=cid %>) {
+        @$<%=cid %> = @$_<%=cid %>;
+    }
+    else {
+        @$<%=cid %> = @$_<%=cid%>[0 .. <%=nbFields - 1%>];
+    }
     $nb_line_<%=cid%>++;
 <%
     }
