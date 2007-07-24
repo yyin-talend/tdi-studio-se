@@ -239,6 +239,11 @@ public abstract class DataMapTableView extends Composite {
 
     private ContentProposalAdapterExtended expressionProposalStyledText;
 
+    private ToolItem activateFilterCheck;
+
+    private boolean previousStateCheckFilter;
+
+
     /**
      * 
      * Call loaded() method after instanciate this class.
@@ -1153,8 +1158,9 @@ public abstract class DataMapTableView extends Composite {
      */
     protected void createActivateFilterCheck() {
         AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
-        final ToolItem activateFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
+        activateFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
         activateFilterCheck.setEnabled(!mapperManager.componentIsReadOnly());
+        previousStateCheckFilter = table.isActivateExpressionFilter();
         activateFilterCheck.setSelection(table.isActivateExpressionFilter());
         activateFilterCheck.setToolTipText(Messages
                 .getString("DataMapTableView.buttonTooltip.activateExpressionFilter")); //$NON-NLS-1$
@@ -1169,49 +1175,8 @@ public abstract class DataMapTableView extends Composite {
                 }
 
                 public void widgetSelected(SelectionEvent e) {
-                    final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
-
-                    GridData gridData = (GridData) expressionFilterText.getLayoutData();
-
-                    if (activateFilterCheck.getSelection()) {
-                        expressionFilterText.setVisible(true);
-                        gridData.exclude = false;
-                        table.setActivateExpressionFilter(true);
-                        mapperManager.getUiManager().parseExpression(expressionFilterText.getText(),
-                                table.getExpressionFilter(), false, false, false);
-                    } else {
-                        expressionFilterText.setVisible(false);
-                        gridData.exclude = true;
-                        table.setActivateExpressionFilter(false);
-                        mapperManager.removeTableEntry(table.getExpressionFilter());
-                    }
-                    // updateGridDataHeightForTableConstraints();
-                    DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true,
-                            true);
-                    DataMapTableView.this.layout();
-
-                    mapperManager.getUiManager().refreshBackground(true, false);
-                    new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
-
-                        public void run() {
-                            checkProblemsForExpressionFilter(false);
-                        }
-
-                    }).start();
-
-                    if (expressionFilterText.isVisible()) {
-                        expressionFilterText.setFocus();
-                        if (DataMapTableView.this.getZone() == Zone.INPUTS) {
-                            ScrolledComposite scrolledZoneView = mapperManager.getUiManager()
-                                    .getScrolledCompositeViewInputs();
-                            Point point = expressionFilterText.getDisplay().map(expressionFilterText,
-                                    mapperManager.getUiManager().getTablesZoneViewInputs(), new Point(0, 0));
-                            mapperManager.getUiManager().setPositionOfVerticalScrollBarZone(scrolledZoneView,
-                                    point.y - 20);
-                        }
-                    }
-
-                    correctAsynchStyledTextWrapBug();
+                    updateViewAfterChangingFilterCheck();
+                    previousStateCheckFilter = activateFilterCheck.getSelection();
                 }
 
             });
@@ -1909,7 +1874,7 @@ public abstract class DataMapTableView extends Composite {
                         ControlUtils.setText(text, defaultText);
                     }
                     setExpressionFilterFromStyledText(table, text);
-                    checkProblemsForExpressionFilter(false);
+                    checkProblemsForExpressionFilter(false, true);
                 }
 
             });
@@ -2079,7 +2044,7 @@ public abstract class DataMapTableView extends Composite {
                         expressionFilterText.getDisplay().asyncExec(new Runnable() {
 
                             public void run() {
-                                checkProblemsForExpressionFilter(true);
+                                checkProblemsForExpressionFilter(true, true);
                             }
 
                         });
@@ -2094,7 +2059,7 @@ public abstract class DataMapTableView extends Composite {
 
     }
 
-    public void checkProblemsForExpressionFilter(boolean forceRecompile) {
+    public void checkProblemsForExpressionFilter(boolean forceRecompile, boolean colorAllowed) {
         if (this.getDataMapTable() instanceof AbstractInOutTable) {
             AbstractInOutTable table = (AbstractInOutTable) this.getDataMapTable();
             if (table.isActivateExpressionFilter() && !DEFAULT_EXPRESSION_FILTER.equals(expressionFilterText.getText())) {
@@ -2108,7 +2073,7 @@ public abstract class DataMapTableView extends Composite {
             } else {
                 table.getExpressionFilter().setProblems(null);
             }
-            colorExpressionFilterFromProblems(table, true);
+            colorExpressionFilterFromProblems(table, colorAllowed);
 
         }
 
@@ -2172,7 +2137,7 @@ public abstract class DataMapTableView extends Composite {
                 }
 
             });
-            checkProblemsForExpressionFilter(false);
+            checkProblemsForExpressionFilter(false, true);
         }
     }
 
@@ -2248,6 +2213,57 @@ public abstract class DataMapTableView extends Composite {
         } else {
             table.getExpressionFilter().setExpression(currentContent);
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "updateViewAfterChangingFilterCheck".
+     * @param activateFilterCheck
+     */
+    protected void updateViewAfterChangingFilterCheck() {
+        final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
+
+        GridData gridData = (GridData) expressionFilterText.getLayoutData();
+
+        if (activateFilterCheck.getSelection()) {
+            expressionFilterText.setVisible(true);
+            gridData.exclude = false;
+            table.setActivateExpressionFilter(true);
+            mapperManager.getUiManager().parseExpression(expressionFilterText.getText(),
+                    table.getExpressionFilter(), false, false, false);
+        } else {
+            expressionFilterText.setVisible(false);
+            gridData.exclude = true;
+            table.setActivateExpressionFilter(false);
+            mapperManager.removeTableEntry(table.getExpressionFilter());
+        }
+        // updateGridDataHeightForTableConstraints();
+        DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, false), true,
+                true);
+        DataMapTableView.this.layout();
+
+        mapperManager.getUiManager().refreshBackground(true, false);
+
+        if (expressionFilterText.isVisible()) {
+            new AsynchronousThreading(50, false, mapperManager.getUiManager().getDisplay(), new Runnable() {
+    
+                public void run() {
+                    checkProblemsForExpressionFilter(expressionFilterText.isFocusControl(), false);
+                }
+    
+            }).start();
+            
+            expressionFilterText.setFocus();
+            if (DataMapTableView.this.getZone() == Zone.INPUTS) {
+                ScrolledComposite scrolledZoneView = mapperManager.getUiManager()
+                        .getScrolledCompositeViewInputs();
+                Point point = expressionFilterText.getDisplay().map(expressionFilterText,
+                        mapperManager.getUiManager().getTablesZoneViewInputs(), new Point(0, 0));
+                mapperManager.getUiManager().setPositionOfVerticalScrollBarZone(scrolledZoneView,
+                        point.y - 20);
+            }
+        }
+
+        correctAsynchStyledTextWrapBug();
     }
 
     /**
@@ -2454,4 +2470,33 @@ public abstract class DataMapTableView extends Composite {
 
     }
 
+    
+    /**
+     * Getter for activateFilterCheck.
+     * @return the activateFilterCheck
+     */
+    protected ToolItem getActivateFilterCheck() {
+        return this.activateFilterCheck;
+    }
+
+    
+    /**
+     * Getter for previousStateCheckFilter.
+     * @return the previousStateCheckFilter
+     */
+    protected boolean isPreviousStateCheckFilter() {
+        return this.previousStateCheckFilter;
+    }
+
+    
+    /**
+     * Sets the previousStateCheckFilter.
+     * @param previousStateCheckFilter the previousStateCheckFilter to set
+     */
+    protected void setPreviousStateCheckFilter(boolean previousStateCheckFilter) {
+        this.previousStateCheckFilter = previousStateCheckFilter;
+    }
+
+    
+    
 }

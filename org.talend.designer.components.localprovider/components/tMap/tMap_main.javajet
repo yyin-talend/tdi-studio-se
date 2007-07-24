@@ -348,7 +348,8 @@
                     		  	    
                     		  	  	   <%
                     		  	  	   if(
-                    		  	  	   		externalTable.isActivateExpressionFilter() 
+                    		  	  	   		externalTable.isInnerJoin()
+                    		  	  	   		&& externalTable.isActivateExpressionFilter() 
                     		  	  	   		&& externalTable.getExpressionFilter() != null 
                     		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
                     		  	  	   ) { // 12 

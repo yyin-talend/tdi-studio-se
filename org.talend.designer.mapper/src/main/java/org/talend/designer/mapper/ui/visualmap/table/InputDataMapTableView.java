@@ -83,7 +83,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     private boolean previousStateAtLeastOneHashKey;
 
-    private ToolItem rejectConstraintCheck;
+    private ToolItem innerJoinCheck;
 
     private boolean previousInnerJoinSelection;
 
@@ -244,33 +244,33 @@ public class InputDataMapTableView extends DataMapTableView {
             }
 
             // Inner join button
-            rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
-            rejectConstraintCheck.setEnabled(!mapperManager.componentIsReadOnly());
+            innerJoinCheck = new ToolItem(toolBarActions, SWT.CHECK);
+            innerJoinCheck.setEnabled(!mapperManager.componentIsReadOnly());
             realToolbarSize.x += 70;
-            rejectConstraintCheck.setToolTipText(Messages
+            innerJoinCheck.setToolTipText(Messages
                     .getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();
             // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
             // ImageInfo.UNCHECKED_ICON);
             Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
             if (WindowSystem.isGTK()) {
-                rejectConstraintCheck.setImage(image);
-                rejectConstraintCheck.setHotImage(image);
+                innerJoinCheck.setImage(image);
+                innerJoinCheck.setHotImage(image);
             } else {
-                rejectConstraintCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-                rejectConstraintCheck.setHotImage(image);
+                innerJoinCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
+                innerJoinCheck.setHotImage(image);
             }
-            rejectConstraintCheck.setSelection(isInnerJoin);
-            rejectConstraintCheck.setText(Messages.getString("InputDataMapTableView.widgetTooltip.innerJoin")); //$NON-NLS-1$
+            innerJoinCheck.setSelection(isInnerJoin);
+            innerJoinCheck.setText(Messages.getString("InputDataMapTableView.widgetTooltip.innerJoin")); //$NON-NLS-1$
 
-            rejectConstraintCheck.addSelectionListener(new SelectionListener() {
+            innerJoinCheck.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
 
                 public void widgetSelected(SelectionEvent e) {
                     Image image = null;
-                    if (rejectConstraintCheck.getSelection()) {
+                    if (innerJoinCheck.getSelection()) {
                         getInputTable().setInnerJoin(true);
                         image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
                     } else {
@@ -278,11 +278,12 @@ public class InputDataMapTableView extends DataMapTableView {
                         image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
                     }
                     if (WindowSystem.isGTK()) {
-                        rejectConstraintCheck.setImage(image);
-                        rejectConstraintCheck.setHotImage(image);
+                        innerJoinCheck.setImage(image);
+                        innerJoinCheck.setHotImage(image);
                     } else {
-                        rejectConstraintCheck.setHotImage(image);
+                        innerJoinCheck.setHotImage(image);
                     }
+                    updateViewAfterChangeInnerJoinCheck();
                 }
 
             });
@@ -428,16 +429,20 @@ public class InputDataMapTableView extends DataMapTableView {
     public void refreshLabelForLookupTypeDropDown() {
         ILookupType matchingMode = getInputTable().getMatchingMode();
         if (matchingMode == TMAP_MATCHING_MODE.ALL_ROWS) {
-            if (rejectConstraintCheck != null) {
-                rejectConstraintCheck.setEnabled(false);
+            if (innerJoinCheck != null) {
+                innerJoinCheck.setEnabled(false);
             }
         } else {
             previousMultipleModeSelected = matchingMode;
             previousInnerJoinSelection = getInputTable().isInnerJoin();
-            if (rejectConstraintCheck != null) {
-                rejectConstraintCheck.setEnabled(true);
+            if (innerJoinCheck != null) {
+                innerJoinCheck.setEnabled(true);
             }
         }
+        if (innerJoinCheck != null) {
+            updateViewAfterChangeInnerJoinCheck();
+        }
+        
         String text = matchingMode.getLabel();
         dropDownItem.setText(text);
         dropDownItem.setToolTipText(text);
@@ -469,21 +474,37 @@ public class InputDataMapTableView extends DataMapTableView {
                     getInputTable().setMatchingMode(previousMultipleModeSelected);
                     selectMenuItem(previousMultipleModeSelected);
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
-                    rejectConstraintCheck.setEnabled(true);
+                    innerJoinCheck.setEnabled(true);
                 } else {
                     dropDownItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     dropDownItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     getInputTable().setMatchingMode(TMAP_MATCHING_MODE.ALL_ROWS);
                     selectMenuItem(TMAP_MATCHING_MODE.ALL_ROWS);
                     getInputTable().setInnerJoin(false);
-                    rejectConstraintCheck.setEnabled(false);
+                    innerJoinCheck.setEnabled(false);
                 }
+                updateViewAfterChangeInnerJoinCheck();
+
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
             }
             refreshLabelForLookupTypeDropDown();
 
         }
 
+    }
+
+    /**
+     * DOC amaumont Comment method "updateViewAfterChangeInnerJoinCheck".
+     */
+    private void updateViewAfterChangeInnerJoinCheck() {
+        if (innerJoinCheck.getSelection()) {
+            getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
+            getActivateFilterCheck().setEnabled(true);
+        } else {
+            getActivateFilterCheck().setSelection(false);
+            getActivateFilterCheck().setEnabled(false);
+        }
+        updateViewAfterChangingFilterCheck();
     }
 
     /**
@@ -551,9 +572,9 @@ public class InputDataMapTableView extends DataMapTableView {
      * DOC amaumont Comment method "init".
      */
     public void loaded() {
-        
+
         super.loaded();
-        
+
         if (mapperManager.isAdvancedMap()) {
             configureExpressionFilter();
             if (!getInputTable().isMainConnection()) {
@@ -563,5 +584,4 @@ public class InputDataMapTableView extends DataMapTableView {
 
     }
 
-    
 }
