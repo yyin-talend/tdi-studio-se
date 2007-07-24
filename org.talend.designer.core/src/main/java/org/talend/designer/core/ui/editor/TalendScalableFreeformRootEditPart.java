@@ -28,10 +28,15 @@ import org.eclipse.draw2d.LayeredPane;
 import org.eclipse.draw2d.ScalableFigure;
 import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.draw2d.Viewport;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.AutoexposeHelper;
+import org.eclipse.gef.ExposeHelper;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
+import org.eclipse.gef.editparts.ViewportExposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.ZoomableEditPart;
 import org.eclipse.gmf.runtime.gef.ui.internal.editparts.AnimatableZoomManager;
@@ -67,7 +72,6 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
             zoomManager.setZoomAnimationStyle(ZoomManager.ANIMATE_ZOOM_IN_OUT);
         }
         return zoomManager;
-        // return super.getZoomManager();
     }
 
     public TalendScalableFreeformRootEditPart(IEditorInput editorInput) {
@@ -135,5 +139,18 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     public void zoomTo(double zoom, Point center) {
         zoomManager.zoomTo(zoom, center);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.FreeformGraphicalRootEditPart#getAdapter(java.lang.Class)
+     */
+    @Override
+    public Object getAdapter(Class key) {
+        if (key == AutoexposeHelper.class) {
+            return new ViewportAutoexposeHelper(this, new Insets(100));
+        }
+        return super.getAdapter(key);
     }
 }
