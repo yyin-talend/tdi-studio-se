@@ -36,15 +36,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 use tIntervalMatch::IntervalMatch;
 
-@<%=cid%> = @<%=inputRowName%> ;
 
 
 my $result_<%=cid %> = tIntervalMatch::IntervalMatch::search( 
         lookup => $a_lookup_<%=cid %>,
-        value  => $<%=cid%>[$icolmatch_<%=cid %>], 
+        value  => $<%=cid%>->[$icolmatch_<%=cid %>], 
     );
 
-$<%=cid%>[<%=metadata.getListColumns().size() - 1%>] = $a_data_<%=cid %>->[$result_<%=cid %>] if defined $result_<%=cid %> ;
+$<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = $a_data_<%=cid %>->[$result_<%=cid %>] if defined $result_<%=cid %> ;
 
 
 
