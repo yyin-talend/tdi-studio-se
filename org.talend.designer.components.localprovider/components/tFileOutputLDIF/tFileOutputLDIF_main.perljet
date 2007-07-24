@@ -22,7 +22,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String changes = ElementParameterParser.getValue(node, "__CHANGES__");
 %>
 
-if (@<%=cid %>) {
+my @<%=cid%> = @$<%=cid%>;
+
     {
         my $entry = Net::LDAP::Entry->new;
 
@@ -80,8 +81,6 @@ if (@<%=cid %>) {
     }
 
     $nb_line_<%=cid %>++;
-
-}
     
 <%
     }

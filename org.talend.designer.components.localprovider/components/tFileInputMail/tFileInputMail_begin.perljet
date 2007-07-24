@@ -94,6 +94,8 @@ foreach my $mail_part (@{ $desc_<%=cid%>{mail_parts} }) {
     $col_num++;
 }
 
+my $<%=cid%> = \@<%=cid%>;
+
 <%
     }
 }

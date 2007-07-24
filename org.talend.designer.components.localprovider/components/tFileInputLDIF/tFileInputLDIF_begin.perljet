@@ -85,6 +85,8 @@ while (not $ldif_<%=cid %>->eof()) {
             }
         }
     }
+
+    my $<%=cid %> = \@<%=cid %>;
     $nb_line_<%=cid%>++;
 
 <%
