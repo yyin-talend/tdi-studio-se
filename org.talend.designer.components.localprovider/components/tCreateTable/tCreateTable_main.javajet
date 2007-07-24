@@ -227,7 +227,12 @@ class Transfer{
 				 	if(!(PKey.isEmpty())){
 					 	sql=sql+" primary key (";
 					 	for(int i=0;i<PKey.size();i++){
-					 		sql=sql+(String)PKey.get(i);
+					 	
+						 	if(dbType.equals("MySQL")){
+				 				sql=sql+(String)PKey.get(i)+" ";
+					 		}else{
+					 			sql=sql+"\\\""+(String)PKey.get(i)+"\\\" ";
+					 		}
 					 		if(i<PKey.size()-1){sql=sql+",";}
 					 	}
 					 	sql=sql+")";
