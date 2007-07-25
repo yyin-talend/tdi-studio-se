@@ -113,7 +113,7 @@ public class RowGenPreviewCodeMain {
     /**
      * qzhang Comment method "runPreviewCode".
      */
-    protected Process runPreviewCode() {
+    public Process runPreviewCode() {
         getProcess();
         IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
         if (UIManager.isJavaProject()) {
