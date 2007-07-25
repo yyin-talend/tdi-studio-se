@@ -50,11 +50,11 @@ tFilterColumns;r4726
 tFilterRow;r4672
 tFlowMeterCatcher;r4740
 tFlowMeter;no need
-tForeach
-tFor
-tFTP
+tForeach;no need
+tFor;no need
+tFTP;no need
 tFuzzyMatch;r4743
-tGPGDecrypt
+tGPGDecrypt;no need
 tHash;r4672
 tIntervalMatch;r4767
 tLogCatcher;r4740
@@ -64,16 +64,16 @@ tMsgBox;no need
 tMSSqlInput;r4680
 tMSSqlOutput;r4688
 tMSSqlRow;r4688
-tMysqlBulkExec
-tMysqlCommit
-tMysqlConnection
+tMysqlBulkExec;no need
+tMysqlCommit;no need
+tMysqlConnection; no need
 tMysqlInput;r4680
-tMysqlOutputBulkExec
-tMysqlOutputBulk
+tMysqlOutputBulkExec;depends on tMysqlOutputBulk
+tMysqlOutputBulk;r4793
 tMysqlOutput;r4688
-tMysqlRollback
+tMysqlRollback;no need
 tMysqlRow;r4688
-tMysqlSCD
+tMysqlSCD;r4793
 tNormalize;r4739
 tOracleBulkExec
 tOracleCommit
@@ -82,7 +82,7 @@ tOracleInput;r4695;r4770, to Verify
 tOracleOutput;r4695
 tOracleRow;r4695
 tOracleSCD
-tPerlFlex;do we do anything?
+tPerlFlex;see note1
 tPerlRow;r4672
 tPerl;no need
 tPOP;no need
@@ -111,3 +111,5 @@ tWarn
 tWebServiceInput
 tXSDValidator;r4743
 tXSLT;no need
+
+note1: Need a migration task to add "->" in the tPerlFlex pieces of code.
