@@ -56,7 +56,7 @@ tFTP
 tFuzzyMatch;r4743
 tGPGDecrypt
 tHash;r4672
-tIntervalMatch
+tIntervalMatch;r4767
 tLogCatcher;r4740
 tLogRow;r4692
 tMap;r4672
