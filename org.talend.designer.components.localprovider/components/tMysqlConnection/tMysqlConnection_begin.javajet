@@ -21,7 +21,7 @@ imports="
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 
-String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?noDatetimeStringSync=true";
 
 String userName_<%=cid%> = <%=dbuser%>;
 
