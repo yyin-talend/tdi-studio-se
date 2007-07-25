@@ -348,7 +348,7 @@
                     		  	    
                     		  	  	   <%
                     		  	  	   if(
-                    		  	  	   		externalTable.isInnerJoin()
+                    		  	  	   		(externalTable.isInnerJoin() || matchingMode.equals("ALL_ROWS"))
                     		  	  	   		&& externalTable.isActivateExpressionFilter() 
                     		  	  	   		&& externalTable.getExpressionFilter() != null 
                     		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
