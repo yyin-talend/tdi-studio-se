@@ -55,6 +55,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -76,9 +77,11 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -734,6 +737,12 @@ public class JavaProcessor extends Processor {
         String exportJar = "";
         if (ProcessorUtilities.isExportConfig()) {
             exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar" + classPathSeparator;
+            Set<String> childrenlist = getChildren((ProcessItem)process.getProperty().getItem());
+            for(String child:childrenlist)
+            {
+                System.out.println(child);
+                exportJar += child.toLowerCase() + ".jar" + classPathSeparator;
+            }
         }
 
         String libFolder = "";
@@ -744,8 +753,23 @@ public class JavaProcessor extends Processor {
         }
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
+    }   
+    
+    private Set<String> getChildren(ProcessItem processItem) {
+        Set<String> childrenList = new HashSet<String>(); // in case the same children is used several time
+        if (processItem.getProcess().getRequired() != null) {
+            EList jobList = processItem.getProcess().getRequired().getJob();
+            for (int j = 0; j < jobList.size(); j++) {
+                JobType jType = (JobType) jobList.get(j);
+                if (!childrenList.contains(jType.getName())) {
+                    childrenList.add(jType.getName());
+                    ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
+                    childrenList.addAll(getChildren(childItem));
+                }
+            }
+        }
+        return childrenList;
     }
-
     /*
      * (non-Javadoc)
      * 
