@@ -7,10 +7,10 @@ tAggregateSortedRow
 tArrayIn;r4672
 tArray;r4672
 tContextLoad;r4726
-tDB2Input
+tDB2Input;r4770, to Verify
 tDB2Output
 tDB2Row
-tDBInput
+tDBInput;r4770, to Verify
 tDBOutput
 tDBSQLRow
 tDenormalizeOut;r4743
@@ -35,7 +35,7 @@ tFileInputExcel;r4693
 tFileInputLDIF;r4772
 tFileInputMail;r4772
 tFileInputPositional;r4672
-tFileInputRegex
+tFileInputRegex;r4771
 tFileInputXML
 tFileList;no need
 tFileOutputCSV;r4726
@@ -78,20 +78,20 @@ tNormalize;r4739
 tOracleBulkExec
 tOracleCommit
 tOracleConnection
-tOracleInput;r4695
+tOracleInput;r4695;r4770, to Verify
 tOracleOutput;r4695
 tOracleRow;r4695
 tOracleSCD
 tPerlFlex;do we do anything?
 tPerlRow;r4672
 tPerl;no need
-tPOP
-tPostgresqlInput
+tPOP;no need
+tPostgresqlInput;r4770, to Verify
 tPostgresqlOutput
 tPostgresqlRow
 tRowGenerator;r4695
 tRunJob
-tSendMail
+tSendMail;no need
 tSleep
 tSortIn;r4672
 tSortRow;r4672
@@ -102,7 +102,7 @@ tSSH
 tStatCatcher;r4740
 tSVNLogInput
 tSybaseBulkExec
-tSybaseInput
+tSybaseInput;r4770, to Verify
 tSybaseOutput
 tSybaseRow
 tSystem
