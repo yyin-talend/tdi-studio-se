@@ -142,6 +142,12 @@ public class ExpressionTestServer implements Runnable {
         return stop;
     }
 
+    /**
+     * yzhang ExpressionTestServer class global comment. Detailled comment <br/>
+     * 
+     * $Id: ExpressionTestServer.java 上午10:07:44 2007-7-24 +0000 (2007-7-24) yzhang $
+     * 
+     */
     class ExpressionTestProcess extends Thread {
 
         private volatile boolean processStop;

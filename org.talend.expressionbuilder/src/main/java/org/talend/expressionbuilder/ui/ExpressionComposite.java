@@ -1,8 +1,31 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006-2007 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
 package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,7 +41,13 @@ import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.JavaFunctionParser;
 import org.talend.designer.rowgenerator.data.Parameter;
 
-public class ExpressionComposite extends Composite implements ExpressionController {
+/**
+ * yzhang class global comment. Detailled comment <br/>
+ * 
+ * $Id: ExpressionComposite.java 上午10:12:38 2007-7-24 +0000 (2007-7-24) yzhang $
+ * 
+ */
+public class ExpressionComposite extends Composite implements IExpressionController {
 
     private static Text text;
 
@@ -54,7 +83,20 @@ public class ExpressionComposite extends Composite implements ExpressionControll
         final Button clearButton = new Button(upperOperationButtonBar, SWT.NONE);
         clearButton.setText("Clear");
 
-        text = new Text(expressionGroup, SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL | SWT.BORDER);
+        clearButton.addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                text.setText("");
+            }
+        });
+
+        text = new Text(expressionGroup, SWT.WRAP | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         final Composite lowerOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
@@ -97,10 +139,10 @@ public class ExpressionComposite extends Composite implements ExpressionControll
         final Button lButton = new Button(lowerOperationButtonBar, SWT.NONE);
         lButton.setText("<");
 
-        final Label label_1 = new Label(lowerOperationButtonBar, SWT.NONE);
-        final RowData rowData_1 = new RowData();
-        rowData_1.width = 20;
-        label_1.setLayoutData(rowData_1);
+        final Label label1 = new Label(lowerOperationButtonBar, SWT.NONE);
+        final RowData rowData1 = new RowData();
+        rowData1.width = 20;
+        label1.setLayoutData(rowData1);
 
         final Button andButton = new Button(lowerOperationButtonBar, SWT.NONE);
         andButton.setText("and");
@@ -111,13 +153,13 @@ public class ExpressionComposite extends Composite implements ExpressionControll
         final Button notButton = new Button(lowerOperationButtonBar, SWT.NONE);
         notButton.setText("not");
 
-        final Label label_2 = new Label(lowerOperationButtonBar, SWT.NONE);
-        final RowData rowData_2 = new RowData();
-        rowData_2.width = 20;
-        label_2.setLayoutData(rowData_2);
+        final Label label2 = new Label(lowerOperationButtonBar, SWT.NONE);
+        final RowData rowData2 = new RowData();
+        rowData2.width = 20;
+        label2.setLayoutData(rowData2);
 
-        final Button button_9 = new Button(lowerOperationButtonBar, SWT.NONE);
-        button_9.setText("(");
+        final Button button9 = new Button(lowerOperationButtonBar, SWT.NONE);
+        button9.setText("(");
 
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")");
@@ -172,5 +214,14 @@ public class ExpressionComposite extends Composite implements ExpressionControll
             return text.getText();
         }
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.expressionbuilder.ui.IExpressionController#setExpression(java.lang.String)
+     */
+    public void setExpression(String expression) {
+        text.insert(expression);
     }
 }

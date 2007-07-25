@@ -1,3 +1,24 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006-2007 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
 package org.talend.expressionbuilder.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -12,10 +33,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.expressionbuilder.model.CategoryManager;
 
+/**
+ * yzhang class global comment. Detailled comment <br/>
+ * 
+ * $Id: ExpressionBuilderDialog.java 上午10:12:13 2007-7-24 +0000 (2007-7-24) yzhang $
+ * 
+ */
 public class ExpressionBuilderDialog extends Dialog {
 
     private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 23;
@@ -57,7 +83,7 @@ public class ExpressionBuilderDialog extends Dialog {
 
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
-        final ExpressionController expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
+        final IExpressionController expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
         upperSashform.setWeights(new int[] { 1, 1 });

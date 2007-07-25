@@ -1,6 +1,29 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006-2007 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
 package org.talend.expressionbuilder.ui;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -17,9 +40,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.talend.designer.rowgenerator.data.Function;
+import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.model.Category;
 import org.talend.expressionbuilder.model.CategoryManager;
+import org.talend.expressionbuilder.test.shadow.VirtualMetadataColumn;
 
+/**
+ * yzhang class global comment. Detailled comment <br/>
+ * 
+ * $Id: CategoryComposite.java 上午10:10:58 2007-7-24 +0000 (2007-7-24) yzhang $
+ * 
+ */
 public class CategoryComposite extends Composite {
 
     private List categoryList;
@@ -28,7 +59,7 @@ public class CategoryComposite extends Composite {
 
     CategoryManager manager = null;
 
-    ExpressionController expressController = null;
+    IExpressionController expressController = null;
 
     private static Function selectedFunction;
 
@@ -55,9 +86,9 @@ public class CategoryComposite extends Composite {
 
         final SashForm sashForm = new SashForm(this, SWT.NONE);
 
-        final SashForm sashForm_1 = new SashForm(sashForm, SWT.HORIZONTAL);
+        final SashForm sashForm1 = new SashForm(sashForm, SWT.HORIZONTAL);
 
-        final Composite composite = new Composite(sashForm_1, SWT.BORDER);
+        final Composite composite = new Composite(sashForm1, SWT.BORDER);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
@@ -80,19 +111,19 @@ public class CategoryComposite extends Composite {
         categoryList = categoryViewer.getList();
         categoryList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        final Composite composite_1 = new Composite(sashForm_1, SWT.BORDER);
-        final GridLayout gridLayout_1 = new GridLayout();
-        gridLayout_1.verticalSpacing = 0;
-        gridLayout_1.horizontalSpacing = 0;
-        gridLayout_1.marginWidth = 0;
-        gridLayout_1.marginHeight = 0;
-        composite_1.setLayout(gridLayout_1);
+        final Composite composite1 = new Composite(sashForm1, SWT.BORDER);
+        final GridLayout gridLayout1 = new GridLayout();
+        gridLayout1.verticalSpacing = 0;
+        gridLayout1.horizontalSpacing = 0;
+        gridLayout1.marginWidth = 0;
+        gridLayout1.marginHeight = 0;
+        composite1.setLayout(gridLayout1);
 
-        final CLabel functionLabel = new CLabel(composite_1, SWT.SHADOW_OUT);
+        final CLabel functionLabel = new CLabel(composite1, SWT.SHADOW_OUT);
         functionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         functionLabel.setText("Functions");
 
-        final ListViewer functionViewer = new ListViewer(composite_1, SWT.V_SCROLL | SWT.H_SCROLL);
+        final ListViewer functionViewer = new ListViewer(composite1, SWT.V_SCROLL | SWT.H_SCROLL);
         functionViewer.setContentProvider(new ArrayContentProvider());
         functionViewer.setLabelProvider(new LabelProvider() {
 
@@ -102,7 +133,7 @@ public class CategoryComposite extends Composite {
         });
         functionList = functionViewer.getList();
         functionList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        sashForm_1.setWeights(new int[] { 1, 1 });
+        sashForm1.setWeights(new int[] { 1, 1 });
 
         final Browser docDisplayer = new Browser(sashForm, SWT.BORDER);
         sashForm.setWeights(new int[] { 1, 1 });
@@ -125,7 +156,7 @@ public class CategoryComposite extends Composite {
      * 
      * @return the expressController
      */
-    public ExpressionController getExpressController() {
+    public IExpressionController getExpressController() {
         return this.expressController;
     }
 
@@ -134,10 +165,16 @@ public class CategoryComposite extends Composite {
      * 
      * @param expressController the expressController to set
      */
-    public void setExpressController(ExpressionController expressController) {
+    public void setExpressController(IExpressionController expressController) {
         this.expressController = expressController;
     }
 
+    /**
+     * yzhang CategoryComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id: CategoryComposite.java 上午10:11:21 2007-7-24 +0000 (2007-7-24) yzhang $
+     * 
+     */
     class UIRelationShipLinker {
 
         UIRelationShipLinker(ListViewer categoryViewer, final ListViewer functionViewer, final Browser docDisplayer) {
@@ -159,15 +196,19 @@ public class CategoryComposite extends Composite {
                 }
             });
 
-            functionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            functionViewer.addDoubleClickListener(new IDoubleClickListener() {
 
-                public void selectionChanged(SelectionChangedEvent event) {
+                public void doubleClick(DoubleClickEvent event) {
+
                     try {
                         Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
                         selectedFunction = function;
                         if (function != null && function.getDescription() != null) {
                             docDisplayer.setText(function.getDescription());
-                            expressController.setExpression(function);
+                            VirtualMetadataColumn column = new VirtualMetadataColumn();
+                            column.setTalendType(function.getTalendType().getName());
+                            column.setFunction(function);
+                            expressController.setExpression(FunctionManagerExt.getOneColData(column));
                         } else {
                             docDisplayer.setText("");
                         }
@@ -175,8 +216,10 @@ public class CategoryComposite extends Composite {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                 }
             });
+
         }
     }
 }
