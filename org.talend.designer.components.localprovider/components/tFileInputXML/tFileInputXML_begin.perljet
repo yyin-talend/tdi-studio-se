@@ -97,7 +97,7 @@ foreach my $line_<%=cid%> ($root_<%=cid%>->findnodes(<%=loopQuery%>)) {
         }
 %>
 
-    my @<%=cid %> = (
+    my $<%=cid %> = [
 <%
         for (int i = 0; i < mapping.size(); i++) {
             Map<String, String> line = mapping.get(i);
@@ -106,7 +106,7 @@ foreach my $line_<%=cid%> ($root_<%=cid%>->findnodes(<%=loopQuery%>)) {
 <%
         }
 %>
-    );
+    ];
 
 <%
     }
