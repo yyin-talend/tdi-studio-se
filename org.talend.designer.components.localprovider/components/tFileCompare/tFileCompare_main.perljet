@@ -38,6 +38,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__FILE_REF__"
         );
+
+        Boolean binarycmp = new Boolean(
+            ElementParameterParser.getValue(node, "__BINARY_CMP__")
+        );
+
+
 %>
 
 my @<%=cid %> = ();
@@ -46,17 +52,28 @@ my @<%=cid %> = ();
 # tFileCompare components in the same process
 {
     if (not -f <%=file%>) {
-        die "Cannot read file to compare\n";
+        die "[<%=cid %>] cannot read file to compare : ", <%=file%>, "\n";
     }
     
     if (not -f <%=fileRef%>) {
-        die "Cannot read reference file\n";
+        die "[<%=cid %>] cannot read reference file : ", <%=fileRef%>, "\n";
     }
-
+<%  
+        if(binarycmp){
+%>
     my $compare = compare(
+<%
+        } else
+        {
+%>
+    my $compare = compare_text(
+<%
+        }
+%>
         <%=file%>,
         <%=fileRef%>,
     );
+
 
     my $message;
 

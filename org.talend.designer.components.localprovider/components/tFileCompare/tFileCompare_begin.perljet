@@ -18,7 +18,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
 %>
 
-use File::Compare;
+use File::Compare qw/compare compare_text/;
 
 <%
     }
