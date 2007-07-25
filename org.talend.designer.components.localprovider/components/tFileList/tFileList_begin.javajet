@@ -22,7 +22,19 @@
 
         String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
         String filemask<%=cid %>        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>+"$";
-        filemask<%=cid %> = java.util.regex.Pattern.compile("[*]").matcher(filemask<%=cid %>).replaceAll(".*");
+        boolean flag<%=cid%>=false;
+        if(filemask<%=cid %>.indexOf("^")==-1) 
+        {
+            filemask<%=cid %>="^"+filemask<%=cid %>;
+        }
+        if(!(filemask<%=cid %>.lastIndexOf(".*$")==-1) &&  filemask<%=cid %>.lastIndexOf("*.*$")==-1)
+        {
+            filemask<%=cid %>=filemask<%=cid %>.substring(0,filemask<%=cid %>.length()-3)+"$";
+            flag<%=cid%>=true;
+        }else{
+            filemask<%=cid %> = java.util.regex.Pattern.compile("[*]").matcher(filemask<%=cid %>).replaceAll(".*");
+        }
+       
         boolean case_sensitive<%=cid %> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
 		java.util.regex.Pattern fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>);
 		if(!case_sensitive<%=cid %>){
@@ -59,9 +71,19 @@
         for (int i<%=cid%> = 0; i<%=cid%> < list_<%=cid%>.size(); i<%=cid%>++){
             
             java.io.File files<%=cid%> =list_<%=cid%>.get(i<%=cid%>);
-            if(!fileNamePattern<%=cid %>.matcher(files<%=cid %>.getName()).find()){
-                continue;
+            String fileName<%=cid%>=files<%=cid%>.getName();
+            if(flag<%=cid%>==true)
+            {
+                if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>.substring(0,fileName<%=cid%>.length()-4 )).find()){
+                    continue;
+                }
+            }else
+            {
+                if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>).find()){
+                    continue;
+                }
             }
+           
             String currentFileName_<%=cid%> = files<%=cid %>.getName(); 
             String currentFilePath_<%=cid%> = files<%=cid %>.getAbsolutePath();
             
