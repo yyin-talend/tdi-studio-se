@@ -475,6 +475,7 @@ public class InputDataMapTableView extends DataMapTableView {
                     selectMenuItem(previousMultipleModeSelected);
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
                     innerJoinCheck.setEnabled(true);
+                    updateViewAfterChangeInnerJoinCheck();
                 } else {
                     dropDownItem.setText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
                     dropDownItem.setToolTipText(TMAP_MATCHING_MODE.ALL_ROWS.getLabel());
@@ -483,7 +484,6 @@ public class InputDataMapTableView extends DataMapTableView {
                     getInputTable().setInnerJoin(false);
                     innerJoinCheck.setEnabled(false);
                 }
-                updateViewAfterChangeInnerJoinCheck();
 
                 previousStateAtLeastOneHashKey = stateAtLeastOneHashKey;
             }
@@ -497,7 +497,7 @@ public class InputDataMapTableView extends DataMapTableView {
      * DOC amaumont Comment method "updateViewAfterChangeInnerJoinCheck".
      */
     private void updateViewAfterChangeInnerJoinCheck() {
-        if (innerJoinCheck.getSelection()) {
+        if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
             getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
             getActivateFilterCheck().setEnabled(true);
         } else {
