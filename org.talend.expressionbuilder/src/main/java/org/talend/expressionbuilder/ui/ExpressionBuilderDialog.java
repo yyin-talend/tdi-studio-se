@@ -50,7 +50,7 @@ public class ExpressionBuilderDialog extends Dialog {
 
     private static final int IMPORT_ID = IDialogConstants.CLIENT_ID + 21;
 
-    TestComposite testComposite;
+    private static TestComposite testComposite;
 
     CategoryManager manager = new CategoryManager();
 
@@ -136,5 +136,14 @@ public class ExpressionBuilderDialog extends Dialog {
     public boolean close() {
         testComposite.stopServerThread();
         return super.close();
+    }
+
+    /**
+     * Getter for testComposite.
+     * 
+     * @return the testComposite
+     */
+    public static TestComposite getTestComposite() {
+        return testComposite;
     }
 }

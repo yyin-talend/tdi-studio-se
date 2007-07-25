@@ -283,4 +283,11 @@ public class TestComposite extends Composite {
         // Disable the check that prevents subclassing of SWT components
     }
 
+    /**
+     * yzhang Comment method "getVariableList".
+     */
+    public List<Variable> getVariableList() {
+        return (List<Variable>) tableViewer.getInput();
+    }
+
 }
