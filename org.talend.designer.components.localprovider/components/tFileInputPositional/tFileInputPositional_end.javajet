@@ -4,7 +4,6 @@
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
-		org.talend.core.model.process.ElementParameterParser
 	" 
 %>
 
@@ -12,21 +11,17 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-%>
-			<%if(!row_separator.equals("\"\\n\"")){%>
-    		}
-    		<%}%>
-    		}
-
-<%
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-%>
-            in<%=cid %>.close();
-            globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+%>	nb_line_<%=cid %>++;
+	if(limit_<%=cid %> != -1 && nb_line_<%=cid %> >= limit_<%=cid %>){
+		break;
+	}
+}
+reader_<%=cid %>.close();
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
 	}

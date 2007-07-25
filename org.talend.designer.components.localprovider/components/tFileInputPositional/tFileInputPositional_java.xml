@@ -34,14 +34,14 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="0"
       REPOSITORY_VALUE="POSITIONAL"
     />
   
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="2"
+      NUM_ROW="1"
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
@@ -51,19 +51,33 @@
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="2"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
     </PARAMETER>
-  
+    
     <PARAMETER
-      NAME="PATTERN"
-      FIELD="TEXT"
+      NAME="FORMATS"
+      FIELD="TABLE"
+      REQUIRED="true"
       NUM_ROW="3"
-      REPOSITORY_VALUE="PATTERN"
+      NB_LINES="5"
     >
-      <DEFAULT>"5,4,5"</DEFAULT>
+      <ITEMS BASED_ON_SCHEMA="true">
+
+        <ITEM NAME="SIZE" VALUE="10" />
+
+        <ITEM NAME="PADDING_CHAR" VALUE="' '" />
+
+        <ITEM NAME="ALIGN" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="LEFT">
+            <ITEM NAME="LEFT"   VALUE="'L'"/>
+            <ITEM NAME="CENTER" VALUE="'C'"/>
+            <ITEM NAME="RIGHT"  VALUE="'R'"/>
+          </ITEMS>
+        </ITEM>
+      </ITEMS>
     </PARAMETER>
 
     <PARAMETER
@@ -124,7 +138,15 @@
 
   </PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="Talen File Enhanced"
+        MODULE="talend_file_enhanced_20070724.jar"
+        REQUIRED="true"
+      />
+    </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>

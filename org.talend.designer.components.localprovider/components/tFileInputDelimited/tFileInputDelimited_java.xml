@@ -142,11 +142,11 @@
 
    </PARAMETERS>
 
-   <CODEGENERATION>
+  <CODEGENERATION>
     <IMPORTS>
       <IMPORT
-        NAME="Delimited_File_Reader"
-        MODULE="talend_file_enhanced.jar"
+        NAME="Talen File Enhanced"
+        MODULE="talend_file_enhanced_20070724.jar"
         REQUIRED="true"
       />
     </IMPORTS>

@@ -10,6 +10,7 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
+    	java.util.Map
 	" 
 %>
 
@@ -22,171 +23,180 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-			String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-			String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
+			String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+			
+			List<Map<String, String>> formats =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FORMATS__"
+            );
+            
 			String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+			
    			String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-    		String myHeader = ElementParameterParser.getValue(node, "__HEADER__");
-    		String myLimit = ElementParameterParser.getValue(node, "__LIMIT__");
+   			
+    		String header = ElementParameterParser.getValue(node, "__HEADER__");
+    		
+    		String footer = ElementParameterParser.getValue(node, "__FOOTER__");
+    		
+    		String limit = ElementParameterParser.getValue(node, "__LIMIT__");    		
+    		
     		String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
-    		pattern=pattern.substring(1, pattern.length()-1);
-    		String[] positions=(pattern.trim()).split(",");
-    		boolean patternContainStar=false;
-    		for(int i=0;i<positions.length;i++){
-            	if(positions[i].equals("")){
-               	 	positions[i]="0";
-            	}
-            	if(positions[i].equals("*")){
-            		patternContainStar=true;
-            	}
-       		}
-%>
-			int nb_line_<%=cid%> = 0;
-			int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
-			int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
-		java.io.BufferedReader in<%=cid %> = null;
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
-        String str<%=cid %>;
-        
-		int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,outputLine<%=cid %>=0;
-        <% 
-         	if (myHeader.equals("")) myHeader = "0"; 
-        	int header =Integer.parseInt(myHeader);
-        	if (header > 0){
-        		%>beginLine<%=cid %>=<%=header%>+1;
-      		<%}
-      		if (myLimit.equals("")) myLimit = "-1";
-      		int limit =Integer.parseInt(myLimit);
-      		if (limit > 0){
-        %>lastLine<%=cid %>=<%=header+limit%>;
-        <%}%>
-        
-        if(footer_<%=cid %> > 0){
-        	while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
-				totalLine<%=cid %>++;
+    		
+    		if(header.equals("")){
+    			header = "0";
+    		}
+    		
+    		if(limit.equals("")){
+    			limit = "-1";
+    		}
+    		
+    		if(footer.equals("")){
+    			footer = "0";
+    		}
+    		boolean useStar = false;
+%>int nb_line_<%=cid%> = 0;
+int footer_<%=cid %>  = <%=footer%>;
+int limit_<%=cid %> = <%=limit %>;
+int[] sizes_<%=cid %> = new int[<%=formats.size() %>];
+int[] begins_<%=cid %> = new int[<%=formats.size() %>];
+int[] ends_<%=cid %> = new int[<%=formats.size() %>];
+<%
+			for(int i = 0; i < formats.size(); i++){ 
+				if(i == formats.size() - 1 && !(rowSeparator.equals("") || rowSeparator.equals("\"\""))){
+					if(formats.get(i).get("SIZE").equals("*")){ 
+						useStar = true;
+					}
+				%>sizes_<%=cid %>[<%=i %>] = <%=useStar ? -1 :  formats.get(i).get("SIZE") %>;
+<%
+				}else{
+				%>sizes_<%=cid %>[<%=i %>] = <%=formats.get(i).get("SIZE") %>;				
+<%
+				}
 			}
-			int lastLineTemp<%=cid %> = totalLine<%=cid %> - footer_<%=cid %>   < 0? 0 : totalLine<%=cid %> - footer_<%=cid %> ;
-			if(lastLine<%=cid %> > 0){
-				lastLine<%=cid %> = lastLine<%=cid %> < lastLineTemp<%=cid %> ? lastLine<%=cid %> : lastLineTemp<%=cid %>; 
-			}else {
-				lastLine<%=cid %> = lastLineTemp<%=cid %>;
+			for(int i = 0; i < formats.size(); i++){ 
+				if(i == 0){
+%>begins_<%=cid %>[<%=i %>] = 0;
+ends_<%=cid %>[<%=i %>] = sizes_<%=cid %>[<%=i %>];
+<%
+				}else if(i == formats.size() - 1 && useStar){
+%>begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+ends_<%=cid %>[<%=i %>] = -1;
+<%
+				}else{
+%>begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+ends_<%=cid %>[<%=i %>] = ends_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i %>];
+<%
+				}
 			}
-			in<%=cid %> = null;
-        	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
-        		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
-        	
-		  }
-        
-        while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
-        	<%if(!row_separator.equals("\"\\n\"")){%>
-        			java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), <%=row_separator %>);
-        	 		while(strRowToken<%=cid %>.hasMoreTokens()){
-        	 		str<%=cid %>=strRowToken<%=cid %>.nextToken();
-        	<%}%>
-       		currentLine<%=cid %>++;
-       		nb_line_<%=cid %>++;
-       		
-       		if(currentLine<%=cid %> < beginLine<%=cid %>) {
-        		continue;
-        	}
-        	if(lastLine<%=cid %> > -1 && currentLine<%=cid %> > lastLine<%=cid %>) {
-        		break;
-        	}
-       		
-        	if(<%=removeEmptyRow%> && str<%=cid %>.equals("")){
-        		continue;
-        	}
-        	outputLine<%=cid %>++;
-        	if(limit<%=cid %>!=-1&& outputLine<%=cid %> > limit<%=cid %>){
-        		break;
-        	}
-			<%
+%>java.io.BufferedReader in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
+<%
+			if(rowSeparator.equals("") || rowSeparator.equals("\"\"") ){
+			%>int rowLength_<%=cid %> = 0;			
+<%
+				for(int i = 0; i < formats.size(); i++){ 
+%>rowLength_<%=cid %> += sizes_<%=cid %>[<%=i %>];
+<%
+				}
+				%>org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
+				<%
+			}else{
+			%>org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
+<%
+			}
+%>reader_<%=cid %>.skipHeaders(<%=header %>);
+if(footer_<%=cid %> > 0){
+	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
+	reader_<%=cid %>.close();
+	in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
+<%
+			if(rowSeparator.equals("") || rowSeparator.equals("\"\"") ){
+				%>reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
+				<%
+			}else{
+			%>reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
+<%
+			}
+%>	reader_<%=cid %>.skipHeaders(<%=header %>);	
+	if(limit_<%=cid %> == -1){
+		limit_<%=cid %> = available_<%=cid %>; 
+	}else{
+		limit_<%=cid %> = (limit_<%=cid %> > available_<%=cid %>) ? available_<%=cid %> : limit_<%=cid %>;
+	}
+}
+String row_<%=cid %> = null;   
+String column_<%=cid %> = null;         
+while (reader_<%=cid %>.readRecord()) {
+	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
+<%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	String firstConnName = "";
 	if (conns!=null) {
 		if (conns.size()>0) {
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
-			
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
-			if(!str<%=cid %>.equals("")){
-			String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
-				int substringBegin<%=cid %>=0,substringEnd<%=cid %>=0;
-			
-			<%
-				for(int i=0;i <	metadata.getListColumns().size();i++){%>
-					columnValue<%=cid %>[<%=i%>]="";
-					<%
-			
-					if(i >=positions.length){
-						continue;
-					}
-					
-					if(positions[i].equals("*")){%>
-						substringEnd<%=cid %>=str<%=cid %>.length();
-					<%}else{%>
-						substringEnd<%=cid %>=substringEnd<%=cid %>+<%=positions[i]%>;
-						if(substringEnd<%=cid %>>str<%=cid %>.length()){
-							substringEnd<%=cid %>=str<%=cid %>.length();
-						}
-					<%}%>
-					if(str<%=cid %>.length()>=substringEnd<%=cid %>){
-						columnValue<%=cid %>[<%=i%>]=str<%=cid %>.substring(substringBegin<%=cid %>,substringEnd<%=cid %>);
-						substringBegin<%=cid %> = substringEnd<%=cid %>;
-						
-					}
-				<%
-				}
-
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					String paddingChar = formats.get(valueN).get("PADDING_CHAR");
+					String align = formats.get(valueN).get("ALIGN");
+					if(align.equals("'L'")){
+						align = "-1";
+					}else if(align.equals("'C'")){
+						align = "0";
+					}else{
+						align = "1";
+					}
+					if(valueN == sizeListColumns - 1 && useStar){ 
+%>if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
+	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+}else{
+	column_<%=cid %> = "";
+}
+<%
+					}else{
+%>if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
+	if(ends_<%=cid %>[<%=valueN %>] <= row_<%=cid %>.length()){
+		column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>], ends_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+	}else{
+		column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+	}
+}else{
+	column_<%=cid %> = "";
+}
+<%
+					}
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-					
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>
-							<%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
+%><%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>;
 <%
 					} else {
-%>
-						if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
-	<%
-							if(javaType == JavaTypesManager.DATE) {
-	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
-	<%
-							}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%><%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes();
+%>if(column_<%=cid %>.length() > 0) {
+<%
+						if(javaType == JavaTypesManager.DATE) {
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>);
+<%
+						}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes();
 <%
 							} else {
-	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>].trim());
-	<%
+%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(column_<%=cid %>);
+<%
 							}
-	%>					
-						}else{
-							<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-						}
-	<%					
+%>}else{
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+}
+<%					
 					}
 				}
 			}
-%>
-			}else{
- 				<%	for (IMetadataColumn column: metadata.getListColumns()) {%>
-				<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), column.isNullable())%>;
-				<%}%>
-			}
-
-	<%
-			}
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
-				IConnection conn = conns.get(i);
+				conn = conns.get(i);
 				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 					for (IMetadataColumn column: metadata.getListColumns()) {
 %>
@@ -197,11 +207,8 @@
 			}
 		}
 	}
-%>
-
- 
-
- <%
+%><%
 		}
 	}
+}
 %>
