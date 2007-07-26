@@ -15,13 +15,14 @@
    
 %>     
         java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
-            if(file_<%=cid %> .exists()&& !<%=replaceFile%>)
-            {
-            	throw new Exception();
-            }else
-            {
-                file_<%=cid %>.createNewFile();
-           	 }
-       
-
-      
+        boolean result<%=cid %> = file_<%=cid %>.createNewFile();
+<%
+	if (replaceFile) {
+%>
+        if (!result<%=cid %>) {
+        	file_<%=cid %>.delete();
+        	file_<%=cid %>.createNewFile();
+        }
+<%
+	}
+%>
