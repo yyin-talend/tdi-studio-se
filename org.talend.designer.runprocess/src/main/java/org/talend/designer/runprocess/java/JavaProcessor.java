@@ -740,7 +740,6 @@ public class JavaProcessor extends Processor {
             Set<String> childrenlist = getChildren((ProcessItem)process.getProperty().getItem());
             for(String child:childrenlist)
             {
-                System.out.println(child);
                 exportJar += child.toLowerCase() + ".jar" + classPathSeparator;
             }
         }
