@@ -494,6 +494,11 @@
             description="Add quote marks to separator after feature 1192 added to trunk."
             id="org.talend.repository.model.migration.addQuot"
             name="Add quote marks to separator after feature 1192 added to trunk."/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgradetRunJobRemoveQuotesMigrationTask"
+            id="org.talend.repository.model.migration.upgradetRunJobRemoveQuotesMigrationTask"
+            name="Remove quotes in the tRunJobProperties of the component"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
