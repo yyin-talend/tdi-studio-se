@@ -88,27 +88,26 @@ tPerl;no need
 tPOP;no need
 tPostgresqlInput;r4770, to Verify
 tPostgresqlOutput;r4817
-tPostgresqlRow
+tPostgresqlRow;no need
 tRowGenerator;r4695
-tRunJob
+tRunJob;no need
 tSendMail;no need
-tSleep
+tSleep;no need
 tSortIn;r4672
 tSortRow;r4672
 tSQLiteInput;r4759
 tSQLiteOutput;r4759
 tSQLiteRow;r4759
-tSSH
+tSSH;no need
 tStatCatcher;r4740
-tSVNLogInput
 tSybaseBulkExec
 tSybaseInput;r4770, to Verify
 tSybaseOutput
 tSybaseRow
-tSystem
+tSystem;no need
 tUniqRow;r4672
-tWarn
-tWebServiceInput
+tWarn;no need
+tWebServiceInput;r4820
 tXSDValidator;r4743
 tXSLT;no need
 
