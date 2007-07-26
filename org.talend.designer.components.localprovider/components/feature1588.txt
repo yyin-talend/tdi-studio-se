@@ -43,9 +43,9 @@ tFileOutputDelimited;r4672
 tFileOutputExcel;r4700
 tFileOutputLDIF;r4772
 tFileOutputPositional;r4672
-tFileOutputShadow
+tFileOutputShadow;r4817
 tFileOutputXML;r4672
-tFileUnarchive
+tFileUnarchive;no need
 tFilterColumns;r4726
 tFilterRow;r4672
 tFlowMeterCatcher;r4740
@@ -76,18 +76,18 @@ tMysqlRow;r4688
 tMysqlSCD;r4793
 tNormalize;r4739
 tOracleBulkExec
-tOracleCommit
-tOracleConnection
+tOracleCommit;no need
+tOracleConnection;no need
 tOracleInput;r4695;r4770, to Verify
 tOracleOutput;r4695
 tOracleRow;r4695
-tOracleSCD
+tOracleSCD;r4817
 tPerlFlex;see note1
 tPerlRow;r4672
 tPerl;no need
 tPOP;no need
 tPostgresqlInput;r4770, to Verify
-tPostgresqlOutput
+tPostgresqlOutput;r4817
 tPostgresqlRow
 tRowGenerator;r4695
 tRunJob
