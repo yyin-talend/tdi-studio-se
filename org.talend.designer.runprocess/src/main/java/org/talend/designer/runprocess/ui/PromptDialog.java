@@ -216,6 +216,9 @@ public class PromptDialog extends Dialog {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
+                    if (text.getText() != null) {
+                        d.setFileName(PathUtils.getOSPath(text.getText()));
+                    }
                     String open = d.open();
                     if (open != null) {
                         // open = open.replaceAll("\\\\", "/");
@@ -237,6 +240,9 @@ public class PromptDialog extends Dialog {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
+                    if (text.getText() != null) {
+                        d.setFilterPath(PathUtils.getOSPath(text.getText()));
+                    }
                     String open = d.open();
                     if (open != null) {
                         // open = open.replaceAll("\\\\", "/");
