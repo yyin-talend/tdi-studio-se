@@ -3,7 +3,7 @@ tAdvancedHash;r4720
 tAdvancedMap;r4720
 tAggregateOut;r4672
 tAggregateRow;r4672
-tAggregateSortedRow
+tAggregateSortedRow;r4812
 tArrayIn;r4672
 tArray;r4672
 tContextLoad;r4726
