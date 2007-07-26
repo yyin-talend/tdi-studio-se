@@ -1,0 +1,27 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		java.util.Map"
+%>	
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");	
+	boolean replaceFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
+   
+%>     
+        java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
+            if(file_<%=cid %> .exists()&& !<%=replaceFile%>)
+            {
+            	throw new Exception();
+            }else
+            {
+                file_<%=cid %>.createNewFile();
+           	 }
+       
+
+      
