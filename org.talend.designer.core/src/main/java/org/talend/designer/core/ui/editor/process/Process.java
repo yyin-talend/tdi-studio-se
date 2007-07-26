@@ -438,26 +438,29 @@ public class Process extends Element implements IProcess {
             }
             if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
                 // if this parameter is defined in a component, then we add a dependancy to this job.
-                RequiredType rType = process.getRequired();
-                if (rType == null) {
-                    rType = fileFact.createRequiredType();
-                    process.setRequired(rType);
-                }
-                JobType jType = fileFact.createJobType();
                 String jobName;
-                jobName = ((String) param.getValue()).replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                jType.setName(jobName);
-                String contextName = ""; //$NON-NLS-1$
-                boolean found = false;
-                for (int i = 0; i < paramList.size() && !found; i++) {
-                    IElementParameter contextParam = paramList.get(i);
-                    if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
-                        contextName = ((String) contextParam.getValue()).replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                        found = true;
+                jobName = ((String) param.getValue());
+                // if there is no job selected in the tRunJob, no need to add any relationship in "required".
+                if (jobName.length() != 0) {
+                    RequiredType rType = process.getRequired();
+                    if (rType == null) {
+                        rType = fileFact.createRequiredType();
+                        process.setRequired(rType);
                     }
+                    JobType jType = fileFact.createJobType();
+                    jType.setName(jobName);
+                    String contextName = ""; //$NON-NLS-1$
+                    boolean found = false;
+                    for (int i = 0; i < paramList.size() && !found; i++) {
+                        IElementParameter contextParam = paramList.get(i);
+                        if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+                            contextName = ((String) contextParam.getValue());
+                            found = true;
+                        }
+                    }
+                    jType.setContext(contextName);
+                    rType.getJob().add(jType);
                 }
-                jType.setContext(contextName);
-                rType.getJob().add(jType);
             }
             if ((!param.isReadOnly()) || param.getName().equals(EParameterName.UNIQUE_NAME.getName())
                     || param.getName().equals(EParameterName.VERSION.getName())) {
@@ -1988,6 +1991,9 @@ public class Process extends Element implements IProcess {
                         // check if we already have the libraries of this job
                         childrensList.add(jType.getName());
                         ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
+                        if (childItem == null) {
+                            continue;
+                        }
                         Process child = new Process(childItem.getProperty());
                         child.loadXmlFile(childItem.getProcess());
                         neededLibraries.addAll(child.getNeededLibraries(true));
@@ -2011,8 +2017,7 @@ public class Process extends Element implements IProcess {
         for (Iterator iter = nodes.iterator(); iter.hasNext();) {
             Node node = (Node) iter.next();
             if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
-                strList.add(((String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName())).replaceAll(
-                        "'", ""));
+                strList.add(((String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName())));
             }
         }
         return strList.size() > 0 ? strList.toArray(new String[1]) : null;

@@ -119,7 +119,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 selectedProcess = (String) param.getValue();
             }
         }
-        return selectedProcess.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        return selectedProcess; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getCurrentContextName() {
@@ -131,7 +131,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 selectedContext = (String) param.getValue();
             }
         }
-        return selectedContext.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        return selectedContext; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     SelectionListener listenerSelection = new SelectionAdapter() {

@@ -321,7 +321,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         } else if (selectedNode.getObject().getProperty().getItem() instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) selectedNode.getObject().getProperty().getItem();
             // command used to set job
-            String value = "'" + processItem.getProperty().getLabel() + "'";
+            String value = processItem.getProperty().getLabel();
             PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
             list.add(command4);
         }

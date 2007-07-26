@@ -226,7 +226,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         for (String name : (List<String>) processNameList) {
             IRepositoryObject process = processMap.get(name);
-            processValueList.add("'" + process.getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String[] processTableNameList = (String[]) processNameList.toArray(new String[0]);
         String[] processTableValueList = (String[]) processValueList.toArray(new String[0]);
@@ -236,13 +236,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
                 param.setListItemsDisplayName(processTableNameList);
                 param.setListItemsValue(processTableValueList);
-                // if (param.getValue().equals("NO_PROCESS")) { //$NON-NLS-1$
-                // if (!processMap.keySet().contains(param.getValue())) {
-                // if (processTableNameList.length > 0) {
-                // elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(), "");
-                // }
-                // }
-                // }
                 if (elem instanceof Node) {
                     ((Node) elem).checkAndRefreshNode();
                 }
@@ -293,7 +286,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
 
             for (IRepositoryObject process : list) {
-                String id = "'" + process.getLabel() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+                String id = process.getLabel();
                 if (selectedProcess.equals(id)) {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
@@ -302,7 +295,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             if (o instanceof ContextType) {
                                 ContextType context = (ContextType) o;
                                 contextNameList.add(context.getName());
-                                contextValueList.add("'" + context.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                                contextValueList.add(context.getName()); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                     }
