@@ -119,6 +119,7 @@ foreach my $line_<%=cid%> (@lines_<%=cid%>) {
         die '[tWebServiceInput] unknown input nested data type', "\n";
     }
 
+    my $<%=cid%> = \@<%=cid%>;
 <%
     }
 }
