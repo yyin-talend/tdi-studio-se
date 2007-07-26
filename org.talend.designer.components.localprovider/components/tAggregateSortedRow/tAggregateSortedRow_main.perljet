@@ -50,26 +50,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             prevComponentName = inConn.getMetadataTable().getTableName();
         }
 
-        StringBuffer hashKey = new StringBuffer();
-
-        for(int i=0; i<groupbys.size(); i++) {
-            Map<String, String> groupby = groupbys.get(i);
-        
-            hashKey.append("$");
-            hashKey.append(inputRowName);
-            hashKey.append("[");
-            hashKey.append(prevComponentName);
-            hashKey.append("__");
-            hashKey.append(groupby.get("INPUT_COLUMN"));
-            hashKey.append("], ");
-        }
-
-        String dataType = "$";
-        if (groupbys.size() == 0) {
-            dataType = "%";
+%>
+$current_key_<%=cid%> = join(
+    $;,
+<%
+        for (Map<String, String> groupby : groupbys) {
+            String indexConstant =
+                prevComponentName
+                + "__"
+                + groupby.get("INPUT_COLUMN")
+            ;
+%>
+    $<%=inputRowName%>->[<%=indexConstant%>],
+<%
         }
 %>
-$current_key_<%=cid%> = join($;, <%=hashKey%>);
+);
 
 <%
         String connName = new String();
@@ -180,7 +176,7 @@ $previous_key_<%=cid%> = $current_key_<%=cid%>;
             StringBuffer curval = new StringBuffer();
             curval.append("$");
             curval.append(inputRowName);
-            curval.append("[");
+            curval.append("->[");
             curval.append(prevComponentName);
             curval.append("__");
             curval.append(operation.get("INPUT_COLUMN"));
