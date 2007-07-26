@@ -32,8 +32,6 @@ List<Map<String, String>> contextParams =
 
 // if it's a generation to run in talend.
 if (!ProcessorUtilities.isExportConfig()) {
-   process = process.replace("'", "");
-   context = context.replace("'", "");
    String[] codeOptions = new String[] {
        "--root_pid='.$_globals{root_pid}.'",
        "--father_pid='.$_globals{pid}.'"
@@ -102,7 +100,7 @@ my @arguments = (
     '<%=interpreterPath %>',
     '-I "' . $libPath . '"',
     '-I "' . $runtimeFilePath . '"',
-    '"' . $runtimeFilePath . '<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
+    '"' . $runtimeFilePath . '<%=currentProjectName %>.job_<%=process %>.pl"',
     '--root_pid='.$_globals{root_pid},
     '--father_pid='.$_globals{pid},
     '--context='.<%=context %>,

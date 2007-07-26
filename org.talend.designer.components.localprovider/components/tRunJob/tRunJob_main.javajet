@@ -14,35 +14,10 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
-//	String interpreterPath = "<interpreter_path>";
-//    if (codeGenArgument.getInterpreterPath() != null) {
-//        interpreterPath = codeGenArgument.getInterpreterPath();
-//        interpreterPath = interpreterPath.replace("\\","/");
-//    }
-
-//    String libPath = "<library_path>";
-//    if (codeGenArgument.getLibPath() != null) {
-//        libPath = codeGenArgument.getLibPath();
-//        libPath = libPath.replace("\\","/");
-//    }
-
-//    String runtimeFilePath = "<runtime_path>";
-//    if (codeGenArgument.getRuntimeFilePath() != null) {
-//        runtimeFilePath = codeGenArgument.getRuntimeFilePath();
-//        runtimeFilePath = runtimeFilePath.replace("\\","/");
-//    }
-
-//    String currentProjectName = "<project_name>";
-//    if (codeGenArgument.getCurrentProjectName() != null) {
-//        currentProjectName = codeGenArgument.getCurrentProjectName();
-//    }
     
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
-    process = process.replace("'", "");
-    context = context.replace("'", "");
     String[] codeOptions = new String[] {"--father_pid=\"+pid+\"", "--root_pid=\"+rootPid+\""};
     String[] commandLineWindows = new String[] {"<command>"};
     String[] commandLineUnix = new String[] {"<command>"};
