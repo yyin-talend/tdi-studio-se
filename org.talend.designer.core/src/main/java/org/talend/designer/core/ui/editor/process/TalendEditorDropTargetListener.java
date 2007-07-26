@@ -411,7 +411,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         FIREBIRD(DatabaseConnectionItem.class, "FIREBIRD", "tFirebirdInput", "tFirebirdOutput"), // "FIREBIRD"),
         INFORMIX(DatabaseConnectionItem.class, "INFORMIX", "tInformixInput", "tInformixOutput"), // "INFORMIX");
         ACCESS(DatabaseConnectionItem.class, "ACCESS", "tAccessInput", "tAccessOutput"), // "ACCESS");
+        TERADATA(DatabaseConnectionItem.class, "TERADATA", "tTeradataInput", "tTeradataOutput"), // "TERADATA");
 
+        
         // FILES
         FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
         FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
