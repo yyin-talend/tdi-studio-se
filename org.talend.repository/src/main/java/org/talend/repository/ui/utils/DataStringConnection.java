@@ -50,9 +50,9 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[15];
+        dataConnection = new DataConnection[16];
 
-        defaultTable = new String[15];
+        defaultTable = new String[16];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -107,6 +107,10 @@ public class DataStringConnection {
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
+        dataConnection[15] = new DataConnection("Teradata",
+                "jdbc:teradata://<host>/<sid>",
+                "jdbc:teradata://" + host +"/"+ sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
 //      dataConnection[15] = new DataConnection("JavaDB Embeded", "jdbc:derby:<datasource>", "jdbc:derby:" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         
 //        dataConnection[16] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",

@@ -217,6 +217,7 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("FireBird");
             databasePerl.remove("Informix");
             databasePerl.remove("Access");
+            databasePerl.remove("Teradata");
 
 //            databasePerl.remove("JavaDB Embeded");
 //            databasePerl.remove("JavaDB JCCJDBC");
