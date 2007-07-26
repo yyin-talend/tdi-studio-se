@@ -22,7 +22,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
 %>
 
-if (@<%=cid %>) {
+if (scalar @$<%=cid%>) {
 <%
         if (colnameAsTagname.equals("true")) {
 %>
@@ -55,7 +55,7 @@ if (@<%=cid %>) {
 <%
         }
 %>
-            } @<%=cid %><% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>
+            } @$<%=cid %>
         ),
         '</'.$desc_<%=cid %>{row_tag}.'>', "\n",
     ) or die "can't write to file " . $output_desc_<%=cid %>{filename} . "\n";

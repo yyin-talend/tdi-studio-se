@@ -132,7 +132,7 @@ if (inMetadata != null && metadata != null) {
 %>
 
 {
-    my $cache_key = join $;, @<%=inConnName%>[<%=keyColPositionsString%>];
+    my $cache_key = join $;, @$<%=inConnName%>[<%=keyColPositionsString%>];
 
     if (not exists $cache_<%=cid%>{$cache_key}) {
         $isth_<%=cid%>->execute(
@@ -142,7 +142,7 @@ if (inMetadata != null && metadata != null) {
 
         if (typeOfColumn.containsKey(colname)) {
 %>
-            $<%=inConnName%>[<%=inConnName%>__<%=colname%>],
+            $<%=inConnName%>->[<%=inConnName%>__<%=colname%>],
 <%
         }
     }
@@ -171,7 +171,7 @@ if (inMetadata != null && metadata != null) {
         # print "==========\ncache comparison row:\n";
         # print Dumper(\@cache_row);
         # print "==========\ncurrent row:\n";
-        # print Dumper(\@<%=inConnName%>);
+        # print Dumper($<%=inConnName%>);
         # print "==========\n";
 
 <%
@@ -185,11 +185,11 @@ if (inMetadata != null && metadata != null) {
 %>
         # printf(
         #     '"%s" Vs "%s"'."\n",
-        #     $<%=inConnName%>[<%=indexInput%>],
+        #     $<%=inConnName%>->[<%=indexInput%>],
         #     $cache_row[<%=indexCache%>],
         # );
 
-        if ($<%=inConnName%>[<%=indexInput%>] ne $cache_row[<%=indexCache%>]) {
+        if ($<%=inConnName%>->[<%=indexInput%>] ne $cache_row[<%=indexCache%>]) {
             my $l1sth_<%=cid %> = $<%=dbh%>->prepare(
                 sprintf($l1_query, '<%=column.getLabel()%>')
             );
@@ -197,11 +197,11 @@ if (inMetadata != null && metadata != null) {
             # printf($l1_query."\n", '<%=column.getLabel()%>');
 
             $l1sth_<%=cid %>->execute(
-                $<%=inConnName%>[<%=indexInput%>],
+                $<%=inConnName%>->[<%=indexInput%>],
 <%
                 for (Map<String, String> sk : sourceKeys) {
 %>
-                $<%=inConnName%>[<%=inConnName%>__<%=sk.get("NAME")%>],
+                $<%=inConnName%>->[<%=inConnName%>__<%=sk.get("NAME")%>],
 <%
                 }
 %>
@@ -239,7 +239,7 @@ if (inMetadata != null && metadata != null) {
                         isFirstL2 = false;
                     }
 %>
-            <%=or%>$<%=inConnName%>[<%=indexInput%>] ne $cache_row[<%=indexCache%>]
+            <%=or%>$<%=inConnName%>->[<%=indexInput%>] ne $cache_row[<%=indexCache%>]
 <%
                 }
             }
@@ -250,7 +250,7 @@ if (inMetadata != null && metadata != null) {
 <%
         for (Map<String, String> sk : sourceKeys) {
 %>
-                $<%=inConnName%>[<%=inConnName%>__<%=sk.get("NAME")%>],
+                $<%=inConnName%>->[<%=inConnName%>__<%=sk.get("NAME")%>],
 <%
         }
 %>
@@ -264,7 +264,7 @@ if (inMetadata != null && metadata != null) {
 
             if (typeOfColumn.containsKey(colname)) {
 %>
-                $<%=inConnName%>[<%=inConnName%>__<%=colname%>],
+                $<%=inConnName%>->[<%=inConnName%>__<%=colname%>],
 <%
             }
         }
