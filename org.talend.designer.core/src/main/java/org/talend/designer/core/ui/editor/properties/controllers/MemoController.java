@@ -26,7 +26,6 @@ import java.beans.PropertyChangeEvent;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -39,9 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
-import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -53,6 +49,12 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * 
  */
 public class MemoController extends AbstractElementPropertySectionController {
+
+    private static boolean estimateInitialized = false;
+
+    private static int rowSizeFixed = 0;
+
+    private static int rowSizeByLine = 0;
 
     /**
      * DOC dev MemoController constructor comment.
@@ -146,25 +148,34 @@ public class MemoController extends AbstractElementPropertySectionController {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
-                new TextControlCreator());
-        Text text = (Text) dField.getControl();
-        FormData d = (FormData) text.getLayoutData();
-        d.height = text.getLineHeight() * param.getNbLines();
-        text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * param.getNbLines());
-        
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dField.getLayoutControl().dispose();
-        
-        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+        if (!estimateInitialized) {
+            DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+                    | SWT.H_SCROLL, new TextControlCreator());
+            Text text = (Text) dField.getControl();
+            FormData d = (FormData) text.getLayoutData();
+            d.height = text.getLineHeight();
+            text.getParent().setSize(subComposite.getSize().x, text.getLineHeight());
+            Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            rowSizeByLine = text.getLineHeight();
+            dField.getLayoutControl().dispose();
+            rowSizeFixed = ITabbedPropertyConstants.VSPACE + (initialSize.y - rowSizeByLine);
+            estimateInitialized = true;
+        }
+
+        return rowSizeFixed + (rowSizeByLine * param.getNbLines());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
      */
     @Override

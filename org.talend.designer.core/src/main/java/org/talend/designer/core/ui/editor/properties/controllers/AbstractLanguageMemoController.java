@@ -52,6 +52,12 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public abstract class AbstractLanguageMemoController extends AbstractElementPropertySectionController {
 
+    private static boolean estimateInitialized = false;
+
+    private static int rowSizeFixed = 0;
+
+    private static int rowSizeByLine = 0;
+
     /**
      * DOC dev LanguageMemoController constructor comment.
      * 
@@ -169,33 +175,37 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        IControlCreator txtCtrl = new IControlCreator() {
+        if (!estimateInitialized) {
+            IControlCreator txtCtrl = new IControlCreator() {
 
-            public Control createControl(final Composite parent, final int style) {
-                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-                colorText.setFont(font);
-                return colorText;
+                public Control createControl(final Composite parent, final int style) {
+                    ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+                    ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                    Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+                    colorText.setFont(font);
+                    return colorText;
+                }
+            };
+
+            DecoratedField dField = null;
+            if (param.getNbLines() != 1) {
+                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
+            } else {
+                dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
             }
-        };
 
-        DecoratedField dField = null;
-        if (param.getNbLines() != 1) {
-            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
-        } else {
-            dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
+            ColorStyledText text = (ColorStyledText) dField.getControl();
+            FormData d = (FormData) text.getLayoutData();
+            d.height = text.getLineHeight();
+            text.getParent().setSize(subComposite.getSize().x, text.getLineHeight());
+            rowSizeByLine = text.getLineHeight();
+            Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            dField.getLayoutControl().dispose();
+            rowSizeFixed = ITabbedPropertyConstants.VSPACE + (initialSize.y - rowSizeByLine);
+            estimateInitialized = true;
         }
 
-        ColorStyledText text = (ColorStyledText) dField.getControl();
-        FormData d = (FormData) text.getLayoutData();
-        d.height = text.getLineHeight() * param.getNbLines();
-        text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * param.getNbLines());
-
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dField.getLayoutControl().dispose();
-
-        return initialSize.y + ITabbedPropertyConstants.VSPACE;
+        return rowSizeFixed + (rowSizeByLine * param.getNbLines());
     }
 
     /*

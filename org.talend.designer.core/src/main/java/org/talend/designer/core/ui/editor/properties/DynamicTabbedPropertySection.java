@@ -661,7 +661,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     Object control = this.hashCurControls.get(elementParameter.getName());
                     if ((control == null && show) || (control != null && !show)) {
                         needRedraw = true;
-                        // System.out.println(elementParameter.getName() + " need redraw");
+                        System.out.println(elementParameter.getName() + " need redraw");
                     }
                 }
             }
@@ -790,7 +790,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         }
         // System.out.println("*** FINAL SIZE =" + heightSize + " ***");
-
         resizeScrolledComposite();
     }
 

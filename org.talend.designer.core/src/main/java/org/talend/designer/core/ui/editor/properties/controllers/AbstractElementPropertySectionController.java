@@ -30,8 +30,10 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
+import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
@@ -45,6 +47,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -109,7 +113,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
-    //PTODO qzhang use PARAMETER_NAME it for bug 853. 
+    // PTODO qzhang use PARAMETER_NAME it for bug 853.
     protected static final String PARAMETER_NAME = TypedTextCommandExecutor.PARAMETER_NAME; //$NON-NLS-1$
 
     protected static final int MAX_PERCENT = 100;
@@ -133,35 +137,42 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param numInRow. The ID of the control in a row.
      * @param nbInRow. The total quantity of the control in a row.
      * @param top
-     * @param rowSize height that can take the control (0 if default size) 
+     * @param rowSize height that can take the control (0 if default size)
      * @param lastControl. The latest control created beside current being created.
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
     public abstract Control createControl(final Composite subComposite, final IElementParameter param,
             final int numInRow, final int nbInRow, final int top, final Control lastControl);
-    
+
     public abstract int estimateRowSize(final Composite subComposite, final IElementParameter param);
+
+    protected int getColorStyledTextRowSize(int nbLines) {
+
+        return 0;
+    }
 
     /**
      * Will return true of false depends if the control has dynamic size or not.
+     * 
      * @return
      */
     public boolean hasDynamicRowSize() {
         return false;
     }
-   
+
     /**
      * Used only to force the rowSize if the size is dynamic.
+     * 
      * @param height
      */
     public void setAdditionalHeightSize(int height) {
         this.additionalHeightSize = height;
     }
 
-    
     /**
      * Used only to force the rowSize if the size is dynamic.
+     * 
      * @return the height
      */
     public int getAdditionalHeightSize() {
@@ -554,7 +565,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     private String getParameterName(Control control) {
-        
+
         String name = (String) control.getData(PARAMETER_NAME);
         if (name == null) { // if the control don't support this property, then take in the list.
             name = (String) hashCurControls.getKey(control);
