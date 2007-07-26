@@ -88,7 +88,7 @@ if (codePart.equals(ECodePart.MAIN)) {
 SendTrace(
     '<%=conn.getName() %>',
     ++$<%=conn.getName() %>_trace_num,
-    \@<%=conn.getName() %>,
+    $<%=conn.getName() %>,
     \@colnames_<%=conn.getName() %>,
 );
 
