@@ -46,6 +46,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
@@ -78,8 +79,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
             TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    private static final String[] STRING_NUMBERS_DATA = {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
     /**
@@ -126,6 +126,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     private ShadowProcessPreview fileManager;
 
     private boolean readOnly;
+
+    SWTUIThreadProcessor processor = new PreviewProcessor();
 
     /**
      * Constructor to use by RCP Wizard.
@@ -233,8 +235,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
      * @param height
      */
     private void addGroupFileSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2,
-                Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
@@ -246,17 +247,15 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         encodingCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
                 .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
 
-        fieldSeparatorText = new LabelledText(compositeFileDelimitor,
-                Messages.getString("FileStep2.fieldSeparator"), 3, true, //$NON-NLS-1$
+        fieldSeparatorText = new LabelledText(compositeFileDelimitor, Messages.getString("FileStep2.fieldSeparator"), 3, true, //$NON-NLS-1$
                 SWT.RIGHT);
         fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip")); //$NON-NLS-1$
 
         // Row Separator Combo & Text
         String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
                 RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
-        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor,
-                Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+                .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
     }
 
@@ -273,13 +272,11 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         info.setText(Messages.getString("FileStep2.rowsToSkipTip")); //$NON-NLS-1$
 
         // Header
-        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
-                .getString("FileStep2.header"), //$NON-NLS-1$
+        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"), //$NON-NLS-1$
                 Messages.getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Footer
-        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
-                .getString("FileStep2.footer"), //$NON-NLS-1$
+        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), //$NON-NLS-1$
                 Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Empty row
@@ -303,8 +300,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     private void addGroupEscapeChar(final Composite mainComposite, final int width, final int height) {
 
         // Composite Escape Char
-        Group group = Form.createGroup(mainComposite, 2,
-                Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
         Composite compositeEscapeChar = Form.startNewDimensionnedGridLayout(group, 3, width, height);
 
         // escape Char Combo
@@ -314,9 +310,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         escapeCharFlag.setText("                            "); //$NON-NLS-1$
 
         // Text Enclosure Combo
-        textEnclosureCombo = new LabelledCombo(compositeEscapeChar,
-                Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
+        textEnclosureCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
+                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
         textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
         textEnclosureFlag.setText("                            "); //$NON-NLS-1$
 
@@ -343,9 +338,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
-                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -359,8 +353,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height); //$NON-NLS-1$
-        Composite compositeFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
-                HEIGHT_BUTTON_PIXEL);
+        Composite compositeFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // File Preview Info
@@ -404,11 +397,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
         if (!isInWizard()) {
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
-        addUtilsButtonListeners();
     }
 
     /**
@@ -457,46 +448,103 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     }
 
     /**
-     * refreshPreview use ShadowProcess to refresh the preview.
+     * Subclass of SWTUIThreadProcessor to process the preview event. <br/>
+     * 
+     * $Id$
+     * 
      */
-    void refreshPreview() {
-        clearPreview();
+    class PreviewProcessor extends SWTUIThreadProcessor {
 
-        // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
+        XmlArray xmlArray = null;
+
+        ProcessDescription processDescription = null;
+
+        public boolean preProcessStart() {
+            previewButton.setText(Messages.getString("FileStep2.stop"));
+
+            clearPreview();
+
+            // if no file, the process don't be executed
+            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
+                return false;
+            }
+
+            // if incomplete settings, , the process don't be executed
+            if (!checkFieldsValue()) {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
+                return false;
+            }
+            previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+            processDescription = getProcessDescription();
+            return true;
         }
 
-        // if incomplete settings, , the process don't be executed
-        if (!checkFieldsValue()) {
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
-        }
-        previewButton.setEnabled(false);
-        previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+        public void nonUIProcessInThread() {
+            // get the XmlArray width an adapt ProcessDescription
+            try {
+                xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_POSITIONAL"); //$NON-NLS-1$
+                if (xmlArray == null) {
+                    previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+                    fileManager.clearTablePreview();
 
-        // get the XmlArray width an adapt ProcessDescription
-        try {
-            ProcessDescription processDescription = getProcessDescription();
-            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_POSITIONAL"); //$NON-NLS-1$
+                } else {
+                    previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
+                    // refresh TablePreview on this step
+                    fileManager.refreshTablePreview(xmlArray, firstRowIsCaptionCheckbox.getSelection());
+                    previewInformationLabel.setText(""); //$NON-NLS-1$
+                }
+            } catch (CoreException e) {
+                setException(e);
+                log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
+        public void updateUIInThreadIfThreadIsCancled() {
+            if (!previewInformationLabel.isDisposed()) {
+                previewInformationLabel.setText("");
+            }
+        }
+
+        public void updateUIInThreadIfThreadIsNotCancled() {
+            if (previewInformationLabel.isDisposed()) {
+                return;
+            }
+            if (getException() != null) {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+                return;
+            }
+
             if (xmlArray == null) {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
                 fileManager.clearTablePreview();
-
             } else {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
                 // refresh TablePreview on this step
                 fileManager.refreshTablePreview(xmlArray, firstRowIsCaptionCheckbox.getSelection());
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
-        } catch (CoreException e) {
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            new ErrorDialogWidthDetailArea(getShell(), PID,
-                    Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
-            log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        previewButton.setEnabled(true);
+
+        public void updateUIInThreadIfThreadFinally() {
+            if (!previewButton.isDisposed()) {
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setEnabled(true);
+            }
+        }
+
+        public void postProcessCancle() {
+            previewButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * refreshPreview use ShadowProcess to refresh the preview.
+     */
+    void refreshPreview() {
+        processor.execute();
     }
 
     /**
@@ -641,8 +689,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipHeaderCheckboxCombo.isInteger()
-                            || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipHeaderCheckboxCombo.deselectAll();
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
                         getConnection().setHeaderValue(0);
@@ -666,8 +713,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipFooterCheckboxCombo.isInteger()
-                            || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
@@ -841,7 +887,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
-        previewButton.setEnabled(false);
 
         // Separator Combo (field and row)
         if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
@@ -900,7 +945,6 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         }
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
-        previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
         return true;
     }
@@ -918,12 +962,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) { //$NON-NLS-1$
-                    previewButton.setText(Messages.getString("FileStep2.wait")); //$NON-NLS-1$
-                    refreshPreview();
-                } else {
-                    previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
-                }
+                refreshPreview();
             }
         });
 

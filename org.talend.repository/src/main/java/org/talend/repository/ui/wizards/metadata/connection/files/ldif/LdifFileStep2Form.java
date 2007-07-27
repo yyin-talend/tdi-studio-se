@@ -56,6 +56,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.XmlArray;
@@ -105,6 +106,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
 
     private AbstractExtendedTableViewer<String> tableEditorView;
 
+    SWTUIThreadProcessor processor = new PreviewProcessor();
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -144,8 +147,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1,
-                Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
 
         attributeModel = new ExtendedTableModel<String>();
         attributeModel.registerDataList(itemTableName);
@@ -272,9 +274,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
-                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -324,11 +325,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
-        addUtilsButtonListeners();
     }
 
     /**
@@ -354,31 +353,67 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
     }
 
     /**
-     * refreshPreview use ShadowProcess to refresh the preview.
+     * Subclass of SWTUIThreadProcessor to process the preview event. <br/>
+     * 
+     * $Id: DelimitedFileStep2Form.java 4837 2007-07-27 05:40:31Z bqian $
+     * 
      */
-    void refreshPreview() {
-        clearPreview();
+    class PreviewProcessor extends SWTUIThreadProcessor {
 
-        // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
+        XmlArray xmlArray = null;
+
+        ProcessDescription processDescription = null;
+
+        public boolean preProcessStart() {
+            previewButton.setText(Messages.getString("FileStep2.stop"));
+
+            clearPreview();
+
+            // if no file, the process don't be executed
+            if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
+                return false;
+            }
+
+            // if incomplete settings, , the process don't be executed
+            if (!checkFieldsValue()) {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
+                return false;
+            }
+
+            previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+            processDescription = getProcessDescription();
+            return true;
         }
 
-        // if incomplete settings, , the process don't be executed
-        if (!checkFieldsValue()) {
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-            return;
+        public void nonUIProcessInThread() {
+            // get the XmlArray width an adapt ProcessDescription
+            try {
+                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
+
+            } catch (CoreException e) {
+                setException(e);
+                log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
 
-        previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+        public void updateUIInThreadIfThreadIsCancled() {
+            if (!previewInformationLabel.isDisposed()) {
+                previewInformationLabel.setText("");
+            }
+        }
 
-        // get the XmlArray width an adapt ProcessDescription
-        try {
+        public void updateUIInThreadIfThreadIsNotCancled() {
+            if (previewInformationLabel.isDisposed()) {
+                return;
+            }
+            if (getException() != null) {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
+                return;
+            }
 
-            ProcessDescription processDescription = getProcessDescription();
-
-            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
             if (xmlArray == null) {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
@@ -388,13 +423,25 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
                 ldifFilePreview.refreshTablePreview(xmlArray, false, processDescription);
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
-
-        } catch (CoreException e) {
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-            new ErrorDialogWidthDetailArea(getShell(), PID,
-                    Messages.getString("FileStep2.previewFailure"), e.getMessage()); //$NON-NLS-1$
-            log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
+
+        public void updateUIInThreadIfThreadFinally() {
+            if (!previewButton.isDisposed()) {
+                previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                previewButton.setEnabled(true);
+            }
+        }
+
+        public void postProcessCancle() {
+            previewButton.setEnabled(false);
+        }
+    }
+
+    /**
+     * refreshPreview use ShadowProcess to refresh the preview.
+     */
+    void refreshPreview() {
+        processor.execute();
     }
 
     /**
@@ -468,7 +515,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
-        previewButton.setEnabled(false);
 
         // Labelled Checkbox Combo (Row to Skip and Limit)
         // ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
@@ -489,7 +535,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         // }
         // }
         previewInformationLabel.setText(""); //$NON-NLS-1$
-        previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
         return true;
     }
@@ -505,12 +550,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         previewButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) { //$NON-NLS-1$
-                    previewButton.setText(Messages.getString("FileStep2.wait")); //$NON-NLS-1$
-                    refreshPreview();
-                } else {
-                    previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
-                }
+                refreshPreview();
             }
         });
 
@@ -589,7 +629,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      * @see org.talend.repository.ui.swt.utils.IRefreshable#refresh()
      */
     public void refresh() {
-       refreshPreview();
-        
+        refreshPreview();
+
     }
 }
