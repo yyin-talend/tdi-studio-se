@@ -26,10 +26,21 @@ imports="
                 if(line.get("APPEND").equals("true")==true)
                     {
 %>
-   System.setProperty(<%= line.get("NAME") %>,<%= line.get("VALUE") %>);
+                        if(System.getProperty(<%= line.get("NAME") %>)!=null)
+                        {
+                            System.setProperty(<%= line.get("NAME") %>, System.getProperty(<%= line.get("NAME") %>)+System.getProperty("path.separator")+<%= line.get("VALUE") %>);
+                        }else
+                        {
+                           System.setProperty(<%= line.get("NAME") %>,<%= line.get("VALUE") %>);                         
+                        }
 <%
+                    }else
+                    {
+                        
+ %>
+                        System.setProperty(<%= line.get("NAME") %>,<%= line.get("VALUE") %>);
+ <%
                     }
-
                 }
             }
         }
