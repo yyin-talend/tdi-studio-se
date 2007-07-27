@@ -1,5 +1,6 @@
 <%@ jet
 imports="
+    org.talend.core.model.process.IConnection
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable 
@@ -31,7 +32,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__CRC_TYPE__"
         );
+
+        List<? extends IConnection> inConns = node.getIncomingConnections();
+    
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
+            IMetadataTable inMetadata = inConn.getMetadataTable();
+            String inputRowName = inConn.getName();
+
+
 %>
+my $<%=cid%> = [ @$<%=inputRowName%> ];
+
     $<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = <%=crcType%>(
         join(
             $;,
@@ -49,6 +61,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     );
 
 <%
+        }
     }
 }
 %>

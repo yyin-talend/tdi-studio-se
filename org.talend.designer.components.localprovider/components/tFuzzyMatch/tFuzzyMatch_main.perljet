@@ -33,11 +33,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     List<? extends IConnection> inConns = node.getIncomingConnections();
 
     if (inConns != null && !inConns.isEmpty()) {
-        IConnection inConn = inConns.get(0);
-        IMetadataTable inMetadata = inConn.getMetadataTable();
-        String inputRowName = inConn.getName();
-
- 
+        for (IConnection conn : inConns) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+%>
+my $<%=cid %> = [ @$<%=conn.getName() %> ];
+<%
+            }
+        }
+    }
 %>
 
 my $result = tFuzzyMatch::FuzzyMatch::<%=matching%>( 
@@ -69,6 +72,5 @@ $<%=cid%>->[<%=metadata.getListColumns().size() - 1%>] = join(<%=separator%>, @{
 $nb_lines_<%=cid%>++;
 
 <%
-    }
 }
 %>

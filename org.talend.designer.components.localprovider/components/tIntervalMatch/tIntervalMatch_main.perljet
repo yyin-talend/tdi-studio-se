@@ -36,6 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 use tIntervalMatch::IntervalMatch;
 
+my $<%=cid %> = [ @$<%=inputRowName %> ];
 
 
 my $result_<%=cid %> = tIntervalMatch::IntervalMatch::search( 
