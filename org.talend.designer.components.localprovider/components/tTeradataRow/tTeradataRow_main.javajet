@@ -83,12 +83,13 @@ pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.
 	%>
 try {
 	pstmt_<%=cid %>.execute();
-} catch (Exception e) {
-<%	if (dieOnError.equals("true")) { %>
-	throw(e);
-<% } else { %>
-	throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
-<% } %>
+}catch(Exception e)
+{
+    <%  if (dieOnError.equals("true")) { %>
+    throw(e);
+    <% } else { %>
+          System.err.print(e.getMessage());
+    <% } %>
 }
 	<%
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){

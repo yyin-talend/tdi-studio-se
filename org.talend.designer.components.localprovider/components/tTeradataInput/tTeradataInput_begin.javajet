@@ -37,7 +37,7 @@ imports="
 %>
 int nb_line_<%=cid%> = 0;
 java.lang.Class.forName("com.ncr.teradata.TeraDriver");
-String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;
+String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%> +"/"+<%=dbname%>;
 
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
