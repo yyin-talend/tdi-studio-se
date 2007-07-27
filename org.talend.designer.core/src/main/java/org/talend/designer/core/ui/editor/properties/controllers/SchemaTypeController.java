@@ -23,8 +23,10 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -53,7 +55,9 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
+import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -100,8 +104,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
         String paramName;
 
-        IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                .getName());
         Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo.equals(repositoryControl)) {
@@ -135,8 +139,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     switchParam.setValue(Boolean.FALSE);
                 }
 
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
-                        (Node) elem, paramName, value, repositoryMetadata);
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
+                        paramName, value, repositoryMetadata);
 
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
@@ -164,8 +168,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (hasMetadataInput) {
                         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                             if (connec.isActivate()
-                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec
-                                            .getLineStyle().equals(EConnectionType.TABLE))) {
+                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                                            EConnectionType.TABLE))) {
                                 repositoryMetadata = connec.getMetadataTable().clone();
                             }
                         }
@@ -173,8 +177,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
                 } else {
                     this.dynamicTabbedPropertySection.updateRepositoryList();
-                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                            .getName());
+                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
                     } else {
@@ -185,8 +188,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     switchParam.setValue(Boolean.FALSE);
                 }
 
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
-                        (Node) elem, paramName, value, repositoryMetadata);
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
+                        paramName, value, repositoryMetadata);
 
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
@@ -204,6 +207,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
         if (inputButton.getData(NAME).equals(SCHEMA)) {
+            // this map wil hold the all input connection for the tUnite component
+            Map<INode, Map<IMetadataTable, Boolean>> inputInfos = new HashMap<INode, Map<IMetadataTable, Boolean>>();
 
             Node node;
             if (elem instanceof Node) {
@@ -218,8 +223,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             boolean inputReadOnly = false, outputReadOnly = false, inputReadOnlyNode = false, inputReadOnlyParam = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate()
-                        && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                                EConnectionType.TABLE))) {
+                        && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                                || connec.getLineStyle().equals(EConnectionType.TABLE) || connec.getLineStyle().equals(
+                                EConnectionType.FLOW_MERGE))) {
                     inputMetadata = connec.getMetadataTable();
                     inputMetaCopy = inputMetadata.clone();
                     inputConec = connec;
@@ -235,12 +241,28 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                             }
                         }
                     }
+
+                    // check if the inputMetadata is readonly
+                    if (inputMetadata != null) {
+                        for (IMetadataColumn column : inputMetadata.getListColumns()) {
+                            IMetadataColumn columnCopied = inputMetaCopy.getColumn(column.getLabel());
+                            columnCopied.setCustom(column.isCustom());
+                            columnCopied.setReadOnly(column.isReadOnly());
+                        }
+                        inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
+                        inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
+                    }
+
+                    // store the value for Dialog
+                    Map<IMetadataTable, Boolean> oneInput = new HashMap<IMetadataTable, Boolean>();
+                    oneInput.put(inputMetaCopy, inputReadOnly);
+                    inputInfos.put(connec.getSource(), oneInput);
                 }
             }
 
+            // check if the outputMetadata is readonly
             String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
-
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -249,57 +271,121 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 columnCopied.setReadOnly(column.isReadOnly());
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
-
             outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
-            MetadataDialog metaDialog;
-            if (inputMetadata != null) {
-                for (IMetadataColumn column : inputMetadata.getListColumns()) {
-                    IMetadataColumn columnCopied = inputMetaCopy.getColumn(column.getLabel());
-                    columnCopied.setCustom(column.isCustom());
-                    columnCopied.setReadOnly(column.isReadOnly());
-                }
-                inputMetaCopy.setReadOnly(inputMetadata.isReadOnly());
 
-                inputReadOnly = prepareReadOnlyTable(inputMetaCopy, inputReadOnlyParam, inputReadOnlyNode);
-                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(),
-                        outputMetaCopy, node, getCommandStack());
+            // create the MetadataDialog
+            MetadataDialog metaDialog = null;
+            if (inputMetadata != null) {
+                if (inputInfos != null && node.getComponent().useMerge() && inputInfos.size() > 1) {
+                    MetadataDialogForMerge metaDialogForMerge = new MetadataDialogForMerge(composite.getShell(), inputInfos,
+                            outputMetaCopy, node, getCommandStack());
+                    metaDialogForMerge.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
+                    metaDialogForMerge.setInputReadOnly(inputReadOnly);
+                    metaDialogForMerge.setOutputReadOnly(outputReadOnly);
+                    if (metaDialogForMerge.open() == MetadataDialogForMerge.OK) {
+                        // inputMetaCopy = metaDialog.getInputMetaData();
+                        outputMetaCopy = metaDialogForMerge.getOutputMetaData();
+
+                        // check if the metadata is modified
+                        boolean modified = false;
+                        if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
+                            modified = true;
+                        } else {
+                            if (inputMetadata != null) {
+
+                                // Notice: the Map inputInfos maybe is modified by the dialog.
+                                Set<INode> inputNodes = inputInfos.keySet();
+                                for (INode inputNode : inputNodes) {
+                                    Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
+                                    inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
+                                    if (!inputMetaCopy.sameMetadataAs(inputNode.getMetadataList().get(0))) {
+                                        modified = true;
+                                    }
+                                }
+
+                            }
+                        }
+
+                        // create the changeMetadataCommand
+                        if (modified) {
+                            if (switchParam != null) {
+                                switchParam.setValue(Boolean.FALSE);
+                            }
+
+                            Command changeMetadataCommand = null;
+
+                            // only output, no input
+                            if (inputInfos.isEmpty()) {
+                                changeMetadataCommand = new ChangeMetadataCommand(node, null, null, null, originaleOutputTable,
+                                        outputMetaCopy);
+
+                            } else {
+                                Set<INode> inputNodes = inputInfos.keySet();
+                                int count = 0;
+                                for (INode inputNode : inputNodes) {
+                                    Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
+                                    inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
+                                    if (count == 0) {
+                                        changeMetadataCommand = new ChangeMetadataCommand(node, (Node) inputNode, inputNode
+                                                .getMetadataList().get(0), inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                                    } else {
+                                        changeMetadataCommand = changeMetadataCommand.chain(new ChangeMetadataCommand(node,
+                                                (Node) inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
+                                                originaleOutputTable, outputMetaCopy));
+                                    }
+                                    count++;
+                                }
+                            }
+                            return changeMetadataCommand;
+
+                        }
+                    }
+
+                } else {
+                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(), outputMetaCopy,
+                            node, getCommandStack());
+                }
+
             } else {
                 metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node, getCommandStack());
             }
-            metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
-            metaDialog.setInputReadOnly(inputReadOnly);
-            metaDialog.setOutputReadOnly(outputReadOnly);
 
-            if (metaDialog.open() == MetadataDialog.OK) {
-                inputMetaCopy = metaDialog.getInputMetaData();
-                outputMetaCopy = metaDialog.getOutputMetaData();
-                boolean modified = false;
-                if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
-                    modified = true;
-                } else {
-                    if (inputMetadata != null) {
-                        if (!inputMetaCopy.sameMetadataAs(inputMetadata)) {
-                            modified = true;
+            if (metaDialog != null) {
+                metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
+                metaDialog.setInputReadOnly(inputReadOnly);
+                metaDialog.setOutputReadOnly(outputReadOnly);
+
+                if (metaDialog.open() == MetadataDialog.OK) {
+                    inputMetaCopy = metaDialog.getInputMetaData();
+                    outputMetaCopy = metaDialog.getOutputMetaData();
+                    boolean modified = false;
+                    if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
+                        modified = true;
+                    } else {
+                        if (inputMetadata != null) {
+                            if (!inputMetaCopy.sameMetadataAs(inputMetadata)) {
+                                modified = true;
+                            }
                         }
                     }
+
+                    if (modified) {
+                        if (switchParam != null) {
+                            switchParam.setValue(Boolean.FALSE);
+                        }
+                        Node inputNode = null;
+                        if (inputConec != null) {
+                            inputNode = inputConec.getSource();
+                        }
+                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, inputNode, inputMetadata,
+                                inputMetaCopy, originaleOutputTable, outputMetaCopy);
+
+                        return changeMetadataCommand;
+
+                    }
                 }
 
-                if (modified) {
-                    if (switchParam != null) {
-                        switchParam.setValue(Boolean.FALSE);
-                    }
-                    Node inputNode = null;
-                    if (inputConec != null) {
-                        inputNode = inputConec.getSource();
-                    }
-                    ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, inputNode,
-                            inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
-
-                    return changeMetadataCommand;
-
-                }
             }
-
         } else if (inputButton.getData(NAME).equals(RESET_COLUMNS)) {
             Node node = (Node) elem;
             IMetadataTable meta = (IMetadataTable) node.getMetadataList().get(0);
@@ -442,7 +528,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         int comboSize, buttonSize;
-        
+
         CCombo combo = new CCombo(subComposite, SWT.BORDER);
         IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
         String[] originalList = schemaTypeParameter.getListItemsDisplayName();
@@ -456,8 +542,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         return Math.max(comboSize, buttonSize) + ITabbedPropertyConstants.VSPACE;
     }
 
-    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
-            int top) {
+    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int top) {
         Button btn;
         Button resetBtn = null;
         Control lastControlUsed = lastControl;
@@ -510,8 +595,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite,
-                Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
@@ -554,8 +638,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 return cb;
             }
         };
-        FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                FieldDecorationRegistry.DEC_REQUIRED);
+        FieldDecoration decoration = FieldDecorationRegistry.getDefault()
+                .getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
         dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         cLayout = dField.getLayoutControl();
@@ -568,8 +652,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         CCombo combo = (CCombo) dField.getControl();
-        IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                .getName());
         hashCurControls.put(repositorySchemaTypeParameter.getName(), dField.getControl());
         dynamicTabbedPropertySection.updateRepositoryList();
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
@@ -627,8 +711,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             combo.setText(strValue);
         }
 
-        IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                .getName());
         combo = (CCombo) hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo == null) {
