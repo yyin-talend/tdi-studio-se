@@ -135,14 +135,14 @@ public class TabFolderEditors extends CTabFolder {
         CommandStack commandStack = mapperManager.getCommandStack();
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        inputMetaEditor.setShowDbTypeColumn(true, false, false);
+        inputMetaEditor.setShowDbTypeColumn(false, true, false, false);
         inputMetaEditor.setShowPatternColumn(false);
         inputMetaEditor.setShowTalendTypeColumn(false);
         inputMetaEditor.initGraphicComponents();
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        outputMetaEditor.setShowDbTypeColumn(true, false, false);
+        outputMetaEditor.setShowDbTypeColumn(false, true, false, false);
         outputMetaEditor.setShowTalendTypeColumn(false);
         outputMetaEditor.setShowPatternColumn(false);
         outputMetaEditor.initGraphicComponents();
