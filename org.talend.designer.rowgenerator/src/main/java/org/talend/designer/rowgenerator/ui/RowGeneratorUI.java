@@ -191,7 +191,7 @@ public class RowGeneratorUI {
                 !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         dataTableView.setGeneratorUI(this);
-        dataTableView.setShowDbTypeColumn(true, true, false);
+        dataTableView.setShowDbTypeColumn(false, true, true, false);
         // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
