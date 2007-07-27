@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.swt.utils;
 
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
@@ -44,6 +45,7 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
 
     protected DelimitedFileConnection connection;
 
+    private WizardPage page=null;
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
      */
@@ -74,4 +76,24 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
     protected DelimitedFileConnection getConnection() {
         return (DelimitedFileConnection) connectionItem.getConnection();
     }
+
+    
+    /**
+     * Getter for page.
+     * @return the page
+     */
+    public WizardPage getWizardPage() {
+        return this.page;
+    }
+
+    
+    /**
+     * Sets the page.
+     * @param page the page to set
+     */
+    public void setWizardPage(WizardPage page) {
+        this.page = page;
+    }
+
+    
 }

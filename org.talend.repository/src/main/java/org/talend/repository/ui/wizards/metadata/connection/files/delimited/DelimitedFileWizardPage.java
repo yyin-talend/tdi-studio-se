@@ -74,6 +74,7 @@ public class DelimitedFileWizardPage extends WizardPage {
             currentComposite = new DelimitedFileStep1Form(parent, connectionItem, existingNames);
         } else if (step == 2) {
             currentComposite = new DelimitedFileStep2Form(parent, connectionItem);
+            currentComposite.setWizardPage(this);
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((DelimitedFileConnection) connectionItem.getConnection()).getTables()
                     .get(0);
