@@ -198,16 +198,14 @@ class Transfer{
 			 	//column type
 				 		sql=sql+column.getType();
 			 	//column DataDefine
-			 		if((column.getType().equals("VARCHAR"))||(column.getType().equals("VARCHAR2"))||(column.getType().equals("RAW"))||(column.getType().equals("VARGRAPHIC"))){
-			 			if((column.getLength()==null)||(column.getLength()<1)){
-			 				sql=sql+"(100)";
-			 			}else{
-			 				sql=sql+"("+column.getLength()+") ";
-			 			}
-			 		}
+			 		if(!((column.getLength()==null)||(column.getLength()==0))&&((column.getPrecision()==null)||(column.getPrecision()==0))){
+			 			sql=sql+"("+column.getLength()+")";
+			 		}else if(!((column.getLength()==null)||(column.getLength()==0))&&!((column.getPrecision()==null))||(column.getLength()==0)){
+			 			sql=sql+"("+column.getLength()+","+column.getPrecision()+")";			 			
+			 		}			 	
 			 		sql=sql+" ";
 			 	//default_value
-			 		if(!(column.getDefault().equals(""))){
+			 		if(!(column.getDefault()==null||column.getDefault().equals(""))){
 			 		sql=sql+"default ";
 				 		if((column.getTalendType().equals("id_String"))||(column.getTalendType().equals("id_Date"))){
 				 			sql=sql+"'"+column.getDefault()+"' ";
@@ -339,6 +337,7 @@ class Transfer{
 		stmtClose<%=cid%>.execute("SHUTDOWN");
 <%	}%>
 		con<%=cid%>.close();
+
 
 		
 
