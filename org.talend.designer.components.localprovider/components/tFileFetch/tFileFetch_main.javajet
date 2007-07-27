@@ -35,16 +35,16 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 			fileName<%=cid %> = "defaultfilename.txt";
 		}
 	}
-	final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(new java.io.File(dir<%=cid %>, fileName<%=cid %>))));
-
+    final java.io.DataOutputStream out<%=cid%>= new java.io.DataOutputStream(new java.io.FileOutputStream(new java.io.File(
+            dir<%=cid %>, fileName<%=cid %>))); 
 	// copy file
-	final java.io.BufferedReader reader<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(conn<%=cid %>.getInputStream()));
-	String line<%=cid %>;
-	while ((line<%=cid %> = reader<%=cid %>.readLine()) != null) {
-		out<%=cid %>.write(line<%=cid %>);
-	}
-	
+    final java.io.DataInputStream in<%=cid%> = new java.io.DataInputStream(conn<%=cid %>.getInputStream());
 	//close opened object
-	reader<%=cid %>.close();
-	out<%=cid %>.close();
+    byte[] buffer<%=cid%> = new byte[1024];
+    int count<%=cid%> = 0;
+    while ((count<%=cid%> = in<%=cid%>.read(buffer<%=cid%>)) > 0) {
+        out<%=cid%>.write(buffer<%=cid%>, 0, count<%=cid%>);
+    }
+    // close opened object
+    in<%=cid%>.close();
+    out<%=cid%>.close();
