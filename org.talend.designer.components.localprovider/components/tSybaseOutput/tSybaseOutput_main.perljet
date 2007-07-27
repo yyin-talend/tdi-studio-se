@@ -81,7 +81,7 @@ my $nb_rows = 0;
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-$nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+$nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
     or die "can't execute update query\n";
 if ($nb_rows) {
     $nb_line_updated_<%=cid%>+= $nb_rows;
@@ -98,7 +98,7 @@ if (++$nb_line_current_commit_upd_<%=cid%> >= <%=commitEvery %>) {
         else if (dataAction.equals("INSERT")) {
 %>
 
-$isth_<%=cid %>->execute(@<%=cid %>)
+$isth_<%=cid %>->execute(@$<%=cid %>)
     or die "can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
@@ -114,12 +114,12 @@ if (++$nb_line_current_commit_ins_<%=cid%> >= <%=commitEvery %>) {
 %>
 $isth_<%=cid %>->{PrintError} = 0;
 eval {
-    $nb_line_inserted_<%=cid%> += $isth_<%=cid %>->execute(@<%=cid%>) ;
+    $nb_line_inserted_<%=cid%> += $isth_<%=cid %>->execute(@$<%=cid%>) ;
 } ;
 if($@){
     eval {
         $dbh_<%=cid%>->rollback();
-        $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>]) ;
+        $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>]) ;
     	$dbh2_<%=cid %>->commit();
     } ;
     if($@){
@@ -136,7 +136,7 @@ if($@){
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
 %>
 $usth_<%=cid %>->{PrintError} = 0;
-    $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>]) 
+    $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>]) 
         or die "can't execute update query\n";
 
     if($nb_line_updated_<%=cid%>){
@@ -146,7 +146,7 @@ $usth_<%=cid %>->{PrintError} = 0;
         }
     }
     else {
-        $nb_line_inserted_<%=cid%> += $isth_<%=cid %>->execute(@<%=cid%>)
+        $nb_line_inserted_<%=cid%> += $isth_<%=cid %>->execute(@$<%=cid%>)
             or die "can't execute insert query\n"  ;
     	$dbh_<%=cid %>->commit();
     }
@@ -154,7 +154,7 @@ $usth_<%=cid %>->{PrintError} = 0;
         }
         else if (dataAction.equals("DELETE")) {
 %>
-$nb_rows = $dsth_<%=cid %>->execute(@<%=cid%>[<%=keyPositionsString%>])
+$nb_rows = $dsth_<%=cid %>->execute(@$<%=cid%>[<%=keyPositionsString%>])
     or die "can't execute delete query\n";
 
 if ($nb_rows) {

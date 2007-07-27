@@ -103,7 +103,7 @@ sub getTableCreationQuery {
 
 #     use Data::Dumper;
 #     print Dumper($param{schema});
-     print $query;
+#     print $query;
 #     exit();
 
     return $query;
