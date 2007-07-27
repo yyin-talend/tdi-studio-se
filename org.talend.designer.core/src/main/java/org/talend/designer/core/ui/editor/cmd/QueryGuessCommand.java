@@ -153,7 +153,7 @@ public class QueryGuessCommand extends Command {
 
         for (int i = 0; i < metaDataColumnList.size(); i++) {
             IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-            String columnName = getColumnName(metaDataColumn.getLabel(), dbType);
+            String columnName = getColumnName(metaDataColumn.getOriginalDbColumnName(), dbType);
             if (i != index - 1) {
                 query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
             } else {
