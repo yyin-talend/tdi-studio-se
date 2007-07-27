@@ -22,10 +22,12 @@
 package org.talend.designer.mapper.language.generation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
+import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
@@ -50,7 +52,35 @@ public class PerlGenerationManager extends GenerationManager {
      */
     public String prefixEntryLocationsForOutputExpression(String uniqueNameComponent, String outputExpression,
             DataMapExpressionParser expressionParser, TableType[] possibleSources) {
-        TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(outputExpression);
+        outputExpression = tranformArraysExpressions(true, uniqueNameComponent, outputExpression, expressionParser,
+                possibleSources);
+        return tranformArraysExpressions(false, uniqueNameComponent, outputExpression, expressionParser,
+                possibleSources);
+    }
+
+    /**
+     * DOC amaumont Comment method "tranformArraysExpressions".
+     * 
+     * @param uniqueNameComponent
+     * @param outputExpression
+     * @param expressionParser
+     * @param possibleSources
+     * @return
+     */
+    private String tranformArraysExpressions(boolean addArrayPointers, String uniqueNameComponent,
+            String outputExpression, DataMapExpressionParser expressionParser, TableType[] possibleSources) {
+        expressionParser.setLocationPattern(getPerlLanguage().getLocationPattern());
+        TableEntryLocation[] allEntryLocations = expressionParser.parseTableEntryLocations(outputExpression);
+        // expressionParser.setLocationPattern("\\$\\s*(\\w+)\\s*\\[\\s*(\\$?\\w+)\\s*\\]");
+        TableEntryLocation[] validColumnEntryLocations = null;
+        HashSet<TableEntryLocation> sValidColumnEntryLocations = new HashSet<TableEntryLocation>();
+        if (!addArrayPointers) {
+            expressionParser.setLocationPattern(getPerlLanguage().getLocationPatternValidColumnName());
+            validColumnEntryLocations = expressionParser.parseTableEntryLocations(outputExpression);
+            for (int i = 0; i < validColumnEntryLocations.length; i++) {
+                sValidColumnEntryLocations.add(validColumnEntryLocations[i]);
+            }
+        }
         ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
         ArrayList<TableEntryLocation> listCoupleForAddTablePrefixWithPrefixComponentName = new ArrayList<TableEntryLocation>();
         boolean possibleSourceInputs = false;
@@ -65,7 +95,7 @@ public class PerlGenerationManager extends GenerationManager {
             }
         }
 
-        for (TableEntryLocation location : entryLocations) {
+        for (TableEntryLocation location : allEntryLocations) {
             if (possibleSourceInputs && isInputTable(location.tableName)) {
                 listCoupleForAddTablePrefix.add(location);
             } else if (possibleSourceVars && isVarsTable(location.tableName)) {
@@ -74,15 +104,24 @@ public class PerlGenerationManager extends GenerationManager {
         }
         String outputExpressionToWrite = outputExpression;
         if (listCoupleForAddTablePrefix.size() > 0) {
-            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
-                    outputExpressionToWrite, listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]), false);
-
+            if (addArrayPointers) {
+                outputExpressionToWrite = expressionParser.addRefArrayPointer(outputExpressionToWrite,
+                        listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]));
+            } else {
+                outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
+                        outputExpressionToWrite, listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]), false,
+                        sValidColumnEntryLocations);
+            }
         }
         if (listCoupleForAddTablePrefixWithPrefixComponentName.size() > 0) {
-            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
-                    outputExpressionToWrite, listCoupleForAddTablePrefixWithPrefixComponentName
-                            .toArray(new TableEntryLocation[0]), true);
-
+            if (addArrayPointers) {
+                outputExpressionToWrite = expressionParser.addRefArrayPointer(outputExpressionToWrite,
+                        listCoupleForAddTablePrefixWithPrefixComponentName.toArray(new TableEntryLocation[0]));
+            } else {
+                outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(uniqueNameComponent,
+                        outputExpressionToWrite, listCoupleForAddTablePrefixWithPrefixComponentName
+                                .toArray(new TableEntryLocation[0]), true, sValidColumnEntryLocations);
+            }
         }
         return outputExpressionToWrite;
     }
@@ -163,6 +202,10 @@ public class PerlGenerationManager extends GenerationManager {
         }
         // string += "};"; //$NON-NLS-1$
         return string;
+    }
+
+    public PerlLanguage getPerlLanguage() {
+        return (PerlLanguage) language;
     }
 
 }

@@ -81,6 +81,7 @@
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
         Set<ExternalMapperTable> validLookupTables = new HashSet<ExternalMapperTable>();
+        boolean hasValidLookupTables = false;
 
           int closeBracketCounter = 0;
         %>
@@ -103,7 +104,6 @@
                                    String expressionFilter = externalTable.getExpressionFilter();
 					               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
 		           			          new TableType[] { TableType.INPUT });
-                                                       expressionFilterWithPrefixs = expressionFilterWithPrefixs.replaceAll("\\b\\[", "->\\[");                           
                              %>
                                if(
                                          !(<%= expressionFilterWithPrefixs%>)
@@ -140,8 +140,6 @@
                             if (expressionKey != null && !"".equals(expressionKey.trim())) {
                                 String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionKey,
                                         expressionParser, new TableType[] { TableType.INPUT });
-
-                                outputExpressionKeyToWrite = outputExpressionKeyToWrite.replaceAll("\\b\\[", "->\\[");
                                 keysValues.add(outputExpressionKeyToWrite);
                             }
                         }
@@ -151,6 +149,8 @@
                     validLookupTables.add(externalTable);
 
                        %><%= sb.toString()%><%
+
+                    hasValidLookupTables = true;
 
                     IHashConfiguration hashConfiguration = node.getHashConfiguration(tableName);
                     List<IHashableColumn> hashableColumns = null;
@@ -284,7 +284,6 @@
 
 								               String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
 		    			       			          new TableType[] { TableType.INPUT});
-		    			       			               expressionFilterWithPrefixs = expressionFilterWithPrefixs.replaceAll("\\b\\[", "->\\[");
 
                                                %>
             if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # 16
@@ -372,7 +371,6 @@
                 
                 String varExpressionWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, varExpression, expressionParser,
                       new TableType[] { TableType.INPUT, TableType.VARS });
-                      varExpressionWithPrefixs = varExpressionWithPrefixs.replaceAll("\\b\\[", "->\\[");
                 
                 sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, varsTableName, varsColumnName, true) + " = "
                         + varExpressionWithPrefixs + ";");
@@ -430,6 +428,7 @@
         int lstSizeOutputs = outputTablesSortedByReject.size();
         // ///////////////////////////////////////////////////////////////////
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
+        String lastValidOutputTableName = null;
         for (int i = 0; i < lstSizeOutputs; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             
@@ -453,8 +452,10 @@
                 }
             }
 
-            if (nameToOutputConnection.get(outputTableName) != null) {
+			IConnection outputConnection = nameToOutputConnection.get(outputTableName);
+            if (outputConnection != null) {
                 sb.append(cr + gm.indent(indent) + "$" +  outputTableName + " = [];");
+	           	lastValidOutputTableName = outputTableName;
             }
         }
         // ///////////////////////////////////////////////////////////////////
@@ -468,21 +469,8 @@
             //sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = true;");
         }
 
-        // write outputs arrays initialization with empty list for NOT reject tables
-        for (int indexReject = 0; indexReject < lstSizeOutputs; indexReject++) {
-            ExternalMapperTable outputNormalTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-            if (outputNormalTable.isReject() || outputNormalTable.isRejectInnerJoin()) {
-                break;
-            }
-            List<ExternalMapperTableEntry> metadataTableEntries = outputNormalTable.getMetadataTableEntries();
-            if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
-                sb.append(cr + gm.indent(indent) + "# Output table: '" + outputNormalTable.getName() + "'");
-                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputNormalTable.getName(), indent));
-            }
-        }
-
         // write conditions for inner join reject
-        if (inputTablesWithInnerJoin.size() > 0 && lstSizeOutputs > 0) {
+        if (lastValidOutputTableName != null && hasValidLookupTables && lstSizeOutputs > 0 && atLeastOneInputTableWithInnerJoin) {
             sb.append(cr + gm.indent(indent) + "if( !$");
             sb.append(rejectedInnerJoin);
             sb.append(" ) {");
@@ -516,7 +504,7 @@
 
             oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && (hasFilters || hasExpressionFilter);
 
-            if (rejectValueHasJustChanged) {
+            if (rejectValueHasJustChanged) { // T 101
 
                 if (closeTestInnerJoinConditionsBracket) {
                     indent--;
@@ -531,24 +519,15 @@
                     closeTestInnerJoinConditionsBracket = false;
                 }
 
-                // No connection matching and no checking errors
-                if (!connectionExists) {
-                    continue;
-                }
-                if (rejectValueHasJustChanged) {
+	            // No connection matching and no checking errors
+    	        if (connectionExists) { // T 102
                     sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
-                }
-                // write outputs arrays initialization with empty list for reject tables
-                for (int indexReject = indexCurrentTable; indexReject < lstSizeOutputs; indexReject++) {
-                    ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-                    if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
-                        sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
-                    }
-                }
-            }
+    	        } // T 102
+    	      } // T 101
 
-            // write filters conditions and code to execute
-            if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
+   	        if (connectionExists) { // T 100
+              // write filters conditions and code to execute
+              if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged
                     && oneFilterForNotRejectTable || currentIsReject && allNotRejectTablesHaveFilter 
                     || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
 
@@ -580,7 +559,6 @@
                                String expressionFilter = outputTable.getExpressionFilter();
 				               filtersConditions = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
    			       			          new TableType[] { TableType.INPUT, TableType.VARS });
-   			       		       filtersConditions = filtersConditions.replaceAll("\\b\\[", "->\\[");
                          } else {
                             filtersConditions = gm.buildConditions(uniqueNameComponent, filters, expressionParser);
                          }
@@ -611,7 +589,6 @@
 
                             String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, outputExpression, expressionParser,
                                     new TableType[] { TableType.INPUT, TableType.VARS });
-                            outputExpressionToWrite = outputExpressionToWrite.replaceAll("\\b\\[", "->\\[");
 
                             sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName, outputColumnName, false)
                                     + " = " + outputExpressionToWrite + ";");
@@ -625,15 +602,18 @@
                     sb.append(cr + gm.indent(indent) + "}");
                 }
 
-            }
-            lastValueReject = currentIsReject || currentIsRejectInnerJoin;
+              }
+              lastValueReject = currentIsReject || currentIsRejectInnerJoin;
 
-            boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
-            if (closeTestInnerJoinConditionsBracket && isLastTable) {
-                indent--;
-                sb.append(cr + gm.indent(indent) + "}");
-                closeTestInnerJoinConditionsBracket = false;
-            }
+		  } // T 100
+		  
+          boolean isLastTable = indexCurrentTable == lstSizeOutputs - 1;
+          if (closeTestInnerJoinConditionsBracket 
+          	&& (isLastTable || (outputTableName.equals(lastValidOutputTableName) || lastValidOutputTableName == null))) {
+              indent--;
+              sb.append(cr + gm.indent(indent) + "}  # closing inner join bracket (2)");
+              closeTestInnerJoinConditionsBracket = false;
+          }
 
         } // for output tables
 
@@ -643,5 +623,5 @@
 
 
 %>
-<%= sb.toString().replaceAll("\\b\\[", "->\\[")%>
+<%= sb.toString()%>
     

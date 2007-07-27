@@ -36,6 +36,7 @@ import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.designer.mapper.language.ILanguage;
+import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 
 /**
@@ -72,7 +73,7 @@ public class DataMapExpressionParser {
      * 
      * @param regexpPattern
      */
-    private void setLocationPattern(String locationPattern) {
+    public void setLocationPattern(String locationPattern) {
         this.locationPattern = locationPattern;
     }
 
@@ -107,17 +108,37 @@ public class DataMapExpressionParser {
     }
 
     public String addTablePrefixToColumnName(String uniqueNameComponent, String expression,
-            TableEntryLocation[] locations, boolean prefixTableNameWithComponentName) {
+            TableEntryLocation[] locations, boolean prefixTableNameWithComponentName,
+            HashSet<TableEntryLocation> validColumnEntryLocations) {
         String returnedExpression = expression;
         for (TableEntryLocation location : locations) {
             recompilePatternIfNecessary(StringHelper.replacePrms(language.getSubstPatternForPrefixColumnName(),
-                    new Object[] { location.tableName, location.columnName }));
+                    new Object[] { Perl5Compiler.quotemeta(location.tableName), Perl5Compiler.quotemeta(location.columnName) }));
             if (returnedExpression != null) {
                 matcher.setMultiline(true);
                 Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp()
-                        + (prefixTableNameWithComponentName ? uniqueNameComponent + "__" : "") + "$1" //$NON-NLS-1$
-                        + language.getPrefixFieldRegexp() + uniqueNameComponent
-                        + "__$1__$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                        + (prefixTableNameWithComponentName ? uniqueNameComponent + "__" : "") + "$1->" //$NON-NLS-1$
+                        + language.getPrefixFieldRegexp()
+                        + (validColumnEntryLocations.contains(location) ? uniqueNameComponent + "__$1__" : "")
+                        + "$2" + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
+                        Util.SUBSTITUTE_ALL);
+            }
+        }
+        return returnedExpression;
+    }
+
+    public String addRefArrayPointer(String expression, TableEntryLocation[] locations) {
+        String returnedExpression = expression;
+        PerlLanguage perlLanguage = (PerlLanguage) language;
+        for (TableEntryLocation location : locations) {
+            recompilePatternIfNecessary(StringHelper.replacePrms(perlLanguage.getSubstPatternToAddRefArrayPointer(),
+                    new Object[] { location.tableName }));
+            if (returnedExpression != null) {
+                matcher.setMultiline(true);
+                Perl5Substitution substitution = new Perl5Substitution(
+                        language.getPrefixTableRegexp() + "$1->" //$NON-NLS-1$
+                                + perlLanguage.getPrefixFieldRegexp() + "$2" + perlLanguage.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                 returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression,
                         Util.SUBSTITUTE_ALL);
             }

@@ -23,6 +23,9 @@ package org.talend.designer.mapper.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.junit.Test;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
@@ -96,10 +99,13 @@ public class DataMapExpressionParserTest {
         TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
                 new TableEntryLocation("book", "id_book"), };
 
+        HashSet<TableEntryLocation> validLocations = new HashSet<TableEntryLocation>();
+        validLocations.addAll(Arrays.asList(locations));
+        
         String result = expressionParser.addTablePrefixToColumnName("UNIQUE_COMPONENT_NAME", "uc "
                 + gen.getTableColumnVariable("page", "content") + " + " + gen.getTableColumnVariable("book", "id_book")
                 + " - 2 * " + language.getPrefixTable() + " book " + language.getSuffixTable()
-                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations, true);
+                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations, true, validLocations);
         assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + "
                 + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * "
                 + gen.getTableColumnVariable("book", "book__id_book"), result);
