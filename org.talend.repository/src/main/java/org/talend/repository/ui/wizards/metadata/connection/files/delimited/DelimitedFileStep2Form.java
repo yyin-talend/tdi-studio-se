@@ -54,6 +54,7 @@ import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -1012,7 +1013,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
         String previewInformationLabelMsg = null;
 
-        XmlArray xmlArray = null;
+        CsvArray csvArray = null;
 
         ProcessDescription processDescription = null;
 
@@ -1046,8 +1047,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             try {
                 if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
 
-                    xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_CSV"); //$NON-NLS-1$
-                    if (xmlArray == null) {
+                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_CSV"); //$NON-NLS-1$
+                    if (csvArray == null) {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewIsDone"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1055,8 +1056,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                         previewInformationLabelMsg = ""; //$NON-NLS-1$
                     }
                 } else {
-                    xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_DELIMITED"); //$NON-NLS-1$
-                    if (xmlArray == null) {
+                    csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_DELIMITED"); //$NON-NLS-1$
+                    if (csvArray == null) {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewIsDone"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1073,13 +1074,13 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             }
         }
 
-        public void updateUIInThreadIfThreadIsCancled() {
+        public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
                 previewInformationLabel.setText("");
             }
         }
 
-        public void updateUIInThreadIfThreadIsNotCancled() {
+        public void updateUIInThreadIfThreadIsNotCanceled() {
             if (previewInformationLabel.isDisposed()) {
                 return;
             }
@@ -1088,8 +1089,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
                 new ErrorDialogWidthDetailArea(getShell(), PID,
                         Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
             }
-            if (xmlArray != null) {
-                delimitedFilePreview.refreshTablePreview(xmlArray, firstRowIsCatption);
+            if (csvArray != null) {
+                delimitedFilePreview.refreshTablePreview(csvArray, firstRowIsCatption);
             }
         }
 

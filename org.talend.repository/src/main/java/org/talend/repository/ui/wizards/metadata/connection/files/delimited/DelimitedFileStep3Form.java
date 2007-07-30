@@ -57,6 +57,7 @@ import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
 import org.talend.core.utils.XmlRow;
@@ -151,9 +152,11 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
-        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
+        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2,
+                WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
+        informationLabel
+                .setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
         guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
@@ -170,7 +173,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -231,8 +235,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
-                                .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
+                        if (MessageDialog.openConfirm(getShell(),
+                                Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
+                                        .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
                             runShadowProcess();
                         }
                     } else {
@@ -311,21 +316,21 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
             // get the XmlArray width an adapt ProcessDescription
             if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
-                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_CSV"); //$NON-NLS-1$
-                if (xmlArray == null) {
+                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_CSV"); //$NON-NLS-1$
+                if (csvArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
                 } else {
-                    refreshMetaDataTable(xmlArray);
+                    refreshMetaDataTable(csvArray);
                 }
 
             } else {
-                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_DELIMITED"); //$NON-NLS-1$
-                if (xmlArray == null) {
+                CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_DELIMITED"); //$NON-NLS-1$
+                if (csvArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
                 } else {
-                    refreshMetaDataTable(xmlArray);
+                    refreshMetaDataTable(csvArray);
                 }
             }
 
@@ -334,7 +339,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                         + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
             } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
             }
             log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -344,23 +350,23 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     /**
      * DOC ocarbone Comment method "refreshMetaData".
      * 
-     * @param xmlArray
+     * @param csvArray
      */
-    public void refreshMetaDataTable(final XmlArray xmlArray) {
+    public void refreshMetaDataTable(final CsvArray csvArray) {
         informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        if (xmlArray == null) {
+        if (csvArray == null) {
             return;
         } else {
 
-            List<XmlRow> xmlRows = xmlArray.getRows();
-            List<XmlField> fields = xmlRows.get(0).getFields();
+            List<String[]> csvRows = csvArray.getRows();
+            String[] fields = csvRows.get(0);
             // int numberOfCol = fields.size();
 
-            Integer numberOfCol = getRightFirstRow(xmlRows);
+            Integer numberOfCol = getRightFirstRow(csvRows);
 
             // define the label to the metadata width the content of the first row
             int firstRowToExtractMetadata = 0;
@@ -377,17 +383,18 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                     // if (!value.equals("")) {
                     // label[i] = value;
                     // }
-                    if (numberOfCol <= fields.size()) {
-                        if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) { //$NON-NLS-1$
-                            label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                    if (numberOfCol <= fields.length) {// if current field size is greater than or equals bigest column
+                        // size
+                        if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
+                            label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
                         } else {
                             label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                         }
-                    } else {
-                        if (i < fields.size()) {
-                            if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) { //$NON-NLS-1$
-                                label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                    } else {// current field size is less than bigest column size
+                        if (i < fields.length) {
+                            if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
+                                label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             } else {
                                 label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                             }
@@ -407,22 +414,22 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        if (i >= xmlRows.get(current).getFields().size()) {
+                        if (i >= csvRows.get(current).length) {
                             globalType = "id_String"; //$NON-NLS-1$
                         } else {
-                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            if (current == xmlRows.size()) {
+                            if (current == csvRows.size()) {
                                 globalType = "id_String"; //$NON-NLS-1$
                             }
                         }
-                    } else { 
-                        if (i >= xmlRows.get(current).getFields().size()) {
+                    } else {
+                        if (i >= csvRows.get(current).length) {
                             globalType = "String"; //$NON-NLS-1$
                         } else {
-                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            if (current == xmlRows.size()) {
+                            if (current == csvRows.size()) {
                                 globalType = "String"; //$NON-NLS-1$
                             }
                         }
@@ -430,22 +437,24 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 }
 
                 // for another lines
-                for (int f = firstRowToExtractMetadata; f < xmlRows.size(); f++) {
-                    fields = xmlRows.get(f).getFields();
-                    if (fields.size() > i) {
-                        String value = fields.get(i).getValue();
+                for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
+                    fields = csvRows.get(f);
+                    if (fields.length > i) {
+                        String value = fields[i];
                         if (!value.equals("")) { //$NON-NLS-1$
                             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                                 if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper.getTalendTypeOfValue(value));
+                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+                                            .getTalendTypeOfValue(value));
                                 }
                             } else {
                                 if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper.getTalendTypeOfValue(value));
+                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+                                            .getTalendTypeOfValue(value));
                                 }
                             }
                             if (lengthValue < value.length()) {
-                                lengthValue = value.length();                                
+                                lengthValue = value.length();
                             }
                             int positionDecimal = 0;
                             if (value.indexOf(',') > -1) {
@@ -464,7 +473,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 // Convert javaType to TalendType
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    talendType = globalType;    
+                    talendType = globalType;
                 } else {
                     talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
                 }
@@ -487,19 +496,19 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     }
 
     // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
-    public Integer getRightFirstRow(List<XmlRow> xmlRows) {
+    public Integer getRightFirstRow(List<String[]> csvRows) {
 
         Integer numbersOfColumns = null;
-        int parserLine = xmlRows.size();
+        int parserLine = csvRows.size();
         if (parserLine > 50) {
             parserLine = 50;
         }
         for (int i = 0; i < parserLine; i++) {
-            if (xmlRows.get(i) != null) {
-                XmlRow nbRow = xmlRows.get(i);
-                List<XmlField> nbRowFields = nbRow.getFields();
-                if (numbersOfColumns == null || nbRowFields.size() >= numbersOfColumns) {
-                    numbersOfColumns = nbRowFields.size();
+            if (csvRows.get(i) != null) {
+                String[] nbRow = csvRows.get(i);
+                // List<XmlField> nbRowFields = nbRow.getFields();
+                if (numbersOfColumns == null || nbRow.length >= numbersOfColumns) {
+                    numbersOfColumns = nbRow.length;
                 }
             }
         }

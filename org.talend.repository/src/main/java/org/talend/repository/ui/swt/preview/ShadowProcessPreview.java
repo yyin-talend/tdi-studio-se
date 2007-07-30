@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
 import org.talend.core.utils.XmlRow;
@@ -46,7 +47,7 @@ import org.talend.repository.preview.ProcessDescription;
  */
 public class ShadowProcessPreview {
 
-    protected  int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     /**
@@ -87,14 +88,14 @@ public class ShadowProcessPreview {
         table = new Table(composite, SWT.BORDER);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-//        table.setSize(filePreviewWidth, filePreviewHeight);
+        // table.setSize(filePreviewWidth, filePreviewHeight);
 
         // force the dimension width a gridData
         GridData gridData = new GridData(GridData.FILL_BOTH);
-//        gridData.minimumWidth = filePreviewWidth;
-//        gridData.minimumHeight = filePreviewHeight;
-//        gridData.heightHint = filePreviewHeight;
-//        gridData.widthHint = filePreviewWidth;
+        // gridData.minimumWidth = filePreviewWidth;
+        // gridData.minimumHeight = filePreviewHeight;
+        // gridData.heightHint = filePreviewHeight;
+        // gridData.widthHint = filePreviewWidth;
         table.setLayoutData(gridData);
     }
 
@@ -132,32 +133,34 @@ public class ShadowProcessPreview {
     /**
      * refresh TablePreview width the first rows of the file.
      * 
-     * @param xmlArray
+     * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final XmlArray xmlArray, final boolean firstRowIsLabel) {
-        List<XmlRow> xmlRows = xmlArray.getRows();
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel) {
+        List<String[]> csvRows = csvArray.getRows();
 
         // init the title columns
 
-        XmlRow firstRow = xmlRows.get(0);
+        // XmlRow firstRow = xmlRows.get(0);
 
-        List<XmlField> firstRowFields = firstRow.getFields();
+        String[] firstRowFields = csvRows.get(0);
 
-        Integer numbersOfColumns = getRightFirstRow(xmlRows);
+        // List<XmlField> firstRowFields = firstRow.getFields();
+
+        Integer numbersOfColumns = getRightFirstRow(csvRows);
 
         String[] title = new String[numbersOfColumns];
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
-                if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
-                        title[i] = firstRowFields.get(i).getValue();
+                if (numbersOfColumns <= firstRowFields.length) {
+                    if (firstRowFields[i] != null && !("").equals(firstRowFields[i])) { //$NON-NLS-1$[
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
-                    if (i < firstRowFields.size()) {
-                        title[i] = firstRowFields.get(i).getValue();
+                    if (i < firstRowFields.length) {
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -173,7 +176,7 @@ public class ShadowProcessPreview {
 
         // refresh the Header and the Item of the table
         refreshPreviewHeader(title);
-        refreshPreviewItem(xmlRows, firstRowIsLabel);
+        refreshPreviewItem(csvRows, firstRowIsLabel);
 
         refreshPreviewHeader(title);
 
@@ -185,39 +188,40 @@ public class ShadowProcessPreview {
         // scroll to show the first col and first row
         table.showItem(table.getItem(0));
         if (table.getColumns() != null && table.getColumns().length > 0) {
-            table.showColumn(table.getColumn(0));    
+            table.showColumn(table.getColumn(0));
         }
     }
-    
+
     /**
      * refresh TablePreview width the first rows of the file.
      * 
-     * @param xmlArray
+     * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final XmlArray xmlArray, final boolean firstRowIsLabel, ProcessDescription processDescription) {
-        List<XmlRow> xmlRows = xmlArray.getRows();
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel,
+            ProcessDescription processDescription) {
+        List<String[]> xmlRows = csvArray.getRows();
 
         // init the title columns
 
-        XmlRow firstRow = xmlRows.get(0);
+        String[] firstRowFields = xmlRows.get(0);
 
-        List<XmlField> firstRowFields = firstRow.getFields();
+        // List<XmlField> firstRowFields = firstRow.getFields();
 
         Integer numbersOfColumns = getRightFirstRow(xmlRows);
 
         String[] title = new String[numbersOfColumns];
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
-                if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
-                        title[i] = firstRowFields.get(i).getValue();
+                if (numbersOfColumns <= firstRowFields.length) {
+                    if (firstRowFields[i] != null && !("").equals(firstRowFields[i])) { //$NON-NLS-1$
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
-                    if (i < firstRowFields.size()) {
-                        title[i] = firstRowFields.get(i).getValue();
+                    if (i < firstRowFields.length) {
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -252,40 +256,41 @@ public class ShadowProcessPreview {
     /**
      * refresh TablePreview width the first rows of the file.
      * 
-     * @param xmlArray
+     * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final XmlArray xmlArray, final boolean firstRowIsLabel, List<SchemaTarget> schemaTarget) {
-        List<XmlRow> xmlRows = xmlArray.getRows();
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel,
+            List<SchemaTarget> schemaTarget) {
+        List<String[]> csvRows = csvArray.getRows();
 
         // init the title columns
 
-        XmlRow firstRow = xmlRows.get(0);
+        String[] firstRowFields = csvRows.get(0);
 
-        List<XmlField> firstRowFields = firstRow.getFields();
+        // List<XmlField> firstRowFields = firstRow.getFields();
 
-        Integer numbersOfColumns = getRightFirstRow(xmlRows);
+        Integer numbersOfColumns = getRightFirstRow(csvRows);
 
         String[] title = new String[numbersOfColumns];
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
-                if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
-                        title[i] = firstRowFields.get(i).getValue();
+                if (numbersOfColumns <= firstRowFields.length) {
+                    if (firstRowFields[i] != null && !("").equals(firstRowFields[i])) { //$NON-NLS-1$
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
-                    if (i < firstRowFields.size()) {
-                        title[i] = firstRowFields.get(i).getValue();
+                    if (i < firstRowFields.length) {
+                        title[i] = firstRowFields[i];
                     } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             } else {
-                if(schemaTarget.get(i).getTagName()!=null && !schemaTarget.get(i).getTagName().equals("")){ //$NON-NLS-1$
-                    title[i] = "" + schemaTarget.get(i).getTagName();     //$NON-NLS-1$
-                }else{
+                if (schemaTarget.get(i).getTagName() != null && !schemaTarget.get(i).getTagName().equals("")) { //$NON-NLS-1$
+                    title[i] = "" + schemaTarget.get(i).getTagName(); //$NON-NLS-1$
+                } else {
                     title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
@@ -297,12 +302,12 @@ public class ShadowProcessPreview {
 
         // refresh the Header and the Item of the table
         refreshPreviewHeader(title);
-        refreshPreviewItem(xmlRows, firstRowIsLabel);
+        refreshPreviewItem(csvRows, firstRowIsLabel);
 
         refreshPreviewHeader(title);
 
         // resize all the columns but not the table
-        for (int i = table.getColumnCount() - 1; i >= 0 ; i--) {
+        for (int i = table.getColumnCount() - 1; i >= 0; i--) {
             table.getColumn(i).pack();
         }
 
@@ -313,22 +318,21 @@ public class ShadowProcessPreview {
         }
     }
 
-    
     // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
-    public Integer getRightFirstRow(List<XmlRow> xmlRows) {
+    public Integer getRightFirstRow(List<String[]> csvRows) {
 
         Integer numbersOfColumns = null;
-        int parserLine = xmlRows.size();
+        int parserLine = csvRows.size();
 
         if (parserLine > maximumRowsToPreview) {
             parserLine = maximumRowsToPreview;
         }
         for (int i = 0; i < parserLine; i++) {
-            if (xmlRows.get(i) != null) {
-                XmlRow nbRow = xmlRows.get(i);
-                List<XmlField> nbRowFields = nbRow.getFields();
-                if (numbersOfColumns == null || nbRowFields.size() >= numbersOfColumns) {
-                    numbersOfColumns = nbRowFields.size();
+            if (csvRows.get(i) != null) {
+                String[] nbRow = csvRows.get(i);
+                // List<XmlField> nbRowFields = nbRow.getFields();
+                if (numbersOfColumns == null || nbRow.length >= numbersOfColumns) {
+                    numbersOfColumns = nbRow.length;
                 }
             }
         }
@@ -338,26 +342,26 @@ public class ShadowProcessPreview {
     /**
      * refresh the Item of Preview.
      * 
-     * @param xmlRows
+     * @param csvRows
      * @param firstRowIsLabel
      */
-    private void refreshPreviewItem(final List<XmlRow> xmlRows, final boolean firstRowIsLabel) {
+    private void refreshPreviewItem(final List<String[]> csvRows, final boolean firstRowIsLabel) {
         int existingItemCount = table.getItemCount();
 
-        int end = xmlRows.size();
+        int end = csvRows.size();
         if (firstRowIsLabel) {
             end--;
         }
         for (int f = 0; f < end; f++) {
-            List<XmlField> xmlFields;
+            String[] csvFields;
             if (firstRowIsLabel) {
-                xmlFields = xmlRows.get(f + 1).getFields();
+                csvFields = csvRows.get(f + 1);
             } else {
-                xmlFields = xmlRows.get(f).getFields();
+                csvFields = csvRows.get(f);
             }
-            String[] values = new String[xmlFields.size()];
-            for (int i = 0; i < xmlFields.size(); i++) {
-                values[i] = xmlFields.get(i).getValue();
+            String[] values = new String[csvFields.length];
+            for (int i = 0; i < csvFields.length; i++) {
+                values[i] = csvFields[i];
             }
 
             if (f >= existingItemCount) {

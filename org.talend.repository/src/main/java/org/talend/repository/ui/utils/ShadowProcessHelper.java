@@ -43,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
@@ -216,8 +217,8 @@ public class ShadowProcessHelper {
      * @return xmlArray
      * @throws CoreException
      */
-    public static XmlArray getXmlArray(final FileConnection fileConnection, String type) throws CoreException {
-        return getXmlArray(getProcessDescription(fileConnection), type);
+    public static CsvArray getCsvArray(final FileConnection fileConnection, String type) throws CoreException {
+        return getCsvArray(getProcessDescription(fileConnection), type);
     }
 
     /**
@@ -226,16 +227,16 @@ public class ShadowProcessHelper {
      * @param processDescription
      * @return xmlArray
      */
-    public static XmlArray getXmlArray(final ProcessDescription processDescription, String type) throws CoreException {
+    public static CsvArray getCsvArray(final ProcessDescription processDescription, String type) throws CoreException {
 
-        XmlArray xmlArray = null;
+        CsvArray csvArray = null;
 
         IPreview preview = createPreview();
 
         if (preview != null) {
-            xmlArray = preview.preview(processDescription, type);
+            csvArray = preview.preview(processDescription, type);
         }
-        return xmlArray;
+        return csvArray;
     }
 
     /**
@@ -264,9 +265,9 @@ public class ShadowProcessHelper {
         return preview;
     }
 
-    public static AsynchronousPreviewHandler<XmlArray> createPreviewHandler() throws CoreException {
+    public static AsynchronousPreviewHandler<CsvArray> createPreviewHandler() throws CoreException {
         IPreview preview = createPreview();
-        return new AsynchronousPreviewHandler<XmlArray>(preview);
+        return new AsynchronousPreviewHandler<CsvArray>(preview);
     }
 
 }

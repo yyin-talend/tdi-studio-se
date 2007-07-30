@@ -59,6 +59,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -147,7 +148,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1,
+                Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
 
         attributeModel = new ExtendedTableModel<String>();
         attributeModel.registerDataList(itemTableName);
@@ -274,8 +276,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
+                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -325,7 +328,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
     }
@@ -360,7 +364,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      */
     class PreviewProcessor extends SWTUIThreadProcessor {
 
-        XmlArray xmlArray = null;
+        CsvArray csvArray = null;
 
         ProcessDescription processDescription = null;
 
@@ -387,9 +391,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         }
 
         public void nonUIProcessInThread() {
-            // get the XmlArray width an adapt ProcessDescription
+            // get the CsvArray width an adapt ProcessDescription
             try {
-                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
+                CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
 
             } catch (CoreException e) {
                 setException(e);
@@ -397,13 +401,13 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             }
         }
 
-        public void updateUIInThreadIfThreadIsCancled() {
+        public void updateUIInThreadIfThreadIsCanceled() {
             if (!previewInformationLabel.isDisposed()) {
                 previewInformationLabel.setText("");
             }
         }
 
-        public void updateUIInThreadIfThreadIsNotCancled() {
+        public void updateUIInThreadIfThreadIsNotCanceled() {
             if (previewInformationLabel.isDisposed()) {
                 return;
             }
@@ -414,13 +418,13 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
                 return;
             }
 
-            if (xmlArray == null) {
+            if (csvArray == null) {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
 
                 // refresh TablePreview on this step
-                ldifFilePreview.refreshTablePreview(xmlArray, false, processDescription);
+                ldifFilePreview.refreshTablePreview(csvArray, false, processDescription);
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }

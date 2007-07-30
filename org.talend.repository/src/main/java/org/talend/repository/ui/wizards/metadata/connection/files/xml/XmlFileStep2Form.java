@@ -80,6 +80,7 @@ import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
@@ -464,15 +465,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        AsynchronousPreviewHandler<XmlArray> previewHandler = null;
+        AsynchronousPreviewHandler<CsvArray> previewHandler = null;
         try {
-            previewHandler = (AsynchronousPreviewHandler<XmlArray>) ShadowProcessHelper.createPreviewHandler();
+            previewHandler = (AsynchronousPreviewHandler<CsvArray>) ShadowProcessHelper.createPreviewHandler();
         } catch (CoreException e) {
             previewInError(e);
             return;
         }
 
-        StoppablePreviewLoader previewLoader = new StoppablePreviewLoader<XmlArray>(previewHandler,
+        StoppablePreviewLoader previewLoader = new StoppablePreviewLoader<CsvArray>(previewHandler,
                 previewInformationLabel) {
 
             /*
@@ -481,7 +482,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
              * @see org.talend.repository.ui.wizards.metadata.connection.files.xml.StoppablePreviewLoader#previewEnded(java.lang.Object)
              */
             @Override
-            protected void previewEnded(XmlArray result) {
+            protected void previewEnded(CsvArray result) {
                 xmlFilePreview.refreshTablePreview(result, false, ((XmlXPathLoopDescriptor) getConnection().getSchema()
                         .get(0)).getSchemaTargets());
             }

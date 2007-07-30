@@ -60,6 +60,7 @@ import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
 import org.talend.core.utils.XmlRow;
@@ -129,13 +130,13 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_POSITIONAL"); //$NON-NLS-1$
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "FILE_POSITIONAL"); //$NON-NLS-1$
 
-            if (xmlArray == null) {
+            if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(xmlArray);
+                refreshMetaDataTable(csvArray);
             }
 
         } catch (CoreException e) {
@@ -339,17 +340,17 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     /**
      * DOC ocarbone Comment method "refreshMetaData".
      * 
-     * @param xmlArray
+     * @param csvArray
      */
-    public void refreshMetaDataTable(final XmlArray xmlArray) {
-        informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
+    public void refreshMetaDataTable(final CsvArray csvArray) {
+        informationLabel.setText(" " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        List<XmlRow> xmlRows = xmlArray.getRows();
-        List<XmlField> fields = xmlRows.get(0).getFields();
-        int numberOfCol = fields.size();
+        List<String[]> csvRows = csvArray.getRows();
+        String[] fields = csvRows.get(0);
+        int numberOfCol = fields.length;
 
         // define the label to the metadata width the content of the first row
         int firstRowToExtractMetadata = 0;
@@ -362,7 +363,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         for (int i = 0; i < numberOfCol; i++) {
             label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
             if (firstRowToExtractMetadata == 1) {
-                String value = fields.get(i).getValue();
+                String value = fields[i];
                 if (value != null && !value.equals("")) { //$NON-NLS-1$
                     label[i] = value.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -381,26 +382,24 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             int current = firstRowToExtractMetadata;
             while (globalType == null) {
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
-                            .getValue());
+                    globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                     current++;
-                    if (current == xmlRows.size()) {
+                    if (current == csvRows.size()) {
                         globalType = "id_String"; //$NON-NLS-1$
                     }
                 } else {
-                    globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
-                            .getValue());
+                    globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                     current++;
-                    if (current == xmlRows.size()) {
+                    if (current == csvRows.size()) {
                         globalType = "String"; //$NON-NLS-1$
                     }
                 }
             }
             // for another lines
-            for (int f = firstRowToExtractMetadata; f < xmlRows.size(); f++) {
-                fields = xmlRows.get(f).getFields();
-                if (fields.size() > i) {
-                    String value = fields.get(i).getValue();
+            for (int f = firstRowToExtractMetadata; f < csvRows.size(); f++) {
+                fields = csvRows.get(f);
+                if (fields.length > i) {
+                    String value = fields[i];
                     if (!value.equals("")) { //$NON-NLS-1$
 
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
@@ -453,6 +452,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         tableEditorView.getTableViewerCreator().layout();
         tableEditorView.getTableViewerCreator().getTableViewer().refresh();
         informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
+
     }
 
     /**
