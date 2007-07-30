@@ -175,15 +175,18 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         return cLayout;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
@@ -246,7 +249,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         combo.setItems(curComponentNameList);
         if (!listContainValue) {
             if (curComponentNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curComponentNameList[0]);
+                elem.setPropertyValue(param.getName(), curComponentValueList[0]);
                 combo.setText(curComponentNameList[0]);
             }
         } else {
