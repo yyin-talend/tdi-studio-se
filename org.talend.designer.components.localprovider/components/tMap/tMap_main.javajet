@@ -644,7 +644,6 @@
 
             // No connection matching and no checking errors
             if (connectionExists || checkingSyntax) {
-//                continue;
 	            if (rejectValueHasJustChanged) {
 	                sb.append(cr + gm.indent(indent) + "// ###### START REJECTS ##### ");
 	            }
