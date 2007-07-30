@@ -1,0 +1,31 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+%>
+
+$_globals{<%=cid%>}{COUNT} = tFileRowCount(
+    filename => <%=filename%>,
+    rowseparator => <%=rowSeparator%>,
+);
