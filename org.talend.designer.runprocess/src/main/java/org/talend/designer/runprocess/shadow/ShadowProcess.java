@@ -170,7 +170,16 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private static IPath buildTempCSVFilename(IPath inPath) {
         String filename = inPath.lastSegment();
-        filename = filename.substring(0, filename.length() - inPath.getFileExtension().length());
+        if (inPath.getFileExtension() != null) {
+            filename = filename.substring(0, filename.length() - inPath.getFileExtension().length());
+        }
+        else //Check if file has no suffix.
+        {   
+            int length = filename.length();
+            filename = filename.substring(0,length-1) + ".";
+        }
+       
+
         filename += CSV_EXT;
         IPath tempPath;
         tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
