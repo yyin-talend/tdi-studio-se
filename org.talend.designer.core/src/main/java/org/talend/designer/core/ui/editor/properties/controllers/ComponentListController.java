@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -43,11 +44,15 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -213,6 +218,22 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
             param.setListItemsDisplayName(componentNameList);
             param.setListItemsValue(componentValueList);
+
+            Object value = param.getValue();
+            if (!componentUniqueNames.contains(value)) {
+                if (value == null || value.equals("")) {
+                    elem.setPropertyValue(param.getName(), componentValueList[0]);
+                } else {
+                    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .getActiveEditor();
+                    if (part instanceof MultiPageTalendEditor) {
+                        TalendEditor te = ((MultiPageTalendEditor) part).getTalendEditor();
+                        CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
+                        cmdStack.execute(new PropertyChangeCommand(elem, param.getName(), componentValueList[0]));
+                    }
+                }
+            }
+
         }
     }
 
