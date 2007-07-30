@@ -148,8 +148,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
      */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1,
-                Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("LdifFileStep2Form.group.listAttributes"), height); //$NON-NLS-1$
 
         attributeModel = new ExtendedTableModel<String>();
         attributeModel.registerDataList(itemTableName);
@@ -276,9 +275,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
-                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -328,8 +326,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
     }
@@ -393,7 +390,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         public void nonUIProcessInThread() {
             // get the CsvArray width an adapt ProcessDescription
             try {
-                CsvArray csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_LDIF"); //$NON-NLS-1$
 
             } catch (CoreException e) {
                 setException(e);
