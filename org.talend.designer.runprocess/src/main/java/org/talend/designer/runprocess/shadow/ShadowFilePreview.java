@@ -23,6 +23,7 @@ package org.talend.designer.runprocess.shadow;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
+import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -53,8 +54,8 @@ public class ShadowFilePreview implements IPreview {
      *      preview(org.talend.repository.preview.filedelimited.ProcessDescription)
      */
     @SuppressWarnings("unchecked") //$NON-NLS-1$
-    public XmlArray preview(IProcessDescription description, String type) throws CoreException {
-        XmlArray res = null;
+    public CsvArray preview(IProcessDescription description, String type) throws CoreException {
+        CsvArray res = null;
         
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
         
