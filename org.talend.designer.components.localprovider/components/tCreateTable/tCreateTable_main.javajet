@@ -267,7 +267,13 @@ class Transfer{
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION_ORACLE__");
 		String conn = "conn_" + connection;
 %>
-		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");		
+		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+	}else if((dbType.equals("Postgre"))&&(useExistingConn.equals("true"))){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION_POSTGRE__");
+		String conn = "conn_" + connection;
+%>
+		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");				
 <%  }else if((dbType.equals("Access"))||(dbType.equals("SQLite"))){%>
 		Class.forName("<%=tr.dbDriver(node)%>");
 		url<%=cid%> = <%=tr.url(node)%>;
@@ -308,8 +314,7 @@ class Transfer{
 		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
 <%	} %>
 
-		stmt<%=cid%>=con<%=cid%>.createStatement();
-	
+		stmt<%=cid%> = con<%=cid%>.createStatement();
 	
  
 <%//  special action / Main action
@@ -321,13 +326,25 @@ class Transfer{
 		}		
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);	
-<%	}else if(specialAction.equals("CreateOnly")){%>
-		try{
-			stmt<%=cid%>.execute("select * from "+"<%=tr.protectChar(dbType, tableName)%>");
-		}catch(Exception e){//create only if it doesn't exist
-			sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
-			stmt<%=cid%>.execute(sql<%=cid%>);	
-		}
+<%	}else if(specialAction.equals("CreateOnly")){%>		
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con<%=cid%>.getMetaData();
+        java.sql.ResultSet rs_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean flag_<%=cid%> = false;
+        while(rs_<%=cid%>.next())
+        {
+        	String table_<%=cid%> = rs_<%=cid%>.getString("TABLE_NAME");
+			if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>))
+			{
+				flag_<%=cid%> = true;
+				break;
+			}
+        }
+        rs_<%=cid%>.close();
+        if(!flag_<%=cid%>)
+        {
+           sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+           stmt<%=cid%>.execute(sql<%=cid%>);         	
+        }  				
 <%}else{%>// just create
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);
@@ -338,7 +355,24 @@ class Transfer{
 		java.sql.Statement stmtClose<%=cid%>=con<%=cid%>.createStatement();
 		stmtClose<%=cid%>.execute("SHUTDOWN");
 <%	}%>
+
+<%
+	if(!dbType.equals("MySQL") && !dbType.equals("Oracle") && !dbType.equals("Postgre"))
+	{
+		%>
 		con<%=cid%>.close();
+		<%			
+	}
+	else
+	{
+		if(!useExistingConn.equals("true"))
+		{
+			%>
+			con<%=cid%>.close();
+			<%
+		}
+	}
+%>
 
 
 		
