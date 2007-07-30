@@ -242,9 +242,7 @@ public class AdvancedLookup<V> {
         if (list != null) {
             list.clear();
         }
-        if (listResult != null) {
-            listResult = null;
-        }
+        listResult = null;
     }
 
     /**
