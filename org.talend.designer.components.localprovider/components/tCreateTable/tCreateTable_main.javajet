@@ -198,11 +198,13 @@ class Transfer{
 			 	//column type
 				 		sql=sql+column.getType();
 			 	//column DataDefine
-			 		if(!((column.getLength()==null)||(column.getLength()==0))&&((column.getPrecision()==null)||(column.getPrecision()==0))){
+					if(column.getLength()==null) {column.setLength(0);};
+					if(column.getPrecision()==null) {column.setPrecision(0);};
+			 		if(column.getLength()!=0&&column.getPrecision()==0){
 			 			sql=sql+"("+column.getLength()+")";
-			 		}else if(!((column.getLength()==null)||(column.getLength()==0))&&!((column.getPrecision()==null))||(column.getLength()==0)){
-			 			sql=sql+"("+column.getLength()+","+column.getPrecision()+")";			 			
-			 		}			 	
+			 		}else if(column.getLength()!=0&&column.getLength()!=0){
+			 			sql=sql+"("+column.getLength()+","+column.getPrecision()+")";					 				 			
+			 		}		 	
 			 		sql=sql+" ";
 			 	//default_value
 			 		if(!(column.getDefault()==null||column.getDefault().equals(""))){
