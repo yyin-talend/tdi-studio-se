@@ -834,4 +834,13 @@ public class ProcessComposite extends Composite {
         return this.processContext;
     }
 
+    
+    /**
+     * Getter for debugBtn.
+     * @return the debugBtn
+     */
+    public Button getDebugBtn() {
+        return this.debugBtn;
+    }
+    
 }
