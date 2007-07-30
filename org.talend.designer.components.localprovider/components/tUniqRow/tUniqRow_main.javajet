@@ -50,7 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	+ <% 
 		if (!javaType.isPrimitive()) { 
 	%>
-		((<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%>:null)
+		((<%=connName %>.<%=column.getLabel() %>!=null)?<%=connName %>.<%=column.getLabel() %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%> + <%=connName %>.<%=column.getLabel() %>.length():null)
 	<% 
 		} else {
 	%>
