@@ -13,22 +13,9 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-String from = ElementParameterParser.getValue(node, "__FROM__");
-String to   = ElementParameterParser.getValue(node, "__TO__");
-String step = ElementParameterParser.getValue(node, "__STEP__");
-String increase = ElementParameterParser.getValue(node, "__INCREASE__");
-
-String operator = new String("<=");
-if (increase.equals("false")) {
-    operator = ">=";
-}
 %>
 
 $_globals{<%=cid %>}{CURRENT_ITERATION} = 0;
 
-for ($i_<%=cid%> = <%=from%>;
-     $i_<%=cid%> <%=operator%> <%=to%>;
-     $i_<%=cid%> += <%=step%>) {
-    $_globals{<%=cid %>}{CURRENT_VALUE} = $i_<%=cid%>;
+while (1) {
     $_globals{<%=cid %>}{CURRENT_ITERATION}++;
