@@ -13,6 +13,7 @@
 		org.talend.core.model.process.IMatchingMode
 		java.util.HashSet
 		java.util.Set
+		org.talend.core.model.process.EConnectionType
 	"
 %>
 
@@ -29,23 +30,18 @@
 	if (connections != null && connections.size() > 0) {
         for (IConnection connection : connections) {
         	String connectionName = connection.getName();
-			INode nodeSource = connection.getSource();
 
-			INode validTarget = null;
-			INode currentTarget = null;
-	
-			// searching the target graphic node of current tHash because no generation nodes are connected at outputs
-		    for(INode graphcalNode : graphicalNodes) {
-		    	if(nodeSource.getUniqueName().equals(graphcalNode.getUniqueName()) || nodeSource.getUniqueName().startsWith(graphcalNode.getUniqueName() + "_")) {
-		    		List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
-		    		for(IConnection outGraphicalConnection : outGraphicalConnections) {
-		    			if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
-		    				currentTarget = outGraphicalConnection.getTarget();
-		    			}
-		    		}
-		    	}
-		    }
-
+   INode nodeSource = connection.getSource();
+   
+   INode validTarget = null;
+   INode currentTarget = null;
+   
+      List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
+      for(IConnection outGraphicalConnection : outGraphicalConnections) {
+       if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
+        currentTarget = outGraphicalConnection.getTarget();
+       }
+      }
 			
 
 			if(!(currentTarget instanceof IHashableInputConnections)) {
