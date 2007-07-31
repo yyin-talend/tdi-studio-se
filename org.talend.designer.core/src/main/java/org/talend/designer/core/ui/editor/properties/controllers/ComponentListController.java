@@ -220,7 +220,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             param.setListItemsValue(componentValueList);
 
             Object value = param.getValue();
-            if (!componentUniqueNames.contains(value)) {
+            if (!componentUniqueNames.contains(value) && (componentUniqueNames.size() > 0)) {
                 if (value == null || value.equals("")) {
                     elem.setPropertyValue(param.getName(), componentValueList[0]);
                 } else {
