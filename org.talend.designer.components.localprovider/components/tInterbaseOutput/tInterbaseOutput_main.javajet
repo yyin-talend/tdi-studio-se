@@ -351,7 +351,7 @@ try{
     <%  if (dieOnError.equals("true")) { %>
     throw(e);
     <% } else { %>
-        throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+    System.err.print(e.getMessage());
     <% } %>
 }
 	<%
@@ -393,7 +393,7 @@ try{
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
         <% } else { %>
-            throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+            System.err.print(e.getMessage());
         <% } %>
     }
 <%
@@ -450,7 +450,7 @@ try{
                 <%  if (dieOnError.equals("true")) { %>
                 throw(e);
                 <% } else { %>
-                    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                System.err.print(e.getMessage());
                 <% } %>
             }
 		}
@@ -473,7 +473,7 @@ try{
                 <%  if (dieOnError.equals("true")) { %>
                 throw(e);
                 <% } else { %>
-                    throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                System.err.print(e.getMessage());
                 <% } %>
             }
 		}
@@ -506,7 +506,7 @@ try{
 			}
 		}
 	%>	
-	int updateCount_<%=cid%> = 0;
+	int updateCount_<%=cid%> = -1;
     try{
         updateCount_<%=cid%> =pstmtUpdate_<%=cid %>.executeUpdate();
     }catch(Exception e)
@@ -514,7 +514,7 @@ try{
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
         <% } else { %>
-            throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+        System.err.print(e.getMessage());
         <% } %>
     }
 	if(updateCount_<%=cid%> == 0)
@@ -539,7 +539,7 @@ try{
             <%  if (dieOnError.equals("true")) { %>
             throw(e);
             <% } else { %>
-                throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+                System.err.print(e.getMessage());
             <% } %>
         }
 	}
@@ -573,7 +573,7 @@ try{
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
         <% } else { %>
-            throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+        System.err.print(e.getMessage());
         <% } %>
     }
 	<%

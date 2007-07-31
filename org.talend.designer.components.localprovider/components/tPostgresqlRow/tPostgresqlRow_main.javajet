@@ -91,7 +91,7 @@ try {
 <%	if (dieOnError.equals("true")) { %>
 	throw(e);
 <% } else { %>
-	throw new RuntimeException("Execution failure, there might be an error in your SQL syntax.");
+    System.err.print(e.getMessage());
 <% } %>
 }
 <%
