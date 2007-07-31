@@ -570,19 +570,14 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm implements IRefr
         table.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!table.getEnabled()) {
-                    table.setEnabled(true);
-                    if (e.detail == SWT.CHECK) {
-                        TableItem tableItem = (TableItem) e.item;
-                        boolean promptNeeded = tableItem.getChecked();
-                        if (promptNeeded) {
-                            getConnection().getValue().add(tableItem.getText());
-                        } else {
-                            getConnection().getValue().remove(tableItem.getText());
-                        }
+                if (e.detail == SWT.CHECK) {
+                    TableItem tableItem = (TableItem) e.item;
+                    boolean promptNeeded = tableItem.getChecked();
+                    if (promptNeeded) {
+                        getConnection().getValue().add(tableItem.getText());
+                    } else {
+                        getConnection().getValue().remove(tableItem.getText());
                     }
-                } else {
-                    table.setEnabled(false);
                 }
                 checkFieldsValue();
             }
