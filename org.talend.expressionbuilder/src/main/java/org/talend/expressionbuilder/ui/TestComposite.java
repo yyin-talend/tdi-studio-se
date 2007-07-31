@@ -45,8 +45,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.expressionbuilder.test.JavaTestShadow;
-import org.talend.expressionbuilder.test.Variable;
 import org.talend.expressionbuilder.test.shadow.ExpressionTestMain;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * yzhang class global comment. Detailled comment <br/>

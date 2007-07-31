@@ -23,9 +23,17 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,10 +44,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.ui.swt.proposal.TextContentAdapterExtended;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
-import org.talend.designer.rowgenerator.data.JavaFunctionParser;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderProposalProvider;
+import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdapter;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -49,7 +60,9 @@ import org.talend.designer.rowgenerator.data.Parameter;
  */
 public class ExpressionComposite extends Composite implements IExpressionController {
 
-    private static Text text;
+    private Text text;
+
+    private String replacedText;
 
     /**
      * Create the composite
@@ -163,6 +176,7 @@ public class ExpressionComposite extends Composite implements IExpressionControl
 
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")");
+
     }
 
     public static final String PERL_FUN_PREFIX = "sub{";
@@ -204,12 +218,12 @@ public class ExpressionComposite extends Composite implements IExpressionControl
         text.setText(newValue);
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * yzhang Comment method "getExpression".
      * 
-     * @see org.talend.expressionbuilder.ui.ExpressionController#getExpression()
+     * @return
      */
-    public static String getExpression() {
+    public String getExpression() {
         if (text != null) {
             return text.getText();
         }
@@ -223,5 +237,46 @@ public class ExpressionComposite extends Composite implements IExpressionControl
      */
     public void setExpression(String expression) {
         text.insert(expression);
+    }
+
+    /**
+     * yzhang Comment method "setPropersoal".
+     */
+    public void configProposal() {
+        try {
+            KeyStroke stroke = KeyStroke.getInstance("Ctrl+Space");
+            IControlContentAdapter contorlContentAdapter = new ExpressionBuilderTextContentAdapter();
+            ExpressionBuilderProposalProvider contentProposalProvider = new ExpressionBuilderProposalProvider();
+            ContentProposalAdapter proposal = new ContentProposalAdapter(text, contorlContentAdapter,
+                    contentProposalProvider, stroke, new char[] { '+', '.' });
+
+        } catch (ParseException e) {
+            RuntimeExceptionHandler.process(e);
+        }
+
+    }
+
+    /**
+     * Sets the replacedText.
+     * 
+     * @param replacedText the replacedText to set
+     */
+    public void setReplacedText(String replacedText) {
+        this.replacedText = replacedText;
+    }
+
+    /**
+     * yzhang Comment method "replacedContent".
+     * 
+     * @param content
+     * @param position
+     */
+    public void replacedContent(String content, Point position) {
+        if (replacedText.startsWith("*")) {
+            text.setSelection(position.x, position.x);
+        } else {
+            text.setSelection(position.x - replacedText.length(), position.x);
+        }
+        text.insert(content);
     }
 }

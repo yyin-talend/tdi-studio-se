@@ -22,7 +22,8 @@
 package org.talend.expressionbuilder.test;
 
 import org.talend.expressionbuilder.test.ExpressionArguments;
-import org.talend.expressionbuilder.test.Variable;
+import org.talend.expressionbuilder.test.shadow.Variable;
+
 import java.util.List;
 
 /**

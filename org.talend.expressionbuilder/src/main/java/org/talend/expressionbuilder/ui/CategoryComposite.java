@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.expressionbuilder.ui;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -43,7 +48,9 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.expressionbuilder.model.Category;
 import org.talend.expressionbuilder.model.CategoryManager;
+import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.test.shadow.VirtualMetadataColumn;
+import org.talend.expressionbuilder.ui.proposal.ExpressionContentProposal;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -143,7 +150,7 @@ public class CategoryComposite extends Composite {
     }
 
     /**
-     * DOC bqian Comment method "initializeData".
+     * bqian Comment method "initializeData".
      * 
      * @param categoryViewer
      */
@@ -220,6 +227,105 @@ public class CategoryComposite extends Composite {
                 }
             });
 
+        }
+    }
+
+    /**
+     * yzhang Comment method "getProposals".
+     * 
+     * @return
+     */
+    public IContentProposal[] getProposals(String categoryFunction, int position) {
+
+        String category = null;
+        String function = null;
+
+        boolean displayFunction = false;
+        if (categoryFunction.indexOf(".") != -1) {
+            String[] cf = categoryFunction.split("\\.");
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < cf.length - 1; i++) {
+                buffer.append(cf[i]);
+                if (i != cf.length - 2) {
+                    buffer.append(".");
+                }
+            }
+            if (cf.length == 1) {
+                category = cf[cf.length - 1];
+            } else {
+                function = cf[cf.length - 1];
+                category = buffer.toString();
+            }
+
+            displayFunction = true;
+
+        } else {
+            category = categoryFunction;
+        }
+
+        java.util.List<IContentProposal> proposals = new LinkedList<IContentProposal>();
+        java.util.List<Category> categories = manager.getInputCategory();
+
+        boolean addAllCategory = category.equals("*C") ? true : false;
+
+        if (!displayFunction) {
+            for (Category cg : categories) {
+                if (!cg.getName().startsWith("*") && (addAllCategory || cg.getName().startsWith(category))) {
+                    proposals.add(new ExpressionContentProposal(cg.getName(), "", position));
+                }
+            }
+
+            java.util.List<Variable> vars = ExpressionBuilderDialog.getTestComposite().getVariableList();
+            for (Variable var : vars) {
+                if (addAllCategory || var.getName().startsWith(category)) {
+                    proposals.add(new ExpressionContentProposal(var.getName(), var.getValue(), position));
+                }
+            }
+
+        } else {
+            for (Category cg : categories) {
+                if (cg.getName().equals(category)) {
+                    java.util.List<Function> funs = cg.getFunctions();
+                    boolean addAll = (function == null ? true : false);
+
+                    for (Function fun : funs) {
+                        if (addAll || fun.getName().startsWith(function)) {
+                            proposals.add(new ExpressionContentProposal(fun.getName() + "()", fun.getDescription(),
+                                    position));
+                        }
+                    }
+                }
+            }
+        }
+
+        Collections.sort(proposals, new CategoryFunctionCompartor());
+
+        String replaceString;
+        if (displayFunction) {
+            replaceString = function == null ? "" : function;
+        } else {
+            replaceString = category;
+        }
+        ExpressionBuilderDialog.getExpressionComposite().setReplacedText(replaceString);
+
+        return proposals.toArray(new IContentProposal[proposals.size()]);
+    }
+
+    /**
+     * yzhang CategoryComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id: CategoryComposite.java 下午01:57:54 2007-7-30 +0000 (2007-7-30) yzhang $
+     * 
+     */
+    class CategoryFunctionCompartor implements Comparator<IContentProposal> {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(IContentProposal o1, IContentProposal o2) {
+            return o1.getContent().compareToIgnoreCase(o2.getContent());
         }
     }
 }

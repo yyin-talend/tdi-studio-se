@@ -52,6 +52,10 @@ public class ExpressionBuilderDialog extends Dialog {
 
     private static TestComposite testComposite;
 
+    private static IExpressionController expressionComposite;
+
+    private static CategoryComposite categoryComposite;
+
     CategoryManager manager = new CategoryManager();
 
     /**
@@ -83,7 +87,7 @@ public class ExpressionBuilderDialog extends Dialog {
 
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
-        final IExpressionController expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
+        expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
         upperSashform.setWeights(new int[] { 1, 1 });
@@ -91,7 +95,7 @@ public class ExpressionBuilderDialog extends Dialog {
         final Composite lowerComposite = new Composite(sashForm, SWT.NONE);
         lowerComposite.setLayout(new FillLayout());
 
-        CategoryComposite categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
+        categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
         categoryComposite.setExpressController(expressionComposite);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -99,6 +103,8 @@ public class ExpressionBuilderDialog extends Dialog {
         // gridData.widthHint = 483;
         sashForm.setLayoutData(gridData);
         sashForm.setWeights(new int[] { 1, 1 });
+
+        expressionComposite.configProposal();
 
         return container;
     }
@@ -145,5 +151,23 @@ public class ExpressionBuilderDialog extends Dialog {
      */
     public static TestComposite getTestComposite() {
         return testComposite;
+    }
+
+    /**
+     * Getter for expressionComposite.
+     * 
+     * @return the expressionComposite
+     */
+    public static ExpressionComposite getExpressionComposite() {
+        return (ExpressionComposite) expressionComposite;
+    }
+
+    /**
+     * Getter for categoryComposite.
+     * 
+     * @return the categoryComposite
+     */
+    public static CategoryComposite getCategoryComposite() {
+        return categoryComposite;
     }
 }

@@ -93,9 +93,11 @@ public class ExpressionTestMain {
 
             try {
                 process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
-                while (process == null) {
+                int counter = 0;
+                while (process == null && counter < 6) {
                     try {
                         Thread.sleep(500);
+                        counter++;
                     } catch (InterruptedException e) {
                         RuntimeExceptionHandler.process(e);
                     }

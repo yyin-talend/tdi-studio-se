@@ -31,8 +31,10 @@ import org.talend.designer.rowgenerator.data.Function;
  */
 public interface IExpressionController {
 
-    public abstract void setExpression(Function f);
+    public void setExpression(Function f);
 
-    public abstract void setExpression(String expression);
+    public void setExpression(String expression);
+
+    public void configProposal();
 
 }

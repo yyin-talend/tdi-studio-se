@@ -46,7 +46,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.JavaFunctionParser;
+import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.ui.CategoryComposite;
+import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 import org.talend.expressionbuilder.ui.ExpressionComposite;
 
 /**
@@ -67,7 +69,7 @@ public class JavaTestShadow {
 
         Function function = CategoryComposite.getSelectedFunction();
 
-        String expression = ExpressionComposite.getExpression();
+        String expression = ExpressionBuilderDialog.getExpressionComposite().getExpression();
 
         if (function != null && expression != null && !"".equals(expression)) {
 

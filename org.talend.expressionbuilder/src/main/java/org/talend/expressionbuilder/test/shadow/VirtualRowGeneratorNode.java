@@ -38,7 +38,6 @@ import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.shadow.TextElementParameter;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.shadow.ObjectElementParameter;
-import org.talend.expressionbuilder.test.Variable;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 import org.talend.expressionbuilder.ui.ExpressionComposite;
 
@@ -101,11 +100,11 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             Map<String, String> value = new HashMap<String, String>();
             value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
             List<Variable> variables = ExpressionBuilderDialog.getTestComposite().getVariableList();
-            String expression = ExpressionComposite.getExpression();
+            String expression = ExpressionBuilderDialog.getExpressionComposite().getExpression();
             for (Variable var : variables) {
                 expression = expression.replaceAll(var.getName(), "\"" + var.getValue() + "\"");
             }
-            value.put(RowGeneratorComponent.ARRAY, expression);
+            value.put(RowGeneratorComponent.ARRAY, expression + "+\"\"");
             map.add(value);
         }
 
