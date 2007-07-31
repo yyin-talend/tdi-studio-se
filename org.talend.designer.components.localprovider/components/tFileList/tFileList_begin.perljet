@@ -1,22 +1,38 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String directory = ElementParameterParser.getValue(
+    node,
+    "__DIRECTORY__"
+);
+
+String filemask = ElementParameterParser.getValue(
+    node,
+    "__FILEMASK__"
+);
+
+String case_sensitive = ElementParameterParser.getValue(
+    node,
+    "__CASE_SENSITIVE__"
+);
+
+String include_subdir = ElementParameterParser.getValue(
+    node,
+    "__INCLUDE_SUBDIR__"
+);
 %>
 
 use File::Spec;
@@ -24,17 +40,12 @@ use File::Basename;
 use talend::filesOp;
 
 my @files = getFileList(
-        directory      => <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>,
-        filemask       => filemaskToRegex(<%=ElementParameterParser.getValue(node, "__FILEMASK__") %>),
-        case_sensitive => <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__") %>,
-    );
+    directory      => <%=directory%>,
+    filemask       => filemaskToRegex(<%=filemask%>),
+    case_sensitive => <%=case_sensitive%>,
+    include_subdir => <%=include_subdir%>,
+);
 
-for my $filename (@files) {
-
-    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILE} = basename($filename);
-    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILEPATH} = File::Spec->catfile( <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>, $filename );
-
-<%
-		}
-	}
-%>
+for my $filepath (@files) {
+    $_globals{<%=cid%>}{CURRENT_FILE} = basename($filepath);
+    $_globals{<%=cid%>}{CURRENT_FILEPATH} = $filepath;

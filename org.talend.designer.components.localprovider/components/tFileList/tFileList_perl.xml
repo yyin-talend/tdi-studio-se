@@ -49,6 +49,14 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="INCLUDE_SUBDIR"
+      FIELD="CHECK"
+      NUM_ROW="4"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION/>
