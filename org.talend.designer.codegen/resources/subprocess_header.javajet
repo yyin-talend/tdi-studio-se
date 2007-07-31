@@ -4,21 +4,18 @@
 		org.talend.designer.codegen.config.NodesSubTree
 		org.talend.core.model.process.INode
 		java.util.List
-		java.util.ArrayList
 		java.util.HashSet
 		java.util.Set
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
-		org.talend.core.model.process.HashableColumn
 	" 
 	class="SubProcessHeader"
 	skeleton="subprocess_header_java.skeleton"
@@ -46,8 +43,8 @@
 					(conn.getLineStyle().equals(EConnectionType.FLOW_REF)) ||
 					(conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) 
 				) {
-					if (!hSet.contains(conn.getName())) {
-						hSet.add(conn.getName());
+					if (!hSet.contains(conn.getName() + templateOrigin)) {
+						hSet.add(conn.getName() + templateOrigin);
 						IMetadataTable metadata = conn.getMetadataTable();
 						
 						Set<String> hashableColumnsNames = new HashSet<String>();
