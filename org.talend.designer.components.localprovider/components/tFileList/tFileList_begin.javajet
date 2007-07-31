@@ -74,8 +74,16 @@
             String fileName<%=cid%>=files<%=cid%>.getName();
             if(flag<%=cid%>==true)
             {
-                if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>.substring(0,fileName<%=cid%>.length()-4 )).find()){
-                    continue;
+                if(!(fileName<%=cid%>.indexOf(".")==-1))
+                {
+                    if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>.substring(0,fileName<%=cid%>.indexOf("."))).find()){
+                        continue;
+                    }
+                }else
+                {
+                    if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>).find()){
+                        continue;
+                    }
                 }
             }else
             {
