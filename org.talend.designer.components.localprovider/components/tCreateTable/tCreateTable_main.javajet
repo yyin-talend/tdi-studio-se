@@ -203,7 +203,7 @@ class Transfer{
 			 		if(column.getLength()!=0&&column.getPrecision()==0){
 			 			sql=sql+"("+column.getLength()+")";
 			 		}else if(column.getLength()!=0&&column.getLength()!=0){
-			 			sql=sql+"("+column.getLength()+","+column.getPrecision()+")";					 				 			
+			 			sql=sql+"("+column.getPrecision()+","+column.getLength()+")";					 				 			
 			 		}		 	
 			 		sql=sql+" ";
 			 	//default_value
