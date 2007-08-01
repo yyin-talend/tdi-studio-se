@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
-import org.talend.core.model.metadata.types.ContextParameterJavaTypeManager;
+import org.talend.core.model.metadata.types.ContextParameterTypeManager;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -262,7 +262,7 @@ public class ContextParameterPage extends WizardPage {
     private String getJavaDisplayedType(String originalTypedValue) {
         JavaType javaType;
 
-        javaType = ContextParameterJavaTypeManager.getJavaTypeFromLabel(originalTypedValue);
+        javaType = ContextParameterTypeManager.getJavaTypeFromLabel(originalTypedValue);
 
         String type;
 
