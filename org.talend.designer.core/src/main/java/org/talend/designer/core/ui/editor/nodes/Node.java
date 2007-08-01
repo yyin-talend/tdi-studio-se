@@ -511,8 +511,7 @@ public class Node extends Element implements INode {
             }
             IMetadataTable originTable = metadataList.get(0);
             IMetadataTable inputTable = connection.getMetadataTable();
-            if (((customFound && originTable.isReadOnly()) || (outputs.size() == 0))
-                    && (inputTable.getListColumns().size() != 0)) {
+            if (((customFound && originTable.isReadOnly()) || (outputs.size() == 0)) && (inputTable.getListColumns().size() != 0)) {
                 // For the auto propagate.
                 MetadataTool.copyTable(inputTable, originTable);
                 ColumnListController.updateColumnList(this, null);
@@ -638,8 +637,7 @@ public class Node extends Element implements INode {
             setShowHint((Boolean) value);
         }
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
@@ -648,8 +646,8 @@ public class Node extends Element implements INode {
             IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             if (part instanceof MultiPageTalendEditor) {
                 if (process.isActivate() && ((MultiPageTalendEditor) part).getProcess().equals(process)) {
-                    ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS
-                            .getName()), (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
+                    ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName()),
+                            (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
                     ((MultiPageTalendEditor) part).updateChildrens();
                 }
             }
@@ -796,8 +794,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
                     if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
-                            || connec.getLineStyle().equals(EConnectionType.RUN_IF_ERROR) || connec.getLineStyle()
-                            .equals(EConnectionType.RUN_IF_OK))) {
+                            || connec.getLineStyle().equals(EConnectionType.RUN_IF_ERROR) || connec.getLineStyle().equals(
+                            EConnectionType.RUN_IF_OK))) {
                         runIf = true;
                     }
                     if (!runIf) {
@@ -1041,8 +1039,7 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -1051,8 +1048,7 @@ public class Node extends Element implements INode {
                 case SCHEMA_TYPE:
                     break;
                 case MEMO_SQL:
-                    String errMessage = "Parameter (" + param.getDisplayName()
-                            + "): schema is different from the query.";
+                    String errMessage = "Parameter (" + param.getDisplayName() + "): schema is different from the query.";
                     String currentQuery = param.getValue().toString();
 
                     // Checks if current query is empty.
@@ -1068,8 +1064,8 @@ public class Node extends Element implements INode {
                     }
                     currentQuery = currentQuery.toUpperCase();
                     if (currentQuery.contains("SELECT") && currentQuery.contains("FROM")) {
-                        currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(),
-                                currentQuery.indexOf("FROM"));
+                        currentQuery = currentQuery.substring(currentQuery.indexOf("SELECT") + "SELECT".length(), currentQuery
+                                .indexOf("FROM"));
                         String[] columnArray = currentQuery.split(",");
 
                         int changedColumnSize = columnArray.length;
@@ -1108,8 +1104,8 @@ public class Node extends Element implements INode {
                                 }
                             }
                             if (!found) {
-                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value ("
-                                        + value + ") that doesn't exist anymore.";
+                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" + value
+                                        + ") that doesn't exist anymore.";
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
@@ -1280,7 +1276,9 @@ public class Node extends Element implements INode {
                 if (((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) && (getConnectorFromType(
                         EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0))
                         || ((getConnectorFromType(EConnectionType.TABLE).getMaxLinkInput() == 0) && (getConnectorFromType(
-                                EConnectionType.TABLE).getMaxLinkOutput() != 0))) {
+                                EConnectionType.TABLE).getMaxLinkOutput() != 0))
+                        || ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) && (getConnectorFromType(
+                                EConnectionType.FLOW_MAIN).getMaxLinkOutput() == 0))) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
                         String errorMessage = "No schema has been defined yet.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1324,8 +1322,8 @@ public class Node extends Element implements INode {
             IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
             for (Connection connection : inputs) {
                 if (connection.isActivate()
-                        && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
-                                .equals(EConnectionType.TABLE))) {
+                        && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
+                                EConnectionType.TABLE))) {
                     inputMeta = connection.getMetadataTable();
                     inputConnecion = connection;
                 }
@@ -1358,8 +1356,8 @@ public class Node extends Element implements INode {
                     }
                 }
                 if (!isSame) {
-                    String warningMessage = "The schemas on the input links of the merge component \""
-                            + getUniqueName() + "\" are different, they should be the same.";
+                    String warningMessage = "The schemas on the input links of the merge component \"" + getUniqueName()
+                            + "\" are different, they should be the same.";
                     Problems.add(ProblemStatus.WARNING, this, warningMessage);
                 }
             }
