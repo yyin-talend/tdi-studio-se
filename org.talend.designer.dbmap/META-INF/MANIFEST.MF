@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dbmap Plug-in
-Bundle-SymbolicName: org.talend.designer.dbmap
+Bundle-SymbolicName: org.talend.designer.dbmap;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: org.talend.designer.dbmap.DbMapActivator
 Bundle-Localization: plugin
@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.core,
  org.talend.designer.core,
  org.eclipse.core.resources,
- org.talend.designer.abstractmap
+ org.talend.designer.abstractmap,
+ org.talend.designer.codegen
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.dbmap,
  org.talend.designer.dbmap.external.connection,

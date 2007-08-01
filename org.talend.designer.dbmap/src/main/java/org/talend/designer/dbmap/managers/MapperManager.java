@@ -50,7 +50,7 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.abstractmap.ui.visualmap.link.LinkState;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.dbmap.AbstractDbMapComponent;
+import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.DbMapActivator;
 import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.i18n.Messages;
@@ -94,13 +94,13 @@ public class MapperManager extends AbstractMapperManager {
 
     UIManager uiManager;
 
-    private AbstractDbMapComponent mapperComponent;
+    private DbMapComponent mapperComponent;
 
     private CommandStack commandStack;
 
     private ProblemsManager problemsManager;
 
-    public MapperManager(AbstractDbMapComponent mapperComponent) {
+    public MapperManager(DbMapComponent mapperComponent) {
         super(mapperComponent);
         this.mapperComponent = mapperComponent;
         tableEntriesManager = new TableEntriesManager(this);
@@ -594,7 +594,7 @@ public class MapperManager extends AbstractMapperManager {
         uiManager.refreshSqlExpression();
     }
 
-    public AbstractDbMapComponent getComponent() {
+    public DbMapComponent getComponent() {
         return this.mapperComponent;
     }
 

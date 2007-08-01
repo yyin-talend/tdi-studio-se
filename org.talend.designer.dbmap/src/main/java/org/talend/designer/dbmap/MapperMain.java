@@ -63,13 +63,13 @@ public class MapperMain {
 
     private MapperModel mapperModel;
 
-    private AbstractDbMapComponent connector;
+    private DbMapComponent connector;
 
     private List<IOConnection> ioInputConnections;
 
     private List<IOConnection> ioOutputConnections;
 
-    public MapperMain(AbstractDbMapComponent connector) {
+    public MapperMain(DbMapComponent connector) {
         super();
         mapperManager = new MapperManager(connector);
         this.connector = connector;

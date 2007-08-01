@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.dbmap.oracle.language;
+package org.talend.designer.dbmap.language.teradata;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,12 +44,12 @@ import org.talend.designer.dbmap.utils.DataMapExpressionParser;
  * $Id: GenerationManager.java 1299 2007-01-05 14:53:10Z amaumont $
  * 
  */
-public class OracleGenerationManager extends DbGenerationManager {
+public class TeradataGenerationManager extends DbGenerationManager {
 
     private Set<String> aliasAlreadyDeclared = new HashSet<String>();
 
-    public OracleGenerationManager() {
-        super(new OracleLanguage());
+    public TeradataGenerationManager() {
+        super(new TeradataLanguage());
     }
 
     /**
@@ -119,10 +119,10 @@ public class OracleGenerationManager extends DbGenerationManager {
         if (outputTable != null) {
 
             IConnection connection = nameToOutputConnection.get(outputTable.getName());
-            if (connection != null) {
-                outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, connection
-                        .getMetadataTable());
-            }
+//            if (connection != null) {
+//                outputTable = removeUnmatchingEntriesWithColumnsOfMetadataTable(outputTable, connection
+//                        .getMetadataTable());
+//            }
 
             sb.append("SELECT\n");
 
@@ -257,7 +257,6 @@ public class OracleGenerationManager extends DbGenerationManager {
                 sb.append(addClauses);
             }
         }
-
         return sb.toString();
     }
 

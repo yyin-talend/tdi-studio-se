@@ -40,8 +40,11 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
@@ -51,6 +54,7 @@ import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
+import org.talend.designer.dbmap.language.teradata.TeradataGenerationManager;
 import org.talend.designer.dbmap.model.tableentry.TableEntryLocation;
 import org.talend.designer.dbmap.utils.DataMapExpressionParser;
 import org.talend.designer.dbmap.utils.problems.ProblemsAnalyser;
@@ -61,7 +65,7 @@ import org.talend.designer.dbmap.utils.problems.ProblemsAnalyser;
  * $Id: MapperComponent.java 1782 2007-02-03 07:57:38Z bqian $
  * 
  */
-public abstract class AbstractDbMapComponent extends AbstractMapComponent {
+public class DbMapComponent extends AbstractMapComponent {
 
     private MapperMain mapperMain;
 
@@ -72,7 +76,7 @@ public abstract class AbstractDbMapComponent extends AbstractMapComponent {
     /**
      * DOC amaumont MapperComponent constructor comment.
      */
-    public AbstractDbMapComponent() {
+    public DbMapComponent() {
         super();
     }
 
@@ -461,6 +465,32 @@ public abstract class AbstractDbMapComponent extends AbstractMapComponent {
         return this.mapperMain;
     }
 
-    public abstract DbGenerationManager getGenerationManager();
+    public DbGenerationManager getGenerationManager() {
+        IElementParameter elementParameter = getElementParameter("COMPONENT_NAME");
+        String value = (String) elementParameter.getValue();
+        DbGenerationManager dbGenerationManager = null;
+        if("tELTTeradataMap".equals(value)) {
+            dbGenerationManager = new TeradataGenerationManager();
+        } else {
+            throw new IllegalArgumentException("Value of element parameter NAME is unknown :" + value);
+        }
+        return dbGenerationManager;
+    }
 
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
+     */
+    public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
+        DbMapComponentDocumentation componentDocumentation = new DbMapComponentDocumentation();
+        componentDocumentation.setComponentName(componentName);
+        componentDocumentation.setTempFolderPath(tempFolderPath);
+        componentDocumentation.setExternalData(this.getExternalData());
+
+        componentDocumentation.setPreviewPicPath(HTMLDocUtils.getPreviewPicPath(this));
+
+        return componentDocumentation;
+    }
+
+    
+    
 }

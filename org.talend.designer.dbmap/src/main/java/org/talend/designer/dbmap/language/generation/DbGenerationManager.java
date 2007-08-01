@@ -31,7 +31,7 @@ import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.designer.dbmap.AbstractDbMapComponent;
+import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.language.IDbLanguage;
@@ -160,7 +160,7 @@ public abstract class DbGenerationManager {
         return this.language.getOperatorsManager();
     }
 
-    public abstract String buildSqlSelect(AbstractDbMapComponent component, String tableName);
+    public abstract String buildSqlSelect(DbMapComponent component, String tableName);
 
     /**
      * DOC amaumont Comment method "removeUnmatchingEntriesWithColumnsOfMetadataTable".

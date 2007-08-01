@@ -24,7 +24,7 @@ import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 
-public abstract class AbstractMapperComponentDocumentation implements IComponentDocumentation {
+public class DbMapComponentDocumentation implements IComponentDocumentation {
 
     private String componentName;
 

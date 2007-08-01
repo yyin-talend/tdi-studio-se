@@ -13,7 +13,7 @@
 	org.talend.designer.dbmap.language.IDbLanguage
 	org.talend.designer.dbmap.oracle.OracleMapperComponent
 	org.talend.designer.dbmap.oracle.language.OracleGenerationManager
-	org.talend.designer.dbmap.AbstractDbMapComponent
+	org.talend.designer.dbmap.DbMapComponent
 
 	java.util.HashMap
 	java.util.Map
@@ -59,7 +59,7 @@
             	continue;
             }
 
-            String sqlQuery = gm.buildSqlSelect((AbstractDbMapComponent) node, outputTable.getName());
+            String sqlQuery = gm.buildSqlSelect((DbMapComponent) node, outputTable.getName());
             
 				%>
 

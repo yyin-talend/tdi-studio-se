@@ -33,4 +33,6 @@ public interface IDbOperatorManager {
 
     public IDbOperator getOperatorFromValue(String operatorValue);
 
+    public IDbOperator getDefaultEqualOperator();
+
 }
