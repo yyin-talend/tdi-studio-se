@@ -113,7 +113,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         column.setModifiable(true);
         column.setWidth(115);
-        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
+        ExtendedTextCellEditor cellEditor = new ExtendedTextCellEditor(tableViewerCreator.getTable());
+        cellEditor.setTableViewerCreator(tableViewerCreator);
+        column.setCellEditor(cellEditor);
+
         // ////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
