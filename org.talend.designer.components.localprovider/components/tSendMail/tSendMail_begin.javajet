@@ -19,7 +19,7 @@
 	String cc          = ElementParameterParser.getValue(node, "__CC__");
 	String bcc          = ElementParameterParser.getValue(node, "__BCC__");
 	String subject     = ElementParameterParser.getValue(node, "__SUBJECT__");
-	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
+	
 	List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTACHMENTS__");
 	List<Map<String, String>> headers = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
 	
@@ -34,7 +34,7 @@
     String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc.replace(";",",") %>;
     String bcc_<%=cid %> = <%=(bcc==null || "".equals(bcc))?null:bcc.replace(";",",") %>;
     String subject_<%=cid %> = <%=subject %>;
-    String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
+    
 	
 	java.util.List<java.util.Map<String, String>> headers_<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
 <%

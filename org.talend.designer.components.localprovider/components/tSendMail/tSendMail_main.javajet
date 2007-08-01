@@ -14,7 +14,9 @@
 	String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 	// component id
 	String cid = node.getUniqueName();
+	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 %>
+	 String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
      props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
      props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
