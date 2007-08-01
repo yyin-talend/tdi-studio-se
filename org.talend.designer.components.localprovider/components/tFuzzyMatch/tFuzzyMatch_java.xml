@@ -34,7 +34,7 @@
       NUM_ROW="1"
     >
       <TABLE READONLY="true">
-        <COLUMN NAME="VALUE" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="DISTANCE" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="MATCHING" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
@@ -63,6 +63,14 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="LOOKUP_COLUMN"
+      FIELD="LOOKUP_COLUMN_LIST"
+      REQUIRED="true"
+      NUM_ROW="2"
+    >
+    </PARAMETER>
+
+    <PARAMETER
       NAME="MIN"
       FIELD="TEXT"
       NOT_SHOW_IF="(MATCHING_TYPE!='LEVENSHTEIN')"
@@ -85,7 +93,7 @@
 
     <PARAMETER
       NAME="MATCH"
-      FIELD="COLUMN_LIST"
+      FIELD="PREV_COLUMN_LIST"
       REQUIRED="true"
       NUM_ROW="11"
     >

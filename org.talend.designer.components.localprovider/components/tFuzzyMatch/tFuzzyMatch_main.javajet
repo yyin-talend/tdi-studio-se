@@ -31,19 +31,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if(max.equals("")){
     	max="0";
     }
-	//int minDistance = Integer.parseInt(min);
-	//int maxDistance = Integer.parseInt(max);
-	//int invalidDistance = maxDistance+1;
+
 	String uniqueS = ElementParameterParser.getValue(node, "__GET_UNIQUE__");
 	boolean unique = uniqueS.equals("true");
 	String caseS = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__");
 	boolean caseSens = caseS.equals("true");
 	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+	String lookUpColumn = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
+	lookUpColumn = lookUpColumn.substring(lookUpColumn.indexOf(".") + 1);
 
     List< ? extends IConnection> conns = node.getIncomingConnections();
     IConnection inRefCon = null;
     IConnection inMainCon = null;
-    String keyName = "Setting a key is mandatory in lookup Schema";
     for (IConnection connection : conns) {
         if (connection == null) {
             continue;
@@ -53,15 +52,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             inMainCon = connection;
         } else if (connectionType == EConnectionType.FLOW_REF) {
             inRefCon = connection;
-            List<IMetadataColumn> listColumns = inRefCon.getMetadataTable().getListColumns();
-            int sizeListColumns = listColumns.size();
-			for (int valueN=0; valueN<sizeListColumns; valueN++) {
-				IMetadataColumn column = listColumns.get(valueN);
-				if(column.isKey()){
-					keyName = column.getLabel();
-					break;
-				}
-			}
         }
     }
 	conns = null;
@@ -78,214 +68,216 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);%>
-<%=conn.getName() %>.<%=column.getLabel() %> = <%=inMainCon.getName() %>.<%=column.getLabel() %>;
+					<%=conn.getName() %>.<%=column.getLabel() %> = <%=inMainCon.getName() %>.<%=column.getLabel() %>;
 
-<%				
-				}%>
-if(<%=conn.getName() %>.VALUE != null){
-
-	<%=conn.getName() %>.VALUE = null;
-}
-if(<%=conn.getName() %>.MATCHING != null){
-	
-<%=conn.getName() %>.MATCHING = null;
-
-}				
+				<%				
+				}
+				%>
+                if(<%=conn.getName() %>.DISTANCE != null){
+                
+                	<%=conn.getName() %>.DISTANCE = null;
+                }
+                if(<%=conn.getName() %>.MATCHING != null){
+                	
+                <%=conn.getName() %>.MATCHING = null;
+                
+                }				
 							
-java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>_<%=cid %> = tSet_<%=inRefCon.getName() %>_<%=cid %>.iterator();
+				java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>_<%=cid %> = tSet_<%=inRefCon.getName() %>_<%=cid %>.iterator();
 
-<%
-if(matchingType.equals("matchLevenshteinDistance")){
-%>
-int value_<%=cid %> = invalid_dis_<%=cid %>;
-
-String tomatch_<%=cid %> = (""+<%=inMainCon.getName() %>.<%=colName %>)<%if(!caseSens){%>.toLowerCase()<%}%>;
-
-<%
-	if(unique){
-%>
-String matching_<%=cid %> = null;
-
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	int distance = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, dic_value<%if(!caseSens){%>.toLowerCase()<%}%>);
-	
-	if(distance < value_<%=cid %>){
-		
-		if(distance >= <%=min %>){
-		
-			value_<%=cid %> = distance;
-			
-			matching_<%=cid %> = dic_value;		
-			
-		}
-		
-		if(value_<%=cid %> == <%=min %>){
-		
-			break;
-							
-		}
-	}
-	
-}
-
-if(value_<%=cid %> >= <%=min %> && value_<%=cid %> <= <%=max %>){
-
-	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
-
-	<%=conn.getName() %>.MATCHING = matching_<%=cid %>;
-	
-}
-
-<%
-	}else{
-%>
-StringBuilder matching_<%=cid %> = null;
-
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	int distance = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, dic_value<%if(!caseSens){%>.toLowerCase()<%}%>);
-	
-	if(distance < value_<%=cid %>){
-		
-		if(distance >= <%=min %>){
-		
-			value_<%=cid %> = distance;
-			
-			matching_<%=cid %> = new StringBuilder(dic_value);		
-			
-		}
-		
-	}else if(distance == value_<%=cid %> && value_<%=cid %> <= <%=max %>){
-
-		matching_<%=cid %>.append(<%=separator %>).append(dic_value);
-
-	}
-	
-}
-
-if(value_<%=cid %> >= <%=min %> && value_<%=cid %> <= <%=max %>){
-
-	<%=conn.getName() %>.VALUE = value_<%=cid %>+"";
-
-	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
-	
-}
-
-<%
-	}
-}else if(matchingType.equals("matchMetaphone")){%>
-<%=conn.getName() %>.VALUE = metaphone_<%=cid %>.metaphone(""+<%=inMainCon.getName() %>.<%=colName %>);
-
-<%
-	if(unique){
-%>
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	if(metaphone_<%=cid %>.metaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
-	
-		<%=conn.getName() %>.MATCHING = dic_value;
-		
-		break;
-	
-	}
-	
-}
-
-<%
-	}else{
-%>
-StringBuilder matching_<%=cid %> = null;
-
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	if(metaphone_<%=cid %>.metaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
-	
-		if(matching_<%=cid %> == null){
-			
-			matching_<%=cid %> = new StringBuilder(dic_value);
-		
-		}else{
-		
-			matching_<%=cid %>.append(<%=separator %>).append(dic_value);
-			
-		}
-	
-	}
-	
-}
-
-if(matching_<%=cid %> != null){
-
-	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
-	
-}
-
-<%
-	}
-}else{%>
-<%=conn.getName() %>.VALUE = doublemetaphone_<%=cid %>.doubleMetaphone(""+<%=inMainCon.getName() %>.<%=colName %>);
-
-<%
-	if(unique){
-%>
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	if(doublemetaphone_<%=cid %>.doubleMetaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
-	
-		<%=conn.getName() %>.MATCHING = dic_value;
-		
-		break;
-	
-	}
-	
-}
-
-<%
-	}else{
-%>
-StringBuilder matching_<%=cid %> = null;
-
-while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
-
-	String dic_value = ""+tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=keyName %>;
-	
-	if(doublemetaphone_<%=cid %>.doubleMetaphone(dic_value).equals(<%=conn.getName() %>.VALUE)){
-	
-		if(matching_<%=cid %> == null){
-			
-			matching_<%=cid %> = new StringBuilder(dic_value);
-		
-		}else{
-		
-			matching_<%=cid %>.append(<%=separator %>).append(dic_value);
-			
-		}
-	
-	}
-	
-}
-
-if(matching_<%=cid %> != null){
-
-	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
-	
-}
-
-<%
-	}
-}%>
-nb_line_<%=cid%>++;
+                <%
+                if(matchingType.equals("matchLevenshteinDistance")){
+                %>
+                    int value_<%=cid %> = invalid_dis_<%=cid %>;
+                    
+                    String tomatch_<%=cid %> = ("" + <%=inMainCon.getName() %>.<%=colName%>)<%if(!caseSens){%>.toLowerCase()<%}%>;
+                
+                <%
+                	if(unique){
+                %>
+                        String matching_<%=cid %> = null;
+                        
+                        while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
+                        	
+                        	int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, lookUpValue_<%=cid%><%if(!caseSens){%>.toLowerCase()<%}%>);
+                        	
+                        	if(distance_<%=cid%> < value_<%=cid%>){
+                        		
+                        		if(distance_<%=cid%> >= <%=min%>){
+                        		
+                        			value_<%=cid %> = distance_<%=cid%>;
+                        			
+                        			matching_<%=cid %> = lookUpValue_<%=cid%>;		
+                        			
+                        		}
+                        		
+                        		if(value_<%=cid %> == <%=min%>){
+                        		
+                        			break;
+                        							
+                        		}
+                        	}
+                        	
+                        }
+                        
+                        if(value_<%=cid%> >= <%=min%> && value_<%=cid%> <= <%=max%>){
+                        
+                        	<%=conn.getName() %>.DISTANCE = value_<%=cid %> + "";
+                        
+                        	<%=conn.getName() %>.MATCHING = matching_<%=cid %>;
+                        	
+                        }
+                
+                <%
+                	}else{
+                %>
+                		StringBuilder matching_<%=cid %> = new StringBuilder();
+                
+                        while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
+                        	
+                        	int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, lookUpValue_<%=cid%><%if(!caseSens){%>.toLowerCase()<%}%>);
+                        	
+                        	if(distance_<%=cid%> < value_<%=cid%>){
+                        		
+                        		if(distance_<%=cid%> >= <%=min%>){
+                        		
+                        			value_<%=cid %> = distance_<%=cid%>;
+                        			
+                        			matching_<%=cid %>.append(lookUpValue_<%=cid%>);		
+                        			
+                        		}
+                        		
+                        	}else if(distance_<%=cid%> == value_<%=cid%> && value_<%=cid%> <= <%=max%>){
+                        
+                        		matching_<%=cid %>.append(<%=separator%>).append(lookUpValue_<%=cid%>);
+                        
+                        	}
+                        	
+                        }
+                        
+                        if(value_<%=cid %> >= <%=min%> && value_<%=cid %> <= <%=max%>){
+                        
+                        	<%=conn.getName() %>.DISTANCE = value_<%=cid %> + "";
+                        
+                        	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
+                        	
+                        }
+                
+                <%
+                	}
+                }else if(matchingType.equals("matchMetaphone")){%>
+                
+                	<%=conn.getName()%>.DISTANCE = metaphone_<%=cid %>.metaphone("" + <%=inMainCon.getName() %>.<%=colName%>);
+                
+                <%
+                	if(unique){
+                %>
+                        while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
+                        	
+                        	if(metaphone_<%=cid %>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	
+                        		<%=conn.getName() %>.MATCHING = lookUpValue_<%=cid%>;
+                        		
+                        		break;
+                        	
+                        	}
+                        	
+                        }
+                
+                <%
+                	}else{
+                %>
+                        StringBuilder matching_<%=cid%> = null;
+                        
+                        while(tItr_<%=inRefCon.getName()%>_<%=cid%>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid%>.next().<%=lookUpColumn%>;
+                        	
+                        	if(metaphone_<%=cid%>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	
+                        		if(matching_<%=cid%> == null){
+                        			
+                        			matching_<%=cid%> = new StringBuilder(lookUpValue_<%=cid%>);
+                        		
+                        		}else{
+                        		
+                        			matching_<%=cid%>.append(<%=separator%>).append(lookUpValue_<%=cid%>);
+                        			
+                        		}
+                        	
+                        	}
+                        	
+                        }
+                        
+                        if(matching_<%=cid%> != null){
+                        
+                        	<%=conn.getName()%>.MATCHING = matching_<%=cid%>.toString();
+                        	
+                        }
+                
+                <%
+                	}
+                }else{%>
+                	<%=conn.getName() %>.DISTANCE = doublemetaphone_<%=cid %>.doubleMetaphone("" + <%=inMainCon.getName() %>.<%=colName %>);
+                
+                <%
+                	if(unique){
+                %>
+                        while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
+                        	
+                        	if(doublemetaphone_<%=cid%>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	
+                        		<%=conn.getName()%>.MATCHING = lookUpValue_<%=cid%>;
+                        		
+                        		break;
+                        	
+                        	}
+                        	
+                        }
+                
+                <%
+                	}else{
+                %>
+                        StringBuilder matching_<%=cid %> = null;
+                        
+                        while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
+                        
+                        	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
+                        	
+                        	if(doublemetaphone_<%=cid %>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	
+                        		if(matching_<%=cid %> == null){
+                        			
+                        			matching_<%=cid %> = new StringBuilder(lookUpValue_<%=cid%>);
+                        		
+                        		}else{
+                        		
+                        			matching_<%=cid %>.append(<%=separator%>).append(lookUpValue_<%=cid%>);
+                        			
+                        		}
+                        	
+                        	}
+                        	
+                        }
+                        
+                        if(matching_<%=cid%> != null){
+                        
+                        	<%=conn.getName()%>.MATCHING = matching_<%=cid%>.toString();
+                        	
+                        }
+                
+                <%
+                	}
+                }%>
+                nb_line_<%=cid%>++;
 
 	
 <%
@@ -296,7 +288,7 @@ nb_line_<%=cid%>++;
 				IConnection conn = conns.get(i);
 				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {%>
-<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+						<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
 <%
 				 	}
 				}
