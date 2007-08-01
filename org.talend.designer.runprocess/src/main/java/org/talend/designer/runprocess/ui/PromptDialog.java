@@ -50,6 +50,7 @@ import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.ui.context.DefaultCellEditorFactory;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**
@@ -166,91 +167,111 @@ public class PromptDialog extends Dialog {
         layout.marginHeight = 0;
         child.setLayout(layout);
         child.setLayoutData(new GridData(GridData.FILL_BOTH));
-        final Text text = new Text(child, SWT.SINGLE | SWT.BORDER);
-        text.setText(parameter.getValue());
-        text.addModifyListener(new ModifyListener() {
+        if (DefaultCellEditorFactory.isBoolean(parameter.getType())) {
+            final Button button = new Button(child, SWT.CHECK);
+            button.setSelection(Boolean.parseBoolean(parameter.getValue()));
+            button.addSelectionListener(new SelectionAdapter() {
 
-            public void modifyText(ModifyEvent e) {
-                parameter.setValue(text.getText());
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                 */
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    parameter.setValue((new Boolean(button.getSelection())).toString());
+                }
+
+            });
+        } else {
+            final Text text = new Text(child, SWT.SINGLE | SWT.BORDER);
+            text.setText(parameter.getValue());
+            text.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    parameter.setValue(text.getText());
+                }
+            });
+            if (parameter.getComment() != null) {
+                if (!parameter.getComment().equals("")) { //$NON-NLS-1$
+                    label.setToolTipText(parameter.getComment());
+                    text.setToolTipText(parameter.getComment());
+                }
             }
-        });
-        if (parameter.getComment() != null) {
-            if (!parameter.getComment().equals("")) { //$NON-NLS-1$
-                label.setToolTipText(parameter.getComment());
-                text.setToolTipText(parameter.getComment());
+            GridData data = new GridData(GridData.FILL_HORIZONTAL);
+            data.minimumWidth = MINIMUM_WIDTH;
+            text.setLayoutData(data);
+            if (DefaultCellEditorFactory.isDate(parameter.getType())) {
+                final Button b = new Button(child, SWT.NONE);
+                b.setText("...");
+                b.addSelectionListener(new SelectionAdapter() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                     */
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        DateDialog d = new DateDialog(((Button) e.getSource()).getShell());
+                        int res = d.open();
+                        if (res == Dialog.OK) {
+                            text.setText(DefaultCellEditorFactory.getInstance().getAddQuoteString(d.getTalendDateString()));
+                        }
+                    }
+
+                });
+            } else if (DefaultCellEditorFactory.isFile(parameter.getType())) {
+                final Button b = new Button(child, SWT.NONE);
+                b.setText("...");
+                b.addSelectionListener(new SelectionAdapter() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                     */
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
+                        if (text.getText() != null) {
+                            d.setFileName(PathUtils.getOSPath(DefaultCellEditorFactory.getInstance().getRemoveQuoteString(
+                                    text.getText())));
+                        }
+                        String open = d.open();
+                        if (open != null) {
+                            text.setText(DefaultCellEditorFactory.getInstance()
+                                    .getAddQuoteString(PathUtils.getPortablePath(open)));
+                        }
+                    }
+
+                });
+            } else if (DefaultCellEditorFactory.isDirectory(parameter.getType())) {
+                final Button b = new Button(child, SWT.NONE);
+                b.setText("...");
+                b.addSelectionListener(new SelectionAdapter() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                     */
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
+                        if (text.getText() != null) {
+                            d.setFilterPath(PathUtils.getOSPath(DefaultCellEditorFactory.getInstance().getRemoveQuoteString(
+                                    text.getText())));
+                        }
+                        String open = d.open();
+                        if (open != null) {
+                            text.setText(DefaultCellEditorFactory.getInstance()
+                                    .getAddQuoteString(PathUtils.getPortablePath(open)));
+                        }
+                    }
+
+                });
             }
-        }
-        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        data.minimumWidth = MINIMUM_WIDTH;
-        text.setLayoutData(data);
-        if (parameter.getType().equals(JavaTypesManager.DATE.getId())) {
-            final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
-            b.addSelectionListener(new SelectionAdapter() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                 */
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    DateDialog d = new DateDialog(((Button) e.getSource()).getShell());
-                    int res = d.open();
-                    if (res == Dialog.OK) {
-                        text.setText(d.getTalendDateString());
-                    }
-                }
-
-            });
-        } else if (parameter.getType().equals(JavaTypesManager.FILE.getId())) {
-            final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
-            b.addSelectionListener(new SelectionAdapter() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                 */
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
-                    if (text.getText() != null) {
-                        d.setFileName(PathUtils.getOSPath(text.getText()));
-                    }
-                    String open = d.open();
-                    if (open != null) {
-                        // open = open.replaceAll("\\\\", "/");
-                        text.setText(PathUtils.getPortablePath(open));
-                    }
-                }
-
-            });
-        } else if (parameter.getType().equals(JavaTypesManager.DIRECTORY.getId())) {
-            final Button b = new Button(child, SWT.NONE);
-            b.setText("...");
-            b.addSelectionListener(new SelectionAdapter() {
-
-                /*
-                 * (non-Javadoc)
-                 * 
-                 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                 */
-                @Override
-                public void widgetSelected(SelectionEvent e) {
-                    DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
-                    if (text.getText() != null) {
-                        d.setFilterPath(PathUtils.getOSPath(text.getText()));
-                    }
-                    String open = d.open();
-                    if (open != null) {
-                        // open = open.replaceAll("\\\\", "/");
-                        text.setText(PathUtils.getPortablePath(open));
-                    }
-                }
-
-            });
         }
     }
 
