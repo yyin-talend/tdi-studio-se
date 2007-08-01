@@ -30,7 +30,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IContainer;
@@ -203,7 +205,7 @@ public class TalendJetEmitter extends JETEmitter {
                 IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
                         "org.eclipse.jdt.launching.JRE_CONTAINER"));
 
-                List classpath = new ArrayList();
+                Set<IClasspathEntry> classpath = new HashSet<IClasspathEntry>();
                 classpath.add(classpathEntry);
                 classpath.add(jreClasspathEntry);
                 classpath.addAll(jetEmitter.getClasspathEntries());
