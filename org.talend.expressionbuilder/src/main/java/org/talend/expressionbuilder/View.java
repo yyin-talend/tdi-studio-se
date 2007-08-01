@@ -98,9 +98,9 @@ public class View extends ViewPart {
         Action action = new Action() {
 
             public void run() {
-                ExpressionBuilderDialog dialog = new ExpressionBuilderDialog(View.this.getViewSite().getShell());
-                dialog.open();
-                dialog.setBlockOnOpen(true);
+                // ExpressionBuilderDialog dialog = new ExpressionBuilderDialog(View.this.getViewSite().getShell());
+                // dialog.open();
+                //                dialog.setBlockOnOpen(true);
             }
         };
         action.setText("expression");

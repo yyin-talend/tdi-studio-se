@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.model.CategoryManager;
 
 /**
@@ -42,7 +43,7 @@ import org.talend.expressionbuilder.model.CategoryManager;
  * $Id: ExpressionBuilderDialog.java 上午10:12:13 2007-7-24 +0000 (2007-7-24) yzhang $
  * 
  */
-public class ExpressionBuilderDialog extends Dialog {
+public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilderDialogController {
 
     private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 23;
 
@@ -56,16 +57,19 @@ public class ExpressionBuilderDialog extends Dialog {
 
     private static CategoryComposite categoryComposite;
 
-    CategoryManager manager = new CategoryManager();
+    private CategoryManager manager = new CategoryManager();
+
+    private IExpressionConsumer consumer;
 
     /**
      * Create the dialog
      * 
      * @param parentShell
      */
-    public ExpressionBuilderDialog(Shell parentShell) {
+    public ExpressionBuilderDialog(Shell parentShell, IExpressionConsumer consumer) {
         super(parentShell);
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
+        this.consumer = consumer;
     }
 
     /**
@@ -169,5 +173,29 @@ public class ExpressionBuilderDialog extends Dialog {
      */
     public static CategoryComposite getCategoryComposite() {
         return categoryComposite;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+     */
+    @Override
+    protected void okPressed() {
+        String expression = ((ExpressionComposite) expressionComposite).getExpression();
+        if (expression != null) {
+            consumer.setExpression(expression);
+        }
+        super.okPressed();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#openDialog()
+     */
+    public void openDialog() {
+        open();
+        setBlockOnOpen(true);
     }
 }
