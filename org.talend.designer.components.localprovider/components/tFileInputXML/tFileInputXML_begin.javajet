@@ -46,16 +46,29 @@ int nb_line_<%=cid%> = 0;
 
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
 org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
-java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)doc_<%=cid%>.selectNodes(<%=loopQuery %>);	
+String ns_<%=cid%> = doc_<%=cid%>.getRootElement().getNamespaceURI();
+java.util.HashMap xmlNameSpaceMap_<%=cid%> = new java.util.HashMap();  
+xmlNameSpaceMap_<%=cid%>.put("ns",ns_<%=cid%>);
 
-String str<%=cid %> = "";
+org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(<%=loopQuery.replace("/", "/ns:") %>);  
+x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
+
+String str_<%=cid %> = "";
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 	nb_line_<%=cid%>++;
 <%	
 				for (int i=0;i<mapping.size();i++) { 
+					String query = mapping.get(i).get("QUERY");
+					if(!query.startsWith("\"@")){
+						query = "\"ns:"+query.substring(1);
+					}
 %>
-	str<%=cid %> = temp_<%=cid%>.valueOf(<%=mapping.get(i).get("QUERY") %>);
-	if (str<%=cid %> != null ) {  
+	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(<%=query%>);
+    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);  
+    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+	if (str_<%=cid %> != null ) {  
 <%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
@@ -65,16 +78,16 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = str<%= cid %>;
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>;
 <%
 								} else {
 									if (javaType == JavaTypesManager.DATE) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str<%= cid %>, <%= patternValue %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
 <%
 									} else {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str<%= cid %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
 <%
 									}
 								}
