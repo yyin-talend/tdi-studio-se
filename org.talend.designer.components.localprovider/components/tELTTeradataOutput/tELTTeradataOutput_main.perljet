@@ -1,0 +1,491 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection 
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+	 org.talend.commons.utils.generation.CodeGenerationUtils
+    
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String dbtable = null;
+INode previousNode = null;
+List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
+if(connections != null && connections.size() > 0 && connections.get(0) != null) {
+    IConnection connection = connections.get(0);
+    previousNode = connection.getSource();
+    String previousComponentName = previousNode.getUniqueName();
+	 String uniqueNameConnection = connection.getUniqueName();
+	dbtable = "'" + connection.getName() + "'";
+	%>
+	$select_query = $_globals{<%=previousComponentName%>}{QUERY}{<%=uniqueNameConnection%>};
+	<%
+}
+
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
+        String tableAction = ElementParameterParser.getValue(
+            node,
+            "__TABLE_ACTION__"
+        );
+
+        String whereClause = ElementParameterParser.getValue(
+                node,
+            "__WHERE_CLAUSE__"
+        );
+        
+        String dbhost = null;
+        String dbport = null;
+        String dbname = null;
+        String dbuser = null;
+        String dbpass = null;
+        String encoding = null;
+        
+        if(previousNode != null) {
+	        dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
+	        dbport = ElementParameterParser.getValue(previousNode, "__PORT__");
+	        dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
+	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
+	        dbpass = ElementParameterParser.getValue(previousNode, "__PASS__");
+	        encoding = ElementParameterParser.getValue(
+	            previousNode,
+	            "__ENCODING__"
+	        );
+        }
+
+%>
+
+use DBI;
+use tMysqlOutput::Mysql;
+
+my %desc_<%=cid %> = (
+    dbhost        => <%=dbhost %>,
+    dbport        => <%=dbport %>,
+    dbname        => <%=dbname %>,
+    dbtable       => <%=dbtable %>,
+    dbuser        => <%=dbuser %>,
+    dbpass        => <%=dbpass %>,
+    encoding      => <%=encoding %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'DBI:mysql:database=%s;host=%s;port=%s',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+<%
+        if (dataAction.equals("INSERT_OR_UPDATE")) {
+%>
+        PrintError => 0,
+<%
+        }
+%>
+    }
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %>;
+my $query;
+
+if (<%=encoding%> =~ m/utf-?8/i) {
+    $query = 'set names "UTF8"';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+}
+
+<%
+        if (tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+# We need the table list to know if drop or "create if not exists" is
+# relevant
+my $schema = '%';
+my $catalog = undef;
+my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
+my @tables = ();
+
+while (my $entity = $tabsth->fetchrow_hashref()) {
+    if ($entity->{TABLE_TYPE} eq 'TABLE') {
+        push @tables, lc $entity->{TABLE_NAME};
+    }
+}
+
+#     print "===\n";
+#     print "existing tables:\n";
+#     print join("\n", map {"  - ".$_} @tables), "\n";
+#     print "===\n";
+
+my $test_table = lc $desc_<%=cid %>{dbtable};
+my $table_exists = grep /^$test_table$/, @tables;
+<%
+        }
+
+        if (tableAction.equals("DROP_CREATE")) {
+%>
+if ($table_exists) {
+    $query = '
+DROP TABLE '.<%=dbtable%>.'
+';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+    $sth_<%=cid %>->execute()
+        or die "can't drop table";
+
+    # the table does not exist anymore
+    $table_exists = 0;
+}
+<%
+        }
+
+        if (tableAction.equals("CREATE")
+            || tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+
+            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+if (not $table_exists) {
+<%
+            }
+%>
+# now we create the table
+$query = tMysqlOutput::Mysql::getTableCreationQuery(
+    tablename  => $desc_<%=cid %>{dbtable},
+    schema     => $desc_<%=cid %>{schema},
+);
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    $query
+);
+
+$sth_<%=cid %>->execute()
+    or die "can't create table\n===\n$query\n===\n";
+<%
+            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+}
+<%
+            }
+        }
+
+        if (tableAction.equals("CLEAR")) {
+%>
+$query = '
+DELETE
+  FROM '.<%=dbtable%>.'
+';
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %>->execute()
+    or die "can't clear table";
+<%
+        }
+%>
+
+my $query = '';
+
+<%
+if ((dataAction.equals("UPDATE"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))
+    || (dataAction.equals("DELETE"))) {
+    List updateCols  = new ArrayList();
+    List keyCols     = new ArrayList();
+
+    for (IMetadataColumn column: metadata.getListColumns()) {
+
+        String currentQueryPart = column.getLabel() + " = ?";
+
+        if (column.isKey()) {
+            keyCols.add(currentQueryPart);
+        }
+        else {
+            updateCols.add(currentQueryPart);
+        }
+
+    }
+
+    String keyString = StringUtils.join(keyCols.toArray(), " AND ");
+    String updateString = StringUtils.join(updateCols.toArray(), ", ");
+    String colsString = StringUtils.join(metadata.getListColumns().toArray(), ", ");
+
+    if ((dataAction.equals("UPDATE"))
+        || (dataAction.equals("UPDATE_OR_INSERT"))
+        || (dataAction.equals("INSERT_OR_UPDATE"))) {
+%>
+
+$query = '
+UPDATE '.<%=dbtable%>.'
+  SET (<%=colsString%>) = ('.$select_query.')
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
+  WHERE '.<%=whereClause%>.'
+<%}%>
+';
+
+print "\n\n".$query."\n";
+
+my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+
+    if (dataAction.equals("DELETE")) {
+%>
+
+$query = '
+DELETE FROM ('.$select_query.') '.<%=dbtable%>.'
+<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
+  WHERE '.<%=whereClause%>.'
+<%}%>
+';
+
+print "\n\n".$query."\n";
+
+
+my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+}
+
+if ((dataAction.equals("INSERT"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))) {
+    List keys = new ArrayList();
+    List parameters = new ArrayList();
+
+    // String keyString = StringUtils.join(keys.toArray(), ".','.");
+    String keyString = StringUtils.join(keys.toArray(), ", ");
+    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+%>
+
+$query = '
+INSERT
+  INTO '.<%=dbtable%>.'
+  ('.$select_query. ')
+';
+
+print "\n\n".$query."\n";
+
+my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+}
+%>
+
+my $nb_line_<%=cid%> = 0;
+my $nb_line_updated_<%=cid%>  = 0;
+my $nb_line_inserted_<%=cid%> = 0;
+my $nb_line_deleted_<%=cid%>  = 0;
+
+<%
+    }
+}
+
+
+
+
+
+
+
+
+
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
+
+        String positionsString = new String();
+        String keyPositionsString = new String();
+
+        if ((dataAction.equals("UPDATE"))
+            || (dataAction.equals("UPDATE_OR_INSERT"))
+            || (dataAction.equals("INSERT_OR_UPDATE"))
+            || (dataAction.equals("DELETE"))) {
+            List positions       = new ArrayList();
+            List keyPositions    = new ArrayList();
+            List updatePositions = new ArrayList();
+        
+            int i = 0;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (!column.isKey()) {
+                    updatePositions.add(i);
+                }
+                i++;
+            }
+        
+            i = 0;
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if (column.isKey()) {
+                    keyPositions.add(i);
+                }
+                i++;
+            }
+            
+            positions.addAll(updatePositions);
+            positions.addAll(keyPositions);
+
+            positionsString  = StringUtils.join(
+                positions.toArray(),
+                ","
+            );
+
+            keyPositionsString = StringUtils.join(
+                keyPositions.toArray(),
+                ","
+            );
+        }
+%>
+
+# keyPositionsString : <%=keyPositionsString%>
+# positionsString    : <%=positionsString%>
+
+my $nb_rows = 0;
+
+<%
+        if (dataAction.equals("UPDATE")) {
+%>
+$nb_rows = $usth_<%=cid %>->execute()
+    or die "can't execute update query\n";
+
+if ($nb_rows) {
+    $nb_line_updated_<%=cid%>+= $nb_rows;
+}
+<%
+        }
+        else if (dataAction.equals("INSERT")) {
+%>
+
+$isth_<%=cid %>->execute()
+    or die "can't execute insert query\n";
+
+$nb_line_inserted_<%=cid%>++;
+<%
+        }
+        else if (dataAction.equals("INSERT_OR_UPDATE")) {
+%>
+if (not $isth_<%=cid %>->execute()) {
+    $nb_rows = $usth_<%=cid %>->execute()
+        or die "can't execute update query\n";
+
+    if ($nb_rows) {
+        $nb_line_updated_<%=cid%>+= $nb_rows;
+    }
+}
+else {
+    $nb_line_inserted_<%=cid%>++;
+}
+<%
+        }
+        else if (dataAction.equals("UPDATE_OR_INSERT")) {
+%>
+if ($nb_rows = $usth_<%=cid %>->execute()) {
+    if ($nb_rows == 0) {
+        $isth_<%=cid %>->execute()
+            or die "can't execute insert query\n";
+
+        $nb_line_inserted_<%=cid%>++;
+    }
+    else {
+        if ($nb_rows) {
+            $nb_line_updated_<%=cid%>+= $nb_rows;
+        }
+    }
+}
+else {
+     die "can't execute update query\n";
+}
+<%
+        }
+        else if (dataAction.equals("DELETE")) {
+%>
+$nb_rows = $dsth_<%=cid %>->execute()
+    or die "can't execute delete query\n";
+
+if ($nb_rows) {
+    $nb_line_deleted_<%=cid%>+= $nb_rows;
+}
+<%
+        }
+%>
+
+my $new_nb_line_<%=cid%> =
+    $nb_line_updated_<%=cid %>
+    + $nb_line_inserted_<%=cid %>
+    + $nb_line_deleted_<%=cid %>
+;
+  
+$nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
+
+<%
+    }
+}
+
+
+
+
+
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+%>
+
+$dbh_<%=cid %>->disconnect();
+
+$_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_UPDATED}  = $nb_line_updated_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_INSERTED} = $nb_line_inserted_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_DELETED}  = $nb_line_deleted_<%=cid %>;
+
+<%
+    }
+}
+%>
