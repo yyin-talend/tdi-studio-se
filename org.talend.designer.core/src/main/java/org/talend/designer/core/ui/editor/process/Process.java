@@ -2005,22 +2005,34 @@ public class Process extends Element implements IProcess {
     }
 
     /**
-     * Get sub jobs under this process, if none return null else return the names wihtin a string arrry..
+     * Get sub jobs under this process
      * 
      * yzhang Comment method "getSubJobs".
      * 
      * @return
      */
-    public String[] getSubJobs() {
-
-        List<String> strList = new ArrayList<String>();
-        for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+    public Set<String> getSubJobs(String processName) {
+        Set<String> curSubJobs = new HashSet<String>();
+        Process currentProcess;
+        if (processName == null) {
+            currentProcess = this;
+        } else {
+            ProcessItem pi = ProcessorUtilities.getProcessItem(processName);
+            if (pi == null) { // if the job is not valid, then return empty childs
+                return curSubJobs;
+            }
+            currentProcess = new Process(pi.getProperty());
+            currentProcess.loadXmlFile(pi.getProcess());
+        }
+        for (Iterator iter = currentProcess.getGraphicalNodes().iterator(); iter.hasNext();) {
             Node node = (Node) iter.next();
             if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
-                strList.add(((String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName())));
+                String curProcessName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+                curSubJobs.add(curProcessName);
+                curSubJobs.addAll(getSubJobs(curProcessName));
             }
         }
-        return strList.size() > 0 ? strList.toArray(new String[1]) : null;
+        return curSubJobs;
     }
 
     /**

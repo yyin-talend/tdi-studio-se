@@ -352,7 +352,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
                 if (processName != null) {
-                    processName = processName.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     try {
                         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                         IRepositoryObject selectedProcess = null;

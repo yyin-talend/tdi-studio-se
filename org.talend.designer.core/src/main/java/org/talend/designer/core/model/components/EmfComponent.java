@@ -699,6 +699,7 @@ public class EmfComponent implements IComponent {
                 }
                 break;
             case PROCESS_TYPE:
+                param.setShow(false);
                 param.setRequired(false);
                 if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                     param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());

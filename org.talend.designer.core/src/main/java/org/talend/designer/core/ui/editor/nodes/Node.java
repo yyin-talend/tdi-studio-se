@@ -81,6 +81,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -641,6 +642,17 @@ public class Node extends Element implements INode {
                 || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+        }
+
+        if (id.equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+            IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if (part instanceof MultiPageTalendEditor) {
+                if (process.isActivate() && ((MultiPageTalendEditor) part).getProcess().equals(process)) {
+                    ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS
+                            .getName()), (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
+                    ((MultiPageTalendEditor) part).updateChildrens();
+                }
+            }
         }
 
         if (parameter.getField().equals(EParameterFieldType.MAPPING_TYPE)) {

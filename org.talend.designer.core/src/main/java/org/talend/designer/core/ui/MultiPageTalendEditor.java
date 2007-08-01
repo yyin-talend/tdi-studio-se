@@ -129,6 +129,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private IProcessor processor;
 
+    private String oldJobName;
+
     public MultiPageTalendEditor() {
         super();
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
@@ -189,6 +191,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     null, pie.getStatus());
         }
+        ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
     }
 
     /**
@@ -265,6 +269,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         if (alreadyGenerated) {
             return;
         }
+        // ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
+        // true);
         try {
             processor.generateCode(false, false, true);
 
@@ -375,6 +381,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void setName() {
         String label = getEditorInput().getName();
+        oldJobName = label;
         // if (getActivePage() == 1) {
         setPartName(Messages.getString("MultiPageTalendEditor.Job", label)); //$NON-NLS-1$
         // } else {
@@ -568,11 +575,13 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void refreshName() {
         try {
-            // remove the old job resources.
             JobResourceManager jobResourceManager = JobResourceManager.getInstance();
             jobResourceManager.removeProtection(designerEditor);
-            for (String id : designerEditor.getProjectedIds()) {
-                jobResourceManager.deleteResource(designerEditor.getJobResource(id));
+            for (String id : designerEditor.getProtectedIds()) {
+                if (designerEditor.getJobResource(id).getJobName().equalsIgnoreCase(oldJobName)) {
+                    // delete only the job renamed
+                    jobResourceManager.deleteResource(designerEditor.getJobResource(id));
+                }
             }
             designerEditor.resetJobResources();
 
@@ -584,7 +593,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             processor.setProcessorStates(IProcessor.STATES_EDIT);
 
             FileEditorInput input = createFileEditorInput();
-            // this.codeEditor.getDocumentProvider().connect(input);
             codeEditor.setInput(input);
 
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -598,5 +606,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
         }
+    }
+
+    public void updateChildrens() {
+        // just call the method add protection will update new childrens and keep old ones (keep to delete automatically when closing job)
+        JobResourceManager jobResourceManager = JobResourceManager.getInstance();
+        jobResourceManager.addProtection(designerEditor);
     }
 }

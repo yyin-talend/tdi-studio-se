@@ -313,10 +313,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
                 param.setListItemsDisplayName(contextTableNameList);
                 param.setListItemsValue(contextTableValueList);
-                if (!contextValueList.contains(param.getValue())) {
-                    if (contextTableNameList.length > 0) {
-                        elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
-                    }
+                if (contextTableNameList.length > 0) {
+                    elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
                 }
             }
         }
