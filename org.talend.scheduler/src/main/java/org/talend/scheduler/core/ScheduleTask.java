@@ -413,4 +413,11 @@ public class ScheduleTask implements IJobResourceProtection {
         return sb.toString();
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.repository.job.deletion.IJobResourceProtection#getProtectedIds()
+     */
+    public String[] getProtectedIds() {
+        return null;
+    }
+
 }
