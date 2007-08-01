@@ -26,8 +26,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -109,11 +114,11 @@ public class SelectorTableForm extends AbstractForm {
 
     protected Table table;
 
-    private Collection<TableItem> tableItems;
-
     private int count = 0;
 
     private WizardPage parentWizardPage;
+
+    CustomThreadPoolExecutor threadExecutor;
 
     /**
      * TableForm Constructor to use by RCP Wizard.
@@ -236,7 +241,7 @@ public class SelectorTableForm extends AbstractForm {
                 .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
         metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription")); //$NON-NLS-1$
-        addUtilsButtonListeners();
+        // addUtilsButtonListeners();
     }
 
     /**
@@ -249,14 +254,8 @@ public class SelectorTableForm extends AbstractForm {
         checkConnectionButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                selectAllTablesButton.setEnabled(true);
                 count = 0;
-                if (!checkConnectionButton.getEnabled()) {
-                    checkConnectionButton.setEnabled(true);
-                    checkConnection(true);
-                } else {
-                    checkConnectionButton.setEnabled(false);
-                }
+                checkConnection(true);
             }
         });
 
@@ -264,28 +263,18 @@ public class SelectorTableForm extends AbstractForm {
 
             public void widgetSelected(final SelectionEvent e) {
                 updateStatus(IStatus.ERROR, null);
-                selectAllTablesButton.setEnabled(false);
-                selectNoneTablesButton.setEnabled(false);
-                checkConnectionButton.setEnabled(false);
-                if (!table.getEnabled()) {
-                    TableItem[] tableItems = table.getItems();
-                    int size = tableItems.length;
-                    for (int i = 0; i < tableItems.length; i++) {
-                        TableItem tableItem = tableItems[i];
-                        table.setEnabled(true);
-                        if (!tableItem.getChecked()) {
-                            tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
-                            parentWizardPage.setPageComplete(false);
-                            refreshTable(tableItem, size);
-                        } else {
-                            updateStatus(IStatus.OK, null);
-                            selectNoneTablesButton.setEnabled(true);
-                            checkConnectionButton.setEnabled(true);
-                        }
-                        tableItem.setChecked(true);
+                TableItem[] tableItems = table.getItems();
+                int size = tableItems.length;
+                for (int i = 0; i < tableItems.length; i++) {
+                    TableItem tableItem = tableItems[i];
+                    if (!tableItem.getChecked()) {
+                        tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                        parentWizardPage.setPageComplete(false);
+                        refreshTable(tableItem, size);
+                    } else {
+                        updateStatus(IStatus.OK, null);
                     }
-                } else {
-                    table.setEnabled(false);
+                    tableItem.setChecked(true);
                 }
             }
         });
@@ -293,22 +282,14 @@ public class SelectorTableForm extends AbstractForm {
         selectNoneTablesButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                selectAllTablesButton.setEnabled(true);
                 count = 0;
-                if (!table.getEnabled()) {
-                    TableItem[] tableItems = table.getItems();
-                    for (int i = 0; i < tableItems.length; i++) {
-                        TableItem tableItem = tableItems[i];
-                        table.setEnabled(true);
-                        if (tableItem.getChecked()) {
-                            deleteTable(tableItem);
-                            tableItem.setText(2, ""); //$NON-NLS-1$
-                            tableItem.setText(3, ""); //$NON-NLS-1$
-                        }
+                TableItem[] tableItems = table.getItems();
+                for (int i = 0; i < tableItems.length; i++) {
+                    TableItem tableItem = tableItems[i];
+                    if (tableItem.getChecked()) {
+                        clearTableItem(tableItem);
                         tableItem.setChecked(false);
                     }
-                } else {
-                    table.setEnabled(false);
                 }
             }
         });
@@ -317,26 +298,17 @@ public class SelectorTableForm extends AbstractForm {
         table.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!table.getEnabled()) {
-                    table.setEnabled(true);
-                    if (e.detail == SWT.CHECK) {
-                        TableItem tableItem = (TableItem) e.item;
-                        boolean promptNeeded = tableItem.getChecked();
-                        if (promptNeeded) {
-                            tableItems.remove(tableItem);
-                            tableItems.add(tableItem);
-                            tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
-                            parentWizardPage.setPageComplete(false);
-                            refreshTable(tableItem, -1);
-                        } else {
-                            tableItems.remove(tableItem);
-                            deleteTable(tableItem);
-                            tableItem.setText(2, ""); //$NON-NLS-1$
-                            tableItem.setText(3, ""); //$NON-NLS-1$
-                        }
+                if (e.detail == SWT.CHECK) {
+                    TableItem tableItem = (TableItem) e.item;
+                    boolean promptNeeded = tableItem.getChecked();
+                    if (promptNeeded) {
+                        tableItem.setText(2, ""); //$NON-NLS-1$
+                        tableItem.setText(3, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
+                        parentWizardPage.setPageComplete(false);
+                        refreshTable(tableItem, -1);
+                    } else {
+                        clearTableItem(tableItem);
                     }
-                } else {
-                    table.setEnabled(false);
                 }
             }
         });
@@ -356,8 +328,6 @@ public class SelectorTableForm extends AbstractForm {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
-
-                    tableItems = new ArrayList<TableItem>();
 
                     iMetadataConnection = ConvertionHelper.convert(getConnection());
                     managerConnection.check(iMetadataConnection);
@@ -495,38 +465,231 @@ public class SelectorTableForm extends AbstractForm {
     }
 
     /**
+     * A subclass of ThreadPoolExecutor that executes each submitted RetrieveColumnRunnable using one of possibly
+     * several pooled threads.
+     * 
+     * 
+     */
+    class CustomThreadPoolExecutor extends ThreadPoolExecutor {
+
+        // This map is used to store the tableItems that are selected or unselected by the user.
+        // see afterExecute() and beforeExecute(). If an item is in the map, it means that the item's
+        // related thread is running.
+        Map<TableItem, RetrieveColumnRunnable> map = Collections
+                .synchronizedMap(new HashMap<TableItem, RetrieveColumnRunnable>());
+
+        /**
+         * bqian CustomThreadPoolExecutor constructor.
+         * 
+         * @param corePoolSize
+         * @param maximumPoolSize
+         * @param keepAliveTime
+         * @param unit
+         * @param workQueue
+         */
+        public CustomThreadPoolExecutor(int queueCapacity) {
+            super(5, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(queueCapacity));
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.util.concurrent.ThreadPoolExecutor#afterExecute(java.lang.Runnable, java.lang.Throwable)
+         */
+        @Override
+        protected void afterExecute(Runnable r, Throwable t) {
+            RetrieveColumnRunnable runnable = (RetrieveColumnRunnable) r;
+            map.remove(runnable.getTableItem());
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.util.concurrent.ThreadPoolExecutor#beforeExecute(java.lang.Thread, java.lang.Runnable)
+         */
+        @Override
+        protected void beforeExecute(Thread t, Runnable r) {
+            RetrieveColumnRunnable runnable = (RetrieveColumnRunnable) r;
+            map.put(runnable.getTableItem(), runnable);
+        }
+
+        /**
+         * If an item is in the List runningThreads, it means that the item's related thread is running.
+         * 
+         * @param item
+         * @return
+         */
+        public boolean isThreadRunning(TableItem item) {
+            return map.containsKey(item);
+        }
+
+        /**
+         * Find the RetrieveColumnRunnable from map and waiting queue. Map stores running runnables
+         * 
+         * @param key
+         * @return
+         */
+        public synchronized RetrieveColumnRunnable getRunnable(TableItem key) {
+            // Get the runnable from map first, else then find it in the waiting queue.
+            RetrieveColumnRunnable runnable = map.get(key);
+            if (runnable != null) {
+                return runnable;
+            }
+            for (Iterator iter = getQueue().iterator(); iter.hasNext();) {
+                RetrieveColumnRunnable element = (RetrieveColumnRunnable) iter.next();
+                if (element.getTableItem() == key) {
+                    return element;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Subclass of SWTUIThreadProcessor to process the Retrieving Columns job. <br/>
+     * 
+     */
+    class RetrieveColumnRunnable implements Runnable {
+
+        TableItem tableItem;
+
+        String tableString = null;
+
+        boolean checkConnectionIsDone = false;
+
+        List<MetadataColumn> metadataColumns = null;
+
+        volatile boolean isCanceled = false;
+
+        /**
+         * Getter for tableItem.
+         * 
+         * @return the tableItem
+         */
+        public TableItem getTableItem() {
+            return this.tableItem;
+        }
+
+        RetrieveColumnRunnable(TableItem tableItem) {
+            this.tableItem = tableItem;
+            setup();
+        }
+
+        public void setCanceled(boolean cancel) {
+            this.isCanceled = cancel;
+        }
+
+        /**
+         * Getter for isCanceled.
+         * 
+         * @return the isCanceled
+         */
+        public boolean isCanceled() {
+            return this.isCanceled;
+        }
+
+        /**
+         * Get all the parameters from UI for the non-UI job to use.
+         */
+        private void setup() {
+            tableString = tableItem.getText(0);
+        }
+
+        public void run() {
+            if (isCanceled()) {
+                return;
+            }
+            IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
+            checkConnectionIsDone = managerConnection.check(iMetadataConnection);
+            if (checkConnectionIsDone) {
+                if (isCanceled()) {
+                    return;
+                }
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
+                if (isCanceled()) {
+                    return;
+                }
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                initExistingNames();
+                metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
+                metadataTable.setSourceName(tableString);
+                metadataTable.setId(factory.getNextId());
+                metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
+                List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
+                Iterator iterate = metadataColumns.iterator();
+                while (iterate.hasNext()) {
+                    MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
+
+                    // Check the label and add it to the table
+                    metadataColumnsValid.add(metadataColumn);
+                    metadataTable.getColumns().add(metadataColumn);
+                }
+                getConnection().getTables().add(metadataTable);
+
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    public void run() {
+                        if (isCanceled()) {
+                            return;
+                        }
+                        updateUIInThreadIfThread();
+                    }
+                });
+
+            }
+        }
+
+        public void updateUIInThreadIfThread() {
+            if (tableItem.isDisposed()) {
+                return;
+            }
+
+            if (checkConnectionIsDone) {
+                tableItem.setText(2, "" + metadataColumns.size()); //$NON-NLS-1$
+                tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
+            } else {
+                updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
+                        managerConnection.getMessageException());
+
+            }
+            count++;
+
+            updateStatus(IStatus.OK, null);
+            // selectNoneTablesButton.setEnabled(true);
+            // checkConnectionButton.setEnabled(true);
+
+            parentWizardPage.setPageComplete(true);
+        }
+    }
+
+    /**
      * refreshTable. This Methos execute the CreateTable in a Thread task.
      * 
      * @param tableItem
      * @param size
      */
     private void refreshTable(final TableItem tableItem, final int size) {
-        getDisplay().asyncExec(new Runnable() {
-
-            public void run() {
-                createTable(tableItem);
-                count++;
-                if (count == size) {
-                    updateStatus(IStatus.OK, null);
-                    selectNoneTablesButton.setEnabled(true);
-                    checkConnectionButton.setEnabled(true);
-                }
-                parentWizardPage.setPageComplete(nextEnable());
-            }
-
-            private boolean nextEnable() {
-                TableItem[] items = table.getItems();
-                for (TableItem item : items) {
-                    String s = item.getText(3);
-                    if (Messages.getString("SelectorTableForm.Pending").equals(s)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        });
+        if (!threadExecutor.isThreadRunning(tableItem)) {
+            RetrieveColumnRunnable runnable = new RetrieveColumnRunnable(tableItem);
+            threadExecutor.execute(runnable);
+        } else {
+            RetrieveColumnRunnable runnable = threadExecutor.getRunnable(tableItem);
+            runnable.setCanceled(false);
+        }
     }
 
+    private void clearTableItem(TableItem item) {
+        deleteTable(item);
+        item.setText(2, ""); //$NON-NLS-1$
+        item.setText(3, ""); //$NON-NLS-1$
+        RetrieveColumnRunnable runnable = threadExecutor.getRunnable(item);
+        if (runnable != null) {
+            runnable.setCanceled(true);
+        }
+    }
 
     /**
      * DOC ocarbone Comment method "initExistingNames".
@@ -579,6 +742,7 @@ public class SelectorTableForm extends AbstractForm {
             initializeForm();
         }
         checkConnection(false);
+        threadExecutor = new CustomThreadPoolExecutor(itemTableName.size());
     }
 
     protected DatabaseConnection getConnection() {
@@ -587,5 +751,16 @@ public class SelectorTableForm extends AbstractForm {
 
     public Table getTable() {
         return this.table;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        threadExecutor.shutdownNow();
     }
 }
