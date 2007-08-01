@@ -499,6 +499,12 @@
             class="org.talend.repository.model.migration.UpgradetRunJobRemoveQuotesMigrationTask"
             id="org.talend.repository.model.migration.upgradetRunJobRemoveQuotesMigrationTask"
             name="Remove quotes in the tRunJobProperties of the component"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ModifytFuzzyMatchSchemaMigrationTask"
+            description="modifytFuzzyMatch"
+            id="org.talend.repository.model.migration.ModifytFuzzyMatchSchemaMigrationTask"
+            name="modifytFuzzyMatch"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
