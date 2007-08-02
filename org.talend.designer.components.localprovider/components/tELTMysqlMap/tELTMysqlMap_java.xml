@@ -138,6 +138,6 @@
    
    <PLUGINDEPENDENCIES>
    	<PLUGINDEPENDENCY ID="org.talend.designer.abstractmap" />
-   	<PLUGINDEPENDENCY ID="org.talend.designer.dbmap" />
+  <!-- 	<PLUGINDEPENDENCY ID="org.talend.designer.dbmap" />  --> 
    </PLUGINDEPENDENCIES>
 </COMPONENT>
