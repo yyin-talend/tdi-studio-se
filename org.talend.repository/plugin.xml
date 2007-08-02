@@ -505,6 +505,11 @@
             description="modifytFuzzyMatch"
             id="org.talend.repository.model.migration.ModifytFuzzyMatchSchemaMigrationTask"
             name="modifytFuzzyMatch"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.MoveParameterRunJobMigrationTask"
+            id="org.talend.repository.model.migration.MoveParameterRunJobMigrationTask"
+            name="move the special string context.getProperty to current context for tRunJob"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
