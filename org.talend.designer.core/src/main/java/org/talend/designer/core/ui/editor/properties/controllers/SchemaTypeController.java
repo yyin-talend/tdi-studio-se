@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -733,11 +734,16 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
             String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
-            if (!paramItems.equals(comboItems)) {
+            if (!Arrays.equals(paramItems, comboItems)) {
                 combo.setItems(paramItems);
                 // ControlUtils.setSortedValuesForCombo(combo, paramItems);
             }
-            combo.setText(strValue);
+            if (strValue.equals("")) {
+                combo.select(0);
+            } else {
+                combo.setText(strValue);
+            }
+
         }
     }
 
