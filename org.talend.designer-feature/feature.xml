@@ -2,7 +2,7 @@
 <feature
       id="org.talend.designer_feature"
       label="Designer Feature"
-      version="2.1.0.qualifier"
+      version="2.2.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/online/featuresdescription.html#designer-feature">
