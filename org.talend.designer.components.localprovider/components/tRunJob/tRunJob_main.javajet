@@ -47,7 +47,7 @@ for (int i=0; i<contextParams.size(); i++) {
         contextStr.append(value);
     }else{
     	contextStr.append("=\"+\"");
-        contextStr.append(value.replaceAll("\"","\\\\\\\\\\\\\""));        
+        contextStr.append(value);        
         contextStr.append("\"");
     } 
   }
