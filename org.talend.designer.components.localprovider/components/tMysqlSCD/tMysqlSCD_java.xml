@@ -60,7 +60,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SERVER_NAME"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -70,7 +70,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="PORT"
     >
-      <DEFAULT>'3306'</DEFAULT>
+      <DEFAULT>"3306"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -81,7 +81,7 @@
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -92,7 +92,7 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -102,7 +102,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REQUIRED="true"
     >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -113,7 +113,7 @@
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -122,7 +122,7 @@
       NUM_ROW="50"
       REQUIRED="true"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -130,7 +130,7 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="60"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
