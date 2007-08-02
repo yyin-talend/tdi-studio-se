@@ -58,7 +58,7 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdap
  * $Id: ExpressionComposite.java 上午10:12:38 2007-7-24 +0000 (2007-7-24) yzhang $
  * 
  */
-public class ExpressionComposite extends Composite implements IExpressionController {
+public class ExpressionComposite extends Composite {
 
     private Text text;
 

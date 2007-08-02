@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.expressionbuilder.ui;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -36,6 +38,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.model.CategoryManager;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -53,13 +56,17 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     private static TestComposite testComposite;
 
-    private static IExpressionController expressionComposite;
+    private static ExpressionComposite expressionComposite;
 
     private static CategoryComposite categoryComposite;
 
     private CategoryManager manager = new CategoryManager();
 
     private IExpressionConsumer consumer;
+
+    private String defaultExpression = "";
+
+    private List<Variable> defaultVariables;
 
     /**
      * Create the dialog
@@ -92,15 +99,17 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
         expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
+        expressionComposite.setExpression(defaultExpression);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
+        testComposite.addVariables(defaultVariables);
         upperSashform.setWeights(new int[] { 1, 1 });
 
         final Composite lowerComposite = new Composite(sashForm, SWT.NONE);
         lowerComposite.setLayout(new FillLayout());
 
         categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
-        categoryComposite.setExpressController(expressionComposite);
+        categoryComposite.setExpressionComposite(expressionComposite);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         // gridData.heightHint = 291;
@@ -184,7 +193,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     protected void okPressed() {
         String expression = ((ExpressionComposite) expressionComposite).getExpression();
         if (expression != null) {
-            consumer.setExpression(expression);
+            consumer.setConsumerExpression(expression);
         }
         super.okPressed();
     }
@@ -197,5 +206,23 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     public void openDialog() {
         open();
         setBlockOnOpen(true);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#setDefaultExpression(java.lang.String)
+     */
+    public void setDefaultExpression(String expression) {
+        defaultExpression = expression;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#setVariables(java.util.List)
+     */
+    public void addVariables(List<Variable> variables) {
+        defaultVariables = variables;
     }
 }

@@ -60,7 +60,7 @@ public class TestComposite extends Composite {
 
     private Button buttonAddVar, buttonRemoveVar;
 
-    private final TableViewer tableViewer;
+    private final TableViewer variableTableViewer;
 
     private final Button testButton;
 
@@ -110,11 +110,11 @@ public class TestComposite extends Composite {
         layout.marginHeight = 0;
         tablePart.setLayout(layout);
 
-        tableViewer = new TableViewer(tablePart, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+        variableTableViewer = new TableViewer(tablePart, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         VariableTableViewerProvider provider = new VariableTableViewerProvider();
-        tableViewer.setContentProvider(provider);
-        tableViewer.setLabelProvider(provider);
-        tableViewer.setCellModifier(new ICellModifier() {
+        variableTableViewer.setContentProvider(provider);
+        variableTableViewer.setLabelProvider(provider);
+        variableTableViewer.setCellModifier(new ICellModifier() {
 
             /*
              * (non-Javadoc)
@@ -151,14 +151,14 @@ public class TestComposite extends Composite {
                 } else if (VALUE_PROPERTY.equals(property)) {
                     var.setValue((String) value);
                 }
-                tableViewer.refresh();
+                variableTableViewer.refresh();
             }
 
         });
-        table = tableViewer.getTable();
-        tableViewer.setCellEditors(new CellEditor[] { new TextCellEditor(table), new TextCellEditor(table) });
-        tableViewer.setColumnProperties(new String[] { NAME_PROPERTY, VALUE_PROPERTY });
-        tableViewer.setInput(new LinkedList<Variable>());
+        table = variableTableViewer.getTable();
+        variableTableViewer.setCellEditors(new CellEditor[] { new TextCellEditor(table), new TextCellEditor(table) });
+        variableTableViewer.setColumnProperties(new String[] { NAME_PROPERTY, VALUE_PROPERTY });
+        variableTableViewer.setInput(new LinkedList<Variable>());
 
         table.setHeaderVisible(true);
         GridData gd = new GridData(GridData.FILL_BOTH);
@@ -204,9 +204,9 @@ public class TestComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                List<Variable> input = (List<Variable>) tableViewer.getInput();
+                List<Variable> input = (List<Variable>) variableTableViewer.getInput();
                 input.add(new Variable(input.size()));
-                tableViewer.refresh();
+                variableTableViewer.refresh();
             }
         });
 
@@ -219,18 +219,18 @@ public class TestComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                ISelection selection = tableViewer.getSelection();
-                List<Variable> list = ((List<Variable>) tableViewer.getInput());
+                ISelection selection = variableTableViewer.getSelection();
+                List<Variable> list = ((List<Variable>) variableTableViewer.getInput());
 
                 if (!selection.isEmpty() && selection instanceof StructuredSelection) {
                     Object[] vars = ((StructuredSelection) selection).toArray();
                     for (Object var : vars) {
                         list.remove((Variable) var);
-                        tableViewer.refresh();
+                        variableTableViewer.refresh();
                     }
                 } else if (!list.isEmpty()) {
                     list.remove(list.size() - 1);
-                    tableViewer.refresh();
+                    variableTableViewer.refresh();
                 }
             }
         });
@@ -287,7 +287,19 @@ public class TestComposite extends Composite {
      * yzhang Comment method "getVariableList".
      */
     public List<Variable> getVariableList() {
-        return (List<Variable>) tableViewer.getInput();
+        return (List<Variable>) variableTableViewer.getInput();
+    }
+
+    /**
+     * yzhang Comment method "setVariableList".
+     * 
+     * @param list
+     */
+    public void addVariables(List<Variable> list) {
+        if (list != null) {
+            ((List<Variable>) variableTableViewer.getInput()).addAll(list);
+            variableTableViewer.refresh();
+        }
     }
 
 }

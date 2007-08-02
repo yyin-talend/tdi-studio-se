@@ -66,7 +66,7 @@ public class CategoryComposite extends Composite {
 
     CategoryManager manager = null;
 
-    IExpressionController expressController = null;
+    ExpressionComposite expressComposite = null;
 
     private static Function selectedFunction;
 
@@ -163,17 +163,17 @@ public class CategoryComposite extends Composite {
      * 
      * @return the expressController
      */
-    public IExpressionController getExpressController() {
-        return this.expressController;
+    public ExpressionComposite getExpressionComposite() {
+        return this.expressComposite;
     }
 
     /**
      * Sets the expressController.
      * 
-     * @param expressController the expressController to set
+     * @param composite the expressController to set
      */
-    public void setExpressController(IExpressionController expressController) {
-        this.expressController = expressController;
+    public void setExpressionComposite(ExpressionComposite composite) {
+        this.expressComposite = composite;
     }
 
     /**
@@ -215,7 +215,7 @@ public class CategoryComposite extends Composite {
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
                             column.setFunction(function);
-                            expressController.setExpression(FunctionManagerExt.getOneColData(column));
+                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column));
                         } else {
                             docDisplayer.setText("");
                         }
