@@ -22,6 +22,8 @@
 package org.talend.designer.core.ui.wizards;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -78,6 +80,10 @@ public class ContextParameterWizard extends Wizard {
     @Override
     public boolean performFinish() {
         for (IContext context : contextManager.getListContext()) {
+            if (parameter.getType().equals(JavaTypesManager.FILE.getId())
+                    || parameter.getType().equals(JavaTypesManager.DIRECTORY.getId())) {
+                parameter.setValue(PathUtils.getPortablePath(parameter.getValue()));
+            }
             context.getContextParameterList().add(parameter.clone());
         }
         contextManager.fireContextsChangedEvent();
