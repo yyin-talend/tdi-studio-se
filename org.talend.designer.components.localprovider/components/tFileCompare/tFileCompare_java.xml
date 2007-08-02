@@ -45,6 +45,17 @@
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="COMPARISON_MODE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+    >
+      <ITEMS DEFAULT="TEXT_CMP">
+        <ITEM NAME="TEXT_CMP" VALUE="TEXT_CMP" />
+        <ITEM NAME="BINARY_CMP" VALUE="BINARY_CMP"/>
+      </ITEMS>
+    </PARAMETER>    
 
     <PARAMETER
        NAME="FILE"

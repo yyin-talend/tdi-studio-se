@@ -20,39 +20,68 @@ String noDifferMessage = ElementParameterParser.getValue(node, "__NO_DIFFER_MESS
 String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
 %>
 
-java.io.BufferedReader br<%=cid %> = new java.io.BufferedReader (new java.io.FileReader(<%=file %>));
-java.io.BufferedReader br1<%=cid %> = new java.io.BufferedReader (new java.io.FileReader(<%=fileRef %>));
-
-boolean result<%=cid %> = true;
-String str1<%=cid %> = "";
-String str2<%=cid %> = "";
-while (true) {
-	str1<%=cid %> = br1<%=cid %>.readLine();
-	str2<%=cid %> = br<%=cid %>.readLine();
-	if(str1<%=cid %> == null && str2<%=cid %> == null)
+boolean result_<%=cid%> = true;
+java.nio.channels.FileChannel fileChannel_<%=cid%> = new java.io.FileInputStream(<%=file%>).getChannel();
+long fileLength_<%=cid%> = fileChannel_<%=cid%>.size();
+fileChannel_<%=cid%>.close();
+java.nio.channels.FileChannel fileChannelRef_<%=cid%> = new java.io.FileInputStream(<%=fileRef%>).getChannel();
+long fileRefLength_<%=cid%> = fileChannelRef_<%=cid%>.size();
+fileChannelRef_<%=cid%>.close();
+if(fileLength_<%=cid%> != fileRefLength_<%=cid%>)
+{
+	result_<%=cid%> = false;
+}
+else
+{
+	<%
+	String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
+	if(cmpMode.equals("TEXT_CMP"))
 	{
-		break;
-	}
-	else if(str1<%=cid %> != null && str2<%=cid %> != null){
-		if (str1<%=cid %>.compareTo(str2<%=cid %>)!=0) {
-			result<%=cid %> = false;
-			break;
+		%>
+		java.io.BufferedReader file_<%=cid%> = new java.io.BufferedReader(new java.io.FileReader(<%=file%>));
+		java.io.BufferedReader fileRef_<%=cid%> = new java.io.BufferedReader(new java.io.FileReader(<%=fileRef%>));
+		String content_<%=cid%> = null,contentRef_<%=cid%> = null;
+		while((content_<%=cid%> = file_<%=cid%>.readLine()) != null && (contentRef_<%=cid%> = fileRef_<%=cid%>.readLine()) != null)
+		{
+			if(content_<%=cid%>.compareTo(contentRef_<%=cid%>) != 0)
+			{
+				result_<%=cid%> = false;
+				break;
+			}
 		}
-	}else{
-		result<%=cid %> = false;
-		break;
+		file_<%=cid%>.close();
+		fileRef_<%=cid%>.close();
+		<%
 	}
-	
+	else
+	{
+		%>
+    	java.io.BufferedInputStream file_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=file%>));
+    	java.io.BufferedInputStream fileRef_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=fileRef%>));
+    	int content_<%=cid%> = -1,contentRef_<%=cid%> = -1;
+    	while((content_<%=cid%> = file_<%=cid%>.read()) != -1 && (contentRef_<%=cid%> = fileRef_<%=cid%>.read()) != -1)
+    	{
+    		if(content_<%=cid%> != contentRef_<%=cid%>)
+    		{
+    			result_<%=cid%> = false;
+    			break;
+    		}
+    	}
+    	file_<%=cid%>.close();
+    	fileRef_<%=cid%>.close();			
+		<%
+	}
+	%>
 }
 
 String message<%=cid %> = "";
-if (result<%=cid %>) {
+if (result_<%=cid %>) {
 	message<%=cid %> = <%=noDifferMessage%>;
 	
 } else {
 	message<%=cid %> = <%=differMessage%>;
 }
-globalMap.put("<%=cid %>_DIFFERENCE",result<%=cid %>);
+globalMap.put("<%=cid %>_DIFFERENCE",result_<%=cid %>);
 
 <%
 if (print) {
