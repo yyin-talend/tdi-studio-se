@@ -18,8 +18,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 %>
 
-$_globals{<%=cid %>}{NB_LINE_INPUT} = $nb_line_input_<%=cid %>;
-$_globals{<%=cid %>}{NB_LINE_OUTPUT} = $nb_line_output_<%=cid %>;
+$_globals{<%=cid %>}{NB_UNIQUES} = $nb_uniques_<%=cid %>;
+$_globals{<%=cid %>}{NB_DUPLICATES} = $nb_duplicates_<%=cid %>;
 
 <%
     }
