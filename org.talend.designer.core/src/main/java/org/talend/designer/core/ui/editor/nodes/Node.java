@@ -810,18 +810,18 @@ public class Node extends Element implements INode {
     public boolean isSubProcessStart() {
         Connection connec;
         if (isActivate()) {
-            for (int j = 0; j < getIncomingConnections().size(); j++) {
-                connec = (Connection) getIncomingConnections().get(j);
-                if (connec.isActivate()) {
-                    // if ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                    // || connec.getLineStyle().equals(EConnectionType.ITERATE) || connec.getLineStyle().equals(
-                    // EConnectionType.TABLE))) {
-                    // return false;
-                    // }
-                    // PTODO MHI / Modif à revoir avec NRO
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-                        return false;
+            if (!isELTComponent()) {
+                for (int j = 0; j < getIncomingConnections().size(); j++) {
+                    connec = (Connection) getIncomingConnections().get(j);
+                    if (connec.isActivate()) {
+                        if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                            return false;
+                        }
                     }
+                }
+            } else {
+                if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
+                    return false;
                 }
             }
         }
@@ -1199,7 +1199,8 @@ public class Node extends Element implements INode {
         }
 
         // Check if there's an input run after / before on a component that is not a sub process start
-        if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
+        if ((!isELTComponent() && !isSubProcessStart())
+                || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
                  * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
                  * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||

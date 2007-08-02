@@ -1606,12 +1606,19 @@ public class Process extends Element implements IProcess {
     public void checkStartNodes() {
         for (Node node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
-                if (node.isELTComponent()) {
-                    if (node.isActivate()) {
-                        node.setStart(true);
-                    }
-                } else {
-                    if (node.isActivate()) {
+                if (node.isActivate()) {
+                    if (node.isELTComponent()) {
+                        // is there condition link, then don't set the start.
+                        boolean isThereConditionLink = false;
+                        for (int j = 0; j < node.getIncomingConnections().size() && !isThereConditionLink; j++) {
+                            Connection connection = (Connection) node.getIncomingConnections().get(j);
+                            if (connection.isActivate()
+                                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                                isThereConditionLink = true;
+                            }
+                        }
+                        node.setStart(!isThereConditionLink);
+                    } else {
                         node.setStart(false);
                         boolean isActivatedConnection = false;
                         for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {

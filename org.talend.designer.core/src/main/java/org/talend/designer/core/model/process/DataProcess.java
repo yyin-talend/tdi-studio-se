@@ -110,22 +110,16 @@ public class DataProcess {
             }
         }
         buildCheckMap.put(graphicalNode, dataNode);
-        if (!(graphicalNode.isELTComponent() && graphicalNode.isSubProcessStart())) {
-            dataNodeList.add(dataNode);
-        }
+        dataNodeList.add(dataNode);
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         initializeDataFromGraphical(dataNode, graphicalNode);
-        // dataNode.setElementParameters(makeCopyofParameters(dataNode, graphicalNode.getElementParameters()));
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-        // dataNode.setThereLinkWithMerge(graphicalNode.isThereLinkWithMerge());
-        // dataNode.setLinkedMergeInfo(graphicalNode.getLinkedMergeInfo());
-        // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
@@ -505,8 +499,7 @@ public class DataProcess {
                 if (connection.getTarget().getUniqueName().startsWith("tMap")
                         && LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA
                         || connection.getTarget().getUniqueName().startsWith("tAdvancedMap")
-                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
-                        ) {
+                        && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
                     uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
                     // ///////////////////////////////////////////////////////////////////////////
@@ -577,7 +570,6 @@ public class DataProcess {
     }
 
     public static void buildFromGraphicalProcess(Process process, List<Node> graphicalNodeList) {
-
         initialize();
         for (Node node : graphicalNodeList) {
             if (node.isSubProcessStart()) {

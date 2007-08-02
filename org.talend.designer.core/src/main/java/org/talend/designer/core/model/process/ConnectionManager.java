@@ -88,7 +88,7 @@ public class ConnectionManager {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 return false;
             }
-            if (!target.isSubProcessStart()) {
+            if (!target.isELTComponent() && !target.isSubProcessStart()) {
                 return false;
             }
         }
