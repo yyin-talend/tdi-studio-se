@@ -4,6 +4,7 @@
 		org.talend.core.model.process.IConnection 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.config.SubTreeArgument
+		org.talend.core.model.process.IConnectionCategory
 	"
   class="SubTreeEnd"     
 %>
@@ -17,7 +18,8 @@ if (subTreeArgument.isMultiplyingOutputComponents()) {
 <%
 	}
 
-if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
+if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
+    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 %>
 
 } # End of branch "$branch_<%= connection.getName()%>_is_active"
