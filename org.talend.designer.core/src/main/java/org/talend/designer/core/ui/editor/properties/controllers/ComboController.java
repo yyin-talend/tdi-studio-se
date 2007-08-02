@@ -585,7 +585,7 @@ public class ComboController extends AbstractElementPropertySectionController {
             String[] paramItems = param.getListItemsDisplayName();
             String[] comboItems = combo.getItems();
 
-            if (!!Arrays.equals(paramItems, comboItems)) {
+            if (!Arrays.equals(paramItems, comboItems)) {
                 combo.setItems(paramItems);
             }
             if (strValue.equals("")) {
