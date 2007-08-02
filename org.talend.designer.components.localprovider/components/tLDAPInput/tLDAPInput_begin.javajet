@@ -1,0 +1,119 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+" 
+class="LDAPInput"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String host=ElementParameterParser.getValue(node, "__HOST__");
+	String port=ElementParameterParser.getValue(node, "__PORT__");
+	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
+	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
+	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
+	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
+	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
+	String user =ElementParameterParser.getValue(node, "__USER__");
+	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+%>
+	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
+	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
+    env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
+<%
+    if(authen.equals("true")){
+%>
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
+    env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
+<%
+    }
+    if(protocol.equals("LDAPS")){
+%>
+	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
+	env_<%=cid%>.put("java.naming.ldap.factory.socket", "talend.ssl.AdvancedSocketFactory");
+<%
+		if(advanced.equals("true")){
+%>
+	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
+<%
+		}
+    }
+%>
+    javax.naming.directory.DirContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
+	javax.naming.directory.SearchControls searchCtls_<%=cid%> = new javax.naming.directory.SearchControls();
+    searchCtls_<%=cid%>.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
+<%
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		
+    	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+    	for(IConnection conn:conns){
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+     			String firstConnName = conn.getName();
+    			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
+%>
+    searchCtls_<%=cid%>.setReturningAttributes(new String[]{
+<%
+					for(IMetadataColumn column:columnList){		
+%>
+		"<%=column.getLabel()%>",
+<%
+                	}
+%>    
+    });
+	
+	//get basce dn
+	javax.naming.directory.Attributes attrsNaming_<%=cid%> = ctx_<%=cid%>.getAttributes("",new String[] {"namingContexts"});
+    javax.naming.directory.Attribute aNaming_<%=cid%> = attrsNaming_<%=cid%>.get("namingContexts");
+    if(aNaming_<%=cid%> == null)
+    {
+        aNaming_<%=cid%> =attrsNaming_<%=cid%>.get("namingcontexts");
+    }
+    String searchBase = aNaming_<%=cid%>==null?"":aNaming_<%=cid%>.get().toString();         
+	
+    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, "(&(objectClass=*))", searchCtls_<%=cid%>);
+	int entryCount_<%=cid%> = 0;
+    while (answer_<%=cid%> .hasMoreElements()) {
+    	if(entryCount_<%=cid%> >= <%=limit%>){
+    		break;
+    	}
+        javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
+
+        javax.naming.directory.Attributes attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
+        if (attrs_<%=cid%> != null) {
+        	entryCount_<%=cid%>++;
+<%
+					for(IMetadataColumn column:columnList){		
+%>        	
+			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getLabel()%>");
+			if(attr_<%=column.getLabel()%>_<%=cid%> != null)
+			{
+    			StringBuffer attrStr_<%=cid%> = new StringBuffer();
+    			for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
+    				if(attrStr_<%=cid%>.length()>0){
+    					attrStr_<%=cid%>.append(",");
+    				}
+    				attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
+    			}
+    			<%=conn.getName() %>.<%=column.getLabel() %> = attrStr_<%=cid%>.toString();
+			}
+			
+<%
+                	}
+				}
+			}
+		}
+	}
+%>
