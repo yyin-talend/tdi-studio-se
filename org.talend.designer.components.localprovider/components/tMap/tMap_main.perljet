@@ -114,12 +114,22 @@
                         }
                     }
                     String[] aKeysValues = keysValues.toArray(new String[0]);
+
+                    StringBuffer keys = new StringBuffer();
+                    
+                    keys.append("join( $;, ");
+                    for(int i = 0; i < aKeysValues.length ; i++) {
+                       keys.append(aKeysValues[i]);
+                       keys.append(", ");
+                    }
+                    keys.append(" ) ");
+
                     if (aKeysValues.length > 0) {
 				        String string = ""; //$NON-NLS-1$
-				        string += "my $" + tableName + " = $tHash_" + tableName + "";
-				        for (int i = 0; i < aKeysValues.length; i++) {
-				            string += "{ " + aKeysValues[i] + " }";
-				        }
+				        string += "my $" + tableName + " = $tHash_" + tableName + "{" + keys + "}";
+				        // for (int i = 0; i < aKeysValues.length; i++) {
+				        //     string += "{ " + aKeysValues[i] + " }";
+				        // }
 				        string += " ;";
                         sb.append(cr + gm.indent(indent) + string);
                     }
