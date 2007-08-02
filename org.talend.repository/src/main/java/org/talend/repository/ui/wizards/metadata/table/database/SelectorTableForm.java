@@ -523,6 +523,10 @@ public class SelectorTableForm extends AbstractForm {
             return map.containsKey(item);
         }
 
+        public boolean hasThreadRunning() {
+            return getQueue().size() != 0;
+        }
+
         /**
          * Find the RetrieveColumnRunnable from map and waiting queue. Map stores running runnables
          * 
@@ -661,7 +665,7 @@ public class SelectorTableForm extends AbstractForm {
             // selectNoneTablesButton.setEnabled(true);
             // checkConnectionButton.setEnabled(true);
 
-            parentWizardPage.setPageComplete(true);
+            parentWizardPage.setPageComplete(!threadExecutor.hasThreadRunning());
         }
     }
 
