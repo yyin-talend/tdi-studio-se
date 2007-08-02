@@ -34,30 +34,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean useAllColumns = true ;
         for (IMetadataColumn column: metadata.getListColumns()) {
             Map<String, String> keyColumn = keyColumns.get(column_num);
-			String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
-			if(keyParticipation.equals("true")) {
-				useAllColumns = false ;
-			}
+            String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
+            if (keyParticipation.equals("true")) {
+                useAllColumns = false ;
+            }
             column_num++;
         }
 
         column_num = 0;
         for (IMetadataColumn column: metadata.getListColumns()) {
             Map<String, String> keyColumn = keyColumns.get(column_num);
-			String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
+            String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
 			
-			if( useAllColumns || keyParticipation.equals("true")) {
-	            hashKey.append(" ");
-				String caseSensitive = keyColumn.get("CASE_SENSITIVE");
-	            if (caseSensitive.equals("false")) {
-	                hashKey.append("lc ");
-	            }
-	            hashKey.append("$");
-	            hashKey.append(cid);
-	            hashKey.append("->[");
-	            hashKey.append(column_num);
-	            hashKey.append("], ");
-			}
+            if( useAllColumns || keyParticipation.equals("true")) {
+                hashKey.append(" ");
+                String caseSensitive = keyColumn.get("CASE_SENSITIVE");
+
+                if (caseSensitive.equals("false")) {
+                    hashKey.append("lc ");
+                }
+
+                hashKey.append("$");
+                hashKey.append(cid);
+                hashKey.append("->[");
+                hashKey.append(column_num);
+                hashKey.append("], ");
+            }
             column_num++;
         }
 %>
@@ -66,27 +68,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         for (IConnection outConn: node.getOutgoingConnections()) {
             String connName = outConn.getName();
 %>
-$branch_<%=connName%>_is_active = true;
+$branch_<%=connName%>_is_active = false;
 <%
         }
 %>
-
-
-$nb_line_input_<%=cid %>++;
-$nb_line_output_<%=cid %>++;
 
 if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1) {
 <%
-        for (IConnection outConn: node.getOutgoingConnections()) {
+        for (IConnection outConn: node.getOutgoingConnections("DUPLICATE")) {
             String connName = outConn.getName();
 %>
-    $branch_<%=connName%>_is_active = false;
+    $branch_<%=connName%>_is_active = true;
 <%
         }
 %>
-    $nb_line_output_<%=cid %>--;
-
-    
+    $nb_duplicates_<%=cid %>++;
+}
+else {
+<%
+        for (IConnection outConn: node.getOutgoingConnections("UNIQUE")) {
+            String connName = outConn.getName();
+%>
+    $branch_<%=connName%>_is_active = true;
+<%
+        }
+%>
+    $nb_uniques_<%=cid %>++;
 }
     
 <%
