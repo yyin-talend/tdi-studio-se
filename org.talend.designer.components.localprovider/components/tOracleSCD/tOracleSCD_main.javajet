@@ -1,0 +1,409 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+// Search incoming schema
+IMetadataTable inMetadata = null;
+IConnection inConnection = null;
+String inConnectionName = null;
+
+List<? extends IConnection> incomingConnections
+    = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    inConnection = incomingConnections.get(0);
+    inConnectionName = inConnection.getName();
+    inMetadata = inConnection.getMetadataTable();
+}
+
+// Search outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    metadata = metadatas.get(0);
+}
+
+// We only generate output if incoming and outgoing schema are defined
+if (inMetadata != null && metadata != null) {
+    String inConnName = inConnection.getName();
+    
+    // SCD parameters
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
+	
+    boolean useL1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
+    if (useL1) {
+        l1fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
+    }
+	
+    boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
+    if (useL2) {
+        l2fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
+    }
+	
+    boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
+    String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
+    String versionType = null;
+	if (useVersion) {
+		// Search java type for version field
+	    for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(versionField)) {
+	        	versionType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				break;
+	        }
+	    }
+	}
+	
+	// Build map with type (sk, L1, L2) of each column
+    Map<String, String> typeOfColumn = new HashMap<String, String>();
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+    for (Map<String, String> l1field : l1fields) {
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+	
+	// Debug mode
+	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
+    
+    // Inner class StatementGenerator (@see tIngresOutput#Operation)
+	class StatementGenerator {
+		public void generateSetStatement(String cid, String statement, String value,
+										 int counter, String typeToGenerate) {
+			boolean isObject = false;
+			
+			if (typeToGenerate.equals("Character")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.CHAR);
+				<%
+			} else if (typeToGenerate.equals("Date")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.DATE);
+				<%
+			} else if (typeToGenerate.equals("byte[]")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.ARRAY);			
+				<%
+			} else if (typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") ||
+					   typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.INTEGER);
+				<%
+			} else if (typeToGenerate.equals("String")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.VARCHAR);
+				<%
+			} else if (typeToGenerate.equals("Object")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.OTHER);
+				<%
+			} else if (typeToGenerate.equals("Boolean")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.BOOLEAN);	
+				<%
+			} else if (typeToGenerate.equals("Double")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.DOUBLE);	
+				<%
+			} else if (typeToGenerate.equals("Float")) {
+				isObject = true;
+				%>
+				if (<%=value%> == null) {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.FLOAT);	
+				<%
+			}
+			if (isObject) {
+				%>} else {<%
+			}
+			
+			if (typeToGenerate.equals("byte[]")) {
+	 	  		typeToGenerate = "Bytes";
+	 	   	} else if (typeToGenerate.equals("java.util.Date")) {
+	 	   		typeToGenerate = "Date";
+	 	  	} else if (typeToGenerate.equals("Integer")) {
+	 	   		typeToGenerate = "Int";
+	 	   	} else {
+				typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+			}
+			
+			if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+				if (isObject) {
+					%>
+					if (<%=value%> == null) {
+					<%
+				} else {
+					%>
+					if (String.valueOf(<%=value%>).toLowerCase().equals("null")) {
+					<%
+				}
+				%>
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.CHAR);
+				} else if(<%=value%> == '\0') {
+					<%=statement%>.setString(<%=counter%>, "");
+				} else {
+					<%=statement%>.setString(<%=counter%>, String.valueOf(<%=value%>));
+				}
+				<%
+			} else if (typeToGenerate.equals("Date")) {
+				%>
+				if (<%=value%> != null) {
+					<%=statement%>.setTimestamp(<%=counter%>, new java.sql.Timestamp(<%=value%>.getTime()));
+				} else {
+					<%=statement%>.setNull(<%=counter%>, java.sql.Types.DATE);
+				}
+				<%
+			} else {
+				%>
+				<%=statement%>.set<%=typeToGenerate%>(<%=counter%>, <%=value%>);
+				<%
+			}
+			if(isObject) {
+				%>}<%
+			}
+		}
+	}
+	
+	StatementGenerator generator = new StatementGenerator();
+    
+    %>
+    // Lookup source keys
+    <%
+	for (IMetadataColumn column : inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+		
+        if (typeOfColumn.containsKey(colname)) {
+	    	if (typeOfColumn.get(colname).equals("SK")) {
+	    		%>
+	    		lookupRow_<%=cid%>.<%=colname%> = <%=inConnectionName%>.<%=colname%>;
+	    		<%
+	        }
+        }
+    }
+    %>
+    lookupRow_<%=cid%>.hashCodeDirty = true; // Regenerate hash code
+   	cacheRow_<%=cid%> = cache_<%=cid%>.get(lookupRow_<%=cid%>);
+    
+	if (cacheRow_<%=cid%> == null) {
+		// Insert new source id
+		<%
+		int colposition = 1;
+    	for (IMetadataColumn column : inMetadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (typeOfColumn.containsKey(colname)) {
+	        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+			}
+		}
+		
+		if (useVersion) {
+			generator.generateSetStatement(cid, "insertQuery_" + cid, "1", colposition, versionType);
+		}
+		
+		%>
+		insertQuery_<%=cid%>.executeUpdate();
+		
+		<%
+	    if (debug) {
+			%>
+			System.out.println("[<%=cid%>] new source id inserted");
+			<%
+	    }
+		%>
+	} else {
+		<%
+		// L1 fields
+		if (l1fields.size() > 0) {
+			boolean isFirstL1 = true;
+			%>
+			// L1 fields
+			if (<%
+				for (IMetadataColumn column : inMetadata.getListColumns()) {
+					String colname = column.getLabel();
+					
+		            if (typeOfColumn.containsKey(colname)) {
+		                if (typeOfColumn.get(colname).equals("L1")) {
+		                    if (isFirstL1) {
+		                        isFirstL1 = false;
+		                    } else {
+		                    	%> || <%
+		                    }
+		                    
+			                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			                
+			                if (javaType == JavaTypesManager.DATE ||
+			                	javaType == JavaTypesManager.OBJECT ||
+			                	javaType == JavaTypesManager.STRING) {
+								%>((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
+								   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>)))<%
+			                } else {
+			                	%>cacheRow_<%=cid%>.<%=colname%> != <%=inConnectionName%>.<%=colname%><%
+			                }
+						}
+					}
+				}
+			%>) {
+				<%
+				// Bind L1 fields to SQL request
+				colposition = 1;
+				for (IMetadataColumn column : metadata.getListColumns()) {
+			        String colname = column.getLabel();
+					
+			        if (typeOfColumn.containsKey(colname)) {
+			            if (typeOfColumn.get(colname).equals("L1")) {
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+			            }
+			        }
+			    }
+			    
+				// Bind SK fields to SQL request
+				for (IMetadataColumn column : metadata.getListColumns()) {
+			        String colname = column.getLabel();
+					
+			        if (typeOfColumn.containsKey(colname)) {
+			            if (typeOfColumn.get(colname).equals("SK")) {
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+			            }
+			        }
+			    }
+			    
+			    %>
+				l1Query_<%=cid%>.executeUpdate();
+				
+				<%
+				if (debug) {
+					%>
+					System.out.println("[<%=cid%>] l1 update done");
+					<%
+				}
+				%>
+			}
+		<%
+		}
+		
+		// L2 fields
+		if (l2fields.size() > 0) {
+        	boolean isFirstL2 = true;
+			%>
+			// L2 fields
+			if (<%
+		        for (IMetadataColumn column : inMetadata.getListColumns()) {
+					String colname = column.getLabel();
+					
+		            if (typeOfColumn.containsKey(colname)) {
+		                if (typeOfColumn.get(colname).equals("L2")) {
+		                    if (isFirstL2) {
+		                        isFirstL2 = false;
+		                    } else {
+		                    	%> || <%
+		                    }
+		                    
+			                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			                
+			                if (javaType == JavaTypesManager.DATE ||
+			                	javaType == JavaTypesManager.OBJECT ||
+			                	javaType == JavaTypesManager.STRING) {
+								%>((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
+								   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>)))<%
+			                } else {
+			                	%>cacheRow_<%=cid%>.<%=colname%> != <%=inConnectionName%>.<%=colname%><%
+			                }
+						}
+					}
+				}
+			%>) {
+				<%
+				colposition = 2; // Note: parameter #1 is end date (defined in _start)
+				for (IMetadataColumn column : metadata.getListColumns()) {
+			        String colname = column.getLabel();
+					
+			        if (typeOfColumn.containsKey(colname)) {
+			            if (typeOfColumn.get(colname).equals("SK")) {
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							generator.generateSetStatement(cid, "l2Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+			            }
+			        }
+			    }
+			    
+    			%>
+    			l2Query_<%=cid%>.executeUpdate();
+    			<%
+				colposition = 1;
+				for (IMetadataColumn column : metadata.getListColumns()) {
+			        String colname = column.getLabel();
+					
+			        if (typeOfColumn.containsKey(colname)) {
+			        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+			        }
+				}
+				
+				if (useVersion) {
+					generator.generateSetStatement(cid, "insertQuery_" + cid,
+						"cacheRow_" + cid + "." + versionField + " + 1", colposition, versionType);
+				}
+				
+				%>
+				insertQuery_<%=cid%>.executeUpdate();
+				<%
+				
+				if (debug) {
+					%>
+					System.out.println("[<%=cid%>] new history line");
+					<%
+				}
+				%>
+			}
+		<%
+		}
+	%>
+	}
+<%
+}
+%>
