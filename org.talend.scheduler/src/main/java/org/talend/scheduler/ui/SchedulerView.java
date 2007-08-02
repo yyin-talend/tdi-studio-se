@@ -309,7 +309,7 @@ public class SchedulerView extends ViewPart {
                 for (ScheduleTask tasks : list) {
                     if (tasks.getTaskMode() == CommandModeType.TalendJob) {
                         jobResourceManager.removeProtection(tasks);
-                        for (String id : tasks.getProjectedIds()) {
+                        for (String id : tasks.getProtectedIds()) {
                             jobResourceManager.deleteResource(tasks.getJobResource(id));
                         }
                     }

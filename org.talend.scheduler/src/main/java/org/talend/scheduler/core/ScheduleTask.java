@@ -94,7 +94,7 @@ public class ScheduleTask implements IJobResourceProtection {
      * 
      * @see org.talend.repository.job.deletion.IJobResourceProtection#getProjectedIds()
      */
-    public String[] getProjectedIds() {
+    public String[] getProtectedIds() {
         return calculateProtectedIds();
     }
 
@@ -412,12 +412,4 @@ public class ScheduleTask implements IJobResourceProtection {
 
         return sb.toString();
     }
-
-    /* (non-Javadoc)
-     * @see org.talend.repository.job.deletion.IJobResourceProtection#getProtectedIds()
-     */
-    public String[] getProtectedIds() {
-        return null;
-    }
-
 }
