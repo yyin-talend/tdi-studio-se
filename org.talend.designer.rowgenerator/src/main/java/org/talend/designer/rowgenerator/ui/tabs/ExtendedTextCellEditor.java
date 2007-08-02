@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -33,6 +36,7 @@ import org.talend.core.IService;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.IExpressionConsumer;
+import org.talend.expressionbuilder.test.shadow.Variable;
 import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
@@ -46,6 +50,8 @@ public class ExtendedTextCellEditor extends TextCellEditor implements IExpressio
     private IExpressionBuilderDialogController expressionBuilderDialog;
 
     private TableViewerCreator tableCreator;
+
+    private String expression;
 
     /**
      * yzhang ExtendedTextCellEditor constructor comment.
@@ -73,7 +79,14 @@ public class ExtendedTextCellEditor extends TextCellEditor implements IExpressio
              */
             @Override
             public void mouseDoubleClick(MouseEvent e) {
+                TableItem[] items = tableCreator.getTable().getSelection();
+                TableItem item = items[0];
+                if (item != null) {
+                    Parameter param = (Parameter) item.getData();
+                    expressionBuilderDialog.setDefaultExpression(param.getValue());
+                }
                 expressionBuilderDialog.openDialog();
+
             }
         });
     }
@@ -83,7 +96,7 @@ public class ExtendedTextCellEditor extends TextCellEditor implements IExpressio
      * 
      * @see org.talend.expressionbuilder.IExpressionConsumer#setExpression(java.lang.String)
      */
-    public void setExpression(String expression) {
+    public void setConsumerExpression(String expression) {
         TableItem[] items = tableCreator.getTable().getSelection();
         TableItem item = items[0];
         if (item != null) {
@@ -103,4 +116,5 @@ public class ExtendedTextCellEditor extends TextCellEditor implements IExpressio
         this.tableCreator = creator;
 
     }
+
 }
