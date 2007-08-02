@@ -169,7 +169,17 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
     ];
     
     if( <%=nbFields%> != scalar(@$<%=cid%>) ){
-        @$<%=cid %> = (@$<%=cid%>)<% if (nbFields>0) { %>[0 .. <%=nbFields - 1%> ]<% } %>;
+        $<%=cid %> = [
+<%
+    int icol = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+            $<%=cid %>->[<%=icol%>],
+<%
+        icol++;
+    }
+%>        
+        ];
     }
 <%
 		}
