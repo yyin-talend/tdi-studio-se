@@ -48,10 +48,19 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="ROWSEPARATOR"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="ROW_SEPARATOR"
+    >
+      <DEFAULT>"\n"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="FORMATS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
       NB_LINES="5"
     >
       <ITEMS BASED_ON_SCHEMA="true">
@@ -84,7 +93,7 @@
       NAME="APPEND"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="5"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -92,7 +101,7 @@
     <PARAMETER
       NAME="INCLUDEHEADER"
       FIELD="CHECK"
-      NUM_ROW="4"
+      NUM_ROW="5"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -100,7 +109,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>

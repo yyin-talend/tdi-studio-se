@@ -24,6 +24,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String cid = node.getUniqueName();
         
+        String separator = ElementParameterParser.getValue(
+            node,
+            "__ROWSEPARATOR__"
+        );
+        
         List<Map<String, String>> formats =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
@@ -123,7 +128,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%
 			}
 			%>
-			sb_<%=cid %>.append("\n");
+			sb_<%=cid %>.append(<%=separator%>);
 			out<%=cid %>.write(sb_<%=cid %>.toString());
 			nb_line_<%=cid %>++;
 <%
