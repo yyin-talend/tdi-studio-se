@@ -1186,7 +1186,7 @@ public class EmfComponent implements IComponent {
 
                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg,
                         importType.isREQUIRED());
-
+                componentImportNeeds.setShow(importType.isSHOW());
                 componentImportNeedsList.add(componentImportNeeds);
             }
         }
