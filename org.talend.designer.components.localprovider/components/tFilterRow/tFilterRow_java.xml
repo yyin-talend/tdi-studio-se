@@ -1,0 +1,130 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070312A"
+    STARTABLE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
+    DATA_AUTO_PROPAGATE="false"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+<PARAMETERS>
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONDITIONS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="2"
+      NB_LINES="3"
+    >
+      <ITEMS>
+        <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="VALUE_OF">
+            <ITEM NAME="S_VALUE_OF"    VALUE="S_VALUE_OF"/>
+            <ITEM NAME="N_VALUE_OF"    VALUE="N_VALUE_OF"/>
+            <ITEM NAME="ABS_VALUE"    VALUE="ABS_VALUE"/>
+            <ITEM NAME="LC"    VALUE="LC"/>
+            <ITEM NAME="UC"    VALUE="UC"/>
+            <ITEM NAME="LCFIRST"    VALUE="LCFIRST"/>
+            <ITEM NAME="UCFIRST"    VALUE="UCFIRST"/>
+            <ITEM NAME="LENGTH"  VALUE="LENGTH"/>
+          </ITEMS>
+        </ITEM>
+
+        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+
+        <ITEM NAME="OPERATOR" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="STR_EQ">
+            <ITEM NAME="STR_EQ"  VALUE="STR_EQ"/>
+            <ITEM NAME="STR_NE"    VALUE="STR_NE"/>
+            <ITEM NAME="STR_GT"    VALUE="STR_GT"/>
+            <ITEM NAME="STR_LT"    VALUE="STR_LT"/>
+            <ITEM NAME="STR_GE"    VALUE="STR_GE"/>
+            <ITEM NAME="STR_LE"    VALUE="STR_LE"/>
+            <ITEM NAME="MATCH"    VALUE="MATCH"/>
+            <ITEM NAME="NMATCH"    VALUE="NMATCH"/>
+            <ITEM NAME="NUM_EQ"    VALUE="NUM_EQ"/>
+            <ITEM NAME="NUM_NE"    VALUE="NUM_NE"/>
+            <ITEM NAME="NUM_GT"    VALUE="NUM_GT"/>
+            <ITEM NAME="NUM_LT"    VALUE="NUM_LT"/>
+            <ITEM NAME="NUM_GE"    VALUE="NUM_GE"/>
+            <ITEM NAME="NUM_LE"    VALUE="NUM_LE"/>
+
+          </ITEMS>
+        </ITEM>
+        <ITEM NAME="RVALUE" FIELD="String" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_ADVANCED"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="3"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER
+      NAME="ADVANCED_COND"
+      FIELD="MEMO"
+      NUM_ROW="4"
+      NB_LINES="4"
+      NOT_SHOW_IF="(USE_ADVANCED=='false')"
+    >
+      <DEFAULT>// code sample : use $input_row to define the condition.
+// input_row.columnName1.equals("foo") || !(input_row.columnName2.equals("xo"))
+
+// replace the following expression by your own filter condition
+input_row.columnName1.equals(input_row.columnName2)
+    </DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LOGICAL_OP"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="5"      
+      REQUIRED="true"
+    >
+      <ITEMS DEFAULT="AND">
+		  <ITEM NAME="OR"   VALUE="OR" />
+		  <ITEM NAME="AND"   VALUE="AND" />
+      </ITEMS>
+    </PARAMETER>
+
+</PARAMETERS>
+
+  <CODEGENERATION>
+
+  </CODEGENERATION>
+
+   <RETURNS>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+   </RETURNS>
+</COMPONENT>
