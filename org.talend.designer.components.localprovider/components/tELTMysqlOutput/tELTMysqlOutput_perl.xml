@@ -107,6 +107,7 @@
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
       <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="true" />
+      <IMPORT NAME="tMysqlOutput::Mysql" MODULE="tMysqlOutput::Mysql" REQUIRED="true" SHOW="false"/>
     </IMPORTS>
   </CODEGENERATION>
    
