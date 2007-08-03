@@ -38,6 +38,16 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="99"
+      SHOW="true"
+      READONLY="true"
+    >
+      <DEFAULT>teradata_id</DEFAULT>
+    </PARAMETER>
+    
    </PARAMETERS>
 
    <CODEGENERATION>

@@ -33,9 +33,19 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="1"
     >
       <DEFAULT>''</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="99"
+      SHOW="true"
+      READONLY="true"
+    >
+      <DEFAULT>mysql_id</DEFAULT>
     </PARAMETER>
 
    </PARAMETERS>
