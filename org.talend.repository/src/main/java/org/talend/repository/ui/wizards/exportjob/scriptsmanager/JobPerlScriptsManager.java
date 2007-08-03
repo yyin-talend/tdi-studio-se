@@ -38,7 +38,9 @@ import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
@@ -46,6 +48,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
@@ -78,7 +81,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS, statisticPort != IProcessor.NO_TRACES);
+            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                    statisticPort != IProcessor.NO_TRACES);
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
                     escapeSpace(launcher), statisticPort, tracePort, codeOptions));
@@ -93,9 +97,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             try {
                 List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
                 if (userRoutineList.size() > 0) {
-                    process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR
-                            + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + this.getCurrentProjectName(),
-                            userRoutineList);
+                    process[i].addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+                            + PATH_SEPARATOR + this.getCurrentProjectName(), userRoutineList);
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
@@ -127,8 +130,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             return list;
         }
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
-        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR
-                + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + PATH_SEPARATOR + this.getCurrentProjectName();
+        String folderPath = librariesService.getLibrariesPath() + PATH_SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER
+                + PATH_SEPARATOR + this.getCurrentProjectName();
         File file = new File(folderPath);
         File[] files = file.listFiles();
         if (files != null) {
@@ -174,9 +177,20 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             NodeType nType = (NodeType) iter.next();
             String componentName = nType.getComponentName();
-
+            IComponent component = ComponentsFactoryProvider.getInstance().get(componentName);
             List<URL> modules = getComponentModules(componentName); //$NON-NLS-1$
             resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + componentName, modules);
+
+            // get the modules that this component depends on.
+            for (ModuleNeeded module : component.getModulesNeeded()) {
+                // for intance, split the "DtMysqlOutput::Mysql" to {"DtMysqlOutput","Mysql"}
+                String[] string = module.getModuleName().split("::");
+                if (string.length != 2) {
+                    continue;
+                }
+                resource.addResources(LIBRARY_FOLDER_NAME + PATH_SEPARATOR + string[0], getComponentModules(string[0] + "/"
+                        + string[1] + ".pm"));
+            }
         }
     }
 
@@ -185,15 +199,26 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         ILibrariesService librariesService = CorePlugin.getDefault().getLibrariesService();
         String path = librariesService.getLibrariesPath() + PATH_SEPARATOR + componentName;
         File file = new File(path);
-        if (file.exists()) {
-            File[] files = file.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File tempFile = files[i];
-                try {
-                    modules.add(tempFile.toURL());
-                } catch (MalformedURLException e) {
-                    ExceptionHandler.process(e);
-                }
+        if (!file.exists()) {
+            return modules;
+        }
+
+        if (file.isFile()) {
+            try {
+                modules.add(file.toURL());
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
+            }
+            return modules;
+        }
+
+        File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            File tempFile = files[i];
+            try {
+                modules.add(tempFile.toURL());
+            } catch (MalformedURLException e) {
+                ExceptionHandler.process(e);
             }
         }
         return modules;
