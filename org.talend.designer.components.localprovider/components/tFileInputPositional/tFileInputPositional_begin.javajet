@@ -31,11 +31,19 @@
                 "__FORMATS__"
             );
             
+            List<Map<String, String>> trimSelects =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__TRIMSELECT__"
+            );
+            
             String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
             
             boolean advanced = ElementParameterParser.getValue(node, "__ADVANCED_OPTION__").equals("true");
             
 			String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+			
+			boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
 			
    			String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
    			
@@ -71,11 +79,13 @@
             		useStar = true;
             	}
             }
-%>int nb_line_<%=cid%> = 0;
+%>
+int nb_line_<%=cid%> = 0;
 int footer_<%=cid %>  = <%=footer%>;
 int limit_<%=cid %> = <%=limit %>;
 <%
-			if(advanced){%>
+		if(advanced){
+%>
 int[] sizes_<%=cid %> = new int[<%=formats.size() %>];
 int[] begins_<%=cid %> = new int[<%=formats.size() %>];
 int[] ends_<%=cid %> = new int[<%=formats.size() %>];
@@ -85,65 +95,81 @@ int[] ends_<%=cid %> = new int[<%=formats.size() %>];
 					if(formats.get(i).get("SIZE").equals("*")){ 
 						useStar = true;
 					}
-				%>sizes_<%=cid %>[<%=i %>] = <%=useStar ? -1 :  formats.get(i).get("SIZE") %>;
+%>
+sizes_<%=cid %>[<%=i %>] = <%=useStar ? -1 :  formats.get(i).get("SIZE") %>;
 <%
 				}else{
-				%>sizes_<%=cid %>[<%=i %>] = <%=formats.get(i).get("SIZE") %>;				
+%>
+sizes_<%=cid %>[<%=i %>] = <%=formats.get(i).get("SIZE") %>;				
 <%
 				}
 			}
 			for(int i = 0; i < formats.size(); i++){ 
 				if(i == 0){
-%>begins_<%=cid %>[<%=i %>] = 0;
+%>
+begins_<%=cid %>[<%=i %>] = 0;
 ends_<%=cid %>[<%=i %>] = sizes_<%=cid %>[<%=i %>];
 <%
 				}else if(i == formats.size() - 1 && useStar){
-%>begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+%>
+begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
 ends_<%=cid %>[<%=i %>] = -1;
 <%
 				}else{
-%>begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
+%>
+begins_<%=cid %>[<%=i %>] = begins_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i-1 %>];
 ends_<%=cid %>[<%=i %>] = ends_<%=cid %>[<%=i-1 %>] + sizes_<%=cid %>[<%=i %>];
 <%
 				}
 			}
-			}
-%>java.io.BufferedReader in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
+		}//end if(advanced)
+%>
+java.io.BufferedReader in_<%=cid %> = 
+	new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
 <%
 			if(rowSeparator.equals("") || rowSeparator.equals("\"\"") ){
-			%>int rowLength_<%=cid %> = 0;			
+%>
+int rowLength_<%=cid %> = 0;			
 <%
 				if(advanced){ 
 					for(int i = 0; i < formats.size(); i++){ 
-%>rowLength_<%=cid %> += sizes_<%=cid %>[<%=i %>];
+%>
+rowLength_<%=cid %> += sizes_<%=cid %>[<%=i %>];
 <%
 					}
 				}else{
     				for(int i=0;i<positions.length;i++){
-%>rowLength_<%=cid %> += <%=positions[i] %>;
+%>
+rowLength_<%=cid %> += <%=positions[i] %>;
 <%
-            		}
-				}
-				%>org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
-				<%
+        		}
+			}
+%>
+org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
+<%
 			}else{
-			%>org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
+%>
+org.talend.fileprocess.delimited.RowParser reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
 <%
 			}
-%>reader_<%=cid %>.skipHeaders(<%=header %>);
+%>
+reader_<%=cid %>.skipHeaders(<%=header %>);
 if(footer_<%=cid %> > 0){
 	int available_<%=cid %> = (int)reader_<%=cid %>.getAvailableRowCount(footer_<%=cid %>);
 	reader_<%=cid %>.close();
 	in_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename %>), <%=encoding %>));
 <%
 			if(rowSeparator.equals("") || rowSeparator.equals("\"\"") ){
-				%>reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
-				<%
+%>
+	reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, rowLength_<%=cid %>);
+<%
 			}else{
-			%>reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
+%>
+	reader_<%=cid %> = new org.talend.fileprocess.delimited.RowParser(in_<%=cid %>, <%=rowSeparator %>, <%=removeEmptyRow %>);
 <%
 			}
-%>	reader_<%=cid %>.skipHeaders(<%=header %>);	
+%>	
+	reader_<%=cid %>.skipHeaders(<%=header %>);	
 	if(limit_<%=cid %> == -1){
 		limit_<%=cid %> = available_<%=cid %>; 
 	}else{
@@ -152,13 +178,16 @@ if(footer_<%=cid %> > 0){
 }
 String row_<%=cid %> = null;   
 <%
-	if(advanced){%>
+	if(advanced){
+%>
 String column_<%=cid %> = null;
 <%
 	}else{
-%>String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
+%>
+String[] columnValue<%=cid %>=new String[<%=metadata.getListColumns().size()%>];
 <%
-	}%>
+	}
+%>
 while (reader_<%=cid %>.readRecord()) {
 	row_<%=cid %> = reader_<%=cid %>.getRowRecord();
 <%
@@ -169,91 +198,119 @@ while (reader_<%=cid %>.readRecord()) {
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			if(advanced){
-				List<IMetadataColumn> listColumns = metadata.getListColumns();
-				int sizeListColumns = listColumns.size();
-				for (int valueN=0; valueN<sizeListColumns; valueN++) {
-					String paddingChar = formats.get(valueN).get("PADDING_CHAR");
-					String align = formats.get(valueN).get("ALIGN");
-					if(align.equals("'L'")){
-						align = "-1";
-					}else if(align.equals("'C'")){
-						align = "0";
-					}else{
-						align = "1";
-					}
-					if(valueN == sizeListColumns - 1 && useStar){ 
-%>if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
-	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
-}else{
-	column_<%=cid %> = "";
-}
+    			if(advanced){
+    				List<IMetadataColumn> listColumns = metadata.getListColumns();
+    				int sizeListColumns = listColumns.size();
+    				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+    					String paddingChar = formats.get(valueN).get("PADDING_CHAR");
+    					String align = formats.get(valueN).get("ALIGN");
+    					if(align.equals("'L'")){
+    						align = "-1";
+    					}else if(align.equals("'C'")){
+    						align = "0";
+    					}else{
+    						align = "1";
+    					}
+    					if(valueN == sizeListColumns - 1 && useStar){ //last column
+%>
+    if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
+    	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+    }else{
+    	column_<%=cid %> = "";
+    }
 <%
-					}else{
-%>if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
-	if(ends_<%=cid %>[<%=valueN %>] <= row_<%=cid %>.length()){
-		column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>], ends_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
-	}else{
-		column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
-	}
-}else{
-	column_<%=cid %> = "";
-}
+						}else{//other column
+%>
+	if(begins_<%=cid %>[<%=valueN %>] < row_<%=cid %>.length()){
+        if(ends_<%=cid %>[<%=valueN %>] <= row_<%=cid %>.length()){
+        	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>], ends_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+        }else{
+        	column_<%=cid %> = TalendString.talendTrim(row_<%=cid %>.substring(begins_<%=cid %>[<%=valueN %>]), <%=paddingChar %>, <%=align %>);
+		}
+    }else{
+    	column_<%=cid %> = "";
+    }
 <%
-					}
+						}
+						if(isTrimAll || trimSelects.get(valueN).get("TRIM").equals("true")){
+%>
+	column_<%=cid %> = column_<%=cid %>.trim();
+<%
+						}
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%><%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>;
+%>
+	<%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>;
 <%
 					} else {
-%>if(column_<%=cid %>.length() > 0) {
+%>
+	if(column_<%=cid %>.length() > 0) {
 <%
 						if(javaType == JavaTypesManager.DATE) {
-%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>);
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>);
 <%
 						}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%><%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes();
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes();
 <%
 							} else {
-%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(column_<%=cid %>);
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(column_<%=cid %>);
 <%
 							}
-%>}else{
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-}
+%>
+    }else{
+    	<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+    }
 <%					
 					}
 				}
-			}else{
-%>int substringBegin<%=cid %>=0,substringEnd<%=cid %>=0;
+			}else{// end if(advance)
+%>
+	int substringBegin<%=cid %>=0,substringEnd<%=cid %>=0;
 <%
 				for(int i=0;i <	metadata.getListColumns().size();i++){
 					if(i >=positions.length){
-%>columnValue<%=cid %>[<%=i%>]="";
+%>
+	columnValue<%=cid %>[<%=i%>]="";
 <%
 						continue;
 					}
-%>if(substringBegin<%=cid %> >= row_<%=cid %>.length()){
-	columnValue<%=cid %>[<%=i%>]= "";
-}else{
+%>
+    if(substringBegin<%=cid %> >= row_<%=cid %>.length()){
+    	columnValue<%=cid %>[<%=i%>]= "";
+    }else{
 <%
-					if(positions[i].equals("*")){%>
-substringEnd<%=cid %>=row_<%=cid %>.length();
-					<%}else{%>
-substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
-if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-	substringEnd<%=cid %> = row_<%=cid %>.length();
-}
+					if(positions[i].equals("*")){
+%>
+        substringEnd<%=cid %>=row_<%=cid %>.length();
 <%
-					  }%>
-columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
-substringBegin<%=cid %> = substringEnd<%=cid %>;
-}
+					}else{
+%>
+        substringEnd<%=cid %> = substringEnd<%=cid %> + <%=positions[i]%>;
+        if(substringEnd<%=cid %> > row_<%=cid %>.length()){
+        	substringEnd<%=cid %> = row_<%=cid %>.length();
+    	}
 <%
-				}
+					}
+%>
+        columnValue<%=cid %>[<%=i%>] = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+<% 
+       				if(isTrimAll || trimSelects.get(i).get("TRIM").equals("true")){
+%>
+		columnValue<%=cid %>[<%=i%>] = columnValue<%=cid %>[<%=i%>].trim();
+<%
+					}
+%>    	
+        substringBegin<%=cid %> = substringEnd<%=cid %>;
+	}
+<%
+				}//for(...)
+				
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
@@ -262,43 +319,48 @@ substringBegin<%=cid %> = substringEnd<%=cid %>;
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%><%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
+%>
+	<%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
 <%
 					} else {
-%>if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
+%>
+	if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
 <%
 							if(javaType == JavaTypesManager.DATE) {
-%>	<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
+%>	
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
 <%
 							}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
-%>	<%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes();
+%>	
+		<%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes();
 <%
 							} else {
-%>	<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>].trim());
+%>	
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>].trim());
 <%
 							}
-%>}else{
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-}
-<%					
-					}
-				}
-			}
-			}
-		if (conns.size()>1) {
-			for (int i=1;i<conns.size();i++) {
-				conn = conns.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
-					for (IMetadataColumn column: metadata.getListColumns()) {
 %>
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+        }else{
+        	<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+        }
 <%
-					}
-				}
-			}
-		}
-	}
-%><%
+        					}
+        				}
+        			}
+        		}
+        		if (conns.size()>1) {
+        			for (int i=1;i<conns.size();i++) {
+        				conn = conns.get(i);
+        				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+        					for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+        					}
+        				}
+        			}
+        		}
+        	}
 		}
 	}
 }

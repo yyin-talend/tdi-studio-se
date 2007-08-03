@@ -80,7 +80,7 @@
       NAME="FORMATS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="30"
+      NUM_ROW="40"
       NB_LINES="5"
       SHOW_IF="ADVANCED_OPTION == 'true'"
     >
@@ -100,10 +100,31 @@
       </ITEMS>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="TRIMALL"
+      FIELD="CHECK"
+      NUM_ROW="50"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="TRIMSELECT"
+      FIELD="TABLE"
+      NUM_ROW="60"
+      NB_LINES="5"
+      SHOW_IF="TRIMALL=='false'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="TRIM" FIELD="CHECK">
+        </ITEM>
+      </ITEMS>
+    </PARAMETER>
+
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="70"
       REPOSITORY_VALUE="HEADER"
     >
       <DEFAULT>0</DEFAULT>
@@ -112,7 +133,7 @@
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="70"
       REPOSITORY_VALUE="FOOTER"
     >
       <DEFAULT>0</DEFAULT>
@@ -121,7 +142,7 @@
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="70"
       REPOSITORY_VALUE="LIMIT"
     >
       <DEFAULT/>
@@ -131,7 +152,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="80"
     >
       <DEFAULT/> 
     </PARAMETER>
@@ -140,7 +161,7 @@
       NAME="REMOVE_EMPTY_ROW"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="80"
       REPOSITORY_VALUE="REMOVE_EMPTY_ROW"
     >
       <DEFAULT>true</DEFAULT>
@@ -149,7 +170,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="60"
+      NUM_ROW="90"
       REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
     >
