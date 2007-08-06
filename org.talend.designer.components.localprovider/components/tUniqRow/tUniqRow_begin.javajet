@@ -22,7 +22,8 @@ for(Map<String, String> keyColumn:keyColumns){
 }
 %>
 
-int nb_line_<%=cid %> = 0;
+int nb_uniques_<%=cid %> = 0;
+int nb_duplicates_<%=cid %> = 0;
 <%
 if(hasKey){%>
 java.util.Set<String> keys<%=cid %> = new java.util.HashSet<String>();

@@ -29,6 +29,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null && connName != null) {
 		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
+		List<? extends IConnection> connsUnique = node.getOutgoingConnections("UNIQUE");
+		List<? extends IConnection> connsDuplicate = node.getOutgoingConnections("DUPLICATE");
+		
 		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 		boolean hasKey = false;
 		for(Map<String, String> keyColumn:keyColumns){
@@ -40,6 +43,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int ii = 0;
 		if(hasKey){
 %>
+<%
+	if (conns!=null) {
+		if (conns.size()>0) {
+			for (int i=0;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+
+			    	 %><%=conn.getName() %> = null;			
+<%					 
+				}
+			}
+		}
+	}
+%>	
 	currentRowKey<%=cid %> = ""
 <%
 		for (IMetadataColumn column: metadata.getListColumns()) {
@@ -66,10 +83,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	if (!keys<%=cid %>.contains(currentRowKey<%=cid %>)) {
 		keys<%=cid %>.add(currentRowKey<%=cid %>);
 <%
-	if (conns!=null) {
-		if (conns.size()>0) {
-			for (int i=0;i<conns.size();i++) {
-				IConnection conn = conns.get(i);
+	if (connsUnique!=null) {
+		if (connsUnique.size()>0) {
+			for (int i=0;i<connsUnique.size();i++) {
+				IConnection conn = connsUnique.get(i);
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>if(<%=conn.getName() %> == null){ 
 	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
@@ -83,21 +100,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 	}
 %>		
-		nb_line_<%=cid %>++;
+		nb_uniques_<%=cid %>++;
 	} else {
 <%
-	if (conns!=null) {
-		if (conns.size()>0) {
-			for (int i=0;i<conns.size();i++) {
-				IConnection conn = conns.get(i);
+	if (connsDuplicate!=null) {
+		if (connsDuplicate.size()>0) {
+			for (int i=0;i<connsDuplicate.size();i++) {
+				IConnection conn = connsDuplicate.get(i);
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%><%=conn.getName() %> = null;
+				%>
+if(<%=conn.getName() %> == null){ 
+	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+}				
 <%
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {
+			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
+<%					 }
 				}
 			}
 		}
 	}
 %>
+	  nb_duplicates_<%=cid %>++;
 	}
 <%
 	}else{
