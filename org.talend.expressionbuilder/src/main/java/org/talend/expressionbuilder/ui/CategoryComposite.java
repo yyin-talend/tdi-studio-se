@@ -215,7 +215,7 @@ public class CategoryComposite extends Composite {
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
                             column.setFunction(function);
-                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column));
+                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column), true);
                         } else {
                             docDisplayer.setText("");
                         }

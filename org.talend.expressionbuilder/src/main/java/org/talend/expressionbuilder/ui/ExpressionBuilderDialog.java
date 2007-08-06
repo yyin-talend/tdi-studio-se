@@ -21,12 +21,18 @@
 // ============================================================================
 package org.talend.expressionbuilder.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -35,10 +41,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.model.CategoryManager;
 import org.talend.expressionbuilder.test.shadow.Variable;
+import org.xml.sax.SAXException;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -99,7 +109,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
         expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
-        expressionComposite.setExpression(defaultExpression);
+        expressionComposite.setExpression(defaultExpression, true);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
         testComposite.addVariables(defaultVariables);
@@ -135,6 +145,76 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         createButton(parent, APPLY_ID, "Apply", false);
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+
+        getButton(EXPORT_ID).addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+
+                FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
+                dialog.setFilterExtensions(new String[] { "*.xml" });
+
+                String filePath = dialog.open();
+                if (filePath != null) {
+                    String expresionContent = expressionComposite.getExpression();
+                    List<Variable> variables = testComposite.getVariableList();
+                    File file = new File(filePath);
+                    ExpressionFileOperation operation = new ExpressionFileOperation();
+                    try {
+                        if (file != null) {
+                            file.createNewFile();
+                        }
+                        operation.saveExpressionToFile(file, variables, expresionContent);
+                    } catch (IOException e1) {
+                        RuntimeExceptionHandler.process(e1);
+                    } catch (ParserConfigurationException e1) {
+                        RuntimeExceptionHandler.process(e1);
+                    }
+                }
+            }
+        });
+
+        getButton(IMPORT_ID).addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+                dialog.setFilterExtensions(new String[] { "*.xml" });
+
+                String filePath = dialog.open();
+                if (filePath != null) {
+                    File file = new File(filePath);
+                    ExpressionFileOperation operation = new ExpressionFileOperation();
+                    try {
+                        List list = operation.importExpressionFromFile(file);
+                        if (list != null && list.size() != 0) {
+                            expressionComposite.setExpression((String) list.get(0), false);
+                            list.remove(0);
+                            if (list.size() > 0) {
+                                testComposite.addVariables(list);
+                            }
+                        }
+                    } catch (IOException e1) {
+                        RuntimeExceptionHandler.process(e1);
+                    } catch (ParserConfigurationException e1) {
+                        RuntimeExceptionHandler.process(e1);
+                    } catch (SAXException e1) {
+                        RuntimeExceptionHandler.process(e1);
+                    }
+                }
+            }
+        });
+
     }
 
     protected void configureShell(Shell newShell) {

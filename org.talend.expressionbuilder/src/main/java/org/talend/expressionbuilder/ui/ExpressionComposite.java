@@ -230,13 +230,17 @@ public class ExpressionComposite extends Composite {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * yzhang Comment method "setExpression".
      * 
-     * @see org.talend.expressionbuilder.ui.IExpressionController#setExpression(java.lang.String)
+     * @param expression
      */
-    public void setExpression(String expression) {
-        text.insert(expression);
+    public void setExpression(String expression, boolean append) {
+        if (append) {
+            text.insert(expression);
+        } else {
+            text.setText(expression);
+        }
     }
 
     /**
