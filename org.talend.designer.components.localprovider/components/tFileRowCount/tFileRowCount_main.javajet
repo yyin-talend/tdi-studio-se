@@ -1,0 +1,48 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+%>
+
+        java.io.FileInputStream fis_<%=cid %> = new java.io.FileInputStream(<%=filename %>);
+        java.io.BufferedReader br_<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(fis_<%=cid %>));
+        int lineCount_<%=cid %> = 0;
+
+        String rowSeparator_<%=cid %> = <%=rowSeparator %>;
+        byte[] bytes_<%=cid %> = rowSeparator_<%=cid %>.getBytes();
+        int index_<%=cid %> = 0;
+
+        int oneChar_<%=cid %> = 0;
+		
+		if(bytes_<%=cid %>.length > 0) {
+            while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
+    
+                if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
+                    if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {
+                        lineCount_<%=cid %>++;
+                        index_<%=cid %> = 0;
+                    } else {
+                        index_<%=cid %>++;
+                    }
+                }
+            }
+        }
+        globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
