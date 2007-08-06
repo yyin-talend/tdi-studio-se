@@ -164,9 +164,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         try {
             IPath classRoot = getClassRootPath();
             classRoot = classRoot.append(projectName).append(jobName).append(JOB_CONTEXT_FOLDER);
-            list.add(classRoot.toFile().toURL());
+            File contextDir = classRoot.toFile();
+            if (contextDir.isDirectory()) {
+                for (File contextFile : classRoot.toFile().listFiles()) {
+                    list.add(contextFile.toURL());
+                }
+            }
 
-            String jobPackagePath = projectName + PATH_SEPARATOR + jobName + PATH_SEPARATOR;
+            // list.add(classRoot.toFile().toURL());
+
+            String jobPackagePath = projectName + PATH_SEPARATOR + jobName + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
             resource.addResources(jobPackagePath, list);
         } catch (Exception e) {
             ExceptionHandler.process(e);
