@@ -203,6 +203,19 @@ public class CategoryComposite extends Composite {
                 }
             });
 
+            functionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+                public void selectionChanged(SelectionChangedEvent event) {
+                    Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                    if (function != null && function.getDescription() != null) {
+                        docDisplayer.setText(function.getDescription());
+                    } else {
+                        docDisplayer.setText("");
+                    }
+                }
+
+            });
+
             functionViewer.addDoubleClickListener(new IDoubleClickListener() {
 
                 public void doubleClick(DoubleClickEvent event) {
