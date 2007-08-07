@@ -43,7 +43,11 @@
             
 			String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
 			
-			boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
+			String trimAll = ElementParameterParser.getValue(node,"__TRIMALL__");
+			boolean isTrimAll = true;
+			if(trimAll != null && trimAll.equals("false")){
+				isTrimAll = false;
+			}
 			
    			String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
    			
