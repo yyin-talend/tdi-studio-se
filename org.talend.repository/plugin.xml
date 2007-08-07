@@ -501,12 +501,6 @@
             name="Remove quotes in the tRunJobProperties of the component"/>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.ModifytFuzzyMatchSchemaMigrationTask"
-            description="modifytFuzzyMatch"
-            id="org.talend.repository.model.migration.ModifytFuzzyMatchSchemaMigrationTask"
-            name="modifytFuzzyMatch"/>
-      <projecttask
-            beforeLogon="false"
             class="org.talend.repository.model.migration.MoveParameterRunJobMigrationTask"
             id="org.talend.repository.model.migration.MoveParameterRunJobMigrationTask"
             name="move the special string context.getProperty to current context for tRunJob"/>
