@@ -73,9 +73,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%				
 				}
 				%>
-                if(<%=conn.getName() %>.DISTANCE != null){
+                if(<%=conn.getName() %>.VALUE != null){
                 
-                	<%=conn.getName() %>.DISTANCE = null;
+                	<%=conn.getName() %>.VALUE = null;
                 }
                 if(<%=conn.getName() %>.MATCHING != null){
                 	
@@ -124,7 +124,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         if(value_<%=cid%> >= <%=min%> && value_<%=cid%> <= <%=max%>){
                         
-                        	<%=conn.getName() %>.DISTANCE = value_<%=cid %> + "";
+                        	<%=conn.getName() %>.VALUE = value_<%=cid %> + "";
                         
                         	<%=conn.getName() %>.MATCHING = matching_<%=cid %>;
                         	
@@ -161,7 +161,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         if(value_<%=cid %> >= <%=min%> && value_<%=cid %> <= <%=max%>){
                         
-                        	<%=conn.getName() %>.DISTANCE = value_<%=cid %> + "";
+                        	<%=conn.getName() %>.VALUE = value_<%=cid %> + "";
                         
                         	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
                         	
@@ -171,7 +171,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	}
                 }else if(matchingType.equals("matchMetaphone")){%>
                 
-                	<%=conn.getName()%>.DISTANCE = metaphone_<%=cid %>.metaphone("" + <%=inMainCon.getName() %>.<%=colName%>);
+                	<%=conn.getName()%>.VALUE = metaphone_<%=cid %>.metaphone("" + <%=inMainCon.getName() %>.<%=colName%>);
                 
                 <%
                 	if(unique){
@@ -180,7 +180,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
                         	
-                        	if(metaphone_<%=cid %>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	if(metaphone_<%=cid %>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.VALUE)){
                         	
                         		<%=conn.getName() %>.MATCHING = lookUpValue_<%=cid%>;
                         		
@@ -199,7 +199,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid%>.next().<%=lookUpColumn%>;
                         	
-                        	if(metaphone_<%=cid%>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	if(metaphone_<%=cid%>.metaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.VALUE)){
                         	
                         		if(matching_<%=cid%> == null){
                         			
@@ -224,7 +224,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%
                 	}
                 }else{%>
-                	<%=conn.getName() %>.DISTANCE = doublemetaphone_<%=cid %>.doubleMetaphone("" + <%=inMainCon.getName() %>.<%=colName %>);
+                	<%=conn.getName() %>.VALUE = doublemetaphone_<%=cid %>.doubleMetaphone("" + <%=inMainCon.getName() %>.<%=colName %>);
                 
                 <%
                 	if(unique){
@@ -233,7 +233,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
                         	
-                        	if(doublemetaphone_<%=cid%>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	if(doublemetaphone_<%=cid%>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.VALUE)){
                         	
                         		<%=conn.getName()%>.MATCHING = lookUpValue_<%=cid%>;
                         		
@@ -252,7 +252,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         
                         	String lookUpValue_<%=cid%> = "" + tItr_<%=inRefCon.getName() %>_<%=cid %>.next().<%=lookUpColumn%>;
                         	
-                        	if(doublemetaphone_<%=cid %>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.DISTANCE)){
+                        	if(doublemetaphone_<%=cid %>.doubleMetaphone(lookUpValue_<%=cid%>).equals(<%=conn.getName()%>.VALUE)){
                         	
                         		if(matching_<%=cid %> == null){
                         			

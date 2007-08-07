@@ -34,7 +34,7 @@
       NUM_ROW="1"
     >
       <TABLE READONLY="true">
-        <COLUMN NAME="DISTANCE" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="VALUE" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="MATCHING" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
