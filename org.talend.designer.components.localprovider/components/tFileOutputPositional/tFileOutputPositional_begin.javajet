@@ -28,6 +28,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             }
         }
         
+        String separator = ElementParameterParser.getValue(
+            node,
+            "__ROWSEPARATOR__"
+        );
+        
         String filename = ElementParameterParser.getValue(
             node,
             "__FILENAME__"
@@ -115,7 +120,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			out<%=cid %>.write(tempStringB<%=cid %>);
     		<%
     		}%>
-    		out<%=cid %>.write("\n");
+    		out<%=cid %>.write(<%=separator%>);
 <%
 		}
     }
