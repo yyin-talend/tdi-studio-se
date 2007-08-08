@@ -35,10 +35,7 @@ StartThreadStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
 <%
 	for (INode rootNode : rootNodes) {
             String componentName =
-                (String) rootNode
-                    .getElementParameter("COMPONENT_NAME")
-                        .getValue()
-            ;
+                (String) rootNode.getComponent().getName();
 
             if (!componentName.equals("tLogCatcher")
                 && !componentName.equals("tFlowMeterCatcher")
