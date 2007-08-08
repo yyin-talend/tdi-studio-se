@@ -241,10 +241,39 @@ class Transfer{
 		sql=sql+")";
 		return sql;
 	}
+	
+    public boolean isLackDBType(INode node) {
+
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        List PKey = new ArrayList();
+        if ((metadatas != null) && (metadatas.size() > 0)) {
+            IMetadataTable metadata = metadatas.get(0);
+            if (metadata != null) {
+                List<IMetadataColumn> columnList = metadata.getListColumns();
+                for (IMetadataColumn column : columnList) {
+                    if (column.getType() == null || column.getType().trim().length() == 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }	
 }
        Transfer tr=new Transfer();
 %>
 
+<% 
+  if (tr.isLackDBType(node)){
+%>		
+		boolean isLackDBType = <%=tr.isLackDBType(node) %>;
+		if(isLackDBType)
+		{
+		 	throw new Exception("For create a table, the DB Type in the schema must be set");
+		}
+<%
+  }
+%>
 		String url<%=cid%>=null;
 		java.sql.Connection con<%=cid%>=null;
 		java.sql.Statement stmt<%=cid%>=null;
