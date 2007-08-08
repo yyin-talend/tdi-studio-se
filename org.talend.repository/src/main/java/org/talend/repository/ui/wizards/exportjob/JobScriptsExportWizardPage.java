@@ -99,6 +99,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private IWorkspace workspace;
 
+    protected Button applyToChildrenButton;
+
     /**
      * Create an instance of this class.
      * 
@@ -121,8 +123,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
                     list.add(resource);
                 }
             }
@@ -216,7 +217,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         Composite left = new Composite(optionsGroup, SWT.NONE);
         left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-        left.setLayout(new GridLayout(2, true));
+        left.setLayout(new GridLayout(3, true));
 
         createOptions(left, font);
 
@@ -239,6 +240,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         shellLauncherButton.setFont(font);
 
         launcherCombo = new Combo(optionsGroup, SWT.PUSH);
+        GridData gd=new GridData();
+        gd.horizontalSpan=2;
+        launcherCombo.setLayoutData(gd);
         // laucherText = new Text(optionsGroup, SWT.BORDER);
         // laucherText.setEditable(false);
 
@@ -252,13 +256,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
+        gd=new GridData();
+        gd.horizontalSpan=2;
+        userRoutineButton.setLayoutData(gd);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         modelButton.setText(Messages.getString("JobScriptsExportWizardPage.requiredTalendPerlModules")); //$NON-NLS-1$
         modelButton.setSelection(true);
         modelButton.setFont(font);
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
+         gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 3;
         modelButton.setLayoutData(gd);
 
         jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -266,7 +273,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
+        gd.horizontalSpan = 3;
         jobButton.setLayoutData(gd);
 
         sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -274,7 +281,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         sourceButton.setSelection(true);
         sourceButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
+        gd.horizontalSpan = 3;
         sourceButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -284,6 +291,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
+        applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        applyToChildrenButton.setText("Apply to children");
+        applyToChildrenButton.setSelection(true);
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         // genCodeButton.setSelection(true);
@@ -449,8 +459,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             JobResourceManager reManager = JobResourceManager.getInstance();
             for (JobResource r : jobResources) {
                 if (reManager.isProtected(r)) {
-                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(),
-                            false, false);
+                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(), false, false);
                 } else {
                     reManager.deleteResource(r);
                 }
@@ -468,8 +477,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
-                resourcesToExport, getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue());
         return exporterOperation;
     }
 
@@ -527,6 +536,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
+        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
         return exportChoiceMap;
     }

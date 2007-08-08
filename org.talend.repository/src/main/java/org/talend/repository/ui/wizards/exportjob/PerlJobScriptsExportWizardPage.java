@@ -49,6 +49,8 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String STORE_CONTEXT_ID = "PerlJobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
 
+    public static final String APPLY_TO_CHILDREN_ID = "PerlJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID"; //$NON-NLS-1$
+
     // public static final String STORE_GENERATECODE_ID = "PerlJobScriptsExportWizardPage.STORE_GENERATECODE_ID";
     // //$NON-NLS-1$
 
@@ -102,6 +104,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             settings.put(STORE_JOB_ID, jobButton.getSelection());
             settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
+            settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
             // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
         }
     }
@@ -128,6 +131,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
+            applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 

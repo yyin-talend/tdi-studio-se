@@ -90,7 +90,8 @@ public abstract class JobScriptsManager {
         needTalendLibraries,
         needJob,
         needSource,
-        needContext
+        needContext,
+        applyToChildren
     }
 
     /**
@@ -286,8 +287,8 @@ public abstract class JobScriptsManager {
      * @param contextName
      * @param process
      */
-    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace) {
-        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace); //$NON-NLS-1$
+    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,boolean applyContextToChildren) {
+        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace,applyContextToChildren); //$NON-NLS-1$
     }
 
     protected IResource[] sourceResouces = null;

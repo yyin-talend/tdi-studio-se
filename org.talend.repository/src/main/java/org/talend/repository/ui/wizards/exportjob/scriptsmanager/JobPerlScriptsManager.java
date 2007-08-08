@@ -51,6 +51,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -82,7 +83,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
             generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                    statisticPort != IProcessor.NO_TRACES);
+                    statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
                     escapeSpace(launcher), statisticPort, tracePort, codeOptions));
