@@ -51,7 +51,7 @@ class Transfer{
 		}else if(dbType.equals("Postgre")){
 			return "org.postgresql.Driver";
 		}else if(dbType.equals("Access")){
-			return "com.hxtt.sql.access.AccessDriver";
+			return "sun.jdbc.odbc.JdbcOdbcDriver";
 		}else if(dbType.equals("DB2")){
 			return "com.ibm.db2.jcc.DB2Driver";
 		}else if(dbType.equals("Firebird")){
@@ -108,8 +108,7 @@ class Transfer{
 			return "\"jdbc:postgresql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}else if(dbType.equals("Access")){
 		String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
-		
-			return "\"jdbc:access:/\"+"+accessDbname+"+\"?user=\"+"+user+"+\";password=\"+"+pass;
+			return "\"jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=\"+"+accessDbname;
 		}else if(dbType.equals("DB2")){
 			return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}else if(dbType.equals("Firebird")){			
