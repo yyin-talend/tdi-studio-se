@@ -1656,20 +1656,22 @@ public class Process extends Element implements IProcess {
     public int getMergelinkOrder(final INode node) {
 
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-        for (int i = 0; i < outgoingConnections.size(); i++) {
+        int returnValue = -1;
+        for (int i = 0; (i < outgoingConnections.size()) && (returnValue == -1); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
 
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
-                    return connec.getInputId();
+                    returnValue = connec.getInputId();
+                    break;
                 } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
                         && connec.getTarget() != null) {
-                    return getMergelinkOrder(connec.getTarget());
+                    returnValue = getMergelinkOrder(connec.getTarget());
                 }
             }
         }
 
-        return -1;
+        return returnValue;
     }
 
     /**
@@ -1683,22 +1685,23 @@ public class Process extends Element implements IProcess {
     public Map<INode, Integer> getLinkedMergeInfo(final INode node) {
 
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-        for (int i = 0; i < outgoingConnections.size(); i++) {
+        Map<INode, Integer> map = null;
+        for (int i = 0; (i < outgoingConnections.size()) && (map == null); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
 
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
-                    Map<INode, Integer> map = new HashMap<INode, Integer>();
+                    map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());
-                    return map;
+                    break;
                 } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
                         && connec.getTarget() != null) {
-                    return getLinkedMergeInfo(connec.getTarget());
+                    map = getLinkedMergeInfo(connec.getTarget());
                 }
             }
         }
 
-        return null;
+        return map;
     }
 
     /**
