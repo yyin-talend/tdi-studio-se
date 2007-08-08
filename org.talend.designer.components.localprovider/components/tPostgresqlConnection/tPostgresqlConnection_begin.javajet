@@ -17,6 +17,7 @@ imports="
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String schema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
@@ -30,5 +31,7 @@ String dbPwd_<%=cid %> = <%=dbpass%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
 conn_<%=cid%>.setAutoCommit(false);
+
+globalMap.put("schema_" + "<%=cid%>",<%=schema%>);
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
