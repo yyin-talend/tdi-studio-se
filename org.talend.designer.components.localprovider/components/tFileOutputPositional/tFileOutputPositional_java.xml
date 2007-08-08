@@ -37,12 +37,21 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="ROWSEPARATOR"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      REPOSITORY_VALUE="ROW_SEPARATOR"
+    >
+      <DEFAULT>"\n"</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="5"
     >
       <DEFAULT/> 
     </PARAMETER>
