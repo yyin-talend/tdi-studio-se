@@ -54,6 +54,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataConnection;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -226,7 +228,8 @@ public class BuildInDBStructure extends SashForm {
             CTabItem item2 = ((CTabFolder) item.getControl()).getItem(0);
             SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) item2.getControl();
             editorComposite.getRepositoryNode();
-            connectionParameters.setQuery(getSchemaSql());
+            connectionParameters.setQuery(QueryUtil.generateNewQuery(connectionParameters.getNode(), metadataTable,
+                    connectionParameters.getDbType(), connectionParameters.getSchema(), schema));
             dialog.openEditor(editorComposite.getRepositoryNode(), Arrays.asList((new String[] { editorComposite
                     .getRepositoryName() })), connectionParameters, false);
         }
@@ -238,11 +241,15 @@ public class BuildInDBStructure extends SashForm {
          */
         private String getSchemaSql() {
             String sql = "select ";
+            String newschema = TalendTextUtils.addQuotesWithSpaceField(schema, connectionParameters.getDbType());
             for (IMetadataColumn column : selectedNodes) {
-                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), column.getLabel(), schema) + ", ";
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(column
+                        .getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
+                        + ", ";
             }
             sql = sql.substring(0, sql.length() - 2);
-            sql += "\nfrom " + TextUtil.addSqlQuots(connectionParameters.getDbType(), schema, connectionParameters.getSchema());
+            sql += "\nfrom "
+                    + TextUtil.addSqlQuots(connectionParameters.getDbType(), newschema, connectionParameters.getSchema());
             return sql;
         }
 
@@ -287,7 +294,7 @@ public class BuildInDBStructure extends SashForm {
                 // return metadataTable3.getLabel();
                 // }
             } else if (element instanceof IMetadataColumn) {
-                return ((IMetadataColumn) element).getLabel();
+                return ((IMetadataColumn) element).getOriginalDbColumnName();
             }
             return null;
         }

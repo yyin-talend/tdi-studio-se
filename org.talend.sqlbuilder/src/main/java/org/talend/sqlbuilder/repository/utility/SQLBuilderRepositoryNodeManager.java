@@ -527,12 +527,8 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-        boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(parameters.getDbType()).isNeedSchema();
-        if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
-            parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
-            return null;
-        }
-        DatabaseConnection connection = createConnection(parameters, isNeedSchema);
+
+        DatabaseConnection connection = createConnection(parameters);
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
 
         RepositoryNode newNode = createNewRepositoryNode(node, parameters, connection, iMetadataConnection);
@@ -632,7 +628,13 @@ public class SQLBuilderRepositoryNodeManager {
      * @param parameters inputed when use Built-In .
      * @return DatabaseConnection : connetion .
      */
-    public DatabaseConnection createConnection(ConnectionParameters parameters, boolean isSchemaNeed) {
+    public DatabaseConnection createConnection(ConnectionParameters parameters) {
+        boolean isNeedSchema = EDatabaseTypeName.getTypeFromDbType(parameters.getDbType()).isNeedSchema();
+        if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
+            parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
+            return null;
+        }
+
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setDatabaseType(parameters.getDbType());
         connection.setUsername(parameters.getUserName());
@@ -646,7 +648,7 @@ public class SQLBuilderRepositoryNodeManager {
         final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
         connection.setDbmsId(mapping);
 
-        if (parameters.getSchema() != null && isSchemaNeed) {
+        if (parameters.getSchema() != null && isNeedSchema) {
             connection.setSchema(parameters.getSchema().replaceAll("\'", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         connection.setURL(parameters.getURL());
