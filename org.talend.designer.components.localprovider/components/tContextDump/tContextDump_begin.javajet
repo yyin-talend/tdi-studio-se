@@ -1,0 +1,40 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable 
+        org.talend.core.model.metadata.IMetadataColumn 
+        org.talend.core.model.process.IConnection
+		java.util.List
+		java.util.Enumeration
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+    	IMetadataTable metadata = metadatas.get(0);
+    	if (metadata!=null) {
+    		List<IMetadataColumn> columns=metadata.getListColumns();
+    		if (conns!=null && conns.size()>0) {
+    			IConnection conn = conns.get(0);
+%>
+	java.util.List<String> assignList_<%=cid %> = new java.util.ArrayList<String>();
+	int nb_line_<%=cid %> = 0;
+	
+	for( java.util.Enumeration<?> en_<%=cid %> = context.propertyNames();en_<%=cid %>.hasMoreElements();)
+    {
+        nb_line_<%=cid %>++;
+        Object key_<%=cid %> = en_<%=cid %>.nextElement();
+        Object value_<%=cid %> = context.getProperty(key_<%=cid %>.toString());
+    	
+       	<%=conn.getName()%>.<%=columns.get(0).getLabel()%> = key_<%=cid %>.toString();
+       	<%=conn.getName()%>.<%=columns.get(1).getLabel()%> = value_<%=cid %>.toString();
+<%
+			}
+		}
+	}
+%>
