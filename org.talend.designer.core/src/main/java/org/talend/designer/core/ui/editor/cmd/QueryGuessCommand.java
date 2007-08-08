@@ -30,9 +30,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -53,8 +54,6 @@ public class QueryGuessCommand extends Command {
 
     private IMetadataTable newOutputMetadataTable;
 
-    private static final String DEFAULT_TABLE_NAME = "_MyTable_"; // this one will be used only
-
     private IMetadataTable newOutputMetadata;
 
     private Map<String, String> dbNameAndDbTypeMap;
@@ -66,6 +65,8 @@ public class QueryGuessCommand extends Command {
     private String realTableId;
 
     private String realTableName;
+
+    private String realDBType;
 
     /**
      * The property is defined in an element, which can be either a node or a connection.
@@ -93,6 +94,9 @@ public class QueryGuessCommand extends Command {
         // used for generating new Query.
 
         String dbType = "";
+        if (realDBType != null) {
+            dbType = realDBType;
+        }
         if (this.realTableId != null && this.dbNameAndDbTypeMap.containsKey(this.realTableId)) {
             dbType = this.dbNameAndDbTypeMap.get(this.realTableId);
         }
@@ -136,33 +140,39 @@ public class QueryGuessCommand extends Command {
      * @param dbType
      * @param schema
      * @return
+     * * @deprecated use {@link QueryUtil#generateNewQuery()} method instead.
      */
     public String generateNewQuery(IMetadataTable repositoryMetadata, String dbType, String schema) {
-        List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
-        int index = metaDataColumnList.size();
-        if (index == 0) {
-            return "";
-        }
-
-        StringBuffer query = new StringBuffer();
-        String enter = "\n";
-        String space = " ";
-        query.append("SELECT").append(space);
-
-        String tableNameForColumnSuffix = getTableName(repositoryMetadata, schema, dbType) + ".";
-
-        for (int i = 0; i < metaDataColumnList.size(); i++) {
-            IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-            String columnName = getColumnName(metaDataColumn.getOriginalDbColumnName(), dbType);
-            if (i != index - 1) {
-                query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
-            } else {
-                query.append(tableNameForColumnSuffix).append(columnName).append(space);
-            }
-        }
-        query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata, schema, dbType));
-
-        return query.toString();
+        return QueryUtil.generateNewQuery(node, repositoryMetadata, dbType, schema, realTableName);
+        // List<IMetadataColumn> metaDataColumnList = repositoryMetadata.getListColumns();
+        // int index = metaDataColumnList.size();
+        // if (index == 0) {
+        // return "";
+        // }
+        //
+        // StringBuffer query = new StringBuffer();
+        // String enter = "\n";
+        // String space = " ";
+        // query.append("SELECT").append(space);
+        //
+        // String tableNameForColumnSuffix = TalendTextUtils.addQuotesWithSpaceField(
+        // getTableName(repositoryMetadata, schema, dbType), dbType)
+        // + ".";
+        //
+        // for (int i = 0; i < metaDataColumnList.size(); i++) {
+        // IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
+        // String columnName =
+        // TalendTextUtils.addQuotesWithSpaceField(getColumnName(metaDataColumn.getOriginalDbColumnName(),
+        // dbType), dbType);
+        // if (i != index - 1) {
+        // query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
+        // } else {
+        // query.append(tableNameForColumnSuffix).append(columnName).append(space);
+        // }
+        // }
+        // query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata, schema, dbType));
+        //
+        // return query.toString();
     }
 
     /**
@@ -171,57 +181,10 @@ public class QueryGuessCommand extends Command {
      * @param tableName
      * @param schema
      * @return
+     * @deprecated use {@link MetadataTool#getTableName()} method instead.
      */
     private String getTableName(IMetadataTable repositoryMetadata, String schema, String dbType) {
-        String currentTableName;
-        String dbTableName = getDbTableName();
-        if (dbTableName != null) {
-            switch (LanguageManager.getCurrentLanguage()) {
-            case JAVA:
-                if (dbTableName.contains(TalendTextUtils.QUOTATION_MARK)) {
-                    if (dbTableName.startsWith(TalendTextUtils.QUOTATION_MARK)
-                            && dbTableName.endsWith(TalendTextUtils.QUOTATION_MARK) && dbTableName.length() > 2) {
-                        return dbTableName.substring(1, dbTableName.length() - 1);
-                    } else {
-                        currentTableName = null;
-                    }
-                } else {
-                    currentTableName = dbTableName;
-                }
-                break;
-            default:
-                if (dbTableName.contains(TalendTextUtils.SINGLE_QUOTE)) {
-                    if (dbTableName.startsWith(TalendTextUtils.SINGLE_QUOTE)
-                            && dbTableName.endsWith(TalendTextUtils.SINGLE_QUOTE) && dbTableName.length() > 2) {
-                        return dbTableName.substring(1, dbTableName.length() - 1);
-                    } else {
-                        currentTableName = null;
-                    }
-                } else {
-                    currentTableName = dbTableName;
-                }
-            }
-        }
-        currentTableName = this.realTableName;
-        if (schema != null && schema.length() > 0) {
-            if (dbType.equalsIgnoreCase("PostgreSQL")) {
-                currentTableName = "\"" + schema + "\"" + "." + "\"" + currentTableName + "\"";
-                return currentTableName;
-            }
-        }
-        if (currentTableName == null) {
-            currentTableName = DEFAULT_TABLE_NAME;
-            return currentTableName;
-        }
-        return currentTableName;
-    }
-
-    private String getDbTableName() {
-        IElementParameter param = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
-        if (param != null && param.isShow(node.getElementParameters())) {
-            return (String) param.getValue();
-        }
-        return null;
+        return MetadataTool.getTableName(node, repositoryMetadata, schema, dbType, this.realTableName);
     }
 
     /**
@@ -261,10 +224,11 @@ public class QueryGuessCommand extends Command {
      * 
      * @param realTableId
      * @param realTableName
+     * @param type
      */
-    public void setParameters(String realTableId, String realTableName) {
+    public void setParameters(String realTableId, String realTableName, String type) {
         this.realTableId = realTableId;
         this.realTableName = realTableName;
-
+        realDBType = type;
     }
 }

@@ -30,10 +30,8 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
-import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
@@ -47,14 +45,13 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
@@ -65,6 +62,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
@@ -79,7 +77,9 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -90,6 +90,8 @@ import org.talend.designer.runprocess.IRunProcessService;
 
 public abstract class AbstractElementPropertySectionController implements PropertyChangeListener {
 
+    protected static final String SQLEDITOR = "SQLEDITOR";  //$NON-NLS-1$
+    
     protected DynamicTabbedPropertySection dynamicTabbedPropertySection;
 
     protected Composite composite;
@@ -186,6 +188,43 @@ public abstract class AbstractElementPropertySectionController implements Proper
         init(dtp);
     }
 
+    protected String getRepositoryItemFromRepositoryName(IElementParameter param, String repositoryName) {
+        String value = (String) param.getValue();
+        Object[] valuesList = (Object[]) param.getListItemsValue();
+        String[] originalList = param.getListItemsDisplayName();
+        for (int i = 0; i < valuesList.length; i++) {
+            if (valuesList[i].equals(value)) {
+                return originalList[i];
+            }
+        }
+        return "";
+    }
+    
+    protected String getValueFromRepositoryName(String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                        return getRepositoryItemFromRepositoryName(param, repositoryName);
+                    }
+                    return (String) param.getValue();
+                }
+            }
+        }
+        return "";
+    }
+    
+    protected String getParaNameFromRepositoryName(String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    return param.getName();
+                }
+            }
+        }
+        return null;
+    }
+    
     /**
      * DOC yzhang Comment method "init".
      * 
@@ -754,4 +793,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
     }
 
+    public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
+        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
+                getCommandStack(), this);
+
+        IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
+                IWorkbenchSiteProgressService.class);
+        siteps.showInDialog(composite.getShell(), openDialogJob);
+        openDialogJob.schedule();
+    }
+    
 }

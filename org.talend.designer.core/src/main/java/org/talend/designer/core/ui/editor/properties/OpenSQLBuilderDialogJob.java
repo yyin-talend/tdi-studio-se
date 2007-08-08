@@ -39,7 +39,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.controllers.SqlMemoController;
+import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -72,7 +72,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 
     private CommandStack commandStack;
 
-    private SqlMemoController controller;
+    private AbstractElementPropertySectionController controller;
 
     /**
      * DOC dev OpenDialogJob constructor comment.
@@ -85,7 +85,7 @@ public class OpenSQLBuilderDialogJob extends Job {
      * @param controller
      */
     public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters, Composite composite, Element elem,
-            String propertyName, CommandStack commandStack, SqlMemoController controller) {
+            String propertyName, CommandStack commandStack, AbstractElementPropertySectionController controller) {
         super(Messages.getString("OpenSQLBuilderDialogJob.openSqlbuilderDialog")); //$NON-NLS-1$
         this.connectionParameters = connectionParameters;
 

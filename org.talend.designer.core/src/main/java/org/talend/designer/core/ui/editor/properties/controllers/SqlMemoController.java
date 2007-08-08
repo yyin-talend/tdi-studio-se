@@ -57,6 +57,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
@@ -85,8 +86,6 @@ import org.talend.sqlbuilder.util.UIUtils;
 public class SqlMemoController extends AbstractElementPropertySectionController {
 
     private IElementParameter switchParam;
-
-    private static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
     /**
      * DOC yzhang SqlMemoController constructor comment.
@@ -122,65 +121,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             }
         }
     };
-
-    /**
-     * DOC ftang Comment method "getValueFromRepositoryName".
-     * 
-     * Gets value base on repository name.
-     * 
-     * @param repositoryName
-     * @return
-     */
-    private String getValueFromRepositoryName(String repositoryName) {
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getRepositoryValue() != null) {
-                if (param.getRepositoryValue().equals(repositoryName)) {
-                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
-                        return getRepositoryItemFromRepositoryName(param, repositoryName);
-                    }
-                    return (String) param.getValue();
-                }
-            }
-        }
-        return "";
-    }
-
-    private String getParaNameFromRepositoryName(String repositoryName) {
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getRepositoryValue() != null) {
-                if (param.getRepositoryValue().equals(repositoryName)) {
-                    return param.getName();
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * DOC ftang Comment method "getRepositoryItemFromRepositoryName".
-     * 
-     * Gets repository item base on repository name.
-     * 
-     * @param repositoryName
-     * @return
-     */
-    private String getRepositoryItemFromRepositoryName(IElementParameter param, String repositoryName) {
-        String value = (String) param.getValue();
-        Object[] valuesList = (Object[]) param.getListItemsValue();
-        String[] originalList = param.getListItemsDisplayName();
-        for (int i = 0; i < valuesList.length; i++) {
-            if (valuesList[i].equals(value)) {
-                return originalList[i];
-            }
-        }
-        return "";
-    }
-
     private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
 
     private Command createCommand() {
 
         ConnectionParameters connParameters = new ConnectionParameters();
+        connParameters.setNode(elem);
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -216,12 +162,15 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setFromDBNode(true);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
-        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            connParameters.setSchemaName(dynamicTabbedPropertySection.getRepositoryTableMap().get(
-                    elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName());
-        }
         String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
+        String realTableName = null;
+        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            realTableName = dynamicTabbedPropertySection.getRepositoryTableMap().get(
+                    elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName();
+        }
+        connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
+                realTableName));
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
@@ -315,21 +264,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return null;
     }
 
-    /**
-     * qzhang Comment method "openSqlBuilderBuildIn".
-     * 
-     * @param connParameters
-     * @param propertyName
-     */
-    public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
-        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
-                getCommandStack(), this);
-
-        IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
-                IWorkbenchSiteProgressService.class);
-        siteps.showInDialog(composite.getShell(), openDialogJob);
-        openDialogJob.schedule();
-    }
+    
 
     /**
      * DOC qzhang Comment method "setConnectionParameter".
@@ -514,8 +449,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -529,7 +467,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 return colorText;
             }
         };
-        
+
         DecoratedField dField = null;
         if (param.getNbLines() != 1) {
             dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
@@ -540,14 +478,16 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         FormData d = (FormData) text.getLayoutData();
         d.height = text.getLineHeight() * param.getNbLines();
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * param.getNbLines());
-        
+
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#hasDynamicRowSize()
      */
     @Override

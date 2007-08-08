@@ -517,8 +517,8 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         cmd.setMaps(dynamicTabbedPropertySection.getTableIdAndDbTypeMap(), dynamicTabbedPropertySection
                 .getTableIdAndDbSchemaMap(), repositoryTableMap);
-
-        cmd.setParameters(realTableId, realTableName);
+        String type = getValueFromRepositoryName("TYPE");
+        cmd.setParameters(realTableId, realTableName,type);
 
         return cmd;
     }
