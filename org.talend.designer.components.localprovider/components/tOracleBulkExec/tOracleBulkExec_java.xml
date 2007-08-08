@@ -34,14 +34,14 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="10"
+      NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:ORACLE"
     />
     
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="20"
+      NUM_ROW="2"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -50,14 +50,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tOracleConnection"
-      NUM_ROW="20"
+      NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />        
     
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="30"
+      NUM_ROW="3"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <ITEMS DEFAULT="ORACLE_SID">
@@ -69,7 +69,7 @@
    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -79,7 +79,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -89,7 +89,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -99,7 +99,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="5"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -110,7 +110,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="5"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -121,7 +121,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="70"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -130,7 +130,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="70"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <ITEMS DEFAULT="INSERT">
@@ -146,27 +146,17 @@
     <PARAMETER
       NAME="DATA"
       FIELD="FILE"
-      NUM_ROW="80"
+      NUM_ROW="8"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="SPECIFY_CLT_FILE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="80"
-    >
-      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="80"
+      NUM_ROW="8"
       REQUIRED="true"
-      SHOW_IF="SPECIFY_CLT_FILE == 'false'"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
@@ -174,9 +164,8 @@
     <PARAMETER
       NAME="FIELDS_ENCLOSED_BY"
       FIELD="TEXT"
-      NUM_ROW="80"
+      NUM_ROW="8"
       REQUIRED="false"
-      SHOW_IF="SPECIFY_CLT_FILE == 'false'"
     >
       <DEFAULT>"""</DEFAULT>
     </PARAMETER>
@@ -184,7 +173,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="90"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
