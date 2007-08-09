@@ -73,7 +73,7 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
      IMetadataTable metadata = metadatas.get(0);
      if (metadata != null) {
       for (IConnection conn : node.getOutgoingConnections()) {
-       if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+       if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
         for (IMetadataColumn column : metadata.getListColumns()) {
 %>
  <%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
