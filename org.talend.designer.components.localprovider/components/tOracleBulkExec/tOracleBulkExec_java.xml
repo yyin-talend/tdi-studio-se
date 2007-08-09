@@ -79,7 +79,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -89,7 +89,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="6"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -99,7 +99,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="7"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -110,7 +110,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="8"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -121,7 +121,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -130,7 +130,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="7"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <ITEMS DEFAULT="INSERT">
@@ -146,7 +146,7 @@
     <PARAMETER
       NAME="DATA"
       FIELD="FILE"
-      NUM_ROW="8"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
@@ -155,7 +155,7 @@
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="11"
       REQUIRED="true"
     >
       <DEFAULT>";"</DEFAULT>
@@ -164,22 +164,56 @@
     <PARAMETER
       NAME="FIELDS_ENCLOSED_BY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="11"
       REQUIRED="false"
     >
       <DEFAULT>"""</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="12"
+      NB_LINES="5"
+    >
+      <ITEMS>
+        <ITEM NAME="KEY" FIELD="CLOSED_LIST" >
+          <ITEMS DEFAULT="BINDSIZE">
+            <ITEM NAME="BINDSIZE"  VALUE="BINDSIZE"/>
+            <ITEM NAME="COLUMNARRAYROWS"    VALUE="COLUMNARRAYROWS"/>
+            <ITEM NAME="DIRECT"    VALUE="DIRECT"/>
+            <ITEM NAME="ERRORS"    VALUE="ERRORS"/>
+            <ITEM NAME="LOAD"    VALUE="LOAD"/>
+            <ITEM NAME="MULTITHREADING"    VALUE="MULTITHREADING"/>
+           	<ITEM NAME="PARFILE"    VALUE="PARFILE"/>
+            <ITEM NAME="PARALLEL"    VALUE="PARALLEL"/>
+            <ITEM NAME="READSIZE"    VALUE="READSIZE"/>
+            <ITEM NAME="RESUMABLE"  VALUE="RESUMABLE"/>
+            <ITEM NAME="RESUMABLE_NAME"    VALUE="RESUMABLENAME"/>
+            <ITEM NAME="RESUMABLE_TIMEOUT"    VALUE="RESUMABLETIMEOUT"/>
+            <ITEM NAME="ROWS"    VALUE="ROWS"/>
+            <ITEM NAME="SILENT"    VALUE="SILENT"/>
+            <ITEM NAME="SKIP"    VALUE="SKIP"/>
+            <ITEM NAME="SKIP_INDEX_MAINTENANCE"    VALUE="SKIPINDEXMAINTENANCE"/>
+          	<ITEM NAME="SKIP_UNUSABLE_INDEXES"    VALUE="SKIPUNUSABLEINDEXES"/>
+          	<ITEM NAME="STREAMSIZE"    VALUE="STREAMSIZE"/>
+          </ITEMS>
+        </ITEM>
+        <ITEM NAME="VALUE" FIELD="TEXT"/>
+      </ITEMS>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="13"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="OUTPUT" FIELD="CLOSED_LIST" NUM_ROW="10">
+    <PARAMETER NAME="OUTPUT" FIELD="CLOSED_LIST" NUM_ROW="13">
        <ITEMS DEFAULT="OUTPUT_TO_CONSOLE">
           <ITEM NAME="OUTPUT_TO_CONSOLE" VALUE="OUTPUT_TO_CONSOLE" />
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />

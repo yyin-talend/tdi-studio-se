@@ -5,6 +5,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+    java.lang.StringBuffer
+    java.util.Map
 " 
 %>
 
@@ -26,6 +28,38 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
        String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
        String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
+       
+       List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
+       java.lang.StringBuffer optionStr = new java.lang.StringBuffer();
+       java.lang.StringBuffer siletModeStr = new java.lang.StringBuffer(); 
+       for(java.util.Map<String,String> option :options){
+       		String key = option.get("KEY");
+       		if(key.equals("SILENT")){
+       			if(siletModeStr.length()>0){
+       				siletModeStr.append(",").append(option.get("VALUE"));
+       			}else{
+       				siletModeStr.append(option.get("VALUE"));
+       			}
+       		}else{
+       			if(optionStr.length()>0){
+       				optionStr.append(",").append(key).append("=").append(option.get("VALUE"));
+       			}else{
+       				optionStr.append(key).append("=").append(option.get("VALUE"));
+       			}
+       		}
+       }
+       if(optionStr.length()>0 || siletModeStr.length()>0){
+       		if(siletModeStr.length()>0){
+       			if(optionStr.length()>0){
+       				optionStr.append(",");
+       			}
+       			if(siletModeStr.indexOf(",")<0){
+       				optionStr.append("SILENT=").append(siletModeStr.toString());
+       			}else{
+       				optionStr.append("SILENT=(").append(siletModeStr.toString()).append(")");
+       			}
+       		}
+       }
        
        String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
        encoding= encoding.toUpperCase();
@@ -130,7 +164,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 	   java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(cltf_<%=cid %>);
         
-	   fw_<%=cid %>.write("LOAD DATA\r\nCHARACTERSET <%=encoding %>\r\n" +
+	   fw_<%=cid %>.write("\r\nLOAD DATA\r\nCHARACTERSET <%=encoding %>\r\n" +
 		               "<%=data_action %> INTO TABLE " + <%=table %> + 
 		               "\r\nFIELDS TERMINATED BY \"" + <%=fields_terminated_by %> + 
 		               "\"\r\nOPTIONALLY ENCLOSED BY '" + enclosure_<%=cid %> + "'\r\n" + 
@@ -146,7 +180,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 	   }
 
-	   String command_<%=cid %> = "sqlldr '" + <%=dbuser %> + "/" + <%=dbpass %> + "@" + serviceUrl_<%=cid%> + "' DATA='" + <%=filename %> + "', CONTROL='"+cltf_<%=cid %> + "', BAD='"+badf_<%=cid %> + "', DISCARD='"+dscf_<%=cid %> + "', LOG='" + logf_<%=cid %> + "'";
+	   String command_<%=cid %> = "sqlldr '" + <%=dbuser %> + "/" + <%=dbpass %> + "@" + serviceUrl_<%=cid%> + "' DATA='" + <%=filename %> 
+	   		+ "', CONTROL='"+cltf_<%=cid %> + "', BAD='"+badf_<%=cid %> + "', DISCARD='"+dscf_<%=cid %> + "', LOG='" + logf_<%=cid %> + "',<%=optionStr%>";
 
 	   final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>); 
 
