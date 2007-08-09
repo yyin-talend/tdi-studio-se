@@ -102,12 +102,12 @@ public class ExpressionComposite extends Composite {
                     text.insert(">=");
                 } else if (buttonType.equals("<=")) {
                     text.insert("<=");
-                } else if (buttonType.equals("not")) {
-                    text.insert("not");
-                } else if (buttonType.equals("and")) {
-                    text.insert("and");
-                } else if (buttonType.equals("or")) {
-                    text.insert("or");
+                } else if (buttonType.equals("!")) {
+                    text.insert("!");
+                } else if (buttonType.equals("&&")) {
+                    text.insert("&&");
+                } else if (buttonType.equals("||")) {
+                    text.insert("||");
                 } else if (buttonType.equals("(")) {
                     text.insert("(");
                 } else if (buttonType.equals(")")) {
@@ -223,15 +223,15 @@ public class ExpressionComposite extends Composite {
         label1.setLayoutData(rowData1);
 
         final Button andButton = new Button(lowerOperationButtonBar, SWT.NONE);
-        andButton.setText("and");
+        andButton.setText("&&");
         andButton.addMouseListener(buttonListener);
 
         final Button orButton = new Button(lowerOperationButtonBar, SWT.NONE);
-        orButton.setText("or");
+        orButton.setText("||");
         orButton.addMouseListener(buttonListener);
 
         final Button notButton = new Button(lowerOperationButtonBar, SWT.NONE);
-        notButton.setText("not");
+        notButton.setText("!");
         notButton.addMouseListener(buttonListener);
 
         final Label label2 = new Label(lowerOperationButtonBar, SWT.NONE);
