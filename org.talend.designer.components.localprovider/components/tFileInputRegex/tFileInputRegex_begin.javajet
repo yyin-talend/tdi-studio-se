@@ -102,7 +102,7 @@
         	}
         	
         	matcher<%= cid %> = pattern<%= cid %>.matcher(str<%=cid %>);
-        	if(!matcher<%= cid %>.matches()){//line data not matched with given regex parameter
+        	if(!matcher<%= cid %>.find()){//line data not matched with given regex parameter
         		continue;
         	}
         	int groupCount<%=cid %>=matcher<%= cid %>.groupCount();
