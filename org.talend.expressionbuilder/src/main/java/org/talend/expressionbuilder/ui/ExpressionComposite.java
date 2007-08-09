@@ -140,12 +140,12 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false));
         upperOperationButtonBar.setData("nsd", null);
 
-        final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
-        undoButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-        undoButton.setText("Undo(Ctrl + Z)");
-
-        final Button wrapButton = new Button(upperOperationButtonBar, SWT.NONE);
-        wrapButton.setText("Wrap");
+        // final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
+        // undoButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+        // undoButton.setText("Undo(Ctrl + Z)");
+        //
+        // final Button wrapButton = new Button(upperOperationButtonBar, SWT.NONE);
+        // wrapButton.setText("Wrap");
 
         final Button clearButton = new Button(upperOperationButtonBar, SWT.NONE);
         clearButton.setText("Clear");
