@@ -155,16 +155,14 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
                     String repositoryValueForPropertyType = getRepositoryValueForPropertyType(copyElementParameterList,
                             "REPOSITORY_PROPERTY_TYPE");
-                    value = repositoryValueForPropertyType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
-                            .toLowerCase()
-                            + ": " + repositoryValueForPropertyType;
+                    value = repositoryValueForPropertyType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN
+                            : elemparameter.getValue().toString().toLowerCase() + ": " + repositoryValueForPropertyType;
                 } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
                     String repositoryValueForSchemaType = getRepositoryValueForSchemaType(copyElementParameterList,
                             "REPOSITORY_SCHEMA_TYPE");
-                    value = repositoryValueForSchemaType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
-                            .toLowerCase()
-                            + ": " + repositoryValueForSchemaType;
+                    value = repositoryValueForSchemaType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN
+                            : elemparameter.getValue().toString().toLowerCase() + ": " + repositoryValueForSchemaType;
                 }
 
                 else if (elemparameter.getName().equals(EParameterFieldType.QUERYSTORE_TYPE.getName())
@@ -172,9 +170,9 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
 
                     String repositoryValueForQueryStoreType = getRepositoryValueForQueryStoreType(
                             copyElementParameterList, "REPOSITORY_QUERYSTORE_TYPE");
-                    value = repositoryValueForQueryStoreType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
-                            .toLowerCase()
-                            + ": " + repositoryValueForQueryStoreType;
+                    value = repositoryValueForQueryStoreType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN
+                            : elemparameter.getValue().toString().toLowerCase() + ": "
+                                    + repositoryValueForQueryStoreType;
                 }
                 // } else if (type.getName().equals("TYPE")) {
                 // int index = type.getIndexOfItemFromList(type.getDisplayName());
@@ -227,7 +225,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
-                if (elemParameter.getValue() != null) {
+                if (elemParameter.getValue() != null && elemParameter.getValue().toString().length()>0) {
                     value = elemParameter.getValue().toString();
                     String newValue = value.substring(0, value.indexOf("-")).trim();
                     if (repositoryDBIdAndNameMap.containsKey(newValue)) {
@@ -254,8 +252,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
-
-                if (elemParameter.getValue() != null) {
+                if (elemParameter.getValue() != null && elemParameter.getValue().toString().length()>0) {
                     value = elemParameter.getValue().toString();
                     String newValue = value.substring(0, value.indexOf("-")).trim();
                     if (repositoryDBIdAndNameMap.containsKey(newValue)) {
