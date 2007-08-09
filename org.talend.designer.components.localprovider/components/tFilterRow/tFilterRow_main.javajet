@@ -20,10 +20,14 @@ class Transfer{
 	public String function(String function,String inputRowName, String inputColumn){
 		if(function.equals("S_VALUE_OF")){
 			return "("+inputRowName+"."+inputColumn+")";
-		}else if(function.equals("N_VALUE_OF")){
-			return "((java.lang.Float)java.lang.Float.parseFloat("+inputRowName+"."+inputColumn+"))";
-		}else if(function.equals("ABS_VALUE")){
-			return "((java.lang.Float)java.lang.Math.abs(Float.parseFloat("+inputRowName+"."+inputColumn+")))";
+		}else if(function.equals("N_VALUE_OF_FLOAT")){
+			return "((Float)Float.parseFloat("+inputRowName+"."+inputColumn+"))";
+		}else if(function.equals("N_VALUE_OF_INTEGER")){
+			return "((Integer)Integer.parseInt("+inputRowName+"."+inputColumn+"))";
+		}else if(function.equals("ABS_VALUE_FLOAT")){
+			return "((Float)java.lang.Math.abs(Float.parseFloat("+inputRowName+"."+inputColumn+")))";
+		}else if(function.equals("ABS_VALUE_INTEGER")){
+			return "((java.lang.Integer)java.lang.Math.abs(Integer.parseInt("+inputRowName+"."+inputColumn+")))";
 		}else if(function.equals("LC")){
 			return "("+inputRowName+"."+inputColumn+").toLowerCase()";
 		}else if(function.equals("UC")){
@@ -33,40 +37,31 @@ class Transfer{
 		}else if(function.equals("UCFIRST")){
 			return "(("+inputRowName+"."+inputColumn+").substring(0, 1).toUpperCase()+("+inputRowName+"."+inputColumn+").substring(1))";
 		}else if(function.equals("LENGTH")){	
-			return "(java.lang.Float.valueOf((float)("+inputRowName+"."+inputColumn+").length()))";
+			return "((Integer)("+inputRowName+"."+inputColumn+").length())";
 		}
 		return null;
 	}
 	
 	public String operator(String operator, String value, String function, String inputRowName, String inputColumn){
-		if(operator.equals("STR_EQ")){
-			return function(function,inputRowName,inputColumn)+".equals(\""+value+"\")";
-		}else if(operator.equals("STR_NE")){
-			return "!("+function(function,inputRowName,inputColumn)+".equals(\""+value+"\"))";
-		}else if(operator.equals("STR_GT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(\""+value+"\")>0)";
-		}else if(operator.equals("STR_LT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(\""+value+"\")<0)";
-		}else if(operator.equals("STR_GE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(\""+value+"\")>=0)";
-		}else if(operator.equals("STR_LE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(\""+value+"\")<=0)";
+		//if(value.startsWith("\""))	
+		
+		
+		if(operator.equals("EQ")){
+			return function(function,inputRowName,inputColumn)+".equals("+value+")";
+		}else if(operator.equals("NE")){
+			return "!("+function(function,inputRowName,inputColumn)+".equals("+value+"))";
+		}else if(operator.equals("GT")){
+			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")>0)";
+		}else if(operator.equals("LT")){
+			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")<0)";
+		}else if(operator.equals("GE")){
+			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")>=0)";
+		}else if(operator.equals("LE")){
+			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")<=0)";
 		}else if(operator.equals("MATCH")){
-			return "("+function(function,inputRowName,inputColumn)+".matches(\""+value+"\"))";
+			return "("+function(function,inputRowName,inputColumn)+".matches("+value+"))";
 		}else if(operator.equals("NMATCH")){
-			return "!("+function(function,inputRowName,inputColumn)+".matches(\""+value+"\"))";
-		}else if(operator.equals("NUM_EQ")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))==0)";
-		}else if(operator.equals("NUM_NE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))!=0)";
-		}else if(operator.equals("NUM_GT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))>0)";
-		}else if(operator.equals("NUM_LT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))<0)";
-		}else if(operator.equals("NUM_GE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))>=0)";
-		}else if(operator.equals("NUM_LE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo(new Float(\""+value+"\"))<=0)";
+			return "!("+function(function,inputRowName,inputColumn)+".matches("+value+"))";
 		}
 		return null;
 	}
@@ -93,10 +88,12 @@ List< ? extends IConnection> inConns = node.getIncomingConnections();
 String inputRowName = new String("input_row");
 String prevComponentName = new String("prev_component_name");
 String cid=null;
+boolean flag=true;
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
+System.out.println("meta size = "+metadata.getTableName());
     if (metadata!=null) {
     	columnList = metadata.getListColumns();
         cid = metadata.getTableName();       
@@ -110,12 +107,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             inputRowName = inConn.getName();
             prevComponentName = inConn.getMetadataTable().getTableName();
         }
-
 %>
 boolean branch_<%=cid%>_is_active = false;
 nb_line_<%=cid%>++ ;
-if (
+<%if(conditions.size()==0&&use_advanced.equals("false")){%>
+	if (true
+<%}else{%>
+	if(	
 <%
+}
         boolean isFirst = true ;
         boolean atLeastOneSimpleCondition = false ;
         

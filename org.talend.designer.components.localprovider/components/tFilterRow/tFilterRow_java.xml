@@ -46,8 +46,10 @@
         <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="VALUE_OF">
             <ITEM NAME="S_VALUE_OF"    VALUE="S_VALUE_OF"/>
-            <ITEM NAME="N_VALUE_OF"    VALUE="N_VALUE_OF"/>
-            <ITEM NAME="ABS_VALUE"    VALUE="ABS_VALUE"/>
+            <ITEM NAME="N_VALUE_OF_FLOAT"    VALUE="N_VALUE_OF_FLOAT"/>
+            <ITEM NAME="N_VALUE_OF_INTEGER"    VALUE="N_VALUE_OF_INTEGER"/>
+            <ITEM NAME="ABS_VALUE_FLOAT"    VALUE="ABS_VALUE_FLOAT"/>
+            <ITEM NAME="ABS_VALUE_INTEGER"    VALUE="ABS_VALUE_INTEGER"/>
             <ITEM NAME="LC"    VALUE="LC"/>
             <ITEM NAME="UC"    VALUE="UC"/>
             <ITEM NAME="LCFIRST"    VALUE="LCFIRST"/>
@@ -59,22 +61,15 @@
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
 
         <ITEM NAME="OPERATOR" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="STR_EQ">
-            <ITEM NAME="STR_EQ"  VALUE="STR_EQ"/>
-            <ITEM NAME="STR_NE"    VALUE="STR_NE"/>
-            <ITEM NAME="STR_GT"    VALUE="STR_GT"/>
-            <ITEM NAME="STR_LT"    VALUE="STR_LT"/>
-            <ITEM NAME="STR_GE"    VALUE="STR_GE"/>
-            <ITEM NAME="STR_LE"    VALUE="STR_LE"/>
+          <ITEMS DEFAULT="EQ">
+           	<ITEM NAME="EQ"  VALUE="EQ"/>
+            <ITEM NAME="NE"    VALUE="NE"/>
+            <ITEM NAME="GT"    VALUE="GT"/>
+            <ITEM NAME="LT"    VALUE="LT"/>
+            <ITEM NAME="GE"    VALUE="GE"/>
+            <ITEM NAME="LE"    VALUE="LE"/>
             <ITEM NAME="MATCH"    VALUE="MATCH"/>
             <ITEM NAME="NMATCH"    VALUE="NMATCH"/>
-            <ITEM NAME="NUM_EQ"    VALUE="NUM_EQ"/>
-            <ITEM NAME="NUM_NE"    VALUE="NUM_NE"/>
-            <ITEM NAME="NUM_GT"    VALUE="NUM_GT"/>
-            <ITEM NAME="NUM_LT"    VALUE="NUM_LT"/>
-            <ITEM NAME="NUM_GE"    VALUE="NUM_GE"/>
-            <ITEM NAME="NUM_LE"    VALUE="NUM_LE"/>
-
           </ITEMS>
         </ITEM>
         <ITEM NAME="RVALUE" FIELD="String" />
