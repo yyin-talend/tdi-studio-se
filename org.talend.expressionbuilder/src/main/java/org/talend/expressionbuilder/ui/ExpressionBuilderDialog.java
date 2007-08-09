@@ -44,6 +44,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.model.CategoryManager;
@@ -57,8 +59,6 @@ import org.xml.sax.SAXException;
  * 
  */
 public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilderDialogController {
-
-    private static final int APPLY_ID = IDialogConstants.CLIENT_ID + 23;
 
     private static final int EXPORT_ID = IDialogConstants.CLIENT_ID + 22;
 
@@ -138,15 +138,24 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * @param parent
      */
     protected void createButtonsForButtonBar(Composite parent) {
-        final Button importButton = createButton(parent, IMPORT_ID, "Import", false);
-        importButton.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
-        importButton.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-        createButton(parent, EXPORT_ID, "Export", false);
-        createButton(parent, APPLY_ID, "Apply", false);
+
+        ((GridLayout) parent.getLayout()).numColumns++;
+
+        Composite buttons = new Composite(parent, SWT.NONE);
+        buttons.setLayout(new GridLayout(2, false));
+
+        final Button importButton = new Button(buttons, SWT.PUSH);
+        importButton.setToolTipText("Import expression and variable(s) from file.");
+        importButton.setImage(ImageProvider.getImage(EImage.EXPORT_ICON));
+
+        final Button exportButton = new Button(buttons, SWT.PUSH);
+        exportButton.setToolTipText("Export expression and variable(s) to file.");
+        exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
+
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 
-        getButton(EXPORT_ID).addMouseListener(new MouseAdapter() {
+        exportButton.addMouseListener(new MouseAdapter() {
 
             /*
              * (non-Javadoc)
@@ -179,7 +188,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
             }
         });
 
-        getButton(IMPORT_ID).addMouseListener(new MouseAdapter() {
+        importButton.addMouseListener(new MouseAdapter() {
 
             /*
              * (non-Javadoc)

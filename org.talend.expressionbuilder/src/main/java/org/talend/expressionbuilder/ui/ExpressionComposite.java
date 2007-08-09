@@ -65,6 +65,60 @@ public class ExpressionComposite extends Composite {
     private String replacedText;
 
     /**
+     * yzhang ExpressionComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id: ExpressionComposite.java 下午04:23:35 2007-8-8 +0000 (2007-8-8) yzhang $
+     * 
+     */
+    class ButtonListener extends MouseAdapter {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+         */
+        @Override
+        public void mouseUp(MouseEvent e) {
+            if (e.getSource() instanceof Button) {
+                Button button = (Button) e.getSource();
+                String buttonType = button.getText();
+                if (buttonType.equals("+")) {
+                    text.insert("+");
+                } else if (buttonType.equals("-")) {
+                    text.insert("-");
+                } else if (buttonType.equals("*")) {
+                    text.insert("*");
+                } else if (buttonType.equals("/")) {
+                    text.insert("/");
+                } else if (buttonType.equals("==")) {
+                    text.insert("==");
+                } else if (buttonType.equals(">")) {
+                    text.insert("<");
+                } else if (buttonType.equals("<")) {
+                    text.insert(">");
+                } else if (buttonType.equals("<>")) {
+                    text.insert("<>");
+                } else if (buttonType.equals(">=")) {
+                    text.insert(">=");
+                } else if (buttonType.equals("<=")) {
+                    text.insert("<=");
+                } else if (buttonType.equals("not")) {
+                    text.insert("not");
+                } else if (buttonType.equals("and")) {
+                    text.insert("and");
+                } else if (buttonType.equals("or")) {
+                    text.insert("or");
+                } else if (buttonType.equals("(")) {
+                    text.insert("(");
+                } else if (buttonType.equals(")")) {
+                    text.insert(")");
+                }
+
+            }
+        }
+    }
+
+    /**
      * Create the composite
      * 
      * @param parent
@@ -117,17 +171,22 @@ public class ExpressionComposite extends Composite {
         lowerOperationButtonBar.setLayoutData(gridData);
         lowerOperationButtonBar.setLayout(new RowLayout(SWT.HORIZONTAL));
 
+        ButtonListener buttonListener = new ButtonListener();
         final Button plusButton = new Button(lowerOperationButtonBar, SWT.NONE);
         plusButton.setText("+");
+        plusButton.addMouseListener(buttonListener);
 
         final Button minusButton = new Button(lowerOperationButtonBar, SWT.NONE);
         minusButton.setText("-");
+        minusButton.addMouseListener(buttonListener);
 
         final Button multiplyButton = new Button(lowerOperationButtonBar, SWT.NONE);
         multiplyButton.setText("*");
+        multiplyButton.addMouseListener(buttonListener);
 
         final Button divideButton = new Button(lowerOperationButtonBar, SWT.NONE);
         divideButton.setText("/");
+        divideButton.addMouseListener(buttonListener);
 
         final Label label = new Label(lowerOperationButtonBar, SWT.NONE);
         final RowData rowData = new RowData();
@@ -136,21 +195,27 @@ public class ExpressionComposite extends Composite {
 
         final Button eqButton = new Button(lowerOperationButtonBar, SWT.NONE);
         eqButton.setText("==");
+        eqButton.addMouseListener(buttonListener);
 
         final Button gButton = new Button(lowerOperationButtonBar, SWT.NONE);
         gButton.setText(">");
+        gButton.addMouseListener(buttonListener);
 
         final Button gebutton = new Button(lowerOperationButtonBar, SWT.NONE);
         gebutton.setText(">=");
+        gebutton.addMouseListener(buttonListener);
 
         final Button nebutton = new Button(lowerOperationButtonBar, SWT.NONE);
         nebutton.setText("<>");
+        nebutton.addMouseListener(buttonListener);
 
         final Button lebutton = new Button(lowerOperationButtonBar, SWT.NONE);
         lebutton.setText("<=");
+        lebutton.addMouseListener(buttonListener);
 
         final Button lButton = new Button(lowerOperationButtonBar, SWT.NONE);
         lButton.setText("<");
+        lButton.addMouseListener(buttonListener);
 
         final Label label1 = new Label(lowerOperationButtonBar, SWT.NONE);
         final RowData rowData1 = new RowData();
@@ -159,23 +224,28 @@ public class ExpressionComposite extends Composite {
 
         final Button andButton = new Button(lowerOperationButtonBar, SWT.NONE);
         andButton.setText("and");
+        andButton.addMouseListener(buttonListener);
 
         final Button orButton = new Button(lowerOperationButtonBar, SWT.NONE);
         orButton.setText("or");
+        orButton.addMouseListener(buttonListener);
 
         final Button notButton = new Button(lowerOperationButtonBar, SWT.NONE);
         notButton.setText("not");
+        notButton.addMouseListener(buttonListener);
 
         final Label label2 = new Label(lowerOperationButtonBar, SWT.NONE);
         final RowData rowData2 = new RowData();
         rowData2.width = 20;
         label2.setLayoutData(rowData2);
 
-        final Button button9 = new Button(lowerOperationButtonBar, SWT.NONE);
-        button9.setText("(");
+        final Button leftBracketButton = new Button(lowerOperationButtonBar, SWT.NONE);
+        leftBracketButton.setText("(");
+        leftBracketButton.addMouseListener(buttonListener);
 
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")");
+        rightBracketbutton.addMouseListener(buttonListener);
 
     }
 
