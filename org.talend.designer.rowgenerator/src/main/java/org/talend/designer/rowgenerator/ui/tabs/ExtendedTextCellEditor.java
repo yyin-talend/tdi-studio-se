@@ -33,6 +33,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
 import org.talend.expressionbuilder.IExpressionConsumer;
@@ -85,7 +87,9 @@ public class ExtendedTextCellEditor extends TextCellEditor implements IExpressio
                     Parameter param = (Parameter) item.getData();
                     expressionBuilderDialog.setDefaultExpression(param.getValue());
                 }
-                expressionBuilderDialog.openDialog();
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    expressionBuilderDialog.openDialog();
+                }
 
             }
         });
