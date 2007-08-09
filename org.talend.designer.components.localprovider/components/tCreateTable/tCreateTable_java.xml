@@ -383,8 +383,7 @@
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-ORACLE" MODULE="ojdbc14.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-ACCESS" MODULE="Access_JDBC30.jar" REQUIRED="true" />	
+		<IMPORT NAME="Driver-POSTGRESQL" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="true" />	
 		<IMPORT NAME="Driver-FIREBIRD" MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-HSQLDb" MODULE="hsqldb.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-INFORMIX-JDBC" MODULE="ifxjdbc.jar" REQUIRED="true" />
