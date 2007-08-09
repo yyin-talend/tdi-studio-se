@@ -269,7 +269,7 @@ class Transfer{
 		boolean isLackDBType = <%=tr.isLackDBType(node) %>;
 		if(isLackDBType)
 		{
-		 	throw new Exception("For create a table, the DB Type in the schema must be set");
+		 	throw new Exception("To create a table, the DB Type in the schema must be set");
 		}
 <%
   }
