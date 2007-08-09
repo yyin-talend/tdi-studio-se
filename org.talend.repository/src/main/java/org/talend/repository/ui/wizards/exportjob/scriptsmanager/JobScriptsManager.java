@@ -360,7 +360,8 @@ public abstract class JobScriptsManager {
             String name = iter.next();
             for (int i = 0; i < resources.length; i++) {
                 IResource resource = resources[i];
-                if (resource.getFullPath().toOSString().endsWith(name)) {
+                
+                if (resource.getName().equals(name)) {
                     try {
                         URL url = resource.getLocation().toFile().toURL();
                         list.add(FileLocator.toFileURL(url));
