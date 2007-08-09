@@ -153,24 +153,28 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
 
                 if (elemparameter.getName().equals(EParameterFieldType.PROPERTY_TYPE.getName())
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
-                    value = elemparameter.getValue().toString().toLowerCase()
-                            + ": "
-                            + getRepositoryValueForPropertyType(copyElementParameterList,
-                                    "REPOSITORY_PROPERTY_TYPE");
+                    String repositoryValueForPropertyType = getRepositoryValueForPropertyType(copyElementParameterList,
+                            "REPOSITORY_PROPERTY_TYPE");
+                    value = repositoryValueForPropertyType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
+                            .toLowerCase()
+                            + ": " + repositoryValueForPropertyType;
                 } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
-                    value = elemparameter.getValue().toString().toLowerCase()
-                            + ": "
-                            + getRepositoryValueForSchemaType(copyElementParameterList,
-                                    "REPOSITORY_SCHEMA_TYPE");
+                    String repositoryValueForSchemaType = getRepositoryValueForSchemaType(copyElementParameterList,
+                            "REPOSITORY_SCHEMA_TYPE");
+                    value = repositoryValueForSchemaType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
+                            .toLowerCase()
+                            + ": " + repositoryValueForSchemaType;
                 }
 
                 else if (elemparameter.getName().equals(EParameterFieldType.QUERYSTORE_TYPE.getName())
                         && elemparameter.getValue().equals(IHTMLDocConstants.REPOSITORY)) {
-                    value = elemparameter.getValue().toString().toLowerCase()
-                            + ": "
-                            + getRepositoryValueForQueryStoreType(copyElementParameterList,
-                                    "REPOSITORY_QUERYSTORE_TYPE");
+
+                    String repositoryValueForQueryStoreType = getRepositoryValueForQueryStoreType(
+                            copyElementParameterList, "REPOSITORY_QUERYSTORE_TYPE");
+                    value = repositoryValueForQueryStoreType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : elemparameter.getValue().toString()
+                            .toLowerCase()
+                            + ": " + repositoryValueForQueryStoreType;
                 }
                 // } else if (type.getName().equals("TYPE")) {
                 // int index = type.getIndexOfItemFromList(type.getDisplayName());
@@ -201,12 +205,14 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
                 ConnectionItem connectionItem = repositoryConnectionItemMap.get(elemParameter.getValue());
-                String aliasName = designerCoreService.getRepositoryAliasName(connectionItem);
-                value = aliasName + ":" + connectionItem.getProperty().getLabel();
-                break;
+                if (connectionItem != null) {
+                    String aliasName = designerCoreService.getRepositoryAliasName(connectionItem);
+                    value = aliasName + ":" + connectionItem.getProperty().getLabel();
+                    return value;
+                }
             }
         }
-        return value;
+        return null;
     }
 
     /**
@@ -221,17 +227,19 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
-                value = elemParameter.getValue().toString();
-                String newValue = value.substring(0, value.indexOf("-")).trim();
-                if (repositoryDBIdAndNameMap.containsKey(newValue)) {
-                    value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
-                    break;
+                if (elemParameter.getValue() != null) {
+                    value = elemParameter.getValue().toString();
+                    String newValue = value.substring(0, value.indexOf("-")).trim();
+                    if (repositoryDBIdAndNameMap.containsKey(newValue)) {
+                        value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
+                        return value;
+                    }
                 }
 
             }
         }
 
-        return value;
+        return null;
     }
 
     /**
@@ -246,14 +254,17 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
-                value = elemParameter.getValue().toString();
-                String newValue = value.substring(0, value.indexOf("-")).trim();
-                if (repositoryDBIdAndNameMap.containsKey(newValue)) {
-                    value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
-                    break;
+
+                if (elemParameter.getValue() != null) {
+                    value = elemParameter.getValue().toString();
+                    String newValue = value.substring(0, value.indexOf("-")).trim();
+                    if (repositoryDBIdAndNameMap.containsKey(newValue)) {
+                        value = value.replace(newValue, repositoryDBIdAndNameMap.get(newValue));
+                        return value;
+                    }
                 }
             }
         }
-        return value;
+        return null;
     }
 }
