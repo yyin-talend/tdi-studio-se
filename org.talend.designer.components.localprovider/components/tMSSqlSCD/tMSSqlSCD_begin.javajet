@@ -1,0 +1,478 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+	java.util.List
+	java.util.ArrayList
+	java.util.Map
+	java.util.HashMap
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode) codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+// Search incoming schema
+IMetadataTable inMetadata = null;
+IConnection inConnection = null;
+String inConnectionName = null;
+
+List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    inConnection = incomingConnections.get(0);
+    inConnectionName = inConnection.getName();
+    inMetadata = inConnection.getMetadataTable();
+}
+
+// Search outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    metadata = metadatas.get(0);
+}
+
+// We only generate output if incoming and outgoing schema are defined
+if (inMetadata != null && metadata != null) {
+	// Database parameters
+	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
+	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	String dbport = ElementParameterParser.getValue(node, "__PORT__");
+	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+	
+	%>
+	// Create database connection
+	java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
+	String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+	<%
+	
+	// SCD parameters
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
+	
+    boolean useL1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
+    if (useL1) {
+        l1fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
+    }
+	
+    boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
+    if (useL2) {
+        l2fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
+    }
+	
+    String startdateField = ElementParameterParser.getValue(node, "__L2_STARTDATE_FIELD__");
+    String enddateField = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIELD__");
+    
+    boolean useActive = ElementParameterParser.getValue(node, "__USE_L2_ACTIVE__").equals("true");
+    String activeField = ElementParameterParser.getValue(node, "__L2_ACTIVE_FIELD__");
+    
+    boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
+    String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
+	
+	// Build map with type (sk, L1, L2) of each column
+    Map<String, String> typeOfColumn = new HashMap<String, String>();
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+    for (Map<String, String> l1field : l1fields) {
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+	
+	// Debug mode
+	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
+    
+    %>
+    
+    // Source keys
+    class SCDSK_<%=cid%> {
+    	private int hashCode;
+    	public boolean hashCodeDirty = true;
+    	<%
+		for (IMetadataColumn column : inMetadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (typeOfColumn.containsKey(colname)) {
+		    	if (typeOfColumn.get(colname).equals("SK")) {
+		        	%>
+		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+		        	<%
+		        }
+	        }
+	    }
+	    %>
+	    
+	    public boolean equals(Object o) {
+	    	if (!(o instanceof SCDSK_<%=cid%>)) {
+	    		return false;
+	    	}
+	    	
+	    	SCDSK_<%=cid%> sk = (SCDSK_<%=cid%>) o;
+	    	
+	    	return <%
+			boolean isFirstSK = true;
+	    	for (IMetadataColumn column : inMetadata.getListColumns()) {
+		        String colname = column.getLabel();
+				
+		        if (typeOfColumn.containsKey(colname)) {
+			    	if (typeOfColumn.get(colname).equals("SK")) {
+		                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			            
+			            if (isFirstSK) {
+	                        isFirstSK = false;
+	                    } else {
+	                    	%> && <%
+	                    }
+		                
+		                if (javaType == JavaTypesManager.DATE ||
+		                	javaType == JavaTypesManager.OBJECT ||
+		                	javaType == JavaTypesManager.STRING) {
+							%><%=colname%>.equals(sk.<%=colname%>)<%
+		                } else {
+		                	%><%=colname%> == sk.<%=colname%><%
+		                }
+			        }
+		        }
+		    }
+		    %>;
+	    }
+	    
+	    public int hashCode() {
+	    	if (hashCodeDirty) {
+		    	int prime = 31;
+		    	hashCode = 0;
+		    	<%
+		    	for (IMetadataColumn column : inMetadata.getListColumns()) {
+			        String colname = column.getLabel();
+					
+			        if (typeOfColumn.containsKey(colname)) {
+				    	if (typeOfColumn.get(colname).equals("SK")) {
+			                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			                
+			                if (javaType == JavaTypesManager.DATE ||
+			                	javaType == JavaTypesManager.OBJECT ||
+			                	javaType == JavaTypesManager.STRING ||
+			                	column.isNullable()) {
+					    		%>
+					    		hashCode = prime * hashCode + (<%=colname%> == null ? 0 : <%=colname%>.hashCode());
+					    		<%
+				    		} else {
+					    		%>
+					    		hashCode = prime * hashCode + <%=colname%>;
+					    		<%
+				    		}
+				    	}
+				   	}
+				}
+				%>
+				hashCodeDirty = false;
+			}
+			
+			return hashCode;
+	    }
+    }
+    
+    // Lookup cache structure
+	class SCDStruct_<%=cid%> {
+		<%
+		// L1, L2 fields
+		for (IMetadataColumn column : inMetadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (typeOfColumn.containsKey(colname)) {
+		    	if (!typeOfColumn.get(colname).equals("SK")) {
+		        	%>
+		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+		        	<%
+		        }
+	        }
+	    }
+		
+	    // Version field
+	    if (useVersion) {
+		    for (IMetadataColumn column : metadata.getListColumns()) {
+		        String colname = column.getLabel();
+				
+		        if (colname.equals(versionField)) {
+			    	%>
+					private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+					<%
+					break;
+		        }
+		    }
+		}
+		%>
+	}
+	<%
+	
+    // Build lookup cache
+    List selectColumns = new ArrayList();
+    List javaTypeColumns = new ArrayList();
+	
+    // First we iterate on the input schema columns...
+    for (IMetadataColumn column : inMetadata.getListColumns()) {
+        String colname = column.getLabel();
+		
+        if (typeOfColumn.containsKey(colname)) {
+            selectColumns.add(colname);
+            javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
+        }
+    }
+	
+    if (useVersion) {
+        selectColumns.add(versionField);
+    }
+	
+    String selectColumnsString = StringUtils.join(selectColumns.toArray(), ", ");
+    
+    %>
+    // Retrieve active records
+    String dbquery_<%=cid %> = "SELECT <%=selectColumnsString%> FROM " + <%=dbtable%>
+    <%
+    if (useL2) {
+    	%>
+		+ " WHERE <%=enddateField%> IS NULL"
+		<%
+    }
+    %>;
+	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
+	java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid %>);
+	
+    // Build lookup cache
+    java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>> cache_<%=cid%> = new java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>>();
+	
+	while (resultSet_<%=cid%>.next()) {
+		SCDSK_<%=cid%> sk_<%=cid%> = new SCDSK_<%=cid%>();
+		SCDStruct_<%=cid%> row_<%=cid%> = new SCDStruct_<%=cid%>();
+		<%
+		int colPosition = 1;
+		
+		for (IMetadataColumn column : inMetadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (typeOfColumn.containsKey(colname)) {
+	            // Search Java type in order to call fitted method getXxx on ResultSet
+	            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	            String struct = (typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;
+	            
+	            if (typeToGenerate.equals("byte[]")) {
+ 	  	   			typeToGenerate = "Bytes";
+				} else if (typeToGenerate.equals("java.util.Date")) {
+					typeToGenerate = "Timestamp";
+				} else if (typeToGenerate.equals("Integer")) {
+					typeToGenerate = "Int";
+				} else {
+					typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+				}
+		  		
+				if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+					%>
+					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+				  	if (value_<%=cid%> != null && value_<%=cid%>.length() > 0) {
+				  		<%=struct%>.<%=colname%> = resultSet_<%=cid %>.getString(<%=colPosition%>).charAt(0);
+				  	} else {			  	
+				  	    <%
+				  	    if (typeToGenerate.equals("Character")) {
+				  	    	%>
+				  	    	if (value_<%=cid%> == null) {
+				  	   			<%=struct%>.<%=colname%> = null;
+					  		} else {
+					  			<%=struct%>.<%=colname%> = '\0';
+					  		}
+				  			<%
+				  		} else {
+				  			%>
+					  		if (value_<%=cid%>.equals("")) {
+				  				<%=struct%>.<%=colname%> = '\0';
+				  			} else {
+					  			throw new RuntimeException("Value is empty for column : '<%=colname%>', value is invalid or this column should be nullable or have a default value.");
+							}
+				  			<%
+				  		}
+				  		%>
+				  	}
+					<%
+				} else if (typeToGenerate.equals("Timestamp")) {
+					%>
+					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+					if (value_<%=cid%> != null){
+    			 		String pattern_<%=cid%> = <%=column.getPattern().equals("") ? "\"yyyy-MM-dd\"" : column.getPattern()%>;
+						java.util.Date tmpDate_<%=cid%> = FastDateParser.getInstance(pattern_<%=cid%>).parse(value_<%=cid%>);
+						<%=struct%>.<%=colname%> = tmpDate_<%=cid%>;
+					} else {
+						<%=struct%>.<%=colname%> =  null;
+					}
+			 		<% 	
+				} else {
+					%>
+					if (resultSet_<%=cid %>.getObject(<%=colPosition%>) != null) {
+						<%=struct%>.<%=colname%> = resultSet_<%=cid %>.get<%=typeToGenerate%>(<%=colPosition%>);
+ 			 		}<% if (column.isNullable()) { %> else {
+	 					<%=struct%>.<%=colname%> = null;
+ 					}
+ 					<%
+	 				}
+ 			 	}
+	            
+	            colPosition++;
+	        }
+	    }
+	    
+	    // Version
+	    if (useVersion) {
+		    for (IMetadataColumn column : metadata.getListColumns()) {
+		        String colname = column.getLabel();
+		        
+		        if (colname.equals(versionField)) {
+		        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+		            
+		            // Note: possible types are int, Integer, long, Long, short, Short
+		            if (typeToGenerate.equals("Integer")) {
+						typeToGenerate = "Int";
+					} else {
+						typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+					}
+					
+					%>
+					if (resultSet_<%=cid %>.getObject(<%=colPosition%>) != null) {
+						row_<%=cid%>.<%=colname%> = resultSet_<%=cid %>.get<%=typeToGenerate%>(<%=colPosition%>);
+ 			 		}<% if (column.isNullable()) { %> else {
+	 					row_<%=cid%>.<%=colname%> = null;
+ 					}
+ 					<%
+ 					}
+		        }
+		    }
+	    }
+	    %>
+	    
+        cache_<%=cid%>.put(sk_<%=cid%>, row_<%=cid%>);
+	}
+	
+	<%
+	if (debug) {
+		%>
+		System.out.println("[<%=cid%>] comparison cache loaded");
+		<%
+	}
+	
+    // INSERT query generation
+    int colposition = 1;
+    List colnames = new ArrayList();
+    List parameters = new ArrayList();
+	
+    // First we iterate on the input schema columns...
+    for (IMetadataColumn column : inMetadata.getListColumns()) {
+        // ... and we add each column only if it was chosen to be in the
+        // output, ie if its type was defined.
+        if (typeOfColumn.containsKey(column.getLabel())) {
+            colnames.add(column.getLabel());
+            parameters.add("?");
+            colposition++;
+        }
+    }
+	
+    // Then we add L2 dedicated columns to store historical informations
+    if (useL2) {
+        if (useActive) {
+            colnames.add(activeField);
+            parameters.add("1");
+        }
+		
+        if (useVersion) {
+            colnames.add(versionField);
+            parameters.add("?");
+            colposition++;
+        }
+        
+        colnames.add(startdateField);
+        parameters.add("?");
+		colposition++;
+		
+        colnames.add(enddateField);
+        parameters.add("NULL");
+    }
+	
+    String colnamesString = StringUtils.join(colnames.toArray(), ", ");
+    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+    
+    %>
+    // Build prepared statements
+    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=colnamesString%>) " +
+    	"VALUES (<%=parametersString%>)";
+    java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
+    insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+    <%
+    
+    // L1 query generation
+    List keyClauses = new ArrayList();
+	List l1fieldClauses = new ArrayList();
+	
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        String colname = column.getLabel();
+		
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyClauses.add(colname + " = ?");
+            } else if (typeOfColumn.get(colname).equals("L1")) {
+            	l1fieldClauses.add(colname + " = ?");
+            }
+        }
+    }
+	
+    String keyClausesString = StringUtils.join(keyClauses.toArray(), " AND ");
+    String l1fieldClausesString = StringUtils.join(l1fieldClauses.toArray(), ", ");
+    
+    %>
+    String l1QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
+    java.sql.PreparedStatement l1Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l1QueryString_<%=cid%>);
+    <%
+    
+    // L2 query generation
+    if (useL2) {
+		%>
+		String l2QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " " +
+			"SET <%=enddateField%> = ? " +<%
+		if (useActive) {
+			%>
+ 			", <%=activeField%> = 0 " +
+ 			<%
+	    }
+	    %>
+			"WHERE <%=keyClausesString%> " +
+		    "AND <%=enddateField%> IS NULL";
+	    java.sql.PreparedStatement l2Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l2QueryString_<%=cid%>);
+	    l2Query_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+		<%
+	}
+	
+	%>
+	SCDSK_<%=cid%> lookupRow_<%=cid%> = new SCDSK_<%=cid%>();
+	SCDStruct_<%=cid%> cacheRow_<%=cid%>;
+    <%
+} else {
+	%>
+	// No code generated: define input and output schema first
+	<%
+}
+%>
