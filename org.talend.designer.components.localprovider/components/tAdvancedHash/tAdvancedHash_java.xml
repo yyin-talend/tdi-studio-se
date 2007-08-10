@@ -21,6 +21,18 @@
    </PARAMETERS>
    
    <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="Advanced_Lookup"
+        MODULE="advancedLookupLib.jar"
+        REQUIRED="true"
+      />
+      <IMPORT
+        NAME="ApacheCommonsCollection32"
+        MODULE="commons-collections-3.2.jar"
+        REQUIRED="true"
+      />
+    </IMPORTS>
   </CODEGENERATION>
   
    <RETURNS>
