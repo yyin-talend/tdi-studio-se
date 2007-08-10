@@ -113,6 +113,12 @@ private static RunTrace runTrace = new RunTrace();
 	MetterCatcherUtils <%=metterCatcher.getUniqueName() %> = new MetterCatcherUtils("<%=process.getId() %>", "<%=process.getVersion() %>"); 
 <%
 	}
+	
+	for (INode assertCatcher : process.getNodesOfType("tAssertCatcher")) {
+%>
+	AssertCatcherUtils <%=assertCatcher.getUniqueName() %> = new AssertCatcherUtils(); 
+<%
+	}
 %>
 private class TalendException extends Exception {
 	private Exception e = null;
@@ -162,6 +168,25 @@ private class TalendException extends Exception {
 			}
 		}
 %>
+
+<%     
+		if (process.getNodesOfType("tAssertCatcher").size() > 0) {
+			List<INode> assertCatchers = (List<INode>)process.getNodesOfType("tAssertCatcher");
+			for (INode assertCatcher : assertCatchers) {
+				if (ElementParameterParser.getValue(assertCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
+					// 1) add the message to the stack
+%>
+			<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", "the error message from the exception");
+<%
+					// 2) launch assertCatcher subProcess
+%>
+			<%=assertCatcher.getUniqueName() %>Process();
+<%
+				}
+			}
+		}
+%>
+
 		} catch (java.lang.SecurityException e) {
 			this.e.printStackTrace();
 		} catch (java.lang.IllegalArgumentException e) {
@@ -170,18 +195,35 @@ private class TalendException extends Exception {
 			this.e.printStackTrace();
 		} catch (java.lang.reflect.InvocationTargetException e) {
 			this.e.printStackTrace();
-		} 
-		<% if (process.getNodesOfType("tLogCatcher").size() > 0) {
-				for(INode node:process.getNodesOfType("tLogCatcher")){ 
-					if(ElementParameterParser.getValue(node, "__CATCH_JAVA_EXCEPTION__").equals("true")){ 
-			 %>
-			catch (TalendException e) {
-			// do nothing
-			}
-		<% 				break;
-					} 
+		}
+<% 		
+		boolean needCatchTalendException = false;
+		if (process.getNodesOfType("tLogCatcher").size() > 0) {
+			for(INode node:process.getNodesOfType("tLogCatcher")){ 
+				if(ElementParameterParser.getValue(node, "__CATCH_JAVA_EXCEPTION__").equals("true")){
+				needCatchTalendException = true; 
+				break;
 				} 
-			} %>
+			} 
+		}
+		
+		if ((!needCatchTalendException) && (process.getNodesOfType("tAssertCatcher").size() > 0)) {
+			for(INode node:process.getNodesOfType("tAssertCatcher")){ 
+				if(ElementParameterParser.getValue(node, "__CATCH_JAVA_EXCEPTION__").equals("true")){
+				needCatchTalendException = true; 
+				break;
+				} 
+			} 
+		}
+		if(needCatchTalendException) {
+%>
+		catch (TalendException e) {
+		// do nothing
+		}
+<%
+       }
+%>
+
 	}
 }
 

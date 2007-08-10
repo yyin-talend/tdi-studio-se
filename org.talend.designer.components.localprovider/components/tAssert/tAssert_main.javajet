@@ -1,0 +1,35 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+%>
+
+<% 
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	String description = ElementParameterParser.getValue(node, "__DESCRIPTION__");
+	String expression = ElementParameterParser.getValue(node, "__EXPRESSION__");
+%>
+
+<%
+			if (node.getProcess().getNodesOfType("tAssertCatcher").size() > 0) {
+				List<INode> assertCatchers = (List<INode>)node.getProcess().getNodesOfType("tAssertCatcher");
+				for (INode assertCatcher : assertCatchers) {
+					if (ElementParameterParser.getValue(assertCatcher, "__CATCH_TASSERT__").equals("true")) {
+%>
+ if(<%=expression %>) {
+	<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", "<%=cid %>", "Ok", "--", <%=description.trim().length()==0?"null":description %>);
+	<%=assertCatcher.getUniqueName() %>Process();
+}else {
+	<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", "<%=cid %>", "Failed", "Test logically failed", <%=description.trim().length()==0?"null":description %>);
+	<%=assertCatcher.getUniqueName() %>Process();	
+}					
+<%
+					}
+				}
+			}
+%>

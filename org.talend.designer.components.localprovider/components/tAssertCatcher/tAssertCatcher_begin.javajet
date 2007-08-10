@@ -1,0 +1,35 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+%>
+	for (AssertCatcherUtils.AssertCatcherMessage acm : <%=cid %>.getMessages()) {
+<%
+	for (IConnection conn : node.getOutgoingConnections()) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+		<%=conn.getName() %>.date = acm.getDate();
+		<%=conn.getName() %>.pid = acm.getPid();
+		<%=conn.getName() %>.projet = acm.getProjet();
+		<%=conn.getName() %>.job = acm.getJob();
+		<%=conn.getName() %>.langage = acm.getLangage();
+		
+		<%=conn.getName() %>.origin = (acm.getOrigin()==null || acm.getOrigin().length()<1 ? null : acm.getOrigin());
+	
+    	<%=conn.getName() %>.status = acm.getStatus();
+		<%=conn.getName() %>.substatus = acm.getSubstatus();
+		<%=conn.getName() %>.description = acm.getDescription();
+<%
+		}
+	}
+%>
