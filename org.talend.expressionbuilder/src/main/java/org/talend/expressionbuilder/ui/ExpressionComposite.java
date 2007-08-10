@@ -127,7 +127,7 @@ public class ExpressionComposite extends Composite {
 
         final Group expressionGroup = new Group(this, SWT.NONE);
         expressionGroup.setLayout(new GridLayout());
-        expressionGroup.setText(""); //$NON-NLS-1$
+        expressionGroup.setText(Messages.getString("ExpressionComposite.expression"));  //$NON-NLS-1$
 
         final Composite upperOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
