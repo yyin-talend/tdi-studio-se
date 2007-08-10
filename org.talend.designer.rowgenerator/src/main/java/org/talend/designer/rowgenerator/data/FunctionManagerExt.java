@@ -115,7 +115,8 @@ public class FunctionManagerExt extends FunctionManager {
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
         Function currentFun = null;
         boolean isExsit = false;
-        for (Function function : funs) {
+        for (int i = 0; i < funs.size() && !isExsit; i++) {
+            Function function = funs.get(i);
             if (value != null && value.indexOf(function.getName()) != -1) {
                 isExsit = true;
             }
@@ -134,9 +135,15 @@ public class FunctionManagerExt extends FunctionManager {
                     int indexOf = value.indexOf(function.getName());
                     if (indexOf != -1) {
                         String para = value.substring(indexOf + function.getName().length() + 1, paramLength);
-                        String[] ps = para.split(FUN_PARAM_SEPARATED); //$NON-NLS-1$
-                        if (ps.length == function.getParameters().size()) {
-                            currentFun = (Function) function.clone(ps);
+                        if ("".equals(para)) {
+                            if (function.getParameters().size() == 0) {
+                                currentFun = (Function) function.clone();
+                            }
+                        } else {
+                            String[] ps = para.split(FUN_PARAM_SEPARATED); //$NON-NLS-1$
+                            if (ps.length == function.getParameters().size()) {
+                                currentFun = (Function) function.clone(ps);
+                            }
                         }
                     }
                 }
