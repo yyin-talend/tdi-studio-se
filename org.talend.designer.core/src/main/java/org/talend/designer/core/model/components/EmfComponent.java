@@ -475,6 +475,8 @@ public class EmfComponent implements IComponent {
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);

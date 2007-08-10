@@ -602,7 +602,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 showQueryStoreRepositoryList(false);
             }
         }
+        
+        IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+        if(param != null)
+        {
+            oldPropertyType = (String)param.getValue();
+            if(param.isShow(elem.getElementParameters()))
+            {
+                if(oldPropertyType.equals(EmfComponent.REPOSITORY))
+                {
+                    showPropertyRepositoryList(true);
+                    updateRepositoryList();
+                }
+                else
+                {
+                    showPropertyRepositoryList(false);
+                }                
+            } 
+            else 
+            {
+                showPropertyRepositoryList(false);
+            }
+        }
 
+        /*
         oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (oldPropertyType != null) {
             if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
@@ -611,7 +634,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             } else {
                 showPropertyRepositoryList(false);
             }
-        }
+        }*/
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
