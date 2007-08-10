@@ -71,7 +71,7 @@ if (inMetadata != null && metadata != null) {
 	        String colname = column.getLabel();
 			
 	        if (colname.equals(versionField)) {
-	        	versionType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	        	versionType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 				break;
 	        }
 	    }

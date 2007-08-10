@@ -305,15 +305,17 @@ if (canGenerate) {
 					}
 					
 					// Copy columns defined in input and output schema which are not arguments
-					for (IMetadataColumn inColumn : inMetadata.getListColumns()) {
-						if (column.getLabel().equals(inColumn.getLabel())) {
-							for (int j = 0; j < outConnections.size(); j++) {
-								IConnection connection = outConnections.get(j);
-		    					if (connection.getLineStyle().hasConnectionCategory(
-				    					IConnectionCategory.DATA)) {
-									%>
-									<%=connection.getName()%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
-									<%
+					if (inMetadata != null && inMetadata.getListColumns() != null) {
+						for (IMetadataColumn inColumn : inMetadata.getListColumns()) {
+							if (column.getLabel().equals(inColumn.getLabel())) {
+								for (int j = 0; j < outConnections.size(); j++) {
+									IConnection connection = outConnections.get(j);
+			    					if (connection.getLineStyle().hasConnectionCategory(
+					    					IConnectionCategory.DATA)) {
+										%>
+										<%=connection.getName()%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
+										<%
+									}
 								}
 							}
 						}
