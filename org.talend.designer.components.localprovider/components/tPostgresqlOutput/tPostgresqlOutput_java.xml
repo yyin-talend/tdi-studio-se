@@ -31,9 +31,9 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:POSTGRESQL"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
     <PARAMETER
