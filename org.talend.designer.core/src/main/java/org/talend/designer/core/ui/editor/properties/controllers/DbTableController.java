@@ -338,6 +338,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
         String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
+        connParameters.setQuery("");
 
     }
 
