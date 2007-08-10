@@ -136,7 +136,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
         return null;
     }
-    
+
     IControlCreator cbCtrl = new IControlCreator() {
 
         public Control createControl(final Composite parent, final int style) {
@@ -234,15 +234,18 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return cLayout;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
@@ -305,7 +308,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             combo.setText(curColumnNameList[numValue]);
         }
     }
-    
+
     public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
@@ -422,6 +425,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
                     }
+
+                    setColumnSize(newLine, node, codes);
+
                     newParamValues.add(j, newLine);
                 }
                 paramValues.clear();
@@ -430,7 +436,30 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             }
         }
     }
-    
+
+    /**
+     * DOC bqian Comment method "setSize".
+     * 
+     * @param newLine
+     * @param node
+     * @param codes
+     */
+    private static void setColumnSize(Map<String, Object> newLine, INode node, String[] codes) {
+        if (node.getMetadataList().size() > 0) {
+            IMetadataTable table = node.getMetadataList().get(0);
+            String lineName = (String) newLine.get(codes[0]);
+            for (IMetadataColumn column : table.getListColumns()) {
+                if (lineName.equals(column.getLabel())) {
+                    if (column.getLength() != null && column.getLength().intValue() > 0) {
+                        // codes[1] is "SIZE"
+                        newLine.put(codes[1], column.getLength().toString());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private static List<String> getColumnList(INode node) {
         List<String> columnList = new ArrayList<String>();
 

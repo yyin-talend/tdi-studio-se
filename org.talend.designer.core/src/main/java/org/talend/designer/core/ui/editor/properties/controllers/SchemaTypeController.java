@@ -266,10 +266,12 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             IElementParameter param = node.getElementParameter(propertyName);
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
+
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
                 IMetadataColumn columnCopied = outputMetaCopy.getColumn(column.getLabel());
                 columnCopied.setCustom(column.isCustom());
                 columnCopied.setReadOnly(column.isReadOnly());
+                setColumnLength(node, param, columnCopied);
             }
             outputMetaCopy.setReadOnly(originaleOutputTable.isReadOnly());
             outputReadOnly = prepareReadOnlyTable(outputMetaCopy, param.isReadOnly(), node.isReadOnly());
@@ -417,6 +419,37 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }
         return null;
+    }
+
+    /**
+     * DOC bqian Comment method "setColumnLength".
+     * @param node
+     * @param param
+     * @param columnCopied
+     */
+    private void setColumnLength(Node node, IElementParameter param, IMetadataColumn columnCopied) {
+        for (int i = 0; i < node.getElementParameters().size(); i++) {
+            IElementParameter parameter = node.getElementParameters().get(i);
+            if (parameter.getField() == EParameterFieldType.TABLE) {
+                if (parameter.isBasedOnSchema()) {
+                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) parameter.getValue();
+                    for (Map<String, Object> columnInfo : paramValues) {
+                        if (columnInfo.get("SCHEMA_COLUMN").equals(columnCopied.getLabel())) {
+                            // codes[1] is SIZE;
+                            String size = (String) columnInfo.get("SIZE");
+                            int tmpSize = 0;
+                            if (size == null || size.equals("")) {
+                                tmpSize = -1;
+                            } else {
+                                tmpSize = Integer.parseInt(size);
+                            }
+                            columnCopied.setLength(tmpSize);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
