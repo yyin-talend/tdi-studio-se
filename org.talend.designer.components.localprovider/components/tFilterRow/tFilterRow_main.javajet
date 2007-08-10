@@ -93,7 +93,6 @@ boolean flag=true;
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-System.out.println("meta size = "+metadata.getTableName());
     if (metadata!=null) {
     	columnList = metadata.getListColumns();
         cid = metadata.getTableName();       
@@ -160,10 +159,14 @@ nb_line_<%=cid%>++ ;
 }
 
 if(branch_<%=cid%>_is_active){
+	
 <%
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
  		for(int connNO = 0; connNO < conns.size(); connNO++){
  		  IConnection conn2 = conns.get(connNO);
+%>
+		<%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
+<%
  		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
  		  	for(IMetadataColumn column:columnList){
  		  %>
@@ -174,7 +177,18 @@ if(branch_<%=cid%>_is_active){
  		}
 %>
 }else {
-	continue;
+	<%		
+	 		for(int connNO = 0; connNO < conns.size(); connNO++){
+	 		  IConnection conn2 = conns.get(connNO);
+	 		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+	 		  
+ 		  %>
+ 		   	<%=conn2.getName()%>=null;
+ 		  <% 
+ 		  		
+	 		  }
+	 		}
+	%>
 }
 
 <%
