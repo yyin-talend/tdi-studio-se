@@ -43,7 +43,7 @@ import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
  */
 public class View extends ViewPart {
 
-    public static final String ID = "org.talend.expressionbuilder.view";
+    public static final String ID = "org.talend.expressionbuilder.view"; //$NON-NLS-1$
 
     private TableViewer viewer;
 
@@ -61,7 +61,7 @@ public class View extends ViewPart {
         }
 
         public Object[] getElements(Object parent) {
-            return new String[] { "One", "Two", "Three" };
+            return new String[] { "One", "Two", "Three" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -103,7 +103,7 @@ public class View extends ViewPart {
                 //                dialog.setBlockOnOpen(true);
             }
         };
-        action.setText("expression");
+        action.setText("expression"); //$NON-NLS-1$
         this.getViewSite().getActionBars().getToolBarManager().add(action);
 
     }

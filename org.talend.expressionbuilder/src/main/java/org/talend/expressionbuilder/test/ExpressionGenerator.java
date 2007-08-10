@@ -43,84 +43,84 @@ public class ExpressionGenerator {
         return result;
     }
 
-    protected static final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl;
+    protected static final String NL = nl == null ? (System.getProperties().getProperty("line.separator")) : nl; //$NON-NLS-1$
 
-    protected static final String TEXT_1 = "// ============================================================================"
+    protected static final String TEXT_1 = "// ============================================================================" //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// Talend Community Edition"
+            + "// Talend Community Edition" //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// Copyright (C) 2006-2007 Talend - www.talend.com"
+            + "// Copyright (C) 2006-2007 Talend - www.talend.com" //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// This library is free software; you can redistribute it and/or"
+            + "// This library is free software; you can redistribute it and/or" //$NON-NLS-1$
             + NL
-            + "// modify it under the terms of the GNU Lesser General Public"
+            + "// modify it under the terms of the GNU Lesser General Public" //$NON-NLS-1$
             + NL
-            + "// License as published by the Free Software Foundation; either"
+            + "// License as published by the Free Software Foundation; either" //$NON-NLS-1$
             + NL
-            + "// version 2.1 of the License."
+            + "// version 2.1 of the License." //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// This library is distributed in the hope that it will be useful,"
+            + "// This library is distributed in the hope that it will be useful," //$NON-NLS-1$
             + NL
-            + "// but WITHOUT ANY WARRANTY; without even the implied warranty of"
+            + "// but WITHOUT ANY WARRANTY; without even the implied warranty of" //$NON-NLS-1$
             + NL
-            + "// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU"
+            + "// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU" //$NON-NLS-1$
             + NL
-            + "// Lesser General Public License for more details."
+            + "// Lesser General Public License for more details." //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// You should have received a copy of the GNU General Public License"
+            + "// You should have received a copy of the GNU General Public License" //$NON-NLS-1$
             + NL
-            + "// along with this program; if not, write to the Free Software"
+            + "// along with this program; if not, write to the Free Software" //$NON-NLS-1$
             + NL
-            + "// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA."
+            + "// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA." //$NON-NLS-1$
             + NL
-            + "//"
+            + "//" //$NON-NLS-1$
             + NL
-            + "// ============================================================================";
+            + "// ============================================================================"; //$NON-NLS-1$
 
-    protected static final String TEXT_2 = NL + "package routines;\t" + NL + "" + NL + "import java.io.IOException;"
-            + NL + "import java.io.PrintWriter;" + NL + "import java.net.Socket;" + NL
-            + "import java.net.UnknownHostException;" + NL + "" + NL + "public class ExpressionVariableTest {" + NL
-            + "" + NL + "    private Socket client;" + NL + "" + NL + "    private PrintWriter writer;" + NL + "    ";
+    protected static final String TEXT_2 = NL + "package routines;\t" + NL + "" + NL + "import java.io.IOException;" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + NL + "import java.io.PrintWriter;" + NL + "import java.net.Socket;" + NL //$NON-NLS-1$ //$NON-NLS-2$
+            + "import java.net.UnknownHostException;" + NL + "" + NL + "public class ExpressionVariableTest {" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + "" + NL + "    private Socket client;" + NL + "" + NL + "    private PrintWriter writer;" + NL + "    "; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-    protected static final String TEXT_3 = NL + "    private String ";
+    protected static final String TEXT_3 = NL + "    private String "; //$NON-NLS-1$
 
-    protected static final String TEXT_4 = "=\"";
+    protected static final String TEXT_4 = "=\""; //$NON-NLS-1$
 
-    protected static final String TEXT_5 = "\";" + NL + "    ";
+    protected static final String TEXT_5 = "\";" + NL + "    "; //$NON-NLS-1$ //$NON-NLS-2$
 
     protected static final String TEXT_6 = NL
             + NL
             + NL
-            + "    public ExpressionVariableTest() {"
+            + "    public ExpressionVariableTest() {" //$NON-NLS-1$
             + NL
-            + "        try {"
+            + "        try {" //$NON-NLS-1$
             + NL
-            + "            client = new Socket(\"localhost\", 6666);"
+            + "            client = new Socket(\"localhost\", 6666);" //$NON-NLS-1$
             + NL
-            + "            writer = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(client"
-            + NL + "                    .getOutputStream())), true);" + NL
-            + "        } catch (UnknownHostException e) {" + NL + "            e.printStackTrace();" + NL
-            + "        } catch (IOException e) {" + NL + "            e.printStackTrace();" + NL + "        }" + NL
-            + "" + NL + "    }" + NL + "" + NL + "    private void exec() {" + NL
-            + "        String msg = String.valueOf(";
+            + "            writer = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(client" //$NON-NLS-1$
+            + NL + "                    .getOutputStream())), true);" + NL //$NON-NLS-1$
+            + "        } catch (UnknownHostException e) {" + NL + "            e.printStackTrace();" + NL //$NON-NLS-1$ //$NON-NLS-2$
+            + "        } catch (IOException e) {" + NL + "            e.printStackTrace();" + NL + "        }" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + "" + NL + "    }" + NL + "" + NL + "    private void exec() {" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            + "        String msg = String.valueOf("; //$NON-NLS-1$
 
-    protected static final String TEXT_7 = ");" + NL + "        sendMsg(msg);" + NL + "    }" + NL + "" + NL
-            + "    public void sendMsg(String msg) {" + NL + "        writer.print(msg);" + NL
-            + "        writer.flush();" + NL + "        try {" + NL + "            writer.close();" + NL
-            + "            client.close();" + NL + "            writer = null;" + NL + "            client = null;"
-            + NL + "        } catch (IOException e) {" + NL + "            e.printStackTrace();" + NL + "        }"
-            + NL + "    }" + NL + "" + NL + "    public static void main(String[] args) {" + NL
-            + "\t\tnew ExpressionVariableTest().exec();" + NL + "    }" + NL + "}";
+    protected static final String TEXT_7 = ");" + NL + "        sendMsg(msg);" + NL + "    }" + NL + "" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            + "    public void sendMsg(String msg) {" + NL + "        writer.print(msg);" + NL //$NON-NLS-1$ //$NON-NLS-2$
+            + "        writer.flush();" + NL + "        try {" + NL + "            writer.close();" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + "            client.close();" + NL + "            writer = null;" + NL + "            client = null;" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + NL + "        } catch (IOException e) {" + NL + "            e.printStackTrace();" + NL + "        }" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + NL + "    }" + NL + "" + NL + "    public static void main(String[] args) {" + NL //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            + "\t\tnew ExpressionVariableTest().exec();" + NL + "    }" + NL + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     protected static final String TEXT_8 = NL;
 

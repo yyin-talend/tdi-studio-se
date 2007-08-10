@@ -71,7 +71,7 @@ public class JavaTestShadow {
 
         String expression = ExpressionBuilderDialog.getExpressionComposite().getExpression();
 
-        if (function != null && expression != null && !"".equals(expression)) {
+        if (function != null && expression != null && !"".equals(expression)) { //$NON-NLS-1$
 
             if (serverThread == null || !serverThread.isAlive()) {
                 server = ExpressionTestServer.getInstance(Display.getCurrent(), testResultText);
@@ -79,8 +79,8 @@ public class JavaTestShadow {
                 serverThread.start();
             }
 
-            String methodFullName = map.get(function.getTalendType().getName() + "." + function.getName());
-            String[] fullClassAndMethod = methodFullName.split("\\.");
+            String methodFullName = map.get(function.getTalendType().getName() + "." + function.getName()); //$NON-NLS-1$
+            String[] fullClassAndMethod = methodFullName.split("\\."); //$NON-NLS-1$
 
             String methodName = fullClassAndMethod[fullClassAndMethod.length - 1];
 
@@ -96,8 +96,8 @@ public class JavaTestShadow {
             IWorkspace workspace = ResourcesPlugin.getWorkspace();
             IProject project = workspace.getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
 
-            IFile file = project.getFile(new Path("src/routines/ExpressionVariableTest.java"));
-            IFile classFile = project.getFile(new Path("classes/routines/ExpressionVariableTest.class"));
+            IFile file = project.getFile(new Path("src/routines/ExpressionVariableTest.java")); //$NON-NLS-1$
+            IFile classFile = project.getFile(new Path("classes/routines/ExpressionVariableTest.class")); //$NON-NLS-1$
 
             InputStream in = new ByteArrayInputStream(fileContent.getBytes());
             try {
@@ -130,10 +130,10 @@ public class JavaTestShadow {
                     ITalendCorePrefConstants.JAVA_INTERPRETER);
 
             IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-            IResource javaProject = workSpaceRoot.findMember(".Java");
-            IPath path = javaProject.getLocation().append("classes");
+            IResource javaProject = workSpaceRoot.findMember(".Java"); //$NON-NLS-1$
+            IPath path = javaProject.getLocation().append("classes"); //$NON-NLS-1$
 
-            String[] str = new String[] { javaInterpreter, "-cp", path.toOSString(), "routines.ExpressionVariableTest" };
+            String[] str = new String[] { javaInterpreter, "-cp", path.toOSString(), "routines.ExpressionVariableTest" }; //$NON-NLS-1$ //$NON-NLS-2$
 
             InputStreamReader reader = null;
 

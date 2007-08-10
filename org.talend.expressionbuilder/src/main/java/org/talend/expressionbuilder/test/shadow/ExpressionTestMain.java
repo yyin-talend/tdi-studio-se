@@ -50,13 +50,13 @@ import org.talend.designer.runprocess.ProcessorUtilities;
  */
 public class ExpressionTestMain {
 
-    public final static String EXPRESSION_BUILDER = "Expression_builder";
+    public final static String EXPRESSION_BUILDER = "Expression_builder"; //$NON-NLS-1$
 
     private RowGeneratorComponent component;
 
     private RowGenProcess proc;
 
-    private final String rowNo = "1";
+    private final String rowNo = "1"; //$NON-NLS-1$
 
     private Process process;
 
@@ -84,7 +84,7 @@ public class ExpressionTestMain {
                 JobContextParameter contextParameter = new JobContextParameter();
                 contextParameter.setName(EXPRESSION_BUILDER);
                 contextParameter.setValue(EXPRESSION_BUILDER);
-                contextParameter.setType("String");
+                contextParameter.setType("String"); //$NON-NLS-1$
                 params.add(contextParameter);
                 context2.setContextParameterList(params);
             }

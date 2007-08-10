@@ -19,36 +19,31 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.expressionbuilder.test.shadow;
+package org.talend.expressionbuilder.i18n;
 
-import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: VirtualMetadataColumn.java 下午03:42:46 2007-7-24 +0000 (2007-7-24) yzhang $
+ * $Id: Messages.java 上午10:12:41 2007-8-10 +0000 (2007-8-10) yzhang $
  * 
  */
-public class VirtualMetadataColumn extends MetadataColumnExt {
+public class Messages {
 
-    /**
-     * yzhang VirtualMetadataColumn constructor comment.
-     */
-    public VirtualMetadataColumn() {
-        this.setComment(""); //$NON-NLS-1$
-        this.setDefault(""); //$NON-NLS-1$
-        this.setLabel("newColumn"); //$NON-NLS-1$
-        this.setTalendType("id_String"); //$NON-NLS-1$
-        this.setType(""); //$NON-NLS-1$
-        this.setId(0);
+    private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
-        this.setLength(null);
-        this.setPrecision(null);
-        this.setDefault(""); //$NON-NLS-1$
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-        this.setKey(false);
+    private Messages() {
+    }
 
-        this.setNullable(false);
-        this.setPattern(""); //$NON-NLS-1$
+    public static String getString(String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
+        }
     }
 }

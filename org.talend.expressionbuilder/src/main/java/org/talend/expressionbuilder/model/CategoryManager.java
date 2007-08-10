@@ -30,6 +30,7 @@ import java.util.Map;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.TalendType;
+import org.talend.expressionbuilder.i18n.Messages;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -47,9 +48,9 @@ public class CategoryManager {
         List<Category> categories = convertTypesToCategories(talendTypes);
 
         Category allCategories = new Category();
-        allCategories.setName("*All");
+        allCategories.setName(Messages.getString("CategoryManager.all")); //$NON-NLS-1$
         Category userDefined = new Category();
-        userDefined.setName("*User Defined");
+        userDefined.setName(Messages.getString("CategoryManager.user.defined")); //$NON-NLS-1$
 
         for (Iterator<Category> iter = categories.iterator(); iter.hasNext();) {
             allCategories.addFunctions(iter.next().getFunctions());

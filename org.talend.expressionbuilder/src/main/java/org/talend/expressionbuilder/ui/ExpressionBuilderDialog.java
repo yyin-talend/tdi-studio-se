@@ -48,6 +48,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.IExpressionConsumer;
+import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.xml.sax.SAXException;
@@ -74,7 +75,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     private IExpressionConsumer consumer;
 
-    private String defaultExpression = "";
+    private String defaultExpression = ""; //$NON-NLS-1$
 
     private List<Variable> defaultVariables;
 
@@ -145,15 +146,15 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         buttons.setLayout(new GridLayout(2, false));
 
         final Button importButton = new Button(buttons, SWT.PUSH);
-        importButton.setToolTipText("Import expression and variable(s) from file.");
+        importButton.setToolTipText("");//$NON-NLS-1$
         importButton.setImage(ImageProvider.getImage(EImage.EXPORT_ICON));
 
         final Button exportButton = new Button(buttons, SWT.PUSH);
-        exportButton.setToolTipText("Export expression and variable(s) to file.");
+        exportButton.setToolTipText("");//$NON-NLS-1$
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
-        createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+        createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancle.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
@@ -166,7 +167,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
             public void mouseUp(MouseEvent e) {
 
                 FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
-                dialog.setFilterExtensions(new String[] { "*.xml" });
+                dialog.setFilterExtensions(new String[] { "*.xml" }); //$NON-NLS-1$
 
                 String filePath = dialog.open();
                 if (filePath != null) {
@@ -198,7 +199,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
             @Override
             public void mouseUp(MouseEvent e) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-                dialog.setFilterExtensions(new String[] { "*.xml" });
+                dialog.setFilterExtensions(new String[] { "*.xml" }); //$NON-NLS-1$
 
                 String filePath = dialog.open();
                 if (filePath != null) {
@@ -228,7 +229,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText("Expression Builder");
+        newShell.setText(Messages.getString("ExpressionBuilderDialog.expression.builder"));  //$NON-NLS-1$
     }
 
     protected Point getInitialSize() {

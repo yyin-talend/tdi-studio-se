@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.JavaTestShadow;
 import org.talend.expressionbuilder.test.shadow.ExpressionTestMain;
 import org.talend.expressionbuilder.test.shadow.Variable;
@@ -68,9 +69,9 @@ public class TestComposite extends Composite {
 
     private final Text testResultText;
 
-    private static final String NAME_PROPERTY = "Name";
+    private static final String NAME_PROPERTY = "Name"; //$NON-NLS-1$
 
-    private static final String VALUE_PROPERTY = "Value";
+    private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
     private JavaTestShadow shadow;
 
@@ -86,7 +87,7 @@ public class TestComposite extends Composite {
 
         final Group group = new Group(this, SWT.NONE);
         group.setLayout(new GridLayout());
-        group.setText("Test");
+        group.setText(Messages.getString("TestComposite.test")); //$NON-NLS-1$
 
         final Composite composite = new Composite(group, SWT.NONE);
         composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
@@ -95,10 +96,10 @@ public class TestComposite extends Composite {
         composite.setLayout(fillLayout);
 
         testButton = new Button(composite, SWT.NONE);
-        testButton.setText("Test!");
+        testButton.setText(Messages.getString("TestComposite.test2")); //$NON-NLS-1$
 
         clearButton = new Button(composite, SWT.NONE);
-        clearButton.setText("Clear");
+        clearButton.setText(Messages.getString("TestComposite.clear")); //$NON-NLS-1$
 
         final SashForm sashForm = new SashForm(group, SWT.NONE);
         sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -136,7 +137,7 @@ public class TestComposite extends Composite {
                 } else if (VALUE_PROPERTY.equals(property)) {
                     return ((Variable) element).getValue();
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             /*
@@ -167,11 +168,11 @@ public class TestComposite extends Composite {
 
         final TableColumn varColumn = new TableColumn(table, SWT.NONE);
         varColumn.setWidth(100);
-        varColumn.setText("Var");
+        varColumn.setText(Messages.getString("TestComposite.var")); //$NON-NLS-1$
 
         final TableColumn valueColumn = new TableColumn(table, SWT.NONE);
         valueColumn.setWidth(100);
-        valueColumn.setText("Value");
+        valueColumn.setText(Messages.getString("TestComposite.value")); //$NON-NLS-1$
 
         testResultText = new Text(sashForm, SWT.MULTI | SWT.BORDER | SWT.WRAP);
 
@@ -180,11 +181,11 @@ public class TestComposite extends Composite {
         buttonPart.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
         buttonAddVar = new Button(buttonPart, SWT.NONE);
-        buttonAddVar.setText("Add");
+        buttonAddVar.setText(Messages.getString("TestComposite.add")); //$NON-NLS-1$
         buttonAddVar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
         buttonRemoveVar = new Button(buttonPart, SWT.NONE);
-        buttonRemoveVar.setText("Remove");
+        buttonRemoveVar.setText(Messages.getString("TestComposite.remove")); //$NON-NLS-1$
         buttonRemoveVar.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
         sashForm.setWeights(new int[] { 1, 1 });
 
@@ -260,7 +261,7 @@ public class TestComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                testResultText.setText("");
+                testResultText.setText(""); //$NON-NLS-1$
             }
         });
 

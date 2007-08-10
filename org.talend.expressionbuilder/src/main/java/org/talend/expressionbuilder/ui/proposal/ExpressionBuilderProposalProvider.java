@@ -51,10 +51,10 @@ public class ExpressionBuilderProposalProvider implements IContentProposalProvid
     public IContentProposal[] getProposals(String contents, int position) {
         String sub = contents.substring(0, position);
 
-        if (sub.endsWith(" ") || sub.endsWith("+")) {
-            sub = "*C";
+        if (sub.endsWith(" ") || sub.endsWith("+")) { //$NON-NLS-1$ //$NON-NLS-2$
+            sub = "*C"; //$NON-NLS-1$
         } else {
-            String[] arrays = sub.split("\" \"|\\+");
+            String[] arrays = sub.split("\" \"|\\+"); //$NON-NLS-1$
             sub = arrays[arrays.length - 1].trim();
         }
 

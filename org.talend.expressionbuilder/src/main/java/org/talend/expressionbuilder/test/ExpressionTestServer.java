@@ -115,7 +115,7 @@ public class ExpressionTestServer implements Runnable {
     public void stop() {
         stop = true;
         try {
-            new Socket("localhost", 6666);
+            new Socket("localhost", 6666); //$NON-NLS-1$
         } catch (UnknownHostException e) {
             RuntimeExceptionHandler.process(e);
         } catch (IOException e) {
@@ -186,7 +186,7 @@ public class ExpressionTestServer implements Runnable {
                     display.syncExec(new Runnable() {
 
                         public void run() {
-                            StringBuffer buffer = new StringBuffer("Error: " + e.getMessage() + "\n");
+                            StringBuffer buffer = new StringBuffer("Error: " + e.getMessage() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
                             buffer.append(resultDisplay.getText());
                             resultDisplay.setText(buffer.toString());
 

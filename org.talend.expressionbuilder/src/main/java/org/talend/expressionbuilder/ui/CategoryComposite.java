@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
+import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.Category;
 import org.talend.expressionbuilder.model.CategoryManager;
 import org.talend.expressionbuilder.test.shadow.Variable;
@@ -105,7 +106,7 @@ public class CategoryComposite extends Composite {
 
         final CLabel categoryLabel = new CLabel(composite, SWT.SHADOW_OUT);
         categoryLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        categoryLabel.setText("Category");
+        categoryLabel.setText(Messages.getString("CategoryComposite.category")); //$NON-NLS-1$
 
         final ListViewer categoryViewer = new ListViewer(composite, SWT.V_SCROLL | SWT.H_SCROLL);
         categoryViewer.setLabelProvider(new LabelProvider() {
@@ -128,7 +129,7 @@ public class CategoryComposite extends Composite {
 
         final CLabel functionLabel = new CLabel(composite1, SWT.SHADOW_OUT);
         functionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        functionLabel.setText("Functions");
+        functionLabel.setText(Messages.getString("CategoryComposite.functions")); //$NON-NLS-1$
 
         final ListViewer functionViewer = new ListViewer(composite1, SWT.V_SCROLL | SWT.H_SCROLL);
         functionViewer.setContentProvider(new ArrayContentProvider());
@@ -193,7 +194,7 @@ public class CategoryComposite extends Composite {
                         Category category = (Category) ((IStructuredSelection) event.getSelection()).getFirstElement();
                         functionViewer.setInput(category.getFunctions());
                         if (category.getFunctions().isEmpty()) {
-                            docDisplayer.setText("");
+                            docDisplayer.setText(""); //$NON-NLS-1$
                             return;
                         }
                         functionViewer.setSelection(new StructuredSelection(category.getFunctions().get(0)));
@@ -210,7 +211,7 @@ public class CategoryComposite extends Composite {
                     if (function != null && function.getDescription() != null) {
                         docDisplayer.setText(function.getDescription());
                     } else {
-                        docDisplayer.setText("");
+                        docDisplayer.setText(""); //$NON-NLS-1$
                     }
                 }
 
@@ -230,7 +231,7 @@ public class CategoryComposite extends Composite {
                             column.setFunction(function);
                             expressComposite.setExpression(FunctionManagerExt.getOneColData(column), true);
                         } else {
-                            docDisplayer.setText("");
+                            docDisplayer.setText(""); //$NON-NLS-1$
                         }
 
                     } catch (Exception e) {
@@ -254,13 +255,13 @@ public class CategoryComposite extends Composite {
         String function = null;
 
         boolean displayFunction = false;
-        if (categoryFunction.indexOf(".") != -1) {
-            String[] cf = categoryFunction.split("\\.");
+        if (categoryFunction.indexOf(".") != -1) { //$NON-NLS-1$
+            String[] cf = categoryFunction.split("\\."); //$NON-NLS-1$
             StringBuffer buffer = new StringBuffer();
             for (int i = 0; i < cf.length - 1; i++) {
                 buffer.append(cf[i]);
                 if (i != cf.length - 2) {
-                    buffer.append(".");
+                    buffer.append("."); //$NON-NLS-1$
                 }
             }
             if (cf.length == 1) {
@@ -279,12 +280,12 @@ public class CategoryComposite extends Composite {
         java.util.List<IContentProposal> proposals = new LinkedList<IContentProposal>();
         java.util.List<Category> categories = manager.getInputCategory();
 
-        boolean addAllCategory = category.equals("*C") ? true : false;
+        boolean addAllCategory = category.equals("*C") ? true : false; //$NON-NLS-1$
 
         if (!displayFunction) {
             for (Category cg : categories) {
-                if (!cg.getName().startsWith("*") && (addAllCategory || cg.getName().startsWith(category))) {
-                    proposals.add(new ExpressionContentProposal(cg.getName(), "", position));
+                if (!cg.getName().startsWith("*") && (addAllCategory || cg.getName().startsWith(category))) { //$NON-NLS-1$
+                    proposals.add(new ExpressionContentProposal(cg.getName(), "", position)); //$NON-NLS-1$
                 }
             }
 
@@ -303,7 +304,7 @@ public class CategoryComposite extends Composite {
 
                     for (Function fun : funs) {
                         if (addAll || fun.getName().startsWith(function)) {
-                            proposals.add(new ExpressionContentProposal(fun.getName() + "()", fun.getDescription(),
+                            proposals.add(new ExpressionContentProposal(fun.getName() + "()", fun.getDescription(), //$NON-NLS-1$
                                     position));
                         }
                     }
@@ -315,7 +316,7 @@ public class CategoryComposite extends Composite {
 
         String replaceString;
         if (displayFunction) {
-            replaceString = function == null ? "" : function;
+            replaceString = function == null ? "" : function; //$NON-NLS-1$
         } else {
             replaceString = category;
         }

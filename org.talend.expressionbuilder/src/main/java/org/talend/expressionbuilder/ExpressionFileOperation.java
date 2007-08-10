@@ -38,6 +38,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.xml.XSDValidator;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -66,7 +67,7 @@ public class ExpressionFileOperation {
 
     private static final String SCHEMA_XSD = "talend_expression_variables_schema.xsd"; //$NON-NLS-1$
 
-    private static final String PLUGIN_ID = "org.talend.expressionbuilder";
+    private static final String PLUGIN_ID = "org.talend.expressionbuilder"; //$NON-NLS-1$
 
     /**
      * yzhang Comment method "savingExpression".
@@ -109,7 +110,7 @@ public class ExpressionFileOperation {
         Element expressionElement = document.createElement("expression"); //$NON-NLS-1$
         document.appendChild(expressionElement);
 
-        Attr content = document.createAttribute("content");
+        Attr content = document.createAttribute(Messages.getString("ExpressionFileOperation.content")); //$NON-NLS-1$
         content.setNodeValue(expressionContent);
         expressionElement.setAttributeNode(content);
 
@@ -118,11 +119,11 @@ public class ExpressionFileOperation {
             Element variableElement = document.createElement("variable"); //$NON-NLS-1$
             expressionElement.appendChild(variableElement);
 
-            Attr name = document.createAttribute("name");
+            Attr name = document.createAttribute(Messages.getString("ExpressionFileOperation.name")); //$NON-NLS-1$
             name.setNodeValue(variable.getName());
             variableElement.setAttributeNode(name);
 
-            Attr value = document.createAttribute("value");
+            Attr value = document.createAttribute(Messages.getString("ExpressionFileOperation.value")); //$NON-NLS-1$
             value.setNodeValue(variable.getValue());
             variableElement.setAttributeNode(value);
 
@@ -159,24 +160,24 @@ public class ExpressionFileOperation {
             final File schema = new File(url.getPath());
             final Document document = XSDValidator.checkXSD(file, schema);
 
-            final NodeList expressionNodes = document.getElementsByTagName("expression");
+            final NodeList expressionNodes = document.getElementsByTagName(Messages.getString("ExpressionFileOperation.expression")); //$NON-NLS-1$
             if (expressionNodes.getLength() == 1) {
 
                 Node expressionNode = expressionNodes.item(0);
                 NamedNodeMap epxressionAttrs = expressionNode.getAttributes();
-                Node contentNode = epxressionAttrs.getNamedItem("content");
+                Node contentNode = epxressionAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.content")); //$NON-NLS-1$
                 list.add(contentNode.getNodeValue());
 
             }
 
-            final NodeList variableNodes = document.getElementsByTagName("variable");
+            final NodeList variableNodes = document.getElementsByTagName(Messages.getString("ExpressionFileOperation.variable")); //$NON-NLS-1$
             for (int i = 0; i < variableNodes.getLength(); i++) {
 
                 Node variableNode = variableNodes.item(i);
                 NamedNodeMap varAttrs = variableNode.getAttributes();
 
-                Node nameNode = varAttrs.getNamedItem("name");
-                Node valueNode = varAttrs.getNamedItem("value");
+                Node nameNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.name")); //$NON-NLS-1$
+                Node valueNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.value")); //$NON-NLS-1$
 
                 Variable variable = new Variable();
                 variable.setName(nameNode.getNodeValue());

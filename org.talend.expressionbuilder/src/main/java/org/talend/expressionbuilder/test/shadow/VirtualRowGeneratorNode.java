@@ -49,7 +49,7 @@ import org.talend.expressionbuilder.ui.ExpressionComposite;
  */
 public class VirtualRowGeneratorNode extends RowGeneratorComponent {
 
-    private static final String ROW_GENERATOR = "tRowGenerator";
+    private static final String ROW_GENERATOR = "tRowGenerator"; //$NON-NLS-1$
 
     private List<IElementParameter> parameters;
 
@@ -64,7 +64,7 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
         setComponent(compFac.get(ROW_GENERATOR));
 
         IMetadataTable m1 = new MetadataTable();
-        m1.setTableName("tRowGenerator_1");
+        m1.setTableName("tRowGenerator_1"); //$NON-NLS-1$
         List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
         VirtualMetadataColumn column = new VirtualMetadataColumn();
         column.setFunction(function);
@@ -75,9 +75,9 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
         metadatas.add(m1);
         setMetadataList(metadatas);
 
-        TextElementParameter p1 = new TextElementParameter("NB_ROWS", "1");
-        ObjectElementParameter p2 = new ObjectElementParameter("VALUES", getArray());
-        p2.setListItemsDisplayCodeName(new String[] { "SCHEMA_COLUMN", "ARRAY" });
+        TextElementParameter p1 = new TextElementParameter("NB_ROWS", "1"); //$NON-NLS-1$ //$NON-NLS-2$
+        ObjectElementParameter p2 = new ObjectElementParameter("VALUES", getArray()); //$NON-NLS-1$
+        p2.setListItemsDisplayCodeName(new String[] { "SCHEMA_COLUMN", "ARRAY" }); //$NON-NLS-1$ //$NON-NLS-2$
 
         parameters = new ArrayList<IElementParameter>();
         parameters.add(p1);
@@ -85,7 +85,7 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
 
         setElementParameters(parameters);
 
-        setUniqueName(ROW_GENERATOR + "_1");
+        setUniqueName(ROW_GENERATOR + "_1"); //$NON-NLS-1$
 
     }
 
@@ -102,9 +102,9 @@ public class VirtualRowGeneratorNode extends RowGeneratorComponent {
             List<Variable> variables = ExpressionBuilderDialog.getTestComposite().getVariableList();
             String expression = ExpressionBuilderDialog.getExpressionComposite().getExpression();
             for (Variable var : variables) {
-                expression = expression.replaceAll(var.getName(), "\"" + var.getValue() + "\"");
+                expression = expression.replaceAll(var.getName(), "\"" + var.getValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            value.put(RowGeneratorComponent.ARRAY, expression + "+\"\"");
+            value.put(RowGeneratorComponent.ARRAY, expression + "+\"\""); //$NON-NLS-1$
             map.add(value);
         }
 
