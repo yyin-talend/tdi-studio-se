@@ -41,6 +41,8 @@ import org.talend.core.model.process.IPerformance;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * Class that define the connection. It's the model part of the Gef element <br/>
@@ -91,14 +93,6 @@ public class Connection extends Element implements IConnection, IPerformance {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
-    // // used only when loading a process
-    // public Connection(Node source, Node target, String connectorName, String metaName, String linkName,
-    // String uniqueName) {
-    // this.uniqueName = uniqueName;
-    // init(source, target, source.getConnectorFromName(connectorName).getDefaultConnectionType(), connectorName,
-    // metaName, linkName);
-    // }
-
     // used only when loading a process && connection creation
     public Connection(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName,
             String linkName, String uniqueName) {
@@ -116,6 +110,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.metaName = metaName;
         if (lineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             trace = new ConnectionTrace(this);
+            createMeterParameters((Process) source.getProcess());
         }
         setName(linkName);
         reconnect(source, target, lineStyle);
@@ -132,6 +127,41 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setNumRow(1);
             addElementParameter(param);
         }
+    }
+
+    private void createMeterParameters(Process process) {
+        IElementParameter param = new ElementParameter(this);
+        param.setName("MONITOR_CONNECTION");
+        param.setDisplayName("Monitor this connection");
+        param.setField(EParameterFieldType.CHECK);
+        param.setValue(Boolean.FALSE);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setShow(true);
+        param.setNumRow(1);
+        addElementParameter(param);
+        Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
+        for (IElementParameter curParam : meterAttached.getElementParameters()) {
+            if (curParam.getCategory() == EComponentCategory.PROPERTY) {
+                curParam.setCategory(EComponentCategory.MAIN);
+                curParam.setNumRow(curParam.getNumRow() + 1);
+                if (curParam.getShowIf() == null || curParam.getShowIf().equals("")) {
+                    curParam.setShowIf("MONITOR_CONNECTION == 'true'");
+                } else {
+                    curParam.setShowIf("(" + curParam.getShowIf() + " and MONITOR_CONNECTION == 'true')");
+                }
+                addElementParameter(curParam);
+            }
+        }
+        param = new ElementParameter(this);
+        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+        param.setValue(new Boolean(false));
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        addElementParameter(param);
     }
 
     @Override

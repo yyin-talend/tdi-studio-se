@@ -49,6 +49,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -109,8 +110,10 @@ public class TableController extends AbstractElementPropertySectionController {
         tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
-                Node node = (Node) elem;
-                node.checkAndRefreshNode();
+                if (elem instanceof Node) {
+                    Node node = (Node) elem;
+                    node.checkAndRefreshNode();
+                }
             }
         });
         final Composite mainComposite = tableEditorView.getMainComposite();
@@ -192,7 +195,7 @@ public class TableController extends AbstractElementPropertySectionController {
                 + table.getItemHeight() + 50;
         int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
                 + 50;
-        
+
         tableEditorView.getMainComposite().dispose();
 
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
@@ -225,7 +228,11 @@ public class TableController extends AbstractElementPropertySectionController {
     }
 
     private void updateTableValues(IElementParameter param) {
-        DbTypeListController.updateDbTypeList((Node) elem, null);
+        if (elem instanceof Node) {
+            DbTypeListController.updateDbTypeList((Node) elem, null);
+        } else if (elem instanceof Connection) {
+            DbTypeListController.updateDbTypeList(((Connection) elem).getSource(), null);
+        }
         updateColumnList(param);
         updateContextList(param);
         updateConnectionList(param);
@@ -233,7 +240,11 @@ public class TableController extends AbstractElementPropertySectionController {
     }
 
     private void updateColumnList(IElementParameter param) {
-        ColumnListController.updateColumnList((Node) elem, null);
+        if (elem instanceof Node) {
+            ColumnListController.updateColumnList((Node) elem, null);
+        } else if (elem instanceof Connection) {
+            ColumnListController.updateColumnList(((Connection) elem).getSource(), null);
+        }
 
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
         Object[] itemsValue = (Object[]) param.getListItemsValue();

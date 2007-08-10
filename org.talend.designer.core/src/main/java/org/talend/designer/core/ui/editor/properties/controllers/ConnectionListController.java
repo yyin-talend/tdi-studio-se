@@ -48,6 +48,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
@@ -109,7 +110,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
         return null;
     }
-    
+
     IControlCreator cbCtrl = new IControlCreator() {
 
         public Control createControl(final Composite parent, final int style) {
@@ -191,15 +192,18 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         return cLayout;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
@@ -227,14 +231,14 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     public void refresh(IElementParameter param, boolean check) {
         updateConnectionList(elem, param, param.getFilter());
 
-        String[] curComponentNameList = param.getListItemsDisplayName();
-        String[] curComponentValueList = (String[]) param.getListItemsValue();
+        String[] curConnectionNameList = param.getListItemsDisplayName();
+        String[] curConnectionValueList = (String[]) param.getListItemsValue();
 
         Object value = param.getValue();
         boolean listContainValue = false;
         int numValue = 0;
-        for (int i = 0; i < curComponentValueList.length && !listContainValue; i++) {
-            if (curComponentValueList[i].equals(value)) {
+        for (int i = 0; i < curConnectionValueList.length && !listContainValue; i++) {
+            if (curConnectionValueList[i].equals(value)) {
                 listContainValue = true;
                 numValue = i;
             }
@@ -242,33 +246,40 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
-        combo.setItems(curComponentNameList);
-        if (!listContainValue) {
-            if (curComponentNameList.length > 0) {
-                elem.setPropertyValue(param.getName(), curComponentNameList[0]);
-                combo.setText(curComponentNameList[0]);
+        if (combo != null) {
+            combo.setItems(curConnectionNameList);
+            if (!listContainValue) {
+                if (curConnectionNameList.length > 0) {
+                    elem.setPropertyValue(param.getName(), curConnectionNameList[0]);
+                    combo.setText(curConnectionNameList[0]);
+                }
+            } else {
+                combo.setText(curConnectionNameList[numValue]);
             }
-        } else {
-            combo.setText(curComponentNameList[numValue]);
         }
     }
 
     public static void updateConnectionList(Element elem, IElementParameter param, String filter) {
+        IConnection[] connections;
         if (elem instanceof Node) {
-            IConnection[] connections = ((Node) elem).getProcess().getAllConnections(filter);
-
-            String[] connectionNames = new String[connections.length];
-            for (int i = 0; i < connectionNames.length; i++) {
-                connectionNames[i] = connections[i].getUniqueName();
-            }
-
-            Arrays.sort(connectionNames);
-
-            String[] connectionNameList = connectionNames;
-            String[] connectionValueList = connectionNames;
-
-            param.setListItemsDisplayName(connectionNameList);
-            param.setListItemsValue(connectionValueList);
+            connections = ((Node) elem).getProcess().getAllConnections(filter);
+        } else if (elem instanceof Connection) {
+            connections = ((Connection) elem).getSource().getProcess().getAllConnections(filter);
+        } else {
+            return;
         }
+
+        String[] connectionNames = new String[connections.length];
+        for (int i = 0; i < connectionNames.length; i++) {
+            connectionNames[i] = connections[i].getUniqueName();
+        }
+
+        Arrays.sort(connectionNames);
+
+        String[] connectionNameList = connectionNames;
+        String[] connectionValueList = connectionNames;
+
+        param.setListItemsDisplayName(connectionNameList);
+        param.setListItemsValue(connectionValueList);
     }
 }

@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;
@@ -323,6 +322,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
         }
+
     }
 
     private String getRepositoryAliasName(ConnectionItem connectionItem) {
@@ -582,10 +582,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      */
     private boolean checkErrorsWhenViewRefreshed;
 
+    public void addComponents(boolean forceRedraw) {
+        addComponents(forceRedraw, true);
+    }
+
     /**
      * Initialize all components for the defined section for this node.
      */
-    public void addComponents(boolean forceRedraw) {
+    public void addComponents(boolean forceRedraw, boolean reInitialize) {
         registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
@@ -697,12 +701,23 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         Control lastControl = null;
-
-        if (currentComponent != null) {
-            Control[] ct = composite.getChildren();
-            for (int i = 0; i < ct.length; i++) {
-                ct[i].dispose();
+        if (reInitialize) {
+            if (currentComponent != null) {
+                Control[] ct = composite.getChildren();
+                for (int i = 0; i < ct.length; i++) {
+                    ct[i].dispose();
+                }
             }
+        } else {
+            Control[] ct = composite.getChildren();
+            int curY = 0, maxY = 0;
+            for (int i = 0; i < ct.length; i++) {
+                curY = ct[i].getLocation().y + ct[i].computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+                if (curY > maxY) {
+                    maxY = curY;
+                }
+            }
+            heightSize = maxY;
         }
 
         hashCurControls = new DualHashBidiMap();
@@ -765,7 +780,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             // System.out.println("--- DIVIDED ADDITIONAL HEIGHT (for each dynamic):" + additionalHeightSize);
         }
 
-        curRowSize = 0;
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
@@ -780,7 +794,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
             numInRow = 0;
             lastControl = null;
-
+            curRowSize = 0;
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
@@ -837,13 +851,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * eclipse functions.
      */
     private void resizeScrolledComposite() {
-        Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        try {
+            Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        lastCompositeSize = getTabbedPropertyComposite().getClientArea().height;
+            lastCompositeSize = getTabbedPropertyComposite().getClientArea().height;
 
-        TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
-        compositeSize.y += tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-        tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);
+            TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
+            compositeSize.y += tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+            tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);
+        } catch (org.eclipse.swt.SWTException e) {
+            // nothing
+        }
     }
 
     /*

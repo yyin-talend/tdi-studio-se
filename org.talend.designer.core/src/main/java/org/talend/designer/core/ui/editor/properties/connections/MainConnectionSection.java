@@ -59,28 +59,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         super(EComponentCategory.MAIN);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection#refresh()
-     */
-    @Override
-    public void refresh() {
-        if (conIf()) {
-            super.refresh();
-            return;
-        }
-
-//        if (conSchema()) {
-//            IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-//            metadataTableEditor.setMetadataTable(outputMetaTable);
-//            metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-//            metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
-//
-//            composite.getParent().layout();
-//        }
-    }
-
     @Override
     public void addComponents(boolean forceRedraw) {
 
@@ -112,8 +90,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             if (outputMetaTable != null) {
-                //Composite compositeEditorView = new Composite(composite, SWT.BORDER);
-                //compositeEditorView.setLayoutData(data);
+                // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
+                // compositeEditorView.setLayoutData(data);
                 
                 metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
                         + ((Connection) elem).getSource().getElementName() + " output ");
@@ -129,7 +107,10 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                 compositeEditorView.setLayoutData(data);
                 compositeEditorView.getParent().layout();
             }
-            //composite.layout();
+            super.addComponents(forceRedraw, false);
+            if (forceRedraw) {
+                refresh();
+            }
         } else if (conIf()) {
             super.addComponents(forceRedraw);
             if (forceRedraw) {

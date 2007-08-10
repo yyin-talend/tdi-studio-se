@@ -44,6 +44,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -132,32 +133,90 @@ public class DataProcess {
 
         DataConnection dataConnec;
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-            dataConnec = new DataConnection();
-            dataConnec.setActivate(connection.isActivate());
-            dataConnec.setLineStyle(connection.getLineStyle());
-            if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER))
-                    && (connection.getTarget().getMetadataList().size() > 0)) {
-                dataConnec.setMetadataTable(connection.getTarget().getMetadataList().get(0));
+            IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
+            if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
+                    && ((Boolean) monitorParam.getValue())) {
+                addvFlowMeterBetween(dataNode, buildfromNode((Node) connection.getTarget()), connection, graphicalNode
+                        .getProcess(), connection.getElementParameters());
             } else {
-                dataConnec.setMetadataTable(connection.getMetadataTable());
+                dataConnec = new DataConnection();
+                dataConnec.setActivate(connection.isActivate());
+                dataConnec.setLineStyle(connection.getLineStyle());
+                if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER))
+                        && (connection.getTarget().getMetadataList().size() > 0)) {
+                    dataConnec.setMetadataTable(connection.getTarget().getMetadataList().get(0));
+                } else {
+                    dataConnec.setMetadataTable(connection.getMetadataTable());
+                }
+                dataConnec.setName(connection.getName());
+                dataConnec.setUniqueName(connection.getUniqueName());
+                dataConnec.setSource(dataNode);
+                dataConnec.setCondition(connection.getCondition());
+                dataConnec.setConnectorName(connection.getConnectorName());
+                dataConnec.setInputId(connection.getInputId());
+                INode target = buildfromNode((Node) connection.getTarget());
+                dataConnec.setTarget(target);
+                incomingConnections = (List<IConnection>) target.getIncomingConnections();
+                if (incomingConnections == null) {
+                    incomingConnections = new ArrayList<IConnection>();
+                }
+                outgoingConnections.add(dataConnec);
+                incomingConnections.add(dataConnec);
             }
-            dataConnec.setName(connection.getName());
-            dataConnec.setUniqueName(connection.getUniqueName());
-            dataConnec.setSource(dataNode);
-            dataConnec.setCondition(connection.getCondition());
-            dataConnec.setConnectorName(connection.getConnectorName());
-            dataConnec.setInputId(connection.getInputId());
-            INode target = buildfromNode((Node) connection.getTarget());
-            dataConnec.setTarget(target);
-            incomingConnections = (List<IConnection>) target.getIncomingConnections();
-            if (incomingConnections == null) {
-                incomingConnections = new ArrayList<IConnection>();
-            }
-            outgoingConnections.add(dataConnec);
-            incomingConnections.add(dataConnec);
         }
 
         return dataNode;
+    }
+
+    private static INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection,
+            IProcess process, List<? extends IElementParameter> parameters) {
+        // from current node to vFlowMeter node.
+        DataConnection dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+            dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
+        } else {
+            dataConnec.setLineStyle(connection.getLineStyle());
+        }
+        dataConnec.setMetadataTable(connection.getMetadataTable());
+        dataConnec.setName(connection.getName());
+        dataConnec.setUniqueName(connection.getUniqueName());
+        dataConnec.setSource(sourceNode);
+        dataConnec.setCondition(connection.getCondition());
+        dataConnec.setConnectorName(connection.getConnectorName());
+        dataConnec.setInputId(connection.getInputId());
+        DataNode meterNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), "vFlowMeter_"
+                + connection.getUniqueName());
+        meterNode.getMetadataList().get(0).setListColumns(connection.getMetadataTable().getListColumns());
+        meterNode.setActivate(connection.isActivate());
+        meterNode.setProcess(process);
+        for (IElementParameter param : parameters) {
+            IElementParameter meterParam = meterNode.getElementParameter(param.getName());
+            if (meterParam != null) {
+                meterParam.setValue(param.getValue());
+            }
+        }
+        dataConnec.setTarget(meterNode);
+        ((List<IConnection>) meterNode.getIncomingConnections()).add(dataConnec);
+        ((List<IConnection>) sourceNode.getOutgoingConnections()).add(dataConnec);
+        dataNodeList.add(meterNode);
+
+        // from vFlowMeter node to next node.
+        dataConnec = new DataConnection();
+        dataConnec.setActivate(connection.isActivate());
+        dataConnec.setLineStyle(connection.getLineStyle());
+        dataConnec.setMetadataTable(meterNode.getMetadataList().get(0));
+        dataConnec.setName("meterRow" + connection.getName());
+        dataConnec.setUniqueName("meterRow" + connection.getUniqueName());
+        dataConnec.setSource(meterNode);
+        dataConnec.setCondition(connection.getCondition());
+        dataConnec.setConnectorName(connection.getConnectorName());
+        dataConnec.setInputId(connection.getInputId());
+        dataConnec.setTarget(targetNode);
+        ((List<IConnection>) targetNode.getIncomingConnections()).add(dataConnec);
+        ((List<IConnection>) meterNode.getOutgoingConnections()).add(dataConnec);
+
+        return meterNode;
     }
 
     /**
@@ -535,10 +594,36 @@ public class DataProcess {
                 // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
-                outgoingConnections = (List<IConnection>) refSource.getOutgoingConnections();
-                outgoingConnections.add(dataConnec);
-                incomingConnections = (List<IConnection>) hashNode.getIncomingConnections();
-                incomingConnections.add(dataConnec);
+
+                IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
+                // if there is a monitor on this connection, then add the vFlowMeter and move the base lookup connection
+                // source from "graphicalNode" to the new meterNode.
+                if (monitorParam != null && ((Boolean) monitorParam.getValue())) {
+                    INode meterNode = addvFlowMeterBetween(refSource, hashNode, dataConnec, graphicalNode.getProcess(),
+                            connection.getElementParameters());
+                    // move the FLOW_REF link from "refSource" to the "meterNode".
+                    List<IConnection> connectionRefList = (List<IConnection>) refSource
+                            .getOutgoingConnections(EConnectionType.FLOW_REF);
+                    IConnection connecToMove = null;
+                    for (IConnection curConnection : connectionRefList) {
+                        if (curConnection.getSource().equals(buildCheckMap.get(connection.getSource()))
+                                && curConnection.getTarget().equals(buildCheckMap.get(connection.getTarget()))) {
+                            connecToMove = curConnection;
+                        }
+                    }
+                    if (connecToMove != null) {
+                        ((List<IConnection>) refSource.getOutgoingConnections()).remove(connecToMove);
+                        ((List<IConnection>) meterNode.getOutgoingConnections()).add(connecToMove);
+                        ((DataConnection) connecToMove).setSource(meterNode);
+                        ((DataConnection) connecToMove).setName("meterRow" + connecToMove.getName());
+                        ((DataConnection) connecToMove).setUniqueName("meterRow" + connecToMove.getUniqueName());
+                    }
+                } else {
+                    outgoingConnections = (List<IConnection>) refSource.getOutgoingConnections();
+                    outgoingConnections.add(dataConnec);
+                    incomingConnections = (List<IConnection>) hashNode.getIncomingConnections();
+                    incomingConnections.add(dataConnec);
+                }
             }
             checkFlowRefLink((Node) connection.getTarget());
         }
