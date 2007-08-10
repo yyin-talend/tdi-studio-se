@@ -53,7 +53,13 @@ public class CategoryManager {
         userDefined.setName(Messages.getString("CategoryManager.user.defined")); //$NON-NLS-1$
 
         for (Iterator<Category> iter = categories.iterator(); iter.hasNext();) {
-            allCategories.addFunctions(iter.next().getFunctions());
+            final List<Function> functions = iter.next().getFunctions();
+            allCategories.addFunctions(functions);
+            for (Function function : functions) {
+                if (function.isUserDefined()) {
+                    userDefined.addFunctions(function);
+                }
+            }
         }
 
         List<Category> input = new ArrayList<Category>();
