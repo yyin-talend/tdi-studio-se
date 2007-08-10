@@ -34,9 +34,11 @@ import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -112,13 +114,17 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
 
         // Stores the path of component icon.
         picFilePathMap.put(componentIconFileName, relativePath);
-        componentElement.addAttribute("label", uniqueName);
+        List<? extends IElementParameter> elementParameters = node.getElementParameters();
+
+        String componentLabel = getLabelFromElemParameters(elementParameters);
+
+        componentElement.addAttribute("label", componentLabel == null ? "" : componentLabel);
 
         String previewImagePath, storedPreviewImagePath = "";
 
         // If component is external node component, gets its preview picture.
         if (isExternalNodeComponent) {
-            previewImagePath = getPreviewImagePath(node.getElementParameters());
+            previewImagePath = getPreviewImagePath(elementParameters);
             if (!previewImagePath.equals("")) {
                 IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY,
                         previewImagePath);
@@ -162,6 +168,23 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
         componentTypeElement.setText(HTMLDocUtils.checkString(node.getComponent().getName()));
 
         return componentElement;
+    }
+
+    /**
+     * Gets the value of Label format.
+     * 
+     * @param elementParameters
+     * @return
+     */
+    private String getLabelFromElemParameters(List<? extends IElementParameter> elementParameters) {
+
+        for (IElementParameter parameter : elementParameters) {
+            if (parameter.getCategory() == EComponentCategory.VIEW && parameter.getName().equals("LABEL")) {
+                return parameter.getValue().toString();
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -217,6 +240,6 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
         // boolean isExternalNode = true;
         // if (isExternalNode) {
         // schemasElement.addElement("componentName", node.getProcess().getLabel());
-        //        }
+        // }
     }
 }

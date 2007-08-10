@@ -53,6 +53,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.repository.RepositoryPlugin;
@@ -223,9 +224,9 @@ public class HTMLDocGenerator {
 
         Document document = DocumentHelper.createDocument();
         Element projectElement = generateProjectInfo(document);
-
+        
         Element jobElement = generateJobInfo(processItem, projectElement);
-
+        
         List<List> allList = seperateNodes(processItem);
         List<INode> allComponentsList = allList.get(0);
         List<INode> internalNodeComponentsList = allList.get(1);
@@ -369,20 +370,22 @@ public class HTMLDocGenerator {
     private Element generateJobInfo(ProcessItem processItem, Element projectElement) {
 
         picFilePathMap = new HashMap<String, String>();
-        IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
-        String jobName = process.getLabel();
+//        IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
+        
+        Property property = processItem.getProperty();
+        String jobName = property.getLabel();
         Element jobElement = projectElement.addElement("job");
         jobElement.addAttribute("name", HTMLDocUtils.checkString(jobName));
+        
+        jobElement.addAttribute("author", HTMLDocUtils.checkString(property.getAuthor().toString()));
+        jobElement.addAttribute("version", HTMLDocUtils.checkString(property.getVersion()));
+        jobElement.addAttribute("purpose", HTMLDocUtils.checkString(property.getPurpose()));
+        jobElement.addAttribute("status", HTMLDocUtils.checkString(property.getStatusCode()));
+        jobElement.addAttribute("description", HTMLDocUtils.checkString(property.getDescription()));
 
-        jobElement.addAttribute("author", HTMLDocUtils.checkString(process.getAuthor().toString()));
-        jobElement.addAttribute("version", HTMLDocUtils.checkString(process.getVersion()));
-        jobElement.addAttribute("purpose", HTMLDocUtils.checkString(process.getPurpose()));
-        jobElement.addAttribute("status", HTMLDocUtils.checkString(process.getStatusCode()));
-        jobElement.addAttribute("description", HTMLDocUtils.checkString(process.getDescription()));
-
-        jobElement.addAttribute("creation", HTMLDocUtils.checkDate(processItem.getProperty().getCreationDate()));
+        jobElement.addAttribute("creation", HTMLDocUtils.checkDate(property.getCreationDate()));
         jobElement
-                .addAttribute("modification", HTMLDocUtils.checkDate(processItem.getProperty().getModificationDate()));
+                .addAttribute("modification", HTMLDocUtils.checkDate(property.getModificationDate()));
 
         String picName = jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX;
         IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE,
