@@ -47,6 +47,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.exception.LoginException;
+import org.talend.repository.preference.StatusPreferenceInitializer;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -308,4 +310,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
     }
 
+    public void logOnProject(Project project) throws LoginException, PersistenceException {
+        new StatusPreferenceInitializer().initializeDefaultPreferences();
+    }
 }
