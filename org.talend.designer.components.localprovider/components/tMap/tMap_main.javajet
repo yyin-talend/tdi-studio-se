@@ -266,7 +266,7 @@
 									 		}
 			  								sbMoreOneResult.append( "\"");
 									 		%>
-									 		System.err.println(<%= sbMoreOneResult.toString()%>);
+									 		System.out.println(<%= sbMoreOneResult.toString()%>);
 									 	}
 									 <% 
 									 } // T 52 
