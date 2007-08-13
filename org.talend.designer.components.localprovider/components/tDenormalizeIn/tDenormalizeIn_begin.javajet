@@ -79,7 +79,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	boolean hasInvalidType = true;
 	if(hasInvalidType)
 	{
-	 	throw new Exception("The Denormalize fields must be the type of string.");
+	 	throw new Exception("The Denormalize fields should be of String type.");
 	}	
 	
 	{
