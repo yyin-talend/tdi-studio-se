@@ -1,13 +1,84 @@
-/* classes générales */
-BODY 	{
-margin-left:0;
-margin-right:0;
-margin-top:0; 
-margin-bottom:0; 
-background-image:url(imgs/fond.jpg); 
-background-repeat:repeat-x; 
-background-color:#DADADB; 
+/* classes gÃ©nÃ©rales */
+html, body{
+margin:0; 
+padding:0;
+background-color:#7E7E81;
+font-family:Arial, Helvetica, sans-serif;
 }
+
+#cadre{
+	width:769px;
+	margin:100px auto;
+	padding:0;
+	background-color:#FFFFFF;
+}
+
+#cadreInner{
+	width:700px;
+	margin:15px auto;
+	padding:12px 0 0 0;
+	background:url(imgs/innertop.gif) top center no-repeat;
+	
+}
+
+#innercorps{
+background:url(imgs/innerbottom.gif) bottom center no-repeat;
+padding:0 15px 15px 15px;
+
+}
+
+#tophead img{
+	float:left;
+	margin:0;
+	padding:0;
+	border:0;
+	}
+
+h1{
+margin:0 0 15px 0;
+padding:15px 0 0 0;
+font-size:16px;
+color:#96DC19;
+font-weight:bold;
+text-align:center;
+}
+
+h2{
+margin:0px 0 15px 0;
+padding:0 0 0 30px;
+font-size:13px;
+color:#96DC19;
+font-weight:bold;
+text-align:left;
+background:url('imgs/asterisque.gif') center left no-repeat;
+}
+
+#cadreFoot{
+width:769px;
+height:22px;
+background:url(imgs/cadreFoot.gif) no-repeat bottom left;
+color:#CCC;
+text-align:center;
+font-size:.8em;
+}
+
+#Content{
+padding:0 20px;
+
+}
+
+#Start{
+text-align:center;
+}
+
+ul {
+
+margin:0 0 35px 20px;
+padding:0 10px;}
+
+li{margin:0;
+padding:0;
+list-style-type:disc;}
 
 a:visited
 	{
@@ -28,19 +99,23 @@ a:visited
 		font-weight: bold;
 	}
 
-HR			{ color: #CCC; background-color:#CCC; height: 1px; border: 0; }
+HR{ color: #CCC; background-color:#CCC; height: 1px; border: 0; }
 /* classes mise en forme */
 .recherche	{ font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#666; border: 1px solid #BBB; }
 .tableUnder	{ float:left; }
 .cadreVert	{ font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#000; font-style:italic; text-align:left; }
 .lienso {text-decoration: underline; }
 /* classes textes */
-.texteHeader	{ font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#5E5E61; }
-.footer			{ font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#5E5E61; text-align:center; height:29px; padding:10px 0 0 0; }
+.borderleft		{ background-image:url('imgs/left.gif'); }
+.borderright	{ background-image:url('imgs/right.gif'); }
+.bordertop		{ background-image:url('imgs/top.gif'); }
+.borderbottom	{ background-image:url('imgs/bottom.gif'); }
+.texteHeader	{ background-image:url('imgs/fondHeader.gif'); }
+.footer			{  font-size:11px; color:#5E5E61; text-align:center; height:29px; padding:10px 0 0 0; }
 .cadreGras		{ font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#96DC19; font-weight:bold; }
 .titreContenu	{ font-family:Arial, Helvetica, sans-serif; font-size:16px; color:#5E5E61; font-weight:bold; text-align:left; }
 .contenu		{ font-family:Arial, Helvetica, sans-serif; font-size:12px; color:#5E5E61; text-align:left; }
-.contenuGras	{ font-family:Arial, Helvetica, sans-serif; font-size:25px; color:#96DC19; font-weight:bold; }
+.contenuGras	{ font-family:Arial, Helvetica, sans-serif; font-size:25px; color:#0060A1; font-weight:bold; }
 .arianne		{ font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#5E5E61; text-align:left; }
 .typoSmall		{ font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#5E5E61; text-align:left; }
 .titreJob		{ font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#333; font-weight:bold; text-align:left; text-decoration: none; }
