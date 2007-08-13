@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -48,6 +49,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
@@ -59,6 +61,8 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
+import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard;
@@ -388,6 +392,51 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileLdifTableWizard);
             handleWizard(node, wizardDialog);
         }
+    }
+    
+    protected void createGenericSchemaWizard(IStructuredSelection selection, final boolean forceReadOnly)
+    {
+        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        RepositoryNode node = (RepositoryNode) obj;
+        GenericSchemaConnection connection = null;
+        MetadataTable metadataTable = null;
+
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            GenericSchemaConnectionItem item = null;
+            switch (nodeType) {
+            case METADATA_CON_TABLE:
+                item = (GenericSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (GenericSchemaConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+                break;
+            case METADATA_GENERIC_SCHEMA:
+                item = (GenericSchemaConnectionItem) node.getObject().getProperty().getItem();
+                connection = (GenericSchemaConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                connection.getTables().add(metadataTable);
+                creation = true;
+                break;
+            default:
+                return;
+            }
+
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            GenericSchemaTableWizard genericSchemaWizard = new GenericSchemaTableWizard(PlatformUI.getWorkbench(),
+                    creation, item, metadataTable, forceReadOnly);
+            genericSchemaWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(new Shell(), genericSchemaWizard);
+            handleWizard(node, wizardDialog);
+        }
+        
     }
 
     /**

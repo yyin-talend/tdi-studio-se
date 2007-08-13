@@ -37,6 +37,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
@@ -1034,5 +1035,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public Boolean hasChildren(Object parent) {
         return repositoryFactoryFromProvider.hasChildren(parent);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataGenericSchema();
     }
 }

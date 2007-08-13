@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,6 +39,7 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
@@ -49,13 +49,11 @@ import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
@@ -84,9 +82,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private TreeViewer viewer;
 
-    private RepositoryNode businessProcessNode, recBinNode, routineNode, snippetsNode, processNode, contextNode, docNode,
-            metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
-            metadataFileLdifNode;
+    private RepositoryNode businessProcessNode, recBinNode, routineNode, snippetsNode, processNode, contextNode,
+            docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
+            metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode;
 
     public RepositoryContentProvider(IRepositoryView view) {
         super();
@@ -122,7 +120,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         if (!repositoryNode.isInitialized()) {
             try {
                 if (parent == businessProcessNode) {
-                    convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
+                    convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS,
+                            recBinNode);
                 } else if (parent == processNode) {
                     convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
                 } else if (parent == routineNode) {
@@ -132,24 +131,28 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == docNode) {
                     convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
                 } else if (parent == metadataConNode) {
-                    convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
-                            recBinNode);
+                    convert(factory.getMetadataConnection(), metadataConNode,
+                            ERepositoryObjectType.METADATA_CONNECTIONS, recBinNode);
                 } else if (parent == metadataFileNode) {
-                    convert(factory.getMetadataFileDelimited(), metadataFileNode, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                            recBinNode);
+                    convert(factory.getMetadataFileDelimited(), metadataFileNode,
+                            ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
                 } else if (parent == metadataFilePositionalNode) {
                     convert(factory.getMetadataFilePositional(), metadataFilePositionalNode,
                             ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
                 } else if (parent == metadataFileRegexpNode) {
-                    convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                            recBinNode);
+                    convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode,
+                            ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
                 } else if (parent == metadataFileXmlNode) {
                     convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
                             recBinNode);
                 } else if (parent == metadataFileLdifNode) {
-                    convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
-                            recBinNode);
-                } else if (parent == recBinNode) {
+                    convert(factory.getMetadataFileLdif(), metadataFileLdifNode,
+                            ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+                } else if (parent == metadataGenericSchemaNode) {
+                    convert(factory.getMetadataGenericSchema(), metadataGenericSchemaNode,
+                            ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
+                }
+                else if (parent == recBinNode) {
                     List<IRepositoryObject> objects = factory.getRecycleBinItems();
                     for (IRepositoryObject object : objects) {
                         RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
@@ -283,7 +286,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         // 6.3. Metadata file positional
         metadataFilePositionalNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-        metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+        metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL);
         metadataNode.getChildren().add(metadataFilePositionalNode);
 
         // 6.4. Metadata file regexp
@@ -306,9 +310,17 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataNode.getChildren().add(metadataFileLdifNode);
         }
 
+        // 6.7. Generic schemas
+        metadataGenericSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+        metadataGenericSchemaNode
+                .setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+        metadataNode.getChildren().add(metadataGenericSchemaNode);
+
     }
 
-    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode) {
+    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type,
+            RepositoryNode recBinNode) {
 
         handleReferenced(parent);
 
@@ -322,8 +334,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
-                folder = new StableRepositoryNode(parent,
-                        Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+                folder = new StableRepositoryNode(parent, Messages
+                        .getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
@@ -346,7 +358,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
                 RepositoryNode referencedProjectNode = new RepositoryNode(null, parent, ENodeType.REFERENCED_PROJECT);
                 referencedProjectNode.setProperties(EProperties.LABEL, project.getLabel()); // //$NON-NLS-1$
-                referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
+                referencedProjectNode
+                        .setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                 parent.getChildren().add(referencedProjectNode);
             }
         }
@@ -368,8 +381,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
 
         if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         // PTODO tgu implementation a revoir
@@ -384,20 +397,27 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
-            RegexpFileConnection metadataConnection = (RegexpFileConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            RegexpFileConnection metadataConnection = (RegexpFileConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_XML) {
-            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
-                    .getConnection();
-            createTables(recBinNode, node, repositoryObject, metadataConnection);
-        }
-        if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
-            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty()
+            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty()
                     .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
+        if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
+            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
+        
+        if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
+            GenericSchemaConnection genericSchemaConnection = (GenericSchemaConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
+        }
+        
     }
 
     /**
@@ -408,8 +428,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @param iMetadataConnection
      * @param metadataConnection
      */
-    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list,
-            ERepositoryObjectType repositoryObjectType) {
+    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
+            EList list, ERepositoryObjectType repositoryObjectType) {
         for (Object currentTable : list) {
             if (currentTable instanceof org.talend.core.model.metadata.builder.connection.MetadataTable) {
                 org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
@@ -453,7 +473,14 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
             Connection metadataConnection) {
+
+        // // 5.GENERIC SCHEMAS
+        // RepositoryNode genericSchemaNode = new StableRepositoryNode(node, Messages
+        // .getString("RepositoryContentProvider.repositoryLabel.GenericSchema"), ECoreImage.FOLDER_CLOSE_ICON);
+        // node.getChildren().add(genericSchemaNode);
+
         if (metadataConnection instanceof DatabaseConnection) {
+
             // 1.Tables:
             RepositoryNode tablesNode = new StableRepositoryNode(node, Messages
                     .getString("RepositoryContentProvider.repositoryLabel.TableSchemas"), ECoreImage.FOLDER_CLOSE_ICON);
@@ -466,7 +493,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             // 3.SYNONYMS:
             RepositoryNode synonymsNode = new StableRepositoryNode(node, Messages
-                    .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"), ECoreImage.FOLDER_CLOSE_ICON);
+                    .getString("RepositoryContentProvider.repositoryLabel.SynonymSchemas"),
+                    ECoreImage.FOLDER_CLOSE_ICON);
             node.getChildren().add(synonymsNode);
 
             Iterator metadataTables = metadataConnection.getTables().iterator();
@@ -478,14 +506,23 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 if (metadataTable.getTableType() != null) {
                     typeTable = metadataTable.getTableType();
                     if (typeTable.equals("TABLE")) {
-                        createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
+                        createTable(recBinNode, tablesNode, repObj, metadataTable,
+                                ERepositoryObjectType.METADATA_CON_TABLE);
 
                     } else if (typeTable.equals("VIEW")) {
-                        createTable(recBinNode, viewsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
+                        createTable(recBinNode, viewsNode, repObj, metadataTable,
+                                ERepositoryObjectType.METADATA_CON_TABLE);
 
                     } else if (typeTable.equals("SYNONYM")) {
-                        createTable(recBinNode, synonymsNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
+                        createTable(recBinNode, synonymsNode, repObj, metadataTable,
+                                ERepositoryObjectType.METADATA_CON_TABLE);
                     }
+
+                    // else if (typeTable.equals("GENERIC_SCHEMA")) {
+                    // //TODO not finished.
+                    // createTable(recBinNode, tablesNode, repObj, metadataTable,
+                    // ERepositoryObjectType.METADATA_CON_TABLE);
+                    // }
                 } else {
                     createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                 }
@@ -505,8 +542,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery(),
                         ERepositoryObjectType.METADATA_CON_TABLE);
             }
+
         } else {
-            createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
+            createTables(recBinNode, node, repObj, metadataConnection.getTables(),
+                    ERepositoryObjectType.METADATA_CON_TABLE);
         }
     }
 
@@ -618,7 +657,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     /**
      */
-    public static class QueryRepositoryObject extends org.talend.core.model.metadata.Query implements ISubRepositoryObject {
+    public static class QueryRepositoryObject extends org.talend.core.model.metadata.Query implements
+            ISubRepositoryObject {
 
         private IRepositoryObject repObj;
 
