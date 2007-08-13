@@ -309,7 +309,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     }
 
-    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged) {
+    // only set synWidthWithMetadataColumn =true, when use the metadataDialog to set the matadata.
+    // see issue 0001676
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
@@ -425,9 +427,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
                     }
-
-                    setColumnSize(newLine, node, codes);
-
+                    if (synWidthWithMetadataColumn) {
+                        setColumnSize(newLine, node, codes);
+                    }
                     newParamValues.add(j, newLine);
                 }
                 paramValues.clear();
@@ -437,8 +439,12 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     }
 
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged) {
+        updateColumnList(node, columnsChanged, false);
+    }
+
     /**
-     * DOC bqian Comment method "setSize".
+     * bqian Comment method "setSize".
      * 
      * @param newLine
      * @param node
@@ -453,8 +459,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     if (column.getLength() != null && column.getLength().intValue() > 0) {
                         // codes[1] is "SIZE"
                         newLine.put(codes[1], column.getLength().toString());
-                        break;
+                    } else {
+                        newLine.put(codes[1], null);
                     }
+                    break;
                 }
             }
         }

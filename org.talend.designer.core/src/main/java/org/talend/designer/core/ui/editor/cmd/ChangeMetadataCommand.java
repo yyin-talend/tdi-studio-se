@@ -371,7 +371,7 @@ public class ChangeMetadataCommand extends Command {
         }
 
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
-        ColumnListController.updateColumnList(node, columnNameChanged);
+        ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);
@@ -402,7 +402,7 @@ public class ChangeMetadataCommand extends Command {
         }
 
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
-        ColumnListController.updateColumnList(node, columnNameChanged);
+        ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
