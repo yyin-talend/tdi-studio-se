@@ -151,8 +151,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataGenericSchemaNode) {
                     convert(factory.getMetadataGenericSchema(), metadataGenericSchemaNode,
                             ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
-                }
-                else if (parent == recBinNode) {
+                } else if (parent == recBinNode) {
                     List<IRepositoryObject> objects = factory.getRecycleBinItems();
                     for (IRepositoryObject object : objects) {
                         RepositoryNode node = new RepositoryNode(object, recBinNode, ENodeType.REPOSITORY_ELEMENT);
@@ -303,12 +302,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataNode.getChildren().add(metadataFileXmlNode);
 
         // 6.6. Metadata file ldif
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-            metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
-            metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
-            metadataNode.getChildren().add(metadataFileLdifNode);
-        }
+        metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
+        metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
+        metadataNode.getChildren().add(metadataFileLdifNode);
 
         // 6.7. Generic schemas
         metadataGenericSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -411,13 +408,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
-        
+
         if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             GenericSchemaConnection genericSchemaConnection = (GenericSchemaConnection) ((ConnectionItem) repositoryObject
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
         }
-        
+
     }
 
     /**
