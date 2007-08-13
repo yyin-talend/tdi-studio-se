@@ -24,7 +24,6 @@ package org.talend.repository.ui.wizards.metadata.connection.database;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -218,6 +217,7 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("Informix");
             databasePerl.remove("Access");
             databasePerl.remove("Teradata");
+            databasePerl.remove("AS400");
 
 //            databasePerl.remove("JavaDB Embeded");
 //            databasePerl.remove("JavaDB JCCJDBC");

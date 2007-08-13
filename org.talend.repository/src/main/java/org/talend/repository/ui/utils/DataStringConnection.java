@@ -50,9 +50,9 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[16];
+        dataConnection = new DataConnection[17];
 
-        defaultTable = new String[16];
+        defaultTable = new String[17];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -107,19 +107,21 @@ public class DataStringConnection {
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[15] = new DataConnection("Teradata",
-                "jdbc:teradata://<host>/<sid>",
-                "jdbc:teradata://" + host +"/"+ sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
-//      dataConnection[15] = new DataConnection("JavaDB Embeded", "jdbc:derby:<datasource>", "jdbc:derby:" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        
-//        dataConnection[16] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
-//                "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[15] = new DataConnection("Teradata", "jdbc:teradata://<host>/<sid>",
+                "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-//        dataConnection[17] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
-//                "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid> ;prompt=false", "jdbc:as400://"
+                + host + "/" + sid + ";prompt=false");
 
-        
+        // dataConnection[15] = new DataConnection("JavaDB Embeded", "jdbc:derby:<datasource>", "jdbc:derby:" + word);
+        // //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        // dataConnection[16] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
+        // "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        // dataConnection[17] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
+        // "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         // + "/" + sid, "2638"); //$NON-NLS-1$ //$NON-NLS-2$
