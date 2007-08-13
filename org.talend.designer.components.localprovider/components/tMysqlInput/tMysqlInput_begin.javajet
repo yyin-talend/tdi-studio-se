@@ -64,6 +64,10 @@ java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
 java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
 int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
 
+java.util.Calendar calendar_<%=cid%> = java.util.Calendar.getInstance();
+calendar_<%=cid%>.set(0, 0, 0, 0, 0, 0);
+java.util.Date year0_<%=cid%> = calendar_<%=cid%>.getTime();
+
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 
 
@@ -140,9 +144,11 @@ if(conns != null && conns.size()>0){
 			  %>
     			  if(rs_<%=cid %>.getString(<%=currentColNo%>) != null){
     			 	 String dateString_<%=cid%> = rs_<%=cid%>.getString(<%=currentColNo%>);
-    			 	 String pattern_<%=cid%> = <%=column.getPattern().equals("")?"\"yyyy-MM-dd\"":column.getPattern()%>;
-    			 	 java.util.Date tmpDate_<%=cid%> = FastDateParser.getInstance(pattern_<%=cid%>).parse(dateString_<%=cid%>);//new java.text.SimpleDateFormat(pattern_<%=cid%>).parse(dateString_<%=cid%>);
-    			 	 <%=firstConnName%>.<%=column.getLabel()%> = tmpDate_<%=cid%>;
+    			 	 if (!dateString_<%=cid%>.equals("0000-00-00") && !dateString_<%=cid%>.equals("0000-00-00 00:00:00")) {
+    			 	 	<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid%>.getTimestamp(<%=currentColNo%>);
+    			 	 } else {
+    			 	 	<%=firstConnName%>.<%=column.getLabel()%> = (java.util.Date) year0_<%=cid%>.clone();
+    			 	 }
     			  }else{
     			 	 <%=firstConnName%>.<%=column.getLabel()%> =  null;
     			  }
