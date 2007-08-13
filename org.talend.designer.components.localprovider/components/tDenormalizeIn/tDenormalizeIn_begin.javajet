@@ -1,13 +1,16 @@
 <%@ jet 
 imports="
-    org.talend.core.model.process.INode 
-    org.talend.core.model.process.ElementParameterParser 
-    org.talend.core.model.metadata.IMetadataTable 
-    org.talend.core.model.metadata.IMetadataColumn 
-    org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.IConnection
-    java.util.List
-    java.util.Map
+        java.util.List
+        java.util.Map
+        
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.types.JavaType
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
 
@@ -48,6 +51,42 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     String merge = ElementParameterParser.getValue(node, "__MERGE__");
 %>
 ////////////////////////
+		int nb_line_<%=cid %> = 0;
+<% 
+//  check the denormalize fields type, only support String type
+	boolean hasInvalidType = false;
+	for (IMetadataColumn column : metadata.getListColumns()) { 
+	
+    	boolean isGroupBy = false;
+    	for (int i=0; i<groups.size(); i++) {
+    		Map<String, String> line = groups.get(i);
+    		String colname = line.get("INPUT_COLUMN");
+        	if (column.getLabel().equals(colname)) { isGroupBy = true; break; }
+    	}
+    	
+    	if (!isGroupBy) {
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		if(javaType != JavaTypesManager.STRING){
+			hasInvalidType = true;
+			break;
+		}
+    }
+  }
+  
+  if(hasInvalidType) {
+%>
+  
+	boolean hasInvalidType = true;
+	if(hasInvalidType)
+	{
+	 	throw new Exception("The Denormalize fields must be the type of string.");
+	}	
+	
+	{
+<%
+	} else {//check
+%>
+
 <% if (merge.equals("true")) {%>
     class Util_<%=cid %>
     {
@@ -75,9 +114,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 	
 	
-	java.util.List<<%=rowName %>Struct> row_aref_<%=origin %>_<%=cid %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
-	
-	int nb_line_<%=cid %> = 0;
+	java.util.List<<%=rowName %>Struct> row_aref_<%=origin %>_<%=cid %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");	
+
 
 <%
   if (groups.size()>0) { //111
@@ -182,6 +220,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	nb_line_<%=cid %>++;
 ////////////////////////
 <%
+       }//check
     }//2    
 }//1
 %>
