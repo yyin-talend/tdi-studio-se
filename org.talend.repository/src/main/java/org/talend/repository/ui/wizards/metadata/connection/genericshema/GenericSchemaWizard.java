@@ -203,6 +203,9 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
             setWindowTitle("Update generic schema");// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
             // //$NON-NLS-1$
+            
+            genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
+                    ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), creation);
 
             genericSchemaWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 2"); //$NON-NLS-1$ //$NON-NLS-2$
