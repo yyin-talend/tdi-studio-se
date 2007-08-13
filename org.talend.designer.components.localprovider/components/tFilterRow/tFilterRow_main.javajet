@@ -158,13 +158,38 @@ nb_line_<%=cid%>++ ;
     nb_line_ok_<%=cid %>++ ;
 }
 
-if(branch_<%=cid%>_is_active){
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <%
-		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
- 		for(int connNO = 0; connNO < conns.size(); connNO++){
- 		  IConnection conn2 = conns.get(connNO);
+		List< ? extends IConnection> connsFilter = node.getOutgoingConnections("FILTER");
+ 		for(int connNO = 0; connNO < connsFilter.size(); connNO++){
+ 		  IConnection conn2 = connsFilter.get(connNO);
 %>
+		if(branch_<%=cid%>_is_active){
 		<%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
 <%
  		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
@@ -174,22 +199,44 @@ if(branch_<%=cid%>_is_active){
  		  <% 
  		  	}
  		  }
+%>
+		}else{
+			<%=conn2.getName()%>=null;
+		}
+<%
  		}
 %>
-}else {
-	<%		
-	 		for(int connNO = 0; connNO < conns.size(); connNO++){
-	 		  IConnection conn2 = conns.get(connNO);
-	 		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-	 		  
+
+
+
+
+
+<%
+		List< ? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
+ 		for(int connNO = 0; connNO < connsReject.size(); connNO++){
+ 		  IConnection conn2 = connsReject.get(connNO);
+%>
+		if(!branch_<%=cid%>_is_active){
+		<%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
+<%
+ 		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+ 		  	for(IMetadataColumn column:columnList){
  		  %>
- 		   	<%=conn2.getName()%>=null;
+ 		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=inputRowName%>.<%=column.getLabel()%>;
  		  <% 
- 		  		
-	 		  }
-	 		}
-	%>
-}
+ 		  	}
+ 		  }
+%>
+		}else{
+			<%=conn2.getName()%>=null;
+		}
+<%
+ 		}
+%>
+
+
+
+
 
 <%
  }
