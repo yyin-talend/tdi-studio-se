@@ -174,12 +174,12 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
+        refreshPropertyView();
+        refreshCodeView();
+        
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
-
-        refreshPropertyView();
-        refreshCodeView();
     }
 
     /**
@@ -263,14 +263,14 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-        if (elem instanceof Node) {
-            ((Node) elem).checkAndRefreshNode();
-        }
         if (changeMetadataCommand != null) {
             changeMetadataCommand.undo();
         }
         refreshPropertyView();
         refreshCodeView();
+        if (elem instanceof Node) {
+            ((Node) elem).checkAndRefreshNode();
+        }
     }
 
     @Override
@@ -302,15 +302,15 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-        if (elem instanceof Node) {
-            ((Node) elem).checkAndRefreshNode();
-        }
 
         if (changeMetadataCommand != null) {
             changeMetadataCommand.redo();
         }
         refreshPropertyView();
         refreshCodeView();
+        if (elem instanceof Node) {
+            ((Node) elem).checkAndRefreshNode();
+        }
     }
 
     public void modifyValue(String value) {
