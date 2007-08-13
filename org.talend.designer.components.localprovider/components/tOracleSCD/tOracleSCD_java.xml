@@ -32,9 +32,9 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      SHOW="true"
       NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:ORACLE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 	
     <PARAMETER
