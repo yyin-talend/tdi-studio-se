@@ -178,7 +178,7 @@ public class ShadowProcessHelper {
         iMetadataDn.setLength(0);
         iMetadataDn.setNullable(false);
         iMetadataDn.setType("String"); //$NON-NLS-1$
-        iMetadataDn.setTalendType("String"); //$NON-NLS-1$
+        iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
 
         schema.add(iMetadataDn);
 
@@ -193,7 +193,7 @@ public class ShadowProcessHelper {
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
                 iMetadataColumn.setType("String"); //$NON-NLS-1$
-                iMetadataColumn.setTalendType("String"); //$NON-NLS-1$
+                iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
 
                 schema.add(iMetadataColumn);
             }
