@@ -38,6 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
@@ -348,7 +349,7 @@ public class ChangeMetadataCommand extends Command {
         propagateDatas(true);
 
         if (currentInputMetadata != null) {
-            if (!currentInputMetadata.sameMetadataAs(newInputMetadata)) {
+            if (!currentInputMetadata.sameMetadataAs(newInputMetadata, IMetadataColumn.OPTIONS_NONE)) {
                 currentInputMetadata.setListColumns(newInputMetadata.getListColumns());
                 String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                 if (type != null) {
@@ -360,7 +361,7 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata)) {
+        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
             currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -384,14 +385,14 @@ public class ChangeMetadataCommand extends Command {
         propagateDatas(false);
 
         if (currentInputMetadata != null) {
-            if (!currentInputMetadata.sameMetadataAs(oldInputMetadata)) {
+            if (!currentInputMetadata.sameMetadataAs(oldInputMetadata, IMetadataColumn.OPTIONS_NONE)) {
                 currentInputMetadata.setListColumns(oldInputMetadata.getListColumns());
                 if (inputWasRepository) {
                     inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                 }
             }
         }
-        if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata)) {
+        if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
             currentOutputMetadata.setListColumns(oldOutputMetadata.getListColumns());
         }
         if (outputWasRepository) {

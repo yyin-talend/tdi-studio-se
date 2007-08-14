@@ -291,7 +291,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
                         // check if the metadata is modified
                         boolean modified = false;
-                        if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
+                        if (!outputMetaCopy.sameMetadataAs(originaleOutputTable, IMetadataColumn.OPTIONS_NONE)) {
                             modified = true;
                         } else {
                             if (inputMetadata != null) {
@@ -301,7 +301,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                                 for (INode inputNode : inputNodes) {
                                     Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
                                     inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
-                                    if (!inputMetaCopy.sameMetadataAs(inputNode.getMetadataList().get(0))) {
+                                    if (!inputMetaCopy.sameMetadataAs(inputNode.getMetadataList().get(0), IMetadataColumn.OPTIONS_NONE)) {
                                         modified = true;
                                     }
                                 }
@@ -362,11 +362,11 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     inputMetaCopy = metaDialog.getInputMetaData();
                     outputMetaCopy = metaDialog.getOutputMetaData();
                     boolean modified = false;
-                    if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
+                    if (!outputMetaCopy.sameMetadataAs(originaleOutputTable, IMetadataColumn.OPTIONS_NONE)) {
                         modified = true;
                     } else {
                         if (inputMetadata != null) {
-                            if (!inputMetaCopy.sameMetadataAs(inputMetadata)) {
+                            if (!inputMetaCopy.sameMetadataAs(inputMetadata, IMetadataColumn.OPTIONS_NONE)) {
                                 modified = true;
                             }
                         }
