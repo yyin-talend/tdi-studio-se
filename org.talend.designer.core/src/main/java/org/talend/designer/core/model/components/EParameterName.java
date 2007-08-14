@@ -82,6 +82,7 @@ public enum EParameterName {
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DBTABLE("Table Name"),
+    MODULE_LIST("Module List"),
 
     /**
      * For stats & logs parameters.

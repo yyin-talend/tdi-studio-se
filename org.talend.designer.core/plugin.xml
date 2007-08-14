@@ -403,5 +403,9 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.DbTypeListGenerator"
             mapping="DBTYPE_LIST"
             name="Db Type List"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ModuleListGenerator"
+            mapping="MODULE_LIST"
+            name="Module List"/>
    </extension>
 </plugin>

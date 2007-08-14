@@ -1989,6 +1989,13 @@ public class Process extends Element implements IProcess {
             for (ModuleNeeded needed : moduleList) {
                 neededLibraries.add(needed.getModuleName());
             }
+            for (IElementParameter curParam : node.getElementParameters()) {
+                if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
+                    if (!"".equals(curParam.getValue())) { // if the parameter is not empty.
+                        neededLibraries.add((String) curParam.getValue());
+                    }
+                }
+            }
         }
         if (withChildrens) {
             Set<String> childrensList = new HashSet<String>(); // in case the same children is used several time
