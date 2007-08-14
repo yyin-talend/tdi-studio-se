@@ -42,15 +42,8 @@ for (int i=0; i<contextParams.size(); i++) {
     contextStr.append(",\"--context_param ");
     contextStr.append(name);
 
-	String noSpacesValue = value.replaceAll(" ", "");
-    if(noSpacesValue.contains("context.getProperty(\"") || noSpacesValue.startsWith("\"")) {
-        contextStr.append("=\"+");
-        contextStr.append(value);
-    }else{
-    	contextStr.append("=\"+\"");
-        contextStr.append(value);        
-        contextStr.append("\"");
-    } 
+    contextStr.append("=\"+");
+    contextStr.append(value);
   }
 
    for (int i=0; i<commandLine.length; i++) {
