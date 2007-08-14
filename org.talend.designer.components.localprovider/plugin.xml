@@ -5,7 +5,7 @@
          point="org.talend.core.service">
       <Service
             class="org.talend.designer.components.model.ComponentsService"
-            serviceId="ComponentsService"/>
+            serviceId="IComponentsService"/>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
