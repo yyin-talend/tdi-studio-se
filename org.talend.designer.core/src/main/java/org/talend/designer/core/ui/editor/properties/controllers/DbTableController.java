@@ -54,6 +54,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
@@ -129,7 +130,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
-
+        this.paramFieldType = param.getField();
         Control buttonControl = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
 
         Control openSqlBuilder = null;
@@ -311,15 +312,18 @@ public class DbTableController extends AbstractElementPropertySectionController 
      */
     private void initConnectionParameters() {
         connParameters = new ConnectionParameters();
-
+        connParameters.setFieldType(paramFieldType);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
         String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
         String realTableName = null;
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            realTableName = dynamicTabbedPropertySection.getRepositoryTableMap().get(
-                    elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName();
+            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
+            if (metadataTable != null) {
+                realTableName = metadataTable.getTableName();
+            }
         }
         connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
                 realTableName));

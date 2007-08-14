@@ -90,8 +90,8 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 
 public abstract class AbstractElementPropertySectionController implements PropertyChangeListener {
 
-    protected static final String SQLEDITOR = "SQLEDITOR";  //$NON-NLS-1$
-    
+    protected static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
+
     protected DynamicTabbedPropertySection dynamicTabbedPropertySection;
 
     protected Composite composite;
@@ -128,6 +128,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String DOTS_BUTTON = "icons/dots_button.gif"; //$NON-NLS-1$s
 
+    protected EParameterFieldType paramFieldType;
+
     /**
      * DOC yzhang Comment method "createControl".
      * 
@@ -144,8 +146,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
-            final int numInRow, final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl);
 
     public abstract int estimateRowSize(final Composite subComposite, final IElementParameter param);
 
@@ -199,7 +201,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         return "";
     }
-    
+
     protected String getValueFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getRepositoryValue() != null) {
@@ -213,7 +215,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         return "";
     }
-    
+
     protected String getParaNameFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getRepositoryValue() != null) {
@@ -224,7 +226,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         return null;
     }
-    
+
     /**
      * DOC yzhang Comment method "init".
      * 
@@ -320,8 +322,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor
-                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -456,8 +457,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, Messages
-                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null,
+                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -802,5 +803,5 @@ public abstract class AbstractElementPropertySectionController implements Proper
         siteps.showInDialog(composite.getShell(), openDialogJob);
         openDialogJob.schedule();
     }
-    
+
 }

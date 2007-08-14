@@ -57,6 +57,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
@@ -121,6 +122,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             }
         }
     };
+
     private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
 
     private Command createCommand() {
@@ -166,8 +168,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         connParameters.setSchema(schema);
         String realTableName = null;
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            realTableName = dynamicTabbedPropertySection.getRepositoryTableMap().get(
-                    elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())).getTableName();
+            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
+            if (metadataTable != null) {
+                realTableName = metadataTable.getTableName();
+            }
         }
         connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
                 realTableName));
@@ -264,8 +269,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return null;
     }
 
-    
-
     /**
      * DOC qzhang Comment method "setConnectionParameter".
      * 
@@ -319,7 +322,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-
+        this.paramFieldType = param.getField();
         switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
@@ -337,7 +340,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
-
         openSQLEditorButton.addSelectionListener(listenerSelection);
 
         FormData data1 = new FormData();

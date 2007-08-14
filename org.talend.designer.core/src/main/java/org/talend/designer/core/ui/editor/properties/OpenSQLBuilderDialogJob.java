@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -127,10 +128,19 @@ public class OpenSQLBuilderDialogJob extends Job {
                         dial.setConnParameters(connectionParameters);
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
-                                String sql = connectionParameters.getQuery();
-                                sql = TalendTextUtils.addSQLQuotes(sql);
-                                Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
-                                commandStack.execute(cmd);
+                                if (EParameterFieldType.DBTABLE.equals(connectionParameters.getFieldType())) {
+                                    final String selectDBTable = connectionParameters.getSelectDBTable();
+                                    if (selectDBTable != null) {
+                                        Command cmd = new PropertyChangeCommand(elem, propertyName, TalendTextUtils
+                                                .addSQLQuotes(selectDBTable));
+                                        commandStack.execute(cmd);
+                                    }
+                                } else {
+                                    String sql = connectionParameters.getQuery();
+                                    sql = TalendTextUtils.addSQLQuotes(sql);
+                                    Command cmd = new PropertyChangeCommand(elem, propertyName, sql);
+                                    commandStack.execute(cmd);
+                                }
                             }
                         }
                     }
