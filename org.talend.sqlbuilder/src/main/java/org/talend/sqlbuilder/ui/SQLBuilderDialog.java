@@ -34,6 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -54,16 +55,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -420,58 +427,72 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
-        String sql = ""; //$NON-NLS-1$
-        // sql = editorComposite.getDefaultTabSql();
-        sql = editorComposite.getCurrentTabSql();
-        // if (ConnectionParameters.isJavaProject()) {
-        // sql = sql.replace("\"", "\\" + "\"");
-        // } else {
-        // sql = sql.replace("'", "\\'");
-        // }
 
-        connParameters.setQuery(sql);
-        if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
-            List<Query> qs = new ArrayList<Query>();
-            boolean isInfo = false;
-            final CTabFolder tabFolder = getEditorComposite().getTabFolder();
-            final CTabItem[] items = tabFolder.getItems();
-
-            for (int i = 0; i < items.length; i++) {
-                CTabItem item = items[i];
-                final String text = item.getText();
-                boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
-                if (isInfo2) {
-                    isInfo = true;
+        if (EParameterFieldType.DBTABLE.equals(connParameters.getFieldType())) {
+            final IStructuredSelection selection = (IStructuredSelection) structureComposite.getTreeViewer().getSelection();
+            final Object firstElement = selection.getFirstElement();
+            if (firstElement instanceof RepositoryNode) {
+                RepositoryNode node = (RepositoryNode) firstElement;
+                boolean is = node.getProperties(EProperties.CONTENT_TYPE).equals(RepositoryNodeType.TABLE);
+                if (is) {
+                    MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
+                    connParameters.setSelectDBTable(object.getSourceName());
                 }
             }
-            if (isInfo) {
-                String title = Messages.getString("SQLBuilderDialog.SaveAllQueries.Title"); //$NON-NLS-1$
-                String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
-                boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
-                if (openQuestion) {
-                    for (CTabItem item : items) {
-                        final String text = item.getText();
-                        boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
-                        if (isInfo2) {
-                            MultiPageSqlBuilderEditor meditor = null;
-                            Object control = item.getData("KEY");
-                            if (control instanceof MultiPageSqlBuilderEditor) {
-                                meditor = (MultiPageSqlBuilderEditor) control;
-                            }
-                            if (meditor != null) {
-                                RepositoryNode node = null;
-                                node = meditor.getActivePageRepositoryNode();
-                                if (text.substring(1).startsWith(AbstractSQLEditorComposite.QUERY_PREFIX)) {
-                                    if (item.getData() instanceof Query) {
-                                        Query q = (Query) item.getData();
-                                        q.setValue(meditor.getActivePageSqlString());
-                                        qs.add(q);
-                                        if (node != null && q != null) {
-                                            manager.saveQuery(node, q, null);
+        } else {
+            String sql = ""; //$NON-NLS-1$
+            // sql = editorComposite.getDefaultTabSql();
+            sql = editorComposite.getCurrentTabSql();
+            // if (ConnectionParameters.isJavaProject()) {
+            // sql = sql.replace("\"", "\\" + "\"");
+            // } else {
+            // sql = sql.replace("'", "\\'");
+            // }
+
+            connParameters.setQuery(sql);
+            if (connParameters.isFromRepository() && !connParameters.isNodeReadOnly()) {
+                List<Query> qs = new ArrayList<Query>();
+                boolean isInfo = false;
+                final CTabFolder tabFolder = getEditorComposite().getTabFolder();
+                final CTabItem[] items = tabFolder.getItems();
+
+                for (int i = 0; i < items.length; i++) {
+                    CTabItem item = items[i];
+                    final String text = item.getText();
+                    boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
+                    if (isInfo2) {
+                        isInfo = true;
+                    }
+                }
+                if (isInfo) {
+                    String title = Messages.getString("SQLBuilderDialog.SaveAllQueries.Title"); //$NON-NLS-1$
+                    String info = Messages.getString("SQLBuilderDialog.SaveAllQueries.Info"); //$NON-NLS-1$
+                    boolean openQuestion = MessageDialog.openQuestion(getShell(), title, info);
+                    if (openQuestion) {
+                        for (CTabItem item : items) {
+                            final String text = item.getText();
+                            boolean isInfo2 = text.length() > 1 && text.substring(0, 1).equals("*");
+                            if (isInfo2) {
+                                MultiPageSqlBuilderEditor meditor = null;
+                                Object control = item.getData("KEY");
+                                if (control instanceof MultiPageSqlBuilderEditor) {
+                                    meditor = (MultiPageSqlBuilderEditor) control;
+                                }
+                                if (meditor != null) {
+                                    RepositoryNode node = null;
+                                    node = meditor.getActivePageRepositoryNode();
+                                    if (text.substring(1).startsWith(AbstractSQLEditorComposite.QUERY_PREFIX)) {
+                                        if (item.getData() instanceof Query) {
+                                            Query q = (Query) item.getData();
+                                            q.setValue(meditor.getActivePageSqlString());
+                                            qs.add(q);
+                                            if (node != null && q != null) {
+                                                manager.saveQuery(node, q, null);
+                                            }
                                         }
+                                    } else {
+                                        meditor.getActivePageSaveAsSQLAction().run();
                                     }
-                                } else {
-                                    meditor.getActivePageSaveAsSQLAction().run();
                                 }
                             }
                         }
@@ -586,7 +607,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
     }
 
-    
     public DBStructureComposite getStructureComposite() {
         return this.structureComposite;
     }

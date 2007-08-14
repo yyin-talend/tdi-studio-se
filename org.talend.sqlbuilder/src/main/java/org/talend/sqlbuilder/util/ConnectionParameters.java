@@ -31,6 +31,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.repository.model.RepositoryNode;
@@ -47,6 +48,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 public class ConnectionParameters {
 
     private Element node;
+
     // set this SqlEditor's Title (tabItem.setText()).
     private String editorTitle;
 
@@ -105,6 +107,10 @@ public class ConnectionParameters {
     private boolean isFromRepository = false;
 
     private boolean isFromDBNode = false;
+
+    private EParameterFieldType fieldType;
+
+    private String selectDBTable;
 
     /**
      * Sets the connectionComment.
@@ -546,27 +552,43 @@ public class ConnectionParameters {
         this.editorTitle = editorTitle;
     }
 
-    
     public boolean isFromDBNode() {
         return this.isFromDBNode;
     }
 
-    
     public void setFromDBNode(boolean isFromDBNode) {
         this.isFromDBNode = isFromDBNode;
     }
 
     /**
      * qzhang Comment method "setNode".
+     * 
      * @param elem
      */
     public void setNode(Element elem) {
         this.node = elem;
     }
 
-    
     public Element getNode() {
         return this.node;
+    }
+
+    public EParameterFieldType getFieldType() {
+        return this.fieldType;
+    }
+
+    public void setFieldType(EParameterFieldType fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    
+    public String getSelectDBTable() {
+        return this.selectDBTable;
+    }
+
+    
+    public void setSelectDBTable(String selectDBTable) {
+        this.selectDBTable = selectDBTable;
     }
 
 }
