@@ -474,8 +474,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         filePathIsDone = false;
         if (fileField.getText() == "") { //$NON-NLS-1$
             filePositionalViewer
-                    .setText("\n" + Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            + " " + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$ //$NON-NLS-2$
+                    .setText("\n" + Messages.getString("FileStep1.fileViewerTip1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                          
         } else {
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 

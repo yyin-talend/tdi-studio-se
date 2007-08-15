@@ -110,6 +110,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
+
         this.metadataTable = metadataTable;
         setupForm();
     }
@@ -348,6 +349,14 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
+        String[] fieldSeparatorValueArray = null;
+        String fieldSeparatorValues = this.getConnection().getFieldSeparatorValue();
+
+        if (fieldSeparatorValues != null && fieldSeparatorValues.length() > 0) {
+            fieldSeparatorValues = fieldSeparatorValues.substring(1, fieldSeparatorValues.length() - 1);
+            fieldSeparatorValueArray = fieldSeparatorValues.split(",");
+        }
+
         List<String[]> csvRows = csvArray.getRows();
         String[] fields = csvRows.get(0);
         int numberOfCol = fields.length;
@@ -438,7 +447,17 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
             }
             metadataColumn.setTalendType(talendType);
-            metadataColumn.setLength(lengthValue);
+
+            if (fieldSeparatorValueArray[i] != null) {
+                if (fieldSeparatorValueArray[i].equals("*")) {
+                    metadataColumn.setLength(lengthValue);
+                } else {
+                    metadataColumn.setLength(Integer.valueOf(fieldSeparatorValueArray[i]).intValue());
+                }
+            } else {
+                metadataColumn.setLength(0);
+            }
+
             if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                 metadataColumn.setPrecision(precisionValue);
             } else {
