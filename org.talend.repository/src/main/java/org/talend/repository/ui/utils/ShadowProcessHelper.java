@@ -198,7 +198,7 @@ public class ShadowProcessHelper {
                 schema.add(iMetadataColumn);
             }
         }
-        table.setTableName(Messages.getString("ShadowProcessHelper.tableName.ldif")); //$NON-NLS-1$
+        table.setTableName("tFileInputLDIF"); //$NON-NLS-1$
         table.setListColumns(schema);
         tableSchema.add(table);
         processDescription.setSchema(tableSchema);
