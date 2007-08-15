@@ -751,7 +751,22 @@ public class EmfComponent implements IComponent {
 
     private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
         List<TABLEType> tableList = xmlParam.getTABLE();
-        if (tableList == null) {
+        if ((tableList == null) || (tableList.size() == 0)) {
+            int nbFlowMaxInput = 0;
+            for (INodeConnector connector : createConnectors()) {
+                if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
+                    nbFlowMaxInput = connector.getMaxLinkInput();
+                }
+            }
+            if (this.isSchemaAutoPropagated() && (nbFlowMaxInput != 0)) {
+                IMetadataTable defaultTable = new MetadataTable();
+                defaultTable.setReadOnly(true);
+                
+                // store the default table in default value
+                IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+                defaultValue.setDefaultValue(defaultTable);
+                param.getDefaultValues().add(defaultValue);
+            }
             return;
         }
 
