@@ -99,9 +99,5 @@ public class FileInputLdifNode extends FileInputNode {
     @Override
     public void setMetadataList(List<IMetadataTable> metadataList) {
         this.metadatas = metadataList;
-        List<IMetadataTable> list = super.getMetadataList();
-        if (!list.isEmpty()) {
-            metadatas.get(0).getListColumns().addAll(list.get(0).getListColumns());
-        }
     }
 }

@@ -56,8 +56,8 @@ import org.talend.designer.runprocess.IProcessor;
  */
 public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObject implements IProcess {
 
-//    private String name = "ShadowFileInputToXmlOutput"; //$NON-NLS-1$
-    
+    // private String name = "ShadowFileInputToXmlOutput"; //$NON-NLS-1$
+
     private String name = "ShadowFileInputToCSVOutput"; //$NON-NLS-1$
 
     private IContextManager contextManager;
@@ -74,6 +74,7 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
 
         this.inNode = inNode;
         this.outNode = outNode;
+
         outNode.setColumnNumber(inNode.getColumnNumber());
         ShadowConnection cnx = new ShadowConnection(inNode, outNode);
         inNode.setOutCnx(cnx);
@@ -508,7 +509,8 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
-        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null)
+                && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)

@@ -158,8 +158,12 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToCSVProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
+            outNode = new FileOutputCSVForLDIF(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+
             FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            outNode.setMetadataList(inLdifNode.getMetadataList());
             ps = new FileinToCSVProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         default:
