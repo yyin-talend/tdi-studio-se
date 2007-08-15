@@ -86,6 +86,7 @@ public class ExportJobScriptAction extends AContextualAction {
 
         Shell activeShell = Display.getCurrent().getActiveShell();
         WizardDialog dialog = new WizardDialog(activeShell, processWizard);
+        workbench.saveAllEditors(true);
         dialog.open();
     }
 }
