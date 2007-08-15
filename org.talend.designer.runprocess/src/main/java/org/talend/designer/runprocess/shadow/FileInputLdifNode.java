@@ -68,7 +68,7 @@ public class FileInputLdifNode extends FileInputNode {
         } catch (IOException e) {
             // e.printStackTrace();
         }
-        
+
         String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, encoding };
 
@@ -99,5 +99,9 @@ public class FileInputLdifNode extends FileInputNode {
     @Override
     public void setMetadataList(List<IMetadataTable> metadataList) {
         this.metadatas = metadataList;
+        List<IMetadataTable> list = super.getMetadataList();
+        if (!list.isEmpty()) {
+            metadatas.get(0).getListColumns().addAll(list.get(0).getListColumns());
+        }
     }
 }
