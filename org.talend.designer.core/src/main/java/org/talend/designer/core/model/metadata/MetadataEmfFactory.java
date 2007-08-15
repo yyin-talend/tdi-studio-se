@@ -76,13 +76,15 @@ public class MetadataEmfFactory {
                 colType.setKey(metaCol.isKey());
                 colType.setNullable(metaCol.isNullable());
                 if (metaCol.getLength() == null) {
-                    colType.setLength(-1);
+                    // colType.setLength(-1);
+                    colType.unsetLength();
                 } else {
                     colType.setLength(metaCol.getLength());
                 }
                 colType.setName(metaCol.getLabel());
                 if (metaCol.getPrecision() == null) {
-                    colType.setPrecision(-1);
+                    // colType.setPrecision(-1);
+                    colType.unsetPrecision();
                 } else {
                     colType.setPrecision(metaCol.getPrecision());
                 }
@@ -120,9 +122,25 @@ public class MetadataEmfFactory {
             metaCol.setComment(colType.getComment());
             metaCol.setKey(colType.isKey());
             metaCol.setNullable(colType.isNullable());
-            metaCol.setLength(new Integer(colType.getLength()));
+            if (colType.isSetLength()) {
+                if (colType.getLength() >= 0) {
+                    metaCol.setLength(new Integer(colType.getLength()));
+                } else {
+                    metaCol.setLength(null);
+                }
+            } else {
+                metaCol.setLength(null);
+            }
             metaCol.setLabel(colType.getName());
-            metaCol.setPrecision(new Integer(colType.getPrecision()));
+            if (colType.isSetPrecision()) {
+                if (colType.getPrecision() >= 0) {
+                    metaCol.setPrecision(new Integer(colType.getPrecision()));
+                } else {
+                    metaCol.setPrecision(null);
+                }
+            } else {
+                metaCol.setPrecision(null);
+            }
             metaCol.setTalendType(colType.getType());
             metaCol.setType(colType.getSourceType());
             metaCol.setPattern(colType.getPattern());
