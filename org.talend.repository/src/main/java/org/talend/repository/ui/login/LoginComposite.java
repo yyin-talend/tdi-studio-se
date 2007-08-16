@@ -553,12 +553,12 @@ public class LoginComposite extends Composite {
                 };
                 new ProgressMonitorDialog(getShell()).run(true, false, op);
             } catch (InvocationTargetException e) {
-                throw (PersistenceException) e.getTargetException();
+                throw (Exception) e.getTargetException();
             } catch (InterruptedException e) {
             }
 
             initialized = true;
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
             projects = new Project[0];
 
             MessageDialog.openError(getShell(),
