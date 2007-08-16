@@ -19,6 +19,8 @@ class="LDAPInput"
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
 	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
+	String filter=ElementParameterParser.getValue(node, "__FILTER__");
+	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
 	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
@@ -47,9 +49,24 @@ class="LDAPInput"
 	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
 		}
+    }else if(protocol.equals("TLS")){
+    	if(advanced.equals("true")){
+%>
+	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
+<%
+		}
     }
 %>
-    javax.naming.directory.DirContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
+    javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = new javax.naming.ldap.InitialLdapContext(env_<%=cid%>, null);
+<%
+	if(protocol.equals("TLS")){
+%>
+	javax.naming.ldap.StartTlsRequest tldsReq_<%=cid%> = new javax.naming.ldap.StartTlsRequest();
+    javax.naming.ldap.StartTlsResponse tls_<%=cid%> =(javax.naming.ldap.StartTlsResponse)ctx_<%=cid%>.extendedOperation(tldsReq_<%=cid%>);
+    javax.net.ssl.SSLSession session_<%=cid%> = tls_<%=cid%>.negotiate((javax.net.ssl.SSLSocketFactory)talend.ssl.AdvancedSocketFactory.getDefault());
+<%
+	}
+%>
 	javax.naming.directory.SearchControls searchCtls_<%=cid%> = new javax.naming.directory.SearchControls();
     searchCtls_<%=cid%>.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
 <%
@@ -83,7 +100,7 @@ class="LDAPInput"
     }
     String searchBase = aNaming_<%=cid%>==null?"":aNaming_<%=cid%>.get().toString();         
 	
-    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, "(&(objectClass=*))", searchCtls_<%=cid%>);
+    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
 	int entryCount_<%=cid%> = 0;
     while (answer_<%=cid%> .hasMoreElements()) {
     	if(entryCount_<%=cid%> >= <%=limit%>){
@@ -103,7 +120,7 @@ class="LDAPInput"
     			StringBuffer attrStr_<%=cid%> = new StringBuffer();
     			for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
     				if(attrStr_<%=cid%>.length()>0){
-    					attrStr_<%=cid%>.append(",");
+    					attrStr_<%=cid%>.append(<%=separator%>);
     				}
     				attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
     			}
