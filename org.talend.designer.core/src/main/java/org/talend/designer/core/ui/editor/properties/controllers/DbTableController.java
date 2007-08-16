@@ -51,11 +51,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
@@ -66,15 +66,11 @@ import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject.ObjectType;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.EConnectionParameterName;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -131,7 +127,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
         this.paramFieldType = param.getField();
+
+        Control lastDbControl;
         Control buttonControl = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
+        lastDbControl = buttonControl;
 
         Control openSqlBuilder = null;
         if (!isContainSqlMemo()) {
@@ -140,7 +139,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
             data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
             data1.left = new FormAttachment(100, -(ITabbedPropertyConstants.HSPACE + STANDARD_BUTTON_WIDTH));
             data1.top = new FormAttachment(0, top);
+            data1.height = STANDARD_HEIGHT - 2;
             openSqlBuilder.setLayoutData(data1);
+            openSqlBuilder.setToolTipText("Open the SQLBuilder on this connection");
+            lastDbControl = openSqlBuilder;
         }
         data = new FormData();
         if (openSqlBuilder != null) {
@@ -156,6 +158,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         openListTable.setData(PARAMETER_NAME, param.getName());
         openListTable.setEnabled(!param.isReadOnly());
         openListTable.addSelectionListener(openTablesListener);
+        openListTable.setToolTipText("Show the table list for the current conection");
         Text labelText;
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
@@ -226,7 +229,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        return null;
+        return lastDbControl;
     }
 
     /**
@@ -268,7 +271,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         Control buttonControl = dField1.getLayoutControl();
         openSQLEditorButton = (Button) dField1.getControl();
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        openSQLEditorButton.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        openSQLEditorButton.setImage(ImageProvider.getImageDesc(EImage.READ_ICON).createImage());
         buttonControl.setBackground(subComposite.getBackground());
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
@@ -295,8 +298,6 @@ public class DbTableController extends AbstractElementPropertySectionController 
         return openListTable;
     }
 
-    private ConnectionParameters connParameters;
-
     /**
      * qzhang Comment method "createCommand".
      * 
@@ -305,54 +306,6 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand() {
         initConnectionParameters();
         openDbTableSelectorJob();
-    }
-
-    /**
-     * qzhang Comment method "initConnectionParameters".
-     */
-    private void initConnectionParameters() {
-        connParameters = new ConnectionParameters();
-        connParameters.setFieldType(paramFieldType);
-        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
-        connParameters.setDbType(type);
-        String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
-        connParameters.setSchema(schema);
-        String realTableName = null;
-        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
-            if (metadataTable != null) {
-                realTableName = metadataTable.getTableName();
-            }
-        }
-        connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
-                realTableName));
-
-        String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
-        connParameters.setUserName(userName);
-
-        String password = setConnectionParameter(connParameters, EConnectionParameterName.PASSWORD.getName());
-        connParameters.setPassword(password);
-
-        String host = setConnectionParameter(connParameters, EConnectionParameterName.SERVER_NAME.getName());
-        connParameters.setHost(host);
-
-        String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
-        connParameters.setPort(port);
-
-        String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
-        connParameters.setDbName(dbName);
-        connParameters.setQuery("");
-
-    }
-
-    private String setConnectionParameter(ConnectionParameters connParameters, String repositoryName) {
-        String userName = getValueFromRepositoryName(repositoryName); //$NON-NLS-1$
-        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(repositoryName);
-        if (paraNameFromRepositoryName != null) {
-            connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
-        }
-        return userName;
     }
 
     /**

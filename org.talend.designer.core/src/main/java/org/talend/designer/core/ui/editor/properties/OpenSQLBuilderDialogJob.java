@@ -129,12 +129,12 @@ public class OpenSQLBuilderDialogJob extends Job {
                         if (Window.OK == dial.open()) {
                             if (!composite.isDisposed() && !connectionParameters.isNodeReadOnly()) {
                                 if (EParameterFieldType.DBTABLE.equals(connectionParameters.getFieldType())) {
-                                    final String selectDBTable = connectionParameters.getSelectDBTable();
-                                    if (selectDBTable != null) {
-                                        Command cmd = new PropertyChangeCommand(elem, propertyName, TalendTextUtils
-                                                .addSQLQuotes(selectDBTable));
-                                        commandStack.execute(cmd);
-                                    }
+                                    // final String selectDBTable = connectionParameters.getSelectDBTable();
+                                    // if (selectDBTable != null) {
+                                    // Command cmd = new PropertyChangeCommand(elem, propertyName, TalendTextUtils
+                                    // .addSQLQuotes(selectDBTable));
+                                    //                                        commandStack.execute(cmd);
+                                    //                                    }
                                 } else {
                                     String sql = connectionParameters.getQuery();
                                     sql = TalendTextUtils.addSQLQuotes(sql);

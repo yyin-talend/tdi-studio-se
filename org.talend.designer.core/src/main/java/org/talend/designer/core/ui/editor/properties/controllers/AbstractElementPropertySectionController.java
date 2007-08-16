@@ -61,6 +61,8 @@ import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -71,15 +73,19 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.EConnectionParameterName;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -802,6 +808,73 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 IWorkbenchSiteProgressService.class);
         siteps.showInDialog(composite.getShell(), openDialogJob);
         openDialogJob.schedule();
+    }
+
+    protected ConnectionParameters connParameters;
+
+    protected void initConnectionParameters() {
+        connParameters = new ConnectionParameters();
+        connParameters.setNode(elem);
+        String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
+        connParameters.setSelectedComponentName(selectedComponentName);
+        
+        connParameters.setFieldType(paramFieldType);
+        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
+        connParameters.setDbType(type);
+        String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
+        connParameters.setSchema(schema);
+        String realTableName = null;
+        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
+            if (metadataTable != null) {
+                realTableName = metadataTable.getTableName();
+            }
+        }
+        connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
+                realTableName));
+
+        String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
+        connParameters.setUserName(userName);
+
+        String password = setConnectionParameter(connParameters, EConnectionParameterName.PASSWORD.getName());
+        connParameters.setPassword(password);
+
+        String host = setConnectionParameter(connParameters, EConnectionParameterName.SERVER_NAME.getName());
+        connParameters.setHost(host);
+
+        String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
+        connParameters.setPort(port);
+
+        String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
+        connParameters.setDbName(dbName);
+        connParameters.setQuery("");
+        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        
+        List<? extends IElementParameter> list = elem.getElementParameters();
+        boolean end = false;
+        for (int i = 0; i < list.size() && !end; i++) {
+            IElementParameter param = list.get(i);
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                connParameters.setNodeReadOnly(param.isReadOnly());
+                end = true;
+            }
+
+        }
+        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
+                .getName())));
+        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        connParameters.setFromDBNode(true);
+
+    }
+
+    private String setConnectionParameter(ConnectionParameters connParameters, String repositoryName) {
+        String userName = getValueFromRepositoryName(repositoryName); //$NON-NLS-1$
+        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(repositoryName);
+        if (paraNameFromRepositoryName != null) {
+            connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
+        }
+        return userName;
     }
 
 }

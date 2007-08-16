@@ -126,11 +126,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
 
     private Command createCommand() {
-
-        ConnectionParameters connParameters = new ConnectionParameters();
-        connParameters.setNode(elem);
-        String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
-        connParameters.setSelectedComponentName(selectedComponentName);
+        initConnectionParameters();
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PARAMETER_NAME);
         String query = (String) elem.getPropertyValue(propertyName);
@@ -148,50 +144,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             return null;
         }
         query = this.removeStrInQuery(query);
-        List<? extends IElementParameter> list = elem.getElementParameters();
-        boolean end = false;
-        for (int i = 0; i < list.size() && !end; i++) {
-            IElementParameter param = list.get(i);
-            if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                connParameters.setNodeReadOnly(param.isReadOnly());
-                end = true;
-            }
-
-        }
-        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
-                .getName())));
-        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
-        connParameters.setFromDBNode(true);
-        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
-        connParameters.setDbType(type);
-        String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
-        connParameters.setSchema(schema);
-        String realTableName = null;
-        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
-            if (metadataTable != null) {
-                realTableName = metadataTable.getTableName();
-            }
-        }
-        connParameters.setSchemaName(MetadataTool.getTableName(elem, connParameters.getMetadataTable(), schema, type,
-                realTableName));
+        
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
-            String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
-            connParameters.setUserName(userName);
-
-            String password = setConnectionParameter(connParameters, EConnectionParameterName.PASSWORD.getName());
-            connParameters.setPassword(password);
-
-            String host = setConnectionParameter(connParameters, EConnectionParameterName.SERVER_NAME.getName());
-            connParameters.setHost(host);
-
-            String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
-            connParameters.setPort(port);
-
-            String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
-            connParameters.setDbName(dbName);
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
                 ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
