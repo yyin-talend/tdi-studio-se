@@ -145,7 +145,11 @@ public class MetadataEmfFactory {
             metaCol.setType(colType.getSourceType());
             metaCol.setPattern(colType.getPattern());
             metaCol.setDefault(colType.getDefaultValue());
-            metaCol.setOriginalDbColumnName(colType.getOriginalDbColumnName());
+            if (colType.getOriginalDbColumnName() == null) {
+                metaCol.setOriginalDbColumnName(colType.getName());
+            } else {
+                metaCol.setOriginalDbColumnName(colType.getOriginalDbColumnName());
+            }
             listMetadataColumn.add(metaCol);
         }
         metadataTable.setListColumns(listMetadataColumn);
