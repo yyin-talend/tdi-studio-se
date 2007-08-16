@@ -57,7 +57,7 @@
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>''</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -67,7 +67,7 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>''</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -77,7 +77,7 @@
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>''</DEFAULT>
       
     </PARAMETER>
        <PARAMETER
@@ -85,15 +85,21 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="5"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>''</DEFAULT>
     </PARAMETER>
-    
+    <PARAMETER
+      NAME="DBTABLE"
+      FIELD="DBTABLE"
+      NUM_ROW="5"
+    >
+      <DEFAULT>''</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
       NUM_ROW="6"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -102,7 +108,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"select id, name from employee"</DEFAULT>
+      <DEFAULT>'select id, name from employee'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -111,7 +117,7 @@
       NUM_ROW="8"
       REQUIRED="true"
     >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
 
    </PARAMETERS>

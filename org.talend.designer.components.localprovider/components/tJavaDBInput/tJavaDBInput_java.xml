@@ -135,7 +135,13 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
+    <PARAMETER
+      NAME="DBTABLE"
+      FIELD="DBTABLE"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"

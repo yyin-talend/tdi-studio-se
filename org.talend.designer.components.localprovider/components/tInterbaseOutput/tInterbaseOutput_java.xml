@@ -115,7 +115,13 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="DBTABLE"
+      FIELD="DBTABLE"
+      NUM_ROW="6"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
