@@ -105,8 +105,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
         String paramName;
 
-        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                .getName());
+        IElementParameter repositorySchemaTypeParameter = elem
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo.equals(repositoryControl)) {
@@ -140,8 +140,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     switchParam.setValue(Boolean.FALSE);
                 }
 
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        paramName, value, repositoryMetadata);
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
+                        (Node) elem, paramName, value, repositoryMetadata);
 
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
@@ -169,8 +169,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (hasMetadataInput) {
                         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                             if (connec.isActivate()
-                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                                            EConnectionType.TABLE))) {
+                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec
+                                            .getLineStyle().equals(EConnectionType.TABLE))) {
                                 repositoryMetadata = connec.getMetadataTable().clone();
                             }
                         }
@@ -178,7 +178,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
                 } else {
                     this.dynamicTabbedPropertySection.updateRepositoryList();
-                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                    String schemaSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                            .getName());
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
                     } else {
@@ -189,8 +190,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     switchParam.setValue(Boolean.FALSE);
                 }
 
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        paramName, value, repositoryMetadata);
+                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
+                        (Node) elem, paramName, value, repositoryMetadata);
 
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
@@ -280,8 +281,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             MetadataDialog metaDialog = null;
             if (inputMetadata != null) {
                 if (inputInfos != null && node.getComponent().useMerge() && inputInfos.size() > 1) {
-                    MetadataDialogForMerge metaDialogForMerge = new MetadataDialogForMerge(composite.getShell(), inputInfos,
-                            outputMetaCopy, node, getCommandStack());
+                    MetadataDialogForMerge metaDialogForMerge = new MetadataDialogForMerge(composite.getShell(),
+                            inputInfos, outputMetaCopy, node, getCommandStack());
                     metaDialogForMerge.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
                     metaDialogForMerge.setInputReadOnly(inputReadOnly);
                     metaDialogForMerge.setOutputReadOnly(outputReadOnly);
@@ -319,8 +320,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
                             // only output, no input
                             if (inputInfos.isEmpty()) {
-                                changeMetadataCommand = new ChangeMetadataCommand(node, null, null, null, originaleOutputTable,
-                                        outputMetaCopy);
+                                changeMetadataCommand = new ChangeMetadataCommand(node, null, null, null,
+                                        originaleOutputTable, outputMetaCopy);
 
                             } else {
                                 Set<INode> inputNodes = inputInfos.keySet();
@@ -329,12 +330,13 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                                     Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
                                     inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
                                     if (count == 0) {
-                                        changeMetadataCommand = new ChangeMetadataCommand(node, (Node) inputNode, inputNode
-                                                .getMetadataList().get(0), inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                                        changeMetadataCommand = new ChangeMetadataCommand(node, (Node) inputNode,
+                                                inputNode.getMetadataList().get(0), inputMetaCopy,
+                                                originaleOutputTable, outputMetaCopy);
                                     } else {
-                                        changeMetadataCommand = changeMetadataCommand.chain(new ChangeMetadataCommand(node,
-                                                (Node) inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
-                                                originaleOutputTable, outputMetaCopy));
+                                        changeMetadataCommand = changeMetadataCommand.chain(new ChangeMetadataCommand(
+                                                node, (Node) inputNode, inputNode.getMetadataList().get(0),
+                                                inputMetaCopy, originaleOutputTable, outputMetaCopy));
                                     }
                                     count++;
                                 }
@@ -345,8 +347,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
 
                 } else {
-                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(), outputMetaCopy,
-                            node, getCommandStack());
+                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(),
+                            outputMetaCopy, node, getCommandStack());
                 }
 
             } else {
@@ -380,8 +382,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         if (inputConec != null) {
                             inputNode = inputConec.getSource();
                         }
-                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, inputNode, inputMetadata,
-                                inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, inputNode,
+                                inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
 
                         return changeMetadataCommand;
 
@@ -397,9 +399,18 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             boolean inputFound = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connec.getLineStyle().equals(EConnectionType.TABLE)) {
-                    MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
-                    inputFound = true;
+                        || connec.getLineStyle().equals(EConnectionType.TABLE)
+                        || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                        if (connec.getInputId() == 1) {
+                            MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                            inputFound = true;
+                            break;
+                        }
+                    } else {
+                        MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                        inputFound = true;
+                    }
                 }
             }
             if (!inputFound) {
@@ -576,7 +587,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         return Math.max(comboSize, buttonSize) + ITabbedPropertyConstants.VSPACE;
     }
 
-    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int top) {
+    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
+            int top) {
         Button btn;
         Button resetBtn = null;
         Control lastControlUsed = lastControl;
@@ -599,7 +611,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             boolean flowMainInput = false;
             for (IConnection connec : node.getIncomingConnections()) {
                 if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connec.getLineStyle().equals(EConnectionType.TABLE)) {
+                        || connec.getLineStyle().equals(EConnectionType.TABLE)
+                        || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                     flowMainInput = true;
                 }
             }
@@ -629,7 +642,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite,
+                Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
@@ -672,8 +686,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 return cb;
             }
         };
-        FieldDecoration decoration = FieldDecorationRegistry.getDefault()
-                .getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+        FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                FieldDecorationRegistry.DEC_REQUIRED);
         dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         cLayout = dField.getLayoutControl();
@@ -686,8 +700,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         CCombo combo = (CCombo) dField.getControl();
-        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                .getName());
+        IElementParameter repositorySchemaTypeParameter = elem
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         hashCurControls.put(repositorySchemaTypeParameter.getName(), dField.getControl());
         dynamicTabbedPropertySection.updateRepositoryList();
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
@@ -745,8 +759,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             combo.setText(strValue);
         }
 
-        IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                .getName());
+        IElementParameter repositorySchemaTypeParameter = elem
+                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         combo = (CCombo) hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         if (combo == null) {

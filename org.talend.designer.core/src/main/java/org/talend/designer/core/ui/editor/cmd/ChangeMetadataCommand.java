@@ -93,8 +93,8 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
-            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
+            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
@@ -158,8 +158,8 @@ public class ChangeMetadataCommand extends Command {
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
             if (connec.isActivate()
-                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                            EConnectionType.FLOW_MERGE))) {
+                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || ((connec.getLineStyle().equals(
+                            EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
@@ -233,7 +233,8 @@ public class ChangeMetadataCommand extends Command {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                            if (map2 != null
+                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
                                 ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
@@ -296,12 +297,13 @@ public class ChangeMetadataCommand extends Command {
                         currentIO.setColumnNameChanged(null);
                     } else {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle()).isBuiltIn()
+                            if (!((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
+                                    .isBuiltIn()
                                     && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
-                                                .getColumnNameChanged();
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
+                                                .get(0).getColumnNameChanged();
                                         for (ChangeMetadataCommand cmd : propagatedChange) {
                                             for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                                 dataComp.setColumnNameChanged(columnNameChanged);
@@ -371,7 +373,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
+                newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -402,7 +405,8 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata,
+                oldOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
