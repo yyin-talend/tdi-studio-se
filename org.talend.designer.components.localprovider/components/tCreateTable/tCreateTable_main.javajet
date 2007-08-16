@@ -188,12 +188,12 @@ class Transfer{
 			 	for(IMetadataColumn column:columnList){	
 			 	//column name
 			 	   if(dbType.equals("MySQL")){
-			 			sql=sql+column.getLabel()+" ";
+			 			sql=sql+column.getOriginalDbColumnName()+" ";
 			 		}else{
-			 			sql=sql+"\\\""+column.getLabel()+"\\\" ";
+			 			sql=sql+"\\\""+column.getOriginalDbColumnName()+"\\\" ";
 			 		}
 			 	//primary key
-					if(column.isKey()==true){PKey.add(column.getLabel());}
+					if(column.isKey()==true){PKey.add(column.getOriginalDbColumnName());}
 			 	//column type
 				 		sql=sql+column.getType();
 			 	//column DataDefine
