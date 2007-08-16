@@ -1549,7 +1549,7 @@ public class Process extends Element implements IProcess {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void setActivate(Node node, boolean active, Node activateNode) {
+    private void setActivateSubjob(Node node, boolean active, Node activateNode) {
         Node mainSubProcess = node.getSubProcessStartNode(false);
 
         // if the selected node is the start node, then everything will be
@@ -1557,9 +1557,9 @@ public class Process extends Element implements IProcess {
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.getSource().isActivate() != active) {
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
-                            setActivate(connec.getSource().getSubProcessStartNode(false), active, activateNode);
+                            setActivateSubjob(connec.getSource().getSubProcessStartNode(false), active, activateNode);
                         }
                     }
                 }
@@ -1567,25 +1567,24 @@ public class Process extends Element implements IProcess {
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                 if (connec.getTarget().isActivate() != active) {
-                    setActivate(connec.getTarget(), active, activateNode);
+                    setActivateSubjob(connec.getTarget(), active, activateNode);
                 }
             }
+
         } else {
             if (node.getSubProcessStartNode(false).equals(mainSubProcess)) {
                 node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getSource().isActivate() != active) {
-                            setActivate(connec.getSource(), active, activateNode);
+                            setActivateSubjob(connec.getSource(), active, activateNode);
                         }
                     }
                 }
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getTarget().isActivate() != active) {
-                            setActivate(connec.getTarget(), active, activateNode);
+                            setActivateSubjob(connec.getTarget(), active, activateNode);
                         }
                     }
                 }
@@ -1594,11 +1593,11 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    public void setActivate(Node node, boolean active) {
+    public void setActivateSubjob(Node node, boolean active) {
         // desactive first the process to avoid to check the process during the
         // activation / desactivation
         setActivate(false);
-        setActivate(node, active, node);
+        setActivateSubjob(node, active, node);
         // now that everything is set, reactivate the process
         setActivate(true);
     }
@@ -1660,7 +1659,6 @@ public class Process extends Element implements IProcess {
         for (int i = 0; (i < outgoingConnections.size()) && (returnValue == -1); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
-
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
                     returnValue = connec.getInputId();
                     break;
@@ -1689,7 +1687,6 @@ public class Process extends Element implements IProcess {
         for (int i = 0; (i < outgoingConnections.size()) && (map == null); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
-
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
                     map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());

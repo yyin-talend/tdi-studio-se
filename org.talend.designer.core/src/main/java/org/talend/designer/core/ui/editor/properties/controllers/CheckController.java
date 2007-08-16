@@ -43,7 +43,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
+import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusSubjobCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -91,7 +91,7 @@ public class CheckController extends AbstractElementPropertySectionController {
                             Command cmd;
                             Boolean value = new Boolean(((Button) ctrl).getSelection());
                             if (name.equals(EParameterName.ACTIVATE.getName())) {
-                                cmd = new ChangeActivateStatusNodeCommand((Node) elem);
+                                cmd = new ChangeActivateStatusSubjobCommand((Node) elem);
                             } else {
                                 cmd = new PropertyChangeCommand(elem, name, value);
                             }

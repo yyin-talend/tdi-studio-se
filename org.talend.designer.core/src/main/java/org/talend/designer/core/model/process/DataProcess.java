@@ -133,6 +133,9 @@ public class DataProcess {
 
         DataConnection dataConnec;
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+            if (!connection.isActivate()) {
+                continue;
+            }
             IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
@@ -509,7 +512,8 @@ public class DataProcess {
         }
         checkRefList.add(graphicalNode);
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+            if (connection.isActivate()
+                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 // retrieve the starts node of each current nodes to add a before link
@@ -649,7 +653,9 @@ public class DataProcess {
         }
 
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-            replaceMultipleComponents((Node) connection.getTarget());
+            if (connection.isActivate()) {
+                replaceMultipleComponents((Node) connection.getTarget());
+            }
         }
         return dataNode;
     }
@@ -657,17 +663,17 @@ public class DataProcess {
     public static void buildFromGraphicalProcess(Process process, List<Node> graphicalNodeList) {
         initialize();
         for (Node node : graphicalNodeList) {
-            if (node.isSubProcessStart()) {
+            if (node.isSubProcessStart() && node.isActivate()) {
                 buildfromNode(node);
             }
         }
         for (Node node : graphicalNodeList) {
-            if (node.isSubProcessStart()) {
+            if (node.isSubProcessStart() && node.isActivate()) {
                 checkFlowRefLink(node);
             }
         }
         for (Node node : graphicalNodeList) {
-            if (node.isSubProcessStart()) {
+            if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
             }
         }

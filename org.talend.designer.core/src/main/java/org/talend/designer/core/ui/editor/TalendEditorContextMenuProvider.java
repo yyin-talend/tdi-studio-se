@@ -37,13 +37,14 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.action.ActivateSubjobAction;
 import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
-import org.talend.designer.core.ui.action.NodeSetActivateAction;
+import org.talend.designer.core.ui.action.ActivateElementAction;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
@@ -106,8 +107,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.SELECT_ALL.getId()));
 
-            action = new NodeSetActivateAction(part);
-            ((NodeSetActivateAction) action).update();
+            action = new ActivateElementAction(part);
+            ((ActivateElementAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+            }
+
+            action = new ActivateSubjobAction(part);
+            ((ActivateSubjobAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
