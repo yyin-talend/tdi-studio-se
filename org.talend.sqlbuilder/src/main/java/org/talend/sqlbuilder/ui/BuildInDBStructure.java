@@ -54,6 +54,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataConnection;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.sqlbuilder.Messages;
@@ -83,7 +84,7 @@ public class BuildInDBStructure extends SashForm {
 
     private IMetadataConnection parentMetadata;
 
-    private String schema = "MySchema";
+    private String schema = MetadataTool.DEFAULT_TABLE_NAME;
 
     private ConnectionParameters connectionParameters;
 
@@ -294,7 +295,9 @@ public class BuildInDBStructure extends SashForm {
                 // return metadataTable3.getLabel();
                 // }
             } else if (element instanceof IMetadataColumn) {
-                return ((IMetadataColumn) element).getOriginalDbColumnName();
+                final IMetadataColumn metadataColumn = ((IMetadataColumn) element);
+                String originalDbColumnName = metadataColumn.getOriginalDbColumnName();
+                return originalDbColumnName;
             }
             return null;
         }
