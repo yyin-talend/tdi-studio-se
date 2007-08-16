@@ -132,6 +132,8 @@ public class LoginComposite extends Composite {
 
     private ImportDemoProjectAction importDemoProjectAction;
 
+    private Label newProjectLabel;
+
     // private Button importProjectAsButton;
 
     /**
@@ -246,7 +248,7 @@ public class LoginComposite extends Composite {
         bottomButtons.setLayoutData(data);
         bottomButtons.setLayout(new FormLayout());
 
-        Label newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new")); //$NON-NLS-1$
+        newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new"));
         data = new FormData();
         data.left = new FormAttachment(0, HORIZONTAL_SPACE);
         data.bottom = new FormAttachment(bottomButtons, 0, SWT.CENTER);
@@ -495,13 +497,15 @@ public class LoginComposite extends Composite {
 
     private void updateButtons() {
         if (isAuthenticationNeeded() || !validateFields()) {
-            newProjectButton.setEnabled(false);
-            importProjectsButton.setEnabled(false);
-            importDemoProjectButton.setEnabled(false);
+            newProjectLabel.setVisible(false);
+            newProjectButton.setVisible(false);
+            importProjectsButton.setVisible(false);
+            importDemoProjectButton.setVisible(false);
         } else {
-            newProjectButton.setEnabled(true);
-            importProjectsButton.setEnabled(true);
-            importDemoProjectButton.setEnabled(true);
+            newProjectLabel.setVisible(true);
+            newProjectButton.setVisible(true);
+            importProjectsButton.setVisible(true);
+            importDemoProjectButton.setVisible(true);
         }
     }
 
