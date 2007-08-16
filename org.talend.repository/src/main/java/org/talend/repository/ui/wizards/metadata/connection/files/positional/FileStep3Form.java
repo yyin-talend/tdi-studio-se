@@ -433,6 +433,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                             positionDecimal = value.lastIndexOf('.');
                             precisionValue = lengthValue - positionDecimal;
                         }
+                    } else {
+                        lengthValue = (int) (Math.random() * 10);
                     }
                 }
             }
@@ -454,8 +456,6 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 } else {
                     metadataColumn.setLength(Integer.valueOf(fieldSeparatorValueArray[i]).intValue());
                 }
-            } else {
-                metadataColumn.setLength(0);
             }
 
             if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
