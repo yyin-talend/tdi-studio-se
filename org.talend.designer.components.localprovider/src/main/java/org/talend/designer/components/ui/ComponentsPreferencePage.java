@@ -25,7 +25,7 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.designer.components.Activator;
+import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.i18n.Messages;
 
 /**
@@ -42,7 +42,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
 
     public ComponentsPreferencePage() {
         super(GRID);
-        setPreferenceStore(Activator.getDefault().getPreferenceStore());
+        setPreferenceStore(ComponentsLocalProviderPlugin.getDefault().getPreferenceStore());
     }
 
     @Override

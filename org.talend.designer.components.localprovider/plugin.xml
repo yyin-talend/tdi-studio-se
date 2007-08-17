@@ -6,6 +6,9 @@
       <Service
             class="org.talend.designer.components.model.ComponentsService"
             serviceId="IComponentsService"/>
+      <Service
+            class="org.talend.designer.components.ComponentsLocalProviderService"
+            serviceId="ComponentsLocalProviderService"/>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -14,6 +17,11 @@
             class="org.talend.designer.components.ui.ComponentsPreferencePage"
             id="org.talend.designer.components.localprovider.page1"
             name="%components"/>
+      <page
+            category="org.talend.designer.components.localprovider.page1"
+            class="org.talend.designer.components.ui.ComponenttRunJobPreferencePage"
+            id="org.talend.designer.components.ui.trunjobpreferencepage"
+            name="%trunjob"/>
    </extension>
 
 </plugin>

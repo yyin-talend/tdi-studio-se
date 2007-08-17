@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.designer.components.Activator;
+import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.ui.ComponentsPreferencePage;
 
 /**
@@ -50,7 +50,7 @@ public class ComponentsRetriever {
     }
 
     private static File getExternalComponentsLocation() {
-        IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+        IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
         String path = prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));
     }

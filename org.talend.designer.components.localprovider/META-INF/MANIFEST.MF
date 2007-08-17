@@ -3,14 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Components local provider Plug-in
 Bundle-SymbolicName: org.talend.designer.components.localprovider;singleton:=true
 Bundle-Version: 2.2.0.qualifier
-Bundle-Activator: org.talend.designer.components.Activator
+Bundle-Activator: org.talend.designer.components.ComponentsLocalProviderPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.commons,
  org.talend.libraries,
  org.talend.designer.core,
- org.talend.core
+ org.talend.core,
+ org.eclipse.gmf.runtime.common.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.components.commons
