@@ -51,6 +51,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
@@ -351,7 +352,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                if (processName != null) {
+
+                boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
+                        .isAvoidToShowJobAfterDoubleClick();
+
+                if (processName != null && !isAvoidShowJobAfterDoubleClick) {
                     try {
                         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                         IRepositoryObject selectedProcess = null;
