@@ -1,0 +1,118 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+	java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode) codeGenArgument.getArgument();
+String cid =  node.getUniqueName();
+
+String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
+boolean isSelectQuery = ((dbquery.replaceAll(" ","").toLowerCase()).indexOf("select")) == 1;
+
+if (!commitEvery.equals("") && !commitEvery.equals("0")) {
+	%>
+	commitCounter_<%=cid%>++;
+	<%
+}
+
+int parametersCount = 0;
+int index = dbquery.indexOf("?");
+while (index >= 0) {
+	parametersCount++;
+	index = dbquery.indexOf("?", index + 1);
+}
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas != null) && (metadatas.size() > 0) && !isSelectQuery) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata != null) {
+		List<? extends IConnection> inConnections = node.getIncomingConnections();
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		
+		if (inConnections != null && inConnections.size() > 0){
+			IConnection inConnection = inConnections.get(0);
+			int parameterIndex = 1;
+			
+			for (IMetadataColumn column : columnList) {
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				
+				String method;
+				if (typeToGenerate.equals("byte[]")) {
+	 	  	   		method = "Bytes";
+ 	   	  		} else if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+	 	   	  		method = "String";
+ 	   	  		} else if (typeToGenerate.equals("java.util.Date")) {
+	 	   	  		method = "Date";
+ 	   	  		} else if (typeToGenerate.equals("Integer")) {
+ 	   	  			method = "Int";
+ 	   	 		} else {
+					method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+		  		}
+		  		
+		  		// Bind parameter to SQL statement
+		  		if (parameterIndex <= parametersCount) {
+					if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+						%>
+						statement_<%=cid%>.setString(<%=parameterIndex%>, String.valueOf(<%=inConnection.getName()%>.<%=column.getLabel()%>));
+						<%
+					} else if (typeToGenerate.equals("java.util.Date")) {
+						%>
+						if (<%=inConnection.getName()%>.<%=column.getLabel()%> != null) {
+							statement_<%=cid%>.setDate(<%=parameterIndex%>, new java.sql.Date(<%=inConnection.getName()%>.<%=column.getLabel()%>.getTime()));
+						} else {
+							statement_<%=cid%>.setDate(<%=parameterIndex%>, null);
+						}
+						<%
+					} else {
+						%>
+						statement_<%=cid%>.set<%=method%>(<%=parameterIndex%>, <%=inConnection.getName()%>.<%=column.getLabel()%>);
+						<%
+					}
+				}
+				
+				parameterIndex++;
+			}
+		}
+	}
+}
+
+%>
+try {
+	statement_<%=cid%>.execute();
+} catch (Exception e) {
+	<%
+	if (dieOnError.equals("true")) {
+		%>
+		throw(e);
+		<%
+	} else {
+		%>
+	    System.err.print(e.getMessage());
+		<%
+	}
+	%>
+}
+
+<%
+if (!commitEvery.equals("") && !commitEvery.equals("0")) {
+	%>
+	if (commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
+		connection_<%=cid%>.commit();
+		commitCounter_<%=cid%> = 0;
+	}
+	<%
+}
+%>
