@@ -119,6 +119,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getFileLdifMetadata();
         } else if (type == ERepositoryObjectType.CONTEXT) {
             return BusinessPackage.eINSTANCE.getContext();
+        } else if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
+            return BusinessPackage.eINSTANCE.getGenericSchemaMetadata();
         }
         return null;
     }
