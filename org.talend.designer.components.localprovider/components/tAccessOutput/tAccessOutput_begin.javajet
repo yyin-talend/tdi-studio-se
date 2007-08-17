@@ -130,6 +130,7 @@ class Column{
 	
 	public Column(String colName,String sqlStmt,boolean addCol){
 		this.column = null;
+		this.name=colName;
 		this.DBname = colName;
 		this.sqlStmt = sqlStmt;
 		this.value = "?";
@@ -226,15 +227,13 @@ for(IMetadataColumn column:columnList){
 	if(addCols != null && addCols.size()>0){
 		for(Map<String, String> addCol:addCols){
 			if(addCol.get("REFCOL").equals(column.getLabel())){
-				int stmtIndex = 0;
-				
-				for(Column stmtStr:stmtStructure){					
+				int stmtIndex = 0;		
+				for(Column stmtStr:stmtStructure){			
 					if(stmtStr.getName().equals(addCol.get("REFCOL"))){
 						break;
 					}
 					stmtIndex++;
-				}
-				
+				}			
 				if(addCol.get("POS").equals("AFTER")){
 					Column insertAfter = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
 					stmtStructure.add(stmtIndex+1,insertAfter);
@@ -250,7 +249,6 @@ for(IMetadataColumn column:columnList){
 		}
 	}
 }
-
 int counterOuter =0;
 boolean firstKey = true;
 boolean firstNoneKey = true;
@@ -319,7 +317,6 @@ for(Column colStmt:stmtStructure){
 	}
 	counterOuter ++;
 }
-
 
 	if(dataAction.equals("INSERT")){
 	%>	
