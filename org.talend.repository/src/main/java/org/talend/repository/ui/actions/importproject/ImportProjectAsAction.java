@@ -67,8 +67,18 @@ public final class ImportProjectAsAction extends Action {
     public void run() {
         ImportProjectAsWizard docWizard = new ImportProjectAsWizard();
         WizardDialog dlg = new ImportProjectWizardDialog(Display.getCurrent().getActiveShell(), docWizard);
+        
+        ////////////////
+        dlg.setBlockOnOpen(false);
+        
         if (dlg.open() == IDialogConstants.OK_ID) {
+        	/////////////////////////
+        	docWizard.performFinish();
+        	
             project = docWizard.getProjectName();
+            
+            /////////////////////////
+            dlg.close();
         } else {
             project = null;
         }
