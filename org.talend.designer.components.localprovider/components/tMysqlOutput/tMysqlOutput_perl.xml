@@ -107,7 +107,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="5"
       REQUIRED="true"
     >
@@ -160,13 +160,6 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
-      NAME="DBTABLE"
-      FIELD="DBTABLE"
       NUM_ROW="7"
     >
       <DEFAULT>''</DEFAULT>

@@ -107,11 +107,10 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
+    <PARAMETER	
       NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REQUIRED="true"
+      FIELD="DBTABLE"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -141,14 +140,6 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-	<PARAMETER	
-      NAME="DBTABLE"
-      FIELD="DBTABLE"
       NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
