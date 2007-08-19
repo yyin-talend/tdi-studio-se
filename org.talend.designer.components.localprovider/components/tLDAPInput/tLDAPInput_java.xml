@@ -67,7 +67,7 @@
     	<DEFAULT>"password"</DEFAULT>
  	</PARAMETER>
  	
- 	<PARAMETER NAME="FILTER" FIELD="TEXT" NUM_ROW="10">
+ 	<PARAMETER NAME="FILTER" FIELD="MEMO" NUM_ROW="10">
     	<DEFAULT>"(&amp;(objectClass=*))"</DEFAULT>
     </PARAMETER>
     
