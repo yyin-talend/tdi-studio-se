@@ -183,7 +183,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
                     } else {
-                        repositoryMetadata = new MetadataTable();
+                        //repositoryMetadata = new MetadataTable();
+                        //Gets the schema of the first item in repository schema type combo.                        
+                        repositoryMetadata = repositoryTableMap.get(repositoryTableMap.keySet().iterator().next());
                     }
                 }
                 if (switchParam != null) {
@@ -762,7 +764,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         IElementParameter repositorySchemaTypeParameter = elem
                 .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         combo = (CCombo) hashCurControls.get(repositorySchemaTypeParameter.getName());
-
+        
         if (combo == null) {
             return;
         }
@@ -790,7 +792,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             } else {
                 combo.setText(strValue);
             }
-
         }
     }
 
