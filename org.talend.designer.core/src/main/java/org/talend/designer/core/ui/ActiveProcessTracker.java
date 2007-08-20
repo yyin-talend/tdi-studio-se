@@ -117,7 +117,6 @@ public class ActiveProcessTracker implements IPartListener {
         service.setActiveProcess(process);
 
         Problems.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
-        Problems.switchToCurProblemView();
     }
 
     /**

@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.core.expressions,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.gmf.runtime.common.ui,
  org.eclipse.gmf.runtime.diagram.ui,
- org.talend.librariesmanager
+ org.talend.librariesmanager,
+ com.ibm.icu
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core.model.components,

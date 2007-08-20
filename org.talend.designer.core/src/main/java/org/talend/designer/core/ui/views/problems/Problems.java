@@ -22,22 +22,25 @@
 package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.utils.data.container.MapList;
+import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemAction;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -47,11 +50,15 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class Problems {
 
-    private static MapList<ProblemStatus, Problem> defaultProblems = new MapList<ProblemStatus, Problem>();
-
-    private static MapList<ProblemStatus, Problem> currentProblems = getDefaultProblems();
-
-    private static Map<String, MapList<ProblemStatus, Problem>> problemsMap = new HashMap<String, MapList<ProblemStatus, Problem>>();
+    /**
+     * This enum is used for marking the group type for problems. <br/>
+     * 
+     */
+    public enum Group {
+        SEVERITY,
+        TYPE,
+        NONE;
+    }
 
     private static IProcess currentProcess = null;
 
@@ -59,27 +66,61 @@ public class Problems {
 
     private static String newTitle = ""; //$NON-NLS-1$
 
+    private static Group group = Group.SEVERITY;
+
+    public static ProblemCategory[] categories = null;
+
+    private static ProblemList problemList = new ProblemList();
+
     public static void clearAll() {
-        for (List<Problem> problemList : currentProblems.values()) {
-            for (Problem problem : problemList) {
-                problem.setAction(ProblemAction.DELETED);
-            }
+        problemList.clear();
+    }
+
+    public static String getSummary() {
+        int[] counts = problemList.getMarkerCounts();
+        return MessageFormat.format("{0,choice,0#0 errors|1#{0,number,integer} error|1<{0,number,integer} errors}, {1,choice,0#0 warnings|1#{1,number,integer} warning|1<{1,number,integer} warnings}, {2,choice,0#0 infos|1#{2,number,integer} info|1<{2,number,integer} infos}", new Object[] { new Integer(counts[0]),
+                new Integer(counts[1]), new Integer(counts[2]) });
+    }
+
+    private static void buildHierarchy() {
+        if (group.equals(Group.SEVERITY)) {
+            categories = new ProblemCategory[3];
+            categories[0] = new SeverityProblemCategory(problemList, ProblemStatus.ERROR);
+            categories[0].setName(Messages.getString("Problems.category.errors")); //$NON-NLS-1$
+
+            categories[1] = new SeverityProblemCategory(problemList, ProblemStatus.WARNING);
+            categories[1].setName(Messages.getString("Problems.category.warnings")); //$NON-NLS-1$
+
+            categories[2] = new SeverityProblemCategory(problemList, ProblemStatus.INFO);
+            categories[2].setName(Messages.getString("Problems.category.infos")); //$NON-NLS-1$
+        } else if (group.equals(Group.TYPE)) {
+            categories = new ProblemCategory[2];
+            categories[0] = new TypeProblemCategory(problemList, ProblemType.JOB);
+            categories[0].setName(Messages.getString("Problems.category.jobs")); //$NON-NLS-1$
+
+            categories[1] = new TypeProblemCategory(problemList, ProblemType.ROUTINE);
+            categories[1].setName(Messages.getString("Problems.category.routines")); //$NON-NLS-1$
+        } else {
+            categories = null;
+        }
+
+    }
+
+    public static List<? extends Problem> getRoot() {
+        if (categories == null) {
+            buildHierarchy();
+        }
+        if (categories != null) {
+            return Arrays.asList(categories);
+        } else {
+            return problemList.getProblemList();
         }
     }
 
     public static void clearAll(Element element) {
         for (ProblemStatus status : ProblemStatus.values()) {
-            remove(status, element);
+            // remove(status, element);
         }
-    }
-
-    private static MapList<ProblemStatus, Problem> getProblemsByProcessId(String processId) {
-        MapList<ProblemStatus, Problem> curProblems = problemsMap.get(processId);
-        if (curProblems == null) {
-            curProblems = new MapList<ProblemStatus, Problem>();
-            problemsMap.put(processId, curProblems);
-        }
-        return curProblems;
     }
 
     public static void add(ProblemStatus status, Element element, String description) {
@@ -94,51 +135,16 @@ public class Problems {
     }
 
     public static void add(Problem problem) {
-        Problem oldProblem = null;
-        boolean found = false;
-        // check if the problem already exists
-        for (int i = 0; i < currentProblems.get(problem.getStatus()).size() && !found; i++) {
-            Problem currentProblem = currentProblems.get(problem.getStatus()).get(i);
-            if (problem.getElement().equals(currentProblem.getElement())) {
-                if (problem.getDescription().equals(currentProblem.getDescription())) {
-                    if (currentProblem.getAction() != ProblemAction.DELETED) {
-                        // problem already exists
-                        oldProblem = currentProblem;
-                        found = true;
-                    }
-                }
-            }
-        }
-        if (!found) {
-            currentProblems.put(problem.getStatus(), problem);
-            problem.setAction(ProblemAction.ADDED);
-        } else {
-            if (oldProblem.getAction().equals(ProblemAction.DELETED)) {
-                oldProblem.setAction(ProblemAction.NONE);
-            }
-        }
-    }
-
-    public static void remove(ProblemStatus status, Element element) {
-        // List<Problem> problemsToRemove = new ArrayList<Problem>();
-
-        for (Problem problem : currentProblems.get(status)) {
-            if (problem.getElement().equals(element)) {
-                // problemsToRemove.add(problem);
-                problem.setAction(ProblemAction.DELETED);
-            }
-        }
-        // problems.removeAll(status, problemsToRemove);
+        problemList.add(problem);
+        refreshView();
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {
         List<String> statusList = new ArrayList<String>();
 
-        for (Problem problem : currentProblems.get(status)) {
-            if (problem.getAction() != ProblemAction.DELETED) {
-                if (problem.getElement().equals(element)) {
-                    statusList.add(problem.getDescription());
-                }
+        for (Problem problem : problemList.getProblemList()) {
+            if (problem.getElement().equals(element)&&problem.getStatus().equals(status)) {
+                statusList.add(problem.getDescription());
             }
         }
         return statusList;
@@ -159,63 +165,19 @@ public class Problems {
      * DOC check the problems the corresponding of current process .
      */
     private static void initCurrentProblems() {
-        currentProblems = getProblemsByProcessId(currentProcess.getId());
-        if (currentProblems.size() == 0) {
-            ((Process) currentProcess).checkProcess();
-        }
+        ((Process) currentProcess).checkProcess();
     }
 
     public static void recheckCurrentProblems(ProblemsView view) {
-        if (currentProcess == null || problemsMap.size() == 0) {
+        if (currentProcess == null) {
             return;
         }
-        currentProblems = getProblemsByProcessId(currentProcess.getId());
-        currentProblems.clear();
         ((Process) currentProcess).checkNodeProblems();
-        view.setProblems(currentProblems);
-    }
-
-    private static MapList<ProblemStatus, Problem> getDefaultProblems() {
-        defaultProblems.clear();
-        return defaultProblems;
-    }
-
-    public static MapList<ProblemStatus, Problem> getCurrentProblems() {
-        return currentProblems == null ? getDefaultProblems() : currentProblems;
-    }
-
-    /**
-     * DOC remove problems by process id.
-     */
-    public static void removeProblemsByProcessId(String processId) {
-        problemsMap.remove(processId);
-        if (problemsMap.size() == 0) {
-            currentProblems = getDefaultProblems();
-            switchToCurProblemView();
-        }
+        view.refresh();
     }
 
     public static void setTitle(String title) {
         newTitle = title;
-    }
-
-    /**
-     * DOC switch to the current problem view.
-     */
-    public static void switchToCurProblemView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView"); //$NON-NLS-1$
-        if (view instanceof ProblemsView) {
-            ProblemsView problemsView = (ProblemsView) view;
-            if (problemsView == null) {
-                return;
-            }
-            if (!newTitle.equals(currentTitle)) {
-                problemsView.setPartName(newTitle);
-                currentTitle = newTitle;
-            }
-            problemsView.setProblems(getCurrentProblems());
-        }
     }
 
     public static void refreshView() {
@@ -235,71 +197,50 @@ public class Problems {
             }
         }
 
-        List<Problem> warningsToRemove = new ArrayList<Problem>();
-        List<Problem> errorsToRemove = new ArrayList<Problem>();
+        problemsView.refresh();
 
-        for (List<Problem> problemList : currentProblems.values()) {
-            for (Problem problem : problemList) {
-                switch (problem.getAction()) {
-                case ADDED:
-                    if (problemsView != null) {
-                        problemsView.addProblem(problem.getStatus(), problem);
-                        problem.setAction(ProblemAction.NONE);
-                    }
-                    IElement elem = problem.getElement();
-                    if (elem instanceof Node) {
-                        switch (problem.getStatus()) {
-                        case WARNING:
-                            ((Node) elem).addStatus(Process.WARNING_STATUS);
-                            break;
-                        case ERROR:
-                            ((Node) elem).addStatus(Process.ERROR_STATUS);
-                            break;
-                        default:
-                        }
-                    }
-                    break;
-                case DELETED:
-                    if (problemsView != null) {
-                        problemsView.removeProblem(problem.getStatus(), problem);
-                    }
-                    switch (problem.getStatus()) {
-                    case WARNING:
-                        warningsToRemove.add(problem);
-                        break;
-                    case ERROR:
-                        errorsToRemove.add(problem);
-                        break;
-                    default:
-                    }
-                    break;
-                default:
-                }
+        List<? extends INode> nodes = currentProcess.getGraphicalNodes();
+        for (INode inode : nodes) {
+            if (inode instanceof Node) {
+                Node node = (Node) inode;
+                refreshNodeStatus(node, problemList.getProblemList());
             }
         }
-        for (Problem warning : warningsToRemove) {
-            IElement elem = warning.getElement();
-            if (elem instanceof Node) {
-                if (getStatusList(warning.getStatus(), warning.getElement()).isEmpty()) {
-                    ((Node) elem).removeStatus(Process.WARNING_STATUS);
-                } else {
-                    ((Node) elem).updateStatus();
-                }
+    }
+
+    /**
+     * DOC bqian Comment method "refreshNodeStatus".
+     * 
+     * @param node
+     * @param problemList2
+     */
+    private static void refreshNodeStatus(Node node, List<Problem> problemList) {
+
+        boolean hasStatus = false;
+        for (Problem problem : problemList) {
+            if (!problem.getElement().equals(node)) {
+                continue;
+            }
+            hasStatus = true;
+            if (problem.getStatus().equals(ProblemStatus.WARNING)) {
+                node.addStatus(Process.WARNING_STATUS);
+            } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                node.addStatus(Process.ERROR_STATUS);
             }
         }
-        for (Problem error : errorsToRemove) {
-            IElement elem = error.getElement();
-            if (elem instanceof Node) {
-                if (getStatusList(error.getStatus(), error.getElement()).isEmpty()) {
-                    ((Node) elem).removeStatus(Process.ERROR_STATUS);
-                } else {
-                    ((Node) elem).updateStatus();
-                }
-            }
+        if (!hasStatus) {
+            node.removeStatus(Process.WARNING_STATUS);
+            node.removeStatus(Process.ERROR_STATUS);
         }
-        if (problemsView != null) {
-            currentProblems.removeAll(ProblemStatus.ERROR, errorsToRemove);
-            currentProblems.removeAll(ProblemStatus.WARNING, warningsToRemove);
-        }
+    }
+
+    /**
+     * DOC bqian Comment method "removeProblemsByProcessId".
+     * 
+     * @param id
+     */
+    public static void removeProblemsByProcessId(String id) {
+        // TODO Auto-generated method stub
+
     }
 }
