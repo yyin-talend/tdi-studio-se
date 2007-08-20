@@ -110,7 +110,7 @@
     <PARAMETER	
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="7"
+      NUM_ROW="5"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
