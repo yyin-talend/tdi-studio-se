@@ -21,18 +21,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -43,14 +40,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.markers.internal.MarkerList;
-import org.eclipse.ui.views.markers.internal.MarkerMessages;
-import org.eclipse.ui.views.markers.internal.ProblemView;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.data.container.MapList;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -67,22 +57,9 @@ public class ProblemsView extends ViewPart {
 
     // private TreeItem warningItem, errorItem;
 
-    private Map<Problem, TreeItem> warningsMap, errorsMap;
-
-    private Image errorImage;
-
-    private Image warningImage;
-
     private TreeViewer viewer;
 
-    private static final String ERRORS_TEXT = Messages.getString("ProblemsView.errorTitle"); //$NON-NLS-1$
-
-    private static final String WARNINGS_TEXT = Messages.getString("ProblemsView.waringTitle"); //$NON-NLS-1$
-
     public ProblemsView() {
-        warningsMap = new HashMap<Problem, TreeItem>();
-        errorsMap = new HashMap<Problem, TreeItem>();
-
         setPartName(""); //$NON-NLS-1$
     }
 
@@ -95,35 +72,18 @@ public class ProblemsView extends ViewPart {
         final Tree tree = viewer.getTree();
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
-        tree.addListener(SWT.Selection, new Listener() {
+        
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            public void handleEvent(Event event) {
-                TreeItem[] items = tree.getSelection();
-                if (items.length > 0) {
-                    if (warningsMap.containsValue(items[0])) {
-                        for (Problem problem : warningsMap.keySet()) {
-                            TreeItem item = warningsMap.get(problem);
-                            if (item.equals(items[0])) {
-                                if (problem.getElement() instanceof Node) {
-                                    selectInEditor((Node) problem.getElement());
-                                }
-                            }
-                        }
-                    }
-
-                    if (errorsMap.containsValue(items[0])) {
-                        for (Problem problem : errorsMap.keySet()) {
-                            TreeItem item = errorsMap.get(problem);
-                            if (item.equals(items[0])) {
-                                if (problem.getElement() instanceof Node) {
-                                    selectInEditor((Node) problem.getElement());
-                                }
-                            }
-                        }
-                    }
+            public void selectionChanged(SelectionChangedEvent event) {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                Problem problem = (Problem) selection.getFirstElement();
+                if (problem.isConcrete()) {
+                    selectInEditor((Node) problem.getElement());
                 }
             }
         });
+
 
         TreeColumn column1 = new TreeColumn(tree, SWT.CENTER);
         column1.setText(Messages.getString("ProblemsView.description")); //$NON-NLS-1$
@@ -140,12 +100,6 @@ public class ProblemsView extends ViewPart {
         viewer.setLabelProvider(provider);
         viewer.setContentProvider(provider);
         viewer.setInput(Problems.getRoot());
-        // warningItem = new TreeItem(tree, SWT.NONE);
-        // warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
-        // warningItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
-        // errorItem = new TreeItem(tree, SWT.NONE);
-        // errorItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
-        // errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
 
         Problems.recheckCurrentProblems(this);
     }
@@ -169,73 +123,6 @@ public class ProblemsView extends ViewPart {
                 }
             }
         }
-    }
-
-    public void clearAll() {
-
-        // TreeItem[] treeItems = errorItem.getItems();
-        // for (int i = 0; i < treeItems.length; i++) {
-        // treeItems[i].dispose();
-        // }
-        // errorsMap.clear();
-        // errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
-        //
-        // treeItems = warningItem.getItems();
-        // for (int i = 0; i < treeItems.length; i++) {
-        // treeItems[i].dispose();
-        // }
-        // warningsMap.clear();
-        // warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    /**
-     * DOC retset problemsTree with the new problems.
-     * 
-     * @param problems the new problems
-     */
-    public void setProblems(MapList<ProblemStatus, Problem> problems) {
-        clearAll();
-        ProblemStatus status;
-        List<Problem> problemList;
-        Iterator it = problems.keySet().iterator();
-        while (it.hasNext()) {
-            status = (ProblemStatus) it.next();
-            problemList = problems.get(status);
-            for (Problem problem : problemList) {
-                addProblem(status, problem);
-            }
-        }
-    }
-
-    public void addProblem(ProblemStatus status, Problem problem) {
-
-    }
-
-    public void removeProblem(ProblemStatus status, Problem problem) {
-    }
-
-    public List<Problem> getProblemList(ProblemStatus status) {
-        Set<Problem> setProblems;
-        List<Problem> problemList = new ArrayList<Problem>();
-
-        switch (status) {
-        case ERROR:
-            setProblems = errorsMap.keySet();
-
-            for (Problem problem : setProblems) {
-                problemList.add(problem);
-            }
-            break;
-        case WARNING:
-            setProblems = warningsMap.keySet();
-
-            for (Problem problem : setProblems) {
-                problemList.add(problem);
-            }
-            break;
-        default:
-        }
-        return problemList;
     }
 
     @Override
