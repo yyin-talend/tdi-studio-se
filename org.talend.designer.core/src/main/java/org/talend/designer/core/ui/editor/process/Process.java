@@ -1742,7 +1742,7 @@ public class Process extends Element implements IProcess {
     }
 
     private void checkProblems() {
-        Problems.clearAll();
+        Problems.removeProblemsByProcess(this);
 
         for (Node node : nodes) {
             if (node.isActivate()) {
@@ -1757,7 +1757,7 @@ public class Process extends Element implements IProcess {
      */
     public void checkNodeProblems() {
         if (isActivate()) {
-            Problems.clearAll();
+            Problems.removeProblemsByProcess(this);
 
             for (Node node : nodes) {
                 if (node.isActivate()) {

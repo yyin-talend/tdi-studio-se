@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -83,6 +84,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -493,8 +495,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
@@ -609,8 +611,28 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     }
 
     public void updateChildrens() {
-        // just call the method add protection will update new childrens and keep old ones (keep to delete automatically when closing job)
+        // just call the method add protection will update new childrens and keep old ones (keep to delete automatically
+        // when closing job)
         JobResourceManager jobResourceManager = JobResourceManager.getInstance();
         jobResourceManager.addProtection(designerEditor);
+    }
+
+    /**
+     * DOC bqian Comment method "selectNode".
+     * 
+     * @param node
+     */
+    public void selectNode(Node node) {
+        GraphicalViewer viewer = getTalendEditor().getViewer();
+        Object object = viewer.getRootEditPart().getChildren().get(0);
+        if (object instanceof ProcessPart) {
+            for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
+                if (editPart instanceof NodePart) {
+                    if (((NodePart) editPart).getModel().equals(node)) {
+                        viewer.select(editPart);
+                    }
+                }
+            }
+        }
     }
 }

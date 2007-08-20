@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ui.IViewPart;
@@ -30,7 +31,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
@@ -60,7 +60,7 @@ public class Problems {
         NONE;
     }
 
-    private static IProcess currentProcess = null;
+    private static List<IProcess> openJobs = new ArrayList<IProcess>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public class Problems {
 
     public static String getSummary() {
         int[] counts = problemList.getMarkerCounts();
-        return MessageFormat.format("{0,choice,0#0 errors|1#{0,number,integer} error|1<{0,number,integer} errors}, {1,choice,0#0 warnings|1#{1,number,integer} warning|1<{1,number,integer} warnings}, {2,choice,0#0 infos|1#{2,number,integer} info|1<{2,number,integer} infos}", new Object[] { new Integer(counts[0]),
+        return MessageFormat.format(MarkerMessages.problem_statusSummaryBreakdown, new Object[] { new Integer(counts[0]),
                 new Integer(counts[1]), new Integer(counts[2]) });
     }
 
@@ -118,9 +118,7 @@ public class Problems {
     }
 
     public static void clearAll(Element element) {
-        for (ProblemStatus status : ProblemStatus.values()) {
-            // remove(status, element);
-        }
+        removeProblemsByElement(element);
     }
 
     public static void add(ProblemStatus status, Element element, String description) {
@@ -136,14 +134,13 @@ public class Problems {
 
     public static void add(Problem problem) {
         problemList.add(problem);
-        refreshView();
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {
         List<String> statusList = new ArrayList<String>();
 
         for (Problem problem : problemList.getProblemList()) {
-            if (problem.getElement().equals(element)&&problem.getStatus().equals(status)) {
+            if (problem.getElement().equals(element) && problem.getStatus().equals(status)) {
                 statusList.add(problem.getDescription());
             }
         }
@@ -155,24 +152,28 @@ public class Problems {
      * 
      * @param process
      */
-    public static void setCurrentProcess(IProcess process) {
-        currentProcess = process;
+    public static void addProcess(IProcess process) {
+        if (openJobs.contains(process)) {
+            return;
+        }
+        openJobs.add(process);
         initCurrentProblems();
-
     }
 
     /**
      * DOC check the problems the corresponding of current process .
      */
     private static void initCurrentProblems() {
-        ((Process) currentProcess).checkProcess();
+        for (IProcess process : openJobs) {
+            ((Process) process).checkProcess();
+        }
+
     }
 
     public static void recheckCurrentProblems(ProblemsView view) {
-        if (currentProcess == null) {
-            return;
+        for (IProcess process : openJobs) {
+            ((Process) process).checkNodeProblems();
         }
-        ((Process) currentProcess).checkNodeProblems();
         view.refresh();
     }
 
@@ -199,11 +200,14 @@ public class Problems {
 
         problemsView.refresh();
 
-        List<? extends INode> nodes = currentProcess.getGraphicalNodes();
-        for (INode inode : nodes) {
-            if (inode instanceof Node) {
-                Node node = (Node) inode;
-                refreshNodeStatus(node, problemList.getProblemList());
+        for (IProcess process : openJobs) {
+            // ((Process) process).checkNodeProblems();
+            List<? extends INode> nodes = process.getGraphicalNodes();
+            for (INode inode : nodes) {
+                if (inode instanceof Node) {
+                    Node node = (Node) inode;
+                    refreshNodeStatus(node, problemList.getProblemList());
+                }
             }
         }
     }
@@ -239,8 +243,31 @@ public class Problems {
      * 
      * @param id
      */
-    public static void removeProblemsByProcessId(String id) {
-        // TODO Auto-generated method stub
+    public static void removeProblemsByProcess(IProcess process) {
 
+        for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
+            Problem problem = iter.next();
+            if (problem.getJob().equals(process)) {
+                iter.remove();
+            }
+
+        }
+
+        refreshView();
+    }
+
+    public static void removeJob(IProcess process) {
+        openJobs.remove(process);
+    }
+
+    public static void removeProblemsByElement(Element element) {
+
+        for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
+            Problem problem = iter.next();
+            if (problem.getElement().equals(element)) {
+                iter.remove();
+            }
+        }
+        refreshView();
     }
 }

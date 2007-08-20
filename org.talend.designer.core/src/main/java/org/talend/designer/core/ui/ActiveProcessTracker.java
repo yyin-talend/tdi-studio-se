@@ -41,29 +41,34 @@ public class ActiveProcessTracker implements IPartListener {
 
     private static IProcess currentProcess;
 
+    public IProcess getJobFromActivatedEditor(IWorkbenchPart part) {
+        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
+            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+            mpte.setName();
+
+            IProcess process = mpte.getTalendEditor().getProcess();
+            return process;
+        }
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
-            mpte.setName();
-
-            IProcess process = mpte.getTalendEditor().getProcess();
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null) {
             if (process instanceof Process) {
                 Process p = (Process) process;
                 if (!p.isReadOnly() && p.isActivate()) {
                     if (p.checkDifferenceWithRepository()) {
+                        MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
                         mpte.getTalendEditor().setDirty(true);
                     }
                 }
             }
-
-            // if (updateContextSection()) {
-            // mpte.getTalendEditor().setDirty(true);
-            // }
         }
     }
 
@@ -94,13 +99,9 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
      */
     public void partBroughtToTop(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
-            mpte.setName();
-            IProcess process = mpte.getTalendEditor().getProcess();
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null) {
             currentProcess = process;
-
-            setProblemsView(process);
             setContextsView(process);
         }
     }
@@ -110,8 +111,8 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @param process
      */
-    private void setProblemsView(IProcess process) {
-        Problems.setCurrentProcess(currentProcess);
+    private void addJobInProblemView(IProcess process) {
+        Problems.addProcess(process);
 
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         service.setActiveProcess(process);
@@ -139,15 +140,13 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
     public void partClosed(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
-            IProcess process = mpte.getTalendEditor().getProcess();
-            Problems.removeProblemsByProcessId(process.getId());
-
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null) {
+            Problems.removeProblemsByProcess(process);
+            Problems.removeJob(process);
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.removeProcess(process);
 
-            
             if (currentProcess == process) {
                 Problems.setTitle(""); //$NON-NLS-1$
                 Problems.clearAll();
@@ -164,7 +163,8 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partDeactivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partDeactivated(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null) {
             MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
             mpte.getTalendEditor().savePaletteState();
         }
@@ -176,7 +176,10 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
      */
     public void partOpened(IWorkbenchPart part) {
-        // Do nothing
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null) {
+            currentProcess = process;
+            addJobInProblemView(process);
+        }
     }
-
 }

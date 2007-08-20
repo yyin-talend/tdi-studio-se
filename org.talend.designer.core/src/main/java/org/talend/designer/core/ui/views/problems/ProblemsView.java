@@ -21,10 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
-import java.util.List;
-
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -32,20 +28,17 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodePart;
-import org.talend.designer.core.ui.editor.process.ProcessPart;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -72,18 +65,17 @@ public class ProblemsView extends ViewPart {
         final Tree tree = viewer.getTree();
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
-        
+
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Problem problem = (Problem) selection.getFirstElement();
-                if (problem.isConcrete()) {
+                if (problem != null && problem.isConcrete()) {
                     selectInEditor((Node) problem.getElement());
                 }
             }
         });
-
 
         TreeColumn column1 = new TreeColumn(tree, SWT.CENTER);
         column1.setText(Messages.getString("ProblemsView.description")); //$NON-NLS-1$
@@ -106,20 +98,17 @@ public class ProblemsView extends ViewPart {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void selectInEditor(Node node) {
-        IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
-        if (editorPart instanceof MultiPageTalendEditor) {
-            MultiPageTalendEditor multi = (MultiPageTalendEditor) editorPart;
-            GraphicalViewer viewer = multi.getTalendEditor().getViewer();
-            Object object = viewer.getRootEditPart().getChildren().get(0);
-            if (object instanceof ProcessPart) {
-                for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
-                    if (editPart instanceof NodePart) {
-                        if (((NodePart) editPart).getModel().equals(node)) {
-                            viewer.select(editPart);
-                            multi.setFocus();
-                        }
-                    }
+        IEditorReference[] editorParts = page.getEditorReferences();
+
+        for (IEditorReference reference : editorParts) {
+            IEditorPart editor = reference.getEditor(false);
+            if (MultiPageTalendEditor.ID.equals(editor.getSite().getId())) {
+                MultiPageTalendEditor mpte = (MultiPageTalendEditor) editor;
+                if (mpte.getTalendEditor().getProcess().equals(node.getProcess())) {
+                    page.bringToTop(mpte);
+                    mpte.selectNode(node);
                 }
             }
         }
