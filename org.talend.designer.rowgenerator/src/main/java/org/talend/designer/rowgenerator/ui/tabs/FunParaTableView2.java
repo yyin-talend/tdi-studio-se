@@ -24,7 +24,6 @@ package org.talend.designer.rowgenerator.ui.tabs;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
@@ -39,15 +38,24 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
+import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
+import org.talend.expressionbuilder.CellEditorDialogBehavior;
+import org.talend.expressionbuilder.ExtendedTextCellEditor;
+import org.talend.expressionbuilder.IExpressionBuilderDialogService;
+import org.talend.expressionbuilder.IExpressionConsumer;
+import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -61,17 +69,28 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     private MetadataTableEditorViewExt rowGenTableEditor2;
 
+    private IExpressionBuilderDialogController dialog;
+
+    private TableViewerCreator<Parameter> tableViewerCreator;
+
     public FunParaTableView2(Composite parentComposite, int mainCompositeStyle) {
         super(parentComposite, mainCompositeStyle);
+
     }
 
     public FunParaTableView2(Composite inEditorContainer, int border, MetadataTableEditorViewExt genTableEditor2) {
         this(inEditorContainer, border);
         this.rowGenTableEditor2 = genTableEditor2;
+
     }
 
     @Override
     protected void createColumns(TableViewerCreator<Parameter> tableViewerCreator, Table table) {
+        this.tableViewerCreator = tableViewerCreator;
+
+        IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
+                IExpressionBuilderDialogService.class);
+
         TableViewerCreatorColumn column;
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("FunParaTableView2.Parameter"));
@@ -113,8 +132,17 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         column.setModifiable(true);
         column.setWidth(115);
+
         ExtendedTextCellEditor cellEditor = new ExtendedTextCellEditor(tableViewerCreator.getTable());
-        cellEditor.setTableViewerCreator(tableViewerCreator);
+
+        dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
+                mainComposite, cellEditor);
+
+        CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
+        behavior.setCellEditorDialog(dialog);
+        cellEditor.setCellEditorBehavior(behavior);
+        cellEditor.init();
+
         column.setCellEditor(cellEditor);
 
         // ////////////////////////////////////////////////////////
@@ -232,4 +260,5 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
             getTable().dispose();
         }
     }
+
 }
