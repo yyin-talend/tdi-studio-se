@@ -40,13 +40,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.expressionbuilder.ExpressionFileOperation;
+import org.talend.expressionbuilder.ICellEditorDialog;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
@@ -154,7 +154,8 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
-        createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancle.button"), false); //$NON-NLS-1$
+        createButton(parent, IDialogConstants.CANCEL_ID,
+                Messages.getString("ExpressionBuilderDialog.cancle.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
@@ -229,7 +230,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("ExpressionBuilderDialog.expression.builder"));  //$NON-NLS-1$
+        newShell.setText(Messages.getString("ExpressionBuilderDialog.expression.builder")); //$NON-NLS-1$
     }
 
     protected Point getInitialSize() {
