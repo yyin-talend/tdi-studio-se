@@ -184,7 +184,6 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 talendProblem.setDescription(Messages.getString("JavaCodeProblemsChecker.processDetailError", //$NON-NLS-1$
                         new Object[] { problemWithLine.getSource(), problemWithLine.getJdtProblem().getMessage() }));
                 talendProblem.setStatus(Problem.ProblemStatus.ERROR);
-                talendProblem.setAction(Problem.ProblemAction.ADDED);
                 talendProblem.setKey(problemWithLine.getKey());
                 problems.add(talendProblem);
             }
