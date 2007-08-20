@@ -1,0 +1,88 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Map
+    java.util.List
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	
+	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
+	
+	String cid = node.getUniqueName();
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		List<IMetadataColumn> columnList = metadata.getListColumns();
+		
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for(IConnection conn:conns){
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+     			String firstConnName = conn.getName();
+    			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
+%>
+	javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
+
+<%
+					int index = 0;
+					for(IMetadataColumn column:columnList){		
+						if(index == 0)
+						{
+%> 
+	String dn_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.trim();
+<%
+						}else if(!insertMode.equals("DELETE")){
+%>
+	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(",")>0){
+		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(",")){
+			entry_<%=cid%>.put("<%=column.getLabel()%>",value_<%=cid%>);
+		}
+	}else{
+		entry_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+	}
+<%
+						}
+						index++;
+					}
+					if(insertMode.equals("INSERT")){
+%> 
+	ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
+<%
+					}else if(insertMode.equals("UPDATA")){
+%>
+    ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
+<%
+					}else if(insertMode.equals("DELETE")){
+%>
+	ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
+<%
+					}else if(insertMode.equals("INSERT_UPDATA")){
+%>
+	boolean found = false;
+	try{
+		ctx_<%=cid%>.getAttributes(dn_<%=cid%>);
+		found = true;
+	}catch(javax.naming.NameNotFoundException nfEx_<%=cid%>)
+	{
+		ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
+	}
+	if(found)
+	{
+		ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.REPLACE_ATTRIBUTE, entry_<%=cid%>);
+	}
+<%
+					}
+				}
+			}
+		}
+	}
+%>
