@@ -40,8 +40,6 @@ import org.talend.designer.business.diagram.custom.util.GmfPropertiesViewHelper;
  */
 public class BusinessDiagramDropTargetListener extends DiagramDropTargetListener {
 
-    private static final String ASSIGNMENT_TAB_ID = "org.talend.designer.business.diagram.properties.AssignmentTab"; //$NON-NLS-1$
-
     /**
      * DOC mhelleboid BusinessDiagramDropTargetListener constructor comment.
      * 
@@ -86,7 +84,7 @@ public class BusinessDiagramDropTargetListener extends DiagramDropTargetListener
         super.handleDrop();
         // hack to show Assignment Tab in Properties View
         if (getCurrentEvent().detail != DND.DROP_NONE) {
-            new GmfPropertiesViewHelper().showTab(ASSIGNMENT_TAB_ID, getViewer(), getTargetEditPart());
+            new GmfPropertiesViewHelper().selectTargetEditPart(getViewer(), getTargetEditPart());
         }
     }
 

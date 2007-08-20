@@ -26,26 +26,12 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gmf.runtime.common.ui.util.WorkbenchPartActivator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.part.IPage;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.talend.designer.business.diagram.custom.properties.BusinessPropertiesBrowserPage;
 
 /**
- * DOC mhelleboid class global comment. Detailled comment <br/>
- * 
- * $Id$
- * 
  */
 public class GmfPropertiesViewHelper {
 
-    /**
-     * DOC mhelleboid Comment method "showTab".
-     * 
-     * @param tabId TODO
-     * @param viewer TODO
-     * @param targetEditPart TODO
-     */
-    public void showTab(final String tabId, final EditPartViewer viewer, final EditPart targetEditPart) {
+    public void selectTargetEditPart(final EditPartViewer viewer, final EditPart targetEditPart) {
         Display.getCurrent().asyncExec(new Runnable() {
 
             public void run() {
@@ -56,17 +42,6 @@ public class GmfPropertiesViewHelper {
                 viewer.deselectAll();
                 viewer.select(targetEditPart);
                 viewer.getControl().forceFocus();
-
-                // show the good tab in the properties view
-                if (viewPart instanceof PropertySheet) {
-                    PropertySheet propertySheet = (PropertySheet) viewPart;
-                    IPage currentPage = propertySheet.getCurrentPage();
-
-                    if (currentPage instanceof BusinessPropertiesBrowserPage) {
-                        BusinessPropertiesBrowserPage businessPropertiesBrowserPage = (BusinessPropertiesBrowserPage) currentPage;
-                        businessPropertiesBrowserPage.showTab(tabId);
-                    }
-                }
             }
         });
     }

@@ -18,4 +18,5 @@ Require-Bundle: org.eclipse.ui,
  org.talend.designer.components.localprovider,
  org.talend.repository
 Eclipse-LazyStart: true
-Export-Package: org.talend.designer.components.localprovider.test
+Export-Package: org.talend.designer.components.localprovider.test,
+ org.talend.designer.components.localprovider.test.i18n

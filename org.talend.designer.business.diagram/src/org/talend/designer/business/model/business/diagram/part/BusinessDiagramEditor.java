@@ -18,14 +18,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IGotoMarker;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
-import org.talend.designer.business.diagram.custom.properties.BusinessPropertiesBrowserPage;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -48,19 +46,6 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      */
     public BusinessDiagramEditor() {
         super(true);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gmf.runtime.diagram.ui.resources.editor.parts.DiagramDocumentEditor#getAdapter(java.lang.Class)
-     */
-    @Override
-    public Object getAdapter(Class type) {
-        if (type == IPropertySheetPage.class) {
-            return new BusinessPropertiesBrowserPage(this);
-        }
-        return super.getAdapter(type);
     }
 
     /**
