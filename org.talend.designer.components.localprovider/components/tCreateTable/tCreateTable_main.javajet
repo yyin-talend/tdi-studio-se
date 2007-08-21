@@ -172,7 +172,7 @@ class Transfer{
 		}else if(dbType.equals("Sybase")){
 			return "\"+"+tableName+"+\"";
 		}
-		return null;
+		return "\"+"+tableName+"+\"";
 	}
 	
 	
