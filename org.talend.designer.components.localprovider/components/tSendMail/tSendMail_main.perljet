@@ -25,6 +25,7 @@ String smtpPort    = ElementParameterParser.getValue(node, "__SMTP_PORT__");
 String to          = ElementParameterParser.getValue(node, "__TO__");
 String from        = ElementParameterParser.getValue(node, "__FROM__");
 String cc          = ElementParameterParser.getValue(node, "__CC__");
+String bcc         = ElementParameterParser.getValue(node, "__BCC__");
 String subject     = ElementParameterParser.getValue(node, "__SUBJECT__");
 String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTACHMENTS__");
@@ -45,31 +46,27 @@ my $smtp_server = sprintf(
 use MIME::Lite;
 use File::Basename;
 
-<%
-if( cc.length() > 0 ){
-%>
 my $msg = MIME::Lite->new(
     From    => <%= from %>,
     To      => <%= to %>,
+<%
+if( ! cc.equals("") ){
+%>
     Cc      => <%= cc %>,
+<%
+}
+%>
+<%
+if( ! bcc.equals("") ){
+%>
+    Bcc     => <%= bcc %>,
+<%
+}
+%>
     Subject => <%= subject %>,
     Data    => <%=message %>,
 );
 
-<%
-}
-else {
-%>
-my $msg = MIME::Lite->new(
-    From    => <%= from %>,
-    To      => <%= to %>,
-    Subject => <%= subject %>,
-    Data    => <%=message %>,
-);
-
-<%
-}
-%>
 
 
 <%
