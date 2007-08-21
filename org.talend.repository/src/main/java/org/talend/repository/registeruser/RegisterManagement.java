@@ -48,7 +48,8 @@ public class RegisterManagement {
     private static final double REGISTRATION_DONE = 2;
 
     public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost,
-            String proxyPort, String designerVersion) throws BusinessException {
+            String proxyPort, String designerVersion, String projectLanguage, String osName, String osVersion,
+            String javaVersion, long totalMemory, Long memRAM, int nbProc) throws BusinessException {
         boolean result = false;
 
         // if proxy is enabled
@@ -66,7 +67,9 @@ public class RegisterManagement {
         try {
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
-            result = proxy.registerUserWithProductName(email, country, designerVersion, brandingService.getShortProductName());
+            result = proxy.registerUserWithAllUserInformations(email, country, designerVersion, brandingService
+                    .getShortProductName(), projectLanguage, osName, osVersion, javaVersion, totalMemory + "", memRAM
+                    + "", nbProc + "");
             if (result) {
                 PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1); //$NON-NLS-1$
                 PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()

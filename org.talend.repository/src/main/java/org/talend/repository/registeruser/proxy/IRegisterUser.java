@@ -19,26 +19,24 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-
 package org.talend.repository.registeruser.proxy;
 
 /**
- * DOC mhirt  class global comment. Detailled comment
- * <br/>
- *
- * $Id$
- *
+ * DOC mhirt class global comment. Detailled comment <br/>
+ * 
  */
 public interface IRegisterUser extends javax.xml.rpc.Service {
 
     /**
      * DOC mhirt Comment method "getRegisterUserPortAddress".
+     * 
      * @return
      */
     public java.lang.String getRegisterUserPortAddress();
 
     /**
      * DOC mhirt Comment method "getRegisterUserPort".
+     * 
      * @return
      * @throws javax.xml.rpc.ServiceException
      */
@@ -47,6 +45,7 @@ public interface IRegisterUser extends javax.xml.rpc.Service {
 
     /**
      * DOC mhirt Comment method "getRegisterUserPort".
+     * 
      * @param portAddress
      * @return
      * @throws javax.xml.rpc.ServiceException

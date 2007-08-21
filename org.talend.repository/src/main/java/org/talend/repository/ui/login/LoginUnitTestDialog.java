@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,7 +30,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -50,6 +50,9 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.IBrandingService;
@@ -62,7 +65,6 @@ import org.talend.repository.registeruser.RegisterManagement;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
 import org.talend.repository.ui.wizards.register.RegisterWizard;
-import org.talend.repository.ui.wizards.register.RegisterWizardDialog;
 
 /**
  * Login dialog. <br/>
@@ -132,33 +134,59 @@ public class LoginUnitTestDialog extends TitleAreaDialog {
                 LicenseWizard licenseWizard = new LicenseWizard();
                 LicenseWizardDialog dialog = new LicenseWizardDialog(getShell(), licenseWizard);
                 dialog.setTitle(Messages.getString("LicenseWizard.windowTitle")); //$NON-NLS-1$
-//                if (dialog.open() == WizardDialog.OK) {
-                    LicenseManagement.acceptLicense();
-//                } else {
-//                    System.exit(0);
-//                }
+                // if (dialog.open() == WizardDialog.OK) {
+                LicenseManagement.acceptLicense();
+                // } else {
+                // System.exit(0);
+                // }
             }
             if (!RegisterManagement.isProductRegistered()) {
                 RegisterWizard registerWizard = new RegisterWizard();
-                
-                //// set registation information for unit test ////
+
+                // // set registation information for unit test ////
                 registerWizard.setCountry("FR");
                 registerWizard.setEmail("testUnitaire@talend.com");
-                ///////////////////////////////////////////////////
-                
-//                WizardDialog dialog = new RegisterWizardDialog(getShell(), registerWizard);
-//                dialog.setTitle(Messages.getString("RegisterWizard.windowTitle")); //$NON-NLS-1$
-//                if (dialog.open() == WizardDialog.OK) {
-                    RegisterManagement.register(registerWizard.getEmail(), registerWizard.getCountry(), registerWizard
-                            .isProxyEnabled(), registerWizard.getProxyHost(), registerWizard.getProxyPort(),
-                            org.talend.core.CorePlugin.getDefault().getBundle().getHeaders().get(
-                                    org.osgi.framework.Constants.BUNDLE_VERSION).toString());
-//                } else {
-//                    RegisterManagement.decrementTry();
-//                }
+                // /////////////////////////////////////////////////
+
+                // WizardDialog dialog = new RegisterWizardDialog(getShell(), registerWizard);
+                // dialog.setTitle(Messages.getString("RegisterWizard.windowTitle")); //$NON-NLS-1$
+                // if (dialog.open() == WizardDialog.OK) {
+                // project language
+                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY);
+                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+                String projectLanguage = codeLanguage.getName();
+
+                // OS
+                String osName = System.getProperty("os.name");
+                String osVersion = System.getProperty("os.version");
+
+                // Java version
+                String javaVersion = System.getProperty("java.version");
+
+                // Java Memory
+                long totalMemory = Runtime.getRuntime().totalMemory();
+
+                // RAM
+                com.sun.management.OperatingSystemMXBean composantSystem = (com.sun.management.OperatingSystemMXBean) ManagementFactory
+                        .getOperatingSystemMXBean();
+                Long memRAM = new Long(composantSystem.getTotalPhysicalMemorySize() / 1024);
+
+                // CPU
+                int nbProc = Runtime.getRuntime().availableProcessors();
+
+                RegisterManagement.register(registerWizard.getEmail(), registerWizard.getCountry(), registerWizard
+                        .isProxyEnabled(), registerWizard.getProxyHost(), registerWizard.getProxyPort(),
+                        org.talend.core.CorePlugin.getDefault().getBundle().getHeaders().get(
+                                org.osgi.framework.Constants.BUNDLE_VERSION).toString(), projectLanguage, osName,
+                        osVersion, javaVersion, totalMemory, memRAM, nbProc);
+                // } else {
+                // RegisterManagement.decrementTry();
+                // }
             }
         } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
+            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
+                    RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
@@ -170,7 +198,6 @@ public class LoginUnitTestDialog extends TitleAreaDialog {
         Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        
         return composite;
     }
 

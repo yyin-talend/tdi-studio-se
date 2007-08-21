@@ -138,19 +138,6 @@ public class LoginDialog extends TitleAreaDialog {
                     System.exit(0);
                 }
             }
-            if (!RegisterManagement.isProductRegistered()) {
-                RegisterWizard registerWizard = new RegisterWizard();
-                WizardDialog dialog = new RegisterWizardDialog(getShell(), registerWizard);
-                dialog.setTitle(Messages.getString("RegisterWizard.windowTitle")); //$NON-NLS-1$
-                if (dialog.open() == WizardDialog.OK) {
-                    RegisterManagement.register(registerWizard.getEmail(), registerWizard.getCountry(), registerWizard
-                            .isProxyEnabled(), registerWizard.getProxyHost(), registerWizard.getProxyPort(),
-                            org.talend.core.CorePlugin.getDefault().getBundle().getHeaders().get(
-                                    org.osgi.framework.Constants.BUNDLE_VERSION).toString());
-                } else {
-                    RegisterManagement.decrementTry();
-                }
-            }
         } catch (BusinessException e) {
             ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
