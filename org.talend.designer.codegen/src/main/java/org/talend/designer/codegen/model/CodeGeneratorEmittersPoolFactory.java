@@ -70,7 +70,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
- * Pool of initalized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
+ * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
  * performance constraint.
  * 
  * $Id$
