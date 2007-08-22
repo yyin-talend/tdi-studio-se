@@ -13,18 +13,13 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
-
-        List<Map<String, String>> values =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__VALUES__"
-            );
+List<Map<String, String>> values =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__VALUES__"
+    );
 %>
 my @values_<%=cid%> = (
 <%
@@ -39,7 +34,3 @@ my @values_<%=cid%> = (
 
 foreach (@values_<%=cid%>) {
     $_globals{<%=cid %>}{CURRENT_VALUE} = $_;
-<%
-    }
-}
-%>
