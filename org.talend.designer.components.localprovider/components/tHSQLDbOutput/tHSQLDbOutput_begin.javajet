@@ -423,6 +423,6 @@ int nb_line_<%=cid%> = 0;
 int nb_line_update_<%=cid%> = 0;
 int nb_line_inserted_<%=cid%> = 0;
 int nb_line_deleted_<%=cid%> = 0;
-
+int deletedCount_<%=cid%>=0;
 
 

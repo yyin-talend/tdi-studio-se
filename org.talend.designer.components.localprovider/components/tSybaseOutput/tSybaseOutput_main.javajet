@@ -572,8 +572,7 @@ nb_line_update_<%=cid%> ++;
 		}
 	%>
     try{
-        pstmt_<%=cid %>.executeUpdate();
-        nb_line_deleted_<%=cid%>++;
+        deletedCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -595,6 +594,8 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 	
 	commitCounter_<%=cid%>=0;
 	
+	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
+		
 }	
 	<%
 	}

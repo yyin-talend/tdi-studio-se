@@ -24,7 +24,7 @@ imports="
 	String cid = node.getUniqueName();
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
 	List<Map<String, String>> addCols =
@@ -571,8 +571,7 @@ try{
 		}
 	%>
     try{
-        pstmt_<%=cid %>.executeUpdate();
-        nb_line_deleted_<%=cid%>++;
+        deletedCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -594,7 +593,9 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 	
 	commitCounter_<%=cid%>=0;
 	
-}	
+	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
+}
+
 	<%
 	}
 }
