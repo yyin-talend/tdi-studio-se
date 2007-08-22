@@ -38,9 +38,9 @@ public class ProblemList {
 
     private List<Problem> problemList = new ArrayList<Problem>();
 
-    
     /**
      * Getter for problemList.
+     * 
      * @return the problemList
      */
     public List<Problem> getProblemList() {
@@ -81,10 +81,19 @@ public class ProblemList {
 
     public List<Problem> getProblemsByType(ProblemType status) {
         List<Problem> list = new ArrayList<Problem>();
+        // Check the problem is belong to job or routine
+        if (status.equals(ProblemType.JOB)) {
 
-        for (Problem problem : problemList) {
-            // TODO Check the problem is belong to job or routine
+            for (Problem problem : problemList) {
+                if (problem.getJob() != null) {
+                    list.add(problem);
+                }
+            }
+
+        } else if (status.equals(ProblemType.ROUTINE)) {
+
         }
+
         return list;
     }
 

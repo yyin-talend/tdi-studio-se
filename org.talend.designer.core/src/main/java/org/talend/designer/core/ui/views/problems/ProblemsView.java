@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,15 +35,20 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Problem;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.views.problems.Problems.Group;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -48,7 +58,19 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class ProblemsView extends ViewPart {
 
-    // private TreeItem warningItem, errorItem;
+    public static final String PROBLEM_TYPE_SELECTION = "PROBLEM.TYPE.SELECTION";//$NON-NLS-1$
+
+    private static final String ID = "org.talend.designer.core.ui.views.ProblemsView"; //$NON-NLS-1$
+
+    public static ProblemsView show() {
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
+        try {
+            part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
+        } catch (Exception e) {
+
+        }
+        return (ProblemsView) part;
+    }
 
     private TreeViewer viewer;
 
@@ -91,9 +113,40 @@ public class ProblemsView extends ViewPart {
         ProblemViewProvider provider = new ProblemViewProvider();
         viewer.setLabelProvider(provider);
         viewer.setContentProvider(provider);
-        viewer.setInput(Problems.getRoot());
+        resetContent();
 
-        Problems.recheckCurrentProblems(this);
+        IActionBars actionBars = getViewSite().getActionBars();
+        initMenu(actionBars.getMenuManager());
+    }
+
+    public void resetContent() {
+        viewer.setInput(Problems.getRoot());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        Problems.setProblemView(null);
+    }
+
+    /**
+     * initialize the Menu of problem view.
+     * 
+     * @param menuManager
+     */
+    private void initMenu(IMenuManager menu) {
+        MenuManager groupByMenu = new MenuManager(MarkerMessages.ProblemView_GroupByMenu);
+        groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_Type, Group.TYPE, this));
+
+        groupByMenu.add(new GroupingAction(Messages.getString("ProblemsView.severity"), Group.SEVERITY, this)); //$NON-NLS-1$
+
+        groupByMenu.add(new GroupingAction(MarkerMessages.ProblemView_None, Group.NONE, this));
+        menu.add(groupByMenu);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -134,5 +187,83 @@ public class ProblemsView extends ViewPart {
     public void refresh() {
         viewer.refresh();
         setContentDescription(Problems.getSummary());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.views.markers.internal.TableView#getDialogSettings()
+     */
+    protected IPreferenceStore getDialogSettings() {
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+        return store;
+    }
+
+    /**
+     * An internal Action that can be used to group the problems.
+     * 
+     */
+    private class GroupingAction extends Action {
+
+        Group groupingField;
+
+        ProblemsView problemView;
+
+        /**
+         * Creates a new instance of the receiver.
+         * 
+         * @param label
+         * @param field
+         * @param view
+         */
+        public GroupingAction(String label, Group group, ProblemsView view) {
+            super(label, IAction.AS_RADIO_BUTTON);
+            groupingField = group;
+            problemView = view;
+            Group categoryField = Problems.getGroupField();
+            setChecked(categoryField.equals(groupingField));
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.action.Action#run()
+         */
+        public void run() {
+
+            if (isChecked()) {
+                Problems.setGroupField(groupingField);
+                problemView.resetContent();
+                getDialogSettings().setValue(PROBLEM_TYPE_SELECTION, groupingField.toString());
+                // Job categoryJob = new Job(MarkerMessages.ProblemView_UpdateCategoryJob) {
+                //
+                // /*
+                // * (non-Javadoc)
+                // *
+                // * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+                // */
+                // protected IStatus run(IProgressMonitor monitor) {
+                // try {
+                // markerProcessJob.join();
+                // } catch (InterruptedException e) {
+                // return Status.CANCEL_STATUS;
+                // }
+                // Problems.setGroupField(groupingField);
+                //
+                // getMarkerAdapter().getCategorySorter().saveState(getDialogSettings());
+                // return Status.OK_STATUS;
+                // }
+                // };
+                // categoryJob.setSystem(true);
+                // problemView.preserveSelection();
+                //
+                // IWorkbenchSiteProgressService progressService = getProgressService();
+                // if (progressService == null)
+                // categoryJob.schedule();
+                // else
+                // getProgressService().schedule(categoryJob);
+
+            }
+        }
     }
 }

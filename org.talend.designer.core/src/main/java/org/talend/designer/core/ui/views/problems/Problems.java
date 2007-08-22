@@ -26,9 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
@@ -36,6 +34,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -60,13 +59,36 @@ public class Problems {
         NONE;
     }
 
+    private static ProblemsView problemView;
+
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
 
     private static String newTitle = ""; //$NON-NLS-1$
 
-    private static Group group = Group.SEVERITY;
+    private static Group groupField = null;
+
+    public static void setGroupField(Group group) {
+        groupField = group;
+    }
+
+    static ProblemsView getProblemView() {
+        if (problemView == null) {
+            problemView = ProblemsView.show();
+        }
+        return problemView;
+    }
+
+    public static Group getGroupField() {
+        if (groupField == null) {
+            IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+            String key = store.getString(ProblemsView.PROBLEM_TYPE_SELECTION);
+            groupField = Group.valueOf(key);
+        }
+
+        return groupField;
+    }
 
     public static ProblemCategory[] categories = null;
 
@@ -83,6 +105,7 @@ public class Problems {
     }
 
     private static void buildHierarchy() {
+        Group group = getGroupField();
         if (group.equals(Group.SEVERITY)) {
             categories = new ProblemCategory[3];
             categories[0] = new SeverityProblemCategory(problemList, ProblemStatus.ERROR);
@@ -107,9 +130,7 @@ public class Problems {
     }
 
     public static List<? extends Problem> getRoot() {
-        if (categories == null) {
-            buildHierarchy();
-        }
+        buildHierarchy();
         if (categories != null) {
             return Arrays.asList(categories);
         } else {
@@ -170,11 +191,11 @@ public class Problems {
 
     }
 
-    public static void recheckCurrentProblems(ProblemsView view) {
+    public static void recheckCurrentProblems() {
         for (IProcess process : openJobs) {
             ((Process) process).checkNodeProblems();
         }
-        view.refresh();
+        getProblemView().refresh();
     }
 
     public static void setTitle(String title) {
@@ -182,31 +203,21 @@ public class Problems {
     }
 
     public static void refreshView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView"); //$NON-NLS-1$
-        if (view instanceof ProblemsView) {
-            ProblemsView problemsView = (ProblemsView) view;
-            refreshView(problemsView);
-        }
-    }
-
-    public static void refreshView(ProblemsView problemsView) {
-        if (problemsView != null) {
+        if (getProblemView() != null) {
             if (!newTitle.equals(currentTitle)) {
-                problemsView.setPartName(newTitle);
+                getProblemView().setPartName(newTitle);
                 currentTitle = newTitle;
             }
-        }
+            getProblemView().refresh();
 
-        problemsView.refresh();
-
-        for (IProcess process : openJobs) {
-            // ((Process) process).checkNodeProblems();
-            List<? extends INode> nodes = process.getGraphicalNodes();
-            for (INode inode : nodes) {
-                if (inode instanceof Node) {
-                    Node node = (Node) inode;
-                    refreshNodeStatus(node, problemList.getProblemList());
+            for (IProcess process : openJobs) {
+                // ((Process) process).checkNodeProblems();
+                List<? extends INode> nodes = process.getGraphicalNodes();
+                for (INode inode : nodes) {
+                    if (inode instanceof Node) {
+                        Node node = (Node) inode;
+                        refreshNodeStatus(node, problemList.getProblemList());
+                    }
                 }
             }
         }
@@ -269,5 +280,14 @@ public class Problems {
             }
         }
         refreshView();
+    }
+
+    /**
+     * Sets the problemView.
+     * 
+     * @param problemView the problemView to set
+     */
+    public static void setProblemView(ProblemsView problemView) {
+        Problems.problemView = problemView;
     }
 }
