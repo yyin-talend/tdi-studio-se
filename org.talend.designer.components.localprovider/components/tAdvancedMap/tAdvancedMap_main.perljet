@@ -593,7 +593,11 @@
                             sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName, outputColumnName, false)
                                     + " = " + outputExpressionToWrite + ";");
 
-                        }
+                         }
+                         else {
+                            sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(uniqueNameComponent, outputTableName, outputColumnName, false)
+                                    + " = undef ;");
+                         }
 
                     } // for entries
                 }
