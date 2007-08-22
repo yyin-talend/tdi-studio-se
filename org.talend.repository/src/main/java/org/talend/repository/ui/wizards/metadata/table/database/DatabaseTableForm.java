@@ -89,6 +89,10 @@ import org.talend.repository.ui.utils.ManagerConnection;
  * @author ocarbone
  * 
  */
+/**
+ * DOC Administrator class global comment. Detailled comment <br/>
+ * 
+ */
 public class DatabaseTableForm extends AbstractForm {
 
     protected static Logger log = Logger.getLogger(DatabaseTableForm.class);
@@ -271,7 +275,7 @@ public class DatabaseTableForm extends AbstractForm {
         metadataEditor.addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
-                checkFieldsValue();
+                changeTableNavigatorStatus(checkFieldsValue());
             }
         });
 
@@ -297,7 +301,8 @@ public class DatabaseTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2,
+                leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -312,7 +317,8 @@ public class DatabaseTableForm extends AbstractForm {
         gridData.horizontalSpan = 3;
 
         // Header Fields
-        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
+        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth,
+                headerCompositeHeight);
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2); //$NON-NLS-1$
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2); //$NON-NLS-1$
 
@@ -342,7 +348,8 @@ public class DatabaseTableForm extends AbstractForm {
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
 
         // Group MetaData
-        Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
+        Group groupMetaData = Form.createGroup(rightComposite, 1,
+                Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
                 tableCompositeHeight);
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
@@ -372,7 +379,8 @@ public class DatabaseTableForm extends AbstractForm {
         Group group = Form.createGroup(parent, 1, Messages.getString("DatabaseTableForm.navigatorTree"), height); //$NON-NLS-1$
 
         // ScrolledComposite
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -402,7 +410,8 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        addTableButton = new UtilsButton(button,
+                Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -513,7 +522,8 @@ public class DatabaseTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"),
+                            IProgressMonitor.UNKNOWN);
 
                     iMetadataConnection = ConvertionHelper.convert(getConnection());
                     managerConnection.check(iMetadataConnection);
@@ -548,7 +558,9 @@ public class DatabaseTableForm extends AbstractForm {
                                     if (displayMessageBox) {
                                         String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
                                         if (!isReadOnly()) {
-                                            msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
+                                            msg = msg
+                                                    + Messages
+                                                            .getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                                         }
                                         SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
                                                 .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
@@ -587,20 +599,26 @@ public class DatabaseTableForm extends AbstractForm {
         tableNavigator.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                metadataTable = TableHelper.findByLabel(getConnection(), tableNavigator.getSelection()[0].getText());
+                String schemaLabel = tableNavigator.getSelection()[0].getText();
+                metadataTable = TableHelper.findByLabel(getConnection(), schemaLabel);
                 // initExistingNames();
                 initMetadataForm();
+
             }
+
         });
 
         // nameText : Event modifyText
         nameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                metadataTable.setLabel(nameText.getText());
-                tableNavigator.getSelection()[0].setText(nameText.getText());
-                checkFieldsValue();
+                String labelText = nameText.getText();
+                changeTableNavigatorStatus(labelText);
+                metadataTable.setLabel(labelText);
+                tableNavigator.getSelection()[0].setText(labelText);
+                changeTableNavigatorStatus(checkFieldsValue());
             }
+
         });
         // nameText : Event KeyListener
         nameText.addKeyListener(new KeyAdapter() {
@@ -667,7 +685,8 @@ public class DatabaseTableForm extends AbstractForm {
                         + table.getLabel() + "\""); //$NON-NLS-1$
                 return false;
             } else if (existNames.contains(table.getLabel())) {
-                updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                updateStatus(IStatus.ERROR,
+                        Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
             }
 
@@ -712,14 +731,16 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             boolean doit = true;
             if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
-                doit = MessageDialog.openConfirm(getShell(), Messages.getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
+                doit = MessageDialog.openConfirm(getShell(), Messages
+                        .getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
                 tableString = tableCombo.getItem(tableCombo.getSelectionIndex());
 
                 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                        tableString);
 
                 tableEditorView.getMetadataEditor().removeAll();
 
@@ -730,7 +751,8 @@ public class DatabaseTableForm extends AbstractForm {
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
-                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
+                    metadataColumn
+                            .setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
                 }
                 tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
@@ -738,7 +760,7 @@ public class DatabaseTableForm extends AbstractForm {
         }
 
         updateRetreiveSchemaButton();
-        checkFieldsValue();
+        changeTableNavigatorStatus(checkFieldsValue());
     }
 
     /*
@@ -774,6 +796,28 @@ public class DatabaseTableForm extends AbstractForm {
 
     protected DatabaseConnection getConnection() {
         return (DatabaseConnection) connectionItem.getConnection();
+    }
+
+    /**
+     * DOC Administrator Comment method "changeTableNavigatorStatus".
+     * 
+     * @param schemaLabel
+     */
+    private void changeTableNavigatorStatus(String schemaLabel) {
+        if (schemaLabel == null || schemaLabel.length() == 0) {
+            tableNavigator.getParent().getParent().getParent().setEnabled(false);
+        } else {
+            tableNavigator.getParent().getParent().getParent().setEnabled(true);
+        }
+    }
+
+    /**
+     * DOC Administrator Comment method "changeTableNavigatorStatus".
+     * 
+     * @param isEnabled
+     */
+    private void changeTableNavigatorStatus(boolean isEnabled) {
+        tableNavigator.getParent().getParent().getParent().setEnabled(isEnabled);
     }
 
 }
