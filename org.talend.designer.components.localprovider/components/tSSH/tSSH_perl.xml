@@ -108,7 +108,12 @@ echo Talend Open Studio'</DEFAULT>
 
   </PARAMETERS>
 
-  <CODEGENERATION/>
+   <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Net-SSH-Perl" MODULE="Net::SSH::Perl" REQUIRED="true" />
+       <IMPORT NAME="Net-SSH-W32Perl" MODULE="Net::SSH::W32Perl" REQUIRED="false" />
+     </IMPORTS>
+   </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="STDOUT" TYPE="STRING" AVAILABILITY="FLOW"/>
