@@ -40,8 +40,10 @@ import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
@@ -209,8 +211,15 @@ public class ExternalNodeChangeCommand extends Command {
                 IODataComponent dataComponent = inAndOut.getDataComponent(connection);
                 if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
                     if (getPropagate()) {
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), connection
-                                .getMetadataTable(), dataComponent.getTable());
+                        IElementParameter schemaParam = null;
+                        for (IElementParameter param : ((Node) connection.getSource()).getElementParameters()) {
+                            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                                    && param.getContext().equals(connection.getConnectorName())) {
+                                schemaParam = param;
+                            }
+                        }
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(),
+                                schemaParam, connection.getMetadataTable(), dataComponent.getTable());
                         cmd.execute(true);
                         metadataOutputChanges.add(cmd);
                     }

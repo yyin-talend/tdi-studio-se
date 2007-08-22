@@ -73,7 +73,6 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.metadata.MetadataUtils;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -207,7 +206,6 @@ public class Node extends Element implements INode {
 
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
-        IMetadataTable meta = new MetadataTable();
 
         boolean hasMetadata = true;
 
@@ -221,40 +219,66 @@ public class Node extends Element implements INode {
                 hasMetadata = false;
             }
         }
-        if (hasMetadata) {
-            metadataList.add(meta);
-        }
 
         setElementParameters(component.createElementParameters(this));
+
+        if (hasMetadata) {
+            // metadataList.add(meta);
+            for (IElementParameter param : getElementParameters()) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    IMetadataTable table = new MetadataTable();
+                    table.setAttachedConnector(param.getContext());
+                    metadataList.add(table);
+                    // metadataMap.put(param.getContext(), new MetadataTable());
+                    // getMetadataList(param.getContext()).add(new MetadataTable());
+                }
+            }
+        }
+
         listReturn = this.component.createReturns();
         String uniqueName = ((Process) getProcess()).generateUniqueNodeName(this);
         ((Process) getProcess()).addUniqueNodeName(uniqueName);
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
 
-        meta.setTableName(uniqueName);
-        IElementParameter mappingParameter = MetadataUtils.getMappingParameter((List<IElementParameter>) this
+        IElementParameter mappingParameter = MetadataTool.getMappingParameter((List<IElementParameter>) this
                 .getElementParameters());
 
-        if (mappingParameter != null) {
-            if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
-                meta.setDbms((String) mappingParameter.getValue());
+        for (IMetadataTable table : metadataList) {
+            if (table.getAttachedConnector().equals(EConnectionType.FLOW_MAIN.getName())
+                    || table.getAttachedConnector().equals(EConnectionType.TABLE.getName())) {
+                table.setTableName(uniqueName);
+            } else {
+                table.setTableName(table.getAttachedConnector());
             }
-        }
-        for (int i = 0; i < getElementParameters().size(); i++) {
-            IElementParameter param = getElementParameters().get(i);
-            if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
-                for (IMetadataTable table : getMetadataList()) {
+            if (mappingParameter != null) {
+                if (mappingParameter.getValue() != null && (!mappingParameter.getValue().equals(""))) {
+                    table.setDbms((String) mappingParameter.getValue());
+                }
+            }
+
+            for (int i = 0; i < getElementParameters().size(); i++) {
+                IElementParameter param = getElementParameters().get(i);
+                if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
                     table.setDbms((String) param.getValue());
                 }
-            }
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                if (param.getValue() instanceof IMetadataTable) {
-                    IMetadataTable table = (IMetadataTable) param.getValue();
-                    meta.getListColumns().addAll(table.getListColumns());
-                    meta.setReadOnly(table.isReadOnly());
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                        && param.getContext().equals(table.getAttachedConnector())) {
+                    if (param.getValue() instanceof IMetadataTable) {
+                        IMetadataTable paramTable = (IMetadataTable) param.getValue();
+                        table.getListColumns().addAll(paramTable.getListColumns());
+                        table.setReadOnly(paramTable.isReadOnly());
+                    }
                 }
             }
         }
+        /*
+         * for (int i = 0; i < getElementParameters().size(); i++) { IElementParameter param =
+         * getElementParameters().get(i); if (param.getField().equals(EParameterFieldType.MAPPING_TYPE)) { for
+         * (IMetadataTable table : getMetadataList()) { table.setDbms((String) param.getValue()); } } if
+         * (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) { if (param.getValue() instanceof IMetadataTable) {
+         * IMetadataTable table = (IMetadataTable) param.getValue();
+         * meta.getListColumns().addAll(table.getListColumns()); meta.setReadOnly(table.isReadOnly()); } } }
+         */
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
@@ -499,25 +523,38 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+        INodeConnector mainConnector;
+        if (isELTComponent()) {
+            mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
+        } else {
+            mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
+        }
+        if (!mainConnector.isBuiltIn()
                 && component.isSchemaAutoPropagated()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
+                        || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
                         .getInputId() == 1))) && ((Process) getProcess()).isActivate()) {
-            boolean customFound = false;
-            for (int i = 0; i < metadataList.get(0).getListColumns().size(); i++) {
-                IMetadataColumn column = metadataList.get(0).getListColumns().get(i);
-                if (column.isCustom()) {
-                    customFound = true;
-                    break;
-                }
-            }
-            IMetadataTable originTable = metadataList.get(0);
             IMetadataTable inputTable = connection.getMetadataTable();
-            if (((customFound && originTable.isReadOnly()) || (outputs.size() == 0) || (connection.getLineStyle() == EConnectionType.FLOW_MERGE))
-                    && (inputTable.getListColumns().size() != 0)) {
-                // For the auto propagate.
-                MetadataTool.copyTable(inputTable, originTable);
-                ColumnListController.updateColumnList(this, null);
+
+            for (INodeConnector connector : getListConnector()) {
+                if (mainConnector.getName().equals(connector.getBaseSchema())) {
+                    IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
+                    boolean customFound = false;
+                    for (int i = 0; i < targetTable.getListColumns().size(); i++) {
+                        IMetadataColumn column = targetTable.getListColumns().get(i);
+                        if (column.isCustom()) {
+                            customFound = true;
+                            break;
+                        }
+                    }
+                    if (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection
+                            .getLineStyle() == EConnectionType.FLOW_MERGE))
+                            && (inputTable.getListColumns().size() != 0)) {
+                        // For the auto propagate.
+                        MetadataTool.copyTable(inputTable, targetTable);
+                        ColumnListController.updateColumnList(this, null);
+                    }
+                }
             }
         }
         fireStructureChange(INPUTS, connection);
@@ -564,8 +601,8 @@ public class Node extends Element implements INode {
         this.inputs.remove(connection);
         if (!this.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn() && component.isSchemaAutoPropagated()
                 && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
-            if (metadataList.get(0).isReadOnly()) {
-                IMetadataTable originTable = metadataList.get(0);
+            if (getMetadataList().get(0).isReadOnly()) {
+                IMetadataTable originTable = getMetadataList().get(0);
                 List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
                 for (IMetadataColumn column : originTable.getListColumns()) {
                     if (column.isCustom()) {
@@ -668,12 +705,71 @@ public class Node extends Element implements INode {
     }
 
     public List<IMetadataTable> getMetadataList() {
-        return metadataList;
+        return this.metadataList;
     }
 
     public void setMetadataList(final List<IMetadataTable> metaDataList) {
         this.metadataList = metaDataList;
+        // metadataMap.clear();
+        // for (IMetadataTable table : metaDataList) {
+        // metadataMap.put(table.getTableName(), table);
+        // }
+        // setMetadataList(metaDataList, EConnectionType.FLOW_MAIN.getName());
     }
+
+    // public List<IMetadataTable> getMetadataList(String connector) {
+    // INodeConnector nodeConnector = this.getConnectorFromName(connector);
+    // List<IMetadataTable> metadataList;
+    // String baseSchema = nodeConnector.getBaseSchema();
+    // if (baseSchema.equals(connector)) {
+    // metadataList = metadataMap.get(connector);
+    // if (metadataList == null) {
+    // metadataList = new ArrayList<IMetadataTable>();
+    // metadataMap.put(connector, metadataList);
+    // }
+    // } else {
+    // List<IMetadataTable> baseMetadataList = metadataMap.get(baseSchema);
+    // metadataList = new ArrayList<IMetadataTable>();
+    // for (IMetadataTable table : baseMetadataList) {
+    // // prepare a copy of the based metadata
+    // IMetadataTable copy = table.clone(true);
+    // // remove the custom columns (won't be used in the copy)
+    // List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+    // for (IMetadataColumn column : copy.getListColumns()) {
+    // if (column.isCustom()) {
+    // columnsToRemove.add(column);
+    // }
+    // }
+    // copy.getListColumns().remove(columnsToRemove);
+    // // look for the parameter that define the selected connector's schema.
+    // IElementParameter param = null;
+    // for (IElementParameter currentParam : getElementParameters()) {
+    // if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+    // && currentParam.getContext().equals(connector)) {
+    // param = currentParam;
+    // break;
+    // }
+    // }
+    // if (param != null) {
+    // // get the default schema
+    // param.setValueToDefault(getElementParameters());
+    // if (param.getValue() instanceof IMetadataTable) {
+    // IMetadataTable tableFromParam = (IMetadataTable) param.getValue();
+    // copy.getListColumns().addAll(tableFromParam.getListColumns());
+    // copy.setReadOnly(true);
+    // }
+    // }
+    // metadataList.add(copy);
+    // }
+    // }
+    // return metadataList;
+    // }
+
+    // public void setMetadataList(final List<IMetadataTable> metaDataList, String connector) {
+    // if (metaDataList != null && connector != null) {
+    // metadataMap.put(connector, metaDataList);
+    // }
+    // }
 
     /*
      * (non-Javadoc)
@@ -697,7 +793,7 @@ public class Node extends Element implements INode {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
-            for (IMetadataTable metaTable : metadataList) {
+            for (IMetadataTable metaTable : getMetadataList()) {
                 copyOfMetadataList.add(metaTable.clone());
             }
             externalNode.setMetadataList(copyOfMetadataList);
@@ -834,15 +930,80 @@ public class Node extends Element implements INode {
 
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
-            if (metadataList.get(i).getTableName().equals(metaName)) {
+            if (metadataList.get(i).getTableName().equals(metaName)/*
+                                                                     * &&
+                                                                     * metadataList.get(i).getAttachedConnector().equals(connectorName)
+                                                                     */) {
                 return metadataList.get(i);
             }
         }
-        // if (metadataList.size() > 0) {
-        // return metadataList.get(0);
-        // }
         return null;
     }
+
+    // public IMetadataTable getMetadataTable(String metaName, String connectorName) {
+    // for (int i = 0; i < metadataList.size(); i++) {
+    // if (metadataList.get(i).getTableName().equals(metaName)
+    // && metadataList.get(i).getAttachedConnector().equals(connectorName)) {
+    // return metadataList.get(i);
+    // }
+    // }
+    // return null;
+    // }
+
+    public IMetadataTable getMetadataFromConnector(String connector) {
+        for (IMetadataTable table : metadataList) {
+            if (table.getAttachedConnector().equals(connector)) {
+                return table;
+            }
+        }
+        return null;
+    }
+
+    // public IMetadataTable getMetadataFromConnector(String connector) {
+    // INodeConnector nodeConnector = this.getConnectorFromName(connector);
+    // // List<IMetadataTable> metadataList;
+    // String baseSchema = nodeConnector.getBaseSchema();
+    // if (baseSchema.equals(connector)) {
+    // for (IMetadataTable table : metadataList) {
+    // if (table.getAttachedConnector().equals(connector)) {
+    // return table;
+    // }
+    // }
+    // } else {
+    // IMetadataTable baseMetadata = getMetadataFromConnector(baseSchema);
+    //
+    // // prepare a copy of the based metadata
+    // IMetadataTable copy = baseMetadata.clone(true);
+    // // remove the custom columns (won't be used in the copy)
+    // List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+    // for (IMetadataColumn column : copy.getListColumns()) {
+    // if (column.isCustom()) {
+    // columnsToRemove.add(column);
+    // }
+    // }
+    // copy.getListColumns().remove(columnsToRemove);
+    // // look for the parameter that define the selected connector's schema.
+    // IElementParameter param = null;
+    // for (IElementParameter currentParam : getElementParameters()) {
+    // if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+    // && currentParam.getContext().equals(connector)) {
+    // param = currentParam;
+    // break;
+    // }
+    // }
+    // if (param != null) {
+    // // get the default schema
+    // param.setValueToDefault(getElementParameters());
+    // if (param.getValue() instanceof IMetadataTable) {
+    // IMetadataTable tableFromParam = (IMetadataTable) param.getValue();
+    // copy.getListColumns().addAll(tableFromParam.getListColumns());
+    // copy.setReadOnly(true);
+    // }
+    // }
+    // return copy;
+    // }
+    // return null;
+    // }
 
     public Node.Data getExternalBytesData() {
         if (externalNode == null) {
@@ -1278,15 +1439,17 @@ public class Node extends Element implements INode {
                 canEditSchema = true;
             }
         }
+        INodeConnector mainConnector;
+        if (isELTComponent()) {
+            mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
+        } else {
+            mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
+        }
+
         if (!isExternalNode()) {
             if (canEditSchema) {
-                if (((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) && (getConnectorFromType(
-                        EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0))
-                        || ((getConnectorFromType(EConnectionType.TABLE).getMaxLinkInput() == 0) && (getConnectorFromType(
-                                EConnectionType.TABLE).getMaxLinkOutput() != 0))
-                        || ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) && (getConnectorFromType(
-                                EConnectionType.FLOW_MAIN).getMaxLinkOutput() == 0))) {
-                    if (metadataList.get(0).getListColumns().size() == 0) {
+                if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
+                    if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
                         String errorMessage = "No schema has been defined yet.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
@@ -1305,10 +1468,9 @@ public class Node extends Element implements INode {
 
         // test empty schema in built in connections (several outputs with different schema)
         if (!noSchema && (!canEditSchema || isExternalNode())) {
-            if (getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
-                    || getConnectorFromType(EConnectionType.TABLE).isBuiltIn()) {
-                if (metadataList != null) {
-                    for (IMetadataTable meta : metadataList) {
+            if (mainConnector.isBuiltIn()) {
+                if (getMetadataList() != null) {
+                    for (IMetadataTable meta : getMetadataList()) {
                         if (meta.getListColumns().size() == 0) {
                             String tableLabel = meta.getTableName();
                             if (meta.getLabel() != null) {
@@ -1324,9 +1486,9 @@ public class Node extends Element implements INode {
         }
 
         // test if the columns can be checked or not
-        if (component.isSchemaAutoPropagated() && (metadataList.size() != 0)) {
+        if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
             Connection inputConnecion = null;
-            IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
+            IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
             for (Connection connection : inputs) {
                 if (connection.isActivate()
                         && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
@@ -1348,12 +1510,12 @@ public class Node extends Element implements INode {
         }
 
         if (component.useMerge()) {
-            if (metadataList.get(0).getListColumns().size() == 0) {
+            if (getMetadataList().get(0).getListColumns().size() == 0) {
                 String errorMessage = "No schema has been defined yet.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             } else {
                 IMetadataTable firstSchema = inputs.get(0).getMetadataTable();
-                boolean isSame = firstSchema.sameMetadataAs(metadataList.get(0));
+                boolean isSame = firstSchema.sameMetadataAs(getMetadataList().get(0));
                 if (!isSame) {
                     String warningMessage = "The schema on the first input link of the merge component \""
                             + getUniqueName() + "\" is different from the schema defined in the component.";
@@ -1377,7 +1539,6 @@ public class Node extends Element implements INode {
                 }
             }
         }
-
     }
 
     public void checkAndRefreshNode() {
@@ -1652,5 +1813,14 @@ public class Node extends Element implements INode {
     public void setSize(Dimension size) {
         this.size = size;
         firePropertyChange(SIZE, null, null);
+    }
+
+    /**
+     * Getter for listConnector.
+     * 
+     * @return the listConnector
+     */
+    public List<? extends INodeConnector> getListConnector() {
+        return listConnector;
     }
 }

@@ -58,6 +58,8 @@ public class NodeConnector implements INodeConnector {
     private String menuName;
 
     private String linkName;
+    
+    private String baseSchema;
 
     private Map<EConnectionType, IConnectionProperty> propertyMap = new HashMap<EConnectionType, IConnectionProperty>();
 
@@ -274,5 +276,23 @@ public class NodeConnector implements INodeConnector {
         public void setLineStyle(Integer lineStyle) {
             this.lineStyle = lineStyle;
         }
+    }
+
+    
+    /**
+     * Getter for baseSchema.
+     * @return the baseSchema
+     */
+    public String getBaseSchema() {
+        return baseSchema;
+    }
+
+    
+    /**
+     * Sets the baseSchema.
+     * @param baseSchema the baseSchema to set
+     */
+    public void setBaseSchema(String baseSchema) {
+        this.baseSchema = baseSchema;
     }
 }

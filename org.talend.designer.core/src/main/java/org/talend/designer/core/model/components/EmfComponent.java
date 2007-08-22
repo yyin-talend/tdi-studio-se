@@ -459,7 +459,7 @@ public class EmfComponent implements IComponent {
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
-            final INode node, final EParameterFieldType type) {
+            final INode node, final EParameterFieldType type, ElementParameter parentParam) {
         if (type == EParameterFieldType.PROPERTY_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
@@ -477,6 +477,7 @@ public class EmfComponent implements IComponent {
             }
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);
@@ -490,24 +491,42 @@ public class EmfComponent implements IComponent {
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
         }
         if (type == EParameterFieldType.SCHEMA_TYPE) {
+            String context = xmlParam.getCONTEXT();
+            if (context == null) {
+                // by default the schema will be set to the "FLOW" connector.
+                context = EConnectionType.FLOW_MAIN.getName();
+                if (getFamily().startsWith("ELT")) {
+                    context = EConnectionType.TABLE.getName();
+                }
+            }
+
+            String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME);
+            if (displayName.startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+                displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
+            }
+
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
             newParam.setName(EParameterName.SCHEMA_TYPE.getName());
-            newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
+            newParam.setDisplayName(displayName);
             newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
             newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
             newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.TECHNICAL);
-            newParam.setShow(true);
-//            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setShow(xmlParam.isSHOW());
+            newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setReadOnly(xmlParam.isREADONLY());
-//            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            listParam.add(newParam);
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+
+            newParam.setContext(context);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
@@ -523,19 +542,9 @@ public class EmfComponent implements IComponent {
             newParam.setReadOnly(xmlParam.isREADONLY());
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            listParam.add(newParam);
-
-            newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.TECHNICAL);
-            newParam.setName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
-            newParam.setDisplayName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getDisplayName());
-            newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CHECK);
-            newParam.setValue(Boolean.FALSE);
-            newParam.setShow(false);
-            newParam.setRequired(true);
-            newParam.setReadOnly(true);
-            listParam.add(newParam);
+            newParam.setContext(context);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
         }
         if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
@@ -554,6 +563,7 @@ public class EmfComponent implements IComponent {
             newParam.setShow(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);
@@ -569,6 +579,7 @@ public class EmfComponent implements IComponent {
             newParam.setRequired(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
         }// Ends
         if (type == EParameterFieldType.QUERYSTORE_TYPE) {
@@ -587,6 +598,7 @@ public class EmfComponent implements IComponent {
             }
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);
@@ -602,6 +614,7 @@ public class EmfComponent implements IComponent {
             newParam.setRequired(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
         }
 
@@ -623,6 +636,7 @@ public class EmfComponent implements IComponent {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setRequired(true);
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
 
             newParam = new ElementParameter(node);
@@ -638,6 +652,7 @@ public class EmfComponent implements IComponent {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setRequired(true);
+            // newParam.setParentParameter(parentParam);
             listParam.add(newParam);
         }
     }
@@ -648,11 +663,29 @@ public class EmfComponent implements IComponent {
         PARAMETERType xmlParam;
         ElementParameter param;
 
+        boolean autoSwitchAdded = false;
+
         listXmlParam = compType.getPARAMETERS().getPARAMETER();
         for (int i = 0; i < listXmlParam.size(); i++) {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
-            createSpecificParametersFromType(listParam, xmlParam, node, type);
+
+            if (type.equals(EParameterFieldType.SCHEMA_TYPE)) {
+                if (!autoSwitchAdded) {
+                    param = new ElementParameter(node);
+                    param.setCategory(EComponentCategory.TECHNICAL);
+                    param.setName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+                    param.setDisplayName(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getDisplayName());
+                    param.setNumRow(xmlParam.getNUMROW());
+                    param.setField(EParameterFieldType.CHECK);
+                    param.setValue(Boolean.FALSE);
+                    param.setShow(false);
+                    param.setRequired(true);
+                    param.setReadOnly(true);
+                    listParam.add(param);
+                    autoSwitchAdded = true;
+                }
+            }
 
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
@@ -676,6 +709,7 @@ public class EmfComponent implements IComponent {
             param.setShowIf(xmlParam.getSHOWIF());
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+            param.setContext(xmlParam.getCONTEXT());
 
             switch (type) {
             case COLOR:
@@ -688,6 +722,22 @@ public class EmfComponent implements IComponent {
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
             case SCHEMA_TYPE:
+                if (param.getContext() == null) {
+                    // by default the schema will be set to the "FLOW" connector.
+                    param.setContext(EConnectionType.FLOW_MAIN.getName());
+                    if (getFamily().startsWith("ELT")) {
+                        param.setContext(EConnectionType.TABLE.getName());
+                    }
+                }
+                List<NodeConnector> list = createConnectors();
+                boolean toShow = true;
+                for (INodeConnector nodeConnector : list) {
+                    if (nodeConnector.getName().equals(param.getContext())
+                            && (!nodeConnector.getBaseSchema().equals(param.getContext()))) {
+                        toShow = false;
+                    }
+                }
+                param.setShow(xmlParam.isSHOW() && toShow);
                 initializeTableFromXml(xmlParam, param);
                 break;
             case DBTABLE:
@@ -745,6 +795,8 @@ public class EmfComponent implements IComponent {
             }
 
             param.setCategory(EComponentCategory.PROPERTY);
+
+            createSpecificParametersFromType(listParam, xmlParam, node, type, param);
             listParam.add(param);
         }
     }
@@ -752,21 +804,21 @@ public class EmfComponent implements IComponent {
     private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
         List<TABLEType> tableList = xmlParam.getTABLE();
         if ((tableList == null) || (tableList.size() == 0)) {
-//            int nbFlowMaxInput = 0;
-//            for (INodeConnector connector : createConnectors()) {
-//                if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
-//                    nbFlowMaxInput = connector.getMaxLinkInput();
-//                }
-//            }
-//            if (this.isSchemaAutoPropagated() && (nbFlowMaxInput != 0)) {
-//                IMetadataTable defaultTable = new MetadataTable();
-//                defaultTable.setReadOnly(true);
-//                
-//                // store the default table in default value
-//                IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-//                defaultValue.setDefaultValue(defaultTable);
-//                param.getDefaultValues().add(defaultValue);
-//            }
+            // int nbFlowMaxInput = 0;
+            // for (INodeConnector connector : createConnectors()) {
+            // if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
+            // nbFlowMaxInput = connector.getMaxLinkInput();
+            // }
+            // }
+            // if (this.isSchemaAutoPropagated() && (nbFlowMaxInput != 0)) {
+            // IMetadataTable defaultTable = new MetadataTable();
+            // defaultTable.setReadOnly(true);
+            //                
+            // // store the default table in default value
+            // IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
+            // defaultValue.setDefaultValue(defaultTable);
+            // param.getDefaultValues().add(defaultValue);
+            // }
             return;
         }
 
@@ -1100,9 +1152,16 @@ public class EmfComponent implements IComponent {
                 color = new Color(null, rgb);
             }
             nodeConnector.addConnectionProperty(currentType, color, lineStyle);
+            String baseSchema = connType.getBASESCHEMA();
+            if (baseSchema != null && (!baseSchema.equals(""))) {
+                nodeConnector.setBaseSchema(baseSchema);
+            } else {
+                nodeConnector.setBaseSchema(nodeConnector.getName());
+            }
 
             listConnector.add(nodeConnector);
-            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow" (main type), then add the same for the //$NON-NLS-1$
+            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow" (main type), then add the same for the
+                // //$NON-NLS-1$
                 // lookup.
                 currentType = EConnectionType.FLOW_REF;
 
@@ -1141,6 +1200,7 @@ public class EmfComponent implements IComponent {
                 nodeConnector = new NodeConnector();
                 nodeConnector.setDefaultConnectionType(currentType);
                 nodeConnector.setName(currentType.getName());
+                nodeConnector.setBaseSchema(currentType.getName());
                 nodeConnector.addConnectionProperty(currentType, currentType.getDefaultColor(), currentType
                         .getDefaultLineStyle());
                 nodeConnector.setLinkName(currentType.getDefaultLinkName());
@@ -1410,7 +1470,7 @@ public class EmfComponent implements IComponent {
         return codePartList;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<String> getPluginDependencies() {
         List<String> pluginDependencyList = new ArrayList<String>();
         if (this.compType.getPLUGINDEPENDENCIES() != null) {

@@ -231,7 +231,7 @@ public class PropertyChangeCommand extends Command {
                     testedParam.setValueToDefault(node.getElementParameters());
                     IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
 
-                    changeMetadataCommand = new ChangeMetadataCommand(node, metadataTable, newMetadataTable);
+                    changeMetadataCommand = new ChangeMetadataCommand(node, null, metadataTable, newMetadataTable);
                     changeMetadataCommand.execute(true);
                 }
             }

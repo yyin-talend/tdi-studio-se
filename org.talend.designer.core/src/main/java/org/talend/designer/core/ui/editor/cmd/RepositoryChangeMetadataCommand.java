@@ -36,6 +36,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
@@ -54,8 +56,9 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private Node node;
 
-    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata) {
-        super(node, null, newOutputMetadata);
+    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue,
+            IMetadataTable newOutputMetadata) {
+        super(node, node.getElementParameter(propName).getParentParameter(), null, newOutputMetadata);
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
         newPropValue = propValue;
@@ -69,12 +72,25 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
                 if (parameter.getField() == EParameterFieldType.TABLE) {
-                    if (!node.getMetadataList().isEmpty() && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
+                    if (!node.getMetadataList().isEmpty()
+                            && !node.getMetadataList().get(0).sameMetadataAs(newOutputMetadata)) {
                         parameter.setValue(new ArrayList<Map<String, Object>>());
                     }
                 }
             }
         }
+        IElementParameter schemaTypeParameter = node.getElementParameter(propName).getParentParameter()
+                .getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+        IElementParameter repositorySchemaTypeParameter = node.getElementParameter(propName).getParentParameter()
+                .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        String schemaType = (String) schemaTypeParameter.getValue();
+        if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
+            repositorySchemaTypeParameter.setShow(true);
+        } else {
+            repositorySchemaTypeParameter.setShow(false);
+        }
+        node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
+
         refreshPropertyView();
         super.execute();
     }

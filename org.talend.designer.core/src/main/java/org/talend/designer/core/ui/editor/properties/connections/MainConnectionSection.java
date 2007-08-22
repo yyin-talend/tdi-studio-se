@@ -70,17 +70,12 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             generator.initController(this);
             for (IElementParameter cur : listParam) {
-                if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                if ((cur.getField() == EParameterFieldType.SCHEMA_TYPE) && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                     AbstractElementPropertySectionController contorller = generator.getController(
                             EParameterFieldType.SCHEMA_TYPE, this);
                     contorller.createControl(composite, cur, 0, 0, 0, null);
                 }
             }
-
-            /*
-             * Connection connection = (Connection) elem; if
-             * (connection.getLineStyle().equals(EConnectionType.FLOW_MERGE)) { addChangeOrder(); }
-             */
 
             FormData data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);

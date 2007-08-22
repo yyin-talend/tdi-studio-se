@@ -483,8 +483,12 @@ public class Connection extends Element implements IConnection, IPerformance {
      * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getMetadataTable()
      */
     public IMetadataTable getMetadataTable() {
-        if (source != null) {
-            return source.getMetadataTable(metaName);
+        if (source != null && this.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            if (sourceNodeConnector.isBuiltIn()) {
+                return source.getMetadataTable(metaName);
+            } else {
+                return source.getMetadataFromConnector(sourceNodeConnector.getName());
+            }
         }
         return null;
     }

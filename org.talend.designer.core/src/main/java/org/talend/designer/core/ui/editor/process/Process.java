@@ -95,7 +95,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
-import org.talend.designer.core.model.metadata.MetadataUtils;
 import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
@@ -112,7 +111,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -429,88 +427,101 @@ public class Process extends Element implements IProcess {
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
         IElementParameter param;
-        ElementParameterType pType;
-
         for (int j = 0; j < paramList.size(); j++) {
             param = paramList.get(j);
-            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                continue;
+            saveElementParameter(param, process, fileFact, paramList, listParamType);
+            for (String key : param.getChildParameters().keySet()) {
+                saveElementParameter(param.getChildParameters().get(key), process, fileFact, paramList, listParamType);
             }
-            if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-                // if this parameter is defined in a component, then we add a dependancy to this job.
-                String jobName;
-                jobName = ((String) param.getValue());
-                // if there is no job selected in the tRunJob, no need to add any relationship in "required".
-                if (jobName.length() != 0) {
-                    RequiredType rType = process.getRequired();
-                    if (rType == null) {
-                        rType = fileFact.createRequiredType();
-                        process.setRequired(rType);
-                    }
-                    JobType jType = fileFact.createJobType();
-                    jType.setName(jobName);
-                    String contextName = ""; //$NON-NLS-1$
-                    boolean found = false;
-                    for (int i = 0; i < paramList.size() && !found; i++) {
-                        IElementParameter contextParam = paramList.get(i);
-                        if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
-                            contextName = ((String) contextParam.getValue());
-                            found = true;
-                        }
-                    }
-                    jType.setContext(contextName);
-                    rType.getJob().add(jType);
+            // accept only one level of child parameters.
+        }
+    }
+
+    private void saveElementParameter(IElementParameter param, ProcessType process, TalendFileFactory fileFact,
+            List<? extends IElementParameter> paramList, EList listParamType) {
+        ElementParameterType pType;
+
+        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+            return;
+        }
+        if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            // if this parameter is defined in a component, then we add a dependancy to this job.
+            String jobName;
+            jobName = ((String) param.getValue());
+            // if there is no job selected in the tRunJob, no need to add any relationship in "required".
+            if (jobName.length() != 0) {
+                RequiredType rType = process.getRequired();
+                if (rType == null) {
+                    rType = fileFact.createRequiredType();
+                    process.setRequired(rType);
                 }
+                JobType jType = fileFact.createJobType();
+                jType.setName(jobName);
+                String contextName = ""; //$NON-NLS-1$
+                boolean found = false;
+                for (int i = 0; i < paramList.size() && !found; i++) {
+                    IElementParameter contextParam = paramList.get(i);
+                    if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+                        contextName = ((String) contextParam.getValue());
+                        found = true;
+                    }
+                }
+                jType.setContext(contextName);
+                rType.getJob().add(jType);
             }
-            if ((!param.isReadOnly()) || param.getName().equals(EParameterName.UNIQUE_NAME.getName())
-                    || param.getName().equals(EParameterName.VERSION.getName())) {
-                pType = fileFact.createElementParameterType();
+        }
+        if ((!param.isReadOnly()) || param.getName().equals(EParameterName.UNIQUE_NAME.getName())
+                || param.getName().equals(EParameterName.VERSION.getName())) {
+            pType = fileFact.createElementParameterType();
+            if (param.getParentParameter() != null) {
+                pType.setName(param.getParentParameter().getName() + ":" + param.getName());
+            } else {
                 pType.setName(param.getName());
-                pType.setField(param.getField().getName());
-                Object value = param.getValue();
-                if (param.getField().equals(EParameterFieldType.TABLE)) {
-                    List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
-                    for (Map<String, Object> currentLine : tableValues) {
-                        for (int i = 0; i < currentLine.size(); i++) {
-                            ElementValueType elementValue = fileFact.createElementValueType();
-                            elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
-                            Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
-                            String strValue = ""; //$NON-NLS-1$
-                            if (o instanceof Integer) {
-                                IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
-                                if (tmpParam.getListItemsValue().length == 0) {
-                                    strValue = ""; //$NON-NLS-1$
-                                } else {
-                                    strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
-                                }
+            }
+            pType.setField(param.getField().getName());
+            Object value = param.getValue();
+            if (param.getField().equals(EParameterFieldType.TABLE)) {
+                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
+                for (Map<String, Object> currentLine : tableValues) {
+                    for (int i = 0; i < currentLine.size(); i++) {
+                        ElementValueType elementValue = fileFact.createElementValueType();
+                        elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
+                        Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
+                        String strValue = ""; //$NON-NLS-1$
+                        if (o instanceof Integer) {
+                            IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
+                            if (tmpParam.getListItemsValue().length == 0) {
+                                strValue = ""; //$NON-NLS-1$
                             } else {
-                                if (o instanceof String) {
-                                    strValue = (String) o;
-                                } else {
-                                    if (o instanceof Boolean) {
-                                        strValue = (String) ((Boolean) o).toString();
-                                    }
+                                strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
+                            }
+                        } else {
+                            if (o instanceof String) {
+                                strValue = (String) o;
+                            } else {
+                                if (o instanceof Boolean) {
+                                    strValue = (String) ((Boolean) o).toString();
                                 }
                             }
-                            elementValue.setValue(strValue);
-                            pType.getElementValue().add(elementValue);
                         }
+                        elementValue.setValue(strValue);
+                        pType.getElementValue().add(elementValue);
                     }
+                }
+            } else {
+                if (value == null) {
+                    pType.setValue(""); //$NON-NLS-1$
                 } else {
-                    if (value == null) {
-                        pType.setValue(""); //$NON-NLS-1$
+                    if (value instanceof Boolean) {
+                        pType.setValue((String) ((Boolean) value).toString());
                     } else {
-                        if (value instanceof Boolean) {
-                            pType.setValue((String) ((Boolean) value).toString());
-                        } else {
-                            if (value instanceof String) {
-                                pType.setValue((String) value);
-                            }
+                        if (value instanceof String) {
+                            pType.setValue((String) value);
                         }
                     }
                 }
-                listParamType.add(pType);
             }
+            listParamType.add(pType);
         }
     }
 
@@ -848,6 +859,7 @@ public class Process extends Element implements IProcess {
         listMetaType = nType.getMetadata();
         IMetadataTable metadataTable;
         listMetaData = new ArrayList<IMetadataTable>();
+
         for (int j = 0; j < listMetaType.size(); j++) {
             mType = (MetadataType) listMetaType.get(j);
             factory.setMetadataType(mType);
@@ -856,10 +868,24 @@ public class Process extends Element implements IProcess {
             if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
                 addUniqueConnectionName(metadataTable.getTableName());
             }
-            MetadataUtils.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
+            if (nc.isELTComponent()) {
+                metadataTable.setAttachedConnector(EConnectionType.TABLE.getName());
+            }
+            MetadataTool.initilializeSchemaFromElementParameters(metadataTable, (List<IElementParameter>) nc
                     .getElementParameters());
         }
+        List<IMetadataTable> oldComponentMetadataList = new ArrayList<IMetadataTable>(nc.getMetadataList());
         nc.setMetadataList(listMetaData);
+        for (IMetadataTable table : oldComponentMetadataList) {
+            if (nc.getMetadataFromConnector(table.getAttachedConnector()) == null) {
+                // if there is any new connector, then add the table to the list.
+                String baseSchema = nc.getConnectorFromName(table.getAttachedConnector()).getBaseSchema();
+                if (!table.getAttachedConnector().equals(baseSchema)) {
+                    MetadataTool.copyTable(nc.getMetadataFromConnector(baseSchema), table);
+                }
+                nc.getMetadataList().add(table);
+            }
+        }
     }
 
     /**
@@ -873,43 +899,48 @@ public class Process extends Element implements IProcess {
     private boolean checkNodeSchemaFromRepository(final Node node, final List<MetadataUpdateCheckResult> resultList) {
         boolean modified = false;
 
-        final IMetadataTable metadataTable = node.getMetadataTable(node.getUniqueName());
-
         final String uniqueName = node.getUniqueName();
 
         // check the metadata from the repository to see if it's up to date.
-        String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-        if (schemaType != null) {
-            if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                        .getName());
-                IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
+        // String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+        for (IElementParameter currentParam : node.getElementParameters()) {
+            if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                IElementParameter schemaParam = currentParam.getChildParameters().get(
+                        EParameterName.SCHEMA_TYPE.getName());
+                if (schemaParam != null) {
+                    if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
+                        String metaRepositoryName = (String) currentParam.getChildParameters().get(
+                                EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
+                        IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
 
-                MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
+                        MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
 
-                if (repositoryMetadata != null) {
-                    repositoryMetadata = repositoryMetadata.clone();
-                    final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
-                    copyOfrepositoryMetadata.setTableName(uniqueName);
+                        if (repositoryMetadata != null) {
+                            repositoryMetadata = repositoryMetadata.clone();
+                            final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
+                            copyOfrepositoryMetadata.setTableName(uniqueName);
 
-                    if (!copyOfrepositoryMetadata.sameMetadataAs(metadataTable)) {
+                            IMetadataTable metadataTable = node.getMetadataFromConnector(currentParam.getContext());
+                            if (!copyOfrepositoryMetadata.sameMetadataAs(metadataTable)) {
 
-                        result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
-                                MetadataUpdateCheckResult.ResultType.change, copyOfrepositoryMetadata);
+                                result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
+                                        MetadataUpdateCheckResult.ResultType.change, copyOfrepositoryMetadata);
 
-                        modified = true;
+                                modified = true;
+                            }
+                        } else {
+
+                            result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
+                                    MetadataUpdateCheckResult.ResultType.delete, null);
+                            // if the repository connection doesn't exists then set to built-in
+                            modified = true;
+                        }
+
+                        // add the check result to resultList, hold the value.
+                        if (result.getResultType() != null) {
+                            resultList.add(result);
+                        }
                     }
-                } else {
-
-                    result.setResult(MetadataUpdateCheckResult.RepositoryType.schema,
-                            MetadataUpdateCheckResult.ResultType.delete, null);
-                    // if the repository connection doesn't exists then set to built-in
-                    modified = true;
-                }
-
-                // add the check result to resultList, hold the value.
-                if (result.getResultType() != null) {
-                    resultList.add(result);
                 }
             }
         }

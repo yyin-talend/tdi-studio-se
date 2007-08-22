@@ -22,7 +22,9 @@
 package org.talend.designer.core.model.components;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.core.model.process.EComponentCategory;
@@ -54,7 +56,7 @@ public class ElementParameter implements IElementParameter {
 
     private Object value;
 
-    private IElement parent;
+    private IElement element;
 
     // used for CLOSED_LIST / TABLE
     private String[] itemsDisplayName;
@@ -94,9 +96,15 @@ public class ElementParameter implements IElementParameter {
     private String filter = null;
 
     private boolean noCheck = false;
+    
+    private String context;
+    
+    private Map<String, IElementParameter> childParameters;
 
-    public ElementParameter(final IElement parent) {
-        this.parent = parent;
+    private IElementParameter parentParameter;
+
+    public ElementParameter(final IElement element) {
+        this.element = element;
     }
 
     /*
@@ -281,8 +289,8 @@ public class ElementParameter implements IElementParameter {
     }
 
     public boolean isReadOnly() {
-        if (parent != null) {
-            return (this.readOnly || parent.isReadOnly());
+        if (element != null) {
+            return (this.readOnly || element.isReadOnly());
         }
         return this.readOnly;
     }
@@ -392,12 +400,12 @@ public class ElementParameter implements IElementParameter {
         }
     }
 
-    public IElement getParent() {
-        return parent;
+    public IElement getElement() {
+        return element;
     }
 
-    public void setParent(IElement element) {
-        parent = element;
+    public void setElement(IElement element) {
+        this.element = element;
     }
 
     public boolean isBasedOnSchema() {
@@ -435,7 +443,7 @@ public class ElementParameter implements IElementParameter {
             return true;
         }
 
-        if (!(parent instanceof INode)) {
+        if (!(element instanceof INode)) {
             return true;
         }
         return noCheck;
@@ -448,5 +456,44 @@ public class ElementParameter implements IElementParameter {
      */
     public void setNoCheck(boolean noCheck) {
         this.noCheck = noCheck;
+    }
+
+    
+    /**
+     * Getter for context.
+     * @return the context
+     */
+    public String getContext() {
+        return context;
+    }
+
+    
+    /**
+     * Sets the context.
+     * @param context the context to set
+     */
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    
+    /**
+     * Getter for childParameters.
+     * @return the childParameters
+     */
+    public Map<String, IElementParameter> getChildParameters() {
+        if (childParameters == null) {
+            childParameters = new HashMap<String, IElementParameter>();
+        }
+        return childParameters;
+    }
+
+    public IElementParameter getParentParameter() {
+        return parentParameter;
+    }
+
+    public void setParentParameter(IElementParameter parentParameter) {
+        this.parentParameter = parentParameter;
+        parentParameter.getChildParameters().put(this.getName(), this);
     }
 }

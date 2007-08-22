@@ -430,19 +430,36 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-                param.setListItemsDisplayName(repositoryTableNameList);
-                param.setListItemsValue(repositoryTableValueList);
-                if (!repositoryTableMap.keySet().contains(param.getValue())) {
+            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                IElementParameter repositorySchemaType = param.getChildParameters().get(
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                repositorySchemaType.setListItemsDisplayName(repositoryTableNameList);
+                repositorySchemaType.setListItemsValue(repositoryTableValueList);
+                if (!repositoryTableMap.keySet().contains(repositorySchemaType.getValue())) {
                     List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
                             .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
-                                true, repositoryConnectionValueList[0]));
+                        repositorySchemaType.setValue(getDefaultRepository(param, true,
+                                repositoryConnectionValueList[0]));
+                        // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
+                        // true, repositoryConnectionValueList[0]));
                     }
                 }
             }
+            // if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
+            // param.setListItemsDisplayName(repositoryTableNameList);
+            // param.setListItemsValue(repositoryTableValueList);
+            // if (!repositoryTableMap.keySet().contains(param.getValue())) {
+            // List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+            // .getName()));
+            // boolean isNeeded = list2 != null && !list2.isEmpty();
+            // if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
+            // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(
+            // true, repositoryConnectionValueList[0]));
+            // }
+            // }
+            // }
             if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
@@ -452,7 +469,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
                         elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
-                                getDefaultRepository(false, repositoryConnectionValueList[0]));
+                                getDefaultRepository(
+                                        elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
+                                        repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -646,17 +665,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
-        IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
-        if (schemaTypeParameter != null) {
-            IElementParameter repositorySchemaTypeParameter = elem
-                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            String schemaType = (String) schemaTypeParameter.getValue();
-            if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
-                repositorySchemaTypeParameter.setShow(true);
-            } else {
-                repositorySchemaTypeParameter.setShow(false);
-            }
-        }
+        // IElementParameter schemaTypeParameter = elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        // if (schemaTypeParameter != null) {
+        // IElementParameter repositorySchemaTypeParameter = elem
+        // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        // String schemaType = (String) schemaTypeParameter.getValue();
+        // if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
+        // repositorySchemaTypeParameter.setShow(true);
+        // } else {
+        // repositorySchemaTypeParameter.setShow(false);
+        // }
+        // }
 
         IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());
         if (encodingTypeParameter != null) {
@@ -672,15 +691,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         if (!forceRedraw) {
             boolean needRedraw = false;
-            for (int i = 0; i < elem.getElementParameters().size() && !needRedraw; i++) {
-                IElementParameter elementParameter = elem.getElementParameters().get(i);
+            for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
                 if (elementParameter.getCategory().equals(section)
                         && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
                         && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)
                         && (elementParameter.getField() != EParameterFieldType.ENCODING_TYPE)) {
                     // if the component must be displayed, then check if the control exists or not.
                     boolean show = elementParameter.isShow(elem.getElementParameters());
-                    Object control = this.hashCurControls.get(elementParameter.getName());
+                    Object control;
+                    if (elementParameter.getParentParameter() == null) {
+                        control = this.hashCurControls.get(elementParameter.getName());
+                    } else {
+                        control = this.hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
+                                + elementParameter.getName());
+                    }
                     if ((control == null && show) || (control != null && !show)) {
                         needRedraw = true;
                         // System.out.println(elementParameter.getName() + " need redraw");
@@ -1196,7 +1220,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * 
      * @return
      */
-    private String getDefaultRepository(boolean istable, String defaultPropertyValue) {
+    private String getDefaultRepository(IElementParameter baseParam, boolean istable, String defaultPropertyValue) {
         boolean metadataInput = false;
         if (((Node) elem).getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
                 || ((Node) elem).getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0
@@ -1205,7 +1229,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         if (metadataInput && istable) {
-            return (String) elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            return (String) baseParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                    .getValue();
         }
         Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {

@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -66,6 +67,7 @@ public class MetadataEmfFactory {
         metadataType.setComment(metadataTable.getDescription());
         metadataType.setName(metadataTable.getTableName());
         metadataType.setLabel(metadataTable.getLabel());
+        metadataType.setConnector(metadataTable.getAttachedConnector());
         listColType = metadataType.getColumn();
 
         if (metadataTable.getListColumns() != null) {
@@ -113,6 +115,11 @@ public class MetadataEmfFactory {
         metadataTable.setDescription(metadataType.getComment());
         metadataTable.setTableName(metadataType.getName());
         metadataTable.setLabel(metadataType.getLabel());
+        if (metadataType.getConnector() != null) {
+            metadataTable.setAttachedConnector(metadataType.getConnector());
+        } else {
+            metadataTable.setAttachedConnector(EConnectionType.FLOW_MAIN.getName());
+        }
         listColType = metadataType.getColumn();
 
         listMetadataColumn = new ArrayList<IMetadataColumn>();

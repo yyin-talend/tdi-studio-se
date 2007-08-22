@@ -81,7 +81,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     @Override
     public void execute() {
         // Force redraw of Commponents propoerties
-        //elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+        // elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
 
         boolean allowAutoSwitch = true;
         IElementParameter elemParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
@@ -120,7 +120,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 setOtherProperties();
             }
         }
-        
+
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 param.setRepositoryValueUsed(false);
@@ -168,9 +168,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         refreshPropertyView();
     }
 
-    private String getFirstRepositoryTable(String repository) {
-        IElementParameter repositorySchemaTypeParameter = elem
-                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+    private String getFirstRepositoryTable(IElementParameter schemaParam, String repository) {
+        IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
+                EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         String[] listId = (String[]) repositorySchemaTypeParameter.getListItemsValue();
         for (int i = 0; i < listId.length; i++) {
             if (listId[i].startsWith(repository)) {
@@ -192,7 +192,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
                 metadataInput = true;
             }
-            boolean hasSchema = elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
+
+            boolean hasSchema = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE) != null;
             if (value.equals(EmfComponent.BUILTIN)) {
                 if (!metadataInput && hasSchema) {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
@@ -200,42 +201,49 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
             } else {
                 if (hasSchema) {
-                    if (!metadataInput) {
-                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-                        IElementParameter repositorySchemaTypeParameter = elem
-                                .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                        String repositoryTable;
-                        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
-                            repositoryTable = (String) repositorySchemaTypeParameter.getValue();
-                        } else {
-                            repositoryTable = getFirstRepositoryTable(value);
-                            repositorySchemaTypeParameter.setValue(repositoryTable);
-                        }
-                        IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
-                        if (table != null) {
-                            table = table.clone();
-                            table.setTableName(node.getMetadataList().get(0).getTableName());
-                            if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, null, table);
-                                cmd.setRepositoryMode(true);
-                                cmd.execute();
-                            }
-                        }
-                    } else {
-                        Node sourceNode = getRealSourceNode((INode) elem);
-                        if (sourceNode != null) {
-                            IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
-                            Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                            boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
-                                    && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
-                            if (isTake && getTake()) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, null,
-                                        sourceMetadataTable);
-                                cmd.execute(true);
-                                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
-                                if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
-                                    elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
-                                            .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
+                    for (IElementParameter param : elem.getElementParameters()) {
+                        if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                            if (!metadataInput) {
+                                param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                        EmfComponent.REPOSITORY);
+                                IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
+                                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                                String repositoryTable;
+                                if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                                    repositoryTable = (String) repositorySchemaTypeParameter.getValue();
+                                } else {
+                                    repositoryTable = getFirstRepositoryTable(param, value);
+                                    repositorySchemaTypeParameter.setValue(repositoryTable);
+                                }
+                                IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
+                                if (table != null) {
+                                    table = table.clone();
+                                    table.setTableName(node.getMetadataList().get(0).getTableName());
+                                    if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
+                                        cmd.setRepositoryMode(true);
+                                        cmd.execute();
+                                    }
+                                }
+                            } else {
+                                Node sourceNode = getRealSourceNode((INode) elem);
+                                if (sourceNode != null) {
+                                    IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
+                                    Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE
+                                            .getName());
+                                    boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
+                                            && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
+                                    if (isTake && getTake()) {
+                                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) elem, param, null,
+                                                sourceMetadataTable);
+                                        cmd.execute(true);
+                                        elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
+                                        if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
+                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
+                                                    sourceNode.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                                                            .getName()));
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -257,6 +265,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 }
             }
+
         }
     }
 
