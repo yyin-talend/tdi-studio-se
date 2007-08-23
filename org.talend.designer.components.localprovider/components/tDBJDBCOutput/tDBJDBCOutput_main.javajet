@@ -593,9 +593,8 @@ commitCounter_<%=cid%>++;
 if (commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
 	connection_<%=cid%>.commit();
 	commitCounter_<%=cid%>=0;
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 }
-
+	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	<%
 	}
 }
