@@ -217,28 +217,42 @@ public class Node extends Element implements INode {
 		listConnector = this.component.createConnectors();
 		metadataList = new ArrayList<IMetadataTable>();
 
-		boolean hasMetadata = true;
+		boolean hasMetadata = false;
 
-		for (INodeConnector curConnector : getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
-			if (curConnector.isBuiltIn()) {
-				hasMetadata = false;
-			}
-		}
-		for (INodeConnector curConnector : getConnectorsFromType(EConnectionType.TABLE)) {
-			if (curConnector.isBuiltIn()) {
-				hasMetadata = false;
+		for (INodeConnector curConnector : getListConnector()) {
+			if (curConnector.getDefaultConnectionType().hasConnectionCategory(
+					IConnectionCategory.DATA)) {
+				if (!curConnector.isBuiltIn()
+						&& curConnector.getMaxLinkInput() != 0) {
+					hasMetadata = true;
+					break;
+				}
 			}
 		}
 
 		setElementParameters(component.createElementParameters(this));
 
 		if (hasMetadata) {
+			boolean hasSchemaType = false;
 			for (IElementParameter param : getElementParameters()) {
 				if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
 					IMetadataTable table = new MetadataTable();
 					table.setAttachedConnector(param.getContext());
 					metadataList.add(table);
+					hasSchemaType = true;
 				}
+			}
+			if (!hasSchemaType) {
+				// add a default metadata on the current component
+				String mainConnector;
+				if (isELTComponent()) {
+					mainConnector = EConnectionType.TABLE.getName();
+				} else {
+					mainConnector = EConnectionType.FLOW_MAIN.getName();
+				}
+				IMetadataTable table = new MetadataTable();
+				table.setAttachedConnector(mainConnector);
+				metadataList.add(table);
 			}
 		}
 
