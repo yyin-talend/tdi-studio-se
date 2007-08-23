@@ -36,6 +36,8 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
  */
 public class FunctionManagerExt extends FunctionManager {
 
+    private static boolean addPreSuffix = true;
+
     public FunctionManagerExt() {
         super();
     }
@@ -176,7 +178,7 @@ public class FunctionManagerExt extends FunctionManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static String getOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null) {
-            String newValue = PERL_FUN_PREFIX; //$NON-NLS-1$
+            String newValue = addPreSuffix ? PERL_FUN_PREFIX : "";
             if (bean.getFunction().getName().equals(PURE_PERL_NAME)) {
                 newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
             } else {
@@ -202,12 +204,28 @@ public class FunctionManagerExt extends FunctionManager {
                         newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
                     }
                     newValue = newValue.substring(0, newValue.length() - 1);
-                    newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
+
+                    newValue += addPreSuffix ? PERL_FUN_SUFFIX : ")"; //$NON-NLS-1$
+
                 }
             }
             return newValue;
         }
         return null;
+    }
+
+    /**
+     * yzhang Comment method "getOneColData".
+     * 
+     * @param bean
+     * @param f
+     * @return
+     */
+    public static String getOneColData(MetadataColumnExt bean, boolean f) {
+        addPreSuffix = f;
+        String str = getOneColData(bean);
+        addPreSuffix = true;
+        return str;
     }
 
 }
