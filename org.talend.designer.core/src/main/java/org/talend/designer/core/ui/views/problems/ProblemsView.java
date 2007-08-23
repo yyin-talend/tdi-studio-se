@@ -107,7 +107,7 @@ public class ProblemsView extends ViewPart {
 
         TreeColumn column2 = new TreeColumn(tree, SWT.LEFT);
         column2.setText(Messages.getString("ProblemsView.resource")); //$NON-NLS-1$
-        column2.setWidth(200);
+        column2.setWidth(400);
         column2.setResizable(true);
 
         ProblemViewProvider provider = new ProblemViewProvider();
