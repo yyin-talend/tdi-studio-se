@@ -28,5 +28,6 @@ Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.java,
  org.talend.designer.runprocess.perl,
+ org.talend.designer.runprocess.shadow,
  org.talend.designer.runprocess.ui,
  org.talend.designer.runprocess.ui.views
