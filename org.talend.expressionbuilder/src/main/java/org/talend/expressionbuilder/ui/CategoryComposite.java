@@ -229,7 +229,7 @@ public class CategoryComposite extends Composite {
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
                             column.setFunction(function);
-                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column), true);
+                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
                         } else {
                             docDisplayer.setText(""); //$NON-NLS-1$
                         }

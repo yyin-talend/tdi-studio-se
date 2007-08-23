@@ -245,8 +245,6 @@ public class TestComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-
-                // shadow.process(testResultText, tableViewer);
                 new ExpressionTestMain(CategoryComposite.getSelectedFunction(), testResultText);
 
             }

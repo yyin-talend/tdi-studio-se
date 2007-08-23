@@ -146,16 +146,16 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         buttons.setLayout(new GridLayout(2, false));
 
         final Button importButton = new Button(buttons, SWT.PUSH);
-        importButton.setToolTipText("");//$NON-NLS-1$
+        importButton.setToolTipText(Messages.getString("ExpressionBuilderDialog.import"));//$NON-NLS-1$
         importButton.setImage(ImageProvider.getImage(EImage.EXPORT_ICON));
 
         final Button exportButton = new Button(buttons, SWT.PUSH);
-        exportButton.setToolTipText("");//$NON-NLS-1$
+        exportButton.setToolTipText(Messages.getString("ExpressionBuilderDialog.export"));//$NON-NLS-1$
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
         createButton(parent, IDialogConstants.CANCEL_ID,
-                Messages.getString("ExpressionBuilderDialog.cancle.button"), false); //$NON-NLS-1$
+                Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
@@ -294,9 +294,13 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * 
      * @see org.talend.expressionbuilder.ui.IExpressionBuilderDialogController#openDialog()
      */
-    public void openDialog() {
+    public void openDialog(Object obj) {
+        if (obj instanceof String) {
+            setDefaultExpression((String) obj);
+        }
         open();
         setBlockOnOpen(true);
+
     }
 
     /*

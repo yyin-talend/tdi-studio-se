@@ -3,14 +3,6 @@
 <plugin>
 
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            name="View"
-            class="org.talend.expressionbuilder.View"
-            id="org.talend.expressionbuilder.view">
-      </view>
-   </extension>
-   <extension
          point="org.talend.core.service">
       <Service
             class="org.talend.expressionbuilder.ExpressionBuilderService"
