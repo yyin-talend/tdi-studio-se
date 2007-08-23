@@ -31,10 +31,10 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
@@ -60,6 +60,7 @@ import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -83,7 +84,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class TalendEditorDropTargetListener implements TransferDropTargetListener {
 
-    private TalendEditor editor;
+    private final TalendEditor editor;
 
     /**
      * TalendEditorDropTargetListener constructor comment.
@@ -178,6 +179,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 store.seletetedNode = sourceNode;
                 store.component = component;
                 list.add(store);
+            } else {
+                MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
+                        .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
+                        Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
             }
         }
 
@@ -192,7 +197,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         /*
          * translate to Viewport coordinate with zoom
          */
-        org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
+        org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x,
+                swtLocation.y);
 
         /*
          * calcule the view port position. Take into acounte the scroll position
@@ -239,8 +245,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
-            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
-                    .getId());
+            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
+                    .getProperty().getId());
 
             ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
@@ -254,7 +260,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             List<String> tableValuesList = new ArrayList<String>();
             List<String> queryStoreNameList = new ArrayList<String>();
             List<String> queryStoreValuesList = new ArrayList<String>();
-            Connection connection = (Connection) connectionItem.getConnection();
+            Connection connection = connectionItem.getConnection();
             if (!connection.isReadOnly()) {
                 for (Object tableObj : connection.getTables()) {
                     org.talend.core.model.metadata.builder.connection.MetadataTable table;
@@ -274,8 +280,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 }
             }
             tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
-            IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                    .getName());
+            IElementParameter repositorySchemaTypeParameter = node
+                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
             if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                 DatabaseConnection dbConnection = (DatabaseConnection) connection;
@@ -322,7 +328,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             ProcessItem processItem = (ProcessItem) selectedNode.getObject().getProperty().getItem();
             // command used to set job
             String value = processItem.getProperty().getLabel();
-            PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
+            PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS
+                    .getName(), value);
             list.add(command4);
         }
 
@@ -332,7 +339,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
     private String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
-        Connection connection = (Connection) connectionItem.getConnection();
+        Connection connection = connectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
             String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
             aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -363,13 +370,16 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
     private IComponent getCorrespondingComponent(Item item, boolean input) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item);
-        String componentName = null;
-        if (input) {
-            componentName = name.getInputComponentName();
-        } else {
-            componentName = name.getOutPutComponentName();
+        IComponent component = null;
+        if (name != null) {
+            String componentName = null;
+            if (input) {
+                componentName = name.getInputComponentName();
+            } else {
+                componentName = name.getOutPutComponentName();
+            }
+            component = editor.getComponent(componentName);
         }
-        IComponent component = editor.getComponent(componentName);
         return component;
     }
 
@@ -398,10 +408,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         MSODBC(DatabaseConnectionItem.class, "MSODBC", "tDBInput", "tDBOutput"),
         IBMDB2(DatabaseConnectionItem.class, "IBMDB2", "tDB2Input", "tDB2Output"),
         SYBASEASE(DatabaseConnectionItem.class, "SYBASE", "tSybaseInput", "tSybaseOutput"),
-
+        AS400(DatabaseConnectionItem.class, "AS400", "tAS400Input", "tAS400Output"),
         // this Sybase IQ not used.
         // SYBASEIQ(DatabaseConnectionItem.class,"SYBASE", "Sybase IQ", new Boolean(false), "SYBASE"),
-        MSSQL(DatabaseConnectionItem.class, "MSODBC", "tMSSqlInput", "tMSSqlOutput"),
+        MSSQLODBC(DatabaseConnectionItem.class, "MSSQL", "tMSSqlInput", "tMSSqlOutput"),
         // this don't use in Branch 2.0
         HSQL(DatabaseConnectionItem.class, "HSQLDB", "tHSQLDbInput", "tHSQLDbOutput"),
         JAVADB(DatabaseConnectionItem.class, "JAVADB", "tJavaDBInput", "tJavaDBOutput"),
@@ -413,7 +423,6 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         ACCESS(DatabaseConnectionItem.class, "ACCESS", "tAccessInput", "tAccessOutput"), // "ACCESS");
         TERADATA(DatabaseConnectionItem.class, "TERADATA", "tTeradataInput", "tTeradataOutput"), // "TERADATA");
 
-        
         // FILES
         FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
         FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
@@ -532,7 +541,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                     }
                 }
             }
-            return DBMYSQL;
+            return null;
         }
     }
 }
