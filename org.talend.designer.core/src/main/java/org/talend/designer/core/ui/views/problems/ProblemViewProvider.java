@@ -32,6 +32,8 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.ui.images.ECoreImage;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
@@ -47,21 +49,29 @@ public class ProblemViewProvider extends LabelProvider implements ITableLabelPro
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
      */
     public Image getColumnImage(Object element, int columnIndex) {
-        if (columnIndex != 0) {
-            return null;
-        }
         Problem problem = (Problem) element;
-        if (problem.isConcrete()) {
-            if (problem.getStatus().equals(ProblemStatus.WARNING)) {
-                return ImageProvider.getImage(EImage.WARNING_SMALL);
-            } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
-                return ImageProvider.getImage(EImage.ERROR_SMALL);
+        switch (columnIndex) {
+        case 0:
+            if (problem.isConcrete()) {
+                if (problem.getStatus().equals(ProblemStatus.WARNING)) {
+                    return ImageProvider.getImage(EImage.WARNING_SMALL);
+                } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                    return ImageProvider.getImage(EImage.ERROR_SMALL);
+                }
+
+            } else {
+                return ImageProvider.getImage(EImage.HIERARCHY_ICON);
             }
-
-        } else {
-            return ImageProvider.getImage(EImage.HIERARCHY_ICON);
+            break;
+        case 1:
+            if (problem.getType().equals(ProblemType.JOB)) {
+                return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+            } else if (problem.getType().equals(ProblemType.ROUTINE)) {
+                return ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
+            } else {
+                return null;
+            }
         }
-
         return null;
     }
 

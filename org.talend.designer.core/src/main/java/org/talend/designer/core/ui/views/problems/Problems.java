@@ -84,7 +84,11 @@ public class Problems {
         if (groupField == null) {
             IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
             String key = store.getString(ProblemsView.PROBLEM_TYPE_SELECTION);
-            groupField = Group.valueOf(key);
+            if (key == null || key.isEmpty()) {
+                groupField = Group.SEVERITY;
+            } else {
+                groupField = Group.valueOf(key);
+            }
         }
 
         return groupField;

@@ -235,34 +235,6 @@ public class ProblemsView extends ViewPart {
                 Problems.setGroupField(groupingField);
                 problemView.resetContent();
                 getDialogSettings().setValue(PROBLEM_TYPE_SELECTION, groupingField.toString());
-                // Job categoryJob = new Job(MarkerMessages.ProblemView_UpdateCategoryJob) {
-                //
-                // /*
-                // * (non-Javadoc)
-                // *
-                // * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-                // */
-                // protected IStatus run(IProgressMonitor monitor) {
-                // try {
-                // markerProcessJob.join();
-                // } catch (InterruptedException e) {
-                // return Status.CANCEL_STATUS;
-                // }
-                // Problems.setGroupField(groupingField);
-                //
-                // getMarkerAdapter().getCategorySorter().saveState(getDialogSettings());
-                // return Status.OK_STATUS;
-                // }
-                // };
-                // categoryJob.setSystem(true);
-                // problemView.preserveSelection();
-                //
-                // IWorkbenchSiteProgressService progressService = getProgressService();
-                // if (progressService == null)
-                // categoryJob.schedule();
-                // else
-                // getProgressService().schedule(categoryJob);
-
             }
         }
     }
