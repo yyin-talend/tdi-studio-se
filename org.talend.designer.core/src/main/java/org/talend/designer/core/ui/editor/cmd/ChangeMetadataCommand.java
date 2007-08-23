@@ -68,422 +68,507 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
  */
 public class ChangeMetadataCommand extends Command {
 
-    private Node node, inputNode;
+	private Node node, inputNode;
 
-    protected IMetadataTable currentOutputMetadata, newOutputMetadata, oldOutputMetadata;
+	protected IMetadataTable currentOutputMetadata, newOutputMetadata,
+			oldOutputMetadata;
 
-    private boolean outputWasRepository = false, inputWasRepository = false;
+	private boolean outputWasRepository = false, inputWasRepository = false;
 
-    private IMetadataTable currentInputMetadata, newInputMetadata, oldInputMetadata;
+	private IMetadataTable currentInputMetadata, newInputMetadata,
+			oldInputMetadata;
 
-    private IODataComponentContainer inputdataContainer;
+	private IODataComponentContainer inputdataContainer;
 
-    private IODataComponentContainer outputdataContainer;
+	private IODataComponentContainer outputdataContainer;
 
-    private IODataComponent dataComponent;
+	private IODataComponent dataComponent;
 
-    private Boolean propagate;
+	private Boolean propagate;
 
-    private List<ChangeMetadataCommand> propagatedChange = new ArrayList<ChangeMetadataCommand>();
+	private List<ChangeMetadataCommand> propagatedChange = new ArrayList<ChangeMetadataCommand>();
 
-    private boolean internal = false;
+	private boolean internal = false;
 
-    private boolean repositoryMode = false;
+	private boolean repositoryMode = false;
 
-    private IElementParameter schemaParam;
+	private IElementParameter schemaParam;
 
-    private String currentConnector;
+	private String currentConnector;
 
-    // Default constructor.
-    public ChangeMetadataCommand() {
-    }
+	// Default constructor.
+	public ChangeMetadataCommand() {
+	}
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode,
-            IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata,
-            IMetadataTable newOutputMetadata) {
-        this.node = node;
-        this.inputNode = inputNode;
-        this.schemaParam = schemaParam;
-        if (schemaParam == null) {
-            currentConnector = EConnectionType.FLOW_MAIN.getName();
-            for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                        && param.getContext().equals(currentConnector)) {
-                    this.schemaParam = param;
-                }
-            }
-        } else {
-            currentConnector = this.schemaParam.getContext();
-        }
-        this.currentInputMetadata = currentInputMetadata;
-        if (currentInputMetadata != null) {
-            oldInputMetadata = currentInputMetadata.clone();
-        } else {
-            oldInputMetadata = null;
-        }
-        this.newInputMetadata = newInputMetadata;
-        this.currentOutputMetadata = currentOutputMetadata;
-        if (this.currentOutputMetadata == null) {
-            this.currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
-        }
-        oldOutputMetadata = this.currentOutputMetadata.clone();
-        this.newOutputMetadata = newOutputMetadata;
-        initializeContainer();
-        setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
-    }
+	public ChangeMetadataCommand(Node node, IElementParameter schemaParam,
+			Node inputNode, IMetadataTable currentInputMetadata,
+			IMetadataTable newInputMetadata,
+			IMetadataTable currentOutputMetadata,
+			IMetadataTable newOutputMetadata) {
+		this.node = node;
+		this.inputNode = inputNode;
+		this.schemaParam = schemaParam;
+		if (schemaParam == null) {
+			currentConnector = EConnectionType.FLOW_MAIN.getName();
+			for (IElementParameter param : node.getElementParameters()) {
+				if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+						&& param.getContext().equals(currentConnector)) {
+					this.schemaParam = param;
+				}
+			}
+		} else {
+			currentConnector = this.schemaParam.getContext();
+		}
+		this.currentInputMetadata = currentInputMetadata;
+		if (currentInputMetadata != null) {
+			oldInputMetadata = currentInputMetadata.clone();
+		} else {
+			oldInputMetadata = null;
+		}
+		this.newInputMetadata = newInputMetadata;
+		this.currentOutputMetadata = currentOutputMetadata;
+		if (this.currentOutputMetadata == null) {
+			this.currentOutputMetadata = node
+					.getMetadataFromConnector(currentConnector);
+		}
+		oldOutputMetadata = this.currentOutputMetadata.clone();
+		this.newOutputMetadata = newOutputMetadata;
+		initializeContainer();
+		setLabel(Messages
+				.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
+	}
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, IMetadataTable currentOutputMetadata,
-            IMetadataTable newOutputMetadata) {
-        this.node = node;
-        this.schemaParam = schemaParam;
-        if (schemaParam == null) {
-            currentConnector = EConnectionType.FLOW_MAIN.getName();
-            for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                        && param.getContext().equals(currentConnector)) {
-                    this.schemaParam = param;
-                }
-            }
-        } else {
-            currentConnector = this.schemaParam.getContext();
-        }
-        this.inputNode = null;
-        this.currentInputMetadata = null;
-        this.newInputMetadata = null;
-        oldInputMetadata = null;
-        this.currentOutputMetadata = currentOutputMetadata;
-        if (this.currentOutputMetadata == null) {
-            this.currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
-        }
+	public ChangeMetadataCommand(Node node, IElementParameter schemaParam,
+			IMetadataTable currentOutputMetadata,
+			IMetadataTable newOutputMetadata) {
+		this.node = node;
+		this.schemaParam = schemaParam;
+		if (schemaParam == null) {
+			currentConnector = EConnectionType.FLOW_MAIN.getName();
+			for (IElementParameter param : node.getElementParameters()) {
+				if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+						&& param.getContext().equals(currentConnector)) {
+					this.schemaParam = param;
+				}
+			}
+		} else {
+			currentConnector = this.schemaParam.getContext();
+		}
+		this.inputNode = null;
+		this.currentInputMetadata = null;
+		this.newInputMetadata = null;
+		oldInputMetadata = null;
+		this.currentOutputMetadata = currentOutputMetadata;
+		if (this.currentOutputMetadata == null) {
+			this.currentOutputMetadata = node
+					.getMetadataFromConnector(currentConnector);
+		}
 
-        oldOutputMetadata = this.currentOutputMetadata.clone(true);
-        this.newOutputMetadata = newOutputMetadata.clone(true);
-        this.newOutputMetadata.setReadOnly(this.currentOutputMetadata.isReadOnly());
-        initializeContainer();
-        setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
-    }
+		oldOutputMetadata = this.currentOutputMetadata.clone(true);
+		this.newOutputMetadata = newOutputMetadata.clone(true);
+		this.newOutputMetadata.setReadOnly(this.currentOutputMetadata
+				.isReadOnly());
+		initializeContainer();
+		setLabel(Messages
+				.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
+	}
 
-    public void setRepositoryMode(boolean repositoryMode) {
-        this.repositoryMode = repositoryMode;
-    }
+	public void setRepositoryMode(boolean repositoryMode) {
+		this.repositoryMode = repositoryMode;
+	}
 
-    private void initializeContainer() {
-        outputdataContainer = new IODataComponentContainer();
-        for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                IODataComponent input = null;
-                if (newInputMetadata == null) {
-                    input = new IODataComponent(connec);
-                } else {
-                    if (connec.getMetaName().equals(newInputMetadata.getTableName())) {
-                        input = new IODataComponent(connec, newInputMetadata);
-                    }
-                }
-                if (input != null) {
-                    outputdataContainer.getInputs().add(input);
-                }
+	private void initializeContainer() {
+		outputdataContainer = new IODataComponentContainer();
+		for (Connection connec : (List<Connection>) node
+				.getIncomingConnections()) {
+			if (connec.isActivate()
+					&& connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+				IODataComponent input = null;
+				if (newInputMetadata == null) {
+					input = new IODataComponent(connec);
+				} else {
+					if (connec.getMetaName().equals(
+							newInputMetadata.getTableName())) {
+						input = new IODataComponent(connec, newInputMetadata);
+					}
+				}
+				if (input != null) {
+					outputdataContainer.getInputs().add(input);
+				}
 
-            }
-        }
-        for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-            if (connec.isActivate()
-                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || ((connec.getLineStyle().equals(
-                            EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
-                if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
-                        || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
-                    IODataComponent output = new IODataComponent(connec, newOutputMetadata);
-                    outputdataContainer.getOuputs().add(output);
-                }
-            }
-        }
+			}
+		}
+		for (Connection connec : (List<Connection>) node
+				.getOutgoingConnections()) {
+			if (connec.isActivate()
+					&& (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || ((connec
+							.getLineStyle().equals(EConnectionType.FLOW_MERGE) && (connec
+							.getInputId() == 1))))) {
+				if ((!connec.getSource().getConnectorFromType(
+						connec.getLineStyle()).isBuiltIn())
+						|| (connec.getMetaName().equals(newOutputMetadata
+								.getTableName()))) {
+					IODataComponent output = new IODataComponent(connec,
+							newOutputMetadata);
+					outputdataContainer.getOuputs().add(output);
+				}
+			}
+		}
 
-        if (inputNode != null) {
-            inputdataContainer = new IODataComponentContainer();
-            for (Connection connec : (List<Connection>) inputNode.getOutgoingConnections()) {
-                if (connec.isActivate() && (connec.getTarget().equals(node))) {
-                    if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
-                            || (connec.getMetaName().equals(newInputMetadata.getTableName()))) {
-                        IODataComponent output = new IODataComponent(connec, newInputMetadata);
-                        inputdataContainer.getOuputs().add(output);
-                    }
-                }
-            }
-        }
-    }
+		if (inputNode != null) {
+			inputdataContainer = new IODataComponentContainer();
+			for (Connection connec : (List<Connection>) inputNode
+					.getOutgoingConnections()) {
+				if (connec.isActivate() && (connec.getTarget().equals(node))) {
+					if ((!connec.getSource().getConnectorFromType(
+							connec.getLineStyle()).isBuiltIn())
+							|| (connec.getMetaName().equals(newInputMetadata
+									.getTableName()))) {
+						IODataComponent output = new IODataComponent(connec,
+								newInputMetadata);
+						inputdataContainer.getOuputs().add(output);
+					}
+				}
+			}
+		}
+	}
 
-    private void setInternal(boolean internal) {
-        this.internal = internal;
-    }
+	private void setInternal(boolean internal) {
+		this.internal = internal;
+	}
 
-    private boolean getPropagate(Boolean returnIfNull) {
-        if (propagate == null) {
-            if (returnIfNull != null) {
-                return returnIfNull;
-            }
-            propagate = MessageDialog
-                    .openQuestion(
-                            new Shell(),
-                            Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return propagate;
-    }
+	private boolean getPropagate(Boolean returnIfNull) {
+		if (propagate == null) {
+			if (returnIfNull != null) {
+				return returnIfNull;
+			}
+			propagate = MessageDialog
+					.openQuestion(
+							new Shell(),
+							Messages
+									.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		return propagate;
+	}
 
-    private boolean getPropagate() {
-        return getPropagate(null);
-    }
+	private boolean getPropagate() {
+		return getPropagate(null);
+	}
 
-    @SuppressWarnings("unchecked")
-    protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
-        if (currentTab == null) {
-            return;
-        }
-        ISection[] sections = currentTab.getSections();
-        final List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldTable, newTable);
-        for (int i = 0; i < sections.length; i++) {
-            if (sections[i] instanceof DynamicTabbedPropertySection) {
-                DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
-                if (currentSection.getElement().equals(node)) {
-                    currentSection.refresh();
-                }
-            }
-        }
-        if (inputNode != null) {
-            List<IElementParameter> eps = (List<IElementParameter>) inputNode.getElementParameters();
-            if (eps != null) {
-                boolean end = false;
-                for (int i = 0; i < eps.size() && !end; i++) {
-                    IElementParameter parameter = eps.get(i);
-                    if (parameter.getField() == EParameterFieldType.TABLE) {
-                        end = true;
-                        if (parameter != null) {
-                            List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null
-                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
-                                ColumnListController.updateColumnList(inputNode, columnNameChanged);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	@SuppressWarnings("unchecked")
+	protected void updateColumnList(IMetadataTable oldTable,
+			IMetadataTable newTable) {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+		PropertySheet sheet = (PropertySheet) view;
+		TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
+				.getCurrentPage();
+		Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
+		if (currentTab == null) {
+			return;
+		}
+		ISection[] sections = currentTab.getSections();
+		final List<ColumnNameChanged> columnNameChanged = MetadataTool
+				.getColumnNameChanged(oldTable, newTable);
+		for (int i = 0; i < sections.length; i++) {
+			if (sections[i] instanceof DynamicTabbedPropertySection) {
+				DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
+				if (currentSection.getElement().equals(node)) {
+					currentSection.refresh();
+				}
+			}
+		}
+		if (inputNode != null) {
+			List<IElementParameter> eps = (List<IElementParameter>) inputNode
+					.getElementParameters();
+			if (eps != null) {
+				boolean end = false;
+				for (int i = 0; i < eps.size() && !end; i++) {
+					IElementParameter parameter = eps.get(i);
+					if (parameter.getField() == EParameterFieldType.TABLE) {
+						end = true;
+						if (parameter != null) {
+							List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter
+									.getValue();
+							if (map2 != null
+									&& inputNode.getMetadataList().get(0)
+											.getListColumns().size() != map2
+											.size()) {
+								ColumnListController.updateColumnList(
+										inputNode, columnNameChanged);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    public void execute(Boolean propagateP) {
-        this.propagate = propagateP;
-        if (currentOutputMetadata == null) {
-            currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
-        }
-        setInternal(true);
-        execute();
-    }
+	public void execute(Boolean propagateP) {
+		this.propagate = propagateP;
+		if (currentOutputMetadata == null) {
+			currentOutputMetadata = node
+					.getMetadataFromConnector(currentConnector);
+		}
+		setInternal(true);
+		execute();
+	}
 
-    private void propagateDatas(boolean isExecute) {
-        // Propagate :
-        if (outputdataContainer != null
-                && (!outputdataContainer.getInputs().isEmpty() || !outputdataContainer.getOuputs().isEmpty())) {
-            for (IODataComponent currentIO : outputdataContainer.getInputs()) {
-                INode sourceNode = currentIO.getSource();
-                if (currentIO.hasChanged() && (currentIO.getConnection().getConnectorName().equals(currentConnector))) {
-                    sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
-                    if (isExecute) {
-                        currentIO.setTable(oldInputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    } else {
-                        currentIO.setTable(newInputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    }
-                }
-            }
-            for (IODataComponent currentIO : outputdataContainer.getOuputs()) {
-                INodeConnector nodeConnector = null;
-                String baseConnector = null;
-                if (currentIO.getSource() instanceof Node) {
-                    Node node = (Node) currentIO.getSource();
-                    nodeConnector = node.getConnectorFromName(currentIO.getConnection().getConnectorName());
-                    baseConnector = nodeConnector.getBaseSchema();
-                }
-                if (currentIO.hasChanged() && (baseConnector.equals(currentConnector))) {
-                    INode targetNode = currentIO.getTarget();
-                    targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
-                    if (isExecute) {
-                        if (targetNode instanceof Node) {
-                            if (((Node) targetNode).getComponent().isSchemaAutoPropagated() && getPropagate()
-                                    && targetNode.getMetadataList().size() > 0) {
-                                IMetadataTable tmpClone = node.getMetadataFromConnector(
-                                        currentIO.getConnection().getConnectorName()).clone(true);
-                                // IMetadataTable tmpClone = currentOutputMetadata.clone(true);
-                                IMetadataTable toCopy = newOutputMetadata.clone();
-                                MetadataTool.copyTable(toCopy, tmpClone); // to keep customs
-                                toCopy = tmpClone;
-                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector)
-                                        .clone(true);
-                                MetadataTool.copyTable(toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null,
-                                        copy);
-                                if (outputdataContainer.getOuputs().size() > 0) {
-                                    List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
-                                            .getColumnNameChanged();
-                                    for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
-                                        dataComp.setColumnNameChanged(columnNameChanged);
-                                    }
-                                }
-                                cmd.execute(true);
-                                propagatedChange.add(cmd);
-                            }
-                        }
-                        currentIO.setTable(oldOutputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    } else {
-                        if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
-                                    .isBuiltIn()
-                                    && getPropagate()) {
-                                if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
-                                    if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
-                                                .get(0).getColumnNameChanged();
-                                        for (ChangeMetadataCommand cmd : propagatedChange) {
-                                            for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
-                                                dataComp.setColumnNameChanged(columnNameChanged);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+	private void propagateDatas(boolean isExecute) {
+		// Propagate :
+		if (outputdataContainer != null
+				&& (!outputdataContainer.getInputs().isEmpty() || !outputdataContainer
+						.getOuputs().isEmpty())) {
+			for (IODataComponent currentIO : outputdataContainer.getInputs()) {
+				INode sourceNode = currentIO.getSource();
+				if (currentIO.hasChanged()
+						&& (currentIO.getConnection().getConnectorName()
+								.equals(currentConnector))) {
+					sourceNode.metadataOutputChanged(currentIO, currentIO
+							.getName());
+					if (isExecute) {
+						currentIO.setTable(oldInputMetadata);
+						currentIO.setColumnNameChanged(null);
+					} else {
+						currentIO.setTable(newInputMetadata);
+						currentIO.setColumnNameChanged(null);
+					}
+				}
+			}
+			for (IODataComponent currentIO : outputdataContainer.getOuputs()) {
+				INodeConnector nodeConnector = null;
+				String baseConnector = null;
+				if (currentIO.getSource() instanceof Node) {
+					Node node = (Node) currentIO.getSource();
+					nodeConnector = node.getConnectorFromName(currentIO
+							.getConnection().getConnectorName());
+					baseConnector = nodeConnector.getBaseSchema();
+				}
+				if (currentIO.hasChanged()
+						&& (baseConnector.equals(currentConnector))) {
+					INode targetNode = currentIO.getTarget();
+					targetNode.metadataInputChanged(currentIO, currentIO
+							.getUniqueName());
+					if (isExecute) {
+						if (targetNode instanceof Node) {
+							if (((Node) targetNode).getComponent()
+									.isSchemaAutoPropagated()
+									&& getPropagate()
+									&& targetNode.getMetadataList().size() > 0) {
+								IMetadataTable tmpClone = node
+										.getMetadataFromConnector(
+												currentIO.getConnection()
+														.getConnectorName())
+										.clone(true);
+								// IMetadataTable tmpClone =
+								// currentOutputMetadata.clone(true);
+								IMetadataTable toCopy = newOutputMetadata
+										.clone();
+								MetadataTool.copyTable(toCopy, tmpClone); // to
+								// keep
+								// customs
+								toCopy = tmpClone;
+								IMetadataTable copy = ((Node) targetNode)
+										.getMetadataFromConnector(baseConnector)
+										.clone(true);
+								MetadataTool.copyTable(toCopy, copy);
+								ChangeMetadataCommand cmd = new ChangeMetadataCommand(
+										(Node) targetNode, null, null, copy);
+								if (outputdataContainer.getOuputs().size() > 0) {
+									List<ColumnNameChanged> columnNameChanged = outputdataContainer
+											.getOuputs().get(0)
+											.getColumnNameChanged();
+									for (IODataComponent dataComp : cmd.outputdataContainer
+											.getOuputs()) {
+										dataComp
+												.setColumnNameChanged(columnNameChanged);
+									}
+								}
+								cmd.execute(true);
+								propagatedChange.add(cmd);
+							}
+						}
+						currentIO.setTable(oldOutputMetadata);
+						currentIO.setColumnNameChanged(null);
+					} else {
+						if (targetNode instanceof Node) {
+							if (!((Node) targetNode).getConnectorFromType(
+									currentIO.getConnection().getLineStyle())
+									.isBuiltIn()
+									&& getPropagate()) {
+								if (((Node) targetNode).getComponent()
+										.isSchemaAutoPropagated()) {
+									if (outputdataContainer.getOuputs().size() > 0) {
+										List<ColumnNameChanged> columnNameChanged = outputdataContainer
+												.getOuputs().get(0)
+												.getColumnNameChanged();
+										for (ChangeMetadataCommand cmd : propagatedChange) {
+											for (IODataComponent dataComp : cmd.outputdataContainer
+													.getOuputs()) {
+												dataComp
+														.setColumnNameChanged(columnNameChanged);
+											}
+										}
+									}
+								}
+							}
+						}
 
-                        currentIO.setTable(newOutputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    }
-                }
-            }
+						currentIO.setTable(newOutputMetadata);
+						currentIO.setColumnNameChanged(null);
+					}
+				}
+			}
 
-        } else if (dataComponent != null) {
-            for (IConnection outgoingConnection : node.getOutgoingConnections()) {
-                if (outgoingConnection.getConnectorName().equals(currentConnector)) {
-                    outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
-                }
-            }
-        }
+		} else if (dataComponent != null) {
+			for (IConnection outgoingConnection : node.getOutgoingConnections()) {
+				if (outgoingConnection.getConnectorName().equals(
+						currentConnector)) {
+					outgoingConnection.getTarget().metadataInputChanged(
+							dataComponent, outgoingConnection.getName());
+				}
+			}
+		}
 
-        if (inputdataContainer != null) {
-            for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
-                if (currentIO.hasChanged() && (currentIO.getConnection().getConnectorName().equals(currentConnector))) {
-                    INode targetNode = currentIO.getTarget();
-                    targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
-                    if (isExecute) {
-                        currentIO.setTable(oldInputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    } else {
-                        currentIO.setTable(newInputMetadata);
-                        currentIO.setColumnNameChanged(null);
-                    }
-                }
-            }
-        }
-        // End propagate
-    }
+		if (inputdataContainer != null) {
+			for (IODataComponent currentIO : inputdataContainer.getOuputs()) {
+				if (currentIO.hasChanged()
+						&& (currentIO.getConnection().getConnectorName()
+								.equals(currentConnector))) {
+					INode targetNode = currentIO.getTarget();
+					targetNode.metadataInputChanged(currentIO, currentIO
+							.getUniqueName());
+					if (isExecute) {
+						currentIO.setTable(oldInputMetadata);
+						currentIO.setColumnNameChanged(null);
+					} else {
+						currentIO.setTable(newInputMetadata);
+						currentIO.setColumnNameChanged(null);
+					}
+				}
+			}
+		}
+		// End propagate
+	}
 
-    @Override
-    public void execute() {
-        propagatedChange.clear();
+	@Override
+	public void execute() {
+		propagatedChange.clear();
 
-        propagateDatas(true);
+		propagateDatas(true);
 
-        if (currentInputMetadata != null) {
-            if (!currentInputMetadata.sameMetadataAs(newInputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-                MetadataTool.copyTable(newInputMetadata, currentInputMetadata);
-                String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                if (type != null) {
-                    if (type.equals(EmfComponent.REPOSITORY)) {
-                        inputWasRepository = true;
-                        inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                    }
-                }
-            }
-        }
+		if (currentInputMetadata != null) {
+			if (!currentInputMetadata.sameMetadataAs(newInputMetadata,
+					IMetadataColumn.OPTIONS_NONE)) {
+				MetadataTool.copyTable(newInputMetadata, currentInputMetadata);
+				String type = (String) inputNode
+						.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+				if (type != null) {
+					if (type.equals(EmfComponent.REPOSITORY)) {
+						inputWasRepository = true;
+						inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE
+								.getName(), EmfComponent.BUILTIN);
+					}
+				}
+			}
+		}
 
-        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-            MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
+		if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata,
+				IMetadataColumn.OPTIONS_NONE)) {
+			MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
 
-            String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
-                outputWasRepository = true;
-                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-            }
-        }
+			String type = (String) node
+					.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+			if (type != null && type.equals(EmfComponent.REPOSITORY)
+					&& !repositoryMode) {
+				outputWasRepository = true;
+				node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+						EmfComponent.BUILTIN);
+			}
+		}
 
-        for (INodeConnector connector : node.getListConnector()) {
-            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
-                // if there is some other schema dependant of this one, modify them
-                MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
-            }
-        }
+		for (INodeConnector connector : node.getListConnector()) {
+			if ((!connector.getName().equals(currentConnector))
+					&& connector.getBaseSchema().equals(currentConnector)) {
+				// if there is some other schema dependant of this one, modify
+				// them
+				MetadataTool.copyTable(newOutputMetadata, node
+						.getMetadataFromConnector(connector.getName()));
+			}
+		}
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
-                newOutputMetadata);
-        ColumnListController.updateColumnList(node, columnNameChanged, true);
+		List<ColumnNameChanged> columnNameChanged = MetadataTool
+				.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
+		ColumnListController.updateColumnList(node, columnNameChanged, true);
 
-        if (!internal) {
-            updateColumnList(oldOutputMetadata, newOutputMetadata);
-            ((Process) node.getProcess()).checkProcess();
-        }
-    }
+		if (!internal) {
+			updateColumnList(oldOutputMetadata, newOutputMetadata);
+			((Process) node.getProcess()).checkProcess();
+		}
+	}
 
-    @Override
-    public void undo() {
-        propagateDatas(false);
+	@Override
+	public void undo() {
+		propagateDatas(false);
 
-        if (currentInputMetadata != null) {
-            if (!currentInputMetadata.sameMetadataAs(oldInputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-                currentInputMetadata.setListColumns(oldInputMetadata.getListColumns());
-                if (inputWasRepository) {
-                    inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-                }
-            }
-        }
-        if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-            currentOutputMetadata.setListColumns(oldOutputMetadata.getListColumns());
-            MetadataTool.copyTable(oldOutputMetadata, currentOutputMetadata);
-        }
+		if (currentInputMetadata != null) {
+			if (!currentInputMetadata.sameMetadataAs(oldInputMetadata,
+					IMetadataColumn.OPTIONS_NONE)) {
+				currentInputMetadata.setListColumns(oldInputMetadata
+						.getListColumns());
+				if (inputWasRepository) {
+					inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE
+							.getName(), EmfComponent.REPOSITORY);
+				}
+			}
+		}
+		if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata,
+				IMetadataColumn.OPTIONS_NONE)) {
+			currentOutputMetadata.setListColumns(oldOutputMetadata
+					.getListColumns());
+			MetadataTool.copyTable(oldOutputMetadata, currentOutputMetadata);
+		}
 
-        for (INodeConnector connector : node.getListConnector()) {
-            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
-                MetadataTool.copyTable(oldOutputMetadata, node.getMetadataFromConnector(connector.getName()));
-            }
-        }
-        if (outputWasRepository) {
-            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-        }
-        for (ChangeMetadataCommand cmd : propagatedChange) {
-            cmd.undo();
-        }
+		for (INodeConnector connector : node.getListConnector()) {
+			if ((!connector.getName().equals(currentConnector))
+					&& connector.getBaseSchema().equals(currentConnector)) {
+				MetadataTool.copyTable(oldOutputMetadata, node
+						.getMetadataFromConnector(connector.getName()));
+			}
+		}
+		if (outputWasRepository) {
+			node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+					EmfComponent.REPOSITORY);
+		}
+		for (ChangeMetadataCommand cmd : propagatedChange) {
+			cmd.undo();
+		}
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata,
-                oldOutputMetadata);
-        ColumnListController.updateColumnList(node, columnNameChanged, true);
+		List<ColumnNameChanged> columnNameChanged = MetadataTool
+				.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+		ColumnListController.updateColumnList(node, columnNameChanged, true);
 
-        if (!internal) {
-            updateColumnList(newOutputMetadata, oldOutputMetadata);
-            ((Process) node.getProcess()).checkProcess();
-        }
-    }
+		if (!internal) {
+			updateColumnList(newOutputMetadata, oldOutputMetadata);
+			((Process) node.getProcess()).checkProcess();
+		}
+	}
 
-    /**
-     * Refresh property view.
-     */
-    public void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        if (tabbedPropertySheetPage.getCurrentTab() != null) {
-            tabbedPropertySheetPage.refresh();
-        }
-    }
+	/**
+	 * Refresh property view.
+	 */
+	protected void refreshPropertyView() {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+		PropertySheet sheet = (PropertySheet) view;
+		if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+			TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
+					.getCurrentPage();
+			if (tabbedPropertySheetPage.getCurrentTab() != null) {
+				tabbedPropertySheetPage.refresh();
+			}
+		}
+	}
 }
