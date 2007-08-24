@@ -223,7 +223,8 @@ public class Node extends Element implements INode {
 			if (curConnector.getDefaultConnectionType().hasConnectionCategory(
 					IConnectionCategory.DATA)) {
 				if (!curConnector.isBuiltIn()
-						&& curConnector.getMaxLinkInput() != 0) {
+						&& curConnector.getMaxLinkInput() != 0
+						&& curConnector.getMaxLinkOutput() != 0) {
 					hasMetadata = true;
 					break;
 				}
@@ -1208,6 +1209,9 @@ public class Node extends Element implements INode {
 							break;
 						}
 
+						if (this.getMetadataList().size() == 0) {
+							break;
+						}
 						IMetadataTable metaTable = this.getMetadataList()
 								.get(0);
 						if (metaTable == null
