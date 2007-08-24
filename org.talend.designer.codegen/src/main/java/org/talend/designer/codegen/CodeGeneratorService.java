@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IProcess;
@@ -87,8 +88,8 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void initializeTemplates() {
-        CodeGeneratorEmittersPoolFactory.initialize();
+    public Job initializeTemplates() {
+        return CodeGeneratorEmittersPoolFactory.initialize();
     }
 
 }

@@ -94,8 +94,10 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     /**
      * initialization of the pool.
+     * 
+     * @return
      */
-    public static void initialize() {
+    public static Job initialize() {
         if (!initInProgress) {
             // Code Generator initialisation with Progress Bar
             Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
@@ -147,6 +149,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                         initialized = true;
                     } catch (Exception e) {
                         log.error("Exception during Initialization", e);
+                        return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
+                                "Exception during Initialization", e);
                     } finally {
                         initInProgress = false;
                     }
@@ -156,7 +160,11 @@ public final class CodeGeneratorEmittersPoolFactory {
             job.setUser(true);
             job.setPriority(Job.LONG);
             job.schedule(); // start as soon as possible
+
+            return job;
         }
+
+        return null;
     }
 
     /**
