@@ -55,6 +55,12 @@
             class="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
             id="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
             name="Java"/>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
+            id="org.talend.designer.core.properties.memo.text.font"
+            name="Memo Text Font">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

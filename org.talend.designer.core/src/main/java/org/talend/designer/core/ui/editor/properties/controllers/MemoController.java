@@ -27,9 +27,11 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextControlCreator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -39,8 +41,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -96,7 +100,11 @@ public class MemoController extends AbstractElementPropertySectionController {
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
-        Font font = new Font(subComposite.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+
+        String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+        FontData fontData = new FontData(fontType);
+        Font font = new Font(subComposite.getDisplay(), fontData); //$NON-NLS-1$
         text.setFont(font);
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
