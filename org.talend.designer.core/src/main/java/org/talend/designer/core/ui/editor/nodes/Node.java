@@ -223,8 +223,8 @@ public class Node extends Element implements INode {
 			if (curConnector.getDefaultConnectionType().hasConnectionCategory(
 					IConnectionCategory.DATA)) {
 				if (!curConnector.isBuiltIn()
-						&& curConnector.getMaxLinkInput() != 0
-						&& curConnector.getMaxLinkOutput() != 0) {
+						&& (curConnector.getMaxLinkInput() != 0 || curConnector
+								.getMaxLinkOutput() != 0)) {
 					hasMetadata = true;
 					break;
 				}
@@ -233,29 +233,29 @@ public class Node extends Element implements INode {
 
 		setElementParameters(component.createElementParameters(this));
 
-		if (hasMetadata) {
-			boolean hasSchemaType = false;
-			for (IElementParameter param : getElementParameters()) {
-				if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-					IMetadataTable table = new MetadataTable();
-					table.setAttachedConnector(param.getContext());
-					metadataList.add(table);
-					hasSchemaType = true;
-				}
-			}
-			if (!hasSchemaType) {
-				// add a default metadata on the current component
-				String mainConnector;
-				if (isELTComponent()) {
-					mainConnector = EConnectionType.TABLE.getName();
-				} else {
-					mainConnector = EConnectionType.FLOW_MAIN.getName();
-				}
+		// if (hasMetadata) {
+		boolean hasSchemaType = false;
+		for (IElementParameter param : getElementParameters()) {
+			if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
 				IMetadataTable table = new MetadataTable();
-				table.setAttachedConnector(mainConnector);
+				table.setAttachedConnector(param.getContext());
 				metadataList.add(table);
+				hasSchemaType = true;
 			}
 		}
+		if (hasMetadata && !hasSchemaType) {
+			// add a default metadata on the current component
+			String mainConnector;
+			if (isELTComponent()) {
+				mainConnector = EConnectionType.TABLE.getName();
+			} else {
+				mainConnector = EConnectionType.FLOW_MAIN.getName();
+			}
+			IMetadataTable table = new MetadataTable();
+			table.setAttachedConnector(mainConnector);
+			metadataList.add(table);
+		}
+		// }
 
 		listReturn = this.component.createReturns();
 		String uniqueName = ((Process) getProcess())
