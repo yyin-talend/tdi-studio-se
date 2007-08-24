@@ -22,7 +22,6 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
@@ -38,7 +37,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
@@ -52,9 +50,9 @@ import org.talend.designer.core.ui.views.CodeView;
  */
 public class PropertyChangeCommand extends Command {
 
-    private Element elem;
+    private final Element elem;
 
-    private String propName;
+    private final String propName;
 
     private Object newValue;
 
@@ -64,7 +62,7 @@ public class PropertyChangeCommand extends Command {
 
     private boolean toUpdate;
 
-    private Map<IElementParameter, Object> oldElementValues;
+    private final Map<IElementParameter, Object> oldElementValues;
 
     private ChangeMetadataCommand changeMetadataCommand;
 
@@ -90,7 +88,7 @@ public class PropertyChangeCommand extends Command {
         PropertySheet sheet = (PropertySheet) view;
         if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            if(tabbedPropertySheetPage.getCurrentTab()!=null){
+            if (tabbedPropertySheetPage.getCurrentTab() != null) {
                 tabbedPropertySheetPage.refresh();
             }
         }
@@ -115,11 +113,11 @@ public class PropertyChangeCommand extends Command {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             } else {
                 elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                for (IElementParameter param : elem.getElementParameters()) {
+                    param.setRepositoryValueUsed(false);
+                }
             }
 
-            for (IElementParameter param : elem.getElementParameters()) {
-                param.setRepositoryValueUsed(false);
-            }
             repositoryValueWasUsed = true;
         } else {
             repositoryValueWasUsed = false;
@@ -176,7 +174,7 @@ public class PropertyChangeCommand extends Command {
         }
         refreshPropertyView();
         refreshCodeView();
-        
+
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
