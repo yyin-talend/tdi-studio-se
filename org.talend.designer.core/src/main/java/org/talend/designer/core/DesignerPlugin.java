@@ -75,10 +75,14 @@ public class DesignerPlugin extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         IWorkbenchWindow activeWorkbenchWindow = null;
-        activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        if (activeWorkbenchWindow != null) {
-            IPartService partService = activeWorkbenchWindow.getPartService();
-            partService.addPartListener(new ActiveProcessTracker());
+        try {
+            activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (activeWorkbenchWindow != null) {
+                IPartService partService = activeWorkbenchWindow.getPartService();
+                partService.addPartListener(new ActiveProcessTracker());
+            }
+        } catch (Exception e) {
+            // should occur if we start the platform in headless mode, and should be ignored
         }
     }
 
