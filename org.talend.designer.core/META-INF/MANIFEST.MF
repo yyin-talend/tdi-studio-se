@@ -31,7 +31,9 @@ Require-Bundle: org.eclipse.core.expressions,
  com.ibm.icu
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
-Export-Package: org.talend.designer.core.model.components,
+Export-Package: org.talend.designer.core,
+ org.talend.designer.core.model.components,
  org.talend.designer.core.ui,
- org.talend.designer.core.ui.editor
+ org.talend.designer.core.ui.editor,
+ org.talend.designer.core.ui.editor.process
 Bundle-Vendor: .Talend SA.
