@@ -1,0 +1,42 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	java.util.List
+	java.util.Map
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode) codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
+String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
+boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
+List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
+
+%>
+java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+String connectionString_<%=cid%> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
+<%
+for (int i = 0; i < spArgs.size(); i++) {
+	if (i < spArgs.size() - 1) {
+		%>?,<%
+	} else {
+		%>?<%
+	}
+}
+%>)}");
+
+java.sql.Date tmpDate_<%=cid%>;
+String tmpString_<%=cid%>;
