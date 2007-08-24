@@ -30,6 +30,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.codegen.jet.JETException;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -275,8 +276,7 @@ public class CodeGenerator implements ICodeGenerator {
                 codeGenArgument.setContextName(designerContext.getName());
                 codeGenArgument.setCurrentProjectName(currentProjectName);
                 codeGenArgument.setJobName(jobName);
-                codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                        ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+                codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
 
                 JetBean jetBean = initializeJetBean(codeGenArgument);
 
@@ -352,8 +352,7 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setJobName(jobName);
         codeGenArgument.setCheckingSyntax(checkingSyntax);
         codeGenArgument.setIncomingName(incomingName);
-        codeGenArgument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+        codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
@@ -371,6 +370,18 @@ public class CodeGenerator implements ICodeGenerator {
             throw new CodeGeneratorException(e);
         }
         return content;
+    }
+
+    private boolean getRunInMultiThread() {
+        //this preferencestore initialize epic preferencestore
+        //and the epic's preferencestore initializer instanciate swt objects !
+        //so in headless mode, we'll always use MultiThreading by default        
+        if (PlatformUI.isWorkbenchRunning()) {
+            return CorePlugin.getDefault().getPreferenceStore()
+                    .getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -516,8 +527,7 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setJobName(jobName);
         argument.setCheckingSyntax(checkingSyntax);
         argument.setIncomingName(incomingName);
-        argument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+        argument.setIsRunInMultiThread(getRunInMultiThread());
 
         JetBean jetBean = initializeJetBean(argument);
 
@@ -565,8 +575,7 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setContextName(contextName);
         argument.setJobName(jobName);
         argument.setCheckingSyntax(checkingSyntax);
-        argument.setIsRunInMultiThread(CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+        argument.setIsRunInMultiThread(getRunInMultiThread());
         JetBean jetBean = initializeJetBean(argument);
 
         StringBuffer content = new StringBuffer();
