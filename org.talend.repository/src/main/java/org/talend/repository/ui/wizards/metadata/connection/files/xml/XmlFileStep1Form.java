@@ -148,7 +148,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         if (getConnection().getXmlFilePath() != null) {
             fileFieldXml.setText(getConnection().getXmlFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
             // init the fileViewer
-            this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+            valid = this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
             checkFieldsValue();
         }
 
@@ -169,6 +169,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      * 
      */
+    @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
         // fileFieldXsd.setReadOnly(isReadOnly());
@@ -183,6 +184,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * 
      * @see org.talend.repository.ui.swt.utils.AbstractForm#addFields()
      */
+    @Override
     protected void addFields() {
 
         // Group File Location
@@ -242,7 +244,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     treePopulator.setLimit(Integer.valueOf(str));
                 }
 
-                treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                valid = treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
 
             }
@@ -286,12 +288,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         addUtilsButtonListeners();
     }
 
+    @Override
     protected void addUtilsButtonListeners() {
 
         if (!isInWizard()) {
             // Event cancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -299,11 +303,12 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         }
     }
 
-    boolean valid;
+    boolean valid = true;
 
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
 
         // fileFieldXsd : Event modifyText
@@ -329,8 +334,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                     String str;
-                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                            guessedCharset.displayName()));
+                    in = new BufferedReader(new InputStreamReader(
+                            new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) { //$NON-NLS-1$
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$"; //$NON-NLS-1$
@@ -389,6 +394,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         // The fields
         if (fileFieldXml.getText() == "") { //$NON-NLS-1$
@@ -409,6 +415,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (isReadOnly() != readOnly) {
