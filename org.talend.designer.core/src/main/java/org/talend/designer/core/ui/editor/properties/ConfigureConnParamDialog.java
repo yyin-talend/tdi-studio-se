@@ -32,21 +32,29 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -61,15 +69,15 @@ public class ConfigureConnParamDialog extends Dialog {
 
     private static final String CONTEXT_WITH = Messages.getString("ConfigureConnParamDialog.ContextText"); //$NON-NLS-1$
 
-    private static final int LABEL_DEFAULT_X = 53;
+    private static final int LABEL_DEFAULT_X = 103;
 
     private static final int DEFAULT_HEIGHT = 13;
 
-    private ConnectionParameters parameters;
+    private final ConnectionParameters parameters;
 
     private static IContextManager contextManager;
 
-    private Map<EConnectionParameterName, String> pvValues = new HashMap<EConnectionParameterName, String>();
+    private final Map<EConnectionParameterName, String> pvValues = new HashMap<EConnectionParameterName, String>();
 
     /**
      * qzhang ConfigureConnParamDialog constructor comment.
@@ -87,6 +95,9 @@ public class ConfigureConnParamDialog extends Dialog {
         pvValues.put(EConnectionParameterName.SERVER_NAME, parameters.getHost());
         pvValues.put(EConnectionParameterName.USERNAME, parameters.getUserName());
         pvValues.put(EConnectionParameterName.SID, parameters.getDbName());
+        pvValues.put(EConnectionParameterName.FILE, parameters.getFilename());
+        pvValues.put(EConnectionParameterName.DIRECTORY, parameters.getDirectory());
+
         ConfigureConnParamDialog.contextManager = contextManager;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.DIALOG_TRIM);
     }
@@ -148,7 +159,7 @@ public class ConfigureConnParamDialog extends Dialog {
         return mainComposite;
     }
 
-    private List<Text> allParamText = new ArrayList<Text>();
+    private final List<Text> allParamText = new ArrayList<Text>();
 
     /**
      * qzhang Comment method "addComponents".
@@ -158,12 +169,240 @@ public class ConfigureConnParamDialog extends Dialog {
     private void addComponents(IContext defaultContext) {
         for (EConnectionParameterName key : EConnectionParameterName.values()) {
             if (parameters.getRepositoryNameParaName().get(key.getName()) != null) {
-                createOneComponent(key, defaultContext);
+                if (key.equals(EConnectionParameterName.FILE)) {
+                    createFileComponent(key, defaultContext);
+                } else if (key.equals(EConnectionParameterName.DIRECTORY)) {
+                    createDirectoryComponent(key, defaultContext);
+                } else {
+                    createTextComponent(key, defaultContext);
+                }
             }
         }
     }
 
-    private void createOneComponent(EConnectionParameterName key, IContext defaultContext) {
+    /**
+     * qiang.zhang Comment method "createDirectoryComponent".
+     * 
+     * @param key
+     * @param defaultContext
+     */
+    private void createDirectoryComponent(EConnectionParameterName key, IContext defaultContext) {
+        GridLayout gridLayout;
+        GridData gridData;
+        Composite hostComposite = new Composite(mainComposite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.verticalSpacing = 2;
+        gridLayout.marginTop = 5;
+        gridLayout.marginBottom = 2;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hostComposite.setLayout(gridLayout);
+        hostComposite.setLayoutData(gridData);
+        Label hostLabel = new Label(hostComposite, SWT.NONE);
+        hostLabel.setText(key.getDisplayName() + ":");
+        GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+
+        Composite fileComposite = new Composite(hostComposite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginTop = 0;
+        gridLayout.marginBottom = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        fileComposite.setLayout(gridLayout);
+        fileComposite.setLayoutData(gridData);
+
+        final Text host = new Text(fileComposite, SWT.BORDER);
+        host.setText(pvValues.get(key));
+        if (host.getText().trim().length() == 0) {
+            host.setBackground(ColorConstants.red);
+            host.redraw();
+        }
+        // GridDataFactory.swtDefaults().hint(TEXT_DEFAULT_X, DEFAULT_HEIGHT).applyTo(host);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        host.setLayoutData(gridData);
+        Button button = new Button(fileComposite, SWT.PUSH);
+        button.setText("...");
+        button.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent e) {
+                DirectoryDialog dialog = new DirectoryDialog(mainComposite.getShell(), SWT.NONE);
+                String path = PathExtractor.extractPath(host.getText());
+                dialog.setFilterPath(PathUtils.getOSPath(path));
+                String file = dialog.open();
+                if (file != null) {
+                    if (!file.equals("")) {
+                        host.setText(PathUtils.getPortablePath(file));
+                    }
+                }
+            }
+
+        });
+
+        final Text hostText = new Text(hostComposite, SWT.NONE);
+        hostText.setEditable(false);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hostText.setLayoutData(gridData);
+        hostText.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
+        host.setData(TEXT_CONTROL, hostText);
+        host.setData(key);
+        allParamText.add(host);
+        host.addModifyListener(new ModifyListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                if (host.getText().trim().length() == 0) {
+                    host.setBackground(ColorConstants.red);
+                    host.redraw();
+                } else {
+                    host.setBackground(ColorConstants.white);
+                    host.redraw();
+                }
+                resetValues(host, hostText);
+
+            }
+        });
+    }
+
+    /**
+     * qiang.zhang Comment method "createFileComponent".
+     * 
+     * @param key
+     * @param defaultContext
+     */
+    private void createFileComponent(EConnectionParameterName key, IContext defaultContext) {
+        GridLayout gridLayout;
+        GridData gridData;
+        Composite hostComposite = new Composite(mainComposite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.verticalSpacing = 2;
+        gridLayout.marginTop = 5;
+        gridLayout.marginBottom = 2;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hostComposite.setLayout(gridLayout);
+        hostComposite.setLayoutData(gridData);
+        Label hostLabel = new Label(hostComposite, SWT.NONE);
+        hostLabel.setText(key.getDisplayName() + ":");
+        GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+
+        Composite fileComposite = new Composite(hostComposite, SWT.NONE);
+        gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginTop = 0;
+        gridLayout.marginBottom = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        fileComposite.setLayout(gridLayout);
+        fileComposite.setLayoutData(gridData);
+
+        final Text host = new Text(fileComposite, SWT.BORDER);
+        host.setText(pvValues.get(key));
+        if (host.getText().trim().length() == 0) {
+            host.setBackground(ColorConstants.red);
+            host.redraw();
+        }
+        // GridDataFactory.swtDefaults().hint(TEXT_DEFAULT_X, DEFAULT_HEIGHT).applyTo(host);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        host.setLayoutData(gridData);
+        Button button = new Button(fileComposite, SWT.PUSH);
+        button.setText("...");
+        button.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(mainComposite.getShell(), SWT.NONE);
+                String path = PathExtractor.extractPath(host.getText());
+                dialog.setFileName(PathUtils.getOSPath(path));
+                String file = dialog.open();
+                if (file != null) {
+                    if (!file.equals("")) {
+                        host.setText(PathUtils.getPortablePath(file));
+                    }
+                }
+            }
+
+        });
+
+        final Text hostText = new Text(hostComposite, SWT.NONE);
+        hostText.setEditable(false);
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hostText.setLayoutData(gridData);
+        hostText.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
+        host.setData(TEXT_CONTROL, hostText);
+        host.setData(key);
+        allParamText.add(host);
+        host.addModifyListener(new ModifyListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                if (host.getText().trim().length() == 0) {
+                    host.setBackground(ColorConstants.red);
+                    host.redraw();
+                } else {
+                    host.setBackground(ColorConstants.white);
+                    host.redraw();
+                }
+                resetValues(host, hostText);
+
+            }
+        });
+    }
+
+    private void createTextComponent(EConnectionParameterName key, IContext defaultContext) {
         GridLayout gridLayout;
         GridData gridData;
         Composite hostComposite = new Composite(mainComposite, SWT.NONE);
@@ -293,6 +532,10 @@ public class ConfigureConnParamDialog extends Dialog {
             case USERNAME:
                 parameters.setUserName(value);
                 break;
+            case DIRECTORY:
+                parameters.setDirectory(value);
+            case FILE:
+                parameters.setFilename(value);
             default:
 
             }
