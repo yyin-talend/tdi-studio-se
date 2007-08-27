@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -43,7 +44,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.JavaTestShadow;
 import org.talend.expressionbuilder.test.shadow.ExpressionTestMain;
@@ -57,9 +57,9 @@ import org.talend.expressionbuilder.test.shadow.Variable;
  */
 public class TestComposite extends Composite {
 
-    private Table table;
+    private final Table table;
 
-    private Button buttonAddVar, buttonRemoveVar;
+    private final Button buttonAddVar, buttonRemoveVar;
 
     private final TableViewer variableTableViewer;
 
@@ -67,13 +67,13 @@ public class TestComposite extends Composite {
 
     private final Button clearButton;
 
-    private final Text testResultText;
+    private final StyledText testResultText;
 
     private static final String NAME_PROPERTY = "Name"; //$NON-NLS-1$
 
     private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
-    private JavaTestShadow shadow;
+    private final JavaTestShadow shadow;
 
     /**
      * Create the composite
@@ -174,7 +174,7 @@ public class TestComposite extends Composite {
         valueColumn.setWidth(100);
         valueColumn.setText(Messages.getString("TestComposite.value")); //$NON-NLS-1$
 
-        testResultText = new Text(sashForm, SWT.MULTI | SWT.BORDER | SWT.WRAP);
+        testResultText = new StyledText(sashForm, SWT.MULTI | SWT.BORDER | SWT.WRAP);
 
         Composite buttonPart = new Composite(tablePart, SWT.NONE);
         buttonPart.setLayout(new GridLayout(2, false));
@@ -226,7 +226,7 @@ public class TestComposite extends Composite {
                 if (!selection.isEmpty() && selection instanceof StructuredSelection) {
                     Object[] vars = ((StructuredSelection) selection).toArray();
                     for (Object var : vars) {
-                        list.remove((Variable) var);
+                        list.remove(var);
                         variableTableViewer.refresh();
                     }
                 } else if (!list.isEmpty()) {
@@ -265,6 +265,7 @@ public class TestComposite extends Composite {
 
     }
 
+    @Override
     public void dispose() {
         super.dispose();
     }
@@ -278,6 +279,7 @@ public class TestComposite extends Composite {
         shadow.stop();
     }
 
+    @Override
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
     }

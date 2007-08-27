@@ -22,12 +22,15 @@
 package org.talend.expressionbuilder.test.shadow;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.process.IContext;
@@ -57,14 +60,14 @@ public class ExpressionTestMain {
 
     private IProcess expressionBuilderTestProcess;
 
-    private Text text;
+    private final StyledText text;
 
     private Process process;
 
     /**
      * yzhang TestProcess constructor comment.
      */
-    public ExpressionTestMain(Function function, Text resultText) {
+    public ExpressionTestMain(Function function, StyledText resultText) {
         text = resultText;
 
         if (function != null) {
@@ -156,6 +159,10 @@ public class ExpressionTestMain {
                     testResult.append(String.valueOf(buffer, 0, i));
                 }
                 text.setText(testResult.toString());
+                Color red = new Color(text.getDisplay(), new RGB(255, 0, 0));
+                StyleRange style = new StyleRange(0, testResult.length(), red, null, SWT.NORMAL);
+                text.setStyleRange(style);
+
             }
         } catch (IOException e) {
             RuntimeExceptionHandler.process(e);
