@@ -25,8 +25,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Display;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -75,10 +76,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
-        FontData fontDataArray[] = JFaceResources.getDefaultFont().getFontData();
-        FontData fontData = fontDataArray[0];
-        fontData.setHeight(9);
-        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, fontData.toString());
+        Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
+        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData().toString());
 
     }
 

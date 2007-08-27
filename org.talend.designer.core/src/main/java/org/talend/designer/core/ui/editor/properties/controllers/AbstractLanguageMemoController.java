@@ -27,9 +27,11 @@ import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -41,8 +43,10 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -86,7 +90,11 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+
+                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                FontData fontData = new FontData(fontType);
+                Font font = new Font(parent.getDisplay(), fontData);
                 colorText.setFont(font);
                 return colorText;
             }
@@ -181,7 +189,11 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 public Control createControl(final Composite parent, final int style) {
                     ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                     ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                    Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+
+                    IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                    FontData fontData = new FontData(fontType);
+                    Font font = new Font(parent.getDisplay(), fontData);
                     colorText.setFont(font);
                     return colorText;
                 }
