@@ -185,6 +185,7 @@
 	}else{ //isRunInMultiThread
 %>
 	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
+	int exitCode=0;
 	try {
 <%
    		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
@@ -201,6 +202,7 @@
 %>
 	} catch(TalendException e) {
 		status="failure";
+		exitCode=1;
 		e.printStackTrace();
 	} finally {
 <%
@@ -224,6 +226,7 @@
     if(!(isRunInMultiThread 
     	&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1)){
 %>
+		System.exit(exitCode);
 	}
 <%
 	}
