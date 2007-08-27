@@ -23,6 +23,8 @@ package org.talend.sqlbuilder.util;
 
 import java.util.Hashtable;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -85,6 +87,8 @@ public class ConnectionParameters {
     private String datasource;
 
     private String filename;
+
+    private String directory;
 
     private String repositoryName;
 
@@ -212,6 +216,12 @@ public class ConnectionParameters {
      */
     public void setFilename(String filename) {
         this.filename = TextUtil.removeQuots(filename);
+        if (filename != null && !"".equals(this.filename)) {
+            IPath path = new Path(this.filename);
+            path = path.removeFileExtension();
+            this.dbName = path.segment(path.segmentCount() - 1);
+            this.datasource = this.dbName;
+        }
     }
 
     /**
@@ -415,8 +425,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
-                getFilename(), getDatasource());
+        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
+                getDbName(), getFilename(), getDatasource());
         return url;
 
     }
@@ -581,14 +591,35 @@ public class ConnectionParameters {
         this.fieldType = fieldType;
     }
 
-    
     public String getSelectDBTable() {
         return this.selectDBTable;
     }
 
-    
     public void setSelectDBTable(String selectDBTable) {
         this.selectDBTable = selectDBTable;
+    }
+
+    /**
+     * Getter for directory.
+     * 
+     * @return the directory
+     */
+    public String getDirectory() {
+        return this.directory;
+    }
+
+    /**
+     * Sets the directory.
+     * 
+     * @param directory the directory to set
+     */
+    public void setDirectory(String directory) {
+        this.directory = TextUtil.removeQuots(directory);
+        // if (directory != null && !"".equals(this.directory)) {
+        // IPath path = new Path(this.directory);
+        // this.dbName = path.segment(path.segmentCount() - 1);
+        // this.datasource = this.dbName;
+        // }
     }
 
 }

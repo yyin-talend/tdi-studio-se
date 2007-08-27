@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
@@ -75,7 +73,6 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepository
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.ui.AbstractSQLEditorComposite;
-import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.TextUtil;
@@ -435,7 +432,7 @@ public class SQLBuilderRepositoryNodeManager {
                 }
                 if (tableFromDB != null) {
                     List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, tableFromDB);
-                    fixedColumns(columnsFromDB, (List<MetadataColumn>) metadataTable.getColumns());
+                    fixedColumns(columnsFromDB, metadataTable.getColumns());
                 }
                 // for (MetadataColumn metadataColumn : (List<MetadataColumn>) metadataTable.getColumns()) {
                 // modifyOneColumnFromDB(iMetadataConnection, tablesFromDB, metadataColumn);
@@ -574,13 +571,14 @@ public class SQLBuilderRepositoryNodeManager {
 
         } else {
             if (parameters != null) {
-                parameters.setConnectionComment(managerConnection.getMessageException());
+                parameters.setConnectionComment(managerConnection.getMessageException() == null ? ""
+                        : managerConnection.getMessageException());
             }
         }
         DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -636,6 +634,7 @@ public class SQLBuilderRepositoryNodeManager {
         }
 
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+        connection.setFileFieldName(parameters.getFilename());
         connection.setDatabaseType(parameters.getDbType());
         connection.setUsername(parameters.getUserName());
         connection.setPort(parameters.getPort());
@@ -743,9 +742,9 @@ public class SQLBuilderRepositoryNodeManager {
      * @return dbMetaData DatabaseMetaData .
      */
     public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
-                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema());
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
+                iMetadataConnection.getUsername(), iMetadataConnection.getPassword(),
+                iMetadataConnection.getDatabase(), iMetadataConnection.getSchema());
         DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn);
         return dbMetaData;
     }
@@ -786,7 +785,7 @@ public class SQLBuilderRepositoryNodeManager {
             query3.setLabel(query.getLabel());
             query3.setValue(query.getValue());
 
-            Connection connection = (Connection) item.getConnection();
+            Connection connection = item.getConnection();
             QueriesConnection queriesConnection = connection.getQueries();
             if (queriesConnection == null) {
                 QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
@@ -797,7 +796,8 @@ public class SQLBuilderRepositoryNodeManager {
                 List<Query> queries = queriesConnection.getQuery();
                 boolean isModify = false;
                 for (Query query2 : queries) {
-                    if (oldQuery != null && (query2.getLabel().equals(oldQuery)) || query2.getLabel().equals(query3.getLabel())) {
+                    if (oldQuery != null && (query2.getLabel().equals(oldQuery))
+                            || query2.getLabel().equals(query3.getLabel())) {
                         query2.setComment(query3.getComment());
                         query2.setId(query3.getId());
                         query2.setValue(query3.getValue());
@@ -821,7 +821,7 @@ public class SQLBuilderRepositoryNodeManager {
         saveEMFQuery(repositoryNode.getObject().getId(), query, oldQuery);
         DatabaseConnectionItem item = getItem(repositoryNode);
         if (query != null) {
-            Connection connection = (Connection) item.getConnection();
+            Connection connection = item.getConnection();
             QueriesConnection queriesConnection = connection.getQueries();
             if (queriesConnection == null) {
                 QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
@@ -1095,7 +1095,8 @@ public class SQLBuilderRepositoryNodeManager {
                             iMetadataConnection, table.getSourceName());
                     for (MetadataColumn emfcolumn : (List<MetadataColumn>) table.getColumns()) {
                         for (MetadataColumn column : returnCols) {
-                            if (emfcolumn.getLabel().equals(col.getLabel()) && column.getLabel().equals(col.getOriginalField())) {
+                            if (emfcolumn.getLabel().equals(col.getLabel())
+                                    && column.getLabel().equals(col.getOriginalField())) {
                                 emfCols.add(emfcolumn);
                                 dbCols.add(column);
                             }
@@ -1181,10 +1182,12 @@ public class SQLBuilderRepositoryNodeManager {
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {
             return false;
         }
-        if (info.getComment() != null && info.getComment().length() != 0 && !info.getComment().equals(column.getComment())) {
+        if (info.getComment() != null && info.getComment().length() != 0
+                && !info.getComment().equals(column.getComment())) {
             return false;
         }
-        if (column.getComment() != null && column.getComment().length() != 0 && !column.getComment().equals(info.getComment())) {
+        if (column.getComment() != null && column.getComment().length() != 0
+                && !column.getComment().equals(info.getComment())) {
             return false;
         }
 
