@@ -61,6 +61,16 @@ if (metadata != null) {
 	}
 	
 	%>
+	
+	int nb_line_<%=cid%> = 0;
+	int nb_line_update_<%=cid%> = 0;
+	int nb_line_inserted_<%=cid%> = 0;
+	int nb_line_deleted_<%=cid%> = 0;
+	
+	int deletedCount_<%=cid%>=0;
+	int updatedCount_<%=cid%>=0;
+	int insertedCount_<%=cid%>=0;
+	
 	java.lang.Class.forName(<%=driverClass%>);
 	String connectionString_<%=cid%> = <%=jdbcUrl%>;
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
@@ -70,7 +80,7 @@ if (metadata != null) {
 	if (clearTable.equals("true")) {
 		%>
 		java.sql.Statement statementClear_<%=cid%> = connection_<%=cid%>.createStatement();
-		statementClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
+		deletedCount_<%=cid%> = deletedCount_<%=cid%> + statementClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
 		<%
 	}
 	
@@ -308,15 +318,8 @@ if (metadata != null) {
 			connection_<%=cid%>.setAutoCommit(false);
 			<%
 		}
-		
-		%>
-		int nb_line_<%=cid%> = 0;
-		int nb_line_updated_<%=cid%> = 0;
-		int nb_line_inserted_<%=cid%> = 0;
-		int nb_line_deleted_<%=cid%> = 0;
-		
-		<%
+
 	}
 }
 %>
-int deletedCount_<%=cid%>=0;
+

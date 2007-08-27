@@ -344,8 +344,7 @@ if(incomingConnName != null && columnList != null){
 		}
 	%>
 try{
-    statement_<%=cid %>.executeUpdate();
-    nb_line_inserted_<%=cid%>++;
+    insertedCount_<%=cid%> = insertedCount_<%=cid%> + statement_<%=cid %>.executeUpdate();
 }catch(Exception e)
 {
     <%  if (dieOnError.equals("true")) { %>
@@ -386,8 +385,7 @@ try{
 
 	%>
     try{
-    statement_<%=cid %>.executeUpdate();
-    nb_line_updated_<%=cid%> ++;
+    updatedCount_<%=cid%> = updatedCount_<%=cid%> + statement_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -443,8 +441,7 @@ try{
 			}
 			%>
             try{
-    			statementUpdate_<%=cid %>.executeUpdate();
-    			nb_line_updated_<%=cid%> ++;
+    			updatedCount_<%=cid%> = updatedCount_<%=cid%> + statementUpdate_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -466,8 +463,7 @@ try{
 			}
 			%>
             try{
-			statementInsert_<%=cid %>.executeUpdate();
-			nb_line_inserted_<%=cid%>++;
+			insertedCount_<%=cid%> = insertedCount_<%=cid%> + statementInsert_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -511,10 +507,9 @@ try{
 		}
 	%>
 	
-	int updateCount_<%=cid%> = -1;
     try
     {
-        updateCount_<%=cid%>=statementUpdate_<%=cid %>.executeUpdate();
+        updatedCount_<%=cid%>= updatedCount_<%=cid%> + statementUpdate_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -523,8 +518,7 @@ try{
             System.err.print(e.getMessage());
         <% } %>
     }
-	if(updateCount_<%=cid%> == 0)
-	{
+
 		<%
 		int counter = 1;
 		
@@ -539,9 +533,7 @@ try{
 		}
 		%>
         try{
-    	statementInsert_<%=cid %>.executeUpdate();
-    	
-    	nb_line_inserted_<%=cid%>++;  
+    		insertedCount_<%=cid%> = insertedCount_<%=cid%> + statementInsert_<%=cid %>.executeUpdate(); 
         }catch(Exception e)
         {
             <%  if (dieOnError.equals("true")) { %>
@@ -550,11 +542,7 @@ try{
                 System.err.print(e.getMessage());
             <% } %>
         }
-	}
-	else
-	{
-		nb_line_updated_<%=cid%> ++;			
-	}
+
 
 <%
 	
@@ -574,7 +562,7 @@ try{
 		}
 	%>
     try{
-        deletedCount_<%=cid%> = statement_<%=cid %>.executeUpdate();
+        deletedCount_<%=cid%> = deletedCount_<%=cid%> + statement_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -594,7 +582,7 @@ if (commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
 	connection_<%=cid%>.commit();
 	commitCounter_<%=cid%>=0;
 }
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
+
 	<%
 	}
 }

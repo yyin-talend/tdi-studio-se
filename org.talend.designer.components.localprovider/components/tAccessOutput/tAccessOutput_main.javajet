@@ -18,6 +18,8 @@ imports="
 "
 %>
 
+
+
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -27,7 +29,10 @@ imports="
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
+%>
+
+
+<%	
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
             
@@ -344,8 +349,7 @@ if(incomingConnName != null && columnList != null){
 		}
 	%>
 try{
-pstmt_<%=cid %>.executeUpdate();
-nb_line_inserted_<%=cid%>++;
+	insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 }catch(Exception e)
 {
     <%  if (dieOnError.equals("true")) { %>
@@ -386,8 +390,7 @@ nb_line_inserted_<%=cid%>++;
 
 	%>
     try{
-    pstmt_<%=cid %>.executeUpdate();
-    nb_line_update_<%=cid%> ++;
+    	updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -443,8 +446,7 @@ nb_line_inserted_<%=cid%>++;
 			}
 			%>
             try{
-			pstmtUpdate_<%=cid %>.executeUpdate();
-			nb_line_update_<%=cid%> ++;
+				updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -466,8 +468,7 @@ nb_line_inserted_<%=cid%>++;
 			}
 			%>
             try{
-    			pstmtInsert_<%=cid %>.executeUpdate();
-    			nb_line_inserted_<%=cid%>++;
+    			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -510,9 +511,9 @@ nb_line_inserted_<%=cid%>++;
 			}
 		}
 	%>
-     int updateCount_<%=cid%>=-1;
+
          try{
-	           updateCount_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
+	           updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
            }catch(Exception e)
            {
                <%  if (dieOnError.equals("true")) { %>
@@ -522,8 +523,6 @@ nb_line_inserted_<%=cid%>++;
                <% } %>
            }
 		
-		if(updateCount_<%=cid%> == 0)
-		{
     		<%
     		int counter = 1;
     		
@@ -538,8 +537,7 @@ nb_line_inserted_<%=cid%>++;
     		}
     		%>
             try{
-    		pstmtInsert_<%=cid %>.executeUpdate();
-    		nb_line_inserted_<%=cid%>++;	
+    			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();	
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -548,13 +546,7 @@ nb_line_inserted_<%=cid%>++;
                 System.err.print(e.getMessage());
                 <% } %>
             }
-		}
-		else
-		{
-			nb_line_update_<%=cid%> ++;
-		}
 		
-
 <%
 	
 	}else if (dataAction.equals("DELETE")){
@@ -573,7 +565,7 @@ nb_line_inserted_<%=cid%>++;
 		}
 	%>
     try{
-        deletedCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+        deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e){
         <%  if (dieOnError.equals("true")) { %>
         throw(e);
@@ -592,11 +584,8 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 
 	conn_<%=cid%>.commit();
 	
-	commitCounter_<%=cid%>=0;
-	
+	commitCounter_<%=cid%>=0;	
 }	
-	
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	<%
 	}
 }
