@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.FontData;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -39,51 +41,45 @@ import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = DesignerPlugin.getDefault()
-				.getPreferenceStore();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+     */
+    @Override
+    public void initializeDefaultPreferences() {
+        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
-		store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL,
-				"__UNIQUE_NAME__"); //$NON-NLS-1$
-		store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT,
-				"<b>__UNIQUE_NAME__</b><br>__COMMENT__"); //$NON-NLS-1$
-		store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
-		store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
-		store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE,
-				FlyoutPaletteComposite.STATE_PINNED_OPEN);
-		store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
-				Platform.getLocation().toOSString());
-		store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, true);
-		store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL, "__UNIQUE_NAME__"); //$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT, "<b>__UNIQUE_NAME__</b><br>__COMMENT__"); //$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
+        store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
+        store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
+        store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, true);
+        store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
 
-		// defaults for the stats preferences for java
-		store.setDefault(ECodeLanguage.JAVA.toString() + "_"
-				+ EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-		store.setDefault(ECodeLanguage.JAVA.toString() + "_"
-				+ EParameterName.CATCH_REALTIME_STATS.getName(), false);
-		store.setDefault(ECodeLanguage.JAVA.toString() + "_"
-				+ EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
-		store.setDefault(ECodeLanguage.JAVA.toString() + "_"
-				+ EParameterName.CATCH_USER_ERRORS.getName(), true);
-		store.setDefault(ECodeLanguage.JAVA.toString() + "_"
-				+ EParameterName.CATCH_USER_WARNING.getName(), true);
+        // defaults for the stats preferences for java
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(),
+                EmfComponent.BUILTIN);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
-		// defaults for the stats preferences for perl
-		store.setDefault(ECodeLanguage.PERL.toString() + "_"
-				+ EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-		store.setDefault(ECodeLanguage.PERL.toString() + "_"
-				+ EParameterName.CATCH_REALTIME_STATS.getName(), false);
-		store.setDefault(ECodeLanguage.PERL.toString() + "_"
-				+ EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
-		store.setDefault(ECodeLanguage.PERL.toString() + "_"
-				+ EParameterName.CATCH_USER_ERRORS.getName(), true);
-		store.setDefault(ECodeLanguage.PERL.toString() + "_"
-				+ EParameterName.CATCH_USER_WARNING.getName(), true);
-	}
+        // defaults for the stats preferences for perl
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(),
+                EmfComponent.BUILTIN);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_REALTIME_STATS.getName(), false);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_RUNTIME_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
+
+        FontData fontDataArray[] = JFaceResources.getDefaultFont().getFontData();
+        FontData fontData = fontDataArray[0];
+        fontData.setHeight(9);
+        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, fontData.toString());
+
+    }
 
 }

@@ -23,10 +23,7 @@ package org.talend.designer.core.ui.preferences;
 
 import org.eclipse.gmf.runtime.common.ui.preferences.AbstractPreferencePage;
 import org.eclipse.gmf.runtime.common.ui.preferences.FontFieldEditor;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -123,18 +120,4 @@ public class PropertiesPreferencePage extends AbstractPreferencePage {
         // do nothing.
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performDefaults()
-     */
-    @Override
-    protected void performDefaults() {
-
-        FontData fontDataArray[] = JFaceResources.getDefaultFont().getFontData();
-        FontData fontData = fontDataArray[0];
-        fontData.setHeight(9);
-        PreferenceConverter.setDefault(getPreferenceStore(), TalendDesignerPrefConstants.MEMO_TEXT_FONT, fontData);
-
-    }
 }
