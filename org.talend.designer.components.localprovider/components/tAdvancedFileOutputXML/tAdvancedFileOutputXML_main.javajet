@@ -470,38 +470,43 @@ out_<%=cid%>.newLine();
 	String split = ElementParameterParser.getValue(node, "__SPLIT__");
 	if(split.equals("true")){
 		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-%>currentRowCount_<%=cid %>++;
-
+%>
+currentRowCount_<%=cid %>++;
 if(currentRowCount_<%=cid %> == <%=ElementParameterParser.getValue(node, "__SPLIT_EVERY__") %>){
-	
 <%
 	for(int i = group - 1; i >=0; i--){
-%>	out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
-
-	out_<%=cid%>.newLine();
-		
-<%
-}
-%><%
-	for(int i = rootTags.size() - 1; i >= 0; i--){
-%>	out_<%=cid%>.write("<%for(int j = 0; j < i; j++){%>  <%}%></<%=rootTags.get(i).get("TAG") %>>");
-
-	out_<%=cid%>.newLine();
-	
+%>	
+	out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
+	out_<%=cid%>.newLine();	
 <%
 	}
-%>	out_<%=cid %>.close();
-	
-	currentFileCount_<%=cid %>++;
-	
-	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
-	
-	out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
-
+	for(int i = rootTags.size() - 1; i >= 0; i--){
+%>	
+	out_<%=cid%>.write("<%for(int j = 0; j < i; j++){%>  <%}%></<%=rootTags.get(i).get("TAG") %>>");
 	out_<%=cid%>.newLine();
-
-<%	String rmargin="";
+<%
+	}
+%>	
+	out_<%=cid %>.close();
+	currentFileCount_<%=cid %>++;
+<%
+if(fileName.startsWith("\"") && fileName.endsWith("\"")){
+	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>
+	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+		new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+}else{
+%>
+	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+		new java.io.FileOutputStream(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+}
+%>
+	out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
+	out_<%=cid%>.newLine();
+<%	
+	String rmargin="";
 	for (int i=0; i<rootTags.size(); i++){
 		Map<String, String> rootTag = rootTags.get(i);
 %>out_<%=cid%>.write("<%=rmargin %><<%=rootTag.get("TAG") %>>");

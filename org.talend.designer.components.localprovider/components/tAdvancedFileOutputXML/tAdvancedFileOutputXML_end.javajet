@@ -50,18 +50,25 @@ out_<%=cid%>.newLine();
 
 <%
 if(split.equals("true")){
-	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-%>if(currentRowCount_<%=cid %> == 0){
-	
-	java.io.File file_<%=cid %> = new java.io.File(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml");
-	
-	file_<%=cid %>.delete();
-	
-}
-
+	if(fileName.startsWith("\"") && fileName.endsWith("\"")){
+		String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>
+	if(currentRowCount_<%=cid %> == 0){
+		java.io.File file_<%=cid %> = new java.io.File(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml");
+    	file_<%=cid %>.delete();
+    }
 <%
-}%>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-
+	}else{
+%>
+	if(currentRowCount_<%=cid %> == 0){
+		java.io.File file_<%=cid %> = new java.io.File(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml");
+    	file_<%=cid %>.delete();
+    }
+<%
+	}
+}
+%>
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 	}else if(metadata!=null && rootTags.size() == 0){
 %>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

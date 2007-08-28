@@ -143,8 +143,9 @@ groupby_<%=cid %>[<%=i %>][1] = "</<%=groupby[i][2] %>>";
 
 <%
 if (!split.equals("true")) {
-%>java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
-
+%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
+	new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
 <%
 	for(int i = 0; i < headers;i++){
 %>	out_<%=cid%>.write(headers_<%=cid %>[<%=i %>]);
@@ -154,14 +155,24 @@ if (!split.equals("true")) {
 <%
 	}
 }else{
-	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-%>int currentRowCount_<%=cid %> = 0;
-
+%>
+int currentRowCount_<%=cid %> = 0;
 int currentFileCount_<%=cid %> = 0;
-
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
-
 <%
+	if(fileName.startsWith("\"") && fileName.endsWith("\"")){
+		String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+	new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+	}else{
+%>
+String fn_<%=cid%> = <%=fileName%>;
+String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf(".xml"));
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+	new java.io.FileOutputStream(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+	}
 	for(int i = 0; i < headers;i++){%>
 
 	out_<%=cid%>.write(headers_<%=cid %>[<%=i %>]);

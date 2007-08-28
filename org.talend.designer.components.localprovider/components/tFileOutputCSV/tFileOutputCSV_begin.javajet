@@ -20,7 +20,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
      	String cid = node.getUniqueName();
-        String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
         String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
         String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
@@ -35,18 +35,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
  int splitEvery_<%=cid%> = <%=splitEvery %>;
  int splitedFileNo_<%=cid%> =0;
  int currentRow_<%=cid%> = 0;
- <%if(!split){%>
+<%
+ 	if(!split){
+%>
     com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                 new java.io.FileOutputStream(<%=filename %>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');  
                 java.io.File file<%=cid%>=new java.io.File(<%=filename%>);	
- <%}else{%>
+<%
+ 	}else{
+ 		if(filename.startsWith("\"") && filename.endsWith("\"")){
+%>
 	  com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                 new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
                 java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
- <%
- 		  }
- 		  List<IMetadataColumn> columns = metadata.getListColumns();
-    		int sizeColumns = columns.size();
+<%
+ 		}else{
+%>
+		String fn_<%=cid%> = <%=filename %>;
+		String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf("."));
+		String suffix_fn_<%=cid%>=fn_<%=cid%>.substring(fn_<%=cid%>.lastIndexOf("."),fn_<%=cid%>.length());
+	  	com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        	new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+        java.io.File file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);	  
+<%
+ 		}
+    }
+    List<IMetadataColumn> columns = metadata.getListColumns();
+    	int sizeColumns = columns.size();
    %>
    		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
    <% 		

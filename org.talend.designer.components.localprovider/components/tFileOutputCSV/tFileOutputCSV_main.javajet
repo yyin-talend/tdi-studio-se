@@ -95,25 +95,45 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
  					}
 %>}
- <%   			}
+<%   			}
  				} 
     			if(split){
- %>
- 				
- 					if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
- 						splitedFileNo_<%=cid%>++;
- 						CsvWriter<%=cid%>.close(); //close original outputStream
- 						CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
-                		//set header.
-                		<%if(isIncludeHeader&&!isAppend){
-                		%>
-                		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
-                		<%
-                		}
-                		 if(isIncludeHeader&&isAppend){
-                		 %>
-                		   file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);
+%>
+		if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
+			splitedFileNo_<%=cid%>++;
+			CsvWriter<%=cid%>.close(); 
+			//close original outputStream
+<%
+		if(filename.startsWith("\"") && filename.endsWith("\"")){
+%>
+			CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+    		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+<%
+ 		}else{
+%>
+			CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+    		new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
+<%
+ 		}
+%>
+    		//set header.
+<%
+		if(isIncludeHeader&&!isAppend){
+%>
+    		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+<%
+    	}
+    	if(isIncludeHeader&&isAppend){
+    		if(filename.startsWith("\"") && filename.endsWith("\"")){
+%>
+		   	file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);
+<%
+ 			}else{
+%>  
+			file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);
+<%
+			}
+%>
                 		    if(file<%=cid%>.length()==0) {
                 		    CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
                 		    }	  

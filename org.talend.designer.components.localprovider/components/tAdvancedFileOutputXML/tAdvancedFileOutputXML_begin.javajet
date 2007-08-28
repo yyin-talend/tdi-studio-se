@@ -23,7 +23,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null && rootTags.size() > 0) {
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
     String split = ElementParameterParser.getValue(node, "__SPLIT__");
     List<Map<String, String>> group_tree = 
     		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -55,34 +54,44 @@ boolean start_<%=cid %> = false;
 <%
 }
 if(!split.equals("true")){
-%>java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
-
-<%}else{
-%>int currentRowCount_<%=cid %> = 0;
-
-int currentFileCount_<%=cid %> = 0;
-
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
-
+%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
 <%
-}%>out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
-
+}else{
+%>
+int currentRowCount_<%=cid %> = 0;
+int currentFileCount_<%=cid %> = 0;
+<%
+	if(fileName.startsWith("\"") && fileName.endsWith("\"")){
+		String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+	new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+	}else{
+%>
+String fn_<%=cid%> = <%=fileName%>;
+String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf(".xml"));
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+	new java.io.FileOutputStream(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+<%
+	}
+}
+%>
+out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
 out_<%=cid%>.newLine();
-
 <%
 	for (int i=0; i<rootTags.size(); i++){
-		
 		Map<String, String> rootTag = rootTags.get(i);
-%>out_<%=cid%>.write("<%=margin %><<%=rootTag.get("TAG") %>>");
-
+%>
+out_<%=cid%>.write("<%=margin %><<%=rootTag.get("TAG") %>>");
 out_<%=cid%>.newLine();
 <%
 		margin+="  ";
 	}
-%><%
 	for(int i = 0; i < group; i++){
-%>groupby_<%=cid %>[<%=i %>][0] = "";
-
+%>
+groupby_<%=cid %>[<%=i %>][0] = "";
 groupby_<%=cid %>[<%=i %>][1] = "<%=margin %><%for(int ii=0; ii < i; ii++){%>  <%}%></<%=group_element[i] %>>";
 
 <%
