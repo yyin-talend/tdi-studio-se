@@ -12,18 +12,9 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
-
-        String pause = ElementParameterParser.getValue(node, "__PAUSE__");
+String pause = ElementParameterParser.getValue(node, "__PAUSE__");
 
 %>
     sleep <%=pause%>;
-<%
-    }
-}
-%>

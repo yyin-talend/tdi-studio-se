@@ -12,22 +12,17 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-	
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
+String cid = node.getUniqueName();
 
-        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-        String dbport = ElementParameterParser.getValue(node, "__PORT__");
-        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-        String dbuser = ElementParameterParser.getValue(node, "__USER__");
-        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
-        String encoding = ElementParameterParser.getValue(
-            node,
-            "__ENCODING__"
-        );
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
 %>
 use DBI;
 
@@ -56,9 +51,3 @@ our $dbh_<%=cid %> = DBI->connect(
         $sth->finish();
     }
 }
-
-<%
-    }
-}
-%>
-

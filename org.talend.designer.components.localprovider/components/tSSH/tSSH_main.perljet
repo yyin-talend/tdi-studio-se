@@ -11,27 +11,22 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
+String command = ElementParameterParser.getValue(
+    node,
+    "__COMMAND__"
+);
 
-        String command = ElementParameterParser.getValue(
-            node,
-            "__COMMAND__"
-        );
+String useTimeout = ElementParameterParser.getValue(
+    node,
+    "__USE_TIMEOUT__"
+);
 
-        String useTimeout = ElementParameterParser.getValue(
-            node,
-            "__USE_TIMEOUT__"
-        );
-
-        String timeout = ElementParameterParser.getValue(
-            node,
-            "__TIMEOUT__"
-        );
+String timeout = ElementParameterParser.getValue(
+    node,
+    "__TIMEOUT__"
+);
 %>
 {
 <%
@@ -65,7 +60,3 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     }
 %>
 }
-<%
-    }
-}
-%>

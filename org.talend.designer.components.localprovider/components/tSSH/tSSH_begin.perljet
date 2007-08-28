@@ -13,42 +13,37 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
+String host = ElementParameterParser.getValue(
+    node,
+    "__HOST__"
+);
 
-        String host = ElementParameterParser.getValue(
-            node,
-            "__HOST__"
-        );
+String port = ElementParameterParser.getValue(
+    node,
+    "__PORT__"
+);
 
-        String port = ElementParameterParser.getValue(
-            node,
-            "__PORT__"
-        );
+String user = ElementParameterParser.getValue(
+    node,
+    "__USER__"
+);
 
-        String user = ElementParameterParser.getValue(
-            node,
-            "__USER__"
-        );
+String authMethod = ElementParameterParser.getValue(
+    node,
+    "__AUTH_METHOD__"
+);
 
-        String authMethod = ElementParameterParser.getValue(
-            node,
-            "__AUTH_METHOD__"
-        );
+String privatekey = ElementParameterParser.getValue(
+    node,
+    "__PRIVATEKEY__"
+);
 
-        String privatekey = ElementParameterParser.getValue(
-            node,
-            "__PRIVATEKEY__"
-        );
-
-        String password = ElementParameterParser.getValue(
-            node,
-            "__PASSWORD__"
-        );
+String password = ElementParameterParser.getValue(
+    node,
+    "__PASSWORD__"
+);
 %>
 my $ssh_<%=cid%>;
 
@@ -100,7 +95,3 @@ $ssh_<%=cid%>->login(
 %>
 )
     or die 'failed to login';
-<%
-    }
-}
-%>

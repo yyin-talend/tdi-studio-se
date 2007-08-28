@@ -14,21 +14,17 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
+String cid = metadata.getTableName();
 
-        String host = ElementParameterParser.getValue(node, "__HOST__");
-        String username = ElementParameterParser.getValue(node, "__USERNAME__");
-        String password = ElementParameterParser.getValue(node, "__PASSWORD__");
-        String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
-        String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
-        String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String username = ElementParameterParser.getValue(node, "__USERNAME__");
+String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
+String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
+String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
 
-        String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
-        String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
+String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
 %>
 
 use Net::POP3;
@@ -119,7 +115,3 @@ my @files = ();
 for my $filename (@files) {
     $_globals{<%=cid %>}{CURRENT_FILE} = $filename;
     $_globals{<%=cid %>}{CURRENT_FILEPATH} = $desc_<%=cid%>{output_directory}.'/'.$filename;
-<%
-    }
-}
-%>

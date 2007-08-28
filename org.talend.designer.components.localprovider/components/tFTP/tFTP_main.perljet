@@ -1,22 +1,18 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-                java.util.Map
-	"
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 %>
 
 <%
@@ -24,10 +20,11 @@ String localdir    = ElementParameterParser.getValue(node, "__LOCALDIR__");
 String remotedir   = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 String action      = ElementParameterParser.getValue(node, "__ACTION__");
 
-List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
-
-// component id
-String cid = metadata.getTableName();
+List<Map<String, String>> files =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__FILES__"
+    );
 %>
 
 # keep all "my" variables local to the block, thus we can use several
@@ -140,8 +137,3 @@ else if (action.equals("rename")) {
 }
 %>
 } # block end
-
-<%
-		}
-	}
-%>

@@ -12,22 +12,18 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-   IMetadataTable metadata = metadatas.get(0);
-   if (metadata!=null) {
-       String cid = metadata.getTableName();
-       String server = ElementParameterParser.getValue(node, "__SERVER__");
-       String filename = ElementParameterParser.getValue(node, "__FILENAME__");
-       String dbname   = ElementParameterParser.getValue(node, "__DBNAME__");
-       String dbuser   = ElementParameterParser.getValue(node, "__USER__");
-       String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
-       String table    = ElementParameterParser.getValue(node, "__TABLE__");
-       String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
-       String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
-       String command       = ElementParameterParser.getValue(node, "__COMMAND__");
-       String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+String server = ElementParameterParser.getValue(node, "__SERVER__");
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+String dbname   = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser   = ElementParameterParser.getValue(node, "__USER__");
+String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
+String table    = ElementParameterParser.getValue(node, "__TABLE__");
+String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+String command       = ElementParameterParser.getValue(node, "__COMMAND__");
+String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 %>
 
 use talend::filesOp;
@@ -86,9 +82,4 @@ else {
         );
     }
 }
-
-<%
-    }
-}
-%>
 

@@ -13,10 +13,6 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
 %>
 
 <%
@@ -105,8 +101,3 @@ $msg->send(
 )
     or die('cannot send mail with attachment on '.$smtp_server);
 
-   
-<%
-		}
-	}
-%>

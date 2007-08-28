@@ -11,26 +11,21 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
+String message = ElementParameterParser.getValue(
+    node,
+    "__MESSAGE__"
+);
 
-        String message = ElementParameterParser.getValue(
-            node,
-            "__MESSAGE__"
-        );
+String priority = ElementParameterParser.getValue(
+    node,
+    "__PRIORITY__"
+);
 
-        String priority = ElementParameterParser.getValue(
-            node,
-            "__PRIORITY__"
-        );
+String code = ElementParameterParser.getValue(node, "__CODE__");
 
-        String code = ElementParameterParser.getValue(node, "__CODE__");
-
-        for (INode logCatcher : node.getProcess().getNodesOfType("tLogCatcher")) {
+for (INode logCatcher : node.getProcess().getNodesOfType("tLogCatcher")) {
 %>
 <%=logCatcher.getUniqueName()%>_subprocess(
     message => <%=message%>,
@@ -40,7 +35,5 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     priority => <%=priority%>,
 );
 <%
-        }
-    }
 }
 %>
