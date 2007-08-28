@@ -34,7 +34,7 @@ import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -43,6 +43,7 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -50,6 +51,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
@@ -64,7 +66,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * Stand alone Perl editor.<br/>
  * 
  */
-public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresher {
+public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements IUIRefresher {
 
     private RepositoryEditorInput rEditorInput;
 
@@ -85,6 +87,7 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
         return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable();
     }
 
+    @Override
     public void doSetInput(IEditorInput input) throws CoreException {
         // Lock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
@@ -96,7 +99,6 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
             FileEditorInput fileInput = (FileEditorInput) input;
             rEditorInput = new RepositoryEditorInput(fileInput.getFile(), rEditorInput.getItem());
         }
-        super.doSetInput(rEditorInput);
         try {
             // see bug 1321
             item = (RoutineItem) rEditorInput.getItem();
@@ -105,8 +107,9 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
                 repFactory.lock(item);
             }
         } catch (Exception e) {
-           ExceptionHandler.process(e);
+            ExceptionHandler.process(e);
         }
+        super.doSetInput(rEditorInput);
         setName();
     }
 
@@ -117,8 +120,44 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
         setPartName(labelProvider.getText(item.getProperty()));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#getTitleImage()
+     */
+    @Override
+    public Image getTitleImage() {
+        if (item != null) {
+            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+            ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+            return labelProvider.getImage(item.getProperty());
+        }
+        return super.getTitleImage();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.WorkbenchPart#getPartName()
+     */
+    @Override
+    public String getPartName() {
+        if (item != null) {
+            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+            ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+            return labelProvider.getText(item.getProperty());
+        }
+        return super.getPartName();
+    }
+
     @Override
     public void dispose() {
+        // remove the Runtines .java file in the .Java Project.
+        try {
+            rEditorInput.getFile().delete(true, null);
+        } catch (CoreException e1) {
+            RuntimeExceptionHandler.process(e1);
+        }
         super.dispose();
         // Unlock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
@@ -140,10 +179,12 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
         return propertyIsDirty || super.isDirty();
     }
 
+    @Override
     protected void editorSaved() {
 
     }
 
+    @Override
     public void doSave(final IProgressMonitor monitor) {
         EList adapters = item.getProperty().eAdapters();
         adapters.remove(dirtyListener);
@@ -169,8 +210,9 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
 
     private boolean propertyIsDirty;
 
-    private AdapterImpl dirtyListener = new AdapterImpl() {
+    private final AdapterImpl dirtyListener = new AdapterImpl() {
 
+        @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
@@ -215,7 +257,7 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
             RenameRefactoring ref = new JavaRenameRefactoring(processor);
             final PerformRefactoringOperation operation = new PerformRefactoringOperation(ref,
                     CheckConditionsOperation.ALL_CONDITIONS);
-            
+
             IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -232,7 +274,7 @@ public class StandAloneTalendJavaEditor extends JavaEditor implements IUIRefresh
 
                 }
             };
-            
+
             PlatformUI.getWorkbench().getProgressService().run(true, true, r);
             RefactoringStatus conditionStatus = operation.getConditionStatus();
             if (conditionStatus.hasError()) {
