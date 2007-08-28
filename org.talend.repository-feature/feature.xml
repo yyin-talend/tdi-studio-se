@@ -35,6 +35,11 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.log4j" version="1.2.8" match="equivalent"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="javax.wsdl15"/>
+      <import plugin="javax.xml.rpc"/>
+      <import plugin="javax.xml.soap"/>
+      <import plugin="org.apache.commons.discovery"/>
    </requires>
 
    <plugin
@@ -92,10 +97,11 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.rpc"
+         id="javax.servlet"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="javax.wsdl15"
@@ -103,6 +109,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="javax.xml.rpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
    <plugin
          id="javax.xml.soap"
@@ -115,12 +127,5 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>
