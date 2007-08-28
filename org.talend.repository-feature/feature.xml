@@ -34,7 +34,7 @@
       <import plugin="org.apache.axis"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.apache.jakarta_log4j" version="1.2.8" match="equivalent"/>
+      <import plugin="org.apache.log4j" version="1.2.8" match="equivalent"/>
    </requires>
 
    <plugin
@@ -58,13 +58,13 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.commons_logging"
+         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.jakarta_log4j"
+         id="org.apache.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
