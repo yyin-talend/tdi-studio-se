@@ -1,0 +1,174 @@
+<COMPONENT>
+	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A" STARTABLE="true">
+		<SIGNATURE/>
+	</HEADER>
+	<DOCUMENTATION>
+		<URL/>
+	</DOCUMENTATION>
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+		<CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+		<CONNECTOR CTYPE="REFERENCE"/>
+		<CONNECTOR CTYPE="RUN_OK"/>
+		<CONNECTOR CTYPE="RUN_ERROR"/>
+		<CONNECTOR CTYPE="RUN_IF"/>
+	</CONNECTORS>
+	<PARAMETERS>
+		<PARAMETER NAME="SERVERADDR" FIELD="TEXT" NUM_ROW="1" REQUIRED="true">
+			<DEFAULT>"localhost"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="PORT" FIELD="TEXT" NUM_ROW="1" REQUIRED="true">
+			<DEFAULT>"81"</DEFAULT>
+		</PARAMETER>		
+		<PARAMETER NAME="USERNAME" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"admin"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="PASSWORD" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"admin"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="VERSION" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"5.0.3"</DEFAULT>
+		</PARAMETER>								
+		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+			<ITEMS DEFAULT="OUTLOOK_PLUGIN">
+				<ITEM NAME="OUTLOOK_PLUGIN" VALUE="outlook"/>
+				<ITEM NAME="WORD_PLUGIN" VALUE="wordplugin"/>
+				<ITEM NAME="THUNDERBIRD_EXTENSION" VALUE="thunderbird"/>
+				<ITEM NAME="CUSTOMER_PORTAL" VALUE="customerportal"/>
+				<ITEM NAME="WEBFORM" VALUE="webforms"/>
+				<ITEM NAME="FIREFOX_EXTENSION" VALUE="firefox"/>
+			</ITEMS>
+		</PARAMETER>
+		<PARAMETER NAME="METHODNAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+			<ITEMS DEFAULT="loginToVtiger">
+				<ITEM NAME="loginToVtiger" VALUE="loginToVtiger" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="checkEmailPermission" VALUE="checkEmailPermission" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="checkContactPermission" VALUE="checkContactPermission" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="checkActivityPermission" VALUE="checkActivityPermission" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="searchContactsByEmail" VALUE="searchContactsByEmail" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="getContacts" VALUE="getContacts" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="getTasks" VALUE="getTasks" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="getClndr" VALUE="getClndr" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="get_contacts_columns" VALUE="get_contacts_columns" SHOW_IF="(MODULENAME=='WORD_PLUGIN')"/>
+				<ITEM NAME="get_accounts_columns" VALUE="get_accounts_columns" SHOW_IF="(MODULENAME=='WORD_PLUGIN')"/>
+				<ITEM NAME="get_leads_columns" VALUE="get_leads_columns" SHOW_IF="(MODULENAME=='WORD_PLUGIN')"/>
+				<ITEM NAME="get_user_columns" VALUE="get_user_columns" SHOW_IF="(MODULENAME=='WORD_PLUGIN')"/>
+				<ITEM NAME="get_tickets_columns" VALUE="get_tickets_columns" SHOW_IF="(MODULENAME=='WORD_PLUGIN')"/>
+				<ITEM NAME="checkContactPerm" VALUE="checkContactPerm" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="checkContactViewPerm" VALUE="checkContactViewPerm" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="checkLeadViewPerm" VALUE="checkLeadViewPerm" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="track_email" VALUE="track_email" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="get_tickets_list" VALUE="get_tickets_list" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_ticket_comments" VALUE="get_ticket_comments" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_combo_values" VALUE="get_combo_values" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_KBase_details" VALUE="get_KBase_details" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_ticket_creator" VALUE="get_ticket_creator" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_picklists" VALUE="get_picklists" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_ticket_attachments" VALUE="get_ticket_attachments" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_filecontent" VALUE="get_filecontent" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="get_version" VALUE="get_version" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="logintoVtigerCRM" VALUE="logintoVtigerCRM" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkLeadPermission" VALUE="checkLeadPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkContactPermission" VALUE="checkContactPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkAccountPermission" VALUE="checkAccountPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkTicketPermission" VALUE="checkTicketPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkVendorPermission" VALUE="checkVendorPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkProductPermission" VALUE="checkProductPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkNotePermission" VALUE="checkNotePermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkSitePermission" VALUE="checkSitePermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="checkRssPermission" VALUE="checkRssPermission" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+			</ITEMS>
+		</PARAMETER>
+		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="4" REQUIRED="true">
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='checkEmailPermission' or METHODNAME=='checkContactPermission' or METHODNAME=='checkActivityPermission' or METHODNAME=='loginToVtiger'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="((MODULENAME=='OUTLOOK_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION') and (METHODNAME=='searchContactsByEmail' or METHODNAME=='getContacts'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="firstname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="middlename" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="lastname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="birthdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="emailaddress" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="jobtitle" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="department" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="accountname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="officephone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="homephone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherphone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="fax" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mobile" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="asstname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="asstphone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="reportsto" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingstreet" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingcity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingstate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingzip" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingcountry" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherstreet" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="othercity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherstate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherzip" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="othercountry" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and METHODNAME=='getTasks')">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="subject" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="startdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="duedate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="status" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="priority" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="contactname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and METHODNAME=='getClndr')">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="subject" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="startdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="duedate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="location" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="contactname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>				
+			</TABLE>
+			<TABLE IF="(MODULENAME=='WORD_PLUGIN' and (METHODNAME=='get_contacts_columns' or METHODNAME=='get_accounts_columns' or METHODNAME=='get_leads_columns' or METHODNAME=='get_user_columns'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_Object"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='THUNDERBIRD_EXTENSION' and (METHODNAME=='checkContactPerm' or METHODNAME=='checkContactViewPerm' or METHODNAME=='checkLeadViewPerm' or METHODNAME=='track_email'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and (METHODNAME=='get_ticket_comments' or METHODNAME=='get_combo_values' or METHODNAME=='get_picklists' or METHODNAME=='get_tickets_list' or METHODNAME=='get_KBase_details' or METHODNAME=='get_ticket_creator' or METHODNAME=='get_filecontent'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_Object"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='get_ticket_creator')">
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>		
+			</TABLE>			
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and (METHODNAME=='checkLeadPermission' or METHODNAME=='checkContactPermission' or METHODNAME=='checkAccountPermission' or METHODNAME=='checkTicketPermission' or METHODNAME=='checkVendorPermission' or METHODNAME=='checkProductPermission' or METHODNAME=='checkNotePermission' or METHODNAME=='checkSitePermission' or METHODNAME=='checkRssPermission' or METHODNAME=='get_version' or METHODNAME=='logintoVtigerCRM'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="returnvalue" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+		</PARAMETER>
+						
+	</PARAMETERS>
+	<CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="VtigerCRM" MODULE="vtigercrm.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="false"/>
+			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="false"/>
+		</IMPORTS>
+	</CODEGENERATION>
+	<RETURNS>
+		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+	</RETURNS>
+</COMPONENT>

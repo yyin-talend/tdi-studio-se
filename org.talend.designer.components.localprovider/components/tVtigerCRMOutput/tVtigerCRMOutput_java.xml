@@ -1,0 +1,313 @@
+<COMPONENT>
+	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA" COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20070312A" STARTABLE="true">
+		<SIGNATURE/>
+	</HEADER>
+	<DOCUMENTATION>
+		<URL/>
+	</DOCUMENTATION>
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+		<CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+		<CONNECTOR CTYPE="REFERENCE"/>
+		<CONNECTOR CTYPE="RUN_OK"/>
+		<CONNECTOR CTYPE="RUN_ERROR"/>
+		<CONNECTOR CTYPE="RUN_IF"/>
+	</CONNECTORS>
+	<PARAMETERS>
+		<PARAMETER NAME="SERVERADDR" FIELD="TEXT" NUM_ROW="1" REQUIRED="true">
+			<DEFAULT>"localhost"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="PORT" FIELD="TEXT" NUM_ROW="1" REQUIRED="true">
+			<DEFAULT>"81"</DEFAULT>
+		</PARAMETER>		
+		<PARAMETER NAME="USERNAME" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"admin"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="PASSWORD" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"admin"</DEFAULT>
+		</PARAMETER>
+		<PARAMETER NAME="VERSION" FIELD="TEXT" NUM_ROW="2" REQUIRED="true">
+			<DEFAULT>"5.0.3"</DEFAULT>
+		</PARAMETER>								
+		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+			<ITEMS DEFAULT="OUTLOOK_PLUGIN">
+				<ITEM NAME="OUTLOOK_PLUGIN" VALUE="outlook"/>
+				<ITEM NAME="WORD_PLUGIN" VALUE="wordplugin"/>
+				<ITEM NAME="THUNDERBIRD_EXTENSION" VALUE="thunderbird"/>
+				<ITEM NAME="CUSTOMER_PORTAL" VALUE="customerportal"/>
+				<ITEM NAME="WEBFORM" VALUE="webforms"/>
+				<ITEM NAME="FIREFOX_EXTENSION" VALUE="firefox"/>
+			</ITEMS>
+		</PARAMETER>
+		<PARAMETER NAME="METHODNAME" FIELD="CLOSED_LIST" NUM_ROW="3" REQUIRED="true">
+			<ITEMS DEFAULT="LoginToVtiger">
+				<ITEM NAME="loginToVtiger" VALUE="loginToVtiger" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="addMessageToContact" VALUE="addMessageToContact" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="addEmailAttachment" VALUE="addEmailAttachment" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="addContacts" VALUE="addContacts" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="updateContacts" VALUE="updateContacts" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="deleteContacts" VALUE="deleteContacts" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="addTasks" VALUE="addTasks" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="updateTasks" VALUE="updateTasks" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="deleteTasks" VALUE="deleteTasks" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="addClndr" VALUE="addClndr" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="updateClndr" VALUE="updateClndr" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="deleteClndr" VALUE="deleteClndr" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
+				<ITEM NAME="create_session" VALUE="create_session" SHOW_IF="(MODULENAME=='WORD_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="end_session" VALUE="end_session" SHOW_IF="(MODULENAME=='WORD_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="addContact" VALUE="addContact" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="addLead" VALUE="addLead" SHOW_IF="(MODULENAME=='THUNDERBIRD_EXTENSION')"/>
+				<ITEM NAME="authenticate_user" VALUE="authenticate_user" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="change_password" VALUE="change_password" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="create_ticket" VALUE="create_ticket" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="save_faq_comment" VALUE="save_faq_comment" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="update_ticket_comment" VALUE="update_ticket_comment" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="close_current_ticket" VALUE="close_current_ticket" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="update_login_details" VALUE="update_login_details" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="send_mail_for_password" VALUE="send_mail_for_password" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="add_ticket_attachment" VALUE="add_ticket_attachment" SHOW_IF="(MODULENAME=='CUSTOMER_PORTAL')"/>
+				<ITEM NAME="create_lead_from_webform" VALUE="create_lead_from_webform" SHOW_IF="(MODULENAME=='WEBFORM' or MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_contact_from_webform" VALUE="create_contact_from_webform" SHOW_IF="(MODULENAME=='WEBFORM')"/>
+				<ITEM NAME="unsubscribe_email" VALUE="unsubscribe_email" SHOW_IF="(MODULENAME=='WEBFORM')"/>
+				<ITEM NAME="create_site_from_webform" VALUE="create_site_from_webform" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_rss_from_webform" VALUE="create_rss_from_webform" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_contacts" VALUE="create_contacts" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_account" VALUE="create_account" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_ticket_from_toolbar" VALUE="create_ticket_from_toolbar" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_vendor_from_webform" VALUE="create_vendor_from_webform" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_product_from_webform" VALUE="create_product_from_webform" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="create_note_from_webform" VALUE="create_note_from_webform" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+				<ITEM NAME="logintoVtigerCRM" VALUE="logintoVtigerCRM" SHOW_IF="(MODULENAME=='FIREFOX_EXTENSION')"/>
+			</ITEMS>
+		</PARAMETER>
+		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="4" REQUIRED="true">
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and METHODNAME=='loginToVtiger')">
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and METHODNAME=='addMessageToContact')">
+				<COLUMN KEY="false" LENGTH="255" NAME="contactid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="subject" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="body" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="datesent" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and METHODNAME=='addEmailAttachment')">
+				<COLUMN KEY="false" LENGTH="255" NAME="emailid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filedata" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filename" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filesize" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filetype" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='addContacts' or METHODNAME=='updateContacts'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="firstname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="middlename" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="lastname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="birthdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="emailaddress" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="jobtitle" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="department" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="accountname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="officephone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="homephone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherphone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="fax" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mobile" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="asstname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="asstphone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="reportsto" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingstreet" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingcity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingstate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingzip" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mailingcountry" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherstreet" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="othercity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherstate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="otherzip" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="othercountry" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='deleteContacts' or METHODNAME=='deleteTasks' or METHODNAME=='deleteClndr'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="crmid" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='addTasks' or METHODNAME=='updateTasks'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="subject" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="startdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="duedate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="status" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="priority" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="contactname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='OUTLOOK_PLUGIN' and (METHODNAME=='addClndr' or METHODNAME=='updateClndr'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="subject" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="startdate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="duedate" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="location" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="contactname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="((MODULENAME=='WORD_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION') and METHODNAME=='create_session')">
+			</TABLE>
+			<TABLE IF="((MODULENAME=='WORD_PLUGIN' or MODULENAME=='THUNDERBIRD_EXTENSION') and METHODNAME=='end_session')">
+			</TABLE>
+			<TABLE IF="(MODULENAME=='THUNDERBIRD_EXTENSION' and (METHODNAME=='addContact' or METHODNAME=='addLead'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="first_name" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="last_name" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="email_address" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="account_name" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="salutation" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="phone_mobile" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="reports_to" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_postalcode" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_country" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="alt_address_city" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="alt_address_street" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="alt_address_state" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="alt_address_postalcode" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="alt_address_country" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="office_phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="home_phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="fax" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="department" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='authenticate_user')">
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='change_password')">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="password" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='create_ticket')">
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="priority" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="severity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="parent_id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="product_id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="module" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='save_faq_comment')">
+				<COLUMN KEY="false" LENGTH="255" NAME="faqid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="comments" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='update_ticket_comment')">
+				<COLUMN KEY="false" LENGTH="255" NAME="ticketid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="ownerid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="comments" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='close_current_ticket')">
+				<COLUMN KEY="false" LENGTH="255" NAME="ticketid" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='update_login_details')">
+				<COLUMN KEY="false" LENGTH="255" NAME="id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="flag" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='send_mail_for_password')">
+				<COLUMN KEY="false" LENGTH="255" NAME="email" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='CUSTOMER_PORTAL' and METHODNAME=='add_ticket_attachment')">
+				<COLUMN KEY="false" LENGTH="255" NAME="ticketid" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filename" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filetype" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filesize" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="filecontents" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="((MODULENAME=='WEBFORM' or MODULENAME=='FIREFOX_EXTENSION') and (METHODNAME=='create_lead_from_webform' or METHODNAME=='create_contact_from_webform'))">
+				<COLUMN KEY="false" LENGTH="255" NAME="lastname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="email" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="company" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="country" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="assigned_user_id" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='WEBFORM' and METHODNAME=='unsubscribe_email')">
+				<COLUMN KEY="false" LENGTH="255" NAME="email_address" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_site_from_webform')">
+				<COLUMN KEY="false" LENGTH="255" NAME="portalname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="portalurl" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_rss_from_webform')">
+				<COLUMN KEY="false" LENGTH="255" NAME="rssurl" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_contacts')">
+				<COLUMN KEY="false" LENGTH="255" NAME="firstname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="lastname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="mobile" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="email" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="street" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="city" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="state" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="country" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="zipcode" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_account')">
+				<COLUMN KEY="false" LENGTH="255" NAME="accountname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="email" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_postalcode" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="primary_address_country" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_ticket_from_toolbar')">
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="priority" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="severity" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="category" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="user_name" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="parent_id" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="product_id" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_vendor_from_webform')">
+				<COLUMN KEY="false" LENGTH="255" NAME="vendorname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="email" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="phone" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="website" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_product_from_webform')">
+				<COLUMN KEY="false" LENGTH="255" NAME="productname" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="productcode" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="website" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='create_note_from_webform')">
+				<COLUMN KEY="false" LENGTH="255" NAME="title" NULLABLE="false" TYPE="id_String"/>
+				<COLUMN KEY="false" LENGTH="255" NAME="notecontent" NULLABLE="false" TYPE="id_String"/>
+			</TABLE>
+			<TABLE IF="(MODULENAME=='FIREFOX_EXTENSION' and METHODNAME=='logintoVtigerCRM')">
+			</TABLE>
+		</PARAMETER>				
+	</PARAMETERS>
+	<CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="VtigerCRM" MODULE="vtigercrm.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.5.1.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true"/>
+			<IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="false"/>
+			<IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="false"/>
+		</IMPORTS>
+	</CODEGENERATION>
+	<RETURNS>
+		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+	</RETURNS>
+</COMPONENT>

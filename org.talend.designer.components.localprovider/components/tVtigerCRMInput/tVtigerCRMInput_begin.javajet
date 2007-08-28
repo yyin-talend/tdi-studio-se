@@ -1,0 +1,86 @@
+<%@ jet 
+imports="
+    	org.talend.core.model.process.INode  
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable        
+        java.util.List		
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String serverAddr = ElementParameterParser.getValue(node, "__SERVERADDR__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String userName = ElementParameterParser.getValue(node, "__USERNAME__");
+String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+String version = ElementParameterParser.getValue(node, "__VERSION__");
+String method = ElementParameterParser.getValue(node, "__METHODNAME__");
+String outgoingConnName = null;
+List<? extends IConnection> conns = node.getOutgoingSortedConnections();
+if(conns != null && conns.size() > 0) {
+    IConnection conn = conns.get(0);
+    outgoingConnName = conn.getName();
+}
+List<IMetadataColumn> metadataColumns = null;
+List<IMetadataTable> metadataTables = node.getMetadataList();
+%>
+org.talend.vtiger.IVtigerManager vtigerManager_<%=cid%> = new org.talend.vtiger.VtigerManager(<%=userName%>, <%=password%>, <%=version%>, <%=serverAddr%>, <%=port%>);
+
+<%
+if(metadataTables != null && metadataTables.size() > 0) {
+    IMetadataTable metadataTable = metadataTables.get(0);
+    if(metadataTable != null) {
+        metadataColumns = metadataTable.getListColumns();
+        if(method.equals("searchContactsByEmail") || method.equals("getContacts") || method.equals("getTasks") || method.equals("getClndr") || method.equals("get_KBase_details")) {
+            if(method.equals("searchContactsByEmail") || method.equals("getContacts")) {
+                %>
+                org.talend.vtiger.module.outlook.Contactdetail [] details_<%=cid%> =  vtigerManager_<%=cid%>.<%=method%>();
+                <%
+            } else if(method.equals("getTasks")) {
+                %>
+                org.talend.vtiger.module.outlook.Taskdetail [] details_<%=cid%> = vtigerManager_<%=cid%>.<%=method%>();                
+                <%
+            } else if(method.equals("getClndr")) {
+                %>
+                org.talend.vtiger.module.outlook.Clndrdetail [] details_<%=cid%> = vtigerManager_<%=cid%>.<%=method%>();
+                <%
+            } else if(method.equals("get_KBase_details")) {
+                %>
+                org.talend.vtiger.module.customerportal.Kbase_detail [] details_<%=cid%> = vtigerManager_<%=cid%>.<%=method%>();
+                <%
+            }
+            %>
+            for(int i = 0 ; i < details_<%=cid%>.length ; i++) {
+                <%
+                for(IMetadataColumn metadataColumn : metadataColumns) {
+                    if(method.equals("searchContactsByEmail") || method.equals("getContacts") || method.equals("getTasks") || method.equals("getClndr")) {
+                        %>
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i].get<%=metadataColumn.getLabel().substring(0,1).toUpperCase()%><%=metadataColumn.getLabel().substring(1)%>();
+                        <%
+                    } else if(method.equals("get_KBase_details")) {
+                        %>
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i];
+                        <%
+                    }
+                }
+                %>
+            //}
+            <%
+        } else {
+            for(IMetadataColumn metadataColumn : metadataColumns) {
+                %>
+                <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = vtigerManager_<%=cid%>.<%=method%>();
+                <%
+            }
+        }
+    }
+}    
+%>
+
+
+
+
