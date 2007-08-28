@@ -47,6 +47,17 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
 %>
+
+int nb_line_<%=cid%> = 0;
+int nb_line_update_<%=cid%> = 0;
+int nb_line_inserted_<%=cid%> = 0;
+int nb_line_deleted_<%=cid%> = 0;
+
+int deletedCount_<%=cid%>=0;
+int updatedCount_<%=cid%>=0;
+int insertedCount_<%=cid%>=0;
+
+
 java.lang.Class.forName("com.ncr.teradata.TeraDriver");
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>;
 <%
@@ -92,7 +103,7 @@ if(tableAction.equals("true"))
 {
 %>
 java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
+deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
 <%	
 }
 %>
@@ -359,12 +370,6 @@ int commitCounter_<%=cid%> = 0;
 conn_<%=cid%>.setAutoCommit(false);
 <%
 	}
-%>
-int nb_line_<%=cid%> = 0;
-int nb_line_update_<%=cid%> = 0;
-int nb_line_inserted_<%=cid%> = 0;
-int nb_line_deleted_<%=cid%> = 0;
-<%	
 }
 %>
-int deletedCount_<%=cid%>=0;
+

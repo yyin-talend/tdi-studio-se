@@ -344,8 +344,7 @@ if(incomingConnName != null && columnList != null){
 		}
 	%>
 try{
-    pstmt_<%=cid %>.executeUpdate();
-    nb_line_inserted_<%=cid%>++;
+    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 }catch(Exception e)
 {
     <%  if (dieOnError.equals("true")) { %>
@@ -386,8 +385,7 @@ try{
 
 	%>
     try{
-        pstmt_<%=cid %>.executeUpdate();
-        nb_line_update_<%=cid%> ++;
+        updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -443,8 +441,7 @@ try{
 			}
 			%>
             try{
-			pstmtUpdate_<%=cid %>.executeUpdate();
-			nb_line_update_<%=cid%> ++;
+			updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -466,8 +463,7 @@ try{
 			}
 			%>
             try{
-    			pstmtInsert_<%=cid %>.executeUpdate();
-    			nb_line_inserted_<%=cid%>++;
+    			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 <%  if (dieOnError.equals("true")) { %>
@@ -511,9 +507,8 @@ try{
 		}
 	%>
 	
-	int updateCount_<%=cid%> = -1;
     try{
-        updateCount_<%=cid%> =pstmtUpdate_<%=cid %>.executeUpdate();
+        updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -522,8 +517,6 @@ try{
         System.err.print(e.getMessage());
         <% } %>
     }
-	if(updateCount_<%=cid%> == 0)
-	{
 		<%
 		int counter = 1;
 		
@@ -538,9 +531,7 @@ try{
 		}
 		%>
         try{
-    	pstmtInsert_<%=cid %>.executeUpdate();
-    	
-    	nb_line_inserted_<%=cid%>++;  
+    	insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
             <%  if (dieOnError.equals("true")) { %>
@@ -549,11 +540,7 @@ try{
             System.err.print(e.getMessage());
             <% } %>
         }
-	}
-	else
-	{
-		nb_line_update_<%=cid%> ++;		
-	}
+
 
 <%
 	
@@ -573,7 +560,7 @@ try{
 		}
 	%>
     try{
-        deletedCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+        deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
     }catch(Exception e)
     {
         <%  if (dieOnError.equals("true")) { %>
@@ -596,7 +583,6 @@ if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
 	commitCounter_<%=cid%>=0;		
 	
 }	
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	<%
 	}
 }

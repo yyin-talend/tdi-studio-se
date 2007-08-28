@@ -83,6 +83,15 @@ if(!dataAction.equals("INSERT"))
 }
 %> 
 
+int nb_line_<%=cid%> = 0;
+int nb_line_update_<%=cid%> = 0;
+int nb_line_inserted_<%=cid%> = 0;
+int nb_line_deleted_<%=cid%> = 0;
+
+int deletedCount_<%=cid%>=0;
+int updatedCount_<%=cid%>=0;
+int insertedCount_<%=cid%>=0;
+
 java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
 calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
 long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
@@ -120,7 +129,7 @@ if(tableAction.equals("true"))
 {
 %>
 java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-stmtClear_<%=cid%>.executeUpdate("TRUNCATE TABLE `" + <%=tableName%>+"`");
+deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from `" + <%=tableName%>+"`");
 <%	
 }
 %>
@@ -403,13 +412,5 @@ if(conn_<%=cid%>.getAutoCommit())
 }
 	<%
 	}
-	%>
-	
-int nb_line_<%=cid%> = 0;
-int nb_line_update_<%=cid%> = 0;
-int nb_line_inserted_<%=cid%> = 0;
-int nb_line_deleted_<%=cid%> = 0;
-<%
 }
 %>
-int deletedCount_<%=cid%>=0;
