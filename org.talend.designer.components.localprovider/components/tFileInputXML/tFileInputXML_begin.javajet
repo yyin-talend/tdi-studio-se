@@ -61,11 +61,30 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%	
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
-					if(!query.startsWith("\"@")){
-						query = "\"ns:"+query.substring(1);
+					if(query.startsWith("\"") && query.endsWith("\"")){
+						query = query.substring(1, query.length() - 1);
 					}
+					if (!query.startsWith("@")) {
+	                    if (query.indexOf("@") < 0 && query.indexOf("/") < 0) {
+	                        query = "ns:" + query;
+	                    } else {
+	                        String[] s = query.split("/");
+	                        java.lang.StringBuffer result = new java.lang.StringBuffer();
+	                        for (String tmp : s) {
+	                            if (result.length() > 0) {
+	                                result.append("/");
+	                            }
+	                            if (tmp.length() > 0 && !tmp.startsWith(".") && !tmp.startsWith("@")) {
+	                                result.append("ns:").append(tmp);
+	                            } else {
+	                                result.append(tmp);
+	                            }
+	                        }
+	                        query = result.toString();
+	                    }
+	                }
 %>
-	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(<%=query%>);
+	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath("<%=query%>");
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);  
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 	if (str_<%=cid %> != null ) {  
