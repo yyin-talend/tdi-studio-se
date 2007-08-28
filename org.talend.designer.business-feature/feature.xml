@@ -77,7 +77,6 @@
       <import plugin="org.eclipse.gmf.runtime.diagram.ui.resources.editor" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.gmf.runtime.draw2d.ui" version="1.0.0" match="compatible"/>
-      <import plugin="org.apache.batik" version="1.6.0" match="compatible"/>
       <import plugin="org.eclipse.emf.ecore.xmi" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.edit" version="2.2.0" match="compatible"/>
       <import plugin="org.eclipse.emf.workspace" version="1.0.0" match="compatible"/>
@@ -97,6 +96,17 @@
       <import plugin="org.eclipse.emf.validation" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.ui.console" version="3.1.100" match="compatible"/>
       <import plugin="org.eclipse.emf.validation.ui" version="1.0.0" match="compatible"/>
+      <import plugin="org.apache.batik.bridge"/>
+      <import plugin="org.apache.batik.css"/>
+      <import plugin="org.apache.batik.dom"/>
+      <import plugin="org.apache.batik.dom.svg"/>
+      <import plugin="org.apache.batik.ext.awt"/>
+      <import plugin="org.apache.batik.parser"/>
+      <import plugin="org.apache.batik.svggen"/>
+      <import plugin="org.apache.batik.transcoder"/>
+      <import plugin="org.apache.batik.util"/>
+      <import plugin="org.apache.batik.util.gui"/>
+      <import plugin="org.apache.batik.xml"/>
    </requires>
 
    <plugin
@@ -535,17 +545,88 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.batik"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.talend.designer.business.diagram.nl"
          download-size="0"
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.bridge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.css"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.dom.svg"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.ext.awt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.parser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.svggen"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.transcoder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.util.gui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.batik.xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
