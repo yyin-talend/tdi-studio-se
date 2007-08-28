@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.FileLocator;
@@ -96,20 +97,20 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
             generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                    tracePort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
+                    tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
+            resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem, escapeSpace(contextName),
                     escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
+            List<URL> srcList = getSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)));
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
 
-            resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
+            resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
 
-            addContextScripts(process[i], exportChoice.get(ExportChoice.needContext));
+            addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
-            boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
+            boolean needChildren = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob)) && BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
             List<URL> childrenList = addChildrenResources(processItem, needChildren, process[i], exportChoice);
             resources.addAll(childrenList);
             process[i].addResources(resources);
@@ -125,14 +126,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine));
+        List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSystemRoutine)));
         rootResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine));
+        List<URL> userRoutineList = getUserRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needUserRoutine)));
         rootResource.addResources(userRoutineList);
 
         // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(exportChoice.get(ExportChoice.needTalendLibraries), process);
+        List<URL> talendLibraries = getExternalLibraries(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needTalendLibraries)), process);
         rootResource.addResources(talendLibraries);
 
         return list;

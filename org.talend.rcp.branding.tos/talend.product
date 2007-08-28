@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.1"?>
 
-<product name="%productName" id="org.talend.rcp.branding.tos.product" application="org.talend.rcp.branding.tos.application" useFeatures="true">
+<product name="%productName" id="org.talend.rcp.branding.tos.product" application="org.talend.rcp.branding.tos.application" useFeatures="false">
 
    <aboutInfo>
       <image path="icons/about.gif"/>
