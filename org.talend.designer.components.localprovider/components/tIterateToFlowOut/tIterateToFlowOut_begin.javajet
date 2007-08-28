@@ -1,0 +1,45 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String destination = ElementParameterParser.getValue(
+    node,
+    "__DESTINATION__"
+);
+
+List<Map<String, String>> mapping =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__MAPPING__"
+    );
+%>
+ThenRunStruct<%=destination%> struct_<%=cid%> = new ThenRunStruct<%=destination%>();
+<%
+for (Map<String, String> mappingColumn : mapping) {
+%>
+struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = (String)<%=mappingColumn.get("VALUE")%>;
+<%
+}
+%>
+if(globalMap.containsKey("<%=destination %>")){
+	java.util.List<ThenRunStruct<%=destination%>> list_<%=cid%> = (java.util.List<ThenRunStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
+	list_<%=cid%>.add(struct_<%=cid%>);
+}else{
+	java.util.List<ThenRunStruct<%=destination%>> list_<%=cid%> = new java.util.ArrayList<ThenRunStruct<%=destination%>>();
+	list_<%=cid%>.add(struct_<%=cid%>);
+	globalMap.put("<%=destination %>",list_<%=cid%>);
+}
