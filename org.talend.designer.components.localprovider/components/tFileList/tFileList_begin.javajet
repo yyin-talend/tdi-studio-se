@@ -7,17 +7,12 @@
 		java.util.List
 	" 
 %>
-
+//tFileList_Begin
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-            boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
+    boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
 %>
 
         String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
@@ -97,8 +92,3 @@
             
             globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
             globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
-        
-<%
-		}
-	}
-%>
