@@ -50,15 +50,15 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
-    private Map<String, Object> oldValues;
+    private final Map<String, Object> oldValues;
 
-    private Element elem;
+    private final Element elem;
 
-    private Connection connection;
+    private final Connection connection;
 
-    private String value;
+    private final String value;
 
-    private String propertyName;
+    private final String propertyName;
 
     private String oldMetadata;
 
@@ -121,9 +121,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
         }
 
+        Node node = (Node) elem;
+        String schemTypeModel = (String) node.getElementParameter(EParameterName.SCHEMA_TYPE.getName()).getValue();
+        boolean repositoryModel = true;
+        if (EmfComponent.BUILTIN.equals(schemTypeModel) && EmfComponent.BUILTIN.equals(value)) {
+            repositoryModel = false;
+        }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
-                param.setRepositoryValueUsed(false);
+                param.setRepositoryValueUsed(repositoryModel);
             }
         } else {
             oldValues.clear();
@@ -131,7 +137,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
                         && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                    Object objectValue = (Object) RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
@@ -215,7 +221,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = getFirstRepositoryTable(param, value);
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
-                                IMetadataTable table = (IMetadataTable) repositoryTableMap.get(repositoryTable);
+                                IMetadataTable table = repositoryTableMap.get(repositoryTable);
                                 if (table != null) {
                                     table = table.clone();
                                     table.setTableName(node.getMetadataList().get(0).getTableName());
@@ -324,7 +330,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
-                    Object objectValue = (Object) RepositoryToComponentProperty.getValue(connection, repositoryValue);
+                    Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         elem.setPropertyValue(param.getName(), oldValues.get(param.getName()));
                         param.setRepositoryValueUsed(false);

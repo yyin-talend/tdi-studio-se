@@ -33,7 +33,6 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
@@ -50,11 +49,11 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
  */
 public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
-    private String propName;
+    private final String propName;
 
-    private Object oldPropValue, newPropValue;
+    private final Object oldPropValue, newPropValue;
 
-    private Node node;
+    private final Node node;
 
     public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue,
             IMetadataTable newOutputMetadata) {
@@ -69,6 +68,16 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
+        boolean repositoryModel = true;
+        String propertyTypeModel = (String) node.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getValue();
+
+        if (EmfComponent.BUILTIN.equals(newPropValue) && EmfComponent.BUILTIN.equals(propertyTypeModel)) {
+            repositoryModel = false;
+        }
+        for (IElementParameter p : node.getElementParameters()) {
+            p.setRepositoryValueUsed(repositoryModel);
+        }
+
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
                 if (parameter.getField() == EParameterFieldType.TABLE) {
@@ -102,6 +111,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         super.undo();
     }
 
+    @Override
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$

@@ -263,9 +263,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         // writable cell
                         column.setCellEditor(textCellEditor);
                     }
-                    if (i != 0) {
-                        column.setCellEditor(textCellEditor);
-                    }
+
                 }
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
 
