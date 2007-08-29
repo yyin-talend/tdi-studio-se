@@ -277,22 +277,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         Control cLayout = dField.getLayoutControl();
         CCombo combo = (CCombo) dField.getControl();
         FormData data;
-        String[] originalList = param.getListItemsDisplayName();
-        List<String> stringToDisplay = new ArrayList<String>();
-        String[] itemsShowIf = param.getListItemsShowIf();
-        if (itemsShowIf != null) {
-            String[] itemsNotShowIf = param.getListItemsNotShowIf();
-            for (int i = 0; i < originalList.length; i++) {
-                if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
-                    stringToDisplay.add(originalList[i]);
-                }
-            }
-        } else {
-            for (int i = 0; i < originalList.length; i++) {
-                stringToDisplay.add(originalList[i]);
-            }
-        }
-        combo.setItems(stringToDisplay.toArray(new String[0]));
+        combo.setItems(getListToDisplay(param));
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
@@ -584,7 +569,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 }
                 nbInList++;
             }
-            String[] paramItems = param.getListItemsDisplayName();
+            String[] paramItems = getListToDisplay(param);
             String[] comboItems = combo.getItems();
 
             if (!Arrays.equals(paramItems, comboItems)) {
@@ -592,5 +577,24 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
             combo.setText(strValue);
         }
+    }
+    
+    private String[] getListToDisplay(IElementParameter param) {
+        String[] originalList = param.getListItemsDisplayName();
+        List<String> stringToDisplay = new ArrayList<String>();
+        String[] itemsShowIf = param.getListItemsShowIf();
+        if (itemsShowIf != null) {
+            String[] itemsNotShowIf = param.getListItemsNotShowIf();
+            for (int i = 0; i < originalList.length; i++) {
+                if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
+                    stringToDisplay.add(originalList[i]);
+                }
+            }
+        } else {
+            for (int i = 0; i < originalList.length; i++) {
+                stringToDisplay.add(originalList[i]);
+            }
+        }
+        return stringToDisplay.toArray(new String[0]);
     }
 }
