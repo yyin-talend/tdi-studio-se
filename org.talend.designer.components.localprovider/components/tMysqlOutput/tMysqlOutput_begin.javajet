@@ -305,7 +305,7 @@ for(Column colStmt:stmtStructure){
 			suffix = "";
 		}
 		for(Column replacement:replacedColumns){
-			insertColName.append(replacement.getName()+suffix);
+			insertColName.append("`"+replacement.getName()+"`"+suffix);
 			insertValueStmt.append(replacement.getSqlStmt()+suffix);
 			if(!colStmt.getColumn().isKey()){
 				if(!firstNoneKey){
@@ -313,7 +313,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstNoneKey = false;
 				}
-				updateSetStmt.append(replacement.getName());
+				updateSetStmt.append("`"+replacement.getName()+"`");
 				updateSetStmt.append(replacement.getSqlStmt());
 			}else{
 				if(!firstKey){
@@ -321,7 +321,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstKey = false;
 				}
-				updateWhereStmt.append(replacement.getName());
+				updateWhereStmt.append("`"+replacement.getName()+"`");
 				updateWhereStmt.append(replacement.getSqlStmt());
 			}
 			counterReplace++;
@@ -331,12 +331,12 @@ for(Column colStmt:stmtStructure){
 			suffix = "";
 		}
 		if(colStmt.isAddCol()){
-			insertColName.append(colStmt.getDBName()+suffix);
+			insertColName.append("`"+colStmt.getDBName()+"`"+suffix);
 			insertValueStmt.append(colStmt.getSqlStmt()+suffix);
-			updateSetStmt.append(colStmt.getDBName());
+			updateSetStmt.append("`"+colStmt.getDBName()+"`");
 			updateSetStmt.append(colStmt.getSqlStmt()+suffix);
 		}else{
-			insertColName.append(colStmt.getDBName()+suffix);
+			insertColName.append("`"+colStmt.getDBName()+"`"+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
 			if(!colStmt.getColumn().isKey()){
 				if(!firstNoneKey){
@@ -344,7 +344,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstNoneKey = false;
 				}
-				updateSetStmt.append(colStmt.getDBName());
+				updateSetStmt.append("`"+colStmt.getDBName()+"`");
 				updateSetStmt.append(colStmt.getSqlStmt());
 			}else{
 				if(!firstKey){
@@ -352,7 +352,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstKey = false;
 				}
-				updateWhereStmt.append(colStmt.getDBName());
+				updateWhereStmt.append("`"+colStmt.getDBName()+"`");
 				updateWhereStmt.append(colStmt.getSqlStmt());
 			}
 		}

@@ -188,7 +188,7 @@ class Transfer{
 			 	for(IMetadataColumn column:columnList){	
 			 	//column name
 			 	   if(dbType.equals("MySQL")){
-			 			sql=sql+column.getOriginalDbColumnName()+" ";
+			 			sql=sql+"`"+column.getOriginalDbColumnName()+"` ";
 			 		}else{
 			 			sql=sql+"\\\""+column.getOriginalDbColumnName()+"\\\" ";
 			 		}
