@@ -66,292 +66,307 @@ import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
  */
 public class RowGeneratorUI {
 
-    private SashForm datasFlowViewSashForm;
+	private SashForm datasFlowViewSashForm;
 
-    private RowGeneratorManager generatorManager;
+	private RowGeneratorManager generatorManager;
 
-    private Composite rowGenUIParent;
+	private Composite rowGenUIParent;
 
-    private Thread threadToEvaluatePerformance;
+	private Thread threadToEvaluatePerformance;
 
-    protected long lastDragAndMoveTime;
+	protected long lastDragAndMoveTime;
 
-    private SashForm mainSashForm;
+	private SashForm mainSashForm;
 
-    private TabFolderEditors tabFolderEditors;
+	private TabFolderEditors tabFolderEditors;
 
-    private boolean inputReadOnly = false;
+	private boolean inputReadOnly = false;
 
-    private MetadataTableEditorViewExt dataTableView;
+	private MetadataTableEditorViewExt dataTableView;
 
-    private MetadataTableEditorExt metadataTableEditor;
+	private MetadataTableEditorExt metadataTableEditor;
 
-    private RowGeneratorComponent externalNode;
+	private RowGeneratorComponent externalNode;
 
-    private FunctionManagerExt functionManager;
+	private FunctionManagerExt functionManager;
 
-    public RowGeneratorUI(Composite parent, RowGeneratorManager generatorManager) {
-        super();
-        this.generatorManager = generatorManager;
-        this.generatorManager.getUiManager().setGeneratorUI(this);
-        externalNode = generatorManager.getRowGeneratorComponent();
-        // add listeners.
-        this.rowGenUIParent = parent;
-        functionManager = new FunctionManagerExt();
-    }
+	public RowGeneratorUI(Composite parent, RowGeneratorManager generatorManager) {
+		super();
+		this.generatorManager = generatorManager;
+		this.generatorManager.getUiManager().setGeneratorUI(this);
+		externalNode = generatorManager.getRowGeneratorComponent();
+		// add listeners.
+		this.rowGenUIParent = parent;
+		functionManager = new FunctionManagerExt();
+	}
 
-    /**
-     * qzhang Comment method "init".
-     */
-    public void init() {
-        final UIManager uiManager = generatorManager.getUiManager();
-        final ExternalRowGeneratorUiProperties uiProperties = uiManager.getUiProperties();
-        addParentListeners(uiManager, uiProperties);
+	/**
+	 * qzhang Comment method "init".
+	 */
+	public void init() {
+		final UIManager uiManager = generatorManager.getUiManager();
+		final ExternalRowGeneratorUiProperties uiProperties = uiManager
+				.getUiProperties();
+		addParentListeners(uiManager, uiProperties);
 
-        final Display display = rowGenUIParent.getDisplay();
+		final Display display = rowGenUIParent.getDisplay();
 
-        GridLayout parentLayout = new GridLayout(1, true);
-        rowGenUIParent.setLayout(parentLayout);
+		GridLayout parentLayout = new GridLayout(1, true);
+		rowGenUIParent.setLayout(parentLayout);
 
-        addKeyListener(uiManager, display);
+		addKeyListener(uiManager, display);
 
-        mainSashForm = new SashForm(rowGenUIParent, SWT.SMOOTH | SWT.VERTICAL);
-        GridData mainSashFormGridData = new GridData(GridData.FILL_BOTH);
-        mainSashForm.setLayoutData(mainSashFormGridData);
+		mainSashForm = new SashForm(rowGenUIParent, SWT.SMOOTH | SWT.VERTICAL);
+		GridData mainSashFormGridData = new GridData(GridData.FILL_BOTH);
+		mainSashForm.setLayoutData(mainSashFormGridData);
 
-        datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
-        datasFlowViewSashForm.setLayoutData(mainSashFormGridData);
-        datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
+		datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH
+				| SWT.HORIZONTAL | SWT.BORDER);
+		datasFlowViewSashForm.setLayoutData(mainSashFormGridData);
+		datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        initBackgroundComponents();
+		initBackgroundComponents();
 
-        // if (WindowSystem.isGTK()) {
-        // datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
-        // }
-        /* Create Schema Table Editor */
-        createSchemaComposite();
+		// if (WindowSystem.isGTK()) {
+		// datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
+		// }
+		/* Create Schema Table Editor */
+		createSchemaComposite();
 
-        /* Create the tabs */
-        tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.BORDER, externalNode, dataTableView);
-        tabFolderEditors.setRowGeneratorUI(this);
-        tabFolderEditors.getProcessPreview().refreshTablePreview(outputMetaTable.getListColumns(), null, true);
+		/* Create the tabs */
+		tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.BORDER,
+				externalNode, dataTableView);
+		tabFolderEditors.setRowGeneratorUI(this);
+		tabFolderEditors.getProcessPreview().refreshTablePreview(
+				outputMetaTable.getListColumns(), null, true);
 
-        new FooterComposite(this.rowGenUIParent, SWT.NONE, generatorManager);
-        dataTableView.getTable().addSelectionListener(new SelectionAdapter() {
+		new FooterComposite(this.rowGenUIParent, SWT.NONE, generatorManager);
+		dataTableView.getTable().addSelectionListener(new SelectionAdapter() {
 
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            @SuppressWarnings("unchecked")//$NON-NLS-1$
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                updateFunParameter((Table) e.getSource());
-            }
+			/*
+			 * (non-Java)
+			 * 
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@SuppressWarnings("unchecked")//$NON-NLS-1$
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateFunParameter((Table) e.getSource());
+			}
 
-        });
-    }
+		});
+	}
 
-    /**
-     * qzhang Comment method "updateFunParameter".
-     * 
-     * @param table
-     */
-    public void updateFunParameter(Table table) {
-        if (table.getSelection().length < 1) {
-            return;
-        }
-        TableItem item = table.getSelection()[0];
-        if (item.getData() != null) {
-            Function fun = ((MetadataColumnExt) item.getData()).getFunction();
-            if (fun != null) {
-                // tabFolderEditors.createTableView(fun);
-                tabFolderEditors.getParameterEditor().update((MetadataColumnExt) item.getData());
-            }
-        }
-    }
+	/**
+	 * qzhang Comment method "updateFunParameter".
+	 * 
+	 * @param table
+	 */
+	public void updateFunParameter(Table table) {
+		if (table.getSelection().length < 1) {
+			return;
+		}
+		TableItem item = table.getSelection()[0];
+		if (item.getData() != null) {
+			Function fun = ((MetadataColumnExt) item.getData()).getFunction();
+			if (fun != null) {
+				// tabFolderEditors.createTableView(fun);
+				tabFolderEditors.getParameterEditor().update(
+						(MetadataColumnExt) item.getData());
+			}
+		}
+	}
 
-    private void initBackgroundComponents() {
+	private void initBackgroundComponents() {
 
-    }
+	}
 
-    private IMetadataTable outputMetaTable;
+	private IMetadataTable outputMetaTable;
 
-    /**
-     * qzhang Comment method "createSchemaComposite".
-     */
-    private void createSchemaComposite() {
-        outputMetaTable = externalNode.getMetadataList().get(0);
-        convert(outputMetaTable);
-        metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
-        metadataTableEditor.setRowGenUI(this);
-        inputReadOnly = this.externalNode.getProcess().isReadOnly();
-        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
-                !inputReadOnly, externalNode, functionManager);
-        dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
-        dataTableView.setGeneratorUI(this);
-        dataTableView.setShowDbTypeColumn(false, true, true, false);
-        // dataTableView.
-        // resize all the columns but not the table
-        for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
-            dataTableView.getTable().getColumn(i).pack();
-        }
-        dataTableView.getTable().getColumn(0).setWidth(0);
+	/**
+	 * qzhang Comment method "createSchemaComposite".
+	 */
+	private void createSchemaComposite() {
+		outputMetaTable = externalNode.getMetadataList().get(0);
+		convert(outputMetaTable);
+		metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
+		metadataTableEditor.setRowGenUI(this);
+		inputReadOnly = this.externalNode.getProcess().isReadOnly();
+		dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm,
+				SWT.BORDER, metadataTableEditor, inputReadOnly, !inputReadOnly,
+				externalNode, functionManager);
+		dataTableView.getExtendedTableViewer().setCommandStack(
+				generatorManager.getCommandStack());
+		dataTableView.setGeneratorUI(this);
+		dataTableView.setShowDbTypeColumn(true, true, false);
+		dataTableView.setShowDbColumnName(false, false);
+		// dataTableView.
+		// resize all the columns but not the table
+		for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
+			dataTableView.getTable().getColumn(i).pack();
+		}
+		dataTableView.getTable().getColumn(0).setWidth(0);
 
-    }
+	}
 
-    /**
-     * qzhang Comment method "convert".
-     * 
-     * @param outputMetaTable2
-     * @return TODO
-     */
-    public void convert(IMetadataTable outputMetaTable2) {
-        List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
-        for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
-            IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
-            if (column instanceof MetadataColumn) {
-                MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
-                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
-                String[] arrayTalendFunctions2 = new String[funs.size()];
-                for (int i = 0; i < funs.size(); i++) {
-                    arrayTalendFunctions2[i] = funs.get(i).getName();
-                }
-                ext.setArrayFunctions(arrayTalendFunctions2);
-                if (!funs.isEmpty()) {
-                    ext.setFunction(functionManager.getFuntionFromArray(ext, externalNode, j));
-                }
-                exts.add(ext);
-            }
-        }
-        outputMetaTable2.setListColumns(exts);
-    }
+	/**
+	 * qzhang Comment method "convert".
+	 * 
+	 * @param outputMetaTable2
+	 * @return TODO
+	 */
+	public void convert(IMetadataTable outputMetaTable2) {
+		List<IMetadataColumn> exts = new ArrayList<IMetadataColumn>();
+		for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
+			IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
+			if (column instanceof MetadataColumn) {
+				MetadataColumnExt ext = new MetadataColumnExt(
+						(MetadataColumn) column);
+				List<Function> funs = functionManager.getFunctionByName(ext
+						.getTalendType());
+				String[] arrayTalendFunctions2 = new String[funs.size()];
+				for (int i = 0; i < funs.size(); i++) {
+					arrayTalendFunctions2[i] = funs.get(i).getName();
+				}
+				ext.setArrayFunctions(arrayTalendFunctions2);
+				if (!funs.isEmpty()) {
+					ext.setFunction(functionManager.getFuntionFromArray(ext,
+							externalNode, j));
+				}
+				exts.add(ext);
+			}
+		}
+		outputMetaTable2.setListColumns(exts);
+	}
 
-    /**
-     * qzhang Comment method "addKeyListener".
-     * 
-     * @param uiManager
-     * @param display
-     */
-    private void addKeyListener(final UIManager uiManager, final Display display) {
+	/**
+	 * qzhang Comment method "addKeyListener".
+	 * 
+	 * @param uiManager
+	 * @param display
+	 */
+	private void addKeyListener(final UIManager uiManager, final Display display) {
 
-        Listener listener = new Listener() {
+		Listener listener = new Listener() {
 
-            public void handleEvent(Event event) {
+			public void handleEvent(Event event) {
 
-                if (event.type == SWT.KeyUp || event.type == SWT.KeyDown) {
-                    boolean isPressed = event.type == SWT.KeyDown ? true : false;
-                    if (event.keyCode == SWT.CTRL) {
-                        uiManager.setCtrlPressed(isPressed);
-                    }
-                    if (event.keyCode == SWT.SHIFT) {
-                        uiManager.setShiftPressed(isPressed);
+				if (event.type == SWT.KeyUp || event.type == SWT.KeyDown) {
+					boolean isPressed = event.type == SWT.KeyDown ? true
+							: false;
+					if (event.keyCode == SWT.CTRL) {
+						uiManager.setCtrlPressed(isPressed);
+					}
+					if (event.keyCode == SWT.SHIFT) {
+						uiManager.setShiftPressed(isPressed);
 
-                    }
-                }
-            }
+					}
+				}
+			}
 
-        };
-        display.addFilter(SWT.KeyUp, listener);
-        display.addFilter(SWT.KeyDown, listener);
-    }
+		};
+		display.addFilter(SWT.KeyUp, listener);
+		display.addFilter(SWT.KeyDown, listener);
+	}
 
-    /**
-     * qzhang Comment method "addParentListeners".
-     * 
-     * @param uiManager
-     * @param uiProperties
-     */
-    private void addParentListeners(final UIManager uiManager, final ExternalRowGeneratorUiProperties uiProperties) {
-        rowGenUIParent.addDisposeListener(new DisposeListener() {
+	/**
+	 * qzhang Comment method "addParentListeners".
+	 * 
+	 * @param uiManager
+	 * @param uiProperties
+	 */
+	private void addParentListeners(final UIManager uiManager,
+			final ExternalRowGeneratorUiProperties uiProperties) {
+		rowGenUIParent.addDisposeListener(new DisposeListener() {
 
-            public void widgetDisposed(DisposeEvent e) {
-                release();
-            }
-        });
-        rowGenUIParent.addListener(SWT.Close, new Listener() {
+			public void widgetDisposed(DisposeEvent e) {
+				release();
+			}
+		});
+		rowGenUIParent.addListener(SWT.Close, new Listener() {
 
-            public void handleEvent(Event event) {
-                if (uiManager.getRowGenResponse() == SWT.NONE) {
-                    uiManager.setRowGenResponse(SWT.CANCEL);
-                }
-            }
+			public void handleEvent(Event event) {
+				if (uiManager.getRowGenResponse() == SWT.NONE) {
+					uiManager.setRowGenResponse(SWT.CANCEL);
+				}
+			}
 
-        });
-        rowGenUIParent.addFocusListener(new FocusListener() {
+		});
+		rowGenUIParent.addFocusListener(new FocusListener() {
 
-            public void focusGained(FocusEvent e) {
-                updateBackground(false, true);
-            }
+			public void focusGained(FocusEvent e) {
+				updateBackground(false, true);
+			}
 
-            public void focusLost(FocusEvent e) {
-            }
+			public void focusLost(FocusEvent e) {
+			}
 
-        });
+		});
 
-        // store size if not maximized
-        if (rowGenUIParent instanceof Shell) {
-            ((Shell) rowGenUIParent).addControlListener(new ControlListener() {
+		// store size if not maximized
+		if (rowGenUIParent instanceof Shell) {
+			((Shell) rowGenUIParent).addControlListener(new ControlListener() {
 
-                public void controlMoved(ControlEvent e) {
+				public void controlMoved(ControlEvent e) {
 
-                }
+				}
 
-                public void controlResized(ControlEvent e) {
-                    if (!((Shell) e.getSource()).getMaximized()) {
-                        ExternalRowGeneratorUiProperties.setBoundsRowGen(((Shell) e.getSource()).getBounds());
-                    }
-                }
-            });
-        }
-    }
+				public void controlResized(ControlEvent e) {
+					if (!((Shell) e.getSource()).getMaximized()) {
+						ExternalRowGeneratorUiProperties
+								.setBoundsRowGen(((Shell) e.getSource())
+										.getBounds());
+					}
+				}
+			});
+		}
+	}
 
-    /**
-     * qzhang Comment method "updateBackground".
-     * 
-     * @param b
-     * @param c
-     */
-    protected void updateBackground(boolean b, boolean c) {
+	/**
+	 * qzhang Comment method "updateBackground".
+	 * 
+	 * @param b
+	 * @param c
+	 */
+	protected void updateBackground(boolean b, boolean c) {
 
-    }
+	}
 
-    /**
-     * qzhang Comment method "release".
-     */
-    protected void release() {
-        if (threadToEvaluatePerformance != null) {
-            threadToEvaluatePerformance.interrupt();
-        }
-    }
+	/**
+	 * qzhang Comment method "release".
+	 */
+	protected void release() {
+		if (threadToEvaluatePerformance != null) {
+			threadToEvaluatePerformance.interrupt();
+		}
+	}
 
-    public Composite getRowGenUIParent() {
-        return this.rowGenUIParent;
-    }
+	public Composite getRowGenUIParent() {
+		return this.rowGenUIParent;
+	}
 
-    public void setRowGenUIParent(Composite rowGenUIParent) {
-        this.rowGenUIParent = rowGenUIParent;
-    }
+	public void setRowGenUIParent(Composite rowGenUIParent) {
+		this.rowGenUIParent = rowGenUIParent;
+	}
 
-    public TabFolderEditors getTabFolderEditors() {
-        return this.tabFolderEditors;
-    }
+	public TabFolderEditors getTabFolderEditors() {
+		return this.tabFolderEditors;
+	}
 
-    public MetadataTableEditorViewExt getDataTableView() {
-        return this.dataTableView;
-    }
+	public MetadataTableEditorViewExt getDataTableView() {
+		return this.dataTableView;
+	}
 
-    public RowGeneratorManager getGeneratorManager() {
-        return this.generatorManager;
-    }
+	public RowGeneratorManager getGeneratorManager() {
+		return this.generatorManager;
+	}
 
-    public SashForm getDatasFlowViewSashForm() {
-        return this.datasFlowViewSashForm;
-    }
+	public SashForm getDatasFlowViewSashForm() {
+		return this.datasFlowViewSashForm;
+	}
 
-    public SashForm getMainSashForm() {
-        return this.mainSashForm;
-    }
+	public SashForm getMainSashForm() {
+		return this.mainSashForm;
+	}
 
 }
