@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -44,9 +43,9 @@ import org.talend.repository.i18n.Messages;
  */
 public class TreePopulator {
 
-    private Tree availableXmlTree;
+    private final Tree availableXmlTree;
 
-    private BidiMap xPathToTreeItem = new DualHashBidiMap();
+    private final BidiMap xPathToTreeItem = new DualHashBidiMap();
 
     private String filePath;
 
@@ -78,6 +77,8 @@ public class TreePopulator {
                 ExceptionHandler.process(e);
             } catch (URISyntaxException e) {
                 ExceptionHandler.process(e);
+            } catch (Exception e) {
+                return false;
             }
             if (treeNode == null || treeNode.getChildren().length == 0) {
                 // OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
