@@ -98,7 +98,12 @@ class="LDAPInput"
     {
         aNaming_<%=cid%> =attrsNaming_<%=cid%>.get("namingcontexts");
     }
-    String searchBase = aNaming_<%=cid%>==null?"":aNaming_<%=cid%>.get().toString();         
+    // String searchBase = (aNaming_<%=cid%>==null)|())?"":aNaming_<%=cid%>.get().toString();         
+	String searchBase = ((aNaming_<%=cid%> == null) || ((aNaming_<%=cid%> != null)
+                    && (aNaming_<%=cid%>.get().toString() != null)
+                    && (aNaming_<%=cid%>.get().toString().length() > 0) && (Character
+                    .isIdentifierIgnorable(aNaming_<%=cid%>.get().toString().charAt(0))))) ? ""
+                    : aNaming_<%=cid%>.get().toString();
 	
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
 	int entryCount_<%=cid%> = 0;
