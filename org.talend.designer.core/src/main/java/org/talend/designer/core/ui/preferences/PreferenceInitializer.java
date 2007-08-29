@@ -77,7 +77,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
         Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
-        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData().toString());
+        store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
 
     }
 
