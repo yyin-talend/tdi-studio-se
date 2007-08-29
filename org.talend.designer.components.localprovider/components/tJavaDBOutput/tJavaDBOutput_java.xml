@@ -95,6 +95,7 @@
       NUM_ROW="4"
       REQUIRED="true"
       SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+      REPOSITORY_VALUE="DIRECTORY"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>     

@@ -96,6 +96,7 @@
       FIELD="TEXT"
       NUM_ROW="5"
       REQUIRED="true"
+      REPOSITORY_VALUE="SID"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -106,6 +107,7 @@
       NUM_ROW="5"
       REQUIRED="true"
       SHOW_IF="FRAMEWORK_TYPE=='EMBEDED'"
+      REPOSITORY_VALUE="DIRECTORY"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
