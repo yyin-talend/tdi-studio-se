@@ -32,11 +32,20 @@
   </CONNECTORS>
 
   <PARAMETERS>
+
+	<PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="XML"
+    />
+    
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
       <!--SHOW_IF="PROPERTY_TYPE=='BUILT_IN'"-->
       <DEFAULT/>
@@ -46,17 +55,9 @@
       NAME="XMLFIELD"
       FIELD="PREV_COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="3"
     >
     </PARAMETER>
-
-	<PARAMETER
-      NAME="PROPERTY"
-      FIELD="PROPERTY_TYPE"
-      SHOW="true"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="XML"
-    />
 
     <PARAMETER
       NAME="LOOP_QUERY"
