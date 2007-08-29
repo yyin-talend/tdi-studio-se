@@ -87,16 +87,28 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="WITH_FORMAT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="7"
     />
+
+
 
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>

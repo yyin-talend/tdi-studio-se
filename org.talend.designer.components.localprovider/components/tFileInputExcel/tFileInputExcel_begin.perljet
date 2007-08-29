@@ -20,6 +20,9 @@
 			// component id
 			String cid = metadata.getTableName();
                         int nbFields = metadata.getListColumns().size();
+                        Boolean withformat = new Boolean(
+                            ElementParameterParser.getValue(node, "__WITH_FORMAT__")
+                        );
 %>
 
 use FileHandle;
@@ -107,8 +110,21 @@ for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
     for (my $current_column = $first_column_<%=cid%>;
          $current_column <= $last_column_<%=cid%>;
          $current_column++) {
-        my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
-        push(@$<%=cid%>, $current_cell ? $current_cell->Value : undef);
+         my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
+         push(@$<%=cid%>, $current_cell ? 
+    <%
+    if(withformat){
+    %>          
+             $current_cell->Value 
+    <%
+    } 
+    else {
+    %>
+             $current_cell->{Val} 
+    <%
+    }
+    %>
+             : undef );
     }
     $current_row++;
 
