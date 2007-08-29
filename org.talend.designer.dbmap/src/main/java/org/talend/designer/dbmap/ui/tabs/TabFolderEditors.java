@@ -48,141 +48,153 @@ import org.talend.designer.dbmap.managers.MapperManager;
  */
 public class TabFolderEditors extends CTabFolder {
 
-    private TabFolderEditors tabFolderEditors;
+	private TabFolderEditors tabFolderEditors;
 
-    private MapperManager mapperManager;
+	private MapperManager mapperManager;
 
-    protected int lastSelectedTab;
+	protected int lastSelectedTab;
 
-    private MetadataTableEditorView inputMetaEditor;
+	private MetadataTableEditorView inputMetaEditor;
 
-    private MetadataTableEditorView outputMetaEditor;
+	private MetadataTableEditorView outputMetaEditor;
 
-    public static final int INDEX_TAB_METADATA_EDITOR = 0;
+	public static final int INDEX_TAB_METADATA_EDITOR = 0;
 
-    public static final int INDEX_TAB_EXPRESSION_EDITOR = 1;
+	public static final int INDEX_TAB_EXPRESSION_EDITOR = 1;
 
-    private StyledTextHandler styledTextHandler;
+	private StyledTextHandler styledTextHandler;
 
-    private StyledText styledSqlText;
+	private StyledText styledSqlText;
 
-    public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
-        super(parent, style);
-        tabFolderEditors = this;
-        this.mapperManager = mapperManager;
-        createComponents();
-    }
+	public TabFolderEditors(Composite parent, int style,
+			MapperManager mapperManager) {
+		super(parent, style);
+		tabFolderEditors = this;
+		this.mapperManager = mapperManager;
+		createComponents();
+	}
 
-    /**
-     * DOC amaumont Comment method "createComponents".
-     */
-    private void createComponents() {
+	/**
+	 * DOC amaumont Comment method "createComponents".
+	 */
+	private void createComponents() {
 
-        setSimple(false);
-        // TableEditorCompositeBase metaDatasDescriptorView3 = new TableEditorCompositeBase(tabFolder1);
-        // item.setControl(metaDatasDescriptorView3);
+		setSimple(false);
+		// TableEditorCompositeBase metaDatasDescriptorView3 = new
+		// TableEditorCompositeBase(tabFolder1);
+		// item.setControl(metaDatasDescriptorView3);
 
-        createMetadataEditorTab();
+		createMetadataEditorTab();
 
-        createExpressionEditorTab();
+		createExpressionEditorTab();
 
-        createSqlViewerTab();
+		createSqlViewerTab();
 
-        tabFolderEditors.addListener(SWT.Selection, new Listener() {
+		tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
-            public void handleEvent(Event event) {
-                lastSelectedTab = tabFolderEditors.getSelectionIndex();
-            }
-        });
-        tabFolderEditors.setSelection(0);
-    }
+			public void handleEvent(Event event) {
+				lastSelectedTab = tabFolderEditors.getSelectionIndex();
+			}
+		});
+		tabFolderEditors.setSelection(0);
+	}
 
-    /**
-     * DOC amaumont Comment method "createSqlViewerTab".
-     */
-    private void createSqlViewerTab() {
-        CTabItem item;
-        item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText(Messages.getString("TabFolderEditors.SqlSelectQuery", new Object[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
-        styledSqlText = createStyledText(item);
-        styledSqlText.setWordWrap(true);
-        styledSqlText.setEditable(false);
-        styledSqlText.setEnabled(true);
-    }
+	/**
+	 * DOC amaumont Comment method "createSqlViewerTab".
+	 */
+	private void createSqlViewerTab() {
+		CTabItem item;
+		item = new CTabItem(tabFolderEditors, SWT.BORDER);
+		item.setText(Messages.getString(
+				"TabFolderEditors.SqlSelectQuery", new Object[] { "" })); //$NON-NLS-1$ //$NON-NLS-2$
+		styledSqlText = createStyledText(item);
+		styledSqlText.setWordWrap(true);
+		styledSqlText.setEditable(false);
+		styledSqlText.setEnabled(true);
+	}
 
-    /**
-     * DOC amaumont Comment method "createExpressionEditorTab".
-     */
-    private void createExpressionEditorTab() {
-        CTabItem item;
-        item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText(Messages.getString("TabFolderEditors.expressionEditor")); //$NON-NLS-1$
-        StyledText styledText = createStyledText(item);
-        this.styledTextHandler = new StyledTextHandler(styledText, mapperManager);
-    }
+	/**
+	 * DOC amaumont Comment method "createExpressionEditorTab".
+	 */
+	private void createExpressionEditorTab() {
+		CTabItem item;
+		item = new CTabItem(tabFolderEditors, SWT.BORDER);
+		item.setText(Messages.getString("TabFolderEditors.expressionEditor")); //$NON-NLS-1$
+		StyledText styledText = createStyledText(item);
+		this.styledTextHandler = new StyledTextHandler(styledText,
+				mapperManager);
+	}
 
-    /**
-     * DOC amaumont Comment method "createMetadataEditor".
-     */
-    private void createMetadataEditorTab() {
-        CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText(Messages.getString("TabFolderEditors.schemaEditor")); //$NON-NLS-1$
+	/**
+	 * DOC amaumont Comment method "createMetadataEditor".
+	 */
+	private void createMetadataEditorTab() {
+		CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
+		item.setText(Messages.getString("TabFolderEditors.schemaEditor")); //$NON-NLS-1$
 
-        SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
-        inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
-        item.setControl(inOutMetaEditorContainer);
+		SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors,
+				SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
+		inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
+		item.setControl(inOutMetaEditorContainer);
 
-        CommandStack commandStack = mapperManager.getCommandStack();
+		CommandStack commandStack = mapperManager.getCommandStack();
 
-        inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        inputMetaEditor.setShowDbTypeColumn(false, true, false, false);
-        inputMetaEditor.setShowPatternColumn(false);
-        inputMetaEditor.setShowTalendTypeColumn(false);
-        inputMetaEditor.initGraphicComponents();
-        inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+		inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer,
+				SWT.BORDER);
+		inputMetaEditor.setShowDbTypeColumn(true, false, false);
+		inputMetaEditor.setShowDbColumnName(false, false);
+		inputMetaEditor.setShowPatternColumn(false);
+		inputMetaEditor.setShowTalendTypeColumn(false);
+		inputMetaEditor.initGraphicComponents();
+		inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
-        outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        outputMetaEditor.setShowDbTypeColumn(false, true, false, false);
-        outputMetaEditor.setShowTalendTypeColumn(false);
-        outputMetaEditor.setShowPatternColumn(false);
-        outputMetaEditor.initGraphicComponents();
-        outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
-    }
+		outputMetaEditor = new MetadataTableEditorView(
+				inOutMetaEditorContainer, SWT.BORDER);
+		outputMetaEditor.setShowDbTypeColumn(true, false, false);
+		outputMetaEditor.setShowDbColumnName(false, false);
+		outputMetaEditor.setShowTalendTypeColumn(false);
+		outputMetaEditor.setShowPatternColumn(false);
+		outputMetaEditor.initGraphicComponents();
+		outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+	}
 
-    private StyledText createStyledText(CTabItem item) {
-        StyledText styledText = null;
-        if (MapperMain.isStandAloneMode()) {
-            styledText = new StyledText(tabFolderEditors, SWT.V_SCROLL | SWT.H_SCROLL);
-        } else {
-            IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-            ColorManager colorManager = new ColorManager(preferenceStore);
-            styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-                    colorManager, "tsql");
-        }
-        styledText.setEnabled(false);
-        item.setControl(styledText);
-        return styledText;
-    }
+	private StyledText createStyledText(CTabItem item) {
+		StyledText styledText = null;
+		if (MapperMain.isStandAloneMode()) {
+			styledText = new StyledText(tabFolderEditors, SWT.V_SCROLL
+					| SWT.H_SCROLL);
+		} else {
+			IPreferenceStore preferenceStore = CorePlugin.getDefault()
+					.getPreferenceStore();
+			ColorManager colorManager = new ColorManager(preferenceStore);
+			styledText = new UnnotifiableColorStyledText(tabFolderEditors,
+					SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager,
+					"tsql");
+		}
+		styledText.setEnabled(false);
+		item.setControl(styledText);
+		return styledText;
+	}
 
-    public MetadataTableEditorView getInputMetaEditor() {
-        return this.inputMetaEditor;
-    }
+	public MetadataTableEditorView getInputMetaEditor() {
+		return this.inputMetaEditor;
+	}
 
-    public MetadataTableEditorView getOutputMetaEditor() {
-        return this.outputMetaEditor;
-    }
+	public MetadataTableEditorView getOutputMetaEditor() {
+		return this.outputMetaEditor;
+	}
 
-    public StyledTextHandler getStyledTextHandler() {
-        return this.styledTextHandler;
-    }
+	public StyledTextHandler getStyledTextHandler() {
+		return this.styledTextHandler;
+	}
 
-    /**
-     * Getter for styledSqlText.
-     * 
-     * @return the styledSqlText
-     */
-    public StyledText getStyledSqlText() {
-        return this.styledSqlText;
-    }
+	/**
+	 * Getter for styledSqlText.
+	 * 
+	 * @return the styledSqlText
+	 */
+	public StyledText getStyledSqlText() {
+		return this.styledSqlText;
+	}
 
 }

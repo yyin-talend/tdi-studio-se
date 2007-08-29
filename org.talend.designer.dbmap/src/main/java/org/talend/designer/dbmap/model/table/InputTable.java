@@ -45,218 +45,230 @@ import org.talend.designer.dbmap.model.tableentry.InputColumnTableEntry;
  */
 public class InputTable extends AbstractInOutTable {
 
-    private IOConnection connection;
+	private IOConnection connection;
 
-    /**
-     */
-    private IJoinType joinType;
+	/**
+	 */
+	private IJoinType joinType;
 
-    private String alias;
+	private String alias;
 
-    private String tableName;
+	private String tableName;
 
-    /**
-     * DOC amaumont InputTable constructor comment.
-     * 
-     * @param mapperManager
-     * 
-     * @param metadataTable
-     * @param externalMapperTable can be null
-     * @param mainConnection
-     */
-    public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
-        super(mapperManager, null, name);
-        this.connection = connection;
-    }
+	/**
+	 * DOC amaumont InputTable constructor comment.
+	 * 
+	 * @param mapperManager
+	 * 
+	 * @param metadataTable
+	 * @param externalMapperTable
+	 *            can be null
+	 * @param mainConnection
+	 */
+	public InputTable(MapperManager mapperManager, IOConnection connection,
+			String name) {
+		super(mapperManager, null, name);
+		this.connection = connection;
+	}
 
-    /**
-     * DOC amaumont InputTable constructor comment.
-     * 
-     * @param manager
-     * @param metadataTable
-     * @param alias2
-     */
-    public InputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
-        super(mapperManager, metadataTable, name);
-    }
+	/**
+	 * DOC amaumont InputTable constructor comment.
+	 * 
+	 * @param manager
+	 * @param metadataTable
+	 * @param alias2
+	 */
+	public InputTable(MapperManager mapperManager,
+			IMetadataTable metadataTable, String name) {
+		super(mapperManager, metadataTable, name);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.dbmap.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.dbmap.external.data.ExternalMapperTable)
-     */
-    @Override
-    public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.talend.designer.dbmap.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.dbmap.external.data.ExternalMapperTable)
+	 */
+	@Override
+	public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
 
-        boolean isAliasTable = externalMapperTable != null && externalMapperTable.getAlias() != null;
+		boolean isAliasTable = externalMapperTable != null
+				&& externalMapperTable.getAlias() != null;
 
-        if (isAliasTable) {
-            // dbmap table is alias
-            setMetadataTable(connection.getTable().clone());
-        } else if (connection != null) {
-            // dbmap table references a physical table
-            setMetadataTable(connection.getTable());
-        }
-        super.initFromExternalData(externalMapperTable);
+		if (isAliasTable) {
+			// dbmap table is alias
+			setMetadataTable(connection.getTable().clone());
+		} else if (connection != null) {
+			// dbmap table references a physical table
+			setMetadataTable(connection.getTable().clone());
+		}
+		super.initFromExternalData(externalMapperTable);
 
-        List<IMetadataColumn> columns = getMetadataTable().getListColumns();
-        Map<String, ExternalDbMapEntry> nameToPerTabEntry = new HashMap<String, ExternalDbMapEntry>();
-        if (externalMapperTable != null && externalMapperTable.getMetadataTableEntries() != null) {
-            for (ExternalDbMapEntry perTableEntry : externalMapperTable.getMetadataTableEntries()) {
-                nameToPerTabEntry.put(perTableEntry.getName(), perTableEntry);
-            }
-        }
+		List<IMetadataColumn> columns = getMetadataTable().getListColumns();
+		Map<String, ExternalDbMapEntry> nameToPerTabEntry = new HashMap<String, ExternalDbMapEntry>();
+		if (externalMapperTable != null
+				&& externalMapperTable.getMetadataTableEntries() != null) {
+			for (ExternalDbMapEntry perTableEntry : externalMapperTable
+					.getMetadataTableEntries()) {
+				nameToPerTabEntry.put(perTableEntry.getName(), perTableEntry);
+			}
+		}
 
-        ArrayList<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
-        for (IMetadataColumn column : columns) {
-            InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
-            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
-                    .getLabel());
-            // Entry match with current column
-            if (externalMapperTableEntry != null) {
-                fillInputEntry(inputEntry, externalMapperTableEntry);
-                nameToPerTabEntry.remove(externalMapperTableEntry.getName());
-            }
-            if (externalMapperTableEntry != null || !isAliasTable) {
-                dataMapTableEntries.add(inputEntry);
-            } else {
-                columnsToRemove.add(column);
-            }
-        }
-        columns.removeAll(columnsToRemove);
-        
-        // create unmatching entries
-        for (ExternalDbMapEntry perTableEntry : nameToPerTabEntry.values()) {
-            MetadataColumn column = new MetadataColumn();
-            column.setLabel(perTableEntry.getName());
-            InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
-            ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry.get(inputEntry.getMetadataColumn()
-                    .getLabel());
-            fillInputEntry(inputEntry, externalMapperTableEntry);
-            dataMapTableEntries.add(inputEntry);
-            columns.add(column);
-        }
+		ArrayList<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+		for (IMetadataColumn column : columns) {
+			InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
+			ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry
+					.get(inputEntry.getMetadataColumn().getLabel());
+			// Entry match with current column
+			if (externalMapperTableEntry != null) {
+				fillInputEntry(inputEntry, externalMapperTableEntry);
+				nameToPerTabEntry.remove(externalMapperTableEntry.getName());
+			}
+			if (externalMapperTableEntry != null || !isAliasTable) {
+				dataMapTableEntries.add(inputEntry);
+			} else {
+				columnsToRemove.add(column);
+			}
+		}
+		columns.removeAll(columnsToRemove);
 
-        if (externalMapperTable != null) {
-            joinType = mapperManager.getCurrentLanguage().getJoin(externalMapperTable.getJoinType());
-            if (joinType == null) {
-                joinType = mapperManager.getCurrentLanguage().getAvailableJoins()[0];
-            }
-            alias = externalMapperTable.getAlias();
-            tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection
-                    .getName();
-        }
-    }
+		// create unmatching entries
+		for (ExternalDbMapEntry perTableEntry : nameToPerTabEntry.values()) {
+			MetadataColumn column = new MetadataColumn();
+			column.setLabel(perTableEntry.getName());
+			InputColumnTableEntry inputEntry = (InputColumnTableEntry) getNewTableEntry(column);
+			ExternalDbMapEntry externalMapperTableEntry = nameToPerTabEntry
+					.get(inputEntry.getMetadataColumn().getLabel());
+			fillInputEntry(inputEntry, externalMapperTableEntry);
+			dataMapTableEntries.add(inputEntry);
+			columns.add(column);
+		}
 
-    /**
-     * DOC amaumont Comment method "fillIputEntry".
-     * @param columnEntry
-     * @param externalMapperTableEntry
-     */
-    private void fillInputEntry(InputColumnTableEntry columnEntry, ExternalDbMapEntry externalMapperTableEntry) {
-        columnEntry.setExpression(externalMapperTableEntry.getExpression());
-        columnEntry.setOperator(externalMapperTableEntry.getOperator());
-        columnEntry.setJoin(externalMapperTableEntry.isJoin());
-    }
+		if (externalMapperTable != null) {
+			joinType = mapperManager.getCurrentLanguage().getJoin(
+					externalMapperTable.getJoinType());
+			if (joinType == null) {
+				joinType = mapperManager.getCurrentLanguage()
+						.getAvailableJoins()[0];
+			}
+			alias = externalMapperTable.getAlias();
+			tableName = externalMapperTable.getTableName() != null ? externalMapperTable
+					.getTableName()
+					: connection.getName();
+		}
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.dbmap.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn)
-     */
-    @Override
-    protected AbstractInOutTableEntry getNewTableEntry(IMetadataColumn column) {
-        return new InputColumnTableEntry(this, column);
-    }
+	/**
+	 * DOC amaumont Comment method "fillIputEntry".
+	 * 
+	 * @param columnEntry
+	 * @param externalMapperTableEntry
+	 */
+	private void fillInputEntry(InputColumnTableEntry columnEntry,
+			ExternalDbMapEntry externalMapperTableEntry) {
+		columnEntry.setExpression(externalMapperTableEntry.getExpression());
+		columnEntry.setOperator(externalMapperTableEntry.getOperator());
+		columnEntry.setJoin(externalMapperTableEntry.isJoin());
+	}
 
-    public boolean isMainConnection() {
-        return false;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.talend.designer.dbmap.model.table.DataMapTable#getNewTableEntry(org.talend.core.model.metadata.IMetadataColumn)
+	 */
+	@Override
+	protected AbstractInOutTableEntry getNewTableEntry(IMetadataColumn column) {
+		return new InputColumnTableEntry(this, column);
+	}
 
-    /**
-     * Getter for joinType.
-     * 
-     * @return the joinType
-     */
-    public IJoinType getJoinType() {
-        if (this.joinType == null) {
-            this.joinType = mapperManager.getCurrentLanguage().getJoin(null);
-        }
-        return this.joinType;
-    }
+	public boolean isMainConnection() {
+		return false;
+	}
 
-    /**
-     * Sets the joinType.
-     * 
-     * @param joinType the joinType to set
-     */
-    public void setJoinType(IJoinType joinType) {
-        this.joinType = joinType;
-    }
+	/**
+	 * Getter for joinType.
+	 * 
+	 * @return the joinType
+	 */
+	public IJoinType getJoinType() {
+		if (this.joinType == null) {
+			this.joinType = mapperManager.getCurrentLanguage().getJoin(null);
+		}
+		return this.joinType;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.dbmap.model.table.IDataMapTable#getName()
-     */
-    @Override
-    public String getName() {
-        if (alias != null) {
-            return alias;
-        }
-        if (tableName != null) {
-            return tableName;
-        }
-        return super.getName();
-    }
+	/**
+	 * Sets the joinType.
+	 * 
+	 * @param joinType
+	 *            the joinType to set
+	 */
+	public void setJoinType(IJoinType joinType) {
+		this.joinType = joinType;
+	}
 
-    /**
-     * Getter for alias.
-     * 
-     * @return the alias
-     */
-    public String getAlias() {
-        return this.alias;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.talend.designer.dbmap.model.table.IDataMapTable#getName()
+	 */
+	@Override
+	public String getName() {
+		if (alias != null) {
+			return alias;
+		}
+		if (tableName != null) {
+			return tableName;
+		}
+		return super.getName();
+	}
 
-    /**
-     * Sets the alias.
-     * 
-     * @param alias the alias to set
-     */
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
+	/**
+	 * Getter for alias.
+	 * 
+	 * @return the alias
+	 */
+	public String getAlias() {
+		return this.alias;
+	}
 
-    /**
-     * Getter for tableName.
-     * 
-     * @return the tableName
-     */
-    public String getTableName() {
-        return this.tableName;
-    }
+	/**
+	 * Sets the alias.
+	 * 
+	 * @param alias
+	 *            the alias to set
+	 */
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 
-    /**
-     * Sets the tableName.
-     * 
-     * @param tableName the tableName to set
-     */
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
+	/**
+	 * Getter for tableName.
+	 * 
+	 * @return the tableName
+	 */
+	public String getTableName() {
+		return this.tableName;
+	}
 
-    @Override
-    public String getTitle() {
-        String alias = this.getAlias();
-        String tableName = this.getTableName();
-        if (alias != null) {
-            return alias + "  (alias of table '" + tableName + "')";
-        } else {
-            return tableName + "  (table)";
-        }
-    }
+	/**
+	 * Sets the tableName.
+	 * 
+	 * @param tableName
+	 *            the tableName to set
+	 */
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
-    
-    
+	@Override
+	public String getTitle() {
+		String alias = this.getAlias();
+		String tableName = this.getTableName();
+		if (alias != null) {
+			return alias + "  (alias of table '" + tableName + "')";
+		} else {
+			return tableName + "  (table)";
+		}
+	}
+
 }
