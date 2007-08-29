@@ -266,6 +266,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     SelectionListener listenerSelection = new SelectionAdapter() {
 
+        @Override
         public void widgetSelected(SelectionEvent event) {
             // updateRepositoryList();
             dynamicTabbedPropertySection.updateRepositoryList();
@@ -311,13 +312,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     // only set synWidthWithMetadataColumn =true, when use the metadataDialog to set the matadata.
     // see issue 0001676
-    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged,
+            boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
 
-        String[] columnNameList = (String[]) columnList.toArray(new String[0]);
-        String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
+        String[] columnNameList = columnList.toArray(new String[0]);
+        String[] prevColumnNameList = prevColumnList.toArray(new String[0]);
         String[] curColumnNameList = null;
         String[] curColumnValueList = null;
 
@@ -331,8 +333,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 refColumnListValuesTmp.add(value + column);
             }
         }
-        String[] refColumnListNames = (String[]) refColumnListNamesTmp.toArray(new String[0]);
-        String[] refColumnListValues = (String[]) refColumnListValuesTmp.toArray(new String[0]);
+        String[] refColumnListNames = refColumnListNamesTmp.toArray(new String[0]);
+        String[] refColumnListValues = refColumnListValuesTmp.toArray(new String[0]);
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
@@ -347,13 +349,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if (param.getField() == EParameterFieldType.COLUMN_LIST
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
             }
             if (param.getField() == EParameterFieldType.TABLE) {
-                Object[] itemsValue = (Object[]) param.getListItemsValue();
+                Object[] itemsValue = param.getListItemsValue();
                 for (int j = 0; j < itemsValue.length; j++) {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
@@ -405,7 +408,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     if (found) {
                         found = false;
                         for (int k = 0; k < paramValues.size() && !found; k++) {
-                            Map<String, Object> currentLine = (Map<String, Object>) paramValues.get(k);
+                            Map<String, Object> currentLine = paramValues.get(k);
                             if (currentLine.get(codes[0]).equals(colChanged.getOldName())) {
                                 currentLine.put(codes[0], colChanged.getNewName());
                                 found = true;
@@ -414,7 +417,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     }
                     found = false;
                     for (int k = 0; k < paramValues.size() && !found; k++) {
-                        Map<String, Object> currentLine = (Map<String, Object>) paramValues.get(k);
+                        Map<String, Object> currentLine = paramValues.get(k);
                         if (currentLine.get(codes[0]) == null) {
                             currentLine.put(codes[0], columnName);
                         }
@@ -456,6 +459,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             String lineName = (String) newLine.get(codes[0]);
             for (IMetadataColumn column : table.getListColumns()) {
                 if (lineName.equals(column.getLabel())) {
+                    if (node.getComponent().getName().equals("tFileInputXML")) {
+                        newLine.put(codes[1], newLine.get(codes[1]));
+                        break;
+                    }
                     if (column.getLength() != null && column.getLength().intValue() > 0) {
                         // codes[1] is "SIZE"
                         newLine.put(codes[1], column.getLength().toString());

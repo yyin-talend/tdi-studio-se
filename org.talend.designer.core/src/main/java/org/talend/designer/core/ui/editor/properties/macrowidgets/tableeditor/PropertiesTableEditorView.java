@@ -163,10 +163,12 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
+                        @Override
                         public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorValue) {
                             return (String) cellEditorValue;
                         }
 
+                        @Override
                         public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
                             Object returnedValue = null;
                             if (cellEditorTypedValue != null && cellEditorTypedValue instanceof Integer) {
@@ -183,6 +185,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             return returnedValue;
                         };
 
+                        @Override
                         public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
 
                             Object returnedValue = 0;
@@ -215,6 +218,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 super.doSetValue(value);
                             }
                         }
+
                         @Override
                         protected void updateContents(Object value) {
                             if (value != null) {
@@ -259,6 +263,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         // writable cell
                         column.setCellEditor(textCellEditor);
                     }
+                    if (i != 0) {
+                        column.setCellEditor(textCellEditor);
+                    }
                 }
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
 
@@ -280,7 +287,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             case DBTYPE_LIST:
                                 String[] namesSet = tmpParam.getListItemsDisplayName();
                                 if (namesSet.length == 0) {
-                                    return (String) tmpParam.getDefaultClosedListValue();
+                                    return tmpParam.getDefaultClosedListValue();
                                 }
                                 if (value instanceof String) {
                                     boolean found = false;
@@ -309,10 +316,10 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                 }
                                 return value; // already RGB
                             default: // TEXT
-                                return (String) value;
+                                return value;
                             }
                         }
-                        return (String) value;
+                        return value;
                     }
 
                     public void set(B bean, Object value) {
