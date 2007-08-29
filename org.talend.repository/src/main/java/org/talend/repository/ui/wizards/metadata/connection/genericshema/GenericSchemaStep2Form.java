@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -40,12 +39,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.Dbms;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
@@ -61,7 +62,6 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ColumnNameValidator;
-import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -69,22 +69,17 @@ import org.talend.repository.ui.wizards.metadata.connection.files.delimited.Deli
  */
 public class GenericSchemaStep2Form extends AbstractForm {
 
-    // protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-    // ITalendCorePrefConstants.PREVIEW_LIMIT);
-
     protected ConnectionItem connectionItem;
 
     protected GenericSchemaConnection connection;
 
     private WizardPage page = null;
 
-    private static Logger log = Logger.getLogger(DelimitedFileStep3Form.class);
+    private static Logger log = Logger.getLogger(GenericSchemaStep2Form.class);
 
     private static final int WIDTH_GRIDDATA_PIXEL = 750;
 
     private UtilsButton cancelButton;
-
-    // private UtilsButton guessButton;
 
     private MetadataEmfTableEditor metadataEditor;
 
@@ -98,7 +93,19 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
     private LabelledText metadataCommentText;
 
+    private LabelledCheckboxCombo mappingTypeCheckBox;
+
+    private Dbms[] dbmsArray;
+
+    private IListenableListListener listenableListListener;
+
     private boolean readOnly;
+
+    private Composite compositeTable;
+
+    private Composite compositeMetaData;
+
+    private Group groupMetaData;
 
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
@@ -167,18 +174,78 @@ public class GenericSchemaStep2Form extends AbstractForm {
      * Initialize value, forceFocus first field.
      */
     protected void initialize() {
+
         // init the metadata Table
         metadataNameText.setText(metadataTable.getLabel());
         metadataCommentText.setText(metadataTable.getComment());
+
+        mappingTypeCheckBox.getCheckbox().setSelection(getConnection().isMappingTypeUsed());
+
+        String mappingTypeId = getConnection().getMappingTypeId();
+        String mappingTypeLabel = null;
+        if (mappingTypeId != null) {
+            mappingTypeLabel = getMappingTypeLabelById(mappingTypeId);
+        } else {
+            tableEditorView.getTable().getParent().dispose();
+
+            tableEditorView.setShowDbTypeColumn(false, false, false);
+            tableEditorView.setShowDbColumnName(false, false);
+            tableEditorView.initGraphicComponents();
+        }
+
+        mappingTypeCheckBox.getCombo().setText(mappingTypeLabel == null ? "" : mappingTypeLabel);
+
+        mappingTypeCheckBox.getCheckbox().setSelection(getConnection().isMappingTypeUsed());
         metadataEditor.setMetadataTable(metadataTable);
         tableEditorView.setMetadataEditor(metadataEditor);
+
         tableEditorView.getTableViewerCreator().layout();
+
+        listenableListListener = new IListenableListListener() {
+
+            public void handleEvent(ListenableListEvent event) {
+                checkFieldsValue();
+            }
+        };
 
         if (getConnection().isReadOnly()) {
             adaptFormToReadOnly();
         } else {
             updateStatus(IStatus.OK, null);
         }
+    }
+
+    /**
+     * DOC Administrator Comment method "getMappingTypeLabelById".
+     * 
+     * @param mappingTypeId
+     * @return
+     */
+    private String getMappingTypeLabelById(String mappingTypeId) {
+        dbmsArray = MetadataTalendType.getAllDbmsArray();
+
+        for (int i = 0; i < dbmsArray.length; i++) {
+            String indexId = dbmsArray[i].getId();
+            if (mappingTypeId.equals(indexId)) {
+                return dbmsArray[i].getLabel();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * DOC Administrator Comment method "getMappingTypeIdByLabel".
+     */
+    private String getMappingTypeIdByLabel(String label) {
+        dbmsArray = MetadataTalendType.getAllDbmsArray();
+
+        for (int i = 0; i < dbmsArray.length; i++) {
+            String indexLabel = dbmsArray[i].getLabel();
+            if (label.equals(indexLabel)) {
+                return dbmsArray[i].getId();
+            }
+        }
+        return null;
     }
 
     /**
@@ -189,6 +256,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
         readOnly = isReadOnly();
         // guessButton.setEnabled(!isReadOnly());
         metadataNameText.setReadOnly(isReadOnly());
+        mappingTypeCheckBox.getCombo().setEnabled(isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
     }
@@ -199,10 +267,17 @@ public class GenericSchemaStep2Form extends AbstractForm {
         Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, WIDTH_GRIDDATA_PIXEL, 60);
         metadataNameText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataName")); //$NON-NLS-1$
         metadataCommentText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataComment")); //$NON-NLS-1$
+        Dbms[] dbms = MetadataTalendType.getAllDbmsArray();
+        String[] dbmsItems = new String[(dbms.length)];
+        for (int i = 0; i < dbms.length; i++) {
+            dbmsItems[i] = dbms[i].getLabel();
+        }
+        Composite mappingTypeComposite = Form.startNewDimensionnedGridLayout(this, 3, WIDTH_GRIDDATA_PIXEL, 60);
 
-        // Group MetaData
-        Group groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280); //$NON-NLS-1$
-        Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
+        mappingTypeCheckBox = new LabelledCheckboxCombo(mappingTypeComposite, "Mapping Type",
+                "Select the database mapping type", dbmsItems);
+        groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280);
+        compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
         // Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2,
@@ -218,10 +293,16 @@ public class GenericSchemaStep2Form extends AbstractForm {
         // guessButton.setToolTipText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
 
         // Composite MetadataTableEditorView
-        Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
+        compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
-        metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription")); //$NON-NLS-1$
+        metadataEditor = new MetadataEmfTableEditor(metadataTable, Messages.getString("FileStep3.metadataDescription")); //$NON-NLS-1$
+
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE);
+
+        tableEditorView.getTable().getParent().dispose();
+        tableEditorView.setShowDbTypeColumn(true, false, true);
+        tableEditorView.setShowDbColumnName(true, true);
+        tableEditorView.initGraphicComponents();
 
         if (!isInWizard()) {
             // Bottom Button
@@ -265,13 +346,63 @@ public class GenericSchemaStep2Form extends AbstractForm {
             }
         });
 
-        // add listener to tableMetadata (listen the event of the toolbars)
-        tableEditorView.getMetadataEditor().addAfterOperationListListener(new IListenableListListener() {
+        // mappingTypeCheckBox : Event Selection
+        mappingTypeCheckBox.addSelectionListener(new SelectionAdapter() {
 
-            public void handleEvent(ListenableListEvent event) {
-                checkFieldsValue();
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (mappingTypeCheckBox.getCheckbox().getSelection()) {
+                    tableEditorView.setShowDbTypeColumn(true, false, true);
+                    tableEditorView.setShowDbColumnName(true, true);
+
+                    getConnection().setMappingTypeUsed(true);
+                    mappingTypeCheckBox.getCombo().select(0);
+                    String mappingTypeValue = mappingTypeCheckBox.getCombo().getText();
+                    getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeValue));
+                    tableEditorView.setCurrentDbms(getMappingTypeIdByLabel(mappingTypeValue));
+                } else {
+                    tableEditorView.setShowDbTypeColumn(false, false, false);
+                    tableEditorView.setShowDbColumnName(false, false);
+                    getConnection().setMappingTypeUsed(false);
+                    mappingTypeCheckBox.getCombo().select(0);
+                    getConnection().setMappingTypeId(null);
+                }
+                if (tableEditorView.getMainComposite() != null && !tableEditorView.getMainComposite().isDisposed()) {
+                    tableEditorView.getMainComposite().dispose();
+                }
+                tableEditorView.initGraphicComponents();
+                tableEditorView.setExtendedTableModel(metadataEditor);
+                tableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+                compositeTable.layout();
+                tableEditorView.getMetadataEditor().addAfterOperationListListener(listenableListListener);
+
             }
         });
+
+        mappingTypeCheckBox.getCombo().addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                tableEditorView.setShowDbTypeColumn(true, false, true);
+                tableEditorView.setShowDbColumnName(true, true);
+                getConnection().setMappingTypeUsed(true);
+                getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeCheckBox.getCombo().getText()));
+                String mappingTypeValue = mappingTypeCheckBox.getCombo().getText();
+                getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeValue));
+                tableEditorView.setCurrentDbms(getMappingTypeIdByLabel(mappingTypeValue));
+
+                if (tableEditorView.getMainComposite() != null && !tableEditorView.getMainComposite().isDisposed()) {
+                    tableEditorView.getMainComposite().dispose();
+                }
+                tableEditorView.initGraphicComponents();
+                tableEditorView.setExtendedTableModel(metadataEditor);
+                tableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+                compositeTable.layout();
+
+                tableEditorView.getMetadataEditor().addAfterOperationListListener(listenableListListener);
+            }
+        });
+        tableEditorView.getMetadataEditor().addAfterOperationListListener(listenableListListener);
     }
 
     /**
@@ -585,5 +716,4 @@ public class GenericSchemaStep2Form extends AbstractForm {
             }
         }
     }
-
 }
