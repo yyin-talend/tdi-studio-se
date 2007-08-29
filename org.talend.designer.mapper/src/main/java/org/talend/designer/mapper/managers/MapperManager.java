@@ -845,9 +845,7 @@ public class MapperManager extends AbstractMapperManager {
      * @return
      */
     public boolean isAdvancedMap() {
-        return LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA
-                || LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL
-                && getAbstractMapComponent() instanceof IAdvancedMap;
+        return true;
 
     }
 
