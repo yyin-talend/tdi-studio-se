@@ -68,6 +68,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -568,7 +569,7 @@ public class Process extends Element implements IProcess {
 									.getName().equals(
 											EParameterName.VERSION.getName()))) {
 						continue; // if the parameter is read only, don't load
-									// it (this will prevent to overwrite the
+						// it (this will prevent to overwrite the
 						// value)
 					}
 					if (param.getField().equals(EParameterFieldType.CHECK)) {
@@ -990,7 +991,8 @@ public class Process extends Element implements IProcess {
 									.getMetadataFromConnector(currentParam
 											.getContext());
 							if (!copyOfrepositoryMetadata
-									.sameMetadataAs(metadataTable)) {
+									.sameMetadataAs(metadataTable,
+											IMetadataColumn.OPTIONS_NONE)) {
 
 								result
 										.setResult(
@@ -2103,7 +2105,7 @@ public class Process extends Element implements IProcess {
 		for (INode node : getGeneratingNodes()) {
 			if (node.isActivate()) {
 				if (componentName == null) { // means all nodes will be
-												// returned
+					// returned
 					matchingNodes.add(node);
 				} else if ((node.getComponent().getName() != null)
 						&& (node.getComponent().getName()
@@ -2232,7 +2234,7 @@ public class Process extends Element implements IProcess {
 			for (IElementParameter curParam : node.getElementParameters()) {
 				if (curParam.getField().equals(EParameterFieldType.MODULE_LIST)) {
 					if (!"".equals(curParam.getValue())) { // if the parameter
-															// is not empty.
+						// is not empty.
 						neededLibraries.add((String) curParam.getValue());
 					}
 				}
@@ -2240,9 +2242,9 @@ public class Process extends Element implements IProcess {
 		}
 		if (withChildrens) {
 			Set<String> childrensList = new HashSet<String>(); // in case the
-																// same children
-																// is used
-																// several time
+			// same children
+			// is used
+			// several time
 			ProcessItem processItem = (ProcessItem) this.property.getItem();
 			if (processItem.getProcess().getRequired() != null) {
 				EList jobList = processItem.getProcess().getRequired().getJob();
@@ -2281,7 +2283,7 @@ public class Process extends Element implements IProcess {
 		} else {
 			ProcessItem pi = ProcessorUtilities.getProcessItem(processName);
 			if (pi == null) { // if the job is not valid, then return empty
-								// childs
+				// childs
 				return curSubJobs;
 			}
 			currentProcess = new Process(pi.getProperty());
