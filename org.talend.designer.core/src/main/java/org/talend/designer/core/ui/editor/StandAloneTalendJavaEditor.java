@@ -51,7 +51,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
@@ -153,11 +152,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     @Override
     public void dispose() {
         // remove the Runtines .java file in the .Java Project.
-        try {
-            rEditorInput.getFile().delete(true, null);
-        } catch (CoreException e1) {
-            RuntimeExceptionHandler.process(e1);
-        }
+        // try {
+        // rEditorInput.getFile().delete(true, null);
+        // } catch (CoreException e1) {
+        // RuntimeExceptionHandler.process(e1);
+        // }
         super.dispose();
         // Unlock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
