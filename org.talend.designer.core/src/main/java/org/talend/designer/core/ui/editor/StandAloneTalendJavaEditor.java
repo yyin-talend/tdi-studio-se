@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
@@ -108,6 +109,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+        rEditorInput.getFile().refreshLocal(IResource.DEPTH_ONE, null);
         super.doSetInput(rEditorInput);
         setName();
     }
