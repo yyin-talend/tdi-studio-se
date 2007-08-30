@@ -1,0 +1,105 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.commons.utils.StringUtils
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+        
+
+        Boolean advanced_mode = new Boolean(
+            ElementParameterParser.getValue( node, "__ADVANCED_MODE__" )
+        );
+
+        Boolean simple_mode = new Boolean(
+            ElementParameterParser.getValue( node, "__SIMPLE_MODE__" )
+        );
+
+
+
+        List<Map<String, String>> substitutions =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__SUBSTITUTIONS__"
+            );
+
+
+        // We need the name of the input connection and the name of the
+        // previous component
+        String inputRowName = new String("input_row");
+        String prevComponentName = new String("prev_component_name");
+
+        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
+
+            inputRowName = inConn.getName();
+            prevComponentName = inConn.getMetadataTable().getTableName();
+        }
+
+
+%>
+
+
+
+<%
+        if(simple_mode){
+            for(int i=0; i<substitutions.size(); i++) {
+                Map<String, String> substitution = substitutions.get(i);
+                if(!substitution.get("SEARCH_PATTERN").equals("")){
+%>
+        $<%=inputRowName%>->[<%=inputRowName%>__<%=substitution.get("INPUT_COLUMN")%>] =~ 
+           s/
+            <%
+            boolean isFirst = true ;
+            for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
+            %>
+            <%if(!isFirst){%>|<%}%>
+            <%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%><%=pattern%><%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>
+            <%
+                isFirst = false ;
+            }//for
+            %>/<%=substitution.get("REPLACE_STRING")%>/<%if( substitution.get("CASE_SENSITIVE").equals("false")){%>i<%}%>go;
+<%
+                }
+            }//for
+        }
+
+        if(advanced_mode){
+            List<Map<String, String>> patterns =
+                (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                    node,
+                    "__ADVANCED_SUBST__"
+                );
+            for(int i=0; i<patterns.size(); i++) {
+                Map<String, String> pattern = patterns.get(i);
+            
+%>
+            $<%=inputRowName%>->[<%=inputRowName%>__<%=pattern.get("INPUT_COLUMN")%>] =~ <%=pattern.get("SEARCH_REPLACE")%> ;
+<%
+            }//for
+        }//Advanced mode
+%>
+
+        $nb_line_<%=cid%>++ ;
+
+
+<%
+    }
+}
+%>
