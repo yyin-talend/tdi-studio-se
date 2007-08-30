@@ -35,7 +35,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.jface.util.Assert;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -603,9 +603,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 							String currentDbType = (String) RepositoryToComponentProperty
 									.getValue(connection, "TYPE"); //$NON-NLS-1$
 							if (repositoryValue.contains(":")) { // database
-																	// is
-																	// specified
-																	// //$NON-NLS-1$
+								// is
+								// specified
+								// //$NON-NLS-1$
 								String neededDbType = repositoryValue
 										.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
 								if (neededDbType.equals(currentDbType)) {
@@ -994,8 +994,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 		TabbedPropertyComposite tabbedPropertyComposite = null;
 		Composite tmpComposite = composite;
 		while (tabbedPropertyComposite == null) { // to retrieve the main
-													// composite of the
-													// TabbedProperties
+			// composite of the
+			// TabbedProperties
 			if (tmpComposite.getParent() instanceof TabbedPropertyComposite) {
 				tabbedPropertyComposite = (TabbedPropertyComposite) tmpComposite
 						.getParent();
@@ -1140,8 +1140,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 			elem = ((ConnectionLabel) elem).getConnection();
 		}
 
-		if (currentComponent == null
-				|| elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {
+		if (currentComponent == null) {
 			addComponents(true);
 		} else {
 			if (!currentComponent.equals(elem.getElementName())) {
