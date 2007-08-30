@@ -22,6 +22,8 @@
 package org.talend.repository.ui.properties;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.jface.action.IMenuListener;
@@ -54,6 +56,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.i18n.Messages;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -74,6 +77,16 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
     private TableViewer tableViewer;
 
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat();
+
+    /**
+     */
+    private static class IRepositoryObjectComparator implements Comparator {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
+        }
+    }
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -132,6 +145,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 try {
                     List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
                             repositoryObject.getId());
+                    Collections.sort(allVersion, new IRepositoryObjectComparator());
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
                         IRepositoryObject repositoryObjectVersion = allVersion.get(i);
