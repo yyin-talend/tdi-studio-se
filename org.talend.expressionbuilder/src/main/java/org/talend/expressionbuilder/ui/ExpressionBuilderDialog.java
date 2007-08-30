@@ -46,7 +46,6 @@ import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.expressionbuilder.ExpressionFileOperation;
-import org.talend.expressionbuilder.ICellEditorDialog;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
@@ -71,9 +70,9 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     private static CategoryComposite categoryComposite;
 
-    private CategoryManager manager = new CategoryManager();
+    private final CategoryManager manager = new CategoryManager();
 
-    private IExpressionConsumer consumer;
+    private final IExpressionConsumer consumer;
 
     private String defaultExpression = ""; //$NON-NLS-1$
 
@@ -95,6 +94,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * 
      * @param parent
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
         final GridLayout gridLayout = new GridLayout();
@@ -138,6 +138,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * 
      * @param parent
      */
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
 
         ((GridLayout) parent.getLayout()).numColumns++;
@@ -228,11 +229,13 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     }
 
+    @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(Messages.getString("ExpressionBuilderDialog.expression.builder")); //$NON-NLS-1$
     }
 
+    @Override
     protected Point getInitialSize() {
         return new Point(1024, 768);
     }
@@ -263,7 +266,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * @return the expressionComposite
      */
     public static ExpressionComposite getExpressionComposite() {
-        return (ExpressionComposite) expressionComposite;
+        return expressionComposite;
     }
 
     /**
@@ -282,7 +285,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     @Override
     protected void okPressed() {
-        String expression = ((ExpressionComposite) expressionComposite).getExpression();
+        String expression = (expressionComposite).getExpression();
         if (expression != null) {
             consumer.setConsumerExpression(expression);
         }
