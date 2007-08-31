@@ -111,7 +111,17 @@ if (inMetadata != null && metadata != null) {
 	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
     
     %>
-    
+	// MySQL date bounds
+	java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
+	calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
+	final java.util.Date dateYear0_<%=cid%> = calendar_<%=cid%>.getTime();
+	final long year1_<%=cid %> = dateYear0_<%=cid%>.getTime();
+	calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
+	final long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
+	long date_<%=cid %>;
+	String dateString_<%=cid%>;
+	String value_<%=cid%>;
+	
     // Source keys
     class SCDSK_<%=cid%> {
     	private int hashCode;
@@ -296,7 +306,7 @@ if (inMetadata != null && metadata != null) {
 		  		
 				if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
 					%>
-					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+					value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
 				  	if (value_<%=cid%> != null && value_<%=cid%>.length() > 0) {
 				  		<%=struct%>.<%=colname%> = resultSet_<%=cid %>.getString(<%=colPosition%>).charAt(0);
 				  	} else {			  	
@@ -323,11 +333,13 @@ if (inMetadata != null && metadata != null) {
 					<%
 				} else if (typeToGenerate.equals("Timestamp")) {
 					%>
-					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
-					if (value_<%=cid%> != null){
-    			 		String pattern_<%=cid%> = <%=column.getPattern().equals("") ? "\"yyyy-MM-dd\"" : column.getPattern()%>;
-						java.util.Date tmpDate_<%=cid%> = FastDateParser.getInstance(pattern_<%=cid%>).parse(value_<%=cid%>);
-						<%=struct%>.<%=colname%> = tmpDate_<%=cid%>;
+					dateString_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+					if (dateString_<%=cid%> != null) {
+	    				if (!dateString_<%=cid%>.equals("0000-00-00") && !dateString_<%=cid%>.equals("0000-00-00 00:00:00")) {
+							<%=struct%>.<%=colname%> = resultSet_<%=cid%>.getTimestamp(<%=colPosition%>);
+						} else {
+							<%=struct%>.<%=colname%> = (java.util.Date) dateYear0_<%=cid%>.clone();
+						}
 					} else {
 						<%=struct%>.<%=colname%> =  null;
 					}
@@ -476,14 +488,6 @@ if (inMetadata != null && metadata != null) {
 	}
 	
 	%>
-	// MySQL date bounds
-	java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
-	calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
-	final long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
-	calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
-	final long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
-	long date_<%=cid %>;
-	
 	SCDSK_<%=cid%> lookupRow_<%=cid%> = new SCDSK_<%=cid%>();
 	SCDStruct_<%=cid%> cacheRow_<%=cid%>;
     <%

@@ -102,6 +102,8 @@ if (inMetadata != null && metadata != null) {
 	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
     
     %>
+    java.sql.Timestamp timestamp_<%=cid%>;
+	String value_<%=cid%>;
     
     // Source keys
     class SCDSK_<%=cid%> {
@@ -287,7 +289,7 @@ if (inMetadata != null && metadata != null) {
 		  		
 				if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
 					%>
-					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+					value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
 				  	if (value_<%=cid%> != null && value_<%=cid%>.length() > 0) {
 				  		<%=struct%>.<%=colname%> = resultSet_<%=cid %>.getString(<%=colPosition%>).charAt(0);
 				  	} else {			  	
@@ -314,13 +316,11 @@ if (inMetadata != null && metadata != null) {
 					<%
 				} else if (typeToGenerate.equals("Timestamp")) {
 					%>
-					String value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
-					if (value_<%=cid%> != null){
-    			 		String pattern_<%=cid%> = <%=column.getPattern().equals("") ? "\"yyyy-MM-dd\"" : column.getPattern()%>;
-						java.util.Date tmpDate_<%=cid%> = FastDateParser.getInstance(pattern_<%=cid%>).parse(value_<%=cid%>);
-						<%=struct%>.<%=colname%> = tmpDate_<%=cid%>;
+					timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=colPosition%>);
+					if (timestamp_<%=cid%> != null) {
+						<%=struct%>.<%=colname%> = new java.util.Date(timestamp_<%=cid%>.getTime());
 					} else {
-						<%=struct%>.<%=colname%> =  null;
+						<%=struct%>.<%=colname%> = null;
 					}
 			 		<% 	
 				} else {
