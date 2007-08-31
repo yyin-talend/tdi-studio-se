@@ -82,7 +82,6 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
      */
     private static class IRepositoryObjectComparator implements Comparator {
 
-        @Override
         public int compare(Object o1, Object o2) {
             return VersionUtils.compareTo(((IRepositoryObject) o1).getVersion(), ((IRepositoryObject) o2).getVersion());
         }
@@ -149,8 +148,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     Object[] objects = new Object[allVersion.size()];
                     for (int i = 0; i < objects.length; i++) {
                         IRepositoryObject repositoryObjectVersion = allVersion.get(i);
-                        RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode,
-                                repositoryObjectVersion);
+                        RepositoryNode repositoryNode = createRepositoryNode(parentRepositoryNode, repositoryObjectVersion);
                         objects[i] = repositoryNode;
                     }
                     return objects;
@@ -161,8 +159,8 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
 
             private RepositoryNode createRepositoryNode(RepositoryNode parentRepositoryNode,
                     IRepositoryObject repositoryObjectVersion) {
-                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion
-                        .getProperty().getItem());
+                ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(repositoryObjectVersion.getProperty()
+                        .getItem());
 
                 RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
                         ENodeType.REPOSITORY_ELEMENT);
@@ -275,10 +273,10 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                     @Override
                     public int compare(Viewer viewer, Object e1, Object e2) {
                         ITableLabelProvider labelProvider = (ITableLabelProvider) tableViewer.getLabelProvider();
-                        String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider
-                                .getColumnText(e1, index) : "";
-                        String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider
-                                .getColumnText(e2, index) : "";
+                        String columnText = labelProvider.getColumnText(e1, index) != null ? labelProvider.getColumnText(e1,
+                                index) : "";
+                        String columnText2 = labelProvider.getColumnText(e2, index) != null ? labelProvider.getColumnText(e2,
+                                index) : "";
                         return getComparator().compare(columnText, columnText2) * direction;
                     }
                 });
