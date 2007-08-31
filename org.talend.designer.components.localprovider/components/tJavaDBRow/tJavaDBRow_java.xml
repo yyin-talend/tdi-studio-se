@@ -8,6 +8,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20070326A"
     STARTABLE="true"
+    DATA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE/>
   </HEADER>
@@ -18,6 +19,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE"/>
@@ -127,12 +129,25 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="SCHEMA"
+      NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
       NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="6"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>    
 
 	<PARAMETER
       NAME="DBTABLE"
