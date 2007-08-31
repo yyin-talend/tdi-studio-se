@@ -68,6 +68,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             <%
             boolean isFirst = true ;
             for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
+                // to protect metachar
+                pattern = StringUtils.protectMetachar(pattern);
             %>
             <%if(!isFirst){%>|<%}%>
             <%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%><%=pattern%><%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>
@@ -88,10 +90,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 );
             for(int i=0; i<patterns.size(); i++) {
                 Map<String, String> pattern = patterns.get(i);
+                if(!pattern.get("SEARCH_REPLACE").equals("")){
             
 %>
             $<%=inputRowName%>->[<%=inputRowName%>__<%=pattern.get("INPUT_COLUMN")%>] =~ <%=pattern.get("SEARCH_REPLACE")%> ;
 <%
+                }
             }//for
         }//Advanced mode
 %>
