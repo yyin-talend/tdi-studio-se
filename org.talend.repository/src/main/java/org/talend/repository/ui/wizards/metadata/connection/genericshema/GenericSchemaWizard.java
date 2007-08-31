@@ -52,10 +52,9 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
-import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
 
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
+ *  ftang class global comment. Detailled comment <br/>
  * 
  */
 public class GenericSchemaWizard extends RepositoryWizard implements INewWizard {
@@ -63,10 +62,6 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
     private static Logger log = Logger.getLogger(GenericSchemaWizard.class);
 
     private PropertiesWizardPage genericSchemaWizardPage0;
-
-    // private DelimitedFileWizardPage delimitedFileWizardPage1;
-    //
-    // private DelimitedFileWizardPage delimitedFileWizardPage2;
 
     private GenericSchemaWizardPage genericSchemaWizardPage1;
 
@@ -158,10 +153,6 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
         genericSchemaWizardPage0 = null;
         genericSchemaWizardPage1 = null;
-        // delimitedFileWizardPage1 = new DelimitedFileWizardPage(1, connectionItem, isRepositoryObjectEditable(),
-        // existingNames);
-        // delimitedFileWizardPage2 = new DelimitedFileWizardPage(2, connectionItem, isRepositoryObjectEditable(),
-        // existingNames);
 
         if (creation) {
             setWindowTitle("Create new generic schema");// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
@@ -173,19 +164,6 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             genericSchemaWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(genericSchemaWizardPage0);
 
-            // delimitedFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$
-            // //$NON-NLS-2$
-            // + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
-            // delimitedFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
-            // //$NON-NLS-1$
-            // addPage(delimitedFileWizardPage1);
-            //
-            // delimitedFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$
-            // //$NON-NLS-2$
-            // + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
-            // delimitedFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2"));
-            // //$NON-NLS-1$
-            // addPage(delimitedFileWizardPage2);
             genericSchemaWizardPage1 = new GenericSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(),
                     null);
             genericSchemaWizardPage1.setTitle("Create new generic schema" // Messages.getString("FileWizardPage.titleCreate")
@@ -194,9 +172,6 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             genericSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
             addPage(genericSchemaWizardPage1);
 
-            // delimitedFileWizardPage0.setPageComplete(false);
-            // delimitedFileWizardPage1.setPageComplete(false);
-            // delimitedFileWizardPage2.setPageComplete(false);
             genericSchemaWizardPage1.setPageComplete(false);
 
         } else if (this.isSinglePageOnly == false) {
@@ -219,20 +194,6 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             addPage(genericSchemaWizardPage1);
             genericSchemaWizardPage1.setPageComplete(true);
 
-            // delimitedFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$
-            // //$NON-NLS-2$
-            // + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
-            // delimitedFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1"));
-            // //$NON-NLS-1$
-            // addPage(delimitedFileWizardPage1);
-            //
-            // delimitedFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$
-            // //$NON-NLS-2$
-            // + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
-            // delimitedFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2"));
-            // //$NON-NLS-1$
-            // addPage(delimitedFileWizardPage2);
-            //
             genericSchemaWizardPage0.setPageComplete(true);
             genericSchemaWizardPage1.setPageComplete(isRepositoryObjectEditable());
         } else {
