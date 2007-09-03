@@ -63,20 +63,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 Map<String, String> substitution = substitutions.get(i);
                 if(!substitution.get("SEARCH_PATTERN").equals("")){
 %>
+        my $replace_string__<%=i%> = <%=substitution.get("REPLACE_STRING")%>;
+<%            
+                int indx = 0;
+                for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
+                // to protect metachar
+                    pattern = StringUtils.protectMetachar(pattern);
+                %>
+        my $search_pattern__<%=i%>__<%=indx%> = <%=pattern%>;
+                <%
+                    indx++;
+                }
+                %> 
         $<%=inputRowName%>->[<%=inputRowName%>__<%=substitution.get("INPUT_COLUMN")%>] =~ 
-           s/
+           s{
             <%
             boolean isFirst = true ;
+            int indx2 = 0;
             for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
-                // to protect metachar
-                pattern = StringUtils.protectMetachar(pattern);
+                
             %>
             <%if(!isFirst){%>|<%}%>
-            <%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%><%=pattern%><%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>
+            <%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>$search_pattern__<%=i%>__<%=indx2%><%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>
             <%
                 isFirst = false ;
+                indx2++;
             }//for
-            %>/<%=substitution.get("REPLACE_STRING")%>/<%if( substitution.get("CASE_SENSITIVE").equals("false")){%>i<%}%>go;
+            %>}{$replace_string__<%=i%>}x<%if( substitution.get("CASE_SENSITIVE").equals("false")){%>i<%}%>go;
 <%
                 }
             }//for
