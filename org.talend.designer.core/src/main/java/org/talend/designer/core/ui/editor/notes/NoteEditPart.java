@@ -68,6 +68,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         noteFigure.setOpaque(note.isOpaque());
     }
 
+    @Override
     public void activate() {
         if (!isActive()) {
             super.activate();
@@ -75,6 +76,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         }
     }
 
+    @Override
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
@@ -86,15 +88,16 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         refresh();
     }
 
+    @Override
     public void performRequest(Request request) {
         Note note = (Note) getModel();
         if (note.isReadOnly()) {
             return;
         }
-        
+
         if (request.getType() == RequestConstants.REQ_OPEN) {
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-            .getActiveEditor();
+                    .getActiveEditor();
             if (part instanceof MultiPageTalendEditor) {
                 CommandStack commandStack = (CommandStack) part.getAdapter(CommandStack.class);
 
@@ -110,5 +113,14 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
             }
             directEditManager.show();
         }
+    }
+
+    /**
+     * yzhang Comment method "getNoteDirectEditManager".
+     * 
+     * @return
+     */
+    public NoteDirectEditManager getNoteDirectEditManager() {
+        return (NoteDirectEditManager) directEditManager;
     }
 }

@@ -26,12 +26,15 @@ import java.util.List;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.NoteDirectEditManager;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
 /**
@@ -65,9 +68,17 @@ public class GEFCopyAction extends SelectionAction {
         List objects = getSelectedObjects();
         if (!objects.isEmpty()) {
             for (Object o : objects) {
+                if (o instanceof NoteEditPart) {
+                    return true;
+                }
+                if (o instanceof ConnLabelEditPart) {
+                    return true;
+                }
+
                 if (!(o instanceof NodePart) && !(o instanceof NoteEditPart)) {
                     return false;
                 }
+
             }
             return true;
         }
@@ -79,13 +90,48 @@ public class GEFCopyAction extends SelectionAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         List objects = getSelectedObjects();
         if (!objects.isEmpty()) {
-            Clipboard.getDefault().setContents(objects);
+            Clipboard clipboard = Clipboard.getDefault();
+
+            boolean noteTextActived = false;
+
+            boolean connectionTextActived = false;
+
+            if (objects.size() == 1) {
+                if (objects.get(0) instanceof NoteEditPart) {
+                    NoteDirectEditManager directEditManager = ((NoteEditPart) objects.get(0))
+                            .getNoteDirectEditManager();
+                    if (directEditManager != null && directEditManager.getCellEditor() != null) {
+                        noteTextActived = true;
+                    }
+                } else if (objects.get(0) instanceof ConnLabelEditPart) {
+                    ConnLabelEditPart connLabelEditPart = (ConnLabelEditPart) objects.get(0);
+                    if (connLabelEditPart.getDirectEditManager() != null
+                            && connLabelEditPart.getDirectEditManager().getTextControl() != null) {
+                        connectionTextActived = true;
+                    }
+                }
+            }
+
+            if (noteTextActived) {
+
+                Text text = ((NoteEditPart) objects.get(0)).getNoteDirectEditManager().getTextControl();
+                clipboard.setContents(text.getSelectionText());
+
+            } else if (connectionTextActived) {
+
+                Text text = ((ConnLabelEditPart) objects.get(0)).getDirectEditManager().getTextControl();
+                clipboard.setContents(text.getSelectionText());
+
+            } else {
+                clipboard.setContents(objects);
+            }
         }
 
-        //Refreshes the pasteAction's enable status.
+        // Refreshes the pasteAction's enable status.
         IWorkbenchPart part = getWorkbenchPart();
         if (part instanceof TalendEditor) {
             TalendEditor talendEditor = (TalendEditor) part;

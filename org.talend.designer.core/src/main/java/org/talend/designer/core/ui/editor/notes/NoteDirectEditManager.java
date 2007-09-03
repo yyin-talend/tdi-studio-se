@@ -38,6 +38,7 @@ public class NoteDirectEditManager extends DirectEditManager {
         super(source, editorType, locator);
     }
 
+    @Override
     protected CellEditor createCellEditorOn(Composite composite) {
         return new TextCellEditor(composite, SWT.MULTI | SWT.WRAP);
     }
@@ -57,5 +58,27 @@ public class NoteDirectEditManager extends DirectEditManager {
             Text text = (Text) getCellEditor().getControl();
             text.setSelection(text.getText().length(), text.getText().length());
         }
+    }
+
+    /**
+     * yzhang Comment method "getTextControl".
+     * 
+     * @return
+     */
+    public Text getTextControl() {
+        if (getCellEditor() == null) {
+            return null;
+        }
+        return (Text) ((TextCellEditor) getCellEditor()).getControl();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.tools.DirectEditManager#getCellEditor()
+     */
+    @Override
+    public CellEditor getCellEditor() {
+        return super.getCellEditor();
     }
 }

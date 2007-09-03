@@ -94,6 +94,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -177,11 +179,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private boolean dirtyState = false;
 
-    private JobResource currentJobResource;
+    private final JobResource currentJobResource;
 
-    private String projectName;
+    private final String projectName;
 
-    private Map<String, JobResource> protectedJobs;
+    private final Map<String, JobResource> protectedJobs;
 
     public TalendEditor() {
         this(false);
@@ -284,6 +286,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     // ------------------------------------------------------------------------
     // Overridden from GraphicalEditor
 
+    @Override
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
@@ -378,6 +381,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      * 
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#getActionRegistry()
      */
+    @Override
     public ActionRegistry getActionRegistry() {
         return super.getActionRegistry();
     }
@@ -420,16 +424,19 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     }
 
+    @Override
     protected Control getGraphicalControl() {
         return rulerComp;
     }
 
+    @Override
     protected void createGraphicalViewer(final Composite parent) {
         rulerComp = new RulerComposite(parent, SWT.NONE);
         super.createGraphicalViewer(rulerComp);
         rulerComp.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
     }
 
+    @Override
     public void commandStackChanged(final EventObject event) {
         if (isDirty()) {
             if (!this.savePreviouslyNeeded) {
@@ -452,6 +459,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return "org.talend.repository.views.repository"; //$NON-NLS-1$
     }
 
+    @Override
     public Object getAdapter(final Class type) {
 
         // this will select the TabbedPropertyPage instead of the classic property view
@@ -475,6 +483,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     // ------------------------------------------------------------------------
     // Overridden from EditorPart
 
+    @Override
     protected void setInput(final IEditorInput input) {
         super.setInput(input);
 
@@ -497,6 +506,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     // ------------------------------------------------------------------------
     // Abstract methods from GraphicalEditor
 
+    @Override
     protected void initializeGraphicalViewer() {
         // this uses the PartFactory set in configureGraphicalViewer
         // to create an EditPart for the diagram and sets it as the
@@ -505,11 +515,24 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         getGraphicalViewer().addDropTargetListener(new ProcessTemplateTransferDropTargetListener(getGraphicalViewer()));
         getGraphicalViewer().addDropTargetListener(new TalendEditorDropTargetListener(this));
+        getGraphicalViewer().getControl().addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                updateActions(getSelectionActions());
+            }
+        });
     }
 
     // ------------------------------------------------------------------------
     // Abstract methods from EditorPart
 
+    @Override
     public void doSave(IProgressMonitor monitor) {
         monitor.beginTask(Messages.getString("TalendEditor.monitorBeginText"), 100); //$NON-NLS-1$
         monitor.worked(10);
@@ -537,6 +560,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     }
 
+    @Override
     public void doSaveAs() {
         SaveAsDialog dialog = new SaveAsDialog(getSite().getWorkbenchWindow().getShell());
         dialog.setOriginalFile(((IFileEditorInput) getEditorInput()).getFile());
@@ -552,6 +576,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
+            @Override
             public void execute(final IProgressMonitor monitor) throws CoreException {
                 try {
                     process.saveXmlFile(file);
@@ -577,6 +602,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public void gotoMarker(final IMarker marker) {
     }
 
+    @Override
     public boolean isDirty() {
         // rely on the command stack to determine dirty flag
         return dirtyState || getCommandStack().isDirty();
@@ -589,15 +615,18 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         }
     }
 
+    @Override
     public boolean isSaveAsAllowed() {
         // allow Save As
         return true;
     }
 
+    @Override
     protected FlyoutPreferences getPalettePreferences() {
         return TalendEditorPaletteFactory.createPalettePreferences();
     }
 
+    @Override
     protected PaletteRoot getPaletteRoot() {
         if (paletteRoot == null) {
 
@@ -654,6 +683,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             super(viewer);
         }
 
+        @Override
         public void init(final IPageSite pageSite) {
             super.init(pageSite);
             ActionRegistry registry = getActionRegistry();
@@ -674,6 +704,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
             showOutlineAction = new Action() {
 
+                @Override
                 public void run() {
                     showPage(ID_OUTLINE);
                 }
@@ -683,6 +714,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             tbm.add(showOutlineAction);
             showOverviewAction = new Action() {
 
+                @Override
                 public void run() {
                     showPage(ID_OVERVIEW);
                 }
@@ -693,6 +725,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             showPage(ID_OUTLINE);
         }
 
+        @Override
         public void createControl(final Composite parent) {
 
             pageBook = new PageBook(parent, SWT.NONE);
@@ -704,6 +737,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             initializeOutlineViewer();
         }
 
+        @Override
         public void dispose() {
             unhookOutlineViewer();
             if (thumbnail != null) {
@@ -722,6 +756,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             return null;
         }
 
+        @Override
         public Control getControl() {
             return pageBook;
         }
@@ -790,6 +825,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     /**
      * This function will allow the use of the Delete in the Multipage Editor.
      */
+    @Override
     public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
         super.selectionChanged(part, selection);
         if (this.equals(part)) { // Propagated from MyMultiPageEditor.
@@ -857,7 +893,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      */
     public String[] getProtectedIds() {
         Set<String> set = protectedJobs.keySet();
-        return (String[]) set.toArray(new String[set.size()]);
+        return set.toArray(new String[set.size()]);
     }
 
     /*

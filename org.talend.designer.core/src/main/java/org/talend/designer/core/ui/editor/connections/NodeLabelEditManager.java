@@ -41,10 +41,13 @@ public class NodeLabelEditManager extends DirectEditManager {
 
     Font scaledFont;
 
+    private Text text;
+
     public NodeLabelEditManager(GraphicalEditPart source, Class editorType, CellEditorLocator locator) {
         super(source, editorType, locator);
     }
 
+    @Override
     protected void bringDown() {
         Font disposeFont = scaledFont;
         scaledFont = null;
@@ -54,16 +57,17 @@ public class NodeLabelEditManager extends DirectEditManager {
         }
     }
 
+    @Override
     protected void initCellEditor() {
         Connection connection = ((ConnectionLabel) this.getEditPart().getModel()).getConnection();
         if (getCellEditor() instanceof NodeLabelCellEditor) {
             ((NodeLabelCellEditor) getCellEditor()).setCurrentConnection(connection);
         }
-        Label label = (Label) ((GraphicalEditPart) getEditPart()).getFigure();
+        Label label = (Label) (getEditPart()).getFigure();
         String initialLabelText = label.getText();
         getCellEditor().setValue(initialLabelText);
-        Text text = (Text) getCellEditor().getControl();
-        IFigure figure = ((GraphicalEditPart) getEditPart()).getFigure();
+        text = (Text) getCellEditor().getControl();
+        IFigure figure = (getEditPart()).getFigure();
         scaledFont = figure.getFont();
         FontData data = scaledFont.getFontData()[0];
         Dimension fontSize = new Dimension(0, data.getHeight());
@@ -72,5 +76,17 @@ public class NodeLabelEditManager extends DirectEditManager {
         scaledFont = new Font(null, data);
         text.setFont(scaledFont);
         text.selectAll();
+    }
+
+    /**
+     * yzhang Comment method "getTextControl".
+     * 
+     * @return
+     */
+    public Text getTextControl() {
+        if (getCellEditor() == null) {
+            return null;
+        }
+        return (Text) getCellEditor().getControl();
     }
 }

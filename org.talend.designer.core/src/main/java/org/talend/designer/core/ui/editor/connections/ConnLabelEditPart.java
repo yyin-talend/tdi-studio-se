@@ -39,7 +39,6 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.talend.commons.utils.workbench.gef.LabelCellEditorLocator;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
@@ -59,6 +58,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
      */
+    @Override
     public void activate() {
         if (!isActive()) {
             super.activate();
@@ -71,6 +71,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
@@ -83,6 +84,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
+    @Override
     public IFigure createFigure() {
         String text = ((ConnectionLabel) getModel()).getLabelText();
         Label label = new Label();
@@ -107,11 +109,13 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
+    @Override
     public void createEditPolicies() {
         installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ConnTextMovePolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ConnTextEditPolicy());
         installEditPolicy(EditPolicy.COMPONENT_ROLE, new ConnectionEditPolicy() {
 
+            @Override
             protected Command getDeleteCommand(GroupRequest request) {
                 if (((Connection) getHost().getParent().getModel()).isReadOnly()) {
                     return null;
@@ -133,6 +137,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getDragTracker(org.eclipse.gef.Request)
      */
+    @Override
     public DragTracker getDragTracker(Request request) {
         return new ConnTextTracker(this, (ConnectionPart) getParent());
     }
@@ -142,6 +147,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
+    @Override
     protected void refreshVisuals() {
         String text = ((ConnectionLabel) getModel()).getLabelText();
         Point offset = ((ConnectionLabel) getModel()).getOffset();
@@ -158,6 +164,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
      */
+    @Override
     public void performRequest(Request request) {
         Connection connectionParent = (Connection) getParent().getModel();
 
@@ -187,10 +194,20 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
+    @Override
     public void setSelected(int value) {
         super.setSelected(value);
         if (this.getParent().getSelected() != value) {
             this.getParent().setSelected(value);
         }
+    }
+
+    /**
+     * Getter for manager.
+     * 
+     * @return the manager
+     */
+    public NodeLabelEditManager getDirectEditManager() {
+        return this.manager;
     }
 }
