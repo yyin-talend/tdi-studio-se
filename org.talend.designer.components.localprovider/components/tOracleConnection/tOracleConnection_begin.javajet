@@ -41,3 +41,8 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
+globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
+globalMap.put("port_" + "<%=cid%>",<%=dbport%>);
+globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+globalMap.put("username_" + "<%=cid%>",<%=dbuser%>);
+globalMap.put("password_" + "<%=cid%>",<%=dbpass%>);
