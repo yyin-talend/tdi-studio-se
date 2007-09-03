@@ -96,9 +96,9 @@ public class ElementParameter implements IElementParameter {
     private String filter = null;
 
     private boolean noCheck = false;
-    
+
     private String context;
-    
+
     private Map<String, IElementParameter> childParameters;
 
     private IElementParameter parentParameter;
@@ -395,7 +395,11 @@ public class ElementParameter implements IElementParameter {
                 }
             }
             if (setDefaultValue) {
-                setValue(defaultValue.getDefaultValue());
+                if (this.field.equals(EParameterFieldType.CHECK)) {
+                    setValue(new Boolean(defaultValue.getDefaultValue().toString()));
+                } else {
+                    setValue(defaultValue.getDefaultValue());
+                }
             }
         }
     }
@@ -458,27 +462,27 @@ public class ElementParameter implements IElementParameter {
         this.noCheck = noCheck;
     }
 
-    
     /**
      * Getter for context.
+     * 
      * @return the context
      */
     public String getContext() {
         return context;
     }
 
-    
     /**
      * Sets the context.
+     * 
      * @param context the context to set
      */
     public void setContext(String context) {
         this.context = context;
     }
 
-    
     /**
      * Getter for childParameters.
+     * 
      * @return the childParameters
      */
     public Map<String, IElementParameter> getChildParameters() {

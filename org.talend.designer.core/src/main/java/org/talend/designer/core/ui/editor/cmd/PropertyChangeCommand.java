@@ -209,7 +209,10 @@ public class PropertyChangeCommand extends Command {
 
             // if the field is not a schema type, then use standard "set value".
             if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                String oldMapping = (String) testedParam.getValue();
+                String oldMapping = "";
+                if (!testedParam.getField().equals(EParameterFieldType.CHECK)) {
+                    oldMapping = (String) testedParam.getValue();
+                }
                 testedParam.setValueToDefault(elem.getElementParameters());
                 if (testedParam.getField().equals(EParameterFieldType.MAPPING_TYPE)) {
                     String newMapping = (String) testedParam.getValue();
