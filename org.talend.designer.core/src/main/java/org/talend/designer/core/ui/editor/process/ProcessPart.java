@@ -31,7 +31,6 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -40,12 +39,13 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.ui.IEditorInput;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.repository.model.RepositoryNode;
 
@@ -60,7 +60,6 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     private FreeformLayer fig2;
 
     private RepositoryNode node;
-
 
     /*
      * (non-Javadoc)
@@ -196,10 +195,12 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     public void propertyChange(final PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
         if (Process.NODES.equals(prop)) {
-            refreshChildren();
+            // refreshChildren();
+            refresh();
         }
         if (Process.NOTES.equals(prop)) {
-            refreshChildren();
+            // refreshChildren();
+            refresh();
         }
     }
 
@@ -229,5 +230,47 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     @Override
     public List getChildren() {
         return super.getChildren();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#refresh()
+     */
+    @Override
+    public void refresh() {
+        sortNode();
+        super.refresh();
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "sortNode". <br/>
+     * 
+     * Sort components Alphabeticaly in the Outline viewer. <br/>
+     * 
+     * Rule: sorted by unique name
+     */
+
+    private void sortNode() {
+        Process process = (Process) this.getModel();
+
+        List<INode> eleList = (List<INode>) process.getGraphicalNodes();
+        if (eleList.size() > 1) {
+            Node node, tmpNode;
+            for (int i = 1; i < eleList.size(); i++) {
+                tmpNode = (Node) eleList.get(i);
+                for (int k = i; k > 0; k--) {
+                    node = (Node) eleList.get(k - 1);
+                    // ascending order
+                    if (node.getUniqueName().compareTo(tmpNode.getUniqueName()) > 0) {
+                        // Swap the node
+                        eleList.remove(node);
+                        eleList.add(k, node);
+                    }
+                }
+            }
+        }
+
     }
 }

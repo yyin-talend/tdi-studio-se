@@ -95,6 +95,11 @@ public class NodeTreeEditPart extends AbstractTreeEditPart implements PropertyCh
      * @see org.eclipse.gef.editparts.AbstractTreeEditPart#refreshVisuals()
      */
     protected void refreshVisuals() {
-        setWidgetText(((Node) getModel()).getUniqueName());
+        Node node = (Node) getModel();
+        if (node.getLabel().equals(node.getUniqueName())) {
+            setWidgetText(node.getUniqueName());
+        } else {
+            setWidgetText(node.getUniqueName() + " (" + node.getLabel() + ")");
+        }
     }
 }
