@@ -83,6 +83,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
@@ -115,7 +116,8 @@ public class CreateConnectionAction extends AbstractCreateAction {
         switch (node.getType()) {
         case REPOSITORY_ELEMENT:
             // pathToSave = null;
-            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
+                    .getConnection();
             creation = false;
             break;
         case SIMPLE_FOLDER:
@@ -132,16 +134,18 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         // Init the content of the Wizard
         init(node);
-        DatabaseWizard databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames());
+        DatabaseWizard databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection,
+                getExistingNames());
 
         // Open the Wizard
         WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), databaseWizard);
-        wizardDialog.setPageSize(600, 475);
+        wizardDialog.setPageSize(600, 565);
         wizardDialog.create();
         wizardDialog.open();
         refresh(((IStructuredSelection) getSelection()).getFirstElement());
     }
 
+    @Override
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (!ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)) {

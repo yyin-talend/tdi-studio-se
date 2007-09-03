@@ -26,7 +26,6 @@ import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.talend.repository.i18n.Messages;
 
 /**
  * @author ocarbone
@@ -34,9 +33,9 @@ import org.talend.repository.i18n.Messages;
  */
 public class DataStringConnection {
 
-    private DataConnection[] dataConnection;
+    private final DataConnection[] dataConnection;
 
-    private String[] defaultTable;
+    private final String[] defaultTable;
 
     // private Combo combo;
 
@@ -50,9 +49,9 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[17];
+        dataConnection = new DataConnection[20];
 
-        defaultTable = new String[17];
+        defaultTable = new String[20];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -113,14 +112,14 @@ public class DataStringConnection {
         dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid> ;prompt=false", "jdbc:as400://"
                 + host + "/" + sid + ";prompt=false");
 
-        // dataConnection[15] = new DataConnection("JavaDB Embeded", "jdbc:derby:<datasource>", "jdbc:derby:" + word);
-        // //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[17] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:" + word);
+        //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        // dataConnection[16] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
-        // "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[18] = new DataConnection("JavaDB JCCJDBC", "jdbc:derby:net://<host>:<port>/<sid>",
+                "jdbc:derby:net://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        // dataConnection[17] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
-        // "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[19] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
+                "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -331,5 +330,29 @@ public class DataStringConnection {
         }
         return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
                 || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql"); //$NON-NLS-1$
+    }
+
+    /**
+     * DOC qiang.zhang Comment method "getString".
+     * 
+     * @param selectionIndex2
+     * @param text
+     * @param text2
+     * @param text3
+     * @param text4
+     * @param text5
+     * @param lowerCase
+     * @param text6
+     * @param text7
+     * @return
+     */
+    public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
+            final String port, final String sid, final String filename, final String datasource, String dbrootPath) {
+        String string = getString(dbTypeItemIndex, host, login, password, port, sid, filename, datasource);
+        if (string.equals("")) {
+            return ""; //$NON-NLS-1$
+        }
+        string = getStringReplace(string, "<dbRootPath>", sid);
+        return string;
     }
 }

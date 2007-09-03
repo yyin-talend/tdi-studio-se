@@ -69,6 +69,8 @@ public class ManagerConnection {
 
     private String schemaOracle;
 
+    private String dbRootPath;
+
     /**
      * setValue.
      * 
@@ -81,8 +83,8 @@ public class ManagerConnection {
      * @param password
      */
     public void setValue(Integer id, final String dbType, final String url, final String server, final String username,
-            final String password, final String sidOrDatabase, final String port, final String file, final String datasource,
-            final String schemaOracle) {
+            final String password, final String sidOrDatabase, final String port, final String file,
+            final String datasource, final String schemaOracle) {
         this.id = id;
         this.dbTypeString = dbType;
         this.urlConnectionString = url;
@@ -110,8 +112,8 @@ public class ManagerConnection {
     public boolean check() {
         messageException = null;
         try {
-            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
-                    username, password, schemaOracle);
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString,
+                    urlConnectionString, username, password, schemaOracle);
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -127,10 +129,13 @@ public class ManagerConnection {
      */
     public boolean check(IMetadataConnection metadataConnection) {
         messageException = null;
+        if (metadataConnection.getDbRootPath() != null && !metadataConnection.getDbRootPath().equals("")) {
+            setDbRootPath(metadataConnection.getDbRootPath());
+        }
         try {
-            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
-                    metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
-                    metadataConnection.getSchema());
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(
+                    metadataConnection.getDbType(), metadataConnection.getUrl(), metadataConnection.getUsername(),
+                    metadataConnection.getPassword(), metadataConnection.getSchema());
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -164,5 +169,26 @@ public class ManagerConnection {
      */
     public void setMessageException(final String messageException) {
         this.messageException = messageException;
+    }
+
+    /**
+     * Getter for dbRootPath.
+     * 
+     * @return the dbRootPath
+     */
+    public String getDbRootPath() {
+        return this.dbRootPath;
+    }
+
+    /**
+     * Sets the dbRootPath.
+     * 
+     * @param dbRootPath the dbRootPath to set
+     */
+    public void setDbRootPath(String dbRootPath) {
+        if (dbRootPath != null) {
+            System.setProperty("derby.system.home", dbRootPath);
+        }
+        this.dbRootPath = dbRootPath;
     }
 }
