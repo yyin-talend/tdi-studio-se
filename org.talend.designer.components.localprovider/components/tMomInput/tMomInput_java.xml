@@ -35,7 +35,11 @@
       FIELD="CHECK"
       SHOW="true"
       NUM_ROW="1"
-    />
+    >
+    <DEFAULT IF="(SERVER == 'JBOSS')">true</DEFAULT>
+    <DEFAULT IF="(SERVER == 'WEBSPHERE')">false</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="TIMEOUT"
       FIELD="TEXT"
