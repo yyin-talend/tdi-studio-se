@@ -61,8 +61,7 @@ else
 	<%
 }
 %>
-
-java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
+java.sql.Statement pstmt_<%=cid %> = conn_<%=cid%>.createStatement();
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%

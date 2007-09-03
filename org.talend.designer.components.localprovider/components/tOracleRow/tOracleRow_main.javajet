@@ -20,6 +20,9 @@ String cid =  node.getUniqueName();
 String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	       dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");
 
 String incomingConnName = null;
 
@@ -45,7 +48,7 @@ commitCounter_<%=cid%>++;
 <%
 	}
 }
-String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
 
 int counter = 0;
@@ -104,7 +107,7 @@ while (index>=0) {
 	}
 	%>
     try {
-    	pstmt_<%=cid %>.execute();
+    	pstmt_<%=cid %>.execute(<%=dbquery%>);
     } catch (Exception e) {
         <%
         if (dieOnError.equals("true")) {

@@ -36,7 +36,9 @@ if(metadataTable != null) {
     rejectColumnList = metadataTable.getListColumns();      
 }
 
-String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
+String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	       dbquery = dbquery.replaceAll("\n"," ");
+    	   dbquery = dbquery.replaceAll("\r"," ");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","").toLowerCase()).indexOf("select")) == 1;
 
 if (!commitEvery.equals("") && !commitEvery.equals("0")) {
@@ -109,7 +111,7 @@ if ((metadatas != null) && (metadatas.size() > 0) && !isSelectQuery) {
 
 %>
 try {
-    statement_<%=cid%>.execute();
+    statement_<%=cid%>.execute(<%=dbquery%>);
 } catch (Exception e) {
     <%
     if (dieOnError.equals("true")) {

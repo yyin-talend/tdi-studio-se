@@ -27,7 +27,7 @@ java.lang.Class.forName(<%=driverClass%>);
 String connectionString_<%=cid%> = <%=jdbcUrl%>;
 java.sql.Connection connection_<%=cid%> =
 	java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
-java.sql.PreparedStatement statement_<%=cid %> = connection_<%=cid%>.prepareStatement(<%=dbquery%>);
+java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
 
 globalMap.put("<%=cid %>_QUERY", <%=dbquery%>);
 
