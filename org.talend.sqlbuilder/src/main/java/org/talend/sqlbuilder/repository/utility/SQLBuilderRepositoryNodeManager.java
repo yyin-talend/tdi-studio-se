@@ -651,7 +651,9 @@ public class SQLBuilderRepositoryNodeManager {
             connection.setSchema(parameters.getSchema().replaceAll("\'", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         connection.setURL(parameters.getURL());
-        connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+        String driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType());
+        connection.setDriverClass(driverClassByDbType);
+        connection.setDBRootPath(parameters.getDirectory());
         return connection;
     }
 

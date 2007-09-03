@@ -49,6 +49,34 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+    /**
+     * qzhang ConnectionParameters class global comment. Detailled comment <br/>
+     * 
+     */
+    public enum EFrameworkKeyName {
+        EMBEDED("Embeded"),
+        JCCJDBC("JCCJDBC"),
+        DERBYCLIENT("DerbyClient");
+
+        /**
+         * qzhang ConnectionParameters.EFrameworkKeyName constructor comment.
+         */
+        String displayName;
+
+        EFrameworkKeyName(String displayName) {
+            this.displayName = displayName;
+        }
+
+        /**
+         * Getter for displayName.
+         * 
+         * @return the displayName
+         */
+        public String getDisplayName() {
+            return this.displayName;
+        }
+    }
+
     private Element node;
 
     // set this SqlEditor's Title (tabItem.setText()).
@@ -426,7 +454,7 @@ public class ConnectionParameters {
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
         String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
-                getDbName(), getFilename(), getDatasource());
+                getDbName(), getFilename(), getDatasource(), getDirectory());
         return url;
 
     }
@@ -620,6 +648,24 @@ public class ConnectionParameters {
         // this.dbName = path.segment(path.segmentCount() - 1);
         // this.datasource = this.dbName;
         // }
+    }
+
+    /**
+     * Sets the frameworkType.
+     * 
+     * @param frameworkType the frameworkType to set
+     */
+    public void setFrameworkType(String frameworkType) {
+        frameworkType = TextUtil.removeQuots(frameworkType);
+        if (!frameworkType.equals("")) {
+            for (EFrameworkKeyName keyname : EFrameworkKeyName.values()) {
+                if (frameworkType.equals(keyname.toString())) {
+                    frameworkType = keyname.getDisplayName();
+                    setDbType(getDbType() + " " + frameworkType);
+                    break;
+                }
+            }
+        }
     }
 
 }

@@ -35,7 +35,8 @@ public enum EConnectionParameterName {
     USERNAME(Messages.getString("ConnectionParameterName.UserLabel")), //$NON-NLS-1$
     PASSWORD(Messages.getString("ConnectionParameterName.PasswordLabel")), //$NON-NLS-1$
     FILE(Messages.getString("ConnectionParameterName.DbfileLabel")), //$NON-NLS-1$
-    DIRECTORY(Messages.getString("ConnectionParameterName.DbPathLabel")); //$NON-NLS-1$
+    DIRECTORY(Messages.getString("ConnectionParameterName.DbPathLabel")), //$NON-NLS-1$
+    DATASOURCE("DataSource"); //$NON-NLS-1$
 
     private String displayName;
 
