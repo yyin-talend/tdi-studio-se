@@ -97,6 +97,7 @@ public class ConfigureConnParamDialog extends Dialog {
         pvValues.put(EConnectionParameterName.SID, parameters.getDbName());
         pvValues.put(EConnectionParameterName.FILE, parameters.getFilename());
         pvValues.put(EConnectionParameterName.DIRECTORY, parameters.getDirectory());
+        pvValues.put(EConnectionParameterName.DATASOURCE, parameters.getDatasource());
 
         ConfigureConnParamDialog.contextManager = contextManager;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.DIALOG_TRIM);
@@ -517,6 +518,9 @@ public class ConfigureConnParamDialog extends Dialog {
             case SID:
                 parameters.setDbName(value);
                 break;
+            case DATASOURCE:
+                parameters.setDatasource(value);
+                break;
             case PASSWORD:
                 parameters.setPassword(value);
                 break;
@@ -534,8 +538,10 @@ public class ConfigureConnParamDialog extends Dialog {
                 break;
             case DIRECTORY:
                 parameters.setDirectory(value);
+                break;
             case FILE:
                 parameters.setFilename(value);
+                break;
             default:
 
             }

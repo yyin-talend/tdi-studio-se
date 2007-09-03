@@ -822,6 +822,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setFieldType(paramFieldType);
         String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
+        String frameWorkKey = getValueFromRepositoryName("FRAMEWORK_TYPE"); //$NON-NLS-1$
+        connParameters.setFrameworkType(frameWorkKey);
+
         String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
         String realTableName = null;
@@ -847,6 +850,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
+        String datasource = setConnectionParameter(connParameters, EConnectionParameterName.DATASOURCE.getName());
+        connParameters.setDatasource(datasource);
 
         String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
         connParameters.setDbName(dbName);
