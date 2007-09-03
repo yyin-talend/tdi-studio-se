@@ -231,20 +231,28 @@ public class NodesPasteCommand extends Command {
 			pastedNode.setSize(copiedNode.getSize());
 
 			if (pastedNode.getExternalNode() == null) {
-				IMetadataTable metaTable = copiedNode.getMetadataList().get(0);
-				IMetadataTable newMetaTable = metaTable.clone();
-				newMetaTable.setTableName(pastedNode.getUniqueName());
-				pastedNode.getMetadataList().clear(); // remove the old
-				// "empty" metadata
-				for (IMetadataColumn column : metaTable.getListColumns()) {
-					if (column.isCustom()) {
-						IMetadataColumn newColumn = newMetaTable
-								.getColumn(column.getLabel());
-						newColumn.setReadOnly(column.isReadOnly());
-						newColumn.setCustom(column.isCustom());
+				if (copiedNode.getMetadataList().size() != 0) {
+					pastedNode.getMetadataList().clear();
+					for (IMetadataTable metaTable : copiedNode
+							.getMetadataList()) {
+						IMetadataTable newMetaTable = metaTable.clone();
+						if (metaTable.getTableName().equals(
+								copiedNode.getUniqueName())) {
+							newMetaTable.setTableName(pastedNode
+									.getUniqueName());
+						}
+						for (IMetadataColumn column : metaTable
+								.getListColumns()) {
+							if (column.isCustom()) {
+								IMetadataColumn newColumn = newMetaTable
+										.getColumn(column.getLabel());
+								newColumn.setReadOnly(column.isReadOnly());
+								newColumn.setCustom(column.isCustom());
+							}
+						}
+						pastedNode.getMetadataList().add(newMetaTable);
 					}
 				}
-				pastedNode.getMetadataList().add(newMetaTable);
 			} else {
 				List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
 				for (IMetadataTable metaTable : copiedNode.getMetadataList()) {

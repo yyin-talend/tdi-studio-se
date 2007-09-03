@@ -930,9 +930,9 @@ public class Node extends Element implements INode {
 	public IMetadataTable getMetadataTable(String metaName) {
 		for (int i = 0; i < metadataList.size(); i++) {
 			if (metadataList.get(i).getTableName().equals(metaName)/*
-																	 * &&
-																	 * metadataList.get(i).getAttachedConnector().equals(connectorName)
-																	 */) {
+			 * &&
+			 * metadataList.get(i).getAttachedConnector().equals(connectorName)
+			 */) {
 				return metadataList.get(i);
 			}
 		}
@@ -1349,11 +1349,11 @@ public class Node extends Element implements INode {
 				|| (!(Boolean) getPropertyValue(EParameterName.STARTABLE
 						.getName()))) {
 			if (/*
-				 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) >
-				 * 0) ||
-				 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) >
-				 * 0)||
-				 */
+			 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) >
+			 * 0) ||
+			 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) >
+			 * 0)||
+			 */
 			(getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
 				String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
 				Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1366,10 +1366,10 @@ public class Node extends Element implements INode {
 				|| (!(Boolean) getPropertyValue(EParameterName.STARTABLE
 						.getName()))) {
 			if (/*
-				 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-				 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) >
-				 * 0) ||
-				 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+			 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+			 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) >
+			 * 0) ||
+			 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
 					|| (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
 					|| (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
 					|| (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
