@@ -35,7 +35,7 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="1"
     >
-      <DEFAULT>''</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
