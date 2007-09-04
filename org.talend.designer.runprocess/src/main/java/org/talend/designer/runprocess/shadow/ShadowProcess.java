@@ -45,7 +45,6 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
-import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -206,7 +205,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
         IContext context = talendProcess.getContextManager().getDefaultContext();
         processor.setContext(context);
-        process = processor.run(Processor.NO_STATISTICS, Processor.NO_TRACES, null);
+        process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
         ProcessStreamTrashReader.readAndForget(process);
 
         if (!outPath.toFile().exists()) {

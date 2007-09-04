@@ -120,9 +120,9 @@ public class RunProcessContext {
 
     private IProcessMessageManager processMessageManager;
 
-    private int statsPort = Processor.NO_STATISTICS;
+    private int statsPort = IProcessor.NO_STATISTICS;
 
-    private int tracesPort = Processor.NO_TRACES;
+    private int tracesPort = IProcessor.NO_TRACES;
 
     private org.eclipse.debug.core.model.IProcess debugProcess;
 
@@ -470,7 +470,7 @@ public class RunProcessContext {
 
     private void findNewStatsPort() {
         statsPort = monitorPerf ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForStatistics()
-                : Processor.NO_STATISTICS;
+                : IProcessor.NO_STATISTICS;
     }
 
     private int getStatisticsPort() {
@@ -479,7 +479,7 @@ public class RunProcessContext {
 
     private void findNewTracesPort() {
         tracesPort = monitorTrace ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForTraces()
-                : Processor.NO_TRACES;
+                : IProcessor.NO_TRACES;
     }
 
     private int getTracesPort() {
