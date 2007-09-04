@@ -62,7 +62,7 @@ public abstract class FileInputNode extends ShadowNode {
     public String trimParameter(String para) {
         int length = para.length();
         String result = para;
-        if (length > 1 && para.startsWith("\"") && para.endsWith("\"")) {
+        if (length > 1 && ((para.startsWith("\"") && para.endsWith("\"")))||(para.startsWith("\'") && para.endsWith("\'"))) {
             result = para.substring(1, length - 1);
         }
         if (result.contains("\\")) {

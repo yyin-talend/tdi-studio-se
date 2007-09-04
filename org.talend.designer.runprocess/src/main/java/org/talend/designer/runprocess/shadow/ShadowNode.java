@@ -168,7 +168,6 @@ public abstract class ShadowNode extends AbstractNode {
         List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
         MetadataTable metadata = new MetadataTable();
         metadata.setTableName(this.getUniqueName());
-        if (LanguageManager.getCurrentLanguage().compareTo(ECodeLanguage.JAVA) == 0) {
             List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
             for (int i = 0; i < columnNumber; i++) {
                 MetadataColumn col = new MetadataColumn();
@@ -178,7 +177,6 @@ public abstract class ShadowNode extends AbstractNode {
                 columns.add(col);
             }
             metadata.setListColumns(columns);
-        }
         metadatas.add(metadata);
         return metadatas;
     }
