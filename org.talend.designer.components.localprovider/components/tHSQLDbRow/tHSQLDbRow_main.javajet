@@ -45,7 +45,11 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
+%>
 
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
+
+<%
 int counter = 0;
 int index=dbquery.indexOf("?");
 while (index>=0) {
@@ -102,7 +106,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)&&!isSelectQuery) {
 }
 %>
 try {
-	pstmt_<%=cid %>.execute(<%=dbquery%>);
+	pstmt_<%=cid %>.execute();
 } catch (Exception e) {
     <%
     if (dieOnError.equals("true")) {

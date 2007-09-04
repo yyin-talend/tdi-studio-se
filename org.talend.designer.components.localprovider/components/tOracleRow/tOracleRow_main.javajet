@@ -50,7 +50,11 @@ commitCounter_<%=cid%>++;
 }
 
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
+%>
 
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
+
+<%
 int counter = 0;
 int index=dbquery.indexOf("?");
 while (index>=0) {
@@ -107,7 +111,7 @@ while (index>=0) {
 	}
 	%>
     try {
-    	pstmt_<%=cid %>.execute(<%=dbquery%>);
+    	pstmt_<%=cid %>.execute();
     } catch (Exception e) {
         <%
         if (dieOnError.equals("true")) {

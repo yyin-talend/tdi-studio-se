@@ -40,7 +40,11 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","").toLowerCase()).indexOf("select")) == 1;
+%>
 
+statement_<%=cid%> = connection_<%=cid%>.prepareStatement(<%=dbquery%>);
+
+<%
 if (!commitEvery.equals("") && !commitEvery.equals("0")) {
     %>
     commitCounter_<%=cid%>++;
@@ -111,7 +115,7 @@ if ((metadatas != null) && (metadatas.size() > 0) && !isSelectQuery) {
 
 %>
 try {
-    statement_<%=cid%>.execute(<%=dbquery%>);
+    statement_<%=cid%>.execute();
 } catch (Exception e) {
     <%
     if (dieOnError.equals("true")) {

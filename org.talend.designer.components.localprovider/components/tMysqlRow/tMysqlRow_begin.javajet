@@ -50,7 +50,7 @@ java.sql.Connection conn_<%=cid%> = null;
 	}	
 %>
 
-java.sql.Statement pstmt_<%=cid %> = conn_<%=cid%>.createStatement();
+java.sql.PreparedStatement pstmt_<%=cid %> = null;
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%
