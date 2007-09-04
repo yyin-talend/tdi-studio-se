@@ -42,13 +42,15 @@ imports="
 <%
 						}else if(!insertMode.equals("DELETE")){
 %>
-	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(",")>0){
-		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(",")){
-			entry_<%=cid%>.put("<%=column.getLabel()%>",value_<%=cid%>);
-		}
-	}else{
-		entry_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
-	}
+	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
+    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(",")>0){
+    		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(",")){
+    			entry_<%=cid%>.put("<%=column.getLabel()%>",value_<%=cid%>);
+    		}
+    	}else{
+    		entry_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
+    	}
+    }
 <%
 						}
 						index++;
