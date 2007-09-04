@@ -42,6 +42,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -104,7 +105,7 @@ public class VersionController extends AbstractElementPropertySectionController 
         data.height = btnSize.y;
         btnUp.setLayoutData(data);
 
-        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);
@@ -162,15 +163,18 @@ public class VersionController extends AbstractElementPropertySectionController 
         return btnDown;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         Button btnUp, btnDown;
 
         btnUp = getWidgetFactory().createButton(subComposite, "M", SWT.PUSH); //$NON-NLS-1$
@@ -180,10 +184,9 @@ public class VersionController extends AbstractElementPropertySectionController 
         btnDown = getWidgetFactory().createButton(subComposite, "m", SWT.PUSH); //$NON-NLS-1$
         Point btnDownSize = btnDown.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         btnDown.dispose();
-        
-        
+
         Point btnSize = new Point(Math.max(btnUpSize.x, btnDownSize.x), Math.max(btnUpSize.y, btnDownSize.y));
-        
+
         return Math.max(btnSize.y, initialSize.y) + ITabbedPropertyConstants.VSPACE;
     }
 

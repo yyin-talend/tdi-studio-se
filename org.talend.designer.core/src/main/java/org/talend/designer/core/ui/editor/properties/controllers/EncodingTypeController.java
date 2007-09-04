@@ -29,7 +29,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -50,6 +49,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.EncodingTypeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 
 /**
  * This class is used for adding a selected combo box for encoding type.
@@ -227,7 +227,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_ENCODING_TYPE
                 .getName());
 
-        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (encodingTypeParameter.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);

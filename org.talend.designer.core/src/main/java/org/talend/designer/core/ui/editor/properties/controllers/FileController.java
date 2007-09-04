@@ -51,6 +51,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -130,7 +131,7 @@ public class FileController extends AbstractElementPropertySectionController {
         btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
 
-        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);

@@ -44,6 +44,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
@@ -80,7 +81,7 @@ public class MemoController extends AbstractElementPropertySectionController {
         int nbLines = param.getNbLines();
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
-                new TextControlCreator());
+                new SelectAllTextControlCreator());
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);

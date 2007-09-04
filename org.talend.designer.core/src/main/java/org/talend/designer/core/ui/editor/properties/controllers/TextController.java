@@ -41,6 +41,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -75,7 +76,7 @@ public class TextController extends AbstractElementPropertySectionController {
 
         Text labelText;
 
-        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);
