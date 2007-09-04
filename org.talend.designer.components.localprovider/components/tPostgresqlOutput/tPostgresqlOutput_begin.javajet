@@ -110,6 +110,14 @@ if(!dataAction.equals("INSERT"))
 <%
 }
 %> 
+int nb_line_<%=cid%> = 0;
+int nb_line_update_<%=cid%> = 0;
+int nb_line_inserted_<%=cid%> = 0;
+int nb_line_deleted_<%=cid%> = 0;
+
+int deletedCount_<%=cid%>=0;
+int updatedCount_<%=cid%>=0;
+int insertedCount_<%=cid%>=0;
 
 java.sql.Connection conn_<%=cid%> = null;
 <%
@@ -123,16 +131,7 @@ if(useExistingConn.equals("true"))
 }
 else
 {
-	%>
-	int nb_line_<%=cid%> = 0;
-	int nb_line_update_<%=cid%> = 0;
-	int nb_line_inserted_<%=cid%> = 0;
-	int nb_line_deleted_<%=cid%> = 0;
-	
-	int deletedCount_<%=cid%>=0;
-	int updatedCount_<%=cid%>=0;
-	int insertedCount_<%=cid%>=0;
-	
+	%>	
     java.lang.Class.forName("org.postgresql.Driver");
     
     String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
@@ -335,7 +334,7 @@ for(Column colStmt:stmtStructure){
 					firstNoneKey = false;
 				}
 				updateSetStmt.append("\\\""+replacement.getName()+"\\\"");
-				updateSetStmt.append(replacement.getSqlStmt());
+				updateSetStmt.append("=" + replacement.getSqlStmt());
 			}else{
 				if(!firstKey){
 					updateWhereStmt.append(" AND ");
@@ -343,7 +342,7 @@ for(Column colStmt:stmtStructure){
 					firstKey = false;
 				}
 				updateWhereStmt.append("\\\""+replacement.getName()+"\\\"");
-				updateWhereStmt.append(replacement.getSqlStmt());
+				updateWhereStmt.append("=" + replacement.getSqlStmt());
 			}
 			counterReplace++;
 		}
@@ -355,7 +354,7 @@ for(Column colStmt:stmtStructure){
 			insertColName.append("\\\""+colStmt.getDBName()+"\\\""+suffix);
 			insertValueStmt.append(colStmt.getSqlStmt()+suffix);
 			updateSetStmt.append("\\\""+colStmt.getDBName()+"\\\"");
-			updateSetStmt.append(colStmt.getSqlStmt()+suffix);
+			updateSetStmt.append("=" + colStmt.getSqlStmt()+suffix);
 		}else{
 			insertColName.append("\\\""+colStmt.getDBName()+"\\\""+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);

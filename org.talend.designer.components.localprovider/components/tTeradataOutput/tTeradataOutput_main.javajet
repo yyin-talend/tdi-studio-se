@@ -613,7 +613,7 @@ if(incomingConnName != null && columnList != null){
         } 
         %>
 	}
-	if(updateCount_<%=cid%> == 0) {
+	if(updatedCount_<%=cid%> == 0) {
 		<%
 		int counter = 1;
 		

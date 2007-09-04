@@ -314,7 +314,7 @@ for(Column colStmt:stmtStructure){
 					firstNoneKey = false;
 				}
 				updateSetStmt.append("`"+replacement.getName()+"`");
-				updateSetStmt.append(replacement.getSqlStmt());
+				updateSetStmt.append("=" + replacement.getSqlStmt());
 			}else{
 				if(!firstKey){
 					updateWhereStmt.append(" AND ");
@@ -322,7 +322,7 @@ for(Column colStmt:stmtStructure){
 					firstKey = false;
 				}
 				updateWhereStmt.append("`"+replacement.getName()+"`");
-				updateWhereStmt.append(replacement.getSqlStmt());
+				updateWhereStmt.append("=" + replacement.getSqlStmt());
 			}
 			counterReplace++;
 		}
@@ -334,7 +334,7 @@ for(Column colStmt:stmtStructure){
 			insertColName.append("`"+colStmt.getDBName()+"`"+suffix);
 			insertValueStmt.append(colStmt.getSqlStmt()+suffix);
 			updateSetStmt.append("`"+colStmt.getDBName()+"`");
-			updateSetStmt.append(colStmt.getSqlStmt()+suffix);
+			updateSetStmt.append("=" + colStmt.getSqlStmt()+suffix);
 		}else{
 			insertColName.append("`"+colStmt.getDBName()+"`"+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);

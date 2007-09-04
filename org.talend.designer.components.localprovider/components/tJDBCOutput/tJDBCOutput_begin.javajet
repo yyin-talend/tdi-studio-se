@@ -238,7 +238,7 @@ if (metadata != null) {
 							firstNoneKey = false;
 						}
 						updateSetStmt.append(replacement.getName());
-						updateSetStmt.append(replacement.getSqlStmt());
+						updateSetStmt.append("=" + replacement.getSqlStmt());
 					} else {
 						if (!firstKey) {
 							updateWhereStmt.append(" AND ");
@@ -246,7 +246,7 @@ if (metadata != null) {
 							firstKey = false;
 						}
 						updateWhereStmt.append(replacement.getName());
-						updateWhereStmt.append(replacement.getSqlStmt());
+						updateWhereStmt.append("=" + replacement.getSqlStmt());
 					}
 					counterReplace++;
 				}
@@ -258,7 +258,7 @@ if (metadata != null) {
 					insertColName.append(colStmt.getName() + suffix);
 					insertValueStmt.append(colStmt.getSqlStmt() + suffix);
 					updateSetStmt.append(colStmt.getName());
-					updateSetStmt.append(colStmt.getSqlStmt() + suffix);
+					updateSetStmt.append("=" + colStmt.getSqlStmt() + suffix);
 				} else {
 					insertColName.append(colStmt.getName() + suffix);
 					insertValueStmt.append(colStmt.getValue() + suffix);
