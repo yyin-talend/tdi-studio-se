@@ -34,15 +34,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalJarPage;
-import org.talend.repository.ui.wizards.ConfigExternalLib.ConfigExternalPerlModulePage;
 
 /**
  * Job scripts export wizard. <br/>
@@ -72,7 +69,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(PerlJobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(PerlJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(PerlJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID, true);
-            
+
             section.put(JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
@@ -80,10 +77,14 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JavaJobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(JavaJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID, true);
-            
-            
-            
-//            section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_EXPORTTYPE_ID, "POJO");
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_WEBXML_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_CONFIGFILE_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_AXISLIB_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_WSDD_ID, true);
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_WSDL_ID, true);
+
+            // section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
         }
         setDialogSettings(section);
     }
@@ -93,11 +94,11 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      */
     public void addPages() {
         super.addPages();
-        
+
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            mainPage = new JavaJobScriptsExportWizardPage(selection);
+            mainPage = new JavaJobScriptsExportWSWizardPage(selection);
             break;
         case PERL:
             mainPage = new PerlJobScriptsExportWizardPage(selection);
@@ -119,6 +120,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
         setWindowTitle(Messages.getString("JobScriptsExportWizard.exportJob"));
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/exportzip_wiz.png"));//$NON-NLS-1$
         setNeedsProgressMonitor(true);
+
     }
 
     /*

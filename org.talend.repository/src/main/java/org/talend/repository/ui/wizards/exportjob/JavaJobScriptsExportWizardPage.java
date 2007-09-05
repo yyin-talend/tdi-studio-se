@@ -57,7 +57,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String STORE_SOURCE_ID = "JavaJobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
 
-    private static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+    public static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     protected JobScriptsManager createJobScriptsManager() {
         return new JobJavaScriptsManager();

@@ -79,6 +79,15 @@ public class ExportFileResource {
         }
     }
 
+    public void removeResources(String relativePath, URL resource) {
+        Set<URL> storeList = map.get(relativePath);
+        if (storeList == null) {
+            return;
+        } else {
+            storeList.remove(resource);
+        }
+    }
+
     public void addResources(List<URL> resources) {
         addResources("", resources); //$NON-NLS-1$
     }

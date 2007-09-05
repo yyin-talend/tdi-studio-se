@@ -65,7 +65,7 @@ public abstract class JobScriptsManager {
     protected static final String WINDOWS_LAUNCHER = "run.bat";
 
     protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
-    
+
     protected static final String PATH_SEPARATOR = "/";
 
     public static final String ALL_ENVIRONMENTS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
@@ -84,6 +84,12 @@ public abstract class JobScriptsManager {
      * 
      */
     public enum ExportChoice {
+        needMetaInfo,
+        needWEBXML,
+        needCONFIGFILE,
+        needAXISLIB,
+        needWSDD,
+        needWSDL,
         needLauncher,
         needSystemRoutine,
         needUserRoutine,
@@ -108,8 +114,8 @@ public abstract class JobScriptsManager {
      */
 
     public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort, int tracePort,
-            String... codeOptions);
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher, int statisticPort,
+            int tracePort, String... codeOptions);
 
     protected String getTmpFolder() {
         String tmpFold = getTmpFolderPath();
@@ -157,10 +163,10 @@ public abstract class JobScriptsManager {
         if (!needLauncher) {
             return list;
         }
-        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, escapeFileNameSpace(process), contextName, statisticPort,
-                tracePort, codeOptions);
-        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, escapeFileNameSpace(process), contextName, statisticPort,
-                tracePort, codeOptions);
+        String windowsCmd = getCommandByTalendJob(Platform.OS_WIN32, escapeFileNameSpace(process), contextName,
+                statisticPort, tracePort, codeOptions);
+        String unixCmd = getCommandByTalendJob(Platform.OS_LINUX, escapeFileNameSpace(process), contextName,
+                statisticPort, tracePort, codeOptions);
         String tmpFold = getTmpFolder();
 
         if (environment.equals(ALL_ENVIRONMENTS)) {
@@ -179,8 +185,8 @@ public abstract class JobScriptsManager {
             int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
         try {
-            cmd = ProcessorUtilities
-                    .getCommandLine(targetPlatform, true, jobName, context, statisticPort, tracePort, codeOptions);
+            cmd = ProcessorUtilities.getCommandLine(targetPlatform, true, jobName, context, statisticPort, tracePort,
+                    codeOptions);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -201,7 +207,8 @@ public abstract class JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
+            String tmpFold) {
         PrintWriter pw = null;
         try {
 
@@ -287,8 +294,10 @@ public abstract class JobScriptsManager {
      * @param contextName
      * @param process
      */
-    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,boolean applyContextToChildren) {
-        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace,applyContextToChildren); //$NON-NLS-1$
+    protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
+            boolean applyContextToChildren) {
+        ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace,
+                applyContextToChildren); //$NON-NLS-1$
     }
 
     protected IResource[] sourceResouces = null;
@@ -297,8 +306,8 @@ public abstract class JobScriptsManager {
         if (sourceResouces == null) {
             try {
                 List<IResource> sourceFile = new ArrayList<IResource>();
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 sourceFile.add(prj.getFile(FileConstants.LOCAL_PROJECT_FILENAME));
@@ -360,7 +369,7 @@ public abstract class JobScriptsManager {
             String name = iter.next();
             for (int i = 0; i < resources.length; i++) {
                 IResource resource = resources[i];
-                
+
                 if (resource.getName().equals(name)) {
                     try {
                         URL url = resource.getLocation().toFile().toURL();

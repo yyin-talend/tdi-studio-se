@@ -123,7 +123,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -240,8 +241,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         shellLauncherButton.setFont(font);
 
         launcherCombo = new Combo(optionsGroup, SWT.PUSH);
-        GridData gd=new GridData();
-        gd.horizontalSpan=2;
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
         launcherCombo.setLayoutData(gd);
         // laucherText = new Text(optionsGroup, SWT.BORDER);
         // laucherText.setEditable(false);
@@ -256,15 +257,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
-        gd=new GridData();
-        gd.horizontalSpan=2;
+        gd = new GridData();
+        gd.horizontalSpan = 2;
         userRoutineButton.setLayoutData(gd);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         modelButton.setText(Messages.getString("JobScriptsExportWizardPage.requiredTalendPerlModules")); //$NON-NLS-1$
         modelButton.setSelection(true);
         modelButton.setFont(font);
-         gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 3;
         modelButton.setLayoutData(gd);
 
@@ -393,14 +394,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     public boolean finish() {
 
+        manager = createJobScriptsManager();
+
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
         for (ExportChoice choice : ExportChoice.values()) {
             // if (choice.equals(ExportChoice.needGenerateCode)) {
             // continue;
             // }
-            canExport = exportChoiceMap.get(choice);
-            if (canExport) {
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice)) {
+                canExport = true;
                 break;
             }
         }
@@ -459,7 +462,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             JobResourceManager reManager = JobResourceManager.getInstance();
             for (JobResource r : jobResources) {
                 if (reManager.isProtected(r)) {
-                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(), false, false);
+                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(),
+                            false, false);
                 } else {
                     reManager.deleteResource(r);
                 }
@@ -477,8 +481,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
+                resourcesToExport, getDestinationValue());
         return exporterOperation;
     }
 
@@ -500,7 +504,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return subjectString.trim();
     }
 
-    private void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
+    protected void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
         for (ExportFileResource fileResource : resourcesToExport) {
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
@@ -527,7 +531,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
     }
 
-    private Map<ExportChoice, Boolean> getExportChoiceMap() {
+    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
         Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());

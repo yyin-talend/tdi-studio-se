@@ -43,10 +43,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
-import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.repository.i18n.Messages;
 
 /**
  * Operation for exporting a resource and its children to a new .zip or .tar.gz file.
@@ -144,7 +141,11 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
             String destinationName = file.getName();
             if (!"".equals(directory)) { //$NON-NLS-1$
-                destinationName = directory + SEPARATOR + file.getName();
+                if (directory.endsWith(SEPARATOR)) {
+                    destinationName = directory + file.getName();
+                } else {
+                    destinationName = directory + SEPARATOR + file.getName();
+                }
             }
 
             if (createLeadupStructure) {
