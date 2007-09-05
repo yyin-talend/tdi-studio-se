@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.commons.utils.StringUtils
     java.util.List
     java.util.Map
 "
@@ -18,11 +19,26 @@ INode node = (INode)codeGenArgument.getArgument();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String cid = metadata.getTableName();
 
-        List<Map<String, String>> substitutions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SUBSTITUTIONS__");
+    String cid = metadata.getTableName();
+
+
+    Boolean simple_mode = new Boolean(
+        ElementParameterParser.getValue( node, "__SIMPLE_MODE__" )
+    );
+
+    Boolean advanced_mode = new Boolean(
+        ElementParameterParser.getValue( node, "__ADVANCED_MODE__" )
+    );
+
+
+    List<Map<String, String>> substitutions =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__SUBSTITUTIONS__"
+        );
 %>
+use Text::ParseWords;
 my %desc_<%=cid %> = (
     schema        => [
 <%
@@ -72,10 +88,44 @@ use constant <%=inputRowName%>__<%=column.getLabel() %> => <%=j%>;
         }
 %>
 
+<%
+    if(simple_mode){
+        for(int i=0; i<substitutions.size(); i++) {
+            Map<String, String> substitution = substitutions.get(i);
+            if(!substitution.get("SEARCH_PATTERN").equals("")){
+%>
+my $replace_string__<%=i%> = <%=substitution.get("REPLACE_STRING")%>;
+my $search_pattern__<%=i%> = <%=substitution.get("SEARCH_PATTERN")%>;
+<%
+            }
+        }
+    } 
+%> 
+
+<%
+        if(advanced_mode){
+            List<Map<String, String>> patterns =
+                (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                    node,
+                    "__ADVANCED_SUBST__"
+                );
+            for(int i=0; i<patterns.size(); i++) {
+                Map<String, String> pattern = patterns.get(i);
+                if(!pattern.get("SEARCH_REPLACE").equals("")){
+            
+%>
+my $search_replace_adv_<%=i%> = <%=pattern.get("SEARCH_REPLACE")%> ;
+<%
+                }
+            }//for
+        }//Advanced mode
+%>
+
+
+
 my $nb_line_<%=cid%> = 0;
 my $nb_line_ok_<%=cid%> = 0;
 
 <%
-    }
 }
 %>

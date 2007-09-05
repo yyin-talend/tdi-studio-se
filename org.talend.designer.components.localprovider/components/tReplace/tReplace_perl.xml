@@ -53,8 +53,8 @@
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
-        <ITEM NAME="SEARCH_PATTERN" FIELD="String" />
-        <ITEM NAME="REPLACE_STRING" FIELD="String" />
+        <ITEM NAME="SEARCH_PATTERN" FIELD="String" VALUE="''" />
+        <ITEM NAME="REPLACE_STRING" FIELD="String" VALUE="''" />
         <ITEM NAME="WHOLE_WORD" FIELD="CHECK" VALUE="true" />
         <ITEM NAME="CASE_SENSITIVE" FIELD="CHECK" VALUE="false" />
         <ITEM NAME="COMMENT" FIELD="String" />
@@ -80,7 +80,7 @@
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
-        <ITEM NAME="SEARCH_REPLACE" FIELD="String" />
+        <ITEM NAME="SEARCH_REPLACE" FIELD="String" VALUE="s///go" />
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>

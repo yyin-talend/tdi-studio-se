@@ -62,37 +62,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             for(int i=0; i<substitutions.size(); i++) {
                 Map<String, String> substitution = substitutions.get(i);
                 if(!substitution.get("SEARCH_PATTERN").equals("")){
-%>
-        my $replace_string__<%=i%> = <%=substitution.get("REPLACE_STRING")%>;
-<%            
-                int indx = 0;
-                for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
-                // to protect metachar
-                    pattern = StringUtils.protectMetachar(pattern);
-                %>
-        my $search_pattern__<%=i%>__<%=indx%> = <%=pattern%>;
-                <%
-                    indx++;
-                }
-                %> 
-        $<%=inputRowName%>->[<%=inputRowName%>__<%=substitution.get("INPUT_COLUMN")%>] =~ 
-           s{
-            <%
-            boolean isFirst = true ;
-            int indx2 = 0;
-            for(String pattern : StringUtils.splitAsList(substitution.get("SEARCH_PATTERN"), '|')) {
-                
-            %>
-            <%if(!isFirst){%>|<%}%>
-            <%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>$search_pattern__<%=i%>__<%=indx2%><%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>
-            <%
-                isFirst = false ;
-                indx2++;
-            }//for
-            %>}{$replace_string__<%=i%>}x<%if( substitution.get("CASE_SENSITIVE").equals("false")){%>i<%}%>go;
+%> 
+
+        #foreach my $pattern (split qr/\|/, $search_pattern__<%=i%> ){
+        foreach my $pattern (parse_line(qr{\|}, 0, $search_pattern__<%=i%>) ){
+            $pattern = quotemeta $pattern ;
+            $<%=inputRowName%>->[<%=inputRowName%>__<%=substitution.get("INPUT_COLUMN")%>] =~ 
+                s{<%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>$pattern<%if( substitution.get("WHOLE_WORD").equals("true")){%>\b<%}%>}
+                {$replace_string__<%=i%>}x<%if( substitution.get("CASE_SENSITIVE").equals("false")){%>i<%}%>g;
+        }
 <%
                 }
-            }//for
+            }
         }
 
         if(advanced_mode){
@@ -103,10 +84,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 );
             for(int i=0; i<patterns.size(); i++) {
                 Map<String, String> pattern = patterns.get(i);
-                if(!pattern.get("SEARCH_REPLACE").equals("")){
+                String patternStr = pattern.get("SEARCH_REPLACE") ;
+                if(!patternStr.equals("")){
+                    patternStr = patternStr.replaceAll("^[\'\"]", "");
+                    patternStr = patternStr.replaceAll("[\'\"]$", "");
             
 %>
-            $<%=inputRowName%>->[<%=inputRowName%>__<%=pattern.get("INPUT_COLUMN")%>] =~ <%=pattern.get("SEARCH_REPLACE")%> ;
+            $<%=inputRowName%>->[<%=inputRowName%>__<%=pattern.get("INPUT_COLUMN")%>] =~ <%=patternStr%> ;
 <%
                 }
             }//for
