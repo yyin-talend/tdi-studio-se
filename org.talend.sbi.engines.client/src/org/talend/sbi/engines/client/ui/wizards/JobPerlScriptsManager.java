@@ -38,12 +38,12 @@ public class JobPerlScriptsManager extends org.talend.repository.ui.wizards.expo
             int statisticPort, int tracePort, String... codeOptions) {
         String tmpFold = getTmpFolder();
         File fileTemp = new File(tmpFold);
-       
+
         List<URL> toReturn = super.getLauncher(needLauncher, process, contextName, environment, statisticPort, tracePort,
                 codeOptions);
         // File spagobi = new File(tmpFold + "/" + "spagobi.xml");
         try {
-            toReturn.add(new GenerateSpagoBIXML(fileTemp, process).getResult());
+            toReturn.add(new GenerateSpagoBIXML(fileTemp, process, contextName).getResult());
         } catch (Exception e) {
             e.printStackTrace();
         }

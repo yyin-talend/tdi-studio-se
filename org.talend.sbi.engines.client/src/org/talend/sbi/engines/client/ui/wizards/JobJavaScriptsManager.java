@@ -45,7 +45,7 @@ public class JobJavaScriptsManager extends org.talend.repository.ui.wizards.expo
                 codeOptions);
         // File spagobi = new File(tmpFold + "/" + "spagobi.xml");
         try {
-            toReturn.add(new GenerateSpagoBIXML(fileTemp, process).getResult());
+            toReturn.add(new GenerateSpagoBIXML(fileTemp, process, contextName).getResult());
         } catch (Exception e) {
             e.printStackTrace();
         }
