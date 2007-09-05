@@ -37,6 +37,8 @@ if(metadataTable != null) {
     rejectColumnList = metadataTable.getListColumns();      
 }
 
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
 if(!useExistingConn.equals("true"))
 {
     if(!commitEvery.equals("")&&!commitEvery.equals("0")){
@@ -136,6 +138,19 @@ while (index>=0) {
         %>
     }
     <%
+    
+    if(outgoingConns != null && outgoingConns.size() > 0) {
+        for(IConnection outgoingConn : outgoingConns) {
+            if(!outgoingConn.getName().equals(rejectConnName)) {
+                for(IMetadataColumn column : columnList) {
+                    %>
+                    <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                    <%                  
+                }
+            }
+        }
+    }    
+    
 if(!useExistingConn.equals("true"))
 {
     if(!commitEvery.equals("")&&!commitEvery.equals("0")){
