@@ -102,24 +102,6 @@ my $search_pattern__<%=i%> = <%=substitution.get("SEARCH_PATTERN")%>;
     } 
 %> 
 
-<%
-        if(advanced_mode){
-            List<Map<String, String>> patterns =
-                (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                    node,
-                    "__ADVANCED_SUBST__"
-                );
-            for(int i=0; i<patterns.size(); i++) {
-                Map<String, String> pattern = patterns.get(i);
-                if(!pattern.get("SEARCH_REPLACE").equals("")){
-            
-%>
-my $search_replace_adv_<%=i%> = <%=pattern.get("SEARCH_REPLACE")%> ;
-<%
-                }
-            }//for
-        }//Advanced mode
-%>
 
 
 
