@@ -112,7 +112,7 @@ class="LDAPInput"
     		break;
     	}
         javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
-
+		globalMap.put("RESULT_NAME",sr_<%=cid%>.getName());
         javax.naming.directory.Attributes attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
         if (attrs_<%=cid%> != null) {
         	entryCount_<%=cid%>++;
