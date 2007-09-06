@@ -12,6 +12,16 @@
 	String cid = node.getUniqueName();
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");	
 	String destination  = ElementParameterParser.getValue(node, "__DESTINATION__");
+	String destination_filename  = ElementParameterParser.getValue(node, "__DESTINATION_RENAME__");
+System.out.println("destination_filename = "+destination_filename);
+	if(destination_filename=="" || destination_filename.equals("\"\"")){
+System.out.println("already");
+		java.util.Date d = new java.util.Date();
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy_MM_dd");
+		destination_filename="myfile_"+sdf.format(d);
+		
+	}
+	
 	boolean reFile=ElementParameterParser.getValue(node, "__REMOVE_FILE__").equals("true");
 	boolean rpFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
     boolean creatDir=ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
@@ -21,7 +31,7 @@
         if(!directory_<%=cid%>.endsWith("/")){
            directory_<%=cid%> = directory_<%=cid%> + "/";
         }
-        directory_<%=cid%>=directory_<%=cid%>+file_<%=cid %>.getName();
+        directory_<%=cid%>=directory_<%=cid%>+"<%=destination_filename%>"+file_<%=cid %>.getName().substring(file_<%=cid %>.getName().lastIndexOf("."));
         java.io.File dirfile_<%=cid%>=new java.io.File(directory_<%=cid%>);
         if(dirfile_<%=cid%>.exists()&& !<%=rpFile%>)
         {

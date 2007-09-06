@@ -48,11 +48,21 @@
     > 
     <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>  
     </PARAMETER>
+    
+     <PARAMETER
+      NAME="DESTINATION_RENAME"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REQUIRED="false"
+    > 
+    <DEFAULT>""</DEFAULT>  
+    </PARAMETER>
+    
    <PARAMETER
       NAME="REMOVE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="REMOVE_FILE"
     >
       <DEFAULT>false</DEFAULT>
@@ -61,7 +71,7 @@
       NAME="REPLACE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="REPLACE_FILE"
     >
       <DEFAULT>true</DEFAULT>
@@ -70,7 +80,7 @@
       NAME="CREATE_DIRECTORY"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="CREATE_DIRECTORY"
     >
       <DEFAULT>true</DEFAULT>
