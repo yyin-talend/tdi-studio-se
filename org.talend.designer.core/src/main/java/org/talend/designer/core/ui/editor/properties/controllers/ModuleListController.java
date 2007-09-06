@@ -22,23 +22,12 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -59,7 +48,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
@@ -103,33 +91,6 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                         CorePlugin.getDefault().getLibrariesService().deployLibrary(
                                 Path.fromOSString(file).toFile().toURL());
                     } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                    CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
-                    String libpath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath();
-                    // Adds the classpath to java project.
-                    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                    IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-                    IJavaProject project = JavaCore.create(prj);
-
-                    List<IClasspathEntry> projectLibraries = new ArrayList<IClasspathEntry>();
-
-                    try {
-                        IClasspathEntry[] resolvedClasspath = project.getResolvedClasspath(true);
-                        List<String> librariesString = new ArrayList<String>();
-                        for (IClasspathEntry entry : resolvedClasspath) {
-                            IPath path = entry.getPath();
-                            librariesString.add(path.lastSegment());
-                        }
-                        projectLibraries.addAll(Arrays.asList(resolvedClasspath));
-                        if (!librariesString.contains(lastSegment)) {
-                            final File file2 = new File(libpath + File.separatorChar + lastSegment);
-                            projectLibraries.add(JavaCore
-                                    .newLibraryEntry(new Path(file2.getAbsolutePath()), null, null));
-                        }
-                        project.setRawClasspath(projectLibraries.toArray(new IClasspathEntry[projectLibraries.size()]),
-                                null);
-                    } catch (JavaModelException e) {
                         ExceptionHandler.process(e);
                     }
                     return new PropertyChangeCommand(elem, propertyName, lastSegment);
