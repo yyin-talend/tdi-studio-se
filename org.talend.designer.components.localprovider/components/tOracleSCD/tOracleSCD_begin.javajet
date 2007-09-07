@@ -46,15 +46,16 @@ if (metadatas != null && metadatas.size() > 0) {
 // We only generate output if incoming and outgoing schema are defined
 if (inMetadata != null && metadata != null) {
 	// Database parameters
-	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbuser = ElementParameterParser.getValue(node, "__USER__");
+	String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
-	boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
+	boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
+	// Create database connection
 	if (useExistingConnection) {
 		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 		String connectionName = "conn_" + connection;
@@ -102,9 +103,23 @@ if (inMetadata != null && metadata != null) {
     boolean useActive = ElementParameterParser.getValue(node, "__USE_L2_ACTIVE__").equals("true");
     String activeField = ElementParameterParser.getValue(node, "__L2_ACTIVE_FIELD__");
     
+    JavaType activeFieldType = null;
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        if (column.getLabel().equals(activeField)) {
+        	activeFieldType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			break;
+        }
+    }
+    
     boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
     String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
 	
+	boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
+	List<Map<String, String>> l3fields = new ArrayList<Map<String, String>>();
+    if (useL3) {
+        l3fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L3_FIELDS__");
+    }
+    
 	// Build map with type (sk, L1, L2) of each column
     Map<String, String> typeOfColumn = new HashMap<String, String>();
     for (Map<String, String> sk : sourceKeys) {
@@ -116,6 +131,16 @@ if (inMetadata != null && metadata != null) {
     for (Map<String, String> l2field : l2fields) {
         typeOfColumn.put(l2field.get("NAME"), "L2");
     }
+    for (Map<String, String> l3field : l3fields) {
+        typeOfColumn.put(l3field.get("CURRENT_VALUE"), "L3C"); // L3 current
+        typeOfColumn.put(l3field.get("PREV_VALUE"), "L3P"); // L3 previous
+        
+        if (l3field.get("CURRENT_VALUE").equals(l3field.get("PREV_VALUE"))) {
+        	%>
+        	// Error: same column defined for current and previous value (field <%=l3field.get("CURRENT_VALUE")%>)
+        	<%
+        }
+    }
 	
 	// Debug mode
 	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
@@ -123,7 +148,7 @@ if (inMetadata != null && metadata != null) {
     %>
     java.sql.Timestamp timestamp_<%=cid%>;
 	String value_<%=cid%>;
-    
+	
     // Source keys
     class SCDSK_<%=cid%> {
     	private int hashCode;
@@ -167,7 +192,8 @@ if (inMetadata != null && metadata != null) {
 		                
 		                if (javaType == JavaTypesManager.DATE ||
 		                	javaType == JavaTypesManager.OBJECT ||
-		                	javaType == JavaTypesManager.STRING) {
+		                	javaType == JavaTypesManager.STRING ||
+	                		column.isNullable()) {
 							%><%=colname%>.equals(sk.<%=colname%>)<%
 		                } else {
 		                	%><%=colname%> == sk.<%=colname%><%
@@ -216,8 +242,8 @@ if (inMetadata != null && metadata != null) {
     // Lookup cache structure
 	class SCDStruct_<%=cid%> {
 		<%
-		// L1, L2 fields
-		for (IMetadataColumn column : inMetadata.getListColumns()) {
+		// L1, L2, L3 fields
+		for (IMetadataColumn column : metadata.getListColumns()) {
 	        String colname = column.getLabel();
 			
 	        if (typeOfColumn.containsKey(colname)) {
@@ -247,11 +273,11 @@ if (inMetadata != null && metadata != null) {
 	<%
 	
     // Build lookup cache
-    List selectColumns = new ArrayList();
-    List javaTypeColumns = new ArrayList();
+    List<String> selectColumns = new ArrayList<String>();
+    List<String> javaTypeColumns = new ArrayList<String>();
 	
     // First we iterate on the input schema columns...
-    for (IMetadataColumn column : inMetadata.getListColumns()) {
+    for (IMetadataColumn column : metadata.getListColumns()) {
         String colname = column.getLabel();
 		
         if (typeOfColumn.containsKey(colname)) {
@@ -259,12 +285,21 @@ if (inMetadata != null && metadata != null) {
             javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
         }
     }
-	
+    
     if (useVersion) {
-        selectColumns.add(versionField);
+    	for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(versionField)) {
+		        selectColumns.add(colname);
+				javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
+				break;
+	        }
+	    }
     }
-	
-    String selectColumnsString = StringUtils.join(selectColumns.toArray(), ", ");
+    
+	String[] selectColumnsArray = selectColumns.toArray(new String[selectColumns.size()]);
+    String selectColumnsString = StringUtils.join(selectColumnsArray, ", ");
     
     %>
     // Retrieve active records
@@ -288,13 +323,13 @@ if (inMetadata != null && metadata != null) {
 		<%
 		int colPosition = 1;
 		
-		for (IMetadataColumn column : inMetadata.getListColumns()) {
-	        String colname = column.getLabel();
+		for (int i = 0; i < selectColumns.size(); i++) {
+			String colname = selectColumns.get(i);
 			
-	        if (typeOfColumn.containsKey(colname)) {
+	        if (typeOfColumn.containsKey(colname) || colname.equals(versionField)) {
 	            // Search Java type in order to call fitted method getXxx on ResultSet
-	            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	            String struct = (typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;
+	            String typeToGenerate = javaTypeColumns.get(i);
+	            String struct = (!colname.equals(versionField) && typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;
 	            
 	            if (typeToGenerate.equals("byte[]")) {
  	  	   			typeToGenerate = "Bytes";
@@ -311,7 +346,7 @@ if (inMetadata != null && metadata != null) {
 					value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
 				  	if (value_<%=cid%> != null && value_<%=cid%>.length() > 0) {
 				  		<%=struct%>.<%=colname%> = resultSet_<%=cid %>.getString(<%=colPosition%>).charAt(0);
-				  	} else {			  	
+				  	} else {
 				  	    <%
 				  	    if (typeToGenerate.equals("Character")) {
 				  	    	%>
@@ -341,47 +376,17 @@ if (inMetadata != null && metadata != null) {
 					} else {
 						<%=struct%>.<%=colname%> = null;
 					}
-			 		<%
+			 		<% 	
 				} else {
 					%>
 					if (resultSet_<%=cid %>.getObject(<%=colPosition%>) != null) {
 						<%=struct%>.<%=colname%> = resultSet_<%=cid %>.get<%=typeToGenerate%>(<%=colPosition%>);
- 			 		}<% if (column.isNullable()) { %> else {
-	 					<%=struct%>.<%=colname%> = null;
- 					}
+ 			 		}
  					<%
-	 				}
  			 	}
 	            
 	            colPosition++;
 	        }
-	    }
-	    
-	    // Version
-	    if (useVersion) {
-		    for (IMetadataColumn column : metadata.getListColumns()) {
-		        String colname = column.getLabel();
-		        
-		        if (colname.equals(versionField)) {
-		        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		            
-		            // Note: possible types are int, Integer, long, Long, short, Short
-		            if (typeToGenerate.equals("Integer")) {
-						typeToGenerate = "Int";
-					} else {
-						typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
-					}
-					
-					%>
-					if (resultSet_<%=cid %>.getObject(<%=colPosition%>) != null) {
-						row_<%=cid%>.<%=colname%> = resultSet_<%=cid %>.get<%=typeToGenerate%>(<%=colPosition%>);
- 			 		}<% if (column.isNullable()) { %> else {
-	 					row_<%=cid%>.<%=colname%> = null;
- 					}
- 					<%
- 					}
-		        }
-		    }
 	    }
 	    %>
 	    
@@ -401,7 +406,7 @@ if (inMetadata != null && metadata != null) {
     List parameters = new ArrayList();
 	
     // First we iterate on the input schema columns...
-    for (IMetadataColumn column : inMetadata.getListColumns()) {
+    for (IMetadataColumn column : metadata.getListColumns()) {
         // ... and we add each column only if it was chosen to be in the
         // output, ie if its type was defined.
         if (typeOfColumn.containsKey(column.getLabel())) {
@@ -414,8 +419,13 @@ if (inMetadata != null && metadata != null) {
     // Then we add L2 dedicated columns to store historical informations
     if (useL2) {
         if (useActive) {
-            colnames.add(activeField);
-            parameters.add("1");
+        	colnames.add(activeField);
+            if (activeFieldType == JavaTypesManager.STRING ||
+            		activeFieldType == JavaTypesManager.BOOLEAN) {
+	            parameters.add("'true'");
+            } else {
+            	parameters.add("1");
+            }
         }
 		
         if (useVersion) {
@@ -474,8 +484,14 @@ if (inMetadata != null && metadata != null) {
 			"SET <%=enddateField%> = ? " +<%
 		if (useActive) {
 			%>
- 			", <%=activeField%> = 0 " +
- 			<%
+ 			", <%=activeField%> = <%
+ 			if (activeFieldType == JavaTypesManager.STRING ||
+            		activeFieldType == JavaTypesManager.BOOLEAN) {
+	            %>'false'<%
+            } else {
+            	%>0<%
+            }
+            %> " +<%
 	    }
 	    %>
 			"WHERE <%=keyClausesString%> " +
@@ -483,6 +499,44 @@ if (inMetadata != null && metadata != null) {
 	    java.sql.PreparedStatement l2Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l2QueryString_<%=cid%>);
 	    l2Query_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
 		<%
+	}
+	
+	// L3 query generation
+	if (useL3) {
+		List l3fieldClauses = new ArrayList();
+		
+	    for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (typeOfColumn.containsKey(colname)) {
+	            if (typeOfColumn.get(colname).equals("L3C")) {
+	            	l3fieldClauses.add(colname + " = ?");
+	            	
+	            	// Search previous value field matching current value field
+					for (Map<String, String> l3field : l3fields) {
+						if (l3field.get("CURRENT_VALUE").equals(colname)) {
+			            	l3fieldClauses.add(l3field.get("PREV_VALUE") + " = ?");
+							break;
+						}
+					}
+	            }
+	        }
+	    }
+		
+	    String l3fieldClausesString = StringUtils.join(l3fieldClauses.toArray(), ", ");
+	    
+	    %>
+	    String l3QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " " +
+	    	"SET <%=l3fieldClausesString%> " +
+	    	"WHERE <%=keyClausesString%>"<%
+	    if (useL2) {
+	    	%>
+		    + " AND <%=enddateField%> IS NULL"
+		    <%
+		}
+		%>;
+	    java.sql.PreparedStatement l3Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l3QueryString_<%=cid%>);
+	    <%
 	}
 	
 	%>
