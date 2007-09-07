@@ -20,6 +20,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		
         boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
 		boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
+		boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
 		
 		%>
 		insertQuery_<%=cid%>.close();
@@ -28,6 +29,12 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		if (useL2) {
 			%>
 			l2Query_<%=cid%>.close();
+			<%
+		}
+		
+		if (useL3) {
+			%>
+			l3Query_<%=cid%>.close();
 			<%
 		}
 		

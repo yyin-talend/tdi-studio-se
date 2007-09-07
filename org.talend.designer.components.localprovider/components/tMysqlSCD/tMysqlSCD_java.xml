@@ -235,9 +235,30 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DEBUG"
+      NAME="USE_L3"
       FIELD="CHECK"
       NUM_ROW="90"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L3_FIELDS"
+      FIELD="TABLE"
+      NUM_ROW="100"
+      NB_LINES="5"
+      SHOW_IF="USE_L3 == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="CURRENT_VALUE" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DEBUG"
+      FIELD="CHECK"
+      NUM_ROW="110"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
