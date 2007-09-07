@@ -363,6 +363,10 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
+            
+            if(csvRows.isEmpty()){
+                return;
+            }
             String[] fields = csvRows.get(0);
             // int numberOfCol = fields.size();
 

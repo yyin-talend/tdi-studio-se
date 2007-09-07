@@ -138,7 +138,11 @@ public class ShadowProcessPreview {
      */
     public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel) {
         List<String[]> csvRows = csvArray.getRows();
-
+        
+        if(csvRows.isEmpty()){
+            return;
+        }
+        
         // init the title columns
 
         // XmlRow firstRow = xmlRows.get(0);
