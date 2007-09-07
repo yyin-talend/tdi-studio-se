@@ -18,11 +18,11 @@
 	for (IConnection conn : node.getOutgoingConnections()) {
 		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
-		<%=conn.getName() %>.date = acm.getDate();
+		<%=conn.getName() %>.moment = acm.getMoment();
 		<%=conn.getName() %>.pid = acm.getPid();
-		<%=conn.getName() %>.projet = acm.getProjet();
+		<%=conn.getName() %>.project = acm.getProject();
 		<%=conn.getName() %>.job = acm.getJob();
-		<%=conn.getName() %>.langage = acm.getLangage();
+		<%=conn.getName() %>.language = acm.getLanguage();
 		
 		<%=conn.getName() %>.origin = (acm.getOrigin()==null || acm.getOrigin().length()<1 ? null : acm.getOrigin());
 	

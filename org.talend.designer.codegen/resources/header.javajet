@@ -176,7 +176,7 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(assertCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
-			<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", "the error message from the exception");
+			<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", e.getMessage());
 <%
 					// 2) launch assertCatcher subProcess
 %>
