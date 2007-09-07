@@ -148,7 +148,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
                 }
-
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, fullParamName, value, repositoryMetadata);
 
@@ -192,8 +191,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
                     } else {
-                        //repositoryMetadata = new MetadataTable();
-                        //Gets the schema of the first item in repository schema type combo.                        
+                        // repositoryMetadata = new MetadataTable();
+                        // Gets the schema of the first item in repository schema type combo.
                         repositoryMetadata = repositoryTableMap.get(repositoryTableMap.keySet().iterator().next());
                     }
                 }
@@ -203,7 +202,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand(
                         (Node) elem, fullParamName, value, repositoryMetadata);
-
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
                 // .getRepositoryTableMap());
@@ -276,7 +274,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             // check if the outputMetadata is readonly
             String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
-            IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataFromConnector(param.getContext());
+            IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
 
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -788,7 +786,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         // elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         combo = (CCombo) hashCurControls.get(param.getName() + ":" + repositorySchemaTypeParameter.getName());
-        
+
         if (combo == null) {
             return;
         }
