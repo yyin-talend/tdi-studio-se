@@ -24,8 +24,10 @@ package org.talend.repository.ui.wizards.metadata.connection.database;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -34,6 +36,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -52,7 +55,9 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -435,12 +440,19 @@ public class DatabaseForm extends AbstractForm {
 
         // portText : Event modifyText
         portText.addModifyListener(new ModifyListener() {
-
             public void modifyText(final ModifyEvent e) {
                 if (!urlConnectionStringText.getEditable()) {
                     getConnection().setPort(portText.getText());
                     checkFieldsValue();
                 }
+                //Check port
+                boolean b =true;
+               if(getConnection().getDatabaseType().equals("Ingres")){
+                   b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText());
+               }else{
+                  b= Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText());
+               }
+               evaluateTextField(b);
             }
         });
 
@@ -449,12 +461,12 @@ public class DatabaseForm extends AbstractForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (!Character.isDigit(e.character) && !Character.isIdentifierIgnorable(e.character)) {
+                if (!Character.isLetterOrDigit(e.character) && !Character.isIdentifierIgnorable(e.character)) {
                     e.doit = false;
                 }
             }
         });
-
+       
         // usernameText : Event modifyText
         usernameText.addModifyListener(new ModifyListener() {
 
@@ -795,4 +807,11 @@ public class DatabaseForm extends AbstractForm {
         return (DatabaseConnection) connectionItem.getConnection();
     }
 
+    protected void evaluateTextField(boolean b) {
+       
+        if (!b) {
+            updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.portError"));
+        } 
+    }
+  
 }
