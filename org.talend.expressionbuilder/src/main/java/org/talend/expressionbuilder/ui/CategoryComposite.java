@@ -43,6 +43,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
@@ -61,9 +62,9 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionContentProposal;
  */
 public class CategoryComposite extends Composite {
 
-    private List categoryList;
+    private final List categoryList;
 
-    private List functionList;
+    private final List functionList;
 
     CategoryManager manager = null;
 
@@ -111,6 +112,7 @@ public class CategoryComposite extends Composite {
         final ListViewer categoryViewer = new ListViewer(composite, SWT.V_SCROLL | SWT.H_SCROLL);
         categoryViewer.setLabelProvider(new LabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 return ((Category) element).getName();
             }
@@ -135,6 +137,7 @@ public class CategoryComposite extends Composite {
         functionViewer.setContentProvider(new ArrayContentProvider());
         functionViewer.setLabelProvider(new LabelProvider() {
 
+            @Override
             public String getText(Object element) {
                 return ((Function) element).getName();
             }
@@ -143,7 +146,21 @@ public class CategoryComposite extends Composite {
         functionList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         sashForm1.setWeights(new int[] { 1, 1 });
 
-        final Browser docDisplayer = new Browser(sashForm, SWT.BORDER);
+        Composite docComposite = new Composite(sashForm, SWT.BORDER);
+        GridLayout docLayout = new GridLayout();
+        docLayout.marginTop = 0;
+        docLayout.marginBottom = 0;
+        docLayout.marginHeight = 0;
+        docLayout.marginLeft = 0;
+        docLayout.marginWidth = 0;
+        docLayout.marginHeight = 0;
+        docComposite.setLayout(docLayout);
+
+        Label docLabel = new Label(docComposite, SWT.NONE);
+        docLabel.setText("Help");
+
+        final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
+        docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
         sashForm.setWeights(new int[] { 1, 1 });
 
         new UIRelationShipLinker(categoryViewer, functionViewer, docDisplayer);

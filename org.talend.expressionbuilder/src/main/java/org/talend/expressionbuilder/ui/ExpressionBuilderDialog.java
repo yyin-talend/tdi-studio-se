@@ -114,7 +114,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
         testComposite.addVariables(defaultVariables);
-        upperSashform.setWeights(new int[] { 1, 1 });
+        upperSashform.setWeights(new int[] { 3, 2 });
 
         final Composite lowerComposite = new Composite(sashForm, SWT.NONE);
         lowerComposite.setLayout(new FillLayout());
@@ -123,10 +123,8 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         categoryComposite.setExpressionComposite(expressionComposite);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        // gridData.heightHint = 291;
-        // gridData.widthHint = 483;
         sashForm.setLayoutData(gridData);
-        sashForm.setWeights(new int[] { 1, 1 });
+        sashForm.setWeights(new int[] { 3, 2 });
 
         expressionComposite.configProposal();
 
@@ -237,7 +235,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     @Override
     protected Point getInitialSize() {
-        return new Point(1024, 768);
+        return new Point(870, 500);
     }
 
     /*

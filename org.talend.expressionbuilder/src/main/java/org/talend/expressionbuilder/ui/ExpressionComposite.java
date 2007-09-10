@@ -57,7 +57,7 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdap
  */
 public class ExpressionComposite extends Composite {
 
-    private Text text;
+    private final Text text;
 
     private String replacedText;
 
@@ -126,15 +126,22 @@ public class ExpressionComposite extends Composite {
         setLayout(new FillLayout());
 
         final Group expressionGroup = new Group(this, SWT.NONE);
-        expressionGroup.setLayout(new GridLayout());
-        expressionGroup.setText(Messages.getString("ExpressionComposite.expression"));  //$NON-NLS-1$
+        GridLayout groupLayout = new GridLayout();
+        expressionGroup.setLayout(groupLayout);
+        expressionGroup.setText(Messages.getString("ExpressionComposite.expression")); //$NON-NLS-1$
 
         final Composite upperOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.horizontalSpacing = 8;
         gridLayout.numColumns = 3;
+        gridLayout.marginTop = 0;
+        gridLayout.marginBottom = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
         upperOperationButtonBar.setLayout(gridLayout);
-        upperOperationButtonBar.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false));
+        upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
 
         // final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
@@ -164,7 +171,7 @@ public class ExpressionComposite extends Composite {
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         final Composite lowerOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
-        final GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         lowerOperationButtonBar.setLayoutData(gridData);
         lowerOperationButtonBar.setLayout(new RowLayout(SWT.HORIZONTAL));
 
@@ -261,7 +268,7 @@ public class ExpressionComposite extends Composite {
         String newValue = PERL_FUN_PREFIX;
         if (f != null) {
 
-            final List<Parameter> parameters = (List<Parameter>) f.getParameters();
+            final List<Parameter> parameters = f.getParameters();
             if (FunctionManager.isJavaProject()) {
                 String fullName = f.getName();
                 newValue = fullName + "("; //$NON-NLS-1$
