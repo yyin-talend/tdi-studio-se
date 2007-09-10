@@ -378,26 +378,23 @@ public class EmfComponent implements IComponent {
 		param.setRequired(false);
 		param.setShow(true);
 		listParam.add(param);
-
-		param = new ElementParameter(node);
-		param.setName(EParameterName.LOG.getName());
-		param.setValue(""); //$NON-NLS-1$
-		param.setDisplayName(EParameterName.LOG.getDisplayName());
-		param
-				.setListItemsValue(new String[] {
-						"NONE", "COUNT", "TIME", "PERF" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		param
-				.setListItemsDisplayName(new String[] {
-						Messages.getString("EmfComponent.None"), Messages.getString("EmfComponent.Count"), //$NON-NLS-1$ //$NON-NLS-2$
-						Messages.getString("EmfComponent.Time"), Messages.getString("EmfComponent.Perf") }); //$NON-NLS-1$ //$NON-NLS-2$
-		param.setField(EParameterFieldType.CLOSED_LIST);
-		param.setCategory(EComponentCategory.MAIN);
-		param.setNumRow(4);
-		param.setReadOnly(false);
-		param.setRequired(false);
-		param.setShow(false);
-		listParam.add(param);
-
+		/*
+		 * param = new ElementParameter(node);
+		 * param.setName(EParameterName.LOG.getName()); param.setValue("");
+		 * //$NON-NLS-1$
+		 * param.setDisplayName(EParameterName.LOG.getDisplayName()); param
+		 * .setListItemsValue(new String[] { "NONE", "COUNT", "TIME", "PERF" });
+		 * //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ param
+		 * .setListItemsDisplayName(new String[] {
+		 * Messages.getString("EmfComponent.None"),
+		 * Messages.getString("EmfComponent.Count"), //$NON-NLS-1$ //$NON-NLS-2$
+		 * Messages.getString("EmfComponent.Time"),
+		 * Messages.getString("EmfComponent.Perf") }); //$NON-NLS-1$
+		 * //$NON-NLS-2$ param.setField(EParameterFieldType.CLOSED_LIST);
+		 * param.setCategory(EComponentCategory.MAIN); param.setNumRow(4);
+		 * param.setReadOnly(false); param.setRequired(false);
+		 * param.setShow(false); listParam.add(param);
+		 */
 		if (canStart()) {
 			param = new ElementParameter(node);
 			param.setName(EParameterName.START.getName());
@@ -907,6 +904,7 @@ public class EmfComponent implements IComponent {
 				xmlColumn = (COLUMNType) xmlColumnList.get(i);
 				talendColumn = new MetadataColumn();
 				talendColumn.setLabel(xmlColumn.getNAME());
+				talendColumn.setOriginalDbColumnName(xmlColumn.getNAME());
 				talendColumn.setTalendType(xmlColumn.getTYPE());
 				talendColumn
 						.setPrecision(new Integer(xmlColumn.getPRECISION()));
@@ -1242,8 +1240,8 @@ public class EmfComponent implements IComponent {
 
 			listConnector.add(nodeConnector);
 			if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow"
-														// (main type), then add
-														// the same for the
+				// (main type), then add
+				// the same for the
 				// //$NON-NLS-1$
 				// lookup.
 				currentType = EConnectionType.FLOW_REF;
@@ -1283,7 +1281,7 @@ public class EmfComponent implements IComponent {
 				}
 			}
 			if (!exists) { // will add by default all connectors not defined in
-							// the xml files
+				// the xml files
 				nodeConnector = new NodeConnector();
 				nodeConnector.setDefaultConnectionType(currentType);
 				nodeConnector.setName(currentType.getName());

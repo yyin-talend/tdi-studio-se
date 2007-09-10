@@ -217,18 +217,21 @@ public class ChangeMetadataCommand extends Command {
         this.internal = internal;
     }
 
-    private boolean getPropagate(Boolean returnIfNull) {
-        if (propagate == null) {
-            if (returnIfNull != null) {
-                return returnIfNull;
-            }
-            propagate = MessageDialog
-                    .openQuestion(
-                            new Shell(),
-                            Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return propagate;
-    }
+	private boolean getPropagate(Boolean returnIfNull) {
+		if (propagate == null) {
+			if (returnIfNull != null) {
+				return returnIfNull;
+			}
+			propagate = MessageDialog
+					.openQuestion(
+							new Shell(),
+							Messages
+									.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+							Messages
+									.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
+		}
+		return propagate;
+	}
 
     private boolean getPropagate() {
         return getPropagate(null);
@@ -309,8 +312,10 @@ public class ChangeMetadataCommand extends Command {
                     nodeConnector = node.getConnectorFromName(currentIO.getConnection().getConnectorName());
                     baseConnector = nodeConnector.getBaseSchema();
                 }
-                if (currentIO.hasChanged() && (baseConnector.equals(currentConnector))) {
-                    INode targetNode = currentIO.getTarget();
+                INode targetNode = currentIO.getTarget();
+				if (baseConnector.equals(currentConnector)
+						&& (!newOutputMetadata.sameMetadataAs(targetNode
+								.getMetadataFromConnector(baseConnector)))) {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
@@ -413,8 +418,10 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-            MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
+		if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata,
+				IMetadataColumn.OPTIONS_NONE)
+				&& (schemaParam == null || !schemaParam.isReadOnly())) {
+			MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
@@ -423,14 +430,18 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        for (INodeConnector connector : node.getListConnector()) {
-            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
-                // if there is some other schema dependant of this one, modify
-                // them
-                MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
-            }
-        }
-
+		for (INodeConnector connector : node.getListConnector()) {
+			if ((!connector.getName().equals(currentConnector))
+					&& connector.getBaseSchema().equals(currentConnector)
+					&& (!node.getSchemaParameterFromConnector(
+							connector.getName()).isReadOnly())) {
+				// if there is some other schema dependant of this one, modify
+				// them
+				MetadataTool.copyTable(newOutputMetadata, node
+						.getMetadataFromConnector(connector.getName()));
+			}
+		}
+		
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
                 newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
@@ -484,7 +495,7 @@ public class ChangeMetadataCommand extends Command {
     /**
      * Refresh property view.
      */
-    protected void refreshPropertyView() {
+    public void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;

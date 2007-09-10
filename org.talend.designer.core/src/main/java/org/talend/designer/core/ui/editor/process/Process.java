@@ -970,7 +970,8 @@ public class Process extends Element implements IProcess {
 				IElementParameter schemaParam = currentParam
 						.getChildParameters().get(
 								EParameterName.SCHEMA_TYPE.getName());
-				if (schemaParam != null) {
+				if (schemaParam != null
+						&& schemaParam.isShow(node.getElementParameters())) {
 					if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
 						String metaRepositoryName = (String) currentParam
 								.getChildParameters().get(
@@ -990,9 +991,9 @@ public class Process extends Element implements IProcess {
 							IMetadataTable metadataTable = node
 									.getMetadataFromConnector(currentParam
 											.getContext());
-							if (!copyOfrepositoryMetadata
-									.sameMetadataAs(metadataTable,
-											IMetadataColumn.OPTIONS_NONE)) {
+							if (!metadataTable.sameMetadataAs(
+									copyOfrepositoryMetadata,
+									IMetadataColumn.OPTIONS_NONE)) {
 
 								result
 										.setResult(

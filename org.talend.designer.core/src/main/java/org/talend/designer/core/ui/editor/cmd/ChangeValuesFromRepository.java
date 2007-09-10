@@ -308,17 +308,24 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         return sourceNode;
     }
 
-    /**
-     * qzhang Comment method "getTake".
-     * 
-     * @return
-     */
-    private boolean getTake() {
-        Boolean take = MessageDialog.openQuestion(new Shell(), Messages
-                .getString("ChangeValuesFromRepository.messageDialog.take"), Messages
-                .getString("ChangeValuesFromRepository.messageDialog.takeMessage"));
-        return take;
-    }
+	/**
+	 * qzhang Comment method "getTake".
+	 * 
+	 * @return
+	 */
+	private Boolean take = null;
+
+	private boolean getTake() {
+		if (take == null) {
+			take = MessageDialog
+					.openQuestion(
+							new Shell(),
+							"",
+							Messages
+									.getString("ChangeValuesFromRepository.messageDialog.takeMessage"));
+		}
+		return take;
+	}
 
     @Override
     public void undo() {
