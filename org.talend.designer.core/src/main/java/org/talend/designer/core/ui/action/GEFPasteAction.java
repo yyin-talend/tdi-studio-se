@@ -37,6 +37,7 @@ import org.talend.designer.core.ui.editor.cmd.MultiplePasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
@@ -129,8 +130,8 @@ public class GEFPasteAction extends SelectionAction {
             if (objects.size() == 1) {
                 String content = (String) clipBoardContent;
                 if (objects.get(0) instanceof NoteEditPart
-                        && ((NoteEditPart) objects.get(0)).getNoteDirectEditManager() != null) {
-                    Text text = ((NoteEditPart) objects.get(0)).getNoteDirectEditManager().getTextControl();
+                        && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
+                    Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                     if (text != null) {
                         text.insert(content);
                     }
@@ -140,6 +141,16 @@ public class GEFPasteAction extends SelectionAction {
                     if (text != null) {
                         text.insert(content);
                     }
+                } else if (objects.get(0) instanceof NodeLabelEditPart
+                        && ((NodeLabelEditPart) objects.get(0)).getDirectEditManager() != null) {
+                    {
+                        Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor()
+                                .getControl();
+                        if (text != null) {
+                            text.insert(content);
+                        }
+                    }
+
                 }
             }
         }

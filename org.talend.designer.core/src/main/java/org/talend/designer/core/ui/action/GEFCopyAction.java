@@ -33,6 +33,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteDirectEditManager;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
@@ -71,14 +72,15 @@ public class GEFCopyAction extends SelectionAction {
                 if (o instanceof NoteEditPart) {
                     return true;
                 }
+                if (o instanceof NodeLabelEditPart) {
+                    return true;
+                }
                 if (o instanceof ConnLabelEditPart) {
                     return true;
                 }
-
                 if (!(o instanceof NodePart) && !(o instanceof NoteEditPart)) {
                     return false;
                 }
-
             }
             return true;
         }
@@ -100,10 +102,11 @@ public class GEFCopyAction extends SelectionAction {
 
             boolean connectionTextActived = false;
 
+            boolean nodeLabelActived = false;
+
             if (objects.size() == 1) {
                 if (objects.get(0) instanceof NoteEditPart) {
-                    NoteDirectEditManager directEditManager = ((NoteEditPart) objects.get(0))
-                            .getNoteDirectEditManager();
+                    NoteDirectEditManager directEditManager = ((NoteEditPart) objects.get(0)).getDirectEditManager();
                     if (directEditManager != null && directEditManager.getCellEditor() != null) {
                         noteTextActived = true;
                     }
@@ -113,12 +116,18 @@ public class GEFCopyAction extends SelectionAction {
                             && connLabelEditPart.getDirectEditManager().getTextControl() != null) {
                         connectionTextActived = true;
                     }
+                } else if (objects.get(0) instanceof NodeLabelEditPart) {
+                    NodeLabelEditPart nodeLabelEditPart = (NodeLabelEditPart) objects.get(0);
+                    if (nodeLabelEditPart.getDirectEditManager() != null
+                            && nodeLabelEditPart.getDirectEditManager().getCellEditor() != null) {
+                        nodeLabelActived = true;
+                    }
                 }
             }
 
             if (noteTextActived) {
 
-                Text text = ((NoteEditPart) objects.get(0)).getNoteDirectEditManager().getTextControl();
+                Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                 clipboard.setContents(text.getSelectionText());
 
             } else if (connectionTextActived) {
@@ -126,6 +135,10 @@ public class GEFCopyAction extends SelectionAction {
                 Text text = ((ConnLabelEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                 clipboard.setContents(text.getSelectionText());
 
+            } else if (nodeLabelActived) {
+                Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor()
+                        .getControl();
+                clipboard.setContents(text.getSelectionText());
             } else {
                 clipboard.setContents(objects);
             }

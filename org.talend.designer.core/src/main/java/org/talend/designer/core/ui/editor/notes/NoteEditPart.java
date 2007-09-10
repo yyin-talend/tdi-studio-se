@@ -120,7 +120,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
      * 
      * @return
      */
-    public NoteDirectEditManager getNoteDirectEditManager() {
+    public NoteDirectEditManager getDirectEditManager() {
         return (NoteDirectEditManager) directEditManager;
     }
 }

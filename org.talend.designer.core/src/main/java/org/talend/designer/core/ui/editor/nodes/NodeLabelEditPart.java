@@ -62,6 +62,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
      */
+    @Override
     public void activate() {
         if (!isActive()) {
             super.activate();
@@ -74,6 +75,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
      */
+    @Override
     public Object getAdapter(final Class key) {
         return super.getAdapter(key);
     }
@@ -83,6 +85,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         if (isActive()) {
             super.deactivate();
@@ -104,6 +107,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
+    @Override
     public IFigure createFigure() {
         String text = ((NodeLabel) getModel()).getLabelText();
 
@@ -111,9 +115,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         htmlFig.setText(text);
 
         if (((NodeLabel) getModel()).isActivate()) {
-            ((SimpleHtmlFigure) htmlFig).setAlpha(-1);
+            (htmlFig).setAlpha(-1);
         } else {
-            ((SimpleHtmlFigure) htmlFig).setAlpha(NodeLabel.ALPHA_VALUE);
+            (htmlFig).setAlpha(NodeLabel.ALPHA_VALUE);
         }
         ((NodeLabel) getModel()).setLabelSize(htmlFig.getPreferredSize());
         getParent().refresh();
@@ -136,8 +140,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             refreshVisuals();
             // set the new size to update the node container
             ((NodeLabel) getModel()).setLabelSize(((SimpleHtmlFigure) figure).getPreferredSize());
-            NodeLabel label= (NodeLabel) getModel();
-            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode().getUniqueName());
+            NodeLabel label = (NodeLabel) getModel();
+            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label
+                    .getNode().getUniqueName());
             getParent().refresh();
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
@@ -162,6 +167,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
+    @Override
     public void createEditPolicies() {
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new NodeTextEditPolicy());
     }
@@ -171,8 +177,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getDragTracker(org.eclipse.gef.Request)
      */
+    @Override
     public DragTracker getDragTracker(final Request request) {
-        return new NodeTextTracker(this, (EditPart) this.getParent());
+        return new NodeTextTracker(this, this.getParent());
     }
 
     /*
@@ -180,6 +187,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
+    @Override
     protected void refreshVisuals() {
         if (nodePart == null) {
             nodePart = ((NodeContainerPart) getParent()).getNodePart();
@@ -209,6 +217,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#performRequest(org.eclipse.gef.Request)
      */
+    @Override
     public void performRequest(final Request request) {
         if (request.getType() == RequestConstants.REQ_DIRECT_EDIT) {
             performDirectEdit();
@@ -228,20 +237,30 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         manager.show();
     }
 
+    /**
+     * yzhang Comment method "getDirectEditManager".
+     * 
+     * @return
+     */
+    public SimpleHtmlTextEditManager getDirectEditManager() {
+        return this.manager;
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setSelected(final int value) {
         if (value != SELECTED_NONE) {
-            List<EditPart> listEditParts = (List<EditPart>) this.getViewer().getSelectedEditParts();
+            List<EditPart> listEditParts = this.getViewer().getSelectedEditParts();
             if (listEditParts.size() != 1) {
                 getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
-//                super.setSelected(SELECTED_NONE);
-//                this.getViewer().deselect(this);
-//                fireSelectionChanged();
+                // super.setSelected(SELECTED_NONE);
+                // this.getViewer().deselect(this);
+                // fireSelectionChanged();
             } else {
                 getParent().installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
                 super.setSelected(value);
