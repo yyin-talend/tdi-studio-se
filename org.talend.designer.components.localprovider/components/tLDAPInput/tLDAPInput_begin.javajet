@@ -18,21 +18,36 @@ class="LDAPInput"
 	String cid = node.getUniqueName();
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
+	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
 	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String filter=ElementParameterParser.getValue(node, "__FILTER__");
 	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
+	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
+	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 	String limit =ElementParameterParser.getValue(node, "__LIMIT__");
+	String timeout =ElementParameterParser.getValue(node, "__TIMEOUT__");
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
 %>
+	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
     env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
-    env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
+	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
+	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
 <%
+	if(baseDN == null || baseDN.length()<=2){
+%>
+	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
+<%
+	}else{
+%>
+	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>+"/"+<%=baseDN%>);
+<%
+	}
     if(authen.equals("true")){
 %>
     env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
@@ -90,7 +105,10 @@ class="LDAPInput"
                 	}
 %>    
     });
-	
+    searchCtls_<%=cid%>.setTimeLimit(<%=timeout%>*1000);
+<%
+					if(baseDN == null || baseDN.length()<=2){
+%>
 	//get basce dn
 	javax.naming.directory.Attributes attrsNaming_<%=cid%> = ctx_<%=cid%>.getAttributes("",new String[] {"namingContexts"});
     javax.naming.directory.Attribute aNaming_<%=cid%> = attrsNaming_<%=cid%>.get("namingContexts");
@@ -106,11 +124,19 @@ class="LDAPInput"
                     : aNaming_<%=cid%>.get().toString();
 	
     javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase, <%=filter%>, searchCtls_<%=cid%>);
+<%
+					}else{
+%>
+	javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search("", <%=filter%>, searchCtls_<%=cid%>);
+<%
+					}
+%>
 	int entryCount_<%=cid%> = 0;
     while (answer_<%=cid%> .hasMoreElements()) {
     	if(entryCount_<%=cid%> >= <%=limit%>){
     		break;
     	}
+    	<%=cid%>_NB_LINE++;
         javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
 		globalMap.put("RESULT_NAME",sr_<%=cid%>.getName());
         javax.naming.directory.Attributes attrs_<%=cid%> = sr_<%=cid%>.getAttributes();

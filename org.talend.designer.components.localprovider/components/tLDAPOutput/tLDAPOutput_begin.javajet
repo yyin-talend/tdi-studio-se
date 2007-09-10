@@ -18,19 +18,32 @@ class="LDAPInput"
 	String cid = node.getUniqueName();
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
+	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
 	String protocol=ElementParameterParser.getValue(node, "__PROTOCOL__");
 	String advanced=ElementParameterParser.getValue(node, "__ADVANCEDCA__");
 	String storepath=ElementParameterParser.getValue(node, "__STORECA__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+	String referrals=ElementParameterParser.getValue(node, "__REFERRALS__");
+	String aliases=ElementParameterParser.getValue(node, "__ALIASES__");
 %>
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
 	env_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
     env_<%=cid%>.put(javax.naming.Context.SECURITY_AUTHENTICATION, "simple");// "none","simple","strong"
-    env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
     env_<%=cid%>.put(javax.naming.Context.SECURITY_PRINCIPAL, <%=user%>);
     env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
+	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
+	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
 <%
+	if(baseDN == null || baseDN.length()<=2){
+%>
+	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>);
+<%
+	}else{
+%>
+	env_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "ldap://"+<%=host%>+":"+<%=port%>+"/"+<%=baseDN%>);
+<%
+	}
     if(protocol.equals("LDAPS")){
 %>
 	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");

@@ -12,3 +12,4 @@
 	}
 }
 ctx_<%=cid%>.close();
+globalMap.put("<%=cid%>_NB_LINE", <%=cid%>_NB_LINE);
