@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,19 @@ public abstract class JobScriptsManager {
     public static final String WINDOWS_ENVIRONMENT = "Windows"; //$NON-NLS-1$
 
     protected static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
+
+    public Map<ExportChoice, Boolean> getDefaultExportChoiseMap() {
+        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.needLauncher, true);
+        exportChoiceMap.put(ExportChoice.needSystemRoutine, true);
+        exportChoiceMap.put(ExportChoice.needUserRoutine, true);
+        exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
+        exportChoiceMap.put(ExportChoice.needJob, true);
+        exportChoiceMap.put(ExportChoice.needSource, true);
+        exportChoiceMap.put(ExportChoice.needContext, true);
+        exportChoiceMap.put(ExportChoice.applyToChildren, true);
+        return exportChoiceMap;
+    }
 
     /**
      * 
