@@ -69,7 +69,7 @@ import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
  */
 public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
-    public static final String EXPORT_METHOD = "main"; //$NON-NLS-1$
+    public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
     private static List<String> axisLib = new ArrayList<String>();
     static {
