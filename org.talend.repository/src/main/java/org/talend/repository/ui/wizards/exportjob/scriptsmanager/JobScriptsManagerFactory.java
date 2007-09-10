@@ -22,6 +22,7 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
 
 /**
@@ -37,6 +38,18 @@ public class JobScriptsManagerFactory {
             instance = new JobScriptsManagerFactory();
         }
         return instance;
+    }
+
+    public JobScriptsManager createDefaultManagerInstance() {
+
+        JobScriptsManager manager = null;
+        ECodeLanguage language = LanguageManager.getCurrentLanguage();
+        if (language == ECodeLanguage.JAVA) {
+            manager = new JobJavaScriptsManager();
+        } else if (language == ECodeLanguage.PERL) {
+            manager = new JobPerlScriptsManager();
+        }
+        return manager;
     }
 
     public JobScriptsManager createManagerInstance(ECodeLanguage language, String exportType) {
