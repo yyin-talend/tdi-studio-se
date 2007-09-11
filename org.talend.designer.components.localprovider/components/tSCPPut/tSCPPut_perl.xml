@@ -1,0 +1,70 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+  >
+    <SIGNATURE />
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL />
+  </DOCUMENTATION>
+
+   <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>"192.168.0.1"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USERNAME"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+    > 
+      <DEFAULT>"remote_user"</DEFAULT>  
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FILELIST"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="40"
+    >
+      <ITEMS>
+     	<ITEM NAME="SOURCE" />
+        <ITEM NAME="DESTINATION" />
+      </ITEMS>
+    </PARAMETER>    
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Net-SCP" MODULE="Net::SCP" REQUIRED="true" />
+     </IMPORTS>
+  </CODEGENERATION>
+<RETURNS/>
+</COMPONENT>
