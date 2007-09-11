@@ -247,7 +247,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return allJobScripts;
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
+    protected void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
             String projectName, List<ProcessItem> processedJob, ExportFileResource resource,
             Map<ExportChoice, Boolean> exportChoice) {
         if (processedJob.contains(process)) {
@@ -363,7 +363,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needContext
      * @return
      */
-    private List<URL> getJobScripts(String jobName, boolean needJob) {
+    protected List<URL> getJobScripts(String jobName, boolean needJob) {
         List<URL> list = new ArrayList<URL>(1);
         if (!needJob) {
             return list;

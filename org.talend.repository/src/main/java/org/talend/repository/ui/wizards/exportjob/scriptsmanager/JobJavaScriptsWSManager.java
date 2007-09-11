@@ -33,9 +33,9 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -59,7 +59,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
@@ -98,6 +97,22 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
+        boolean needJob = true;
+        boolean needSource = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource));
+        boolean needContext = BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext));
+        ExportFileResource libResource = new ExportFileResource(null, "WEB-INF/lib"); //$NON-NLS-1$
+        ExportFileResource contextResource = new ExportFileResource(null, "WEB-INF/classes"); //$NON-NLS-1$
+        ExportFileResource srcResource = new ExportFileResource(null, "WEB-INF"); //$NON-NLS-1$
+        if (needJob) {
+            list.add(libResource);
+        }
+        if (needContext) {
+            list.add(contextResource);
+        }
+        if (needSource) {
+            list.add(srcResource);
+        }
+
         copyServerConfigFileToTempDir();
 
         for (int i = 0; i < process.length; i++) {
@@ -122,29 +137,15 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             // edit the WSDD file
             editWSDDFile(processItem);
 
-            ExportFileResource srcFile = getSrcFile(processItem, BooleanUtils.isTrue(exportChoice
-                    .get(ExportChoice.needSource)));
-            list.add(srcFile);
-            // here remove the talend.project file to avoid duplication
-            if (BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)) && i != 0) {
-                Set<URL> resourcesByRelativePath = srcFile.getResourcesByRelativePath(JOB_SOURCE_FOLDER_NAME);
-                for (URL url : resourcesByRelativePath) {
-                    if (url.getFile().indexOf(FileConstants.LOCAL_PROJECT_FILENAME) != -1) {
-                        srcFile.removeResources(JOB_SOURCE_FOLDER_NAME, url);
-                        break;
-                    }
-                }
-            }
+            // add children jobs
+            boolean needChildren = true;
+            addSubJobResources(processItem, needChildren, exportChoice, libResource, contextResource, srcResource);
 
             // generate the context file
-            ExportFileResource contextScripts = getContextScripts(processItem, BooleanUtils.isTrue(exportChoice
-                    .get(ExportChoice.needContext)));
-            list.add(contextScripts);
+            getContextScripts(processItem, needContext, contextResource);
 
             // generate jar file for job
-            ExportFileResource jobScriptsResource = new ExportFileResource(null, "WEB-INF/lib"); //$NON-NLS-1$
-            jobScriptsResource.addResources(getJobScripts(processItem, true));
-            list.add(jobScriptsResource);
+            libResource.addResources(getJobScripts(processItem, needJob));
         }
 
         // generate Server Config file
@@ -165,27 +166,48 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 .get(ExportChoice.needMetaInfo)));
         list.add(metaInfoFolder);
 
-        // generate the classes folder for the WEB-INFO folder
-        ExportFileResource rootResource = new ExportFileResource(null, "WEB-INF/lib"); //$NON-NLS-1$
-        list.add(rootResource);
         // Gets system routines
         List<URL> systemRoutineList = getSystemRoutine(true);
-        rootResource.addResources(systemRoutineList);
+        libResource.addResources(systemRoutineList);
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(true);
-        rootResource.addResources(userRoutineList);
+        libResource.addResources(userRoutineList);
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
-        rootResource.addResources(talendLibraries);
+        libResource.addResources(talendLibraries);
 
         // Gets axis libraries
         List<URL> axisLibList = getAxisLib(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needAXISLIB)));
-        rootResource.addResources(axisLibList);
+        libResource.addResources(axisLibList);
 
-        // check the axis lib avoid duplication
+        // check the list avoid duplication
 
         return list;
+    }
+
+    private void addSubJobResources(ProcessItem process, boolean needChildren, Map<ExportChoice, Boolean> exportChoice,
+            ExportFileResource libResource, ExportFileResource contextResource, ExportFileResource srcResource) {
+
+        List<String> list = new ArrayList<String>();
+
+        if (needChildren) {
+            String projectName = getCurrentProjectName();
+            try {
+                List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
+                        processedJob, srcResource, exportChoice);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
+            String jobName = iter.next();
+            libResource.addResources(getJobScripts(jobName, true));
+            addContextScripts(jobName, contextResource, true);
+        }
+
     }
 
     private void copyServerConfigFileToTempDir() {
@@ -202,11 +224,9 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     }
 
-    protected ExportFileResource getContextScripts(ProcessItem processItem, Boolean needContext) {
+    protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource) {
         String jobName = processItem.getProperty().getLabel();
-        ExportFileResource contextResource = new ExportFileResource(null, "WEB-INF/classes"); //$NON-NLS-1$
         addContextScripts(jobName, contextResource, needContext);
-        return contextResource;
     }
 
     protected List<URL> getAxisLib(Boolean needAxisLib) {
@@ -334,15 +354,6 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         }
 
         webInfo.addResources(urlList);
-        return webInfo;
-    }
-
-    private ExportFileResource getSrcFile(ProcessItem processItem, boolean needSource) {
-        ExportFileResource webInfo = new ExportFileResource(null, "WEB-INF"); //$NON-NLS-1$
-
-        // generate the src folder
-        webInfo.addResources(JOB_SOURCE_FOLDER_NAME, getSource(processItem, needSource));
-
         return webInfo;
     }
 
