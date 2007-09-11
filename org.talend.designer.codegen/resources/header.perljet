@@ -162,6 +162,9 @@ $current_component = undef;
 $current_component = undef;
 
 sub global_die_catcher {
+    # go away if we are inside an eval
+    return if $^S;
+
     our $_globals;
     $_globals{job_failure} = 1;
 
