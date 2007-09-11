@@ -39,6 +39,7 @@ StartThreadStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
 
             if (!componentName.equals("tLogCatcher")
                 && !componentName.equals("tFlowMeterCatcher")
+                && !componentName.equals("tAssertCatcher")
                 && !componentName.equals("tStatCatcher")) {
 %>
 <%=rootNode.getUniqueName() %>_subprocess();

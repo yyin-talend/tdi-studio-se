@@ -206,6 +206,16 @@ sub global_die_catcher {
 
 <%
     }
+    for (INode assertCatcher : process.getNodesOfType("tAssertCatcher")) {
+%>
+        <%=assertCatcher.getUniqueName()%>_subprocess(
+            origin => undef,
+            description => $_globals{$dying_component}{ERROR_MESSAGE},
+            status => 'Failed',
+            substatus => 'Job execution error',
+        );
+<%
+    }
 %>
         no strict 'refs';
         &{$dying_component.'_error'}();
