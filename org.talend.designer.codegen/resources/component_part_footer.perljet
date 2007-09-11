@@ -58,7 +58,10 @@ if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
                     node.getOutgoingConnections();
 
                 for (IConnection conn : conns) {
-                    if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    EConnectionType lineStyle = conn.getLineStyle();
+
+                    if (lineStyle.equals(EConnectionType.FLOW_MAIN)
+                        || lineStyle.equals(EConnectionType.FLOW_MERGE)) {
 %>
 
 my $<%=conn.getName() %> = $<%=metadata.getTableName() %>;

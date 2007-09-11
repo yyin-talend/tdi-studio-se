@@ -18,6 +18,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean stat = codeGenArgument.isStatistics();
+
+String currentIncomingName = (String)codeGenArgument.getIncomingName();
 %>
 # +-------------------------------------------------------------------------+
 # | [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -60,7 +62,11 @@ $current_component="<%=node.getUniqueName() %>";
 
 if (codePart.equals(ECodePart.MAIN)) {
     for (IConnection conn : node.getIncomingConnections()) {
-        if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {
+        EConnectionType lineStyle = conn.getLineStyle();
+
+        if (EConnectionType.FLOW_MAIN == lineStyle
+            || (EConnectionType.FLOW_MERGE == lineStyle
+                && conn.getName().equals(currentIncomingName))) {
             if (conn.isUseByMetter()) {
 %>
 $_globals{count_<%=conn.getName()%>}++;
@@ -71,7 +77,11 @@ $_globals{count_<%=conn.getName()%>}++;
 
     if (stat) {
         for (IConnection conn : node.getIncomingConnections()) {
-            if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {
+            EConnectionType lineStyle = conn.getLineStyle();
+
+            if (EConnectionType.FLOW_MAIN == lineStyle
+                || (EConnectionType.FLOW_MERGE == lineStyle
+                    && conn.getName().equals(currentIncomingName))) {
 %>
 UpdateStat('<%=conn.getName() %>', 1);
 
