@@ -1,0 +1,104 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String directory = ElementParameterParser.getValue(
+    node,
+    "__DIRECTORY__"
+);
+
+String filemask = ElementParameterParser.getValue(
+    node,
+    "__FILEMASK__"
+);
+
+String case_sensitive = ElementParameterParser.getValue(
+    node,
+    "__CASE_SENSITIVE__"
+);
+
+String include_subdir = ElementParameterParser.getValue(
+    node,
+    "__INCLUDE_SUBDIR__"
+);
+%>
+
+use File::Spec;
+use File::Basename;
+use talend::filesOp;
+
+$| = 1;
+
+$_globals{<%=cid %>}{CURRENT_ITERATION} = 0;
+
+my %hprev_files ;
+my $isFirstIteration = 1 ;
+while (1) {
+<%if(!ElementParameterParser.getValue(
+    node,
+    "__MAX_ITERATIONS__").equals("")){
+%>
+    last if(<%=ElementParameterParser.getValue(node, "__MAX_ITERATIONS__")%> == $_globals{<%=cid %>}{CURRENT_ITERATION});
+<%
+}
+%>
+    my @files = getFileList(
+        directory      => <%=directory%>,
+        filemask       => filemaskToRegex(<%=filemask%>),
+        case_sensitive => <%=case_sensitive%>,
+        include_subdir => <%=include_subdir%>,
+    );
+
+    my %hcurr_files;
+    foreach my $file (@files){
+        $hcurr_files{$file} = 1;
+    }    
+
+    my $triggerOn ;
+    if($isFirstIteration){
+    	$isFirstIteration = 0;
+    } else {
+<%if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filedeleted")){%>    	
+        foreach my $prev_file (keys %hprev_files){
+    	    unless( $hcurr_files{$prev_file} ){
+    	    	$triggerOn = 1 ;
+                $_globals{<%=cid %>}{DELETED_FILE} = $prev_file ;
+                last;
+    	    }
+        }
+<%}%>    	
+
+<%if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filecreated")){%>    	
+        foreach my $curr_file (keys %hcurr_files){
+    	    unless( $hprev_files{$curr_file} ){
+    	    	$triggerOn = 1 ;
+                $_globals{<%=cid %>}{CREATED_FILE} = $curr_file ;
+                last;
+    	    }
+        }
+<%}%>    	
+    }
+    %hprev_files = %hcurr_files ;
+    
+    $_globals{<%=cid %>}{CURRENT_ITERATION}++;
+    if(!$triggerOn){
+        sleep <%=ElementParameterParser.getValue(node, "__WAIT__")%> ;
+    	next ;
+    }
+
+
+
+
+    
