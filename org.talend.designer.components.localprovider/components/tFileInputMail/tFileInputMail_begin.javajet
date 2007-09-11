@@ -11,6 +11,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
 		java.util.Map
+		java.util.Enumeration
 	" 
 %>
 
@@ -47,6 +48,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 %>
 	};
+   String [] mailChecked_<%=cid %> = new String [] {
+<%
+	for (int i=0; i<mailParts.size(); i++) {
+	   Map<String, String> lineValue = mailParts.get(i);
+%>
+	 	"<%= lineValue.get("MULTI_VALUE") %>",
+<%
+	}
+%>
+	};
+	   String [] mailSeparator_<%=cid %> = new String [] {
+<%
+	for (int i=0; i<mailParts.size(); i++) {
+	   Map<String, String> lineValue = mailParts.get(i);
+%>
+	 	<%= lineValue.get("PART_SEPARATOR") %>,
+<%
+	}
+%>
+	};
 	javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(System.getProperties(), null);
     javax.mail.internet.MimeMessage msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>, new java.io.FileInputStream(<%=filename %>));
 	java.util.List<String> list_<%=cid %> = new java.util.ArrayList<String>();
@@ -54,14 +75,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	for (int i_<%=cid %> =0;i_<%=cid %> < mailParts_<%=cid %>.length;i_<%=cid %>++)
 	{				
 		String part_<%=cid %> = mailParts_<%=cid %>[i_<%=cid %>];
-            
-        if(!part_<%=cid %>.equalsIgnoreCase("body"))
-        {
-           String content_<%=cid %> = msg_<%=cid %>.getHeader(part_<%=cid %>, null);
-           list_<%=cid %>.add(content_<%=cid %>);
-        }
-        else
-        {
+       	String sep_<%=cid%>= mailSeparator_<%=cid %>[i_<%=cid %>];
+        if(part_<%=cid %>.equalsIgnoreCase("body"))
+        { 
            java.io.InputStream in_<%=cid %> = msg_<%=cid %>.getInputStream();
            byte[] buffer_<%=cid %> = new byte[1024];
            int length_<%=cid %> = 0;
@@ -71,7 +87,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            }
            list_<%=cid %>.add(baos_<%=cid %>.toString());
            in_<%=cid %>.close();
-           baos_<%=cid %>.close();                
+           baos_<%=cid %>.close();      
+ 
+        }else if(part_<%=cid %>.equalsIgnoreCase("header")){
+            java.util.Enumeration em = msg_<%=cid %>.getAllHeaderLines();
+            int em_count=0;
+            
+            String tempStr_<%=cid %>="";
+            
+			while (em.hasMoreElements()) {
+				tempStr_<%=cid %> = tempStr_<%=cid %> + (String) em.nextElement() + sep_<%=cid%> ;
+			}
+			list_<%=cid%>.add(tempStr_<%=cid %>);
+        }else{
+        	if(mailChecked_<%=cid %>[i_<%=cid%>].equals("true")){   
+				String[] sa_<%=cid%> = msg_<%=cid %>.getHeader(part_<%=cid%>);
+				String tempStr_<%=cid%>="";
+				for(int i=0;i<sa_<%=cid%>.length;i++){
+					tempStr_<%=cid%>=tempStr_<%=cid%>+sa_<%=cid%>[i] + sep_<%=cid%>;
+				}
+				list_<%=cid%>.add(tempStr_<%=cid%>);
+        	}else{ 
+	           String content_<%=cid %> = msg_<%=cid %>.getHeader(part_<%=cid %>, null);
+	           list_<%=cid %>.add(content_<%=cid %>);
+           	}    
         }   
  	}           
  	//attachment Deal
@@ -120,10 +159,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			firstConnName = conn.getName();			
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
 
-				%>
-
-			
-<%
 			List<IMetadataColumn> columns=metadata.getListColumns();
 			int columnSize = columns.size();
 			for (int i=0;i<columnSize;i++) {//4
@@ -136,9 +171,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 			if(<%=i %> < list_<%=cid %>.size() && list_<%=cid %>.get(<%=i %>)!=null){				
 <%
-					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String and Object
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = list_<%=cid %>.get(<%=i %>);
+					<%=conn.getName() %>.<%=column.getLabel() %> = (String)list_<%=cid %>.get(<%=i %>);
 <%
 					} else if(javaType == JavaTypesManager.DATE) { //Date
 %>
@@ -147,9 +182,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
 					<%=conn.getName() %>.<%=column.getLabel() %> = list_<%=cid %>.get(<%=i %>).getBytes();
-	
 <%
-					} else  { //other
+					}else  { //other
 %>						
 					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(list_<%=cid %>.get(<%=i %>));
 <%
