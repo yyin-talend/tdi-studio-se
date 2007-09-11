@@ -68,8 +68,6 @@ public class CategoryComposite extends Composite {
 
     CategoryManager manager = null;
 
-    ExpressionComposite expressComposite = null;
-
     private static Function selectedFunction;
 
     /**
@@ -160,8 +158,9 @@ public class CategoryComposite extends Composite {
         docLabel.setText("Help");
 
         final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
+        docDisplayer.setText("Please select a category and function.");
         docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
-        sashForm.setWeights(new int[] { 1, 1 });
+        sashForm.setWeights(new int[] { 2, 1 });
 
         new UIRelationShipLinker(categoryViewer, functionViewer, docDisplayer);
         initializeData(categoryViewer);
@@ -174,24 +173,6 @@ public class CategoryComposite extends Composite {
      */
     private void initializeData(ListViewer categoryViewer) {
         categoryViewer.setInput(manager.getInputCategory());
-    }
-
-    /**
-     * Getter for expressController.
-     * 
-     * @return the expressController
-     */
-    public ExpressionComposite getExpressionComposite() {
-        return this.expressComposite;
-    }
-
-    /**
-     * Sets the expressController.
-     * 
-     * @param composite the expressController to set
-     */
-    public void setExpressionComposite(ExpressionComposite composite) {
-        this.expressComposite = composite;
     }
 
     /**
@@ -246,7 +227,10 @@ public class CategoryComposite extends Composite {
                             VirtualMetadataColumn column = new VirtualMetadataColumn();
                             column.setTalendType(function.getTalendType().getName());
                             column.setFunction(function);
-                            expressComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
+
+                            ExpressionComposite expressionComposite = ExpressionBuilderDialog.getExpressionComposite();
+                            expressionComposite.setExpression(FunctionManagerExt.getOneColData(column, false), true);
+
                         } else {
                             docDisplayer.setText(""); //$NON-NLS-1$
                         }

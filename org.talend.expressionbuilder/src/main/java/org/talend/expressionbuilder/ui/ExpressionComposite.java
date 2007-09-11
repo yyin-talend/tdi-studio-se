@@ -19,15 +19,24 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+/**
+ * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
+ * 
+ * $Id: ExpressionComposite.java 下午05:58:51 2007-9-11 +0000 (2007-9-11) yzhang $
+ * 
+ */
 package org.talend.expressionbuilder.ui;
 
 import java.util.List;
+import java.util.Stack;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -40,8 +49,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
+import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.core.CorePlugin;
+import org.talend.core.language.LanguageManager;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -57,9 +69,13 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdap
  */
 public class ExpressionComposite extends Composite {
 
-    private final Text text;
+    private final ColorStyledText text;
 
     private String replacedText;
+
+    private final Stack<String> modificationRecord;
+
+    private boolean undoClicked;
 
     /**
      * yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -125,6 +141,8 @@ public class ExpressionComposite extends Composite {
         super(parent, style);
         setLayout(new FillLayout());
 
+        modificationRecord = new Stack<String>();
+
         final Group expressionGroup = new Group(this, SWT.NONE);
         GridLayout groupLayout = new GridLayout();
         expressionGroup.setLayout(groupLayout);
@@ -144,10 +162,37 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
 
-        // final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
-        // undoButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-        // undoButton.setText("Undo(Ctrl + Z)");
-        //
+        final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
+        undoButton.setText("Undo(Ctrl + Z)");
+        undoButton.setEnabled(false);
+        undoButton.addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseDown(MouseEvent e) {
+
+                undoClicked = true;
+                setExpression(modificationRecord.pop(), false);
+                if (modificationRecord.size() <= 0) {
+                    undoButton.setEnabled(false);
+                }
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                undoClicked = false;
+            }
+        });
+
         // final Button wrapButton = new Button(upperOperationButtonBar, SWT.NONE);
         // wrapButton.setText("Wrap");
 
@@ -167,8 +212,23 @@ public class ExpressionComposite extends Composite {
             }
         });
 
-        text = new Text(expressionGroup, SWT.WRAP | SWT.V_SCROLL | SWT.MULTI | SWT.H_SCROLL | SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+        text = new ColorStyledText(expressionGroup, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
+                LanguageManager.getCurrentLanguage().getName());
+        text.setLayoutData(new GridData(GridData.FILL_BOTH));
+        text.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                if (!undoClicked || !undoButton.isEnabled()) {
+                    String content = getExpression();
+                    modificationRecord.push(content);
+                    if (modificationRecord.size() > 0) {
+                        undoButton.setEnabled(true);
+                    }
+                }
+            }
+
+        });
 
         final Composite lowerOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
         final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);

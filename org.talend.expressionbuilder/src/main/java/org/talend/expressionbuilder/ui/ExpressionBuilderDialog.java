@@ -120,7 +120,6 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         lowerComposite.setLayout(new FillLayout());
 
         categoryComposite = new CategoryComposite(lowerComposite, SWT.NONE, manager);
-        categoryComposite.setExpressionComposite(expressionComposite);
 
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);

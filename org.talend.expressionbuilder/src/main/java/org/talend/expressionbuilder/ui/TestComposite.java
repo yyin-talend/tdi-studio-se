@@ -303,4 +303,17 @@ public class TestComposite extends Composite {
         }
     }
 
+    /**
+     * yzhang Comment method "setVariableList".
+     * 
+     * @param list
+     */
+    public void setVariables(List<Variable> list) {
+        if (list != null) {
+            ((List<Variable>) variableTableViewer.getInput()).clear();
+            ((List<Variable>) variableTableViewer.getInput()).addAll(list);
+            variableTableViewer.refresh();
+        }
+    }
+
 }
