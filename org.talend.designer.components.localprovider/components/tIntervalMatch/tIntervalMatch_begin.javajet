@@ -53,6 +53,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
         String returnClassName = "Object";
         JavaType mainjavaType = JavaTypesManager.STRING;
+        String mainTypeName = null;
+        String mainCanonicalTypeName = null;
         List<IMetadataColumn> columns = metadata.getListColumns();
         int sizeColumns = columns.size();			
         for (int i = 0; i < sizeColumns; i++) {//5
@@ -65,7 +67,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         	
         	if(column.getLabel().equals(mainName)) 
         	{
-            	mainjavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());  	
+            	mainjavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            	mainTypeName = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
         	}
         }//5	
         %> 
@@ -75,37 +78,132 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         java.util.Collections.sort((java.util.List<<%=lookupConName %>Struct>) list_<%=cid%>, new java.util.Comparator<<%=lookupConName %>Struct>(){
 
             public int compare(<%=lookupConName %>Struct o1, <%=lookupConName %>Struct o2) {
-		
-                <% 
-                if(mainjavaType == JavaTypesManager.DATE ) {
-                %>
-                    if (o1.<%=minName%>.before(o2.<%=minName%>)) 
-           
                 <%
+                if(mainjavaType == JavaTypesManager.DATE) {
+                    %>
+                    Long o1_min = o1.<%=minName%> == null ? null : new Long(o1.<%=minName%>.getTime());
+                    Long o1_max = o1.<%=maxName%> == null ? null : new Long(o1.<%=maxName%>.getTime());
+                    Long o2_min = o2.<%=minName%> == null ? null : new Long(o2.<%=minName%>.getTime());
+                    Long o2_max = o2.<%=maxName%> == null ? null : new Long(o2.<%=maxName%>.getTime());
+                    <%
                 } else if(mainjavaType == JavaTypesManager.BYTE || 
                         mainjavaType == JavaTypesManager.SHORT || 
                         mainjavaType == JavaTypesManager.FLOAT ||
                         mainjavaType == JavaTypesManager.DOUBLE ||
                         mainjavaType == JavaTypesManager.LONG ||
                         mainjavaType == JavaTypesManager.INTEGER){
-                %> 
-                    if (o1.<%=minName%> < o2.<%=minName%>) 
-                <%
+                    %>
+                    <%=mainTypeName%> o1_min = o1.<%=minName%>;
+                    <%=mainTypeName%> o1_max = o1.<%=maxName%>;
+                    <%=mainTypeName%> o2_min = o2.<%=minName%>;
+                    <%=mainTypeName%> o2_max = o2.<%=maxName%>;
+                    <%
+                } else if(mainjavaType == JavaTypesManager.BYTE_ARRAY) {
+                    %>
+                    String o1_min = o1.<%=minName%> == null ? null : new String(o1.<%=minName%>);
+                    String o1_max = o1.<%=maxName%> == null ? null : new String(o1.<%=maxName%>);
+                    String o2_min = o2.<%=minName%> == null ? null : new String(o2.<%=minName%>);
+                    String o2_max = o2.<%=maxName%> == null ? null : new String(o2.<%=maxName%>);
+                    <%
                 } else {
-                %>
-                    String o1_min = <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(o1.<%=minName%>)).toString()<%}else {%>String.valueOf(o1.<%=minName%>) <%}%>;
-                    String o2_min =  <% if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {%> java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(o2.<%=minName%>)).toString()<%}else {%>String.valueOf(o2.<%=minName%>) <%}%>;
-            
-                    if (o1_min.compareTo(o2_min) < 0) 
-    
-                <%
+                    %>
+                    String o1_min = String.valueOf(o1.<%=minName%>);
+                    String o1_max = String.valueOf(o1.<%=maxName%>);
+                    String o2_min = String.valueOf(o2.<%=minName%>);
+                    String o2_max = String.valueOf(o2.<%=maxName%>);
+                    <%
                 }
-                %>         
-                {
-                    return -1;
-                } else {
-                    return 1;
-                }	
+                %>
+                
+                <% 
+                if(mainjavaType == JavaTypesManager.DATE || 
+                        mainjavaType == JavaTypesManager.BYTE || 
+                        mainjavaType == JavaTypesManager.SHORT || 
+                        mainjavaType == JavaTypesManager.FLOAT ||
+                        mainjavaType == JavaTypesManager.DOUBLE ||
+                        mainjavaType == JavaTypesManager.LONG ||
+                        mainjavaType == JavaTypesManager.INTEGER){
+                    if(mainTypeName.equals("java.util.Date") || 
+                            mainTypeName.equals("Byte") || 
+                            mainTypeName.equals("Short") || 
+                            mainTypeName.equals("Float") || 
+                            mainTypeName.equals("Double") || 
+                            mainTypeName.equals("Long") || 
+                            mainTypeName.equals("Integer")) {
+                        %>
+                        if(o1_min == null && o2_min != null) {
+                            return -1;
+                        } else if(o1_min != null && o2_min == null) {
+                            return 1;
+                        } else if(o1_min != null && o2_min != null && o1_min != o2_min) {
+                            if(o1_min < o2_min) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        } else {
+                            if(o1_max == null && o2_max != null) {
+                                return -1;
+                            } else if(o1_max != null && o2_max == null) {
+                                return 1;
+                            } else if(o1_max != null && o2_max != null && o1_max != o2_max) {
+                                if(o1_max < o2_max) {
+                                    return -1;
+                                } else {
+                                    return 1;
+                                }
+                            } else {
+                                return 0;
+                            }
+                        }
+                        <%
+                    } else {
+                        %>
+                        if(o1_min < o2_min) {
+                            return -1;
+                        } else if(o1_min > o2_min) {
+                            return 1;
+                        } else {
+                            if(o1_max < o2_max) {
+                                return -1;
+                            } else if(o1_max > o2_max) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                        <%
+                    }
+                } else {    
+                    %>
+                    if(o1_min == null && o2_min != null) {
+                        return -1;
+                    } else if(o1_min != null && o2_min == null) {
+                        return 1;
+                    } else if(o1_min != null && o2_min != null && o1_min.compareTo(o2_min) != 0) {
+                        if(o1_min.compareTo(o2_min) < 0) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    } else {
+                        if(o1_max == null && o2_max != null) {
+                            return -1;
+                        } else if(o1_max != null && o2_max == null) {
+                            return 1;
+                        } else if(o1_max != null && o2_max != null && o1_max.compareTo(o2_max) != 0) {
+                            if(o1_max.compareTo(o2_max) < 0) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        } else {
+                            return 0;
+                        }
+                    }                    
+                    <%
+                }
+                %>         	
             }
 	
         });
@@ -115,58 +213,86 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         class Util_<%= cid %> {
         
             public <%=returnClassName%> getLookup(<%=mainConName %>Struct row_Main) {
-                <%
-                if(!mainjavaType.isPrimitive()) {
-                    %>
-                    if(row_Main.<%=mainName%> == null) {
-                        return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
-                    }                    
-                    <%
-                }%>
 
                 int lowerBound = 0;
                 int upperBound = array_<%=cid%>.length - 1;
                 <%
                 String minEqual = minBounds ? "=" : "";
                 String maxEqual = maxBounds ? "=" : "";
-                %>
-                String main = null;
-                String min = null;
-                String max = null;                
+                %>               
                 while(true) {
                     int currentIndex = (lowerBound + upperBound)/2;
                     <%
                     if(mainjavaType == JavaTypesManager.DATE) {
                         %>
-                        if(row_Main.<%=mainName%>.after(array_<%=cid%>[currentIndex].<%=minName%>) && 
-                                row_Main.<%=mainName%>.before(array_<%=cid%>[currentIndex].<%=maxName%>)) {
-                            return array_<%=cid%>[currentIndex].<%=lookupName %>;
+                        Long tmpMain = row_Main.<%=mainName%> == null ? null : new Long(row_Main.<%=mainName%>.getTime());
+                        Long tmpMin = array_<%=cid%>[currentIndex].<%=minName%> == null ? null : new Long(array_<%=cid%>[currentIndex].<%=minName%>.getTime());
+                        Long tmpMax = array_<%=cid%>[currentIndex].<%=maxName%> == null ? null : new Long(array_<%=cid%>[currentIndex].<%=maxName%>.getTime());
                         <%
-                    } else if (mainjavaType == JavaTypesManager.BYTE || 
+                    } else if(mainjavaType == JavaTypesManager.BYTE || 
+                            mainjavaType == JavaTypesManager.SHORT || 
+                            mainjavaType == JavaTypesManager.FLOAT ||
+                            
+                            mainjavaType == JavaTypesManager.DOUBLE ||
+                            mainjavaType == JavaTypesManager.LONG ||
+                            mainjavaType == JavaTypesManager.INTEGER) {
+                        %>
+                        <%=mainTypeName%> tmpMain = row_Main.<%=mainName%>;
+                        <%=mainTypeName%> tmpMin = array_<%=cid%>[currentIndex].<%=minName%>;
+                        <%=mainTypeName%> tmpMax = array_<%=cid%>[currentIndex].<%=maxName%>;
+                        <%
+                    } else if(mainjavaType == JavaTypesManager.BYTE_ARRAY) {
+                        %>
+                        String tmpMain = new String(row_Main.<%=mainName%>);
+                        String tmpMin = array_<%=cid%>[currentIndex].<%=minName%> == null ? null : new String(array_<%=cid%>[currentIndex].<%=minName%>);
+                        String tmpMax = array_<%=cid%>[currentIndex].<%=maxName%> == null ? null : new String(array_<%=cid%>[currentIndex].<%=maxName%>);
+                        <%
+                    } else {
+                        %>
+                        String tmpMain = String.valueOf(row_Main.<%=mainName%>);
+                        String tmpMin = String.valueOf(array_<%=cid%>[currentIndex].<%=minName%>);
+                        String tmpMax = String.valueOf(array_<%=cid%>[currentIndex].<%=maxName%>);
+                        <%
+                    }
+                    
+                    if (mainjavaType == JavaTypesManager.DATE || 
+                            mainjavaType == JavaTypesManager.BYTE || 
                             mainjavaType == JavaTypesManager.SHORT || 
                             mainjavaType == JavaTypesManager.FLOAT ||
                             mainjavaType == JavaTypesManager.DOUBLE ||
                             mainjavaType == JavaTypesManager.LONG ||
                             mainjavaType == JavaTypesManager.INTEGER) {
+                        if(mainTypeName.equals("java.util.Date") || 
+                                mainTypeName.equals("Byte") || 
+                                mainTypeName.equals("Short") || 
+                                mainTypeName.equals("Float") || 
+                                mainTypeName.equals("Double") || 
+                                mainTypeName.equals("Long") || 
+                                mainTypeName.equals("Integer")) {
+                            %>
+                            if(tmpMain == null) {
+                                return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
+                            }                            
+                            if((tmpMin == null && tmpMax != null && tmpMain <<%=maxEqual%> tmpMax) || 
+                                    (tmpMin != null && tmpMax == null && tmpMain ><%=minEqual%> tmpMin) || 
+                                    (tmpMin != null && tmpMax != null && tmpMain ><%=minEqual%> tmpMin && tmpMain <<%=maxEqual%> tmpMax)) {
+                            <%
+                        } else {
+                            %>
+                            if(tmpMain ><%=minEqual%> tmpMin && tmpMain <<%=maxEqual%> tmpMax) {
+                            <%
+                        }
                         %>
-                        if(row_Main.<%=mainName%> ><%=minEqual%> array_<%=cid%>[currentIndex].<%=minName%> && 
-                                row_Main.<%=mainName%> <<%=maxEqual%> array_<%=cid%>[currentIndex].<%=maxName%>) {
-                            return array_<%=cid%>[currentIndex].<%=lookupName %>;
-                        <%
-                    } else if (mainjavaType == JavaTypesManager.BYTE_ARRAY) {
-                        %>
-                        main = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row_Main.<%=mainName%>)).toString();
-                        min = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(array_<%=cid%>[currentIndex].<%=minName%>)).toString();
-                        max = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(array_<%=cid%>[currentIndex].<%=maxName%>)).toString();
-                        if(main.compareTo(min) ><%=minEqual%> 0 && main.compareTo(max) <<%=maxEqual%> 0) {
-                            return array_<%=cid%>[currentIndex].<%=lookupName %>;
+                        return array_<%=cid%>[currentIndex].<%=lookupName %>;
                         <%
                     } else {
                         %>
-                        main = String.valueOf(row_Main.<%=mainName%>);
-                        min = String.valueOf(array_<%=cid%>[currentIndex].<%=minName%>);
-                        max = String.valueOf(array_<%=cid%>[currentIndex].<%=maxName%>);
-                        if(main.compareTo(min) ><%=minEqual%> 0 && main.compareTo(max) <<%=maxEqual%> 0) {
+                        if(tmpMain == null) {
+                            return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
+                        }                        
+                        if((tmpMin == null && tmpMax != null && tmpMain.compareTo(tmpMax) <<%=maxEqual%> 0) ||
+                                (tmpMin != null && tmpMax == null && tmpMain.compareTo(tmpMin) ><%=minEqual%> 0) || 
+                                (tmpMin != null && tmpMax != null && tmpMain.compareTo(tmpMin) ><%=minEqual%> 0 && tmpMain.compareTo(tmpMax) <<%=maxEqual%> 0)) {
                             return array_<%=cid%>[currentIndex].<%=lookupName %>;
                         <%
                     }
@@ -175,36 +301,45 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         return <%=JavaTypesManager.getDefaultValueFromJavaType(returnClassName)%>;
                     } else {
                         <%
-                        if(mainjavaType == JavaTypesManager.DATE) {
-                            %>
-                            if(row_Main.<%=mainName%>.before(array_<%=cid%>[currentIndex].<%=minName%>)) {
-                                upperBound = currentIndex - 1;
-                            } else if (row_Main.<%=mainName%>.after(array_<%=cid%>[currentIndex].<%=minName%>)) {
-                                lowerBound = currentIndex + 1;
-                            } else {
-                                upperBound = currentIndex - 1;
-                            }
-                            <%
-                        } else if (mainjavaType == JavaTypesManager.BYTE || 
+                        if (mainjavaType == JavaTypesManager.DATE || 
+                                mainjavaType == JavaTypesManager.BYTE || 
                                 mainjavaType == JavaTypesManager.SHORT || 
                                 mainjavaType == JavaTypesManager.FLOAT ||
                                 mainjavaType == JavaTypesManager.DOUBLE ||
                                 mainjavaType == JavaTypesManager.LONG ||
                                 mainjavaType == JavaTypesManager.INTEGER) {
-                            %>
-                            if(row_Main.<%=mainName%> < array_<%=cid%>[currentIndex].<%=minName%>) {
-                                upperBound = currentIndex - 1;                            
-                            } else if(row_Main.<%=mainName%> > array_<%=cid%>[currentIndex].<%=minName%>) {
-                                lowerBound = currentIndex + 1;
+                            if(mainTypeName.equals("java.util.Date") || 
+                                    mainTypeName.equals("Byte") || 
+                                    mainTypeName.equals("Short") || 
+                                    mainTypeName.equals("Float") || 
+                                    mainTypeName.equals("Double") || 
+                                    mainTypeName.equals("Long") || 
+                                    mainTypeName.equals("Integer")) {
+                                %>
+                                if(tmpMin != null && tmpMain < tmpMin) {
+                                    upperBound = currentIndex - 1;
+                                } else if(tmpMin != null && tmpMain > tmpMin) {
+                                    lowerBound = currentIndex + 1;
+                                } else {
+                                    upperBound = currentIndex - 1;
+                                }
+                                <%
                             } else {
-                                upperBound = currentIndex - 1;
+                                %>
+                                if(tmpMain < tmpMin) {
+                                    upperBound = currentIndex - 1;
+                                } else if(tmpMain > tmpMin) {
+                                    lowerBound = currentIndex + 1;
+                                } else {
+                                    upperBound = currentIndex - 1;
+                                }
+                                <%
                             }
-                            <%
                         } else {
                             %>
-                            if(main.compareTo(min) < 0) {
+                            if(tmpMin != null && tmpMain.compareTo(tmpMin) < 0) {
                                 upperBound = currentIndex - 1;
-                            } else if(main.compareTo(min) > 0) {
+                            } else if(tmpMin != null && tmpMain.compareTo(tmpMin) > 0) {
                                 lowerBound = currentIndex + 1;
                             } else {
                                 upperBound = currentIndex - 1;
