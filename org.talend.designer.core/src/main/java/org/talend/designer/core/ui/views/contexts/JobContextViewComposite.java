@@ -37,7 +37,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -67,7 +66,7 @@ public class JobContextViewComposite extends JobContextComposite {
 
     private MultiPageTalendEditor part;
 
-    private CCombo contextCombo;
+    private CCombo repositoryCombo;
 
     private Map<String, ContextItem> repositoryContextItemMap;
 
@@ -117,22 +116,22 @@ public class JobContextViewComposite extends JobContextComposite {
             typeCombo.setEnabled(false);
         }
 
-        contextCombo = new CCombo(composite, SWT.BORDER);
-        contextCombo.setEditable(false);
+        repositoryCombo = new CCombo(composite, SWT.BORDER);
+        repositoryCombo.setEditable(false);
         if (process != null) {
-            contextCombo.setEnabled(!process.isReadOnly());
+            repositoryCombo.setEnabled(!process.isReadOnly());
         } else {
-            contextCombo.setEnabled(false);
+            repositoryCombo.setEnabled(false);
         }
         if (currentRepositoryContext == null) {
-            contextCombo.setVisible(false);
+            repositoryCombo.setVisible(false);
         } else {
-            contextCombo.setVisible(true);
+            repositoryCombo.setVisible(true);
         }
 
         if (process != null && currentRepositoryContext != null) {
             updateContextList();
-            contextCombo.setText(currentRepositoryContext);
+            repositoryCombo.setText(currentRepositoryContext);
         }
         addListeners();
         super.addChoiceComponents(composite);
@@ -151,20 +150,20 @@ public class JobContextViewComposite extends JobContextComposite {
                 CCombo combo = (CCombo) e.getSource();
                 if (combo.getText().equals(EmfComponent.TEXT_REPOSITORY)) {
                     updateContextList();
-                    if (contextCombo.getItemCount() == 0) {
-                        contextCombo.setText("");
+                    if (repositoryCombo.getItemCount() == 0) {
+                        repositoryCombo.setText("");
                     } else {
-                        contextCombo.setText(currentRepositoryContext);
+                        repositoryCombo.setText(currentRepositoryContext);
                     }
-                    contextCombo.setVisible(true);
+                    repositoryCombo.setVisible(true);
                 } else {
-                    contextCombo.setVisible(false);
+                    repositoryCombo.setVisible(false);
                     currentRepositoryContext = null;
                     getCommandStack().execute(new ContextRepositoryCommand(process, null));
                 }
             }
         });
-        contextCombo.addSelectionListener(new SelectionListener() {
+        repositoryCombo.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
             }
@@ -239,11 +238,11 @@ public class JobContextViewComposite extends JobContextComposite {
             repositoryContextNames = (String[]) contextNamesList.toArray(new String[0]);
         }
         loadRepositoryContextFromProcess();
-        if (process != null && contextCombo != null && !contextCombo.isDisposed()) {
-            contextCombo.setItems(repositoryContextNames);
+        if (process != null && repositoryCombo != null && !repositoryCombo.isDisposed()) {
+            repositoryCombo.setItems(repositoryContextNames);
             if (repositoryContextNames.length != 0 && (!contextNamesList.contains(currentRepositoryContext))) {
                 currentRepositoryContext = repositoryContextNames[0];
-                contextCombo.setText(repositoryContextNames[0]);
+                repositoryCombo.setText(repositoryContextNames[0]);
                 ContextItem contextItem = repositoryContextItemMap.get(repositoryContextNames[0]);
                 getCommandStack().execute(new ContextRepositoryCommand(process, contextItem));
             }
@@ -275,35 +274,6 @@ public class JobContextViewComposite extends JobContextComposite {
             currentRepositoryContext = null;
             setReadOnly(process.isReadOnly());
         }
-    }
-
-    public boolean updateContextFromRepository() {
-
-        String repositoryId = process.getRepositoryId();
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        List<ContextItem> contextItemList = null;
-        try {
-            contextItemList = factory.getContextItem();
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-        if (contextItemList != null) {
-            for (ContextItem item : contextItemList) {
-                if (factory.getStatus(item) != ERepositoryStatus.DELETED) {
-                    String id = item.getProperty().getId();
-                    if (id.equals(repositoryId)) {
-                        IContextManager tmpManager = new JobContextManager(item.getContext(), item.getDefaultContext());
-                        if (tmpManager.sameAs(getContextManager())) {
-                            return false;
-                        }
-                        getContextManager().setListContext(tmpManager.getListContext());
-                        getContextManager().setDefaultContext(tmpManager.getDefaultContext());
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public MultiPageTalendEditor getPart() {

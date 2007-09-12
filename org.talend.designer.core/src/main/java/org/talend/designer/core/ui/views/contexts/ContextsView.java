@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.contexts;
 
+import java.util.List;
+
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -28,11 +30,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.designer.core.DesignerCoreService;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -44,7 +50,7 @@ public class ContextsView extends ViewPart {
 
     private MultiPageTalendEditor part;
 
-    private JobContextViewComposite composite;
+    private Process process;
 
     protected CommandStack getCommandStack() {
         return (CommandStack) part.getTalendEditor().getAdapter(CommandStack.class);
@@ -53,11 +59,10 @@ public class ContextsView extends ViewPart {
     public ContextsView() {
     }
 
-    private Composite parent;
+    private ContextViewComposite contextComposite;
 
     @Override
     public void createPartControl(Composite parent) {
-        this.parent = parent;
         parent.setLayout(new GridLayout());
         GridData gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
@@ -65,139 +70,114 @@ public class ContextsView extends ViewPart {
         gridData.verticalAlignment = SWT.FILL;
         gridData.horizontalAlignment = SWT.FILL;
         parent.setLayoutData(gridData);
-        // final Label label = new Label(parent, SWT.NONE);
-        // label.setText("This is not available");
         getPart();
-        if (part == null) {
-            composite = new JobContextViewComposite(parent);
-            GridLayout gridLayout = new GridLayout();
-            gridLayout.marginWidth = ITabbedPropertyConstants.HSPACE + 2;
-            gridLayout.marginHeight = ITabbedPropertyConstants.VSPACE;
-            composite.setLayout(gridLayout);
 
-            GridData gridData2 = new GridData();
-            gridData2.grabExcessHorizontalSpace = true;
-            gridData2.grabExcessVerticalSpace = true;
-            gridData2.verticalAlignment = SWT.FILL;
-            gridData2.horizontalAlignment = SWT.FILL;
-            composite.setLayoutData(gridData2);
-            updateContextView();
-        } else {
-            createJobComposite();
+        contextComposite = new ContextViewComposite(parent, this);
+        GridData gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.grabExcessVerticalSpace = true;
+        gd.verticalAlignment = SWT.FILL;
+        gd.horizontalAlignment = SWT.FILL;
+        contextComposite.setLayoutData(gd);
+
+        updateContextView();
+
+    }
+
+    public boolean updateContextFromRepository() {
+        String repositoryId = process.getRepositoryId();
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+        List<ContextItem> contextItemList = null;
+        try {
+            contextItemList = factory.getContextItem();
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
         }
+        if (contextItemList != null) {
+            for (ContextItem item : contextItemList) {
+                if (factory.getStatus(item) != ERepositoryStatus.DELETED) {
+                    String id = item.getProperty().getId();
+                    if (id.equals(repositoryId)) {
+                        IContextManager tmpManager = new JobContextManager(item.getContext(), item.getDefaultContext());
+                        if (tmpManager.sameAs(getContextManager())) {
+                            return false;
+                        }
+                        getContextManager().setListContext(tmpManager.getListContext());
+                        getContextManager().setDefaultContext(tmpManager.getDefaultContext());
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
-     * qzhang Comment method "createJobComposite".
+     * DOC bqian Comment method "getContextManager".
      * 
-     * @param parent
+     * @return
      */
-    private void createJobComposite() {
-        // for (Control child : parent.getChildren()) {
-        // if (child != null && !child.isDisposed()) {
-        // child.dispose();
-        // }
-        // }
-        getPart();
-        composite = new JobContextViewComposite(parent, part);
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.marginWidth = ITabbedPropertyConstants.HSPACE + 2;
-        gridLayout.marginHeight = ITabbedPropertyConstants.VSPACE;
-        composite.setLayout(gridLayout);
-
-        GridData gridData2 = new GridData();
-        gridData2.grabExcessHorizontalSpace = true;
-        gridData2.grabExcessVerticalSpace = true;
-        gridData2.verticalAlignment = SWT.FILL;
-        gridData2.horizontalAlignment = SWT.FILL;
-        composite.setLayoutData(gridData2);
-
-        initialContents();
+    private IContextManager getContextManager() {
+        return part.getProcess().getContextManager();
     }
 
     public void updateContextView() {
-        composite.disposeAllComponents();
         getPart();
         if (part != null) {
-            boolean modified = composite.updateContextFromRepository();
+            boolean modified = updateContextFromRepository();
             if (modified) {
                 part.getTalendEditor().setDirty(true);
             }
         }
-        composite.addComponents();
-        composite.layout();
-        composite.refresh();
-        
+        contextComposite.setReadOnly(false);
+        contextComposite.refresh();
+
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
-        
+
     }
 
     public void updateContextView(boolean isBuildIn) {
-        composite.disposeAllComponents();
         getPart();
         if (part != null) {
-            boolean modified = composite.updateContextFromRepository();
+            boolean modified = updateContextFromRepository();
             if (modified) {
                 part.getTalendEditor().setDirty(true);
             }
         }
-        composite.setReadOnly(!isBuildIn);
-        composite.addComponents();
-        composite.refresh();
-        composite.layout();
+        contextComposite.setReadOnly(!isBuildIn);
+        contextComposite.refresh();
+
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
-        if (isDisposeAll) {
-            composite.disposeAllComponents();
-        }
         getPart();
         if (part != null) {
-            boolean modified = composite.updateContextFromRepository();
+            boolean modified = updateContextFromRepository();
             if (modified) {
                 part.getTalendEditor().setDirty(true);
             }
         }
-        composite.setReadOnly(!isBuildIn);
-        // composite.addComponents();
-        composite.refresh();
-        composite.layout();
+        contextComposite.setReadOnly(!isBuildIn);
+        contextComposite.refresh();
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void refresh() {
-        if (composite != null) {
-            getPart();
-            composite.setPart(part);
-            initialContents();
-        } else {
-            createJobComposite();
-        }
-    }
-
-    private Process process;
-
-    /**
-     * qzhang Comment method "initialContents".
-     */
-    private void initialContents() {
+        getPart();
         if (part != null) {
-            process = part.getTalendEditor().getProcess();
-            composite.setContextManager(process.getContextManager());
-            composite.setProcess(process);
-            updateContextView();
-        } else {
-            composite.setContextManager(null);
-            composite.setReadOnly(true);
-            composite.setProcess(null);
-            updateContextView();
+            boolean modified = updateContextFromRepository();
+            if (modified) {
+                part.getTalendEditor().setDirty(true);
+            }
         }
+        contextComposite.setPart(part);
+        DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     @Override
     public void setFocus() {
-        updateContextView(true);
+        contextComposite.setFocus();
     }
 
     public void setPartName(String title) {
@@ -213,6 +193,7 @@ public class ContextsView extends ViewPart {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
         if (activeEditor instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) activeEditor;
+            process = part.getTalendEditor().getProcess();
         } else {
             part = null;
         }
