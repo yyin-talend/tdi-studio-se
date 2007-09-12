@@ -25,7 +25,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
@@ -48,8 +47,7 @@ public class ContextForm extends AbstractForm {
      * @param style
      * @param existingNames
      */
-    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager,
-            boolean readOnly) {
+    public ContextForm(Composite parent, int style, String[] existingNames, IContextManager contextManager, boolean readOnly) {
         super(parent, style, existingNames);
         this.contextManager = contextManager;
         this.readOnly = readOnly;
@@ -72,7 +70,7 @@ public class ContextForm extends AbstractForm {
      */
     @Override
     protected void addFields() {
-        final JobContextRepositoryComposite jobContext = new JobContextRepositoryComposite(this);
+        final ContextRepositoryComposite jobContext = new ContextRepositoryComposite(this, contextManager);
         jobContext.setLayout(new GridLayout());
         GridData gridData = new GridData();
         gridData.grabExcessHorizontalSpace = true;
@@ -80,16 +78,8 @@ public class ContextForm extends AbstractForm {
         gridData.verticalAlignment = SWT.FILL;
         gridData.horizontalAlignment = SWT.FILL;
         jobContext.setLayoutData(gridData);
-        jobContext.setContextManager(contextManager);
         jobContext.setReadOnly(readOnly);
-        jobContext.addComponents();
         jobContext.refresh();
-        contextManager.addContextListener(new IContextListener() {
-
-            public void contextsChanged() {
-                jobContext.refresh();
-            }
-        });
     }
 
     /*
