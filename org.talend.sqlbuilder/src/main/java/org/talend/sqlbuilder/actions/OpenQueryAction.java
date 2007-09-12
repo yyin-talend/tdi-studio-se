@@ -23,13 +23,13 @@ package org.talend.sqlbuilder.actions;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -42,7 +42,7 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class OpenQueryAction extends OpenNewEditorAction {
 
-    private ISQLBuilderDialog dialog;
+    private final ISQLBuilderDialog dialog;
 
     /**
      * DOC qianbing OpenQueryAction constructor comment.
@@ -65,6 +65,9 @@ public class OpenQueryAction extends OpenNewEditorAction {
         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
             List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connectionParameters = new ConnectionParameters();
+            if (node.getObject() instanceof QueryRepositoryObject) {
+                connectionParameters.setQueryObject(((QueryRepositoryObject) node.getObject()).getQuery());
+            }
             connectionParameters.setQuery(dialog.getConnParameters().getQuery());
             connectionParameters.setShowDesignerPage(false);
             dialog.openEditor(node, repositoryName, connectionParameters, false);
