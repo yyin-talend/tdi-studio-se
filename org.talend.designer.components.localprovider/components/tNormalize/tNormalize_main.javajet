@@ -6,6 +6,8 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType    
     java.util.List
 " 
 %>
@@ -22,59 +24,108 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     if (metadata!=null) {//2
        
         String cid = node.getUniqueName();
-        String colname = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
+        String normalizeColumn = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
         String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
-
-        String inputRowName = new String("input_row");
-        String outputRowName = new String("output_row");
+        String deduplicate = ElementParameterParser.getValue(node, "__DEDUPLICATE__");
+        String incomingConnName = null;
+        String outgoingConnName = null;
 
         List< ? extends IConnection> inConns = node.getIncomingConnections();
         if (inConns != null && !inConns.isEmpty()) {
             IConnection inConn = inConns.get(0);
-            inputRowName = inConn.getName();
-        }else {
-            return "";//if no input, stop here, nothing in CodeViewer
+            incomingConnName = inConn.getName();
         }
         
         List< ? extends IConnection> outConns = node.getOutgoingConnections();
         if (outConns != null && !outConns.isEmpty()) {
             IConnection outConn = outConns.get(0);
-            outputRowName = outConn.getName();
-        }else {
-            return "";//if no output, stop here, nothing in CodeViewer
+            outgoingConnName = outConn.getName();
         }
-%>
-////////////////////////
-
-String [] splitResult = null;
-if(<%=inputRowName %>.<%=colname %> == null) {
-   splitResult = new String[]{null};
-} else {
-   splitResult = <%=inputRowName %>.<%=colname %>.split(<%=separator %>);
-}
-
-for (int i = 0; i < splitResult.length; i++) {
-
-////
-<% 
-    //output
-	for (IMetadataColumn column : metadata.getListColumns()) {
-	  if (column.getLabel().equals(colname)) {
-%> 
-     <%=outputRowName %>.<%=column.getLabel() %> = splitResult[i];      
-<%     
-    } else {
-%>
-	 <%=outputRowName %>.<%=column.getLabel() %> = <%=inputRowName %>.<%=column.getLabel() %>;
-<%    
-    }  
-  }
-%>
-////
-	nb_line_<%=cid%>++;
-	
-////////////////////////
-<%
+        List<IMetadataColumn> metadataColumns = metadata.getListColumns();
+        if(incomingConnName != null && outgoingConnName != null && 
+                metadataColumns != null && !metadataColumns.isEmpty()) {//3           
+            if(deduplicate.equals("true")) {//check deduplicate start
+                %>
+                currentRecord_<%=cid%> = new StringBuffer();
+                <%
+                for(IMetadataColumn metadataColumn : metadataColumns) {
+                    JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
+                    String typeName = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+                    if(javaType == JavaTypesManager.DATE) {
+                        %>
+                        tmp_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null ? null : String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.getTime());
+                        <%
+                    } else if(javaType == JavaTypesManager.BYTE || 
+                            javaType == JavaTypesManager.SHORT || 
+                            javaType == JavaTypesManager.FLOAT ||
+                            javaType == JavaTypesManager.DOUBLE ||
+                            javaType == JavaTypesManager.LONG ||
+                            javaType == JavaTypesManager.INTEGER) {
+                        if(typeName.equals("Byte") || 
+                                typeName.equals("Short") || 
+                                typeName.equals("Float") || 
+                                typeName.equals("Double") || 
+                                typeName.equals("Long") || 
+                                typeName.equals("Integer")) {                    
+                            %>
+                            tmp_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null ? null : <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();
+                            <%
+                        } else {
+                            %>
+                            tmp_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+                            <%
+                        }
+                    } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+                        %>
+                        tmp_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null ? null : new String(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+                        <%
+                    } else if(javaType == JavaTypesManager.STRING){
+                        %>
+                        tmp_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null ? null : String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+                        <%
+                    } else {
+                        %>
+                        tmp_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+                        <%
+                    }
+                    %>
+                    if(tmp_<%=cid%> != null) {
+                        currentRecord_<%=cid%>.append(tmp_<%=cid%> + tmp_<%=cid%>.length());
+                    }
+                    <%
+                }
+                %>
+                if(!recordSet_<%=cid%>.contains(currentRecord_<%=cid%>.toString())) {
+                    recordSet_<%=cid%>.add(currentRecord_<%=cid%>.toString());
+                } else {
+                    continue;
+                }
+                <%
+            }//check deduplicate end
+            %>
+            String [] spliteResult_<%=cid%> = null;
+            if(<%=incomingConnName %>.<%=normalizeColumn%> == null || <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() == 0) {
+                spliteResult_<%=cid%> = new String[0];
+            } else {
+                spliteResult_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=separator %>);
+            }
+            for(int i = 0 ; i < spliteResult_<%=cid%>.length ; i++) {
+                <%
+                for(IMetadataColumn metadataColumn : metadataColumns) {
+                    if(metadataColumn.getLabel().equals(normalizeColumn)) {
+                        %>
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = spliteResult_<%=cid%>[i];
+                        <%
+                    } else {
+                        %>
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+                        <%
+                    }
+                }
+                %>
+                nb_line_<%=cid%>++;
+            <%
+        }//3
     }//2    
 }//1
 %>

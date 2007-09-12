@@ -39,19 +39,26 @@
     >
     </PARAMETER>
 
+    <PARAMETER
+      NAME="DEDUPLICATE"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="NORMALIZE_COLUMN"
       FIELD="PREV_COLUMN_LIST"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="3"
     >
     </PARAMETER>
 
     <PARAMETER
       NAME="ITEMSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
     >
       <DEFAULT>","</DEFAULT>
     </PARAMETER>
