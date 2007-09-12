@@ -214,8 +214,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     for (IElementParameter param : elem.getElementParameters()) {
                         if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                             if (!metadataInput) {
-                                param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
-                                        EmfComponent.REPOSITORY);
                                 IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
                                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                                 String repositoryTable;
@@ -225,18 +223,23 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = getFirstRepositoryTable(param, value);
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
-                                IMetadataTable table = repositoryTableMap.get(repositoryTable);
-                                if (table != null) {
-                                    table = table.clone();
-                                    setDBTableFieldValue(node, table.getTableName(), null);
-                                    table.setTableName(node.getMetadataList().get(0).getTableName());
-                                    if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
-                                        cmd.setRepositoryMode(true);
-                                        cmd.execute();
+                                if (!"".equals(repositoryTable)) {
+                                    param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
+                                            EmfComponent.REPOSITORY);
+
+                                    IMetadataTable table = repositoryTableMap.get(repositoryTable);
+                                    if (table != null) { 
+                                        table = table.clone();
+                                        setDBTableFieldValue(node, table.getTableName(), null);
+                                        table.setTableName(node.getMetadataList().get(0).getTableName());
+                                        if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,                                                    table);
+                                            cmd.setRepositoryMode(true);
+                                            cmd.execute();
+                                        }
                                     }
                                 }
-                            } else {
+                            }else {
                                 Node sourceNode = getRealSourceNode((INode) elem);
                                 if (sourceNode != null) {
                                     IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
