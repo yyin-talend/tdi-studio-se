@@ -45,6 +45,8 @@ public class EditContextAction extends AContextualAction {
 
     private static final String EDIT_LABEL = Messages.getString("EditContextAction.editContext"); //$NON-NLS-1$
 
+    private RepositoryNode node = null;
+
     /**
      * DOC nrousseau EditContextAction constructor comment.
      */
@@ -66,7 +68,7 @@ public class EditContextAction extends AContextualAction {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
-            RepositoryNode node = (RepositoryNode) o;
+            node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
                 if (node.getObjectType() != ERepositoryObjectType.CONTEXT) {
@@ -90,9 +92,9 @@ public class EditContextAction extends AContextualAction {
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
         dlg.open();
 
-        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        refresh(node);
-
+        if (node != null) {
+            refresh(node);
+        }
     }
 
     @Override

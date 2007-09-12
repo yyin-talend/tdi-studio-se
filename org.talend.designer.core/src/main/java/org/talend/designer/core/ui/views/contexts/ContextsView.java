@@ -132,7 +132,7 @@ public class ContextsView extends ViewPart {
         contextComposite.setReadOnly(false);
         contextComposite.refresh();
 
-        DesignerPlugin.getDefault().getRunProcessService().refreshView();
+        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
 
     }
 
@@ -147,7 +147,7 @@ public class ContextsView extends ViewPart {
         contextComposite.setReadOnly(!isBuildIn);
         contextComposite.refresh();
 
-        DesignerPlugin.getDefault().getRunProcessService().refreshView();
+        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
@@ -160,7 +160,7 @@ public class ContextsView extends ViewPart {
         }
         contextComposite.setReadOnly(!isBuildIn);
         contextComposite.refresh();
-        DesignerPlugin.getDefault().getRunProcessService().refreshView();
+        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void refresh() {
@@ -172,7 +172,7 @@ public class ContextsView extends ViewPart {
             }
         }
         contextComposite.setPart(part);
-        DesignerPlugin.getDefault().getRunProcessService().refreshView();
+        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     @Override

@@ -24,6 +24,7 @@ package org.talend.designer.core.ui.views.contexts;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -53,6 +54,13 @@ public class Contexts {
     private static ContextsView getView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+        if (view == null) {
+            try {
+                view = page.showView("org.talend.designer.core.ui.views.ContextsView"); //$NON-NLS-1$
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+        }
         if (view instanceof ContextsView) {
             return (ContextsView) view;
         }
