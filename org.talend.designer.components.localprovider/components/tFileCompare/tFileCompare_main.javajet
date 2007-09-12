@@ -98,7 +98,7 @@ for (IConnection conn : node.getOutgoingConnections()) {
     	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
     	<%=conn.getName() %>.job = jobName;
 		<%=conn.getName() %>.component = currentComponent;
-		<%=conn.getName() %>.differ = difference<%=cid %>;
+		<%=conn.getName() %>.differ = (result_<%=cid%>)?0:1;
 		<%=conn.getName() %>.message = message<%=cid %>;
 <%
 	}
