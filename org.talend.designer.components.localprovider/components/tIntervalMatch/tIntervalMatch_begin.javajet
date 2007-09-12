@@ -105,6 +105,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                     String o2_min = o2.<%=minName%> == null ? null : new String(o2.<%=minName%>);
                     String o2_max = o2.<%=maxName%> == null ? null : new String(o2.<%=maxName%>);
                     <%
+                } else if(mainjavaType == JavaTypesManager.STRING) {
+                    %>
+                    String o1_min = o1.<%=minName%>;
+                    String o1_max = o1.<%=maxName%>;
+                    String o2_min = o2.<%=minName%>;
+                    String o2_max = o2.<%=maxName%>;                    
+                    <%
                 } else {
                     %>
                     String o1_min = String.valueOf(o1.<%=minName%>);
@@ -243,9 +250,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         <%
                     } else if(mainjavaType == JavaTypesManager.BYTE_ARRAY) {
                         %>
-                        String tmpMain = new String(row_Main.<%=mainName%>);
+                        String tmpMain = row_Main.<%=mainName%> == null ? null : new String(row_Main.<%=mainName%>);
                         String tmpMin = array_<%=cid%>[currentIndex].<%=minName%> == null ? null : new String(array_<%=cid%>[currentIndex].<%=minName%>);
                         String tmpMax = array_<%=cid%>[currentIndex].<%=maxName%> == null ? null : new String(array_<%=cid%>[currentIndex].<%=maxName%>);
+                        <%
+                    } else if(mainjavaType == JavaTypesManager.STRING) {
+                        %>
+                        String tmpMain = row_Main.<%=mainName%>;
+                        String tmpMin = array_<%=cid%>[currentIndex].<%=minName%>;
+                        String tmpMax = array_<%=cid%>[currentIndex].<%=maxName%>;
                         <%
                     } else {
                         %>
