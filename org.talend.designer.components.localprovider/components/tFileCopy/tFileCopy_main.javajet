@@ -26,11 +26,9 @@
         
 <%
 		if(destination_filename=="" || destination_filename.equals("\"\"")){
-			java.util.Date d = new java.util.Date();
-			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy_MM_dd");
-			destination_filename="myfile_"+sdf.format(d);	
+			destination_filename= fileName.substring(fileName.lastIndexOf("/")+1,fileName.length()-1);
 %>
-		directory_<%=cid%>=directory_<%=cid%>+"<%=destination_filename%>"+file_<%=cid %>.getName().substring(file_<%=cid %>.getName().lastIndexOf("."));     
+		directory_<%=cid%>=directory_<%=cid%>+"<%=destination_filename%>";     
 <%
 		}else{
 %>
