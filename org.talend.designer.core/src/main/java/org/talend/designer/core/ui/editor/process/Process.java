@@ -42,6 +42,8 @@ import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
@@ -1269,8 +1271,6 @@ public class Process extends Element implements IProcess {
         }
 
         if (connectionsProblems.size() > 0) {
-            MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
-            mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
             String message = Messages.getString("Process.errorLoadingConnectionMessage"); //$NON-NLS-1$
             for (int i = 0; i < connectionsProblems.size(); i++) {
                 message += connectionsProblems.get(i);
@@ -1278,8 +1278,15 @@ public class Process extends Element implements IProcess {
                     message += ","; //$NON-NLS-1$
                 }
             }
-            mb.setMessage(message);
-            mb.open();
+            if (PlatformUI.isWorkbenchRunning()) {
+                MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
+                mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
+                mb.setMessage(message);
+                mb.open();
+            } else {
+                IStatus status = new Status(IStatus.WARNING, DesignerPlugin.ID, message);
+                DesignerPlugin.getDefault().getLog().log(status);
+            }
         }
     }
 
