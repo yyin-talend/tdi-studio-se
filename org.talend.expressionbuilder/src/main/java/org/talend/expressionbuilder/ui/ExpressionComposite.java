@@ -28,7 +28,6 @@
 package org.talend.expressionbuilder.ui;
 
 import java.util.List;
-import java.util.Stack;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
@@ -73,9 +72,7 @@ public class ExpressionComposite extends Composite {
 
     private String replacedText;
 
-    private final Stack<String> modificationRecord;
-
-    private boolean undoClicked;
+    private final ExpressionRecorder modificationRecord;
 
     /**
      * yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -141,8 +138,6 @@ public class ExpressionComposite extends Composite {
         super(parent, style);
         setLayout(new FillLayout());
 
-        modificationRecord = new Stack<String>();
-
         final Group expressionGroup = new Group(this, SWT.NONE);
         GridLayout groupLayout = new GridLayout();
         expressionGroup.setLayout(groupLayout);
@@ -165,6 +160,7 @@ public class ExpressionComposite extends Composite {
         final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
         undoButton.setText("Undo(Ctrl + Z)");
         undoButton.setEnabled(false);
+        modificationRecord = new ExpressionRecorder(undoButton);
         undoButton.addMouseListener(new MouseAdapter() {
 
             /*
@@ -174,23 +170,9 @@ public class ExpressionComposite extends Composite {
              */
             @Override
             public void mouseDown(MouseEvent e) {
-
-                undoClicked = true;
-                setExpression(modificationRecord.pop(), false);
-                if (modificationRecord.size() <= 0) {
-                    undoButton.setEnabled(false);
-                }
+                undoOperation();
             }
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
-             */
-            @Override
-            public void mouseUp(MouseEvent e) {
-                undoClicked = false;
-            }
         });
 
         // final Button wrapButton = new Button(upperOperationButtonBar, SWT.NONE);
@@ -215,17 +197,16 @@ public class ExpressionComposite extends Composite {
         ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
         text = new ColorStyledText(expressionGroup, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
                 LanguageManager.getCurrentLanguage().getName());
+        // text = (StyledText) TalendJavaSourceViewer.createViewer(expressionGroup, "",
+        // SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL).getControl();
         text.setLayoutData(new GridData(GridData.FILL_BOTH));
         text.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                if (!undoClicked || !undoButton.isEnabled()) {
-                    String content = getExpression();
-                    modificationRecord.push(content);
-                    if (modificationRecord.size() > 0) {
-                        undoButton.setEnabled(true);
-                    }
-                }
+
+                String content = getExpression();
+                modificationRecord.pushRecored(content);
+
             }
 
         });
@@ -310,6 +291,17 @@ public class ExpressionComposite extends Composite {
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")"); //$NON-NLS-1$
         rightBracketbutton.addMouseListener(buttonListener);
+
+    }
+
+    /**
+     * yzhang Comment method "undoOperation".
+     */
+    public void undoOperation() {
+
+        modificationRecord.undo();
+        setExpression(modificationRecord.popRecored(), false);
+        modificationRecord.undoFinished();
 
     }
 

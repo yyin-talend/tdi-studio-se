@@ -31,6 +31,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -78,6 +80,8 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     private List<Variable> defaultVariables;
 
+    private Composite container;
+
     /**
      * Create the dialog
      * 
@@ -96,7 +100,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        Composite container = (Composite) super.createDialogArea(parent);
+        container = (Composite) super.createDialogArea(parent);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.makeColumnsEqualWidth = true;
         container.setLayout(gridLayout);
@@ -124,10 +128,59 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);
         sashForm.setWeights(new int[] { 3, 2 });
-
         expressionComposite.configProposal();
 
         return container;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#create()
+     */
+    @Override
+    public void create() {
+        super.create();
+        addUndoOperationListener(container);
+    }
+
+    /**
+     * yzhang ExpressionBuilderDialog class global comment. Detailled comment <br/>
+     * 
+     * $Id: ExpressionBuilderDialog.java 下午08:32:27 2007-9-13 +0000 (2007-9-13) yzhang $
+     * 
+     */
+    class UndoKeyListener extends KeyAdapter {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.events.KeyAdapter#keyPressed(org.eclipse.swt.events.KeyEvent)
+         */
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.stateMask == SWT.CTRL && (e.keyCode == 'z' || e.keyCode == 'Z')) {
+                getExpressionComposite().undoOperation();
+            }
+        }
+
+    }
+
+    /**
+     * yzhang Comment method "addUndoOperationListener".
+     * 
+     * @param composite
+     */
+    private void addUndoOperationListener(Composite composite) {
+
+        Control controls[] = composite.getChildren();
+        for (Control control : controls) {
+            if (control instanceof Composite) {
+                addUndoOperationListener((Composite) control);
+            }
+            control.addKeyListener(new UndoKeyListener());
+        }
+
     }
 
     /**
