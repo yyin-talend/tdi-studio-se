@@ -64,7 +64,7 @@ if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
                         || lineStyle.equals(EConnectionType.FLOW_MERGE)) {
 %>
 
-my $<%=conn.getName() %> = $<%=metadata.getTableName() %>;
+my $<%=conn.getName() %> = $<%=node.getUniqueName() %>;
 
 <%
                     }

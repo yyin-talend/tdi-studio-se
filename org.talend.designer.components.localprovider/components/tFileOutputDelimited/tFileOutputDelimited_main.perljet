@@ -10,6 +10,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -17,16 +18,16 @@
 		if (metadata!=null) {
 %>
 
-    print {$output_FH_<%=metadata.getTableName() %>} (
+    print {$output_FH_<%=cid%>} (
 	    join(
-                OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>,
-                @$<%=metadata.getTableName() %>
+                OUTPUT_FIELD_SEPARATOR_<%=cid%>,
+                @$<%=cid%>
             ),
-	    OUTPUT_ROW_SEPARATOR_<%=metadata.getTableName() %>
+	    OUTPUT_ROW_SEPARATOR_<%=cid%>
     )
-        or die "can't write to file " . $output_desc_<%=metadata.getTableName() %>{filename} . "\n";
+        or die "can't write to file " . $output_desc_<%=cid%>{filename} . "\n";
 
-    $nb_line_<%=metadata.getTableName() %>++;
+    $nb_line_<%=cid%>++;
 
     
 <%

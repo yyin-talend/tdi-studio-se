@@ -19,11 +19,11 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-    String cid = metadata.getTableName();
     String matching = ElementParameterParser.getValue(node, "__MATCHING_TYPE__");
     String dmin = ElementParameterParser.getValue(node, "__MIN__");
     String dmax = ElementParameterParser.getValue(node, "__MAX__");

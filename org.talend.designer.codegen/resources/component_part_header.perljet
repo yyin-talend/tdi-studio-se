@@ -101,7 +101,7 @@ UpdateStat('<%=conn.getName() %>', 1);
 	        for (IConnection conn : conns) {
                     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 %>
-my $<%=metadata.getTableName() %> = $<%=conn.getName() %>;
+my $<%=node.getUniqueName() %> = $<%=conn.getName() %>;
 <%
                     }
                 }

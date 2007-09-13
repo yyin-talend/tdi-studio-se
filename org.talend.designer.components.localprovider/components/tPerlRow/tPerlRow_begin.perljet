@@ -13,12 +13,12 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
 %>
 
 my %desc_<%=cid%> = (
@@ -45,7 +45,7 @@ my %desc_<%=cid%> = (
         int i = 0;
         for (IMetadataColumn column: metadata.getListColumns()) {
 %>
-use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= i %>;
+use constant <%=cid%>__<%=column.getLabel() %> => <%= i %>;
 <%
             i++;
         }

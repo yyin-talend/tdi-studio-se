@@ -9,7 +9,8 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
+String cid = node.getUniqueName();
+
 	String filename = ElementParameterParser.getValue(node, "__FILENAME__");	
 %>     
 

@@ -11,20 +11,11 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String crcType = ElementParameterParser.getValue(
-            node,
-            "__CRC_TYPE__"
-        );
+String crcType = ElementParameterParser.getValue(
+    node,
+    "__CRC_TYPE__"
+);
 %>
-
 use Digest::CRC qw/<%=crcType%>/;
-
-<%
-    }
-}
-%>

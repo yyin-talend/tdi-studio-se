@@ -12,19 +12,19 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-                    String cid = metadata.getTableName();
-%>
+            %>
 
 use FileHandle;
 use List::Util qw/min/;
 use talend::filesOp;
 
-my %desc_<%=metadata.getTableName() %> = (
+my %desc_<%=cid%> = (
     filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
     row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
     header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
@@ -53,7 +53,7 @@ my %desc_<%=metadata.getTableName() %> = (
 String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
 %>
 
-my $pattern_<%=metadata.getTableName() %> = join(
+my $pattern_<%=cid%> = join(
     ' ',
     map {'A'.$_} split(
         /,/,
@@ -61,11 +61,11 @@ my $pattern_<%=metadata.getTableName() %> = join(
     )
 );
 
-$/ = $desc_<%=metadata.getTableName() %>{row_separator};
+$/ = $desc_<%=cid%>{row_separator};
 
-my $input_FH_<%=metadata.getTableName() %> = new FileHandle;
-open($input_FH_<%=metadata.getTableName() %>, '<', $desc_<%=metadata.getTableName() %>{filename})
-    or die 'cannot open file "' . $desc_<%=metadata.getTableName() %>{filename} . '"';
+my $input_FH_<%=cid%> = new FileHandle;
+open($input_FH_<%=cid%>, '<', $desc_<%=cid%>{filename})
+    or die 'cannot open file "' . $desc_<%=cid%>{filename} . '"';
 
 <%
   if ((!ElementParameterParser.getValue(node, "__HEADER__").equals(""))
@@ -74,9 +74,9 @@ open($input_FH_<%=metadata.getTableName() %>, '<', $desc_<%=metadata.getTableNam
 %>
 
 # move to the first useful line
-if ($desc_<%=metadata.getTableName() %>{header} > 0) {
-    for (1..$desc_<%=metadata.getTableName() %>{header}) {
-        my $useless_line_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>;
+if ($desc_<%=cid%>{header} > 0) {
+    for (1..$desc_<%=cid%>{header}) {
+        my $useless_line_<%=cid%> = <$input_FH_<%=cid%>>;
     }
 }
 
@@ -84,7 +84,7 @@ if ($desc_<%=metadata.getTableName() %>{header} > 0) {
   }
 %>
 
-$nb_line_<%=metadata.getTableName() %> = 0;
+$nb_line_<%=cid%> = 0;
 
 <%
   if (((!ElementParameterParser.getValue(node, "__FOOTER__").equals(""))
@@ -95,9 +95,9 @@ $nb_line_<%=metadata.getTableName() %> = 0;
 
 # as we have a limit and/or a footer, we need to know the number of rows in
 # the input file
-my $total_line_<%=metadata.getTableName() %> = tFileRowCount(
-    filename => $desc_<%=metadata.getTableName() %>{filename},
-    rowseparator => $desc_<%=metadata.getTableName() %>{row_separator},
+my $total_line_<%=cid%> = tFileRowCount(
+    filename => $desc_<%=cid%>{filename},
+    rowseparator => $desc_<%=cid%>{row_separator},
     buffersize => 4096,
 );
 
@@ -108,36 +108,36 @@ my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
     total   => $total_line_<%=cid%>,
 );
 
-for ($first_row_<%=metadata.getTableName() %> .. $last_row_<%=metadata.getTableName() %>) {
-    my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>;
+for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
+    my $_<%=cid%> = <$input_FH_<%=cid%>>;
 <%
   }
   else
   {
 %>
 
-while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>) {
+while (my $_<%=cid%> = <$input_FH_<%=cid%>>) {
 
 <%
   }
 %>
 
-    chomp $_<%=metadata.getTableName() %>;
+    chomp $_<%=cid%>;
 
 <%
     if (ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__").equals("true")) {
 %>
-    next if ($_<%=metadata.getTableName() %> eq '');
+    next if ($_<%=cid%> eq '');
 <%
     }
 %>
 
     # increase number of line really splitted
-    $nb_line_<%=metadata.getTableName() %>++;
+    $nb_line_<%=cid%>++;
 
-    my $<%=metadata.getTableName() %> = [ unpack(
-        $pattern_<%=metadata.getTableName() %>,
-        $_<%=metadata.getTableName() %>
+    my $<%=cid%> = [ unpack(
+        $pattern_<%=cid%>,
+        $_<%=cid%>
     ) ];
 <%
 		}

@@ -10,15 +10,16 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
-close($output_FH_<%=metadata.getTableName() %>);
+close($output_FH_<%=cid%>);
 
-$_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
+$_globals{<%=cid%>}{NB_LINE} = $nb_line_<%=cid%>;
 
 <%
 		}

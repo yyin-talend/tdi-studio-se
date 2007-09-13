@@ -12,14 +12,14 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 
-                    String cid = metadata.getTableName();
-                    String colname = ElementParameterParser.getValue(node, "__MATCH__");
+                                String colname = ElementParameterParser.getValue(node, "__MATCH__");
 
             int icolmatch = 0 ;
             for (IMetadataColumn column: metadata.getListColumns()) {
@@ -72,7 +72,7 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
     push @$a_data_<%=cid %>, $_<%=cid %> ;
 }
 
-close($input_FH_<%=metadata.getTableName() %>);
+close($input_FH_<%=cid%>);
 
 <%
 

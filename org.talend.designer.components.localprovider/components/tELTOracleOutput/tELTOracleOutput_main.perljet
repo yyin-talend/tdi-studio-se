@@ -18,6 +18,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
 String dbtable = null;
 INode previousNode = null;
@@ -38,7 +39,6 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
 
         String dataAction = ElementParameterParser.getValue(
                 node,
@@ -340,7 +340,6 @@ my $nb_line_current_commit_<%=cid%> = 0;
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
 
         String dataAction = ElementParameterParser.getValue(
             node,
@@ -480,7 +479,6 @@ $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
 %>
 $dbh_<%=cid %>->commit();
 $dbh_<%=cid %>->disconnect();
