@@ -26,9 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
@@ -97,5 +100,20 @@ public class DesignerCoreService implements IDesignerCoreService {
     public void saveJobBeforeRun(IProcess activeProcess) {
         new SaveJobBeforeRunAction(activeProcess).run();
     }
+
     // ends.
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getCurrentProcess()
+     */
+    public IProcess getCurrentProcess() {
+        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (!(editor instanceof MultiPageTalendEditor)) {
+            return null;
+        }
+        IProcess process = ((MultiPageTalendEditor) editor).getProcess();
+        return process;
+    }
 }
