@@ -161,6 +161,7 @@ public class JavaProcessor extends Processor {
 
         try {
             this.project = getProcessorProject();
+            createInternalPackage();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
@@ -235,8 +236,8 @@ public class JavaProcessor extends Processor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
-                        javaContext, currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
+                        currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -465,10 +466,8 @@ public class JavaProcessor extends Processor {
         if (rootProject == null || javaProject == null) {
             initializeProject();
         }
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
-                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -488,8 +487,7 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
-                .size()]);
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
@@ -561,6 +559,20 @@ public class JavaProcessor extends Processor {
         return root.getPackageFragment(packageName);
     }
 
+    public static void createInternalPackage() {
+
+        IPackageFragmentRoot root = getJavaProject().getPackageFragmentRoot(
+                getJavaProject().getProject().getFolder(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IPackageFragment leave = root.getPackageFragment("internal");
+        if (!leave.exists()) {
+            try {
+                root.createPackageFragment("internal", false, null);
+            } catch (JavaModelException e) {
+                throw new RuntimeException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
+            }
+        }
+    }
+
     /**
      * Get the required job package under the project package within the tranfered project, if not existed new one will
      * be created.
@@ -573,8 +585,7 @@ public class JavaProcessor extends Processor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
-            throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
@@ -592,7 +603,8 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     public String getInterpreter() throws ProcessorException {
-        // if the interpreter has been set to a specific one (not standard), then this value won't be null
+        // if the interpreter has been set to a specific one (not standard),
+        // then this value won't be null
         String interpreter = super.getInterpreter();
         if (interpreter != null) {
             return interpreter;
@@ -611,7 +623,8 @@ public class JavaProcessor extends Processor {
     }
 
     public String getLibraryPath() throws ProcessorException {
-        // if the library path has been set to a specific one (not standard), then this value won't be null
+        // if the library path has been set to a specific one (not standard),
+        // then this value won't be null
         String libraryPath = super.getLibraryPath();
         if (libraryPath != null) {
             return libraryPath;
@@ -620,7 +633,8 @@ public class JavaProcessor extends Processor {
     }
 
     public String getCodeLocation() throws ProcessorException {
-        // if the routine path has been set to a specific one (not standard), then this value won't be null
+        // if the routine path has been set to a specific one (not standard),
+        // then this value won't be null
         String codeLocation = super.getCodeLocation();
         if (codeLocation != null) {
             return codeLocation;
@@ -694,7 +708,8 @@ public class JavaProcessor extends Processor {
                 neededLibraries.add(moduleNeeded.getModuleName());
             }
 
-        } else { // this will avoid to add all libraries, only the needed libraries will be added
+        } else { // this will avoid to add all libraries, only the needed
+            // libraries will be added
             for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
                 neededLibraries.add(moduleNeeded.getModuleName());
             }
@@ -706,8 +721,7 @@ public class JavaProcessor extends Processor {
             for (File externalLib : externalLibDirectory.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 if (externalLib.isFile() && neededLibraries.contains(externalLib.getName())) {
                     if (ProcessorUtilities.isExportConfig()) {
-                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName())
-                                + classPathSeparator);
+                        libPath.append(new Path(this.getLibraryPath()).append(externalLib.getName()) + classPathSeparator);
                     } else {
                         libPath.append(new Path(externalLib.getAbsolutePath()).toPortableString() + classPathSeparator);
                     }
@@ -725,8 +739,7 @@ public class JavaProcessor extends Processor {
         } else {
             IFolder classesFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_CLASSES_DIRECTORY); //$NON-NLS-1$
             IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
-            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath)
-                    .toOSString()
+            projectPath = Path.fromOSString(getCodeProject().getLocation().toOSString()).append(projectFolderPath).toOSString()
                     + classPathSeparator;
         }
 
@@ -737,9 +750,8 @@ public class JavaProcessor extends Processor {
         String exportJar = "";
         if (ProcessorUtilities.isExportConfig()) {
             exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar" + classPathSeparator;
-            Set<String> childrenlist = getChildren((ProcessItem)process.getProperty().getItem());
-            for(String child:childrenlist)
-            {
+            Set<String> childrenlist = getChildren((ProcessItem) process.getProperty().getItem());
+            for (String child : childrenlist) {
                 exportJar += child.toLowerCase() + ".jar" + classPathSeparator;
             }
         }
@@ -752,10 +764,12 @@ public class JavaProcessor extends Processor {
         }
         return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
-    }   
-    
+    }
+
     private Set<String> getChildren(ProcessItem processItem) {
-        Set<String> childrenList = new HashSet<String>(); // in case the same children is used several time
+        Set<String> childrenList = new HashSet<String>(); // in case the same
+        // children is used
+        // several time
         if (processItem.getProcess().getRequired() != null) {
             EList jobList = processItem.getProcess().getRequired().getJob();
             for (int j = 0; j < jobList.size(); j++) {
@@ -769,6 +783,7 @@ public class JavaProcessor extends Processor {
         }
         return childrenList;
     }
+
     /*
      * (non-Javadoc)
      * 
