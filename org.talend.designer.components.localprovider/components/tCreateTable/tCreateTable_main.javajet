@@ -206,14 +206,7 @@ class Transfer{
 			 		}		 	
 			 		sql=sql+" ";
 			 	//default_value
-			 		if(!(column.getDefault()==null||column.getDefault().equals(""))){
-			 		sql=sql+"default ";
-				 		if((column.getTalendType().equals("id_String"))||(column.getTalendType().equals("id_Date"))){
-				 			sql=sql+"'"+column.getDefault()+"' ";
-				 		}else{
-				 			sql=sql+column.getDefault()+" ";
-				 		}
-			 		}
+					sql=sql+fillValue(column.getDefault(),column.getTalendType());
 			 	//nullable
 			 		if(column.isNullable()==false){
 			 			sql=sql+"not null ";
@@ -259,6 +252,19 @@ class Transfer{
         }
         return false;
     }	
+    
+    
+    public String fillValue(String value, String colType) {
+	  if((value.startsWith("\"")||value.startsWith("'") )&& (value.endsWith("\"")||value.endsWith("'"))){
+			return "default '"+value.substring(1,value.length()-1)+"' ";
+	   	}else if(value.equalsIgnoreCase("null")){
+	   		return "default null ";
+	   	}else{
+			return "default "+value+" ";
+		}
+	}
+    
+    
 }
        Transfer tr=new Transfer();
 %>
