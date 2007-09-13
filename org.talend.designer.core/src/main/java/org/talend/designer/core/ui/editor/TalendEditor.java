@@ -119,10 +119,12 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -548,6 +550,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             }
             getCommandStack().markSaveLocation();
             setDirty(false);
+            ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
+                    .resetModulesNeeded();
             monitor.worked(10);
 
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
