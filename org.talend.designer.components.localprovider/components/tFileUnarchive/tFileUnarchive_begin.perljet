@@ -11,7 +11,7 @@
 String cid = node.getUniqueName();
 
 	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
-	String archFile = ElementParameterParser.getValue(node, "__ARCHFILE__").toLowerCase();
+	String archFile = ElementParameterParser.getValue(node, "__ARCHFILE__");
 %>      
 
 use Archive::Extract ;
