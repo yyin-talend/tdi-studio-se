@@ -6,13 +6,12 @@ sub getTableCreationQuery {
     my %param = @_;
 
     my %talendtype_to_dbtype = (
-        char    => 'CHAR',
-        Day     => 'DATETIME',
-        double  => 'DOUBLE',
-        float   => 'FLOAT',
+        boolean    => 'TINYINT',
+        date     => 'DATE',
+        datetime  => 'DATETIME',
+        decimal   => 'DECIMAL',
         int     => 'INT',
-        long    => 'LONG',
-        String  => 'VARCHAR',
+        string  => 'VARCHAR',
     );
 
     my @dont_need_length_types = qw/DATE DATETIME/;
@@ -69,8 +68,8 @@ sub getTableCreationQuery {
                 $query.= '(';
                 $query.= $column_href->{len};
 
-                if (grep /^$column_href->{dbtype}$/, qw/FLOAT DOUBLE/) {
-                    # REAL, DOUBLE, FLOAT, DECIMAL, NUMERIC
+                if (grep /^$column_href->{dbtype}$/, qw/DECIMAL/) {
+                    # DECIMAL
                     $query.= ','.$column_href->{precision};
                 }
 
