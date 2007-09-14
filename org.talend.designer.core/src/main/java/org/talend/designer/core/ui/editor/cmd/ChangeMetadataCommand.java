@@ -100,17 +100,15 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode,
-            IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata,
-            IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode, IMetadataTable currentInputMetadata,
+            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.schemaParam = schemaParam;
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                        && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -141,8 +139,7 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
-                        && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -217,21 +214,17 @@ public class ChangeMetadataCommand extends Command {
         this.internal = internal;
     }
 
-	private boolean getPropagate(Boolean returnIfNull) {
-		if (propagate == null) {
-			if (returnIfNull != null) {
-				return returnIfNull;
-			}
-			propagate = MessageDialog
-					.openQuestion(
-							new Shell(),
-							Messages
-									.getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
-							Messages
-									.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
-		}
-		return propagate;
-	}
+    private boolean getPropagate(Boolean returnIfNull) {
+        if (propagate == null) {
+            if (returnIfNull != null) {
+                return returnIfNull;
+            }
+            propagate = MessageDialog.openQuestion(new Shell(), Messages
+                    .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+                    Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
+        }
+        return propagate;
+    }
 
     private boolean getPropagate() {
         return getPropagate(null);
@@ -267,8 +260,7 @@ public class ChangeMetadataCommand extends Command {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null
-                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
                                 ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
@@ -308,14 +300,17 @@ public class ChangeMetadataCommand extends Command {
                 INodeConnector nodeConnector = null;
                 String baseConnector = null;
                 if (currentIO.getSource() instanceof Node) {
-                    Node node = (Node) currentIO.getSource();
-                    nodeConnector = node.getConnectorFromName(currentIO.getConnection().getConnectorName());
+                    Node sourceNode = (Node) currentIO.getSource();
+                    nodeConnector = sourceNode.getConnectorFromName(currentIO.getConnection().getConnectorName());
                     baseConnector = nodeConnector.getBaseSchema();
                 }
                 INode targetNode = currentIO.getTarget();
-				if (baseConnector.equals(currentConnector)
-						&& (!newOutputMetadata.sameMetadataAs(targetNode
-								.getMetadataFromConnector(baseConnector)))) {
+
+                boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
+                        .isBuiltIn();
+                if (baseConnector.equals(currentConnector)
+                        && (targetIsBuiltIn || (!newOutputMetadata.sameMetadataAs(targetNode
+                                .getMetadataFromConnector(baseConnector))))) {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
@@ -323,18 +318,13 @@ public class ChangeMetadataCommand extends Command {
                                     && targetNode.getMetadataList().size() > 0) {
                                 IMetadataTable tmpClone = node.getMetadataFromConnector(
                                         currentIO.getConnection().getConnectorName()).clone(true);
-                                // IMetadataTable tmpClone =
-                                // currentOutputMetadata.clone(true);
                                 IMetadataTable toCopy = newOutputMetadata.clone();
-                                MetadataTool.copyTable(toCopy, tmpClone); // to
-                                // keep
-                                // customs
+                                // to keep customs
+                                MetadataTool.copyTable(toCopy, tmpClone);
                                 toCopy = tmpClone;
-                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector)
-                                        .clone(true);
+                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
                                 MetadataTool.copyTable(toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null,
-                                        copy);
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy);
                                 if (outputdataContainer.getOuputs().size() > 0) {
                                     List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
                                             .getColumnNameChanged();
@@ -350,13 +340,11 @@ public class ChangeMetadataCommand extends Command {
                         currentIO.setColumnNameChanged(null);
                     } else {
                         if (targetNode instanceof Node) {
-                            if (!((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
-                                    .isBuiltIn()
-                                    && getPropagate()) {
+                            if (!targetIsBuiltIn && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
-                                                .get(0).getColumnNameChanged();
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
+                                                .getColumnNameChanged();
                                         for (ChangeMetadataCommand cmd : propagatedChange) {
                                             for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                                 dataComp.setColumnNameChanged(columnNameChanged);
@@ -418,10 +406,9 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-		if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata,
-				IMetadataColumn.OPTIONS_NONE)
-				&& (schemaParam == null || !schemaParam.isReadOnly())) {
-			MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
+        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)
+                && (schemaParam == null || !schemaParam.isReadOnly())) {
+            MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
@@ -430,20 +417,16 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-		for (INodeConnector connector : node.getListConnector()) {
-			if ((!connector.getName().equals(currentConnector))
-					&& connector.getBaseSchema().equals(currentConnector)
-					&& (!node.getSchemaParameterFromConnector(
-							connector.getName()).isReadOnly())) {
-				// if there is some other schema dependant of this one, modify
-				// them
-				MetadataTool.copyTable(newOutputMetadata, node
-						.getMetadataFromConnector(connector.getName()));
-			}
-		}
-		
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
-                newOutputMetadata);
+        for (INodeConnector connector : node.getListConnector()) {
+            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)
+                    && (!node.getSchemaParameterFromConnector(connector.getName()).isReadOnly())) {
+                // if there is some other schema dependant of this one, modify
+                // them
+                MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
+            }
+        }
+
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -482,8 +465,7 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata,
-                oldOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
