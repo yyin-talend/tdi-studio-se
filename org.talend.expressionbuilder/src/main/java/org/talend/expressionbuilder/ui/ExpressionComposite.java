@@ -34,6 +34,7 @@ import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -50,9 +51,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
-import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.LanguageManager;
+import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -68,7 +68,7 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdap
  */
 public class ExpressionComposite extends Composite {
 
-    private final ColorStyledText text;
+    private final StyledText text;
 
     private String replacedText;
 
@@ -195,10 +195,19 @@ public class ExpressionComposite extends Composite {
         });
 
         ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        text = new ColorStyledText(expressionGroup, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
-                LanguageManager.getCurrentLanguage().getName());
-        // text = (StyledText) TalendJavaSourceViewer.createViewer(expressionGroup, "",
-        // SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL).getControl();
+        Composite composite = new Composite(expressionGroup, SWT.BORDER);
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout();
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        composite.setLayout(layout);
+        // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
+        // LanguageManager.getCurrentLanguage().getName());
+        text = (StyledText) TalendJavaSourceViewer.createViewer(composite, "", SWT.NONE).getControl();
         text.setLayoutData(new GridData(GridData.FILL_BOTH));
         text.addModifyListener(new ModifyListener() {
 

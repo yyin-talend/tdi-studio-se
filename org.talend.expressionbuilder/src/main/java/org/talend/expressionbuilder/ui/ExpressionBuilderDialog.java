@@ -51,6 +51,7 @@ import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
+import org.talend.expressionbuilder.test.shadow.Expression;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.xml.sax.SAXException;
 
@@ -335,9 +336,11 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     @Override
     protected void okPressed() {
-        String expression = (expressionComposite).getExpression();
+        String expression = expressionComposite.getExpression();
+        List<Variable> vList = testComposite.getVariableList();
+
         if (expression != null) {
-            consumer.setConsumerExpression(expression);
+            consumer.setConsumerExpression(new Expression(expression, vList));
         }
         super.okPressed();
     }
@@ -350,6 +353,10 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     public void openDialog(Object obj) {
         if (obj instanceof String) {
             setDefaultExpression((String) obj);
+        } else if (obj instanceof Expression) {
+            Expression expression = (Expression) obj;
+            setDefaultExpression(expression.getExpression());
+            addVariables(expression.getVariables());
         }
         open();
         setBlockOnOpen(true);
