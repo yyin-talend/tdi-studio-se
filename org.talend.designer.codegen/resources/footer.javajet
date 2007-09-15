@@ -189,8 +189,7 @@
 <%
 	}else{ //isRunInMultiThread
 %>
-	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
-	 int exitCode=0; 
+	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 	try {
 <%
    		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
@@ -207,7 +206,6 @@
 %>
 	} catch(TalendException e) {
 		status="failure";
-		exitCode=1; 
 		e.printStackTrace();
 	} finally {
 <%
@@ -247,7 +245,7 @@
 <%
 	}
 %>
-    return exitCode;
+    return status != null && status.equals("failure") ? 1 : 0;
 	}
 	
 	public static void evalParam(String arg) {	   
