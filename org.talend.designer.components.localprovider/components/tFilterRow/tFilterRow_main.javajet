@@ -7,6 +7,8 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
     org.talend.commons.utils.generation.LocationUtils
     org.talend.commons.utils.generation.EntryLocation
     java.util.List
@@ -17,51 +19,159 @@ imports="
 
 <%
 class Transfer{
-	public String function(String function,String inputRowName, String inputColumn){
+	public String function(String function, String connName, String columnName ,String typeName, JavaType javaType){
 		if(function.equals("S_VALUE_OF")){
-			return "("+inputRowName+"."+inputColumn+")";
+			return "(" + connName + "." + columnName + ")";
 		}else if(function.equals("N_VALUE_OF_FLOAT")){
-			return "((Float)Float.parseFloat("+inputRowName+"."+inputColumn+"))";
+	        if(javaType == JavaTypesManager.BYTE || 
+	                javaType == JavaTypesManager.SHORT ||
+	                javaType == JavaTypesManager.INTEGER || 
+	                javaType == JavaTypesManager.LONG || 
+	                javaType == JavaTypesManager.DOUBLE) {
+	            return "((Float)Float.parseFloat(String.valueOf("+connName+"."+columnName+")))";         
+	        } else if(javaType == JavaTypesManager.FLOAT) {
+	            if(typeName.equals("Float")) {
+	                return connName + "." + columnName; 
+	            } else {
+	                return "((Float)" + connName + "." + columnName + ")";
+	            }           
+	        } else if(javaType == JavaTypesManager.STRING) {
+	            return "((Float)Float.parseFloat(" + connName + "." + columnName + "))";
+	        } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+	            return null;
+	        } else if(javaType == JavaTypesManager.DATE) {
+	            return null;
+	        } else if(javaType == JavaTypesManager.BOOLEAN) {
+	            return null;
+	        } else {
+	            return null;
+	        }		    
 		}else if(function.equals("N_VALUE_OF_INTEGER")){
-			return "((Integer)Integer.parseInt("+inputRowName+"."+inputColumn+"))";
+            if(javaType == JavaTypesManager.BYTE || 
+                    javaType == JavaTypesManager.SHORT ||
+                    javaType == JavaTypesManager.FLOAT || 
+                    javaType == JavaTypesManager.LONG || 
+                    javaType == JavaTypesManager.DOUBLE) {
+                return "((Integer)Integer.parseInt(String.valueOf("+connName+"."+columnName+")))";         
+            } else if(javaType == JavaTypesManager.INTEGER) {
+                if(typeName.equals("Integer")) {
+                    return connName + "." + columnName; 
+                } else {
+                    return "((Integer)" + connName + "." + columnName + ")";
+                }           
+            } else if(javaType == JavaTypesManager.STRING) {
+                return "((Integer)Integer.parseInt(" + connName + "." + columnName + "))";
+            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+                return null;
+            } else if(javaType == JavaTypesManager.DATE) {
+                return null;
+            } else if(javaType == JavaTypesManager.BOOLEAN) {
+                return null;
+            } else {
+                return null;
+            }
 		}else if(function.equals("ABS_VALUE_FLOAT")){
-			return "((Float)java.lang.Math.abs(Float.parseFloat("+inputRowName+"."+inputColumn+")))";
+            if(javaType == JavaTypesManager.BYTE || 
+                    javaType == JavaTypesManager.SHORT ||
+                    javaType == JavaTypesManager.INTEGER || 
+                    javaType == JavaTypesManager.LONG || 
+                    javaType == JavaTypesManager.DOUBLE) {
+                return "((Float)Math.abs(Float.parseFloat(String.valueOf("+connName+"."+columnName+"))))";         
+            } else if(javaType == JavaTypesManager.FLOAT) {
+                if(typeName.equals("Float")) {
+                    return "((Float)" + "Math.abs(" + connName + "." + columnName + ".floatValue()))"; 
+                } else {
+                    return "((Float)" + "Math.abs(" + connName + "." + columnName + "))";
+                }           
+            } else if(javaType == JavaTypesManager.STRING) {
+                return "((Float)Math.abs(Float.parseFloat(" + connName + "." + columnName + ")))";
+            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+                return null;
+            } else if(javaType == JavaTypesManager.DATE) {
+                return null;
+            } else if(javaType == JavaTypesManager.BOOLEAN) {
+                return null;
+            } else {
+                return null;
+            }		    
 		}else if(function.equals("ABS_VALUE_INTEGER")){
-			return "((java.lang.Integer)java.lang.Math.abs(Integer.parseInt("+inputRowName+"."+inputColumn+")))";
+            if(javaType == JavaTypesManager.BYTE || 
+                    javaType == JavaTypesManager.SHORT ||
+                    javaType == JavaTypesManager.FLOAT || 
+                    javaType == JavaTypesManager.LONG || 
+                    javaType == JavaTypesManager.DOUBLE) {
+                return "((Integer)Math.abs(Integer.parseInt(String.valueOf("+connName+"."+columnName+"))))";         
+            } else if(javaType == JavaTypesManager.INTEGER) {
+                if(typeName.equals("Integer")) {
+                    return "((Integer)" + "Math.abs(" + connName + "." + columnName + ".intValue()))"; 
+                } else {
+                    return "((Integer)" + "Math.abs(" + connName + "." + columnName + "))";
+                }           
+            } else if(javaType == JavaTypesManager.STRING) {
+                return "((Integer)Math.abs(Integer.parseInt(" + connName + "." + columnName + ")))";
+            } else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+                return null;
+            } else if(javaType == JavaTypesManager.DATE) {
+                return null;
+            } else if(javaType == JavaTypesManager.BOOLEAN) {
+                return null;
+            } else {
+                return null;
+            }
 		}else if(function.equals("LC")){
-			return "("+inputRowName+"."+inputColumn+").toLowerCase()";
+		    if(javaType == JavaTypesManager.STRING) {
+		        return "(" + connName + "." + columnName + ").toLowerCase()"; 
+		    } else {
+		        return null;
+		    }			
 		}else if(function.equals("UC")){
-			return "("+inputRowName+"."+inputColumn+").toUpperCase()";
+		    if(javaType == JavaTypesManager.STRING) {
+		        return "(" + connName + "." + columnName + ").toUpperCase()"; 
+		    } else {
+		        return null;
+		    }			
 		}else if(function.equals("LCFIRST")){
-			return "(("+inputRowName+"."+inputColumn+").substring(0, 1).toLowerCase()+("+inputRowName+"."+inputColumn+").substring(1))";
+		    if(javaType == JavaTypesManager.STRING) {
+		        return "((" + connName + "." + columnName + ").substring(0, 1).toLowerCase()+(" + connName + "." + columnName+").substring(1))";
+		    } else {
+		        return null;
+		    }			
 		}else if(function.equals("UCFIRST")){
-			return "(("+inputRowName+"."+inputColumn+").substring(0, 1).toUpperCase()+("+inputRowName+"."+inputColumn+").substring(1))";
-		}else if(function.equals("LENGTH")){	
-			return "((Integer)("+inputRowName+"."+inputColumn+").length())";
+		    if(javaType == JavaTypesManager.STRING) {
+		        return "((" + connName + "." + columnName + ").substring(0, 1).toUpperCase()+(" + connName + "." + columnName+").substring(1))";
+		    } else {
+		        return null;
+		    }
+		}else if(function.equals("LENGTH")){
+		    if(javaType == JavaTypesManager.STRING) {
+		        return "((Integer)(" + connName + "." + columnName + ").length())";
+		    } else {
+		        return null;
+		    }
 		}
 		return null;
 	}
 	
-	public String operator(String operator, String value, String function, String inputRowName, String inputColumn){
+	public String operator(String operator, String value, String function, String connName, String columnName ,String typeName, JavaType javaType){
 		//if(value.startsWith("\""))	
 		
 		
 		if(operator.equals("EQ")){
-			return function(function,inputRowName,inputColumn)+".equals("+value+")";
+			return function(function,connName,columnName,typeName,javaType)+".equals("+value+")";
 		}else if(operator.equals("NE")){
-			return "!("+function(function,inputRowName,inputColumn)+".equals("+value+"))";
+			return "!("+function(function,connName,columnName,typeName,javaType)+".equals("+value+"))";
 		}else if(operator.equals("GT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")>0)";
+			return "("+function(function,connName,columnName,typeName,javaType)+".compareTo("+value+")>0)";
 		}else if(operator.equals("LT")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")<0)";
+			return "("+function(function,connName,columnName,typeName,javaType)+".compareTo("+value+")<0)";
 		}else if(operator.equals("GE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")>=0)";
+			return "("+function(function,connName,columnName,typeName,javaType)+".compareTo("+value+")>=0)";
 		}else if(operator.equals("LE")){
-			return "("+function(function,inputRowName,inputColumn)+".compareTo("+value+")<=0)";
+			return "("+function(function,connName,columnName,typeName,javaType)+".compareTo("+value+")<=0)";
 		}else if(operator.equals("MATCH")){
-			return "("+function(function,inputRowName,inputColumn)+".matches("+value+"))";
+			return "("+function(function,connName,columnName,typeName,javaType)+".matches("+value+"))";
 		}else if(operator.equals("NMATCH")){
-			return "!("+function(function,inputRowName,inputColumn)+".matches("+value+"))";
+			return "!("+function(function,connName,columnName,typeName,javaType)+".matches("+value+"))";
 		}
 		return null;
 	}
@@ -101,138 +211,150 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String advanced = ElementParameterParser.getValue(node,"__ADVANCED_COND__");
         List<Map<String, String>> conditions =
         (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CONDITIONS__");
+        JavaType javaType = null;
+        String typeName = null;
         if (inConns != null && !inConns.isEmpty()) {
             IConnection inConn = inConns.get(0);
             inputRowName = inConn.getName();
             prevComponentName = inConn.getMetadataTable().getTableName();
         }
-%>
-boolean branch_<%=cid%>_is_active = false;
-nb_line_<%=cid%>++ ;
-<%if(conditions.size()==0&&use_advanced.equals("false")){%>
-	if (true
-<%}else{%>
-	if(	
-<%
-}
-        boolean isFirst = true ;
-        boolean atLeastOneSimpleCondition = false ;
-        
-        for(int i=0; i<conditions.size(); i++) {
-            atLeastOneSimpleCondition = true ;
-            Map<String, String> condition = conditions.get(i);     
-        	if(!isFirst){
-%>
-        <%=tr.logical(logical)%>
-<%      }%>
-        <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"))%>
-<%
-            isFirst = false ;
-        }//for
-
-        if(use_advanced.equals("true")){
-            if(atLeastOneSimpleCondition){
         %>
-        <%=tr.logical(logical)%>
-        <%  }
-            LocationUtils locationUtils = new LocationUtils(); 
-            //replace column label by column position constant
-            List<EntryLocation> locations = new ArrayList<EntryLocation>();
-            if (inConns != null && !inConns.isEmpty()) {
-                IConnection inConn = inConns.get(0);
-                IMetadataTable inMetadata = inConn.getMetadataTable();
-                List<IMetadataColumn> columns = inMetadata.getListColumns();
-                for(IMetadataColumn column : columns) {
-                    locations.add(new EntryLocation(inputRowName,column.getLabel()));
+        boolean branch_<%=cid%>_is_active = false;
+        nb_line_<%=cid%>++ ;
+        <%
+        if(conditions.size() == 0 && use_advanced.equals("false")){
+            %>
+            if (true
+            <%
+        }else{
+            %>
+            if(            
+                <%
+                if(use_advanced.equals("true")){
+                    LocationUtils locationUtils = new LocationUtils(); 
+                    //replace column label by column position constant
+                    List<EntryLocation> locations = new ArrayList<EntryLocation>();
+                    if (inConns != null && !inConns.isEmpty()) {
+                        IConnection inConn = inConns.get(0);
+                        IMetadataTable inMetadata = inConn.getMetadataTable();
+                        List<IMetadataColumn> columns = inMetadata.getListColumns();
+                        for(IMetadataColumn column : columns) {
+                            locations.add(new EntryLocation(inputRowName,column.getLabel()));
+                        }
+                    }    
+                    advanced = advanced.replaceAll("input_row",inputRowName);              
+                    advanced = locationUtils.replaceColumnNameToConstantName(advanced,(EntryLocation[])locations.toArray(new EntryLocation[0]));   
+                    %>                
+                    <%=advanced%>
+                <%
                 }
-            }    
-            advanced = advanced.replaceAll("input_row",inputRowName);              
-            advanced = locationUtils.replaceColumnNameToConstantName(advanced,(EntryLocation[])locations.toArray(new EntryLocation[0]));   
-         %>
-            
-            <%=advanced%>
-<%     }%>
-
-) {
-    branch_<%=cid%>_is_active = true ;
-    nb_line_ok_<%=cid %>++ ;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                if(use_advanced.equals("true")) {
+                    %>
+                    <%=tr.logical(logical)%>
+                    <%
+                }                
+                boolean isFirst = true ;            
+                for(int i = 0 ; i < conditions.size() ; i++) {
+                    Map<String, String> condition = conditions.get(i);
+                    if(!isFirst){
+                        %>
+                        <%=tr.logical(logical)%>
+                        <%
+                    }
+                    for(IMetadataColumn metadataColumn : columnList) {
+                        if(metadataColumn.getLabel().equals(condition.get("INPUT_COLUMN"))) {
+                            javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
+                            typeName = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+                            break;
+                        }
+                    }
+                    %>
+                    <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>
+                    <%
+                    isFirst = false ;                        
+                }//for            
+        }
+        %>
+        ) {
+            branch_<%=cid%>_is_active = true ;
+            nb_line_ok_<%=cid %>++ ;
+        }
 
 
 
 
 
 
-<%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <%
 		List< ? extends IConnection> connsFilter = node.getOutgoingConnections("FILTER");
  		for(int connNO = 0; connNO < connsFilter.size(); connNO++){
- 		  IConnection conn2 = connsFilter.get(connNO);
-%>
-		if(branch_<%=cid%>_is_active){
-		<%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
-<%
- 		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
- 		  	for(IMetadataColumn column:columnList){
- 		  %>
- 		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=inputRowName%>.<%=column.getLabel()%>;
- 		  <% 
- 		  	}
- 		  }
-%>
-		}else{
-			<%=conn2.getName()%>=null;
-		}
-<%
+    	  IConnection conn2 = connsFilter.get(connNO);
+    	  %>
+    	  if(branch_<%=cid%>_is_active){
+    	      <%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
+    	      <%
+    	      if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+    	          for(IMetadataColumn column:columnList){
+    	              %>
+    	              <%=conn2.getName()%>.<%=column.getLabel()%> = <%=inputRowName%>.<%=column.getLabel()%>;
+    	              <% 
+    	          }
+    	      }
+    	      %>
+    	  }else{
+    		<%=conn2.getName()%> = null;
+    	  }
+        <%
  		}
-%>
+ 		%>
 
 
 
 
 
-<%
+ 		<%
 		List< ? extends IConnection> connsReject = node.getOutgoingConnections("REJECT");
  		for(int connNO = 0; connNO < connsReject.size(); connNO++){
- 		  IConnection conn2 = connsReject.get(connNO);
-%>
-		if(!branch_<%=cid%>_is_active){
-		<%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
-<%
- 		  if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
- 		  	for(IMetadataColumn column:columnList){
- 		  %>
- 		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=inputRowName%>.<%=column.getLabel()%>;
- 		  <% 
- 		  	}
- 		  }
-%>
-		}else{
-			<%=conn2.getName()%>=null;
-		}
-<%
+ 		    IConnection conn2 = connsReject.get(connNO);
+ 		    %>
+ 		    if(!branch_<%=cid%>_is_active){
+ 		        <%=conn2.getName()%> = new <%=conn2.getName()%>Struct();
+ 		        <%
+ 		        if(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+ 		            for(IMetadataColumn column:columnList){
+ 		                %>
+ 		                <%=conn2.getName()%>.<%=column.getLabel()%>=<%=inputRowName%>.<%=column.getLabel()%>;
+ 		                <% 
+ 		            }
+ 		        }
+ 		        %>
+ 		    }else{
+ 		        <%=conn2.getName()%>=null;
+ 		    }
+	    <%
  		}
-%>
+ 		%>
 
 
 
