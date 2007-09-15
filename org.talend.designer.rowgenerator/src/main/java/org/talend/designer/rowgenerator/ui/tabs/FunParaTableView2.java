@@ -22,6 +22,7 @@
 package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -38,11 +39,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
-import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.rowgenerator.data.Function;
@@ -54,7 +53,7 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 import org.talend.expressionbuilder.CellEditorDialogBehavior;
 import org.talend.expressionbuilder.ExtendedTextCellEditor;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
-import org.talend.expressionbuilder.IExpressionConsumer;
+import org.talend.expressionbuilder.test.shadow.Expression;
 import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
@@ -111,17 +110,30 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("FunParaTableView2.Value"));
         column.setId(VALUE_PROPERTY);
+
+        final ExtendedTextCellEditor cellEditor = new ExtendedTextCellEditor(tableViewerCreator.getTable());
+
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
+                cellEditor.setParameter(bean);
                 return bean.getValue();
             }
 
             public void set(Parameter bean, Object value) {
+
                 if (value == null) {
                     return;
                 }
-                String newValue = value.toString();
+
+                String newValue = null;
+                if (value instanceof Map) {
+                    newValue = (String) ((Map) value).get("TEXT");
+                    bean.setVariables(((Expression) ((Map) value).get("TEXT_DATA")).getVariables());
+                } else {
+                    newValue = value.toString();
+                }
+
                 bean.setValue(newValue);
                 if (ext != null) {
                     ext.setChanged(true);
@@ -132,8 +144,6 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         column.setModifiable(true);
         column.setWidth(115);
-
-        ExtendedTextCellEditor cellEditor = new ExtendedTextCellEditor(tableViewerCreator.getTable());
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
                 mainComposite, cellEditor);
@@ -192,6 +202,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         final int eDITABLECOLUMN = 2;
         table.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // Clean up any previous editor control
                 Control oldEditor = editor.getEditor();
@@ -225,6 +236,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 editor.minimumWidth = size.x;
                 combo.addSelectionListener(new SelectionAdapter() {
 
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         list.setValue(combo.getText());
                         viewer.refresh(list);
