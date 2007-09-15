@@ -259,6 +259,8 @@ class Transfer{
 			return "default '"+value.substring(1,value.length()-1)+"' ";
 	   	}else if(value.equalsIgnoreCase("null")){
 	   		return "default null ";
+	   	}else if(value.equals("")){
+	   		return " ";
 	   	}else{
 			return "default "+value+" ";
 		}
