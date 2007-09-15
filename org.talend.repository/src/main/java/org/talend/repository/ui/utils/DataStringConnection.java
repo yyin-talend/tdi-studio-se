@@ -49,9 +49,9 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[20];
+        dataConnection = new DataConnection[23];
 
-        defaultTable = new String[20];
+        defaultTable = new String[23];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -120,6 +120,16 @@ public class DataStringConnection {
 
         dataConnection[19] = new DataConnection("JavaDB DerbyClient", "jdbc:derby://<host>:<port>/<sid>",
                 "jdbc:derby://" + host + ":" + port + "/" + sid, "1527"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[20] = new DataConnection("HSQLDB Server", "jdbc:hsqldb:hsql://<host>:<port>/<sid>",
+                "jdbc:hsqldb:hsql://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[21] = new DataConnection("HSQLDB WebServer", "jdbc:hsqldb:http://<host>:<port>/<sid>",
+                "jdbc:derby://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[22] = new DataConnection("HSQLDB In Progress Persistent",
+                "jdbc:hsqldb:file:<filename>/<sid>;ifexists=true",
+                "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
