@@ -106,7 +106,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             || paramValue.equals(defaultValue);
                 }
             }
-            if (isSchemaEmpty && isQueryEmpty) {
+            if (!isSchemaEmpty) {
                 allowAutoSwitch = true;
             }
         }
