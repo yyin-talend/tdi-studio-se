@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.views.contexts;
 
 import java.util.List;
 
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -52,10 +51,6 @@ public class ContextsView extends ViewPart {
 
     private Process process;
 
-    protected CommandStack getCommandStack() {
-        return (CommandStack) part.getTalendEditor().getAdapter(CommandStack.class);
-    }
-
     public ContextsView() {
     }
 
@@ -80,7 +75,7 @@ public class ContextsView extends ViewPart {
         gd.horizontalAlignment = SWT.FILL;
         contextComposite.setLayoutData(gd);
 
-        updateContextView();
+        refresh();
 
     }
 
@@ -113,7 +108,7 @@ public class ContextsView extends ViewPart {
     }
 
     /**
-     * DOC bqian Comment method "getContextManager".
+     * bqian Comment method "getContextManager".
      * 
      * @return
      */
@@ -131,9 +126,6 @@ public class ContextsView extends ViewPart {
         }
         contextComposite.setReadOnly(false);
         contextComposite.refresh();
-
-        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
-
     }
 
     public void updateContextView(boolean isBuildIn) {
@@ -146,8 +138,6 @@ public class ContextsView extends ViewPart {
         }
         contextComposite.setReadOnly(!isBuildIn);
         contextComposite.refresh();
-
-        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void updateContextView(boolean isBuildIn, boolean isDisposeAll) {
@@ -160,7 +150,6 @@ public class ContextsView extends ViewPart {
         }
         contextComposite.setReadOnly(!isBuildIn);
         contextComposite.refresh();
-        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     public void refresh() {
@@ -172,7 +161,6 @@ public class ContextsView extends ViewPart {
             }
         }
         contextComposite.setPart(part);
-        // DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     @Override

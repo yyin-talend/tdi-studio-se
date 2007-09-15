@@ -29,6 +29,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.views.contexts.Contexts;
 
 /**
  * Wizard for the creation of a new IContextParameter. <br/>
@@ -87,6 +88,7 @@ public class ContextParameterWizard extends Wizard {
             context.getContextParameterList().add(parameter.clone());
         }
         contextManager.fireContextsChangedEvent();
+        Contexts.switchToCurContextsView();
         return true;
     }
 

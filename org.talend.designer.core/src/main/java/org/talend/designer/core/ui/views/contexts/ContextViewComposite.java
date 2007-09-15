@@ -141,6 +141,24 @@ public class ContextViewComposite extends ContextComposite {
         super.addChoiceComponents(composite);
     }
 
+    protected void refreshChoiceComposite() {
+        if (currentRepositoryContext == null) {
+            typeCombo.setText(EmfComponent.TEXT_BUILTIN);
+        } else {
+            typeCombo.setText(EmfComponent.TEXT_REPOSITORY);
+        }
+        if (currentRepositoryContext == null) {
+            repositoryCombo.setVisible(false);
+        } else {
+            repositoryCombo.setVisible(true);
+        }
+        if (getProcess() != null && currentRepositoryContext != null) {
+            updateContextList();
+            repositoryCombo.setText(currentRepositoryContext);
+        }
+        super.refreshChoiceComposite();
+    }
+
     private void updateContextList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ContextItem> contextItemList = null;
@@ -205,7 +223,6 @@ public class ContextViewComposite extends ContextComposite {
 
             public void widgetSelected(SelectionEvent e) {
                 CCombo combo = (CCombo) e.getSource();
-                System.out.println(repositoryContextItemMap);
 
                 if (combo.getText().equals(EmfComponent.TEXT_REPOSITORY)) {
                     updateContextList();
