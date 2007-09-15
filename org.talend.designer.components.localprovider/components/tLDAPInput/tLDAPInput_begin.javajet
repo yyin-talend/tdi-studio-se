@@ -156,6 +156,8 @@ class="LDAPInput"
     				attrStr_<%=cid%>.append(e_<%=cid%>.next().toString());
     			}
     			<%=conn.getName() %>.<%=column.getLabel() %> = attrStr_<%=cid%>.toString();
+			} else {
+				<%=conn.getName() %>.<%=column.getLabel() %> = null;
 			}
 			
 <%
