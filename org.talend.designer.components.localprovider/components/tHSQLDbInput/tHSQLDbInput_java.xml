@@ -86,7 +86,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>HSQLDb</DEFAULT>
+      <DEFAULT>HSQLDB</DEFAULT>
     </PARAMETER>    
 
     <PARAMETER

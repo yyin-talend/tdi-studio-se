@@ -45,7 +45,7 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>"Interbase"</DEFAULT>
+      <DEFAULT>Interbase</DEFAULT>
     </PARAMETER>
 
 	<PARAMETER

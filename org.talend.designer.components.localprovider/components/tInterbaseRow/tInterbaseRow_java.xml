@@ -36,6 +36,15 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:INTERBASE"
     />
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Interbase</DEFAULT>
+    </PARAMETER>
     
 	<PARAMETER
       NAME="HOST"
