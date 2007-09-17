@@ -127,8 +127,8 @@ public class DataStringConnection {
         dataConnection[21] = new DataConnection("HSQLDB WebServer", "jdbc:hsqldb:http://<host>:<port>/<sid>",
                 "jdbc:derby://" + host + ":" + port + "/" + sid, "9001"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[22] = new DataConnection("HSQLDB In Progress Persistent",
-                "jdbc:hsqldb:file:<filename>/<sid>;ifexists=true",
+        dataConnection[22] = new DataConnection("HSQLDB In-Process",
+                "jdbc:hsqldb:file:<dbRootPath>/<sid>;ifexists=true",
                 "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
@@ -362,7 +362,11 @@ public class DataStringConnection {
         if (string.equals("")) {
             return ""; //$NON-NLS-1$
         }
-        string = getStringReplace(string, "<dbRootPath>", sid);
+        if (dbTypeItemIndex == 22) {
+            string = getStringReplace(string, "<dbRootPath>", dbrootPath);
+        } else {
+            string = getStringReplace(string, "<dbRootPath>", sid);
+        }
         return string;
     }
 }

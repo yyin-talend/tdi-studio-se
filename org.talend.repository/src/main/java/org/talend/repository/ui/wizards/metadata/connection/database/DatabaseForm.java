@@ -234,6 +234,11 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("JavaDB JCCJDBC");
             databasePerl.remove("JavaDB DerbyClient");
 
+
+            databasePerl.remove("HSQLDB Server");
+            databasePerl.remove("HSQLDB WebServer");
+            databasePerl.remove("HSQLDB In-Process");
+
             String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
                     .getString("DatabaseForm.dbTypeTip"), dbPerl, 2, true); //$NON-NLS-1$
