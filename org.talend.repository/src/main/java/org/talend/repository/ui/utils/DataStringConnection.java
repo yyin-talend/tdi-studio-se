@@ -109,8 +109,9 @@ public class DataStringConnection {
         dataConnection[15] = new DataConnection("Teradata", "jdbc:teradata://<host>/<sid>",
                 "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid> ;prompt=false", "jdbc:as400://"
-                + host + "/" + sid + ";prompt=false");
+        dataConnection[16] = new DataConnection("AS400",
+                "jdbc:as400://<host>/<sid>;prompt=false;libraries=*LIBL <sid>", "jdbc:as400://" + host + "/" + sid
+                        + ";prompt=false;libraries=*LIBL " + sid);
 
         dataConnection[17] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:" + word);
         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
