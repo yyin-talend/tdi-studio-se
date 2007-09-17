@@ -9,6 +9,9 @@ imports="
 	org.talend.core.database.EDatabaseTypeName
 	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.core.model.metadata.types.TypesManager
+	org.talend.core.model.metadata.Dbms
+	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.metadata.MappingTypeRetriever
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
@@ -27,6 +30,8 @@ imports="
 	String user = ElementParameterParser.getValue(node,"__USER__");
 	String pass = ElementParameterParser.getValue(node,"__PASS__");
 	String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
+	final String dbmsId= ElementParameterParser.getValue(node,"__MAPPING__");
+	Dbms dbms=MetadataTalendType.getDbms(dbmsId);
 	
 	List<IMetadataColumn> columnList = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -197,12 +202,21 @@ class Transfer{
 			 	//column type
 				 		sql=sql+column.getType();
 			 	//column DataDefine
+			 	
+			 	MappingTypeRetriever mtr=MetadataTalendType.getMappingTypeRetriever(dbmsId);		 	
+			 	
 					if(column.getLength()==null) {column.setLength(0);};
 					if(column.getPrecision()==null) {column.setPrecision(0);};
 			 		if(column.getLength()!=0&&column.getPrecision()==0){
-			 			sql=sql+"("+column.getLength()+")";
+			 				if(!mtr.isLengthIgnored(dbmsId,column.getType()))
+			 					sql=sql+"("+column.getLength()+")";		 				
 			 		}else if(column.getLength()!=0&&column.getLength()!=0){
-			 			sql=sql+"("+column.getPrecision()+","+column.getLength()+")";					 				 			
+			 				if(mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))
+			 					sql=sql+"("+column.getLength()+")";	
+			 				else if(!mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))	
+			 					sql=sql+"("+column.getPrecision()+","+column.getLength()+")";
+			 				else
+			 					sql=sql;					 				 			
 			 		}		 	
 			 		sql=sql+" ";
 			 	//default_value
