@@ -142,6 +142,7 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     protected void refreshChoiceComposite() {
+        updateContextList();
         if (currentRepositoryContext == null) {
             typeCombo.setText(EmfComponent.TEXT_BUILTIN);
         } else {
@@ -160,6 +161,10 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     private void updateContextList() {
+        if (getProcess() == null) {
+            return;
+        }
+
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ContextItem> contextItemList = null;
         String[] repositoryContextNames = new String[] {};
@@ -184,8 +189,11 @@ public class ContextViewComposite extends ContextComposite {
             repositoryContextNames = (String[]) contextNamesList.toArray(new String[0]);
         }
         loadRepositoryContextFromProcess();
-        if (getProcess() != null && repositoryCombo != null && !repositoryCombo.isDisposed()) {
-            repositoryCombo.setItems(repositoryContextNames);
+        repositoryCombo.setItems(repositoryContextNames);
+        if (getJob().getRepositoryId() == null) {
+
+        } else if (getProcess() != null && repositoryCombo != null && !repositoryCombo.isDisposed()) {
+
             if (repositoryContextNames.length != 0 && (!contextNamesList.contains(currentRepositoryContext))) {
                 currentRepositoryContext = repositoryContextNames[0];
                 repositoryCombo.setText(repositoryContextNames[0]);
@@ -229,7 +237,9 @@ public class ContextViewComposite extends ContextComposite {
                     if (repositoryCombo.getItemCount() == 0) {
                         repositoryCombo.setText("");
                     } else {
-                        repositoryCombo.setText(currentRepositoryContext);
+                        if (currentRepositoryContext == null) {
+                            repositoryCombo.select(0);
+                        }
                     }
                     repositoryCombo.setVisible(true);
                 } else {
@@ -247,7 +257,7 @@ public class ContextViewComposite extends ContextComposite {
             public void widgetSelected(SelectionEvent e) {
                 CCombo combo = (CCombo) e.getSource();
                 currentRepositoryContext = combo.getText();
-                ContextItem contextItem = repositoryContextItemMap.get(currentRepositoryContext);
+                ContextItem contextItem = getRepositoryContextItemMap().get(currentRepositoryContext);
                 getCommandStack().execute(new ContextRepositoryCommand(getJob(), contextItem));
             }
         });
