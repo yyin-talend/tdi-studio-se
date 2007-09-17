@@ -255,13 +255,13 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     public boolean finish() {
         String topFolder = getRootFolderName();
 
-        List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
-
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
+
+        List<ExportFileResource> resourcesToExport = getExportResources();
+        setTopFolder(resourcesToExport, topFolder);
 
         ArchiveFileExportOperationFullPath runnable = new ArchiveFileExportOperationFullPath(resourcesToExport,
                 getDestinationValue());

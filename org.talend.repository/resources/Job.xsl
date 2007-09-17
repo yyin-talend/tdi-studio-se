@@ -533,7 +533,7 @@
 					</xsl:for-each>
 					<br/>
 					<xsl:comment>
-						<xsl:value-of select="$job/externalNodeComponents/component/@uniqueName"/>ended<xsl:text/>
+						<xsl:value-of select="@uniqueName"/>ended<xsl:text/><!--before: $job/externalNodeComponents/component/@uniqueName -->
 					</xsl:comment>
 				</xsl:for-each>
 			</body>
