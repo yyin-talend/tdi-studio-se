@@ -6,13 +6,12 @@ sub getTableCreationQuery {
     my %param = @_;
 
     my %talendtype_to_dbtype = (
-        char    => 'TEXT',
-        Day     => 'TEXT',
-        double  => 'REAL',
-        float   => 'REAL',
+        boolean    => 'INTEGER',
+        date     => 'STRING',
+        datetime  => 'STRING',
+        decimal   => 'NUMERIC',
         int     => 'INTEGER',
-        long    => 'INTEGER',
-        String  => 'TEXT',
+        string  => 'STRING',
     );
 
     # In $param{schema}, each column looks like this:
