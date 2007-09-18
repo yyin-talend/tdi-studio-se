@@ -22,7 +22,6 @@
 package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -41,6 +40,8 @@ import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
+import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
@@ -50,10 +51,7 @@ import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
-import org.talend.expressionbuilder.CellEditorDialogBehavior;
-import org.talend.expressionbuilder.ExtendedTextCellEditor;
 import org.talend.expressionbuilder.IExpressionBuilderDialogService;
-import org.talend.expressionbuilder.test.shadow.Expression;
 import org.talend.expressionbuilder.ui.IExpressionBuilderDialogController;
 
 /**
@@ -116,7 +114,6 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
-                cellEditor.setParameter(bean);
                 return bean.getValue();
             }
 
@@ -126,15 +123,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                     return;
                 }
 
-                String newValue = null;
-                if (value instanceof Map) {
-                    newValue = (String) ((Map) value).get("TEXT");
-                    bean.setVariables(((Expression) ((Map) value).get("TEXT_DATA")).getVariables());
-                } else {
-                    newValue = value.toString();
-                }
+                bean.setValue(value.toString());
 
-                bean.setValue(newValue);
                 if (ext != null) {
                     ext.setChanged(true);
                 }
