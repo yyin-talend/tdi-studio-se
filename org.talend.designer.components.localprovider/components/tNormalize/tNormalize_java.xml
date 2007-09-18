@@ -34,9 +34,9 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      READONLY="true"
       NUM_ROW="1"
     >
+    <TABLE READONLY="true"/>
     </PARAMETER>
 
     <PARAMETER
