@@ -52,6 +52,18 @@
     />
 
     <PARAMETER
+      NAME="CONNECTION_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="21"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <ITEMS DEFAULT="ORACLE_SID">
+        <ITEM NAME="ORACLE_SID" VALUE="sid" />
+        <ITEM NAME="ORACLE_SERVICE_NAME" VALUE="service_name"/>
+      </ITEMS>
+    </PARAMETER>    
+
+    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="30"

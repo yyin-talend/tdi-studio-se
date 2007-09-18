@@ -19,6 +19,7 @@ String dbport = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+
 String encoding = ElementParameterParser.getValue(
     node,
     "__ENCODING__"
@@ -27,6 +28,11 @@ String encoding = ElementParameterParser.getValue(
 String printError = ElementParameterParser.getValue(
     node,
     "__PRINT_ERROR__"
+);
+
+String connectionType = ElementParameterParser.getValue(
+    node,
+    "__CONNECTION_TYPE__"
 );
 %>
 use DBI;
@@ -40,7 +46,7 @@ elsif (<%=encoding%> =~ m/^iso-?8859-?1$/i) {
 
 our $dbh_<%=cid %> = DBI->connect(
     sprintf(
-        'dbi:Oracle:host=%s;sid=%s;port=%s',
+        'dbi:Oracle:host=%s;<%=connectionType%>=%s;port=%s',
         <%=dbhost %>,
         <%=dbname %>,
         <%=dbport %>,
