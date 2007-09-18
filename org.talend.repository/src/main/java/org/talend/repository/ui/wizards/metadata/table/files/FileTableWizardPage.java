@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -42,6 +43,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.positional.Fil
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaStep2Form;
+import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaStep4Form;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -147,6 +149,14 @@ public class FileTableWizardPage extends WizardPage {
                 genericSchemaStep2Form.setReadOnly(!isRepositoryObjectEditable);
                 genericSchemaStep2Form.setListener(listener);
                 return genericSchemaStep2Form;
+            }
+            
+            @Override
+            public Object caseLDAPSchemaConnection(final LDAPSchemaConnection object) {
+                LDAPSchemaStep4Form ldapSchemaStep5Form = new LDAPSchemaStep4Form(parent, connectionItem);
+                ldapSchemaStep5Form.setReadOnly(!isRepositoryObjectEditable);
+                ldapSchemaStep5Form.setListener(listener);
+                return ldapSchemaStep5Form;
             }
 
         }.doSwitch(connection);

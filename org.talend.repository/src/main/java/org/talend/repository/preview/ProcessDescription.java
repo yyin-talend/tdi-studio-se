@@ -29,10 +29,21 @@ package org.talend.repository.preview;
  */
 public class ProcessDescription extends AbstractProcessDescription {
 
+    private LDAPSchemaBean ldapSchemaBean;
+
     /**
      * Constructs a new ProcessDescription.
      */
     public ProcessDescription() {
         super();
     }
+
+    public LDAPSchemaBean getLdapSchemaBean() {
+        return this.ldapSchemaBean;
+    }
+
+    public void setLdapSchemaBean(LDAPSchemaBean ldapSchemaBean) {
+        this.ldapSchemaBean = ldapSchemaBean;
+    }
+
 }

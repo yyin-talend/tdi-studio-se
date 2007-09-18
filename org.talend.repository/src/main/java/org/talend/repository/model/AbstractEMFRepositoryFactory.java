@@ -114,6 +114,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
+    
+    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
+    }
+    
         public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException {
             return getObjectFromFolder(ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
     }
@@ -129,7 +134,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS,
                 ERepositoryObjectType.CONTEXT, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF,ERepositoryObjectType.METADATA_GENERIC_SCHEMA};
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA};
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -168,7 +174,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
                 ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
                 ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, 
-                ERepositoryObjectType.CONTEXT,ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));

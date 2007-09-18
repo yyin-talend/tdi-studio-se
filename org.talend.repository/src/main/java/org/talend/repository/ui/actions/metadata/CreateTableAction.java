@@ -104,9 +104,12 @@ public class CreateTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(selection, false);
-        } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)){
+        } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(selection, false);
+        } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createLDAPSchemaWizard(selection, false);
         }
     }
 
@@ -147,15 +150,16 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
+                        || ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
                     collectChildNames(node);
                     setEnabled(true);
                     return;
                 }
-//                if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
-//                    setEnabled(false);
-//                }
+                // if (ERepositoryObjectType.METADATA_CON_QUERY.equals(nodeType)) {
+                // setEnabled(false);
+                // }
             }
         }
     }

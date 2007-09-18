@@ -79,8 +79,12 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 9;
             case METADATA_FILE_LDIF:
                 return 10;
-            case DOCUMENTATION:
+            case METADATA_LDAP_SCHEMA:
                 return 11;
+            case METADATA_GENERIC_SCHEMA:
+                return 12;
+            case DOCUMENTATION:
+                return 13;
             default:
                 return 99;
             }

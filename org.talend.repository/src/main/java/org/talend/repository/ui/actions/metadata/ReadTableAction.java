@@ -35,7 +35,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
- * DOC smallet class global comment. Detailled comment <br/>
+ * DOC smallet class global comment. Detailed comment <br/>
  * 
  * $Id$
  * 
@@ -111,10 +111,12 @@ public class ReadTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(selection, true);
-        } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType))
-        {
+        } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(selection, true);
+        } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createLDAPSchemaWizard(selection, true);
         }
     }
 }

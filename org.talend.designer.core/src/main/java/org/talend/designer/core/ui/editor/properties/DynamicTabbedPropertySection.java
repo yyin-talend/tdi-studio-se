@@ -30,12 +30,12 @@ import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -67,6 +67,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -597,6 +598,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 							addOrderDisplayNames(connectionValuesList,
 									connectionNamesList, key, name);
 						}
+                        if ((connection instanceof LDAPSchemaConnection)
+                                && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                            addOrderDisplayNames(connectionValuesList,
+                                    connectionNamesList, key, name);
+                        }
 
 						if ((connection instanceof DatabaseConnection)
 								&& (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$

@@ -33,11 +33,13 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.commons.utils.StringUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -46,8 +48,11 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.EAliasesDereference;
+import org.talend.repository.model.EReferrals;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreview;
+import org.talend.repository.preview.LDAPSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
 
 /**
@@ -273,4 +278,78 @@ public class ShadowProcessHelper {
         return new AsynchronousPreviewHandler<CsvArray>(preview);
     }
 
+    /**
+     * Administrator Comment method "getProcessDescription".
+     * 
+     * @param connection
+     * @return
+     */
+    public static ProcessDescription getProcessDescription(LDAPSchemaConnection connection) {
+        ProcessDescription processDescription = new ProcessDescription();
+        List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
+
+        IMetadataTable table = new MetadataTable();
+
+        List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+
+        if (connection.getValue() != null && !connection.getValue().isEmpty()) {
+            Iterator<String> iterate = connection.getValue().iterator();
+
+            while (iterate.hasNext()) {
+                IMetadataColumn iMetadataColumn = new MetadataColumn();
+                iMetadataColumn.setLabel(iterate.next());
+                iMetadataColumn.setKey(false);
+                iMetadataColumn.setLength(0);
+                iMetadataColumn.setNullable(false);
+                iMetadataColumn.setType("String"); //$NON-NLS-1$
+                iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+
+                schema.add(iMetadataColumn);
+            }
+        } else {
+
+            IMetadataColumn iMetadataDn = new MetadataColumn();
+            iMetadataDn.setLabel("dn"); //$NON-NLS-1$
+            iMetadataDn.setKey(false);
+            iMetadataDn.setLength(0);
+            iMetadataDn.setNullable(false);
+            iMetadataDn.setType("String"); //$NON-NLS-1$
+            iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
+
+            schema.add(iMetadataDn);
+        }
+
+        table.setTableName("tLDAPInput"); //$NON-NLS-1$
+        table.setListColumns(schema);
+        tableSchema.add(table);
+        processDescription.setSchema(tableSchema);
+
+        LDAPSchemaBean bean = new LDAPSchemaBean();
+        // TODO: added properties here...
+        bean.setHost(TalendTextUtils.addQuotes(connection.getHost()));
+        bean.setPort(connection.getPort());// int
+        bean.setEncryMethod(TalendTextUtils.addQuotes(connection.getEncryptionMethodName()));
+        bean.setAuthen(connection.isUseAuthen());
+        bean.setAuthMethod(TalendTextUtils.addQuotes(connection.getProtocol()));
+        bean.setUser(TalendTextUtils.addQuotes(connection.getBindPrincipal()));
+        bean.setPasswd(TalendTextUtils.addQuotes(connection.getBindPassword()));
+
+        bean.setBaseDN(TalendTextUtils.addQuotes(connection.getSelectedDN()));
+
+        bean.setReferrals(connection.getReferrals());
+        bean.setAliasDereferenring(connection.getAliases());
+
+        bean.setMultiValueSeparator(TalendTextUtils.addQuotes(","));
+
+        bean.setFilter(TalendTextUtils.addQuotes(connection.getFilter()));
+
+        bean.setCountLimit(connection.getCountLimit()); // int
+        bean.setTimeOutLimit(connection.getTimeOutLimit());// int
+
+        processDescription.setLdapSchemaBean(bean);
+
+        processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
+
+        return processDescription;
+    }
 }

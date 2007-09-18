@@ -32,14 +32,13 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
@@ -84,7 +83,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode businessProcessNode, recBinNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
-            metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode;
+            metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode;
 
     public RepositoryContentProvider(IRepositoryView view) {
         super();
@@ -148,6 +147,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataFileLdifNode) {
                     convert(factory.getMetadataFileLdif(), metadataFileLdifNode,
                             ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+                } else if (parent == metadataLDAPSchemaNode) {
+                    convert(factory.getMetadataLDAPSchema(), metadataLDAPSchemaNode,
+                            ERepositoryObjectType.METADATA_LDAP_SCHEMA, recBinNode);
+
                 } else if (parent == metadataGenericSchemaNode) {
                     convert(factory.getMetadataGenericSchema(), metadataGenericSchemaNode,
                             ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
@@ -307,7 +310,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
         metadataNode.getChildren().add(metadataFileLdifNode);
 
-        // 6.7. Generic schemas
+        // 6.7. LDAP schemas
+        metadataLDAPSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+        metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
+        metadataNode.getChildren().add(metadataLDAPSchemaNode);
+
+        // 6.8. Generic schemas
         metadataGenericSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataGenericSchemaNode
@@ -405,6 +414,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
         if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
             LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
+
+        if (type == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
+            LDAPSchemaConnection metadataConnection = (LDAPSchemaConnection) ((ConnectionItem) repositoryObject
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }

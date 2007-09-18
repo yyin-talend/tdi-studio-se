@@ -193,12 +193,20 @@
              name="Import External JARs"/>
        <Action
              class="org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction"
-             id="org.talend.repository.Action1"
+             id="org.talend.repository.actions.createGenericSchemas"
              isEditAction="true"
              isPropertiesAction="false"
              isReadAction="true"
              level="10"
              name="Metadata/Create generic schemas"/>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction"
+             id="org.talend.repository.actions.createLDAPSchema"
+             isEditAction="true"
+             isReadAction="true"
+             level="10"
+             name="Metadata/Create LDAP schemas">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -513,12 +521,6 @@
             description="%migrationtask.changetUniqRowLinks.description"
             id="org.talend.repository.migration.changetUniqRowLinks"
             name="%migrationtask.changetUniqRowLinks.title">
-      </projecttask>
-      <projecttask
-            class="org.talend.repository.model.migration.ConvertOldPerlTypesMigrationTask"
-            description="%migrationtask.convertOldPerlTypes.description"
-            id="org.talend.repository.migration.convertOldPerlTypes"
-            name="%migrationtask.convertOldPerlTypes.title">
       </projecttask>
    </extension>
    <extension

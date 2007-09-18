@@ -21,13 +21,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_CSV;
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_DELIMITED;
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_LDIF;
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_POSITIONAL;
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_REGEXP;
-import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_XML;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +54,11 @@ import org.talend.repository.preview.IProcessDescription;
 public class ShadowProcess<T extends IProcessDescription> {
 
     /**
+     * 
+     */
+    private static final String TEMP_LDAP_SCHEMA_FILE_NAME = "TempLDAPSchema";
+
+    /**
      * Available Shadow Process Types.
      * 
      * $Id$
@@ -72,7 +70,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_CSV,
         FILE_REGEXP,
         FILE_XML,
-        FILE_LDIF;
+        FILE_LDIF,
+        LDAP_SCHEMA;
 
         private EShadowProcessType() {
 
@@ -100,9 +99,17 @@ public class ShadowProcess<T extends IProcessDescription> {
         super();
 
         this.description = description;
-        this.inPath = new Path(description.getFilepath());
+        String filePath = description.getFilepath();
+        if (filePath != null) {
+            this.inPath = new Path(filePath);
+            this.outPath = buildTempCSVFilename(this.inPath);
+        } else // Used for LDAP schema only
+        {
+            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
+                    ITalendCorePrefConstants.FILE_PATH_TEMP));
+            this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT);
+        }
         this.type = type;
-        outPath = buildTempCSVFilename(inPath);
     }
 
     private IProcess buildProcess() {
@@ -164,6 +171,17 @@ public class ShadowProcess<T extends IProcessDescription> {
                     description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             outNode.setMetadataList(inLdifNode.getMetadataList());
             ps = new FileinToCSVProcess<FileInputLdifNode>(inLdifNode, outNode);
+            break;
+        case LDAP_SCHEMA:
+            outNode = new FileOutputCSVForLDIF(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+
+            LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description
+                    .getEncoding(), description.getLdapSchemaBean());
+
+            outNode.setMetadataList(inLDAPSchemaNode.getMetadataList());
+            ps = new FileinToCSVProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
             break;
         default:
             break;

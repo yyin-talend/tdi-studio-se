@@ -232,6 +232,10 @@ public interface IRepositoryFactory {
     public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
+    
+    public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException;
+    
+    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException;
 
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException;
 
@@ -252,6 +256,5 @@ public interface IRepositoryFactory {
 
     public Boolean hasChildren(Object parent);
 
-    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException;
 
 }

@@ -28,7 +28,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
@@ -37,14 +36,12 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
-import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 
 /**
- * Action used to create a new "file delimited" metadata.<br/>
+ * Action used to create a new "generic schema" metadata.<br/>
  * 
- * $Id: CreateFileDelimitedAction.java 3351 2007-05-04 12:14:00Z plegall $
+ * $Id: CreateGenericSchemaAction.java 3351 2007-05-04 12:14:00Z ftang $
  * 
  */
 public class CreateGenericSchemaAction extends AbstractCreateAction {
