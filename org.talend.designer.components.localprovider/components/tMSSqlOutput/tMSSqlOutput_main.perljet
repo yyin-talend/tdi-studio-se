@@ -77,13 +77,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 # keyPositionsString : <%=keyPositionsString%>
 # positionsString    : <%=positionsString%>
 
-if (@<%=cid %>) {
+if (@$<%=cid %>) {
     my $nb_rows = 0;
 
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-    $nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+    $nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
         or die "can't execute update query\n";
 
     if ($nb_rows) {
@@ -93,7 +93,7 @@ if (@<%=cid %>) {
         }
         else if (dataAction.equals("INSERT")) {
 %>
-    $isth_<%=cid %>->execute(@<%=cid %>)
+    $isth_<%=cid %>->execute(@$<%=cid %>)
         or die "can't execute insert query\n";
 
     $nb_line_inserted_<%=cid%>++;
@@ -101,8 +101,8 @@ if (@<%=cid %>) {
         }
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
-    if (not $isth_<%=cid %>->execute(@<%=cid%>)) {
-        $nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+    if (not $isth_<%=cid %>->execute(@$<%=cid%>)) {
+        $nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
             or die "can't execute update query\n";
 
         if ($nb_rows) {
@@ -116,9 +116,9 @@ if (@<%=cid %>) {
         }
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
 %>
-    if ($nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])) {
+    if ($nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])) {
         if ($nb_rows == 0) {
-            $isth_<%=cid %>->execute(@<%=cid%>)
+            $isth_<%=cid %>->execute(@$<%=cid%>)
                 or die "can't execute insert query\n";
             
             $nb_line_inserted_<%=cid%>++;
@@ -136,7 +136,7 @@ if (@<%=cid %>) {
         }
         else if (dataAction.equals("DELETE")) {
 %>
-    $nb_rows = $dsth_<%=cid %>->execute(@<%=cid%>[<%=keyPositionsString%>])
+    $nb_rows = $dsth_<%=cid %>->execute(@$<%=cid%>[<%=keyPositionsString%>])
         or die "can't execute delete query\n";
 
     if ($nb_rows) {
