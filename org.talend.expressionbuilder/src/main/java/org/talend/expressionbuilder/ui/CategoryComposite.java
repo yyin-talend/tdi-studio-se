@@ -66,9 +66,11 @@ public class CategoryComposite extends Composite {
 
     private final List functionList;
 
+    final ListViewer functionViewer;
+
     CategoryManager manager = null;
 
-    private static Function selectedFunction;
+    private static Function selectedFunction = new Function();
 
     /**
      * Getter for selectedFunction.
@@ -131,7 +133,7 @@ public class CategoryComposite extends Composite {
         functionLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         functionLabel.setText(Messages.getString("CategoryComposite.functions")); //$NON-NLS-1$
 
-        final ListViewer functionViewer = new ListViewer(composite1, SWT.V_SCROLL | SWT.H_SCROLL);
+        functionViewer = new ListViewer(composite1, SWT.V_SCROLL | SWT.H_SCROLL);
         functionViewer.setContentProvider(new ArrayContentProvider());
         functionViewer.setLabelProvider(new LabelProvider() {
 
@@ -173,6 +175,14 @@ public class CategoryComposite extends Composite {
      */
     private void initializeData(ListViewer categoryViewer) {
         categoryViewer.setInput(manager.getInputCategory());
+//        if (manager.getInputCategory().size() > 0) {
+//            categoryViewer.getList().select(0);
+//            java.util.List<Function> functions = manager.getInputCategory().get(0).getFunctions();
+//            if (functions != null && functions.size() > 0) {
+//                functionViewer.setInput(functions);
+//                functionList.select(0);
+//            }
+//        }
     }
 
     /**
@@ -190,6 +200,9 @@ public class CategoryComposite extends Composite {
 
                     try {
                         Category category = (Category) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                        if (category == null) {
+                            return;
+                        }
                         functionViewer.setInput(category.getFunctions());
                         if (category.getFunctions().isEmpty()) {
                             docDisplayer.setText(""); //$NON-NLS-1$

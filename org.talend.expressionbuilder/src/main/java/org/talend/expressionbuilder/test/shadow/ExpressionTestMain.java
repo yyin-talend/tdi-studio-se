@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.expressionbuilder.test.shadow;
 
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.process.IContext;
@@ -44,7 +45,6 @@ import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.shadow.LogRowNode;
 import org.talend.designer.rowgenerator.shadow.RowGenProcess;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
 
@@ -56,7 +56,7 @@ import org.talend.expressionbuilder.ui.ExpressionBuilderDialog;
  */
 public class ExpressionTestMain {
 
-    public final static String EXPRESSION_BUILDER = "Expression_builder"; //$NON-NLS-1$
+    public static final String EXPRESSION_BUILDER = "Expression_builder"; //$NON-NLS-1$
 
     private IProcess expressionBuilderTestProcess;
 
@@ -118,24 +118,35 @@ public class ExpressionTestMain {
      * @param context
      */
     private void startProcess(IProcess p, IContext context) {
-        IProcessor processor = ProcessorUtilities.getProcessor(p, context);
+        final IProcessor processor = ProcessorUtilities.getProcessor(p, context);
+        new Thread(new Runnable() {
 
-        try {
-            process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
-            int counter = 0;
-            while (process == null && counter < 6) {
+            public void run() {
                 try {
+                    process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
                     Thread.sleep(500);
-                    counter++;
-                } catch (InterruptedException e) {
-                    RuntimeExceptionHandler.process(e);
-                }
-            }
-            feedBackTestResult();
+                    Display.getDefault().asyncExec(new Runnable() {
 
-        } catch (ProcessorException e) {
-            RuntimeExceptionHandler.process(e);
-        }
+                        public void run() {
+                            feedBackTestResult();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+        // int counter = 0;
+        // while (process == null && counter < 6) {
+        // try {
+        // System.out.println("Thread : stop 500ms. ");
+        // Thread.sleep(500);
+        // counter++;
+        // } catch (InterruptedException e) {
+        // RuntimeExceptionHandler.process(e);
+        // }
+        // }
     }
 
     /**
@@ -143,28 +154,27 @@ public class ExpressionTestMain {
      */
     private void feedBackTestResult() {
 
-        InputStreamReader reader = new InputStreamReader(process.getInputStream());
-        char[] buffer = new char[512];
-        int i = 0;
         StringBuffer testResult = new StringBuffer();
         try {
-            while ((i = reader.read(buffer)) != -1) {
-                testResult.append(String.valueOf(buffer, 0, i));
+            // Thread.sleep(500);
+            BufferedReader readerOut = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader readerError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            Thread.sleep(500);
+            boolean ready = readerOut.ready();
+            // System.out.println(ready);
+            if (ready) {
+                testResult.append(readerOut.readLine() + "\n");
             }
+            Thread.sleep(500);
             text.setText(testResult.toString());
-
-            if (process.getErrorStream().available() > 0) {
-                InputStreamReader errorReader = new InputStreamReader(process.getErrorStream());
-                while ((i = errorReader.read(buffer)) != -1) {
-                    testResult.append(String.valueOf(buffer, 0, i));
-                }
+            if (readerError.ready()) {
+                testResult.append(readerError.readLine() + "\n");
                 text.setText(testResult.toString());
                 Color red = new Color(text.getDisplay(), new RGB(255, 0, 0));
                 StyleRange style = new StyleRange(0, testResult.length(), red, null, SWT.NORMAL);
                 text.setStyleRange(style);
-
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             RuntimeExceptionHandler.process(e);
         }
     }
