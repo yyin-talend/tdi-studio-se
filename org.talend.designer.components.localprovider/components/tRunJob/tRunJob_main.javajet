@@ -9,7 +9,12 @@ imports="
     java.util.List
 "
 %>
+    class TRunJobException extends Exception {
 
+        public TRunJobException() {
+            super();
+        }
+    }
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -46,9 +51,12 @@ for (int i=0; i<contextParams.size(); i++) {
     contextStr.append(value);
   }
 
+   String childJob = null;
+
    for (int i=0; i<commandLine.length; i++) {
       if(i==0){
-      %>
+          childJob = commandLine[i];
+      %>        
         <%=commandLine[i]%>.runJob(new String[]{
       <%
       }else{
@@ -70,3 +78,15 @@ for (int i=0; i<contextParams.size(); i++) {
     <%
     }
     %>
+
+<%
+    if (childJob!=null) {
+%>  
+    errorCode = <%=childJob %>.errorCode;
+    if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
+        throw new TRunJobException();
+    } 
+<%
+    }
+%>
+    

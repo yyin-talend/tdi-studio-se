@@ -68,7 +68,7 @@ import java.util.Date;
 
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
-	private static Integer errorCode = null;
+	public static Integer errorCode = null;
 <%
 	if(!isRunInMultiThread ){
 %>
