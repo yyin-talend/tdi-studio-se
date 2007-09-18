@@ -77,6 +77,8 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
     public static final String ARRAY = "ARRAY"; //$NON-NLS-1$
 
+    public static final String VARIABLE = "VARIABLE"; //$NON-NLS-1$
+
     private RowGenMain rowGeneratorMain;
 
     private List<IMetadataTable> metadataListOut;
@@ -178,6 +180,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.INode#getMetadataList()
      */
+    @Override
     public List<IMetadataTable> getMetadataList() {
         return this.metadataListOut;
     }
@@ -187,6 +190,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
      */
+    @Override
     public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
         this.metadataListOut = metadataTablesOut;
     }
@@ -373,6 +377,25 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         reinitColumnValues(map);
     }
 
+    public void setColumnVariable(String columnName, String value) {
+        List<Map<String, Object>> map = getMapList();
+        boolean isAdd = true;
+        for (int i = 0; i < map.size(); i++) {
+            Map<String, Object> line = map.get(i);
+            if (line.get(COLUMN_NAME).equals(columnName)) {
+                line.put(VARIABLE, value);
+                isAdd = false;
+            }
+        }
+        if (isAdd) {
+            Map<String, Object> l = new HashMap<String, Object>();
+            l.put(COLUMN_NAME, columnName);
+            l.put(VARIABLE, value);
+            map.add(l);
+        }
+        reinitColumnValues(map);
+    }
+
     public void reinitColumnValues(List<Map<String, Object>> map) {
         MetadataTable tableExt = (MetadataTable) this.getMetadataList().get(0);
         List<String> columnNames = new ArrayList<String>();
@@ -396,6 +419,19 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             Map<String, Object> line = map.get(i);
             if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
                 arrayValue = (String) line.get(ARRAY);
+                break;
+            }
+        }
+        return arrayValue;
+    }
+
+    public String getColumnVariable(IMetadataColumn ext, int index) {
+        List<Map<String, Object>> map = getMapList();
+        String arrayValue = (String) map.get(index).get(VARIABLE); //$NON-NLS-1$
+        for (int i = 0; i < map.size(); i++) {
+            Map<String, Object> line = map.get(i);
+            if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
+                arrayValue = (String) line.get(VARIABLE);
                 break;
             }
         }
@@ -476,6 +512,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
                     Map<String, Object> map2 = new HashMap<String, Object>();
                     map2.put(COLUMN_NAME, changed.getNewName());
                     map2.put(ARRAY, map.get(ARRAY));
+                    map2.put(VARIABLE, map.get(VARIABLE));
                     newMap.add(map2);
                     notuseMap.remove(map);
                     break;
