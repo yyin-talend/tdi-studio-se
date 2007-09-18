@@ -6,13 +6,12 @@ sub getTableCreationQuery {
     my %param = @_;
 
     my %talendtype_to_dbtype = (
-        char    => 'CHAR',
-        Day     => 'DATETIME',
-        double  => 'DECIMAL',
-        float   => 'DECIMAL',
+        boolean    => 'TINYINT',
+        date     => 'SMALLDATETIME',
+        datetime  => 'DATETIME',
+        decimal   => 'DECIMAL',
         int     => 'INT',
-        long    => 'INT',
-        String  => 'VARCHAR',
+        string  => 'VARCHAR',
     );
 
     # In $param{schema}, each column looks like this:
@@ -62,13 +61,11 @@ sub getTableCreationQuery {
         $query.= ' '.$column_href->{dbtype};
 
         if (lc $column_href->{dbtype} eq 'varchar'
-            or lc $column_href->{dbtype} eq 'decimal'
-            or lc $column_href->{dbtype} eq 'char') {
+            or lc $column_href->{dbtype} eq 'decimal') {
             $query.= ' (';
             $query.= $column_href->{len};
 
-            if (lc $column_href->{type} eq 'float'
-                or lc $column_href->{type} eq 'double') {
+            if (lc $column_href->{type} eq 'decimal') {
                 $query.= ','.$column_href->{precision};
             }
 
