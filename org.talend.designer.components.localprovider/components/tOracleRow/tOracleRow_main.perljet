@@ -23,7 +23,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         String query = ElementParameterParser.getValue(node, "__QUERY__");
 
-        String preparedStatement = ElementParameterParser.getValue(node, "__PREPARED_STATEMENT__");
+        String preparedStatement = ElementParameterParser.getValue(
+            node,
+            "__PREPARED_STATEMENT__"
+        );
 
         List<Map<String, String>> statementParams =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -42,22 +45,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__DIE_ON_ERROR__"
         );
-%>
 
-<%
-if(preparedStatement.equals("false")){
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+
+        if(preparedStatement.equals("false")){
 %>
-    my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    my $sth_<%=cid %> = $<%=dbh%>->prepare(
         <%=query %>
     )
-    <%
+<%
             if (dieOnError.equals("true")) {
-    %>
-        or die '[<%=cid%>] cannot prepare query '.$DBI::errstr;
-    <%
+%>
+        or die '[<%=cid%>] cannot prepare query '.$DBI::errstr
+<%
             }
-    %>
-
+%>
 ;
 <%
 }
@@ -97,12 +115,15 @@ if ($_context{StoreSQLQuery}) {
     $_globals{<%=cid %>}{QUERY} = <%=query%>;
 }
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
 if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
     $nb_line_current_commit_<%=cid%> = 0;
-    $dbh_<%=cid %>->commit;
+    $<%=dbh%>->commit;
 }
-
 <%
+        }
     }
 }
 %>

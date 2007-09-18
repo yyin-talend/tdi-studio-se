@@ -16,12 +16,13 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+        String cid = metadata.getTableName();
+
         String commitEvery = ElementParameterParser.getValue(
             node,
             "__COMMIT_EVERY__"
@@ -46,6 +47,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
 
+        String schemaDB = ElementParameterParser.getValue(
+            node,
+            "__SCHEMA_DB__"
+        );
+
         List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
@@ -56,6 +62,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             || tableAction.equals("CREATE")
             || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             addCols.clear();
+        }
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
         }
 %>
 
@@ -91,6 +115,10 @@ my %desc_<%=cid %> = (
     ],
 );
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+
 if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
     $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
 }
@@ -98,7 +126,7 @@ elsif ($desc_<%=cid %>{encoding} =~ m/^iso-?8859-?1$/i) {
     $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
 }
 
-my $dbh_<%=cid %> = DBI->connect(
+my $<%=dbh%> = DBI->connect(
     sprintf(
         'dbi:Oracle:host=%s;sid=%s;port=%s',
         <%=dbhost %>,
@@ -119,6 +147,9 @@ my $dbh_<%=cid %> = DBI->connect(
     }
 )
     or die "can't connect to database";
+<%
+        }
+%>
 
 my $sth_<%=cid %>;
 my $query;
@@ -129,9 +160,9 @@ my $query;
 %>
 # We need the table list to know if drop or "create if not exists" is
 # relevant
-my $schema = uc <%=dbuser %>;
+my $schema = uc <%=schemaDB%>;
 my $catalog = undef;
-my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
+my $tabsth = $<%=dbh%>->table_info($catalog, $schema);
 my @tables = ();
 
 while (my $entity = $tabsth->fetchrow_hashref()) {
@@ -156,7 +187,7 @@ if ($table_exists) {
     $query = '
 DROP TABLE '.<%=dbtable%>.'
 ';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
 
     $sth_<%=cid %>->execute()
         or die "can't drop table";
@@ -183,7 +214,7 @@ $query = tOracleOutput::Oracle::getTableCreationQuery(
     schema     => $desc_<%=cid %>{schema},
 );
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+$sth_<%=cid %> = $<%=dbh%>->prepare(
     $query
 );
 
@@ -204,7 +235,7 @@ DELETE
   FROM '.<%=dbtable%>.'
 ';
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %> = $<%=dbh%>->prepare($query);
 $sth_<%=cid %>->execute()
     or die "can't clear table";
 <%
@@ -299,7 +330,7 @@ UPDATE '.<%=dbtable%>.'
   WHERE <%=keyString%>
 ';
 
-my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $usth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
     }
@@ -312,7 +343,7 @@ DELETE FROM '.<%=dbtable%>.'
   WHERE <%=keyString%>
 ';
 
-my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $dsth_<%=cid %> = $<%=dbh %>->prepare($query);
 
 <%
     }
@@ -373,7 +404,7 @@ INSERT
   (<%=parametersString%>)
 ';
 
-my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
 }
