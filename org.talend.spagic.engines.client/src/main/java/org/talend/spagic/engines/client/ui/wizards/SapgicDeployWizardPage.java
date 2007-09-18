@@ -21,18 +21,12 @@
 // ============================================================================
 package org.talend.spagic.engines.client.ui.wizards;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +57,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.RepositoryNode;
@@ -73,6 +66,7 @@ import org.talend.repository.ui.wizards.exportjob.ArchiveFileExportOperationFull
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
+import org.talend.spagic.engines.client.i18n.Messages;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -418,7 +412,7 @@ public abstract class SapgicDeployWizardPage extends WizardFileSystemResourceExp
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-//        File file = createSapgicProperty();
+        // File file = createSapgicProperty();
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
         boolean ok = executeExportOperation(exporterOperation);
 
@@ -459,10 +453,7 @@ public abstract class SapgicDeployWizardPage extends WizardFileSystemResourceExp
                     reManager.deleteResource(r);
                 }
             }
-            
-            
-            
-            
+
         }
         // create sapgicdeploy property file
 

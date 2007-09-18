@@ -39,7 +39,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.repository.i18n.Messages;
+import org.talend.spagic.engines.client.i18n.Messages;
 
 /**
  * Job scripts export wizard. <br/>
