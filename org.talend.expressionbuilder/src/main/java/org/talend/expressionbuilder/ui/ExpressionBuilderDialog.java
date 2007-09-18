@@ -336,18 +336,8 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     @Override
     protected void okPressed() {
-        String expression = expressionComposite.getExpression();
-        List<Variable> vList = testComposite.getVariableList();
-        StringBuffer buffer = new StringBuffer(expression);
 
-        buffer.append("{variables}");
-        for (Variable variable : vList) {
-            buffer.append(variable.getName() + ":");
-            buffer.append(variable.getValue() + ";");
-        }
-        buffer.append("{/variables}");
-
-        consumer.setConsumerExpression(buffer.toString());
+        consumer.setConsumerExpression(expressionComposite.getExpression());
 
         super.okPressed();
     }
