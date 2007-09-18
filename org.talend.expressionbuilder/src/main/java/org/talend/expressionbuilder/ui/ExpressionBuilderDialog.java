@@ -206,7 +206,8 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
-        createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
+        createButton(parent, IDialogConstants.CANCEL_ID,
+                Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
@@ -337,10 +338,17 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     protected void okPressed() {
         String expression = expressionComposite.getExpression();
         List<Variable> vList = testComposite.getVariableList();
+        StringBuffer buffer = new StringBuffer(expression);
 
-        if (expression != null) {
-            consumer.setConsumerExpression(new Expression(expression, vList));
+        buffer.append("{variables}");
+        for (Variable variable : vList) {
+            buffer.append(variable.getName() + ":");
+            buffer.append(variable.getValue() + ";");
         }
+        buffer.append("{/variables}");
+
+        consumer.setConsumerExpression(buffer.toString());
+
         super.okPressed();
     }
 
