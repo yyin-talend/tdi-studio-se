@@ -58,8 +58,7 @@ public class StatsAndLogsManager {
     public static boolean isStatsAndLogsActivated(IProcess process) {
         String dbOutput = null;
         boolean dbFlag = ((Boolean) process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).isShow(process.getElementParameters());
         if (!dbFlag) {
             dbOutput = null;
         } else {
@@ -70,12 +69,10 @@ public class StatsAndLogsManager {
             }
         }
         boolean file = ((Boolean) process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).isShow(process.getElementParameters());
 
         boolean console = ((Boolean) process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).isShow(process.getElementParameters());
 
         if (!file && !dbFlag && !console) {
             return false;
@@ -89,8 +86,7 @@ public class StatsAndLogsManager {
         String dbOutput = null;
 
         boolean dbFlag = ((Boolean) process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_DATABASE_FLAG.getName()).isShow(process.getElementParameters());
         if (!dbFlag) {
             dbOutput = null;
         } else {
@@ -101,42 +97,43 @@ public class StatsAndLogsManager {
             }
         }
         boolean file = ((Boolean) process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_FILES_FLAG.getName()).isShow(process.getElementParameters());
 
         boolean console = ((Boolean) process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).getValue())
-                && process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).isShow(
-                        process.getElementParameters());
+                && process.getElementParameter(EParameterName.ON_CONSOLE_FLAG.getName()).isShow(process.getElementParameters());
 
         if (!file && !dbFlag && !console) {
             return nodeList;
         }
 
-        boolean useStats = ((Boolean) process.getElementParameter(EParameterName.ON_STATCATCHER_FLAG.getName())
-                .getValue())
+        boolean useStats = ((Boolean) process.getElementParameter(EParameterName.ON_STATCATCHER_FLAG.getName()).getValue())
                 && process.getElementParameter(EParameterName.ON_STATCATCHER_FLAG.getName()).isShow(
                         process.getElementParameters());
 
-        boolean useLogs = ((Boolean) process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName())
-                .getValue())
-                && process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName()).isShow(
-                        process.getElementParameters());
+        boolean useLogs = ((Boolean) process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName()).getValue())
+                && process.getElementParameter(EParameterName.ON_LOGCATCHER_FLAG.getName())
+                        .isShow(process.getElementParameters());
 
-        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName())
-                .getValue()) //$NON-NLS-1$
+        boolean useMetter = ((Boolean) process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).getValue()) //$NON-NLS-1$
                 && process.getElementParameter(EParameterName.ON_METERCATCHER_FLAG.getName()).isShow(
                         process.getElementParameters());
 
         String basePath = (String) process.getElementParameter(EParameterName.FILE_PATH.getName()).getValue();
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
-            basePath = basePath.replace("\\", "/") + ". '/' ."; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            basePath = basePath.replace("\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             basePath = basePath.replace("\\", "/") + "+ \"/\" +"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         if (useLogs) {
             DataNode logsNode = createLogsNode(file, console, dbOutput);
-            logsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
-                    basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue());
+            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                logsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        "File::Spec->catfile(" + basePath + "," //$NON-NLS-1$ //$NON-NLS-2$
+                                + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue() + ")"); //$NON-NLS-1$
+            } else {
+                logsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        basePath + process.getElementParameter(EParameterName.FILENAME_LOGS.getName()).getValue()); //$NON-NLS-1$
+            }
             logsNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                     process.getElementParameter(EParameterName.HOST.getName()).getValue());
             logsNode.getElementParameter(EParameterName.PORT.getName()).setValue(
@@ -164,8 +161,14 @@ public class StatsAndLogsManager {
 
         if (useStats) {
             DataNode statsNode = createStatsNode(file, console, dbOutput);
-            statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
-                    basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
+            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        "File::Spec->catfile(" + basePath + "," //$NON-NLS-1$ //$NON-NLS-2$
+                                + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue() + ")"); //$NON-NLS-1$
+            } else {
+                statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        basePath + process.getElementParameter(EParameterName.FILENAME_STATS.getName()).getValue()); //$NON-NLS-1$
+            }
             statsNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                     process.getElementParameter(EParameterName.HOST.getName()).getValue());
             statsNode.getElementParameter(EParameterName.PORT.getName()).setValue(
@@ -186,26 +189,32 @@ public class StatsAndLogsManager {
         }
 
         if (useMetter) {
-            DataNode statsNode = createMetterNode(file, console, dbOutput);
-            statsNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
-                    basePath + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.HOST.getName()).setValue(
+            DataNode meterNode = createMetterNode(file, console, dbOutput);
+            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                meterNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        "File::Spec->catfile(" + basePath + "," //$NON-NLS-1$ //$NON-NLS-2$
+                                + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue() + ")"); //$NON-NLS-1$
+            } else {
+                meterNode.getElementParameter("FILENAME").setValue(//$NON-NLS-1$
+                        basePath + process.getElementParameter(EParameterName.FILENAME_METTER.getName()).getValue());
+            }
+            meterNode.getElementParameter(EParameterName.HOST.getName()).setValue(
                     process.getElementParameter(EParameterName.HOST.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.PORT.getName()).setValue(
+            meterNode.getElementParameter(EParameterName.PORT.getName()).setValue(
                     process.getElementParameter(EParameterName.PORT.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.SCHEMA_DB.getName()).setValue(
+            meterNode.getElementParameter(EParameterName.SCHEMA_DB.getName()).setValue(
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+            meterNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
                     process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.USER.getName()).setValue(
+            meterNode.getElementParameter(EParameterName.USER.getName()).setValue(
                     process.getElementParameter(EParameterName.USER.getName()).getValue());
-            statsNode.getElementParameter(EParameterName.PASS.getName()).setValue(
+            meterNode.getElementParameter(EParameterName.PASS.getName()).setValue(
                     process.getElementParameter(EParameterName.PASS.getName()).getValue());
-            statsNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
+            meterNode.getElementParameter("TABLE").setValue(//$NON-NLS-1$
                     process.getElementParameter(EParameterName.TABLE_METER.getName()).getValue());
 
-            statsNode.setProcess(process);
-            nodeList.add(statsNode);
+            meterNode.setProcess(process);
+            nodeList.add(meterNode);
         }
 
         return nodeList;
@@ -357,8 +366,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(2);
-        param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
     }
 
@@ -377,15 +385,13 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(10);
-        param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         // file path
         param = new ElementParameter(process);
         param.setName(EParameterName.FILE_PATH.getName());
-        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(languagePrefix
-                + EParameterName.FILE_PATH.getName()))));
+        param.setValue(addQuotes(replaceSlash(preferenceStore.getString(languagePrefix + EParameterName.FILE_PATH.getName()))));
         param.setDisplayName(EParameterName.FILE_PATH.getDisplayName());
         param.setField(EParameterFieldType.DIRECTORY);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -449,8 +455,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(50);
-        param
-                .setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
         param = new ElementParameter(process);
@@ -610,7 +615,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_METER.getName()); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METER.getName())));
         param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
-       param.setField(EParameterFieldType.TEXT);
+        param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
