@@ -1,0 +1,46 @@
+<%@ jet 
+imports="
+   org.talend.core.model.process.INode 
+   org.talend.core.model.process.ElementParameterParser 
+   org.talend.core.model.process.IConnection
+   org.talend.core.model.metadata.IMetadataTable 
+   org.talend.core.model.metadata.IMetadataColumn 
+   org.talend.designer.codegen.config.CodeGeneratorArgument
+   java.util.List
+   java.util.Map
+" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+	String nbRows = ElementParameterParser.getValue(node, "__NB_ROWS__");
+
+	List<Map<String, String>> tableValues =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__VALUES__"
+    );
+    
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+	String firstConnName = "";
+	if (conns!=null) {
+		if (conns.size()>0) {
+			IConnection conn = conns.get(0);
+			firstConnName = conn.getName();
+%>
+
+	globalMap.put("NB_LINE", <%=nbRows%>);
+
+	for (int i_<%=cid%>=0;i_<%=cid%><<%=nbRows%>;i_<%=cid%>++) {
+<%
+			for (Map<String, String> tableValue : tableValues) {
+%>
+        <%=firstConnName%>.<%=tableValue.get("SCHEMA_COLUMN") %> = <%=tableValue.get("VALUE")%>;
+<%
+			}
+		}
+	}
+%>
