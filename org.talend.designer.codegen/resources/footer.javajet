@@ -245,8 +245,12 @@
 <%
 	}
 %>
-    return status != null && status.equals("failure") ? 1 : 0;
-	}
+    if(errorCode == null) {
+         return status != null && status.equals("failure") ? 1 : 0;	
+    } else {   
+         return errorCode.intValue();
+    }
+  }
 	
 	public static void evalParam(String arg) {	   
 		if (arg.startsWith("--watch")) {

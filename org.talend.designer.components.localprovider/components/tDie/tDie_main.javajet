@@ -28,4 +28,8 @@
 %>
 
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
-	System.exit(<%=ElementParameterParser.getValue(node, "__CODE__")%>);
+	currentComponent = "<%=cid %>";
+	errorCode = new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>);
+	if(true){
+	    throw new TDieException();
+	}

@@ -68,6 +68,7 @@ import java.util.Date;
 
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
+	private static Integer errorCode = null;
 <%
 	if(!isRunInMultiThread ){
 %>
@@ -142,17 +143,18 @@ private class TalendException extends Exception {
 	
 	@Override
 	public void printStackTrace() {
-	    if (!(e instanceof TalendException)) {
+	    if (!(e instanceof TalendException || e instanceof TDieException)) {
 	        System.err.println("Exception in component " + currentComponent);
 	    }
-		
-	    e.printStackTrace();
-		
+	    if (!(e instanceof TDieException)) {
+	        e.printStackTrace();
+	    }
 		if (!(e instanceof TalendException)) {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
 					m.invoke(c, (Object[])null);
+					break;
 				}
 			}
 <%
@@ -162,11 +164,13 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
-			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 6, e.getMessage(), 1);
+		  if(!(e instanceof TDieException)){
+            <%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 6, e.getMessage(), 1);
 <%
 					// 2) launch logCatcher subProcess
 %>
 			<%=logCatcher.getUniqueName() %>Process();
+		  }
 <%
 				}
 			}
@@ -180,11 +184,13 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(assertCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
+        if(!(e instanceof TDieException)){
 			<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", e.getMessage());
 <%
 					// 2) launch assertCatcher subProcess
 %>
 			<%=assertCatcher.getUniqueName() %>Process();
+        }
 <%
 				}
 			}
@@ -239,7 +245,8 @@ private class TalendException extends Exception {
 public void <%=node.getUniqueName() %>_error() throws TalendException {
 	end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 <%
-	String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+if (!node.getComponent().getName().equals("tDie")) {
+    String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
 	if (statCatcher.compareTo("true")==0) {
 		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
@@ -248,13 +255,14 @@ public void <%=node.getUniqueName() %>_error() throws TalendException {
 <%
 		}
 	}
-
+}
 	List< ? extends IConnection> conns = node.getOutgoingConnections();
    	for (IConnection conn : conns) {
    		if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
 %>
 	try {
-    	<%=conn.getTarget().getUniqueName() %>Process();
+	    errorCode = null;
+	    <%=conn.getTarget().getUniqueName() %>Process();
     	status="end";
     } catch (Exception e) {
     	e.printStackTrace();
