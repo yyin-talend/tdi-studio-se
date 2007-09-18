@@ -1,0 +1,39 @@
+<%@ jet 
+imports="
+   org.talend.core.model.process.INode 
+   org.talend.core.model.process.ElementParameterParser 
+   org.talend.core.model.metadata.IMetadataTable 
+   org.talend.core.model.metadata.IMetadataColumn 
+   org.talend.designer.codegen.config.CodeGeneratorArgument
+   java.util.List
+   java.util.Map
+" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String nbRows = ElementParameterParser.getValue(node, "__NB_ROWS__");
+
+List<Map<String, String>> tableValues =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__VALUES__"
+    );
+%>
+
+$_globals{<%=cid%>}{NB_LINE} = <%=nbRows%>;
+
+for (1..<%=nbRows%>) {
+    my @<%=cid %> = (
+<%
+for (Map<String, String> tableValue : tableValues) {
+%>
+        <%=tableValue.get("VALUE")%>,
+<%
+}
+%>
+    );
+
+    my $<%=cid%> = \@<%=cid %>;
