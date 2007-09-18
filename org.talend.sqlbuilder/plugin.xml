@@ -63,4 +63,13 @@
             level="14"
             name="Read Queries"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.sqlbuilder.ui.prefs.SqlBuilderPreferencePage"
+            id="org.talend.sqlbuilder.ui.prefs.sqlbuilder"
+            name="Sql Builder">
+      </page>
+   </extension>
 </plugin>
