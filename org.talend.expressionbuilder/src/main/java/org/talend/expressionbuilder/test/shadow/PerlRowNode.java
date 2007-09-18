@@ -28,13 +28,10 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.rowgenerator.shadow.TextElementParameter;
-import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.shadow.ShadowNode;
 
 /**
- * yzhang class global comment. Detailled comment <br/>
- * 
- * $Id: TPerlRowNode.java 下午03:16:33 2007-8-20 +0000 (2007-8-20) yzhang $
+ * DOC yzhang class global comment. Detailled comment <br/>
  * 
  */
 public class PerlRowNode extends ShadowNode {
@@ -49,7 +46,7 @@ public class PerlRowNode extends ShadowNode {
     public PerlRowNode(String expression) {
         super("tPerlRow");
 
-        TextElementParameter parameter = new TextElementParameter("CODE", "$output_row[id] ="+expression+";");
+        TextElementParameter parameter = new TextElementParameter("CODE", "$output_row[id] =" + expression + ";");
         addParameter(parameter);
 
         IMetadataTable metadataTable = new MetadataTable();

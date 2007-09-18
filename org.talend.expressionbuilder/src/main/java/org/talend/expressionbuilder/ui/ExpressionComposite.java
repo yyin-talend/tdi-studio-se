@@ -19,12 +19,6 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-/**
- * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
- * 
- * $Id: ExpressionComposite.java 下午05:58:51 2007-9-11 +0000 (2007-9-11) yzhang $
- * 
- */
 package org.talend.expressionbuilder.ui;
 
 import java.util.List;
@@ -33,6 +27,7 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -50,9 +45,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.exception.RuntimeExceptionHandler;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
-import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
+import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -61,9 +57,7 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderProposalProvide
 import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdapter;
 
 /**
- * yzhang class global comment. Detailled comment <br/>
- * 
- * $Id: ExpressionComposite.java 上午10:12:38 2007-7-24 +0000 (2007-7-24) yzhang $
+ * DOC yzhang class global comment. Detailled comment <br/>
  * 
  */
 public class ExpressionComposite extends Composite {
@@ -75,9 +69,7 @@ public class ExpressionComposite extends Composite {
     private final ExpressionRecorder modificationRecord;
 
     /**
-     * yzhang ExpressionComposite class global comment. Detailled comment <br/>
-     * 
-     * $Id: ExpressionComposite.java 下午04:23:35 2007-8-8 +0000 (2007-8-8) yzhang $
+     * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
      * 
      */
     class ButtonListener extends MouseAdapter {
@@ -194,7 +186,7 @@ public class ExpressionComposite extends Composite {
             }
         });
 
-        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+        // ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
         Composite composite = new Composite(expressionGroup, SWT.BORDER);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout layout = new GridLayout();
@@ -207,7 +199,13 @@ public class ExpressionComposite extends Composite {
         composite.setLayout(layout);
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
-        text = (StyledText) TalendJavaSourceViewer.createViewer(composite, "", SWT.NONE).getControl();
+        ISourceViewer viewer;
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            viewer = TalendJavaSourceViewer.createViewer(composite, "", SWT.NONE);
+        } else {
+            viewer = TalendPerlSourceViewer.createViewer(composite, "", SWT.NONE);
+        }
+        text = viewer.getTextWidget();
         text.setLayoutData(new GridData(GridData.FILL_BOTH));
         text.addModifyListener(new ModifyListener() {
 
@@ -215,7 +213,6 @@ public class ExpressionComposite extends Composite {
 
                 String content = getExpression();
                 modificationRecord.pushRecored(content);
-
             }
 
         });
@@ -386,8 +383,8 @@ public class ExpressionComposite extends Composite {
             KeyStroke stroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
             IControlContentAdapter contorlContentAdapter = new ExpressionBuilderTextContentAdapter();
             ExpressionBuilderProposalProvider contentProposalProvider = new ExpressionBuilderProposalProvider();
-            ContentProposalAdapter proposal = new ContentProposalAdapter(text, contorlContentAdapter,
-                    contentProposalProvider, stroke, new char[] { '+', '.' });
+            ContentProposalAdapter proposal = new ContentProposalAdapter(text, contorlContentAdapter, contentProposalProvider,
+                    stroke, new char[] { '+', '.' });
 
         } catch (ParseException e) {
             RuntimeExceptionHandler.process(e);

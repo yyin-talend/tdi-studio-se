@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
 /**
  * yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: ExpressionBuilderDialog.java 上午10:12:13 2007-7-24 +0000 (2007-7-24) yzhang $
+ * $Id: ExpressionBuilderDialog.java ä¸Šå�ˆ10:12:13 2007-7-24 +0000 (2007-7-24) yzhang $
  * 
  */
 public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilderDialogController {
@@ -129,7 +129,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);
         sashForm.setWeights(new int[] { 3, 2 });
-        expressionComposite.configProposal();
+        // expressionComposite.configProposal();
 
         return container;
     }
@@ -148,7 +148,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     /**
      * yzhang ExpressionBuilderDialog class global comment. Detailled comment <br/>
      * 
-     * $Id: ExpressionBuilderDialog.java 下午08:32:27 2007-9-13 +0000 (2007-9-13) yzhang $
+     * $Id: ExpressionBuilderDialog.java ä¸‹å�ˆ08:32:27 2007-9-13 +0000 (2007-9-13) yzhang $
      * 
      */
     class UndoKeyListener extends KeyAdapter {
@@ -206,8 +206,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
-        createButton(parent, IDialogConstants.CANCEL_ID,
-                Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
