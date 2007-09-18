@@ -18,12 +18,12 @@ Require-Bundle: org.junit,
  org.talend.core,
  org.talend.commons,
  org.talend.libraries,
- org.talend.designer.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.debug,
  org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.launching,
- org.talend.librariesmanager
+ org.talend.librariesmanager,
+ org.talend.designer.core
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.java,

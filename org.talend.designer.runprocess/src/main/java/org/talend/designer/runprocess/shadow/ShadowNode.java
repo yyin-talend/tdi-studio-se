@@ -26,10 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.draw2d.geometry.Point;
 import org.talend.commons.exception.SystemException;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -38,12 +35,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractNode;
-import org.talend.core.model.process.BlockCode;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalNode;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
@@ -73,7 +66,7 @@ public abstract class ShadowNode extends AbstractNode {
     private IProcess process;
 
     private List<IMetadataTable> metadatas;
-    
+
     private int columnNumber = 256;
 
     /**
@@ -88,7 +81,7 @@ public abstract class ShadowNode extends AbstractNode {
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
     }
-    
+
     public ShadowNode(String componentName, int nbColumn) {
         super();
 
@@ -97,7 +90,7 @@ public abstract class ShadowNode extends AbstractNode {
 
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
-        
+
         this.columnNumber = nbColumn;
     }
 
@@ -155,8 +148,7 @@ public abstract class ShadowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
     }
 
     /*
@@ -168,15 +160,15 @@ public abstract class ShadowNode extends AbstractNode {
         List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
         MetadataTable metadata = new MetadataTable();
         metadata.setTableName(this.getUniqueName());
-            List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
-            for (int i = 0; i < columnNumber; i++) {
-                MetadataColumn col = new MetadataColumn();
-                col.setLabel("row" + i);
-                col.setTalendType("id_String");
-                col.setType("String");
-                columns.add(col);
-            }
-            metadata.setListColumns(columns);
+        List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
+        for (int i = 0; i < columnNumber; i++) {
+            MetadataColumn col = new MetadataColumn();
+            col.setLabel("row" + i);
+            col.setTalendType("id_String");
+            col.setType("String");
+            columns.add(col);
+        }
+        metadata.setListColumns(columns);
         metadatas.add(metadata);
         return metadatas;
     }
@@ -196,8 +188,7 @@ public abstract class ShadowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
     }
 
     /*
@@ -303,8 +294,10 @@ public abstract class ShadowNode extends AbstractNode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
      */
     public Boolean isMultiplyingOutputs() {
@@ -382,11 +375,11 @@ public abstract class ShadowNode extends AbstractNode {
         this.component = component;
 
     }
-    
+
     public int getColumnNumber() {
         return columnNumber;
     }
-    
+
     public void setColumnNumber(int columnNumber) {
         this.columnNumber = columnNumber;
     }
