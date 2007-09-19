@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -51,13 +50,14 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
 public class LDAPSchemaStep1Form extends AbstractForm {
 
-    /** The connection name text widget */
-    private Text nameText;
+    // /** The connection name text widget */
+    // private Text nameText;
 
     /** The host name combo with the history of recently used host names */
     private Combo hostCombo;
@@ -101,9 +101,9 @@ public class LDAPSchemaStep1Form extends AbstractForm {
 
         Composite composite = BaseWidgetUtils.createColumnContainer(this, 1, 1);
 
-        Composite nameComposite = BaseWidgetUtils.createColumnContainer(composite, 2, 1);
-        BaseWidgetUtils.createLabel(nameComposite, "Connection name:", 1);
-        nameText = BaseWidgetUtils.createText(nameComposite, "", 1);
+        // Composite nameComposite = BaseWidgetUtils.createColumnContainer(composite, 2, 1);
+        // BaseWidgetUtils.createLabel(nameComposite, "Connection name:", 1);
+        // nameText = BaseWidgetUtils.createText(nameComposite, "", 1);
 
         BaseWidgetUtils.createSpacer(composite, 1);
 
@@ -124,9 +124,9 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         int index = 0;
         BaseWidgetUtils.createLabel(groupComposite, "Encryption method:", 1);
         encryptionMethodCombo = BaseWidgetUtils.createReadonlyCombo(groupComposite, encMethods, index, 2);
-//        BaseWidgetUtils.createSpacer(groupComposite, 1);
-        BaseWidgetUtils.createLabel(groupComposite,
-                "                    Cilck the button to check connection status.", 2);
+        // BaseWidgetUtils.createSpacer(groupComposite, 1);
+        BaseWidgetUtils.createLabel(groupComposite, "                    Cilck the button to check connection status.",
+                2);
 
         BaseWidgetUtils.createSpacer(groupComposite, 2);
         checkConnectionButton = new Button(groupComposite, SWT.PUSH);
@@ -136,7 +136,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         checkConnectionButton.setLayoutData(gd);
         checkConnectionButton.setText("Check Network Parameter");
 
-        nameText.setFocus();
         checkFieldsValue();
     }
 
@@ -149,14 +148,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
     protected void addFieldsListeners() {
 
         final LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
-
-        nameText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent event) {
-                checkFieldsValue();
-                connection.setConnectionName(nameText.getText().trim());
-            }
-        });
 
         hostCombo.addModifyListener(new ModifyListener() {
 
@@ -251,11 +242,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
     @Override
     protected boolean checkFieldsValue() {
 
-        if (nameText.getText() == null || nameText.getText().equals("")) {
-            this.checkConnectionButton.setEnabled(false);
-            updateStatus(IStatus.ERROR, "Connection name must be specified."); //$NON-NLS-1$
-            return false;
-        }
         if (hostCombo.getText() == null || hostCombo.getText().equals("")) {
             this.checkConnectionButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Host name must be specified."); //$NON-NLS-1$
@@ -279,8 +265,6 @@ public class LDAPSchemaStep1Form extends AbstractForm {
     @Override
     protected void initialize() {
         LDAPSchemaConnection connection = (LDAPSchemaConnection) this.connectionItem.getConnection();
-        String connectionName = connection.getConnectionName();
-        this.nameText.setText(connectionName == null ? "" : connectionName);
         String host = connection.getHost();
         this.hostCombo.setItems(HistoryUtils.load(ConnectionUIConstants.DIALOGSETTING_KEY_HOST_HISTORY));
         this.hostCombo.setText(host == null ? "" : host);

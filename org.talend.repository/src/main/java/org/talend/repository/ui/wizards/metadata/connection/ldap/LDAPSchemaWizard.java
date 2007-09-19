@@ -262,7 +262,6 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
     @Override
     public boolean performFinish() {
         if (isSinglePageOnly) {
-
             return true;
         }
 

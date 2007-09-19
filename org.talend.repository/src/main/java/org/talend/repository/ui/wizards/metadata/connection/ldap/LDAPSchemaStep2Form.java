@@ -58,6 +58,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -176,6 +177,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         BaseWidgetUtils.createSpacer(composite, 1);
         saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite, "Save password", 1);
         saveBindPasswordButton.setSelection(true);
+        saveBindPasswordButton.setEnabled(true);
 
         checkPrincipalPasswordAuthButton = new Button(composite, SWT.PUSH);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -268,9 +270,10 @@ public class LDAPSchemaStep2Form extends AbstractForm {
             public void modifyText(ModifyEvent event) {
                 checkFieldsValue();
                 password = bindPasswordText.getText().trim();
-                // if (saveBindPasswordButton.getSelection() == true) {
-                connection.setBindPassword(password);
-                // }
+                if (saveBindPasswordButton.getSelection() == true) {
+                    connection.setSavePassword(true);
+                    connection.setBindPassword(password);
+                }
             }
         });
         authenticationMethodCombo.addSelectionListener(new SelectionAdapter() {
@@ -292,12 +295,13 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
             public void widgetSelected(SelectionEvent event) {
 
-                System.out.println(connection);
+                // System.out.println(connection);
                 try {
                     IRunnableWithProgress op = new IRunnableWithProgress() {
 
                         public void run(IProgressMonitor monitor) {
 
+                            connection.setUseAuthen(true);
                             isOK = LDAPConnectionUtils.checkParam(connection);
 
                         }
@@ -319,7 +323,8 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                     saveDialogSettings();
                     MessageDialog.openInformation(Display.getDefault().getActiveShell(),
                             "Check Authentication Parameter", "The authentication check was successfully.");
-                    updateStatus(IStatus.OK, null);
+                    String alertForFetchBaseDNs = "Please click \"Fetch base DNs\" button, cannot go forward unless fetch successfully.";
+                    updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
                 } else {
 
                     MessageDialog.openError(Display.getDefault().getActiveShell(), "Check Authentication Parameter",
@@ -357,7 +362,6 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                             if (isOK) {
                                 dnList = LDAPConnectionUtils.fetchBaseDNs();
                             }
-
                         }
                     };
                     new ProgressMonitorDialog(Display.getDefault().getActiveShell()).run(true, false, op);
@@ -376,8 +380,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                     baseDNCombo.select(0);
                     connection.getBaseDNs().addAll(Arrays.asList(baseDNarray));
                     connection.setSelectedDN(baseDNarray[0]);
-
-                    System.out.println(connection);
+                    // System.out.println(connection);
                 }
 
                 if (isOK) {
@@ -527,9 +530,14 @@ public class LDAPSchemaStep2Form extends AbstractForm {
             this.fetchBaseDnsButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
             return false;
+        } else if (isSampleAuthMethod
+                && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
+            updateStatus(IStatus.ERROR, "Please click \"Check Authentication\" button to verify Authentication.");
+            checkPrincipalPasswordAuthButton.setEnabled(true);
+            return false;
         } else {
             this.checkPrincipalPasswordAuthButton.setEnabled(true);
-            updateStatus(IStatus.OK, null);
+            // updateStatus(IStatus.OK, null);
             return true;
         }
     }
@@ -561,20 +569,22 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         String password = connection.getBindPassword();
         if (password != null && password.length() > 0) {
             this.bindPasswordText.setText(password);
+            if (connection.isSavePassword()) {
+                saveBindPasswordButton.setSelection(true);
+            }
         }
 
         boolean isGetBaseDNsFromRoot = connection.isGetBaseDNsFromRoot();
         if (!isGetBaseDNsFromRoot) {
             this.baseDNCombo.setEnabled(false);
         }
-        
+
         EList baseDNs = connection.getBaseDNs();
         int size = baseDNs.size();
-        if(baseDNs!=null && size>0)
-        {
-            this.baseDNCombo.setItems((String[])baseDNs.toArray(new String[size]));
+        if (baseDNs != null && size > 0) {
+            this.baseDNCombo.setItems((String[]) baseDNs.toArray(new String[size]));
             this.baseDNCombo.setText(connection.getSelectedDN());
-            updateStatus(IStatus.OK, null);
+            // updateStatus(IStatus.OK, null);
         }
 
         String aliases = connection.getAliases();
@@ -638,8 +648,6 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         if (connection.getFilter() == null) {
             connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
         }
-
-        saveBindPasswordButton.setEnabled(connection.isSavePassword());
 
         checkFieldsValue();
 

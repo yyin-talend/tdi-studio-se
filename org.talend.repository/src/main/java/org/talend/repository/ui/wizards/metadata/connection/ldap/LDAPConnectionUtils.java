@@ -31,6 +31,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.swt.widgets.MessageBox;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.repository.model.EAuthenticationMethod;
@@ -128,7 +130,7 @@ public class LDAPConnectionUtils {
             }
             // System.out.println("Total attrs: " + totalResults);
         } catch (Exception e) {
-            e.printStackTrace();
+            MessageBoxExceptionHandler.process(e);
         }
 
         return attributeList;
@@ -165,14 +167,14 @@ public class LDAPConnectionUtils {
                 try {
                     for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
                         Attribute attr = (Attribute) ae.next();
-                        System.out.println("Attribute: " + attr.getID());
+                        // System.out.println("Attribute: " + attr.getID());
                         if (attributeList.contains(attr) == false) {
                             attributeList.add(attr);
                         }
-                        int totalResults = 1;
-                        for (javax.naming.NamingEnumeration e = attr.getAll(); e.hasMore(); totalResults++) {
-                            System.out.println(" " + totalResults + ". " + e.next());
-                        }
+                        // int totalResults = 1;
+                        // for (javax.naming.NamingEnumeration e = attr.getAll(); e.hasMore(); totalResults++) {
+                        // System.out.println(" " + totalResults + ". " + e.next());
+                        // }
                     }
 
                 } catch (NamingException e) {
@@ -215,7 +217,7 @@ public class LDAPConnectionUtils {
             return list;
 
         } catch (NamingException e) {
-            // e.printStackTrace();
+            MessageBoxExceptionHandler.process(e);
             return null;
         }
     }

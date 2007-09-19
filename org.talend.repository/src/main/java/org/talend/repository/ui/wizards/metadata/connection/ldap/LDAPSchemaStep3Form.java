@@ -452,7 +452,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
      * populateLDAPSchemaAttributes method to populate the Table of Attributes to read the ldap schema
      * 
      */
-    protected void populateLDAPSchemaAttributes() throws IOException, Exception {
+    protected void populateLDAPSchemaAttributes() {
 
         itemTableNameList = new ArrayList<String>();
 
@@ -462,7 +462,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             String attributeId = attribute.getID();
             if (itemTableNameList.contains(attributeId) == false) {
                 itemTableNameList.add(attributeId);
-                System.out.println(attributeId);
+                // System.out.println(attributeId);
             }
         }
     }
