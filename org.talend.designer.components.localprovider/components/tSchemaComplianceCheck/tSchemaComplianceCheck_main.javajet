@@ -1,0 +1,163 @@
+<%@ jet 
+imports="
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+    "
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
+String incomingConnName = null;
+List<? extends IConnection> conns = node.getIncomingConnections();
+if(conns != null && conns.size() > 0) {
+    for(IConnection conn : conns) {
+        incomingConnName = conn.getName();
+        break;
+    }
+}
+String rejectConnName = null;
+List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+if(rejectConns != null && rejectConns.size() > 0) {
+    for(IConnection conn : rejectConns) {
+        rejectConnName = conn.getName();
+    }
+}
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadataTables = node.getMetadataList();
+if(metadataTables != null && metadataTables.size() > 0) {
+    for(IMetadataTable metadataTable : metadataTables) {
+        if(metadataTable != null) {
+            columnList = metadataTable.getListColumns();
+            break;
+        }
+    }
+}
+if(incomingConnName != null && columnList != null && columnList.size() > 0) {
+    class SchemaChecker {
+        public boolean checkNullable(String javaTypeName,IMetadataColumn metadataColumn) {
+            boolean nullable = true;
+            if(!(javaTypeName.equals("byte") || javaTypeName.equals("short") ||
+                    javaTypeName.equals("int") || javaTypeName.equals("long") || 
+                    javaTypeName.equals("float") || javaTypeName.equals("double") || 
+                    javaTypeName.equals("char"))) {
+                nullable = metadataColumn.isNullable();
+            }
+            return nullable;
+        }
+        public Integer checkLength(String javaTypeName,IMetadataColumn metadataColumn) {
+            Integer length = null;
+            if(javaTypeName.equals("String")) {
+                if(metadataColumn.getLength() != null) {
+                    length = metadataColumn.getLength();
+                }
+            }
+            return length;
+        }
+    }
+    SchemaChecker schemaChecker = new SchemaChecker();
+    String javaTypeName = null;
+    %>
+    boolean isPassed = true;
+    <%
+    if(checkAll.equals("true")) {
+        for(IMetadataColumn metadataColumn : columnList) {
+            javaTypeName = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+            %>
+            boolean <%=metadataColumn.getLabel()%>Nullable_<%=cid%> = <%=schemaChecker.checkNullable(javaTypeName,metadataColumn)%>;
+            if(!<%=metadataColumn.getLabel()%>Nullable_<%=cid%>) {
+                isPassed = false;
+            }
+            <%
+            Integer length = schemaChecker.checkLength(javaTypeName,metadataColumn);
+            if(length != null) {
+                %>
+                if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null && <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=length%>) {
+                    isPassed = false;
+                }
+                <%
+            }
+        }
+    } else {
+        List<Map<String, String>> checkedColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CHECKCOLS__");
+        for(IMetadataColumn metadataColumn : columnList) {
+            for(Map<String, String> checkColumn : checkedColumns) {
+                if(metadataColumn.getLabel().equals(checkColumn.get("CHECK_COLUMN"))) {
+                    javaTypeName = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());              
+                    if(checkColumn.get("ALL").equals("true")) {
+                        %>
+                        boolean <%=metadataColumn.getLabel()%>Nullable_<%=cid%> = <%=schemaChecker.checkNullable(javaTypeName,metadataColumn)%>;
+                        if(!<%=metadataColumn.getLabel()%>Nullable_<%=cid%>) {
+                            isPassed = false;
+                        }                        
+                        <%
+                        Integer length = schemaChecker.checkLength(javaTypeName,metadataColumn);
+                        if(length != null) {
+                            %>
+                            if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null && <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=length%>) {
+                                isPassed = false;
+                            }
+                            <%
+                        }                        
+                    } else {
+                        if(checkColumn.get("NULLABLE").equals("true")) {
+                            %>
+                            boolean <%=metadataColumn.getLabel()%>Nullable_<%=cid%> = <%=schemaChecker.checkNullable(javaTypeName,metadataColumn)%>;
+                            if(!<%=metadataColumn.getLabel()%>Nullable_<%=cid%>) {
+                                isPassed = false;
+                            }                            
+                            <%
+                        }
+                        if(checkColumn.get("MAX_LENGTH").equals("true")) {
+                            Integer length = schemaChecker.checkLength(javaTypeName,metadataColumn);
+                            if(length != null) {
+                                %>
+                                if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null && <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=length%>) {
+                                    isPassed = false;
+                                }
+                                <%
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    if(outgoingConns != null && outgoingConns.size() > 0) {
+        for(IConnection conn : outgoingConns) {
+            if(rejectConnName == null || (rejectConnName != null && !rejectConnName.equals(conn.getName()))){
+                for(IMetadataColumn metadataColumn : columnList) {
+                    %>
+                    <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+                    <%
+                }
+            }
+        }
+    }
+    if(rejectConnName != null) {
+        %>
+        if(!isPassed) {
+            <%
+            for(IMetadataColumn metadataColumn : columnList) {
+                %>
+                <%=rejectConnName%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+                <%
+            }
+            %>
+        }
+        <%
+    }
+}
+%>
