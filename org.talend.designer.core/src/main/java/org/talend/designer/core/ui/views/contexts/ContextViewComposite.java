@@ -242,6 +242,8 @@ public class ContextViewComposite extends ContextComposite {
                         }
                     }
                     repositoryCombo.setVisible(true);
+                    ContextItem contextItem = getRepositoryContextItemMap().get(repositoryCombo.getText());
+                    getCommandStack().execute(new ContextRepositoryCommand(getJob(), contextItem));
                 } else {
                     repositoryCombo.setVisible(false);
                     currentRepositoryContext = null;
