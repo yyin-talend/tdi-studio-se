@@ -141,7 +141,7 @@ while (index>=0) {
     
     if(outgoingConns != null && outgoingConns.size() > 0) {
         for(IConnection outgoingConn : outgoingConns) {
-            if(!outgoingConn.getName().equals(rejectConnName)) {
+            if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
                 for(IMetadataColumn column : columnList) {
                     %>
                     <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
