@@ -36,8 +36,9 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.sbi.engines.client.Activator;
 import org.talend.sbi.engines.client.i18n.Messages;
-import org.talend.sbi.engines.client.ui.wizards.GenerateSpagoBIXML;
+import org.talend.sbi.engines.client.ui.preferences.SpagoPreferenceInitializer;
 import org.talend.sbi.engines.client.ui.wizards.PublishOnSpagoExportWizard;
 
 /**
@@ -70,7 +71,7 @@ public final class PublishOnSpagoAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled();
+        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
     }
 
     public PublishOnSpagoAction() {

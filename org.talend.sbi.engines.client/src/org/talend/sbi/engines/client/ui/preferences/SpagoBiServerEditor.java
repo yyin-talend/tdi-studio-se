@@ -61,6 +61,7 @@ public class SpagoBiServerEditor extends TableEditor {
 
     @Override
     protected Table createTable(Composite parent) {
+
         Table contextTable = new Table(parent, SWT.BORDER | SWT.SINGLE);
         contextTable.setLinesVisible(true);
         contextTable.setHeaderVisible(true);

@@ -20,4 +20,10 @@
              level="100"
              name="Publish on SpagoBI"/>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.sbi.engines.client.ui.preferences.SpagoPreferenceInitializer">
+      </initializer>
+   </extension>
 </plugin>

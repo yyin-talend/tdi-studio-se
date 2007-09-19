@@ -22,8 +22,13 @@
 package org.talend.sbi.engines.client.ui.preferences;
 
 import org.apache.log4j.Logger;
+import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.model.properties.SpagoBiServer;
@@ -40,6 +45,12 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
 
     protected static Logger log = Logger.getLogger(SpagoBiPreferencePage.class);
 
+    protected CheckBoxFieldEditor spagoBiCheckButton;
+
+    protected SpagoBiServerEditor editor;
+
+    private Composite parent;
+
     /**
      * SpagoBiPreferencePage.
      * 
@@ -49,27 +60,55 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
 
     public SpagoBiPreferencePage() {
         super(FLAT);
+        setPreferenceStore(Activator.getDefault().getPreferenceStore());
     }
 
-    @Override
-    protected IPreferenceStore doGetPreferenceStore() {
-//        SpagoPreferenceStore preferenceStore = new SpagoPreferenceStore(ProxyRepositoryFactory.getInstance());
-//        try {
-//            preferenceStore.load();
-//        } catch (PersistenceException e) {
-//            String detailError = e.getMessage();
-//            new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID, Messages
-//                    .getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
-//            log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
-//        }
-//        return preferenceStore;
-        return Activator.getDefault().getPreferenceStore();
-    }
+    /*
+     * @Override protected IPreferenceStore doGetPreferenceStore() { // SpagoPreferenceStore preferenceStore = new
+     * SpagoPreferenceStore(ProxyRepositoryFactory.getInstance()); // try { // preferenceStore.load(); // } catch
+     * (PersistenceException e) { // String detailError = e.getMessage(); // new ErrorDialogWidthDetailArea(new Shell(),
+     * RepositoryPlugin.PLUGIN_ID, Messages // .getString("CommonWizard.persistenceException"), detailError);
+     * //$NON-NLS-1$ // log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+     * //$NON-NLS-1$ // //$NON-NLS-2$ // } // return preferenceStore; return
+     * Activator.getDefault().getPreferenceStore(); }
+     */
 
     @Override
     protected void createFieldEditors() {
-        addField(new SpagoBiServerEditor(SpagoBiServer.SPAGOBI_SERVER,
-                Messages.getString("SpagoBiPreferencePage.technicalStatusLabel"), getFieldEditorParent())); //$NON-NLS-1$
+        parent = getFieldEditorParent();
+
+        spagoBiCheckButton = new CheckBoxFieldEditor(SpagoPreferenceInitializer.SPAGO_STATUS, Messages
+                .getString("SpagoBiPreferencePage.spagoBiCheckButton"), parent);
+        editor = new SpagoBiServerEditor(SpagoBiServer.SPAGOBI_SERVER, Messages
+                .getString("SpagoBiPreferencePage.technicalStatusLabel"), parent); //$NON-NLS-1$
+        addField(editor);
+
+        updateEnableStateFromPreferences();
+
+        SelectionListener listener = new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                IPreferenceStore preferenceStore = getPreferenceStore();
+                preferenceStore.setValue(SpagoPreferenceInitializer.SPAGO_STATUS, ((Button) e.getSource()).getSelection());
+                updateEnableStateFromDisplay();
+            }
+        };
+        spagoBiCheckButton.getCheckbox().addSelectionListener(listener);
+    }
+
+    private void updateEnableStateFromDisplay() {
+        boolean spago = spagoBiCheckButton.getBooleanValue();
+        editor.setEnabled(spago, parent);
+    }
+
+    private void updateEnableStateFromPreferences() {
+        IPreferenceStore preferenceStore = getPreferenceStore();
+        boolean spago = preferenceStore.getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
+        spagoBiCheckButton.getCheckbox().setSelection(spago);
+        editor.setEnabled(spago, parent);
     }
 
     @Override
@@ -93,6 +132,17 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
     }
 
     public void init(IWorkbench workbench) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performDefaults()
+     */
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        updateEnableStateFromDisplay();
     }
 
 }
