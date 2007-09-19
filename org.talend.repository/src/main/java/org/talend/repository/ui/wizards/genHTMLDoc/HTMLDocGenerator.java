@@ -22,6 +22,7 @@
 package org.talend.repository.ui.wizards.genHTMLDoc;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -140,6 +141,9 @@ public class HTMLDocGenerator {
 
             resource.addResources(IHTMLDocConstants.PIC_FOLDER_NAME, picList);
 
+            List<URL> externalList = getExternalHtmlPath();
+            resource.addResources(IHTMLDocConstants.EXTERNAL_FOLDER_NAME, externalList);
+
         } catch (Exception e) {
             e.printStackTrace();
             ExceptionHandler.process(e);
@@ -224,9 +228,9 @@ public class HTMLDocGenerator {
 
         Document document = DocumentHelper.createDocument();
         Element projectElement = generateProjectInfo(document);
-        
+
         Element jobElement = generateJobInfo(processItem, projectElement);
-        
+
         List<List> allList = seperateNodes(processItem);
         List<INode> allComponentsList = allList.get(0);
         List<INode> internalNodeComponentsList = allList.get(1);
@@ -246,7 +250,7 @@ public class HTMLDocGenerator {
         ExternalNodeComponentHandler externalNodeComponentHandler = new ExternalNodeComponentHandler(
                 this.picFilePathMap, externalNodeElement, externalNodeComponentsList, this.sourceConnectionMap,
                 this.targetConnectionMap, this.designerCoreService, this.repositoryConnectionItemMap,
-                this.repositoryDBIdAndNameMap, externalNodeHTMLMap);
+                this.repositoryDBIdAndNameMap, externalNodeHTMLMap, tempFolderPath);
 
         // Generates internal node components information.
         internalNodeComponentHandler.generateComponentInfo();
@@ -370,13 +374,13 @@ public class HTMLDocGenerator {
     private Element generateJobInfo(ProcessItem processItem, Element projectElement) {
 
         picFilePathMap = new HashMap<String, String>();
-//        IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
-        
+        // IProcess process = CorePlugin.getDefault().getDesignerCoreService().getProcessFromProcessItem(processItem);
+
         Property property = processItem.getProperty();
         String jobName = property.getLabel();
         Element jobElement = projectElement.addElement("job");
         jobElement.addAttribute("name", HTMLDocUtils.checkString(jobName));
-        
+
         jobElement.addAttribute("author", HTMLDocUtils.checkString(property.getAuthor().toString()));
         jobElement.addAttribute("version", HTMLDocUtils.checkString(property.getVersion()));
         jobElement.addAttribute("purpose", HTMLDocUtils.checkString(property.getPurpose()));
@@ -384,8 +388,7 @@ public class HTMLDocGenerator {
         jobElement.addAttribute("description", HTMLDocUtils.checkString(property.getDescription()));
 
         jobElement.addAttribute("creation", HTMLDocUtils.checkDate(property.getCreationDate()));
-        jobElement
-                .addAttribute("modification", HTMLDocUtils.checkDate(property.getModificationDate()));
+        jobElement.addAttribute("modification", HTMLDocUtils.checkDate(property.getModificationDate()));
 
         String picName = jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX;
         IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE,
@@ -483,4 +486,34 @@ public class HTMLDocGenerator {
                 org.osgi.framework.Constants.BUNDLE_VERSION);
         return currentVersion;
     }
+
+    /**
+     * 
+     * DOC ggu Comment method "getExternalHtmlPath".<br>
+     * 
+     * add external Doc file list
+     * 
+     * @return
+     * @throws MalformedURLException
+     */
+    private List<URL> getExternalHtmlPath() throws MalformedURLException {
+        List<URL> externalList = new ArrayList<URL>();
+
+        Set keySet = externalNodeHTMLMap.keySet();
+        for (Object key : keySet) {
+            URL html = externalNodeHTMLMap.get(key);
+            if (html != null) {
+                externalList.add(html);// html
+
+                String htmlStr = html.toString();
+                String xmlStr = htmlStr.substring(0, htmlStr.lastIndexOf(IHTMLDocConstants.HTML_FILE_SUFFIX))
+                        + IHTMLDocConstants.XML_FILE_SUFFIX;
+                externalList.add(new URL(xmlStr));// xml
+            }
+
+        }
+
+        return externalList;
+    }
+
 }

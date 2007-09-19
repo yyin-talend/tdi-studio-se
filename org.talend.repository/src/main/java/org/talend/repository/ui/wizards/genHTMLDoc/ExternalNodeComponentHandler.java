@@ -21,12 +21,12 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.genHTMLDoc;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import org.dom4j.Element;
-import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IElementParameter;
@@ -62,6 +62,8 @@ public class ExternalNodeComponentHandler extends AbstractComponentHandler {
 
     private Map<String, URL> externalNodeHTMLMap;
 
+    private String tempFolderPath;
+
     /**
      * Contructor.
      * 
@@ -79,7 +81,7 @@ public class ExternalNodeComponentHandler extends AbstractComponentHandler {
             List<INode> allComponentsList, Map<String, List> sourceConnectionMap,
             Map<String, List> targetConnectionMap, IDesignerCoreService designerCoreService,
             Map<String, ConnectionItem> repositoryConnectionItemMap, Map<String, String> repositoryDBIdAndNameMap,
-            Map<String, URL> externalNodeHTMLMap) {
+            Map<String, URL> externalNodeHTMLMap, String tempFolderPath) {
         this.picFilePathMap = picFilePathMap;
         this.externalNodeElement = externalNodeElement;
         this.componentsList = allComponentsList;
@@ -89,6 +91,7 @@ public class ExternalNodeComponentHandler extends AbstractComponentHandler {
         this.repositoryConnectionItemMap = repositoryConnectionItemMap;
         this.repositoryDBIdAndNameMap = repositoryDBIdAndNameMap;
         this.externalNodeHTMLMap = externalNodeHTMLMap;
+        this.tempFolderPath = tempFolderPath;
     }
 
     /*
@@ -109,7 +112,7 @@ public class ExternalNodeComponentHandler extends AbstractComponentHandler {
 
             String componentName = externalNode.getUniqueName();
             IComponentDocumentation componentDocumentation = externalNode.getExternalNode().getComponentDocumentation(
-                    componentName, HTMLDocUtils.getTmpFolder());
+                    componentName, checkExternalPathIsExists(tempFolderPath)/* HTMLDocUtils.getTmpFolder() */);
 
             // Checks if generating html file for external node failed, generating the same information as internal node
             // instead.
@@ -145,4 +148,20 @@ public class ExternalNodeComponentHandler extends AbstractComponentHandler {
             }
         }
     }
+
+    /**
+     * Checks if external node component directory is existing.
+     * 
+     * @param resource
+     * @return
+     */
+    private String checkExternalPathIsExists(String tempFolderPath) {
+        String tempExternalPath = tempFolderPath + File.separator + IHTMLDocConstants.EXTERNAL_FOLDER_NAME;
+        File file = new File(tempExternalPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return tempExternalPath;
+    }
+
 }
