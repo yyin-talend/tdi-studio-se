@@ -9,4 +9,19 @@
 		    level="101"
 		    name="Deploy on Spagic"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.spagic.engines.client.ui.preferences.SpagicPreferencePage"
+            id="org.talend.repository.prefs.spagic"
+            name="Spagic Server">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.spagic.engines.client.ui.preferences.SpagicPreferenceInitializer">
+      </initializer>
+   </extension>
 </plugin>

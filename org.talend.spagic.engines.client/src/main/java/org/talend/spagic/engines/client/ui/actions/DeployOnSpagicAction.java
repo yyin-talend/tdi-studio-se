@@ -36,7 +36,9 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.spagic.engines.client.Activator;
 import org.talend.spagic.engines.client.i18n.Messages;
+import org.talend.spagic.engines.client.ui.preferences.SpagicPreferenceInitializer;
 import org.talend.spagic.engines.client.ui.wizards.SpagicDeployWizard;
 
 /**
@@ -69,7 +71,7 @@ public class DeployOnSpagicAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled();
+        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
     }
 
     public DeployOnSpagicAction() {
