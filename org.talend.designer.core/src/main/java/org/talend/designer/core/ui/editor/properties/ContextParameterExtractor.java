@@ -23,12 +23,14 @@ package org.talend.designer.core.ui.editor.properties;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -43,6 +45,7 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
@@ -75,6 +78,15 @@ public final class ContextParameterExtractor {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
+                    String repositoryId = process.getRepositoryId();
+                    if (repositoryId != null) {
+                        MessageDialog.openWarning(Display.getCurrent().getActiveShell(), Messages
+                                .getString("ContextParameterExtractor.Warning"), Messages
+                                .getString("ContextParameterExtractor.warningInfo"));// "It is impossible to add a
+                                                                                        // new parameter when using a
+                                                                                        // repository context.");
+                        return;
+                    }
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
                     ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
                             parameter);
@@ -119,7 +131,7 @@ public final class ContextParameterExtractor {
     public static void saveContext(final String parameterName, final Element elem, String replaceCode) {
         PropertyChangeCommand cmd = new PropertyChangeCommand(elem, parameterName, replaceCode);
         cmd.execute();
-        
+
         // note that no undo will be available
     }
 
