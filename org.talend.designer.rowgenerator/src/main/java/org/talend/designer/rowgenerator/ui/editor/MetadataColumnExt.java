@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -36,8 +37,16 @@ import org.talend.designer.rowgenerator.data.Parameter;
  */
 public class MetadataColumnExt extends MetadataColumn {
 
+    public final static String PARAMETER_BEGIN = "<paramater>";
+
+    public final static String PARAMETER_END = "</paramater>";
+
+    public final static String VARIABLE_BEGIN = "<variable>";
+
+    public final static String VARIABLE_END = "</variable>";
+
     private boolean isChanged;
-    
+
     /**
      * qzhang MetadataColumnExt constructor comment.
      */
@@ -86,6 +95,31 @@ public class MetadataColumnExt extends MetadataColumn {
             }
         }
         return currentPara;
+    }
+
+    /**
+     * yzhang Comment method "getVariables".
+     * 
+     * @return
+     */
+    public String getVariables() {
+        StringBuffer buffer = new StringBuffer();
+
+        for (Parameter para : (List<Parameter>) function.getParameters()) {
+            if (para.getVars() != null) {
+                buffer.append(PARAMETER_BEGIN);
+                buffer.append(para.getName());
+                for (Variable var : para.getVars()) {
+                    buffer.append(VARIABLE_BEGIN);
+                    buffer.append(var.getName() + "=>");
+                    buffer.append(var.getValue());
+                    buffer.append(VARIABLE_END);
+                }
+                buffer.append(PARAMETER_END);
+            }
+
+        }
+        return buffer.toString();
     }
 
     private String[] arrayFunctions;
@@ -150,12 +184,10 @@ public class MetadataColumnExt extends MetadataColumn {
 
     }
 
-    
     public boolean isChanged() {
         return this.isChanged;
     }
 
-    
     public void setChanged(boolean isChanged) {
         this.isChanged = isChanged;
     }

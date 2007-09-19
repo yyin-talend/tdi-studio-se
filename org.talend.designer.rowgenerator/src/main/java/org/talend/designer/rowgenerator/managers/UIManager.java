@@ -30,14 +30,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
-import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.FunctionManagerExt;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
@@ -56,7 +51,7 @@ public class UIManager {
 
     private int rowGenResponse = SWT.NONE;
 
-    private RowGeneratorManager rgManager;
+    private final RowGeneratorManager rgManager;
 
     private boolean shiftPressed;
 
@@ -150,10 +145,12 @@ public class UIManager {
             Map<String, Object> value = new HashMap<String, Object>();
             value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
             value.put(RowGeneratorComponent.ARRAY, FunctionManagerExt.getOneColData(ext));
+            value.put(RowGeneratorComponent.VARIABLE, ext.getVariables());
             map.add(value);
         }
         rgManager.getRowGeneratorComponent().setTableElementParameter(map);
-        rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
+        rgManager.getRowGeneratorComponent()
+                .setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
 
     }
 
@@ -171,7 +168,8 @@ public class UIManager {
      */
     private void saveCurrentUIProperties() {
         ExternalRowGeneratorUiProperties.setWeightsMainSashForm(generatorUI.getMainSashForm().getWeights());
-        ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm().getWeights());
+        ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm()
+                .getWeights());
         ExternalRowGeneratorUiProperties.setShellMaximized(generatorUI.getRowGenUIParent().getShell().getMaximized());
         if (!ExternalRowGeneratorUiProperties.isShellMaximized()) {
             ExternalRowGeneratorUiProperties.setBoundsRowGen(generatorUI.getRowGenUIParent().getBounds());

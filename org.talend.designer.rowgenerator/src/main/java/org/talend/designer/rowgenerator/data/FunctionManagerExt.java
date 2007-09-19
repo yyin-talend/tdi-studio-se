@@ -22,11 +22,14 @@
 package org.talend.designer.rowgenerator.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * class global comment. Detailled comment <br/>
@@ -87,6 +90,7 @@ public class FunctionManagerExt extends FunctionManager {
         String value = externalNode.getColumnValue(bean, index);
         List<Function> functions = getFunctionByName(bean.getTalendType());
         Function currentFun = getAvailableFunFromValue(value, functions);
+
         if (currentFun == null) {
             currentFun = new Function();
             String[] arrayTalendFunctions2 = new String[functions.size()];
@@ -104,8 +108,43 @@ public class FunctionManagerExt extends FunctionManager {
             }
         }
 
+        String variables = externalNode.getColumnVariable(bean, index);
+        if (!variables.equals("")) {
+
+            Map<String, List<Variable>> vars = initVariables(variables);
+
+            for (Object para : currentFun.getParameters()) {
+                Parameter p = (Parameter) para;
+                p.setVars(vars.get(p.getName()));
+            }
+        }
+
         return currentFun;
 
+    }
+
+    /**
+     * yzhang Comment method "initVariables".
+     * 
+     * @param str
+     * @return
+     */
+    public Map<String, List<Variable>> initVariables(String str) {
+        Map<String, List<Variable>> var = new HashMap<String, List<Variable>>();
+        String[] parameter = str.split(MetadataColumnExt.PARAMETER_END);
+        for (String string : parameter) {
+            String parameterName = string.substring(MetadataColumnExt.PARAMETER_BEGIN.length(), string
+                    .indexOf(MetadataColumnExt.VARIABLE_BEGIN));
+            String[] variables = string.substring(string.indexOf(MetadataColumnExt.VARIABLE_BEGIN)).split(
+                    MetadataColumnExt.VARIABLE_END);
+            List<Variable> varList = new ArrayList<Variable>();
+            for (String string2 : variables) {
+                String[] vv = string2.substring(MetadataColumnExt.VARIABLE_BEGIN.length()).split("=>");
+                varList.add(new Variable(vv[0], vv[1]));
+            }
+            var.put(parameterName, varList);
+        }
+        return var;
     }
 
     /**
@@ -144,7 +183,7 @@ public class FunctionManagerExt extends FunctionManager {
                         } else {
                             String[] ps = para.split(FUN_PARAM_SEPARATED); //$NON-NLS-1$
                             if (ps.length == function.getParameters().size()) {
-                                currentFun = (Function) function.clone(ps);
+                                currentFun = function.clone(ps);
                             }
                         }
                     }
@@ -185,7 +224,7 @@ public class FunctionManagerExt extends FunctionManager {
                 if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
                     return ""; //$NON-NLS-1$
                 }
-                final List<Parameter> parameters = (List<Parameter>) bean.getFunction().getParameters();
+                final List<Parameter> parameters = bean.getFunction().getParameters();
                 if (UIManager.isJavaProject()) {
                     String fullName = JavaFunctionParser.getTypeMethods().get(
                             bean.getTalendType() + "." + bean.getFunction().getName());

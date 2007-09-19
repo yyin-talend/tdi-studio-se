@@ -114,6 +114,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
+                cellEditor.setBean(bean);
                 return bean.getValue();
             }
 
@@ -121,6 +122,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
                 if (value == null) {
                     return;
+                }
+
+                if (cellEditor.getVariables() != null) {
+                    bean.setVars((List) cellEditor.getVariables());
                 }
 
                 bean.setValue(value.toString());
