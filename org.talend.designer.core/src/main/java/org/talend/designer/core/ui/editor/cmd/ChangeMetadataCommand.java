@@ -100,15 +100,17 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode, IMetadataTable currentInputMetadata,
-            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode,
+            IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata,
+            IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.schemaParam = schemaParam;
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -139,7 +141,8 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -260,7 +263,8 @@ public class ChangeMetadataCommand extends Command {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                            if (map2 != null
+                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
                                 ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
@@ -306,8 +310,8 @@ public class ChangeMetadataCommand extends Command {
                 }
                 INode targetNode = currentIO.getTarget();
 
-                boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
-                        .isBuiltIn();
+                boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(
+                        currentIO.getConnection().getLineStyle()).isBuiltIn();
                 if (baseConnector.equals(currentConnector)
                         && (targetIsBuiltIn || (!newOutputMetadata.sameMetadataAs(targetNode
                                 .getMetadataFromConnector(baseConnector))))) {
@@ -322,9 +326,11 @@ public class ChangeMetadataCommand extends Command {
                                 // to keep customs
                                 MetadataTool.copyTable(toCopy, tmpClone);
                                 toCopy = tmpClone;
-                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
+                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector)
+                                        .clone(true);
                                 MetadataTool.copyTable(toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy);
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null,
+                                        copy);
                                 if (outputdataContainer.getOuputs().size() > 0) {
                                     List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
                                             .getColumnNameChanged();
@@ -343,8 +349,8 @@ public class ChangeMetadataCommand extends Command {
                             if (!targetIsBuiltIn && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
-                                                .getColumnNameChanged();
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
+                                                .get(0).getColumnNameChanged();
                                         for (ChangeMetadataCommand cmd : propagatedChange) {
                                             for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                                 dataComp.setColumnNameChanged(columnNameChanged);
@@ -426,7 +432,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
+                newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -465,7 +472,8 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata,
+                oldOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -495,11 +503,14 @@ public class ChangeMetadataCommand extends Command {
     protected void setDBTableFieldValue(Element curNode, String newdbTableName, String olddbTableName) {
         // add the code for the DBTable Field. bug 1304.
         if (curNode != null) {
+            String uniqueName = ((Node) curNode).getUniqueName();
             IElementParameter dbTableElementField = curNode.getElementParameterFromField(EParameterFieldType.DBTABLE);
             if (dbTableElementField != null) {
                 Object value = dbTableElementField.getValue();
                 String removeQuotes = TalendTextUtils.removeQuotes((String) value);
                 boolean b = value == null || removeQuotes.equals("");
+                // add the code for table name equals uniqueName
+                b = b || uniqueName.equals(olddbTableName);
                 b = b || value != null && removeQuotes.toString().equals(olddbTableName);
 
                 if (b) {
