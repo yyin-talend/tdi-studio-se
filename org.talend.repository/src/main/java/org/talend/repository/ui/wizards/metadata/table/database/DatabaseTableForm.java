@@ -683,10 +683,13 @@ public class DatabaseTableForm extends AbstractForm {
             if (table.getLabel().equals("")) { //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlert")); //$NON-NLS-1$
                 return false;
-            } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, table.getLabel())) {
+                
+                //Comment this condition because table name was allowed including illegal characters such as "&" or "#".
+                /**} else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, table.getLabel())) {
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlertIllegalChar") + " \"" //$NON-NLS-1$ //$NON-NLS-2$
                         + table.getLabel() + "\""); //$NON-NLS-1$
                 return false;
+               **/
             } else if (existNames.contains(table.getLabel())) {
                 updateStatus(IStatus.ERROR,
                         Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
