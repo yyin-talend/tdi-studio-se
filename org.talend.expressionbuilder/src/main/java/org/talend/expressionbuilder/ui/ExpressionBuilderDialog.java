@@ -337,7 +337,9 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     @Override
     protected void okPressed() {
 
-        consumer.setConsumerExpression(expressionComposite.getExpression());
+        consumer.setVariables(testComposite.getVariableList());
+
+        consumer.setConsumerExpression(expressionComposite.getExpression() + " ");
 
         super.okPressed();
     }
