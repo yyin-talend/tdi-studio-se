@@ -47,7 +47,7 @@ import org.talend.spagic.engines.client.i18n.Messages;
  * $Id: JobScriptsExportWizard.java 1 2006-12-13 涓嬪�?3:13:18 bqian
  * 
  */
-public class SapgicDeployWizard extends Wizard implements IExportWizard {
+public class SpagicDeployWizard extends Wizard implements IExportWizard {
 
     private IStructuredSelection selection;
 
@@ -56,27 +56,27 @@ public class SapgicDeployWizard extends Wizard implements IExportWizard {
     /**
      * Creates a wizard for exporting workspace resources to a zip file.
      */
-    public SapgicDeployWizard() {
+    public SpagicDeployWizard() {
         AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
         IDialogSettings workbenchSettings = plugin.getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection("SapgicDeployWizard"); //$NON-NLS-1$
         if (section == null) {
             section = workbenchSettings.addNewSection("SapgicDeployWizard"); //$NON-NLS-1$
-            section.put(PerlSapgicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
-            section.put(PerlSapgicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
-            section.put(PerlSapgicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
-            section.put(PerlSapgicDeployWizardPage.STORE_MODEL_ID, true);
-            section.put(PerlSapgicDeployWizardPage.STORE_JOB_ID, true);
-            section.put(PerlSapgicDeployWizardPage.STORE_CONTEXT_ID, true);
-            section.put(PerlSapgicDeployWizardPage.APPLY_TO_CHILDREN_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_MODEL_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_JOB_ID, true);
+            section.put(PerlSpagicDeployWizardPage.STORE_CONTEXT_ID, true);
+            section.put(PerlSpagicDeployWizardPage.APPLY_TO_CHILDREN_ID, true);
 
-            section.put(JavaSapgicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
-            section.put(JavaSapgicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
-            section.put(JavaSapgicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
-            section.put(JavaSapgicDeployWizardPage.STORE_MODEL_ID, true);
-            section.put(JavaSapgicDeployWizardPage.STORE_JOB_ID, true);
-            section.put(JavaSapgicDeployWizardPage.STORE_CONTEXT_ID, true);
-            section.put(JavaSapgicDeployWizardPage.APPLY_TO_CHILDREN_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_SHELL_LAUNCHER_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_USER_ROUTINE_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_MODEL_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_JOB_ID, true);
+            section.put(JavaSpagicDeployWizardPage.STORE_CONTEXT_ID, true);
+            section.put(JavaSpagicDeployWizardPage.APPLY_TO_CHILDREN_ID, true);
 
         }
         setDialogSettings(section);
@@ -91,10 +91,10 @@ public class SapgicDeployWizard extends Wizard implements IExportWizard {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            mainPage = new JavaSapgicDeployWizardPage(selection);
+            mainPage = new JavaSpagicDeployWizardPage(selection);
             break;
         case PERL:
-            mainPage = new PerlSapgicDeployWizardPage(selection);
+            mainPage = new PerlSpagicDeployWizardPage(selection);
             break;
         }
         addPage(mainPage);

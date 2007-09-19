@@ -37,7 +37,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.spagic.engines.client.i18n.Messages;
-import org.talend.spagic.engines.client.ui.wizards.SapgicDeployWizard;
+import org.talend.spagic.engines.client.ui.wizards.SpagicDeployWizard;
 
 /**
  * Action used to export job scripts. <br/>
@@ -80,7 +80,7 @@ public class DeployOnSpagicAction extends AContextualAction {
     }
 
     public void run() {
-        SapgicDeployWizard processWizard = new SapgicDeployWizard();
+        SpagicDeployWizard processWizard = new SpagicDeployWizard();
         IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
         processWizard.setWindowTitle(DEPLOYONSPAGIC);
         processWizard.init(workbench, (IStructuredSelection) this.getSelection());

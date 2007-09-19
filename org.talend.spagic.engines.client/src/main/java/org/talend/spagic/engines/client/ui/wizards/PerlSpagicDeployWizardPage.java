@@ -21,16 +21,14 @@
 // ============================================================================
 package org.talend.spagic.engines.client.ui.wizards;
 
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.talend.designer.runprocess.IProcessor;
+import org.talend.repository.ui.wizards.exportjob.ArchiveFileExportOperationFullPath;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -38,32 +36,32 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
-public class JavaSapgicDeployWizardPage extends SapgicDeployWizardPage {
+public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
 
     // dialog store id constants
-    public static final String STORE_SHELL_LAUNCHER_ID = "JavaSapgicDeployWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
+    public static final String STORE_SHELL_LAUNCHER_ID = "PerlSapgicDeployWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
-    public static final String STORE_SYSTEM_ROUTINE_ID = "JavaSapgicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_SYSTEM_ROUTINE_ID = "PerlSapgicDeployWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_USER_ROUTINE_ID = "JavaSapgicDeployWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_USER_ROUTINE_ID = "PerlSapgicDeployWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_MODEL_ID = "JavaSapgicDeployWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
+    public static final String STORE_MODEL_ID = "PerlSapgicDeployWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
 
-    public static final String STORE_JOB_ID = "JavaSapgicDeployWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
+    public static final String STORE_JOB_ID = "PerlSapgicDeployWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
-    public static final String STORE_CONTEXT_ID = "JavaSapgicDeployWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
+    public static final String STORE_CONTEXT_ID = "PerlSapgicDeployWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
 
-    public static final String APPLY_TO_CHILDREN_ID = "JavaSapgicDeployWizardPage.APPLY_TO_CHILDREN_ID"; //$NON-NLS-1$
+    public static final String APPLY_TO_CHILDREN_ID = "PerlSapgicDeployWizardPage.APPLY_TO_CHILDREN_ID"; //$NON-NLS-1$
 
-    // public static final String STORE_GENERATECODE_ID = "JavaJobScriptsExportWizardPage.STORE_GENERATECODE_ID";
+    // public static final String STORE_GENERATECODE_ID = "PerlJobScriptsExportWizardPage.STORE_GENERATECODE_ID";
     // //$NON-NLS-1$
 
-    public static final String STORE_SOURCE_ID = "JavaSapgicDeployWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
+    public static final String STORE_SOURCE_ID = "PerlSapgicDeployWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
 
-    public static final String STORE_DESTINATION_NAMES_ID = "JavaSapgicDeployWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+    private static final String STORE_DESTINATION_NAMES_ID = "PerlSapgicDeployWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     protected JobScriptsManager createJobScriptsManager() {
-        return new SapgicDeployManager();
+        return new JobPerlScriptsManager();
     }
 
     /**
@@ -71,43 +69,20 @@ public class JavaSapgicDeployWizardPage extends SapgicDeployWizardPage {
      * 
      * @param selection the selection
      */
-    public JavaSapgicDeployWizardPage(IStructuredSelection selection) {
-        super("JavaSapgicDeployWizardPage1", selection); //$NON-NLS-1$
+    public PerlSpagicDeployWizardPage(IStructuredSelection selection) {
+        super("PerlSapgicDeployWizardPage1", selection); //$NON-NLS-1$
     }
 
-    /**
-     * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
+    /*
+     * (non-Javadoc)
      * 
-     * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExporterOperation(java.util.List)
      */
-    // protected List<ExportFileResource> getExportResources() {
-    // final List<ExportFileResource>[] resourcesToExportxx = new List[1];
-    //
-    // BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {
-    //
-    // public void run() {
-    // // resourcesToExportxx[0] = JavaSapgicDeployWizardPage.super.getExportResources();
-    // }
-    // });
-    // return resourcesToExportxx[0];
-    // }
-    protected List<ExportFileResource> getExportResources() {
-        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
-        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
-    }
-
-    protected Map<ExportChoice, Boolean> getExportChoiceMap() {
-        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
-        exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
-        exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
-        return exportChoiceMap;
+    @Override
+    protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
+        ArchiveFileExportOperationFullPath operation = super.getExporterOperation(resourcesToExport);
+        operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        return operation;
     }
 
     /**
@@ -159,7 +134,6 @@ public class JavaSapgicDeployWizardPage extends SapgicDeployWizardPage {
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
@@ -174,5 +148,6 @@ public class JavaSapgicDeployWizardPage extends SapgicDeployWizardPage {
                 contextCombo.select(0);
             }
         }
+
     }
 }

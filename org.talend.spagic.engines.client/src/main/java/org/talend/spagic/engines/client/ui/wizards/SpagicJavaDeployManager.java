@@ -21,8 +21,10 @@
 // ============================================================================
 package org.talend.spagic.engines.client.ui.wizards;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,19 +35,20 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
- * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * DOC qwei class global comment. Detailled comment <br/>
  * 
  */
-public class SapgicDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
+public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
 
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
@@ -69,7 +72,7 @@ public class SapgicDeployManager extends org.talend.repository.ui.wizards.export
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
-            resources.addAll(getProperties());
+            resources.addAll(getProperties(processItem, srcList));
             addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
@@ -129,17 +132,33 @@ public class SapgicDeployManager extends org.talend.repository.ui.wizards.export
         return allJobScripts;
     }
 
-    public List<URL> getProperties() {
+    public List<URL> getProperties(ProcessItem processItem, List<URL> srcList) {
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
-        File file = new File("c:/sapgic.properties");
         FileOutputStream out = null;
+        String projectName = getCurrentProjectName();
+        String jobName = processItem.getProperty().getLabel();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
         try {
+
+            IPath path = getSrcRootLocation();
+            File file = new File(path + PATH_SEPARATOR + "spagic.properties");
+            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
+            BufferedReader buff = new BufferedReader(new FileReader(path.toPortableString()));
+            int nbLine = 0;
+            while (buff.readLine() != null) {
+                nbLine++;
+            }
             out = new FileOutputStream(file);
             PrintStream ps = new PrintStream(out);
-            p.put("talendJobClassName", "myclassname");
-            p.put("talendJobClassDescription", "description");
-            p.put("rowNumber", "100");
+            p.put("talendJobClassName", getCurrentProjectName() + "."
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
+                    + processItem.getProperty().getLabel());
+            // p.put("talendJobClassDescription",
+            // HTMLDocUtils.checkString(processItem.getProperty().getDescription()).replace("\n",
+            // "\\n"));
+            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
+            p.put("rowNumber", Integer.toString(nbLine));
             p.put("host", "localhost");
             p.list(ps);
             ps.flush();

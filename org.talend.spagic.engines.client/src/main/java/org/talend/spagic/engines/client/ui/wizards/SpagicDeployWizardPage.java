@@ -74,7 +74,7 @@ import org.talend.spagic.engines.client.i18n.Messages;
  * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
-public abstract class SapgicDeployWizardPage extends WizardFileSystemResourceExportPage1 {
+public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExportPage1 {
 
     // widgets
     protected Button shellLauncherButton;
@@ -108,7 +108,7 @@ public abstract class SapgicDeployWizardPage extends WizardFileSystemResourceExp
      * 
      * @param name java.lang.String
      */
-    protected SapgicDeployWizardPage(String name, IStructuredSelection selection) {
+    protected SpagicDeployWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
 
         manager = createJobScriptsManager();
