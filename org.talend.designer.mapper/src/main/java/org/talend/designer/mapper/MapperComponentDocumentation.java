@@ -223,6 +223,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     private void generateTableSummaryInfo(Element mapperTableElement, Element tableElement, ExternalMapperTable table) {
 
         tableElement.addAttribute("name", table.getName());
+        tableElement.addAttribute("matching-mode", table.getMatchingMode());
         tableElement.addAttribute("isMinimized", String.valueOf(table.isMinimized()));
         tableElement.addAttribute("isReject", String.valueOf(table.isReject()));
         tableElement.addAttribute("isRejectInnerJoin", String.valueOf(table.isRejectInnerJoin()));
