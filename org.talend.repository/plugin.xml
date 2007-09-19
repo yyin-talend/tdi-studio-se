@@ -522,6 +522,13 @@
             id="org.talend.repository.migration.changetUniqRowLinks"
             name="%migrationtask.changetUniqRowLinks.title">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddDdColumnMigrationTask"
+            description="Add DdColumn name for all DB components"
+            id="org.talend.repository.model.migration.AddDdColumn"
+            name="Add DdColumn name for all DB components">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
