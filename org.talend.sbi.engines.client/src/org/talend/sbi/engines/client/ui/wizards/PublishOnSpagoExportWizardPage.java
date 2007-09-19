@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.CorePlugin;
@@ -68,7 +67,6 @@ import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -187,7 +185,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
         composite.setFont(parent.getFont());
 
-        createDestinationGroup(composite);
+        // createDestinationGroup(composite);
 
         createOptionsGroup(composite);
 
@@ -199,7 +197,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         setErrorMessage(null); // should not initially have error message
 
         setControl(composite);
-        giveFocusToDestination();
+        // giveFocusToDestination();
     }
 
     /*
@@ -414,7 +412,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
         // path can like name/name
         manager.deleteTempFiles();
-        
+
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
@@ -652,4 +650,27 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
     }
+
+    protected void createOptionsGroup(Composite parent) {
+        // options group
+        Group optionsGroup = new Group(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        optionsGroup.setLayout(layout);
+        optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+        optionsGroup.setText(Messages.getString("PublishOnSpagoExportWizardPage.Settings"));
+        optionsGroup.setFont(parent.getFont());
+        createOptionsGroupButtons(optionsGroup);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#validateDestinationGroup()
+     */
+    @Override
+    protected boolean validateDestinationGroup() {
+        return true;
+    }
+
 }

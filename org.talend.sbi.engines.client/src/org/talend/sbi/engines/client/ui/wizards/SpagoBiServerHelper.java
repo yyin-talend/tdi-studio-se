@@ -28,19 +28,18 @@ import java.util.List;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.SpagoBiServer;
 
-
 /**
- * DOC cantoine  class global comment. Detailled comment
- * <br/>
- *
+ * DOC cantoine class global comment. Detailled comment <br/>
+ * 
  * $Id: SpagoBiServerHelper.java 2738 2007-04-27 13:12:27Z cantoine $
- *
+ * 
  */
 public final class SpagoBiServerHelper {
 
     private static final String SPAGOBISERVER_DELIMITER = ";"; //$NON-NLS-1$
+
     private static final String ENGINE_DESCRIPTION_DELIMITER = "#o#"; //$NON-NLS-1$
-    
+
     public static String writeString(List<String> items) {
         int size = items.size();
         StringBuffer buf = new StringBuffer(size * 50);
@@ -51,7 +50,7 @@ public final class SpagoBiServerHelper {
         }
         return buf.toString();
     }
-    
+
     public static List<String> readString(String stringList) {
         if (stringList == null || "".equals(stringList)) //$NON-NLS-1$
             return EMPTY_STRING_LIST;
@@ -68,7 +67,7 @@ public final class SpagoBiServerHelper {
             return EMPTY_SPAGOBISERVER_LIST;
         final List<String> strings = readString(stringList);
         List<SpagoBiServer> result = new ArrayList<SpagoBiServer>();
-        for (String spagoBiServerStr: strings) {
+        for (String spagoBiServerStr : strings) {
             final SpagoBiServer spagoBiServer = PropertiesFactory.eINSTANCE.createSpagoBiServer();
             spagoBiServer.setEngineName(getEngineName(spagoBiServerStr));
             spagoBiServer.setShortDescription(getShortDescription(spagoBiServerStr));
@@ -81,21 +80,22 @@ public final class SpagoBiServerHelper {
         }
         return Collections.unmodifiableList(result);
     }
-    
+
     public static String flat(List<SpagoBiServer> list) {
         final List<String> strings = new ArrayList<String>(list.size());
-        for (SpagoBiServer spagoBiServer: list) {
-            strings.add(getString(spagoBiServer.getEngineName(), spagoBiServer.getShortDescription(), spagoBiServer.getHost(), spagoBiServer.getPort(), spagoBiServer.getLogin(), spagoBiServer.getPassword(), spagoBiServer.getApplicationContext()));
+        for (SpagoBiServer spagoBiServer : list) {
+            strings.add(getString(spagoBiServer.getEngineName(), spagoBiServer.getShortDescription(), spagoBiServer.getHost(),
+                    spagoBiServer.getPort(), spagoBiServer.getLogin(), spagoBiServer.getPassword()));
         }
         return writeString(strings);
     }
-    
+
     public static final String getEngineName(String value) {
         check(value);
         String[] index = value.split(ENGINE_DESCRIPTION_DELIMITER);
         return index[0];
     }
-    
+
     public static final String getShortDescription(String value) {
         check(value);
         String[] index = value.split(ENGINE_DESCRIPTION_DELIMITER);
@@ -131,31 +131,32 @@ public final class SpagoBiServerHelper {
         String[] index = value.split(ENGINE_DESCRIPTION_DELIMITER);
         return index[6];
     }
-    
-    public static final String getString(String engineName, String shortDescription, String host, String port, String login, String password, String applicationContext) {
+
+    public static final String getString(String engineName, String shortDescription, String host, String port, String login,
+            String password) {
         check(engineName);
         check(shortDescription);
         check(host);
         check(port);
         check(login);
         check(password);
-        check(applicationContext);
-        return engineName + ENGINE_DESCRIPTION_DELIMITER + shortDescription
-            + ENGINE_DESCRIPTION_DELIMITER + host
-            + ENGINE_DESCRIPTION_DELIMITER + port
-            + ENGINE_DESCRIPTION_DELIMITER + login
-            + ENGINE_DESCRIPTION_DELIMITER + password
-            + ENGINE_DESCRIPTION_DELIMITER + applicationContext;
+        // check(applicationContext);
+        return engineName + ENGINE_DESCRIPTION_DELIMITER + shortDescription + ENGINE_DESCRIPTION_DELIMITER + host
+                + ENGINE_DESCRIPTION_DELIMITER + port + ENGINE_DESCRIPTION_DELIMITER + login + ENGINE_DESCRIPTION_DELIMITER
+                + password;
+        // + ENGINE_DESCRIPTION_DELIMITER + applicationContext;
     }
-    
+
     private static void check(String str) {
         if (str == null || str.equals("")) //$NON-NLS-1$
             throw new IllegalArgumentException();
     }
-    
+
     private SpagoBiServerHelper() {
     }
 
-    private static final List<SpagoBiServer> EMPTY_SPAGOBISERVER_LIST = Collections.unmodifiableList(new ArrayList<SpagoBiServer>());
+    private static final List<SpagoBiServer> EMPTY_SPAGOBISERVER_LIST = Collections
+            .unmodifiableList(new ArrayList<SpagoBiServer>());
+
     private static final List<String> EMPTY_STRING_LIST = Collections.unmodifiableList(new ArrayList<String>());
 }

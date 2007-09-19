@@ -147,7 +147,7 @@ public class SpagoBiServerEditor extends TableEditor {
         SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList());
         if (dialog.open() == Window.OK) {
             return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword(), dialog.getApplicationContext());
+                    .getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }
@@ -162,7 +162,7 @@ public class SpagoBiServerEditor extends TableEditor {
 
         if (dialog.open() == Window.OK) {
             return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
-                    .getPort(), dialog.getLogin(), dialog.getPassword(), dialog.getApplicationContext());
+                    .getPort(), dialog.getLogin(), dialog.getPassword());
         }
         return null;
     }

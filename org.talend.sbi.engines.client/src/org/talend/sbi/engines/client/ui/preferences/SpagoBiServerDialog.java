@@ -52,15 +52,15 @@ public class SpagoBiServerDialog extends Dialog {
     private String shortDescription = ""; //$NON-NLS-1$
 
     private String host = ""; //$NON-NLS-1$
-    
+
     private String port = ""; //$NON-NLS-1$
-    
+
     private String login = ""; //$NON-NLS-1$
-    
+
     private String password = ""; //$NON-NLS-1$
-    
-    private String applicationContext = ""; //$NON-NLS-1$
-    
+
+    // private String applicationContext = ""; //$NON-NLS-1$
+
     private Button okButton;
 
     private Text engineNameText;
@@ -70,13 +70,13 @@ public class SpagoBiServerDialog extends Dialog {
     private Text hostText;
 
     private Text portText;
-    
+
     private Text loginText;
-    
+
     private Text passwordText;
-    
-    private Text applicationContextText;
-    
+
+    // private Text applicationContextText;
+
     private Label errorMessageText;
 
     private boolean creation = false;
@@ -88,7 +88,8 @@ public class SpagoBiServerDialog extends Dialog {
         creation = true;
     }
 
-    public SpagoBiServerDialog(Shell parentShell, List existingServers, String initialEngine, String initialDescription, String initialHost, String initialLogin, String initialPassword,String initialPort, String initialContext) {
+    public SpagoBiServerDialog(Shell parentShell, List existingServers, String initialEngine, String initialDescription,
+            String initialHost, String initialLogin, String initialPassword, String initialPort, String initialContext) {
         super(parentShell);
         this.existingServers = existingServers == null ? Collections.EMPTY_LIST : existingServers;
         engineName = initialEngine == null ? "" : initialEngine; //$NON-NLS-1$
@@ -97,7 +98,7 @@ public class SpagoBiServerDialog extends Dialog {
         port = initialPort == null ? "" : initialPort; //$NON-NLS-1$
         login = initialLogin == null ? "" : initialLogin; //$NON-NLS-1$
         password = initialPassword == null ? "" : initialPassword; //$NON-NLS-1$
-        applicationContext = initialContext == null ? "" : initialContext; //$NON-NLS-1$
+        // applicationContext = initialContext == null ? "" : initialContext; //$NON-NLS-1$
     }
 
     @Override
@@ -109,7 +110,7 @@ public class SpagoBiServerDialog extends Dialog {
             port = portText.getText();
             login = loginText.getText();
             password = passwordText.getText();
-            applicationContext = applicationContextText.getText();
+            // applicationContext = applicationContextText.getText();
 
         } else {
             shortDescription = ""; //$NON-NLS-1$
@@ -118,7 +119,7 @@ public class SpagoBiServerDialog extends Dialog {
             port = ""; //$NON-NLS-1$
             login = ""; //$NON-NLS-1$
             password = ""; //$NON-NLS-1$
-            applicationContext = ""; //$NON-NLS-1$
+            // applicationContext = ""; //$NON-NLS-1$
         }
         super.buttonPressed(buttonId);
     }
@@ -140,7 +141,7 @@ public class SpagoBiServerDialog extends Dialog {
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
         // do this here because setting the text will set enablement on the ok
         // button
-        if (engineName  != null) {
+        if (engineName != null) {
             engineNameText.setText(engineName);
             engineNameText.selectAll();
         }
@@ -162,6 +163,8 @@ public class SpagoBiServerDialog extends Dialog {
     protected Control createDialogArea(Composite parent) {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
+        // ((GridData) composite.getLayoutData()).widthHint = 400;
+        // ((GridData) composite.getLayoutData()).heightHint = 400;
         // create message
         // if (message != null) {
         // Label label = new Label(composite, SWT.WRAP);
@@ -178,106 +181,122 @@ public class SpagoBiServerDialog extends Dialog {
         composite.setLayout(layout);
         Label engineNameLabel = new Label(composite, SWT.None);
         engineNameLabel.setText(Messages.getString("SpagoBiServerDialog.engineNameText")); //$NON-NLS-1$
-        GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-        engineNameLabel.setLayoutData(data);
+        // GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL |
+        // GridData.VERTICAL_ALIGN_CENTER);
+        // engineNameLabel.setLayoutData(data);
         engineNameLabel.setFont(parent.getFont());
         engineNameText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        GridData data1 = new GridData(GridData.GRAB_HORIZONTAL);
+        data1.minimumWidth = 150;
+        engineNameText.setLayoutData(data1);
         engineNameText.addModifyListener(new ModifyListener() {
+
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
-        
+
         Label shortDescriptionLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        shortDescriptionLabel.setLayoutData(data);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // shortDescriptionLabel.setLayoutData(data);
 
         shortDescriptionLabel = new Label(composite, SWT.WRAP);
         shortDescriptionLabel.setText(Messages.getString("SpagoBiServerDialog.shortDescription")); //$NON-NLS-1$
         shortDescriptionLabel.setFont(parent.getFont());
         shortDescriptionText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        shortDescriptionText.setLayoutData(data1);
         shortDescriptionText.addModifyListener(new ModifyListener() {
+
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
-        
+
         Label hostLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        hostLabel.setLayoutData(data);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // hostLabel.setLayoutData(data);
 
         hostLabel = new Label(composite, SWT.WRAP);
         hostLabel.setText(Messages.getString("SpagoBiServerDialog.host")); //$NON-NLS-1$
         hostLabel.setFont(parent.getFont());
         hostText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        hostText.setLayoutData(data1);
         hostText.addModifyListener(new ModifyListener() {
+
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
 
         Label portLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        portLabel.setLayoutData(data);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // portLabel.setLayoutData(data);
 
         portLabel = new Label(composite, SWT.WRAP);
         portLabel.setText(Messages.getString("SpagoBiServerDialog.port")); //$NON-NLS-1$
         portLabel.setFont(parent.getFont());
         portText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        portText.setLayoutData(data1);
         portText.addModifyListener(new ModifyListener() {
+
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
 
         Label loginLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        loginLabel.setLayoutData(data);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // loginLabel.setLayoutData(data);
 
         loginLabel = new Label(composite, SWT.WRAP);
         loginLabel.setText(Messages.getString("SpagoBiServerDialog.login")); //$NON-NLS-1$
         loginLabel.setFont(parent.getFont());
         loginText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        loginText.setLayoutData(data1);
         loginText.addModifyListener(new ModifyListener() {
+
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
-        
+
         Label passwordLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        passwordLabel.setLayoutData(data);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // passwordLabel.setLayoutData(data);
 
         passwordLabel = new Label(composite, SWT.WRAP);
         passwordLabel.setText(Messages.getString("SpagoBiServerDialog.password")); //$NON-NLS-1$
         passwordLabel.setFont(parent.getFont());
-        passwordText = new Text(composite, SWT.SINGLE | SWT.BORDER| SWT.PASSWORD);
+        passwordText = new Text(composite, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
+        passwordText.setLayoutData(data1);
         passwordText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validateInput();
-            }
-        });
-        
-        Label applicationContextLabel = new Label(composite, SWT.WRAP);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        applicationContextLabel.setLayoutData(data);
 
-        applicationContextLabel = new Label(composite, SWT.WRAP);
-        applicationContextLabel.setText(Messages.getString("SpagoBiServerDialog.applicationContext")); //$NON-NLS-1$
-        applicationContextLabel.setFont(parent.getFont());
-        applicationContextText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        applicationContextText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 validateInput();
             }
         });
+
+        // Label applicationContextLabel = new Label(composite, SWT.WRAP);
+        // data = new GridData(GridData.FILL_HORIZONTAL);
+        // applicationContextLabel.setLayoutData(data);
+        //
+        // applicationContextLabel = new Label(composite, SWT.WRAP);
+        // applicationContextLabel.setText(Messages.getString("SpagoBiServerDialog.applicationContext")); //$NON-NLS-1$
+        // applicationContextLabel.setFont(parent.getFont());
+        // applicationContextText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        // applicationContextText.addModifyListener(new ModifyListener() {
+        //
+        // public void modifyText(ModifyEvent e) {
+        // validateInput();
+        // }
+        // });
 
         errorMessageText = new Label(composite, SWT.NONE);
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        errorMessageText.setLayoutData(data);
-//        errorMessageText.setLayoutData(data); 
+        // GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        // errorMessageText.setLayoutData(data);
+        // errorMessageText.setLayoutData(data);
         errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        
+
         applyDialogFont(composite);
         return composite;
     }
@@ -302,9 +321,10 @@ public class SpagoBiServerDialog extends Dialog {
             errorMessage = "Login cannot be empty."; //$NON-NLS-1$
         } else if (passwordText.getText().equals("")) { //$NON-NLS-1$
             errorMessage = "Password cannot be empty."; //$NON-NLS-1$
-        } else if (applicationContextText.getText().equals("")) { //$NON-NLS-1$
-            errorMessage = "Application context cannot be empty."; //$NON-NLS-1$
         }
+        // else if (applicationContextText.getText().equals("")) { //$NON-NLS-1$
+        // errorMessage = "Application context cannot be empty."; //$NON-NLS-1$
+        // }
         setErrorMessage(errorMessage);
     }
 
@@ -321,7 +341,6 @@ public class SpagoBiServerDialog extends Dialog {
         }
     }
 
-
     /**
      * Getter for engineName.
      * 
@@ -330,7 +349,7 @@ public class SpagoBiServerDialog extends Dialog {
     public String getEngineName() {
         return this.engineName;
     }
-    
+
     /**
      * Getter for shortDescription.
      * 
@@ -348,7 +367,7 @@ public class SpagoBiServerDialog extends Dialog {
     public String getHost() {
         return this.host;
     }
-    
+
     /**
      * Getter for port.
      * 
@@ -366,7 +385,7 @@ public class SpagoBiServerDialog extends Dialog {
     public String getLogin() {
         return this.login;
     }
-    
+
     /**
      * Getter for password.
      * 
@@ -374,14 +393,14 @@ public class SpagoBiServerDialog extends Dialog {
      */
     public String getPassword() {
         return this.password;
-    }    
+    }
 
     /**
      * Getter for applicationContext.
      * 
      * @return the applicationContext
      */
-    public String getApplicationContext() {
-        return this.applicationContext;
-    }    
+    // public String getApplicationContext() {
+    // return this.applicationContext;
+    // }
 }
