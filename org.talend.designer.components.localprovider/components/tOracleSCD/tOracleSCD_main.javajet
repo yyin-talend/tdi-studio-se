@@ -47,6 +47,12 @@ if (inMetadata != null && metadata != null) {
     String inConnName = inConnection.getName();
     
     // SCD parameters
+	String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");
+	String surrogateKeyCreation = ElementParameterParser.getValue(node, "__SK_CREATION__");
+	String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
+	String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
+	String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+	
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
 	
@@ -102,7 +108,7 @@ if (inMetadata != null && metadata != null) {
 	// Debug mode
 	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
     
-    // Inner class StatementGenerator
+    // Inner class StatementGenerator (@see tMysqlOutput#Operation)
 	class StatementGenerator {
 		public void generateSetStatement(String cid, String statement, String value,
 										 int counter, String typeToGenerate) {
@@ -278,6 +284,26 @@ if (inMetadata != null && metadata != null) {
 		// Insert new source id
 		<%
 		int colposition = 1;
+		
+		// Surrogate key
+		if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+			for (IMetadataColumn column : metadata.getListColumns()) {
+		        String colname = column.getLabel();
+				
+		        if (colname.equals(surrogateKeyField)) {
+		        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+		        	
+		        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
+			        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
+			        } else if (surrogateKeyCreation.equals("ROUTINE")) {
+			        	generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
+			        } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
+			        	generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid + "++", colposition++, typeToGenerate);
+			        }
+		        }
+		    }
+		}
+		
     	for (IMetadataColumn column : metadata.getListColumns()) {
 	        String colname = column.getLabel();
 			
@@ -434,6 +460,26 @@ if (inMetadata != null && metadata != null) {
     			l2Query_<%=cid%>.executeUpdate();
     			<%
 				colposition = 1;
+				
+				// Surrogate key
+				if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+					for (IMetadataColumn column : metadata.getListColumns()) {
+				        String colname = column.getLabel();
+						
+				        if (colname.equals(surrogateKeyField)) {
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				        	
+				        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
+					        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
+					        } else if (surrogateKeyCreation.equals("ROUTINE")) {
+					        	generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
+					        } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
+					        	generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid + "++", colposition++, typeToGenerate);
+					        }
+				        }
+				    }
+				}
+				
 				for (IMetadataColumn column : metadata.getListColumns()) {
 			        String colname = column.getLabel();
 					

@@ -82,6 +82,12 @@ if (inMetadata != null && metadata != null) {
 	}
 	
 	// SCD parameters
+	String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");
+	String surrogateKeyCreation = ElementParameterParser.getValue(node, "__SK_CREATION__");
+	String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
+	String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
+	String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+	
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
 	
@@ -393,7 +399,55 @@ if (inMetadata != null && metadata != null) {
         cache_<%=cid%>.put(sk_<%=cid%>, row_<%=cid%>);
 	}
 	
+	statement_<%=cid%>.close();
+	
 	<%
+	if (surrogateKeyCreation.equals("TABLE_MAX")) {
+		for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(surrogateKeyField)) {
+	            %>
+	            <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> nextSurrogateKey_<%=cid%> = 1;
+				<%
+			}
+		}
+		%>
+		if (cache_<%=cid%>.size() > 0) {
+			// Get table max value for surrogate key
+			dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyField%>) FROM " + <%=dbtable%>;
+			statement_<%=cid%> = connection_<%=cid%>.createStatement();
+			resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid%>);
+			<%
+	    	for (IMetadataColumn column : metadata.getListColumns()) {
+		        String colname = column.getLabel();
+				
+		        if (colname.equals(surrogateKeyField)) {
+		            // Search Java type in order to call fitted method getXxx on ResultSet
+		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+		            
+		            if (typeToGenerate.equals("Integer")) {
+						typeToGenerate = "Int";
+					} else {
+						typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+					}
+			  		
+					%>
+					if (resultSet_<%=cid%>.next() && resultSet_<%=cid%>.getObject(1) != null) {
+						nextSurrogateKey_<%=cid%> = resultSet_<%=cid%>.get<%=typeToGenerate%>(1) + 1;
+	 			 	}
+	 				<%
+		        }
+			}
+			%>
+	    }
+	    <%
+	}
+	
+	%>
+	statement_<%=cid%>.close();
+	<%
+	
 	if (debug) {
 		%>
 		System.out.println("[<%=cid%>] comparison cache loaded");
@@ -404,6 +458,24 @@ if (inMetadata != null && metadata != null) {
     int colposition = 1;
     List colnames = new ArrayList();
     List parameters = new ArrayList();
+	
+	// Surrogate key
+	if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+		for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(surrogateKeyField)) {
+	            colnames.add(surrogateKeyField);
+	            if (surrogateKeyCreation.equals("DB_SEQUENCE")) {
+	            	parameters.add(skSequence + ".nextval");
+	            } else {
+		            parameters.add("?");
+	            }
+	            colposition++;
+	            break;
+	        }
+	    }
+    }
 	
     // First we iterate on the input schema columns...
     for (IMetadataColumn column : metadata.getListColumns()) {
@@ -447,8 +519,8 @@ if (inMetadata != null && metadata != null) {
     
     %>
     // Build prepared statements
-    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=colnamesString%>) " +
-    	"VALUES (<%=parametersString%>)";
+    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyField + ", " : ""%><%=colnamesString%>) " +
+    	"VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "\" + " + skSequence + " + \".nextval, " : ""%><%=parametersString%>)";
     java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
     insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
     <%
@@ -515,7 +587,8 @@ if (inMetadata != null && metadata != null) {
 	            	// Search previous value field matching current value field
 					for (Map<String, String> l3field : l3fields) {
 						if (l3field.get("CURRENT_VALUE").equals(colname)) {
-			            	l3fieldClauses.add(l3field.get("PREV_VALUE") + " = ?");
+			            	l3fieldClauses.add(
+			            		l3field.get("PREV_VALUE") + " = ?");
 							break;
 						}
 					}

@@ -53,10 +53,10 @@ if (inMetadata != null && metadata != null) {
 	String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 	String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	String useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
 	// Create database connection
-	if (useExistingConnection.equals("true")) {
+	if (useExistingConnection) {
 		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 		String connectionName = "conn_" + connection;
 		%>
@@ -71,6 +71,12 @@ if (inMetadata != null && metadata != null) {
 	}
 	
 	// SCD parameters
+	String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");
+	String surrogateKeyCreation = ElementParameterParser.getValue(node, "__SK_CREATION__");
+	String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
+	String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
+	String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+	
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
 	
@@ -396,7 +402,55 @@ if (inMetadata != null && metadata != null) {
         cache_<%=cid%>.put(sk_<%=cid%>, row_<%=cid%>);
 	}
 	
+	statement_<%=cid%>.close();
+	
 	<%
+	if (surrogateKeyCreation.equals("TABLE_MAX")) {
+		for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(surrogateKeyField)) {
+	            %>
+	            <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> nextSurrogateKey_<%=cid%> = 1;
+				<%
+			}
+		}
+		%>
+		if (cache_<%=cid%>.size() > 0) {
+			// Get table max value for surrogate key
+			dbquery_<%=cid%> = "SELECT MAX(<%=StringUtils.getMysqlProtectedColumnName(surrogateKeyField)%>) FROM `" + <%=dbtable%> + "`";
+			statement_<%=cid%> = connection_<%=cid%>.createStatement();
+			resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid%>);
+			<%
+	    	for (IMetadataColumn column : metadata.getListColumns()) {
+		        String colname = column.getLabel();
+				
+		        if (colname.equals(surrogateKeyField)) {
+		            // Search Java type in order to call fitted method getXxx on ResultSet
+		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+		            
+		            if (typeToGenerate.equals("Integer")) {
+						typeToGenerate = "Int";
+					} else {
+						typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+					}
+			  		
+					%>
+					if (resultSet_<%=cid%>.first() && resultSet_<%=cid%>.getObject(1) != null) {
+						nextSurrogateKey_<%=cid%> = resultSet_<%=cid%>.get<%=typeToGenerate%>(1) + 1;
+	 			 	}
+	 				<%
+		        }
+			}
+			%>
+	    }
+	    <%
+	}
+	
+	%>
+	statement_<%=cid%>.close();
+	<%
+	
 	if (debug) {
 		%>
 		System.out.println("[<%=cid%>] comparison cache loaded");
@@ -407,6 +461,24 @@ if (inMetadata != null && metadata != null) {
     int colposition = 1;
     List colnames = new ArrayList();
     List parameters = new ArrayList();
+	
+	// Surrogate key
+	if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+		for (IMetadataColumn column : metadata.getListColumns()) {
+	        String colname = column.getLabel();
+			
+	        if (colname.equals(surrogateKeyField)) {
+	            colnames.add(StringUtils.getMysqlProtectedColumnName(surrogateKeyField));
+	            if (surrogateKeyCreation.equals("DB_SEQUENCE")) {
+	            	parameters.add(skSequence + ".nextval");
+	            } else {
+		            parameters.add("?");
+	            }
+	            colposition++;
+	            break;
+	        }
+	    }
+    }
 	
     // First we iterate on the input schema columns...
     for (IMetadataColumn column : metadata.getListColumns()) {
@@ -450,8 +522,8 @@ if (inMetadata != null && metadata != null) {
     
     %>
     // Build prepared statements
-    String insertQueryString_<%=cid%> = "INSERT INTO `" + <%=dbtable%> + "` (<%=colnamesString%>) " +
-    	"VALUES (<%=parametersString%>)";
+    String insertQueryString_<%=cid%> = "INSERT INTO `" + <%=dbtable%> + "` (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? StringUtils.getMysqlProtectedColumnName(surrogateKeyField) + ", " : ""%><%=colnamesString%>) " +
+    	"VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "\" + " + skSequence + " + \".nextval, " : ""%><%=parametersString%>)";
     java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
     insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
     <%

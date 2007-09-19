@@ -103,9 +103,57 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SURROGATE_KEY"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="61"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_CREATION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="61"
+    >
+      <ITEMS DEFAULT="AUTO_INCREMENT">
+        <ITEM NAME="AUTO_INCREMENT"   VALUE="AUTO_INCREMENT" />
+        <ITEM NAME="INPUT_FIELD"      VALUE="INPUT_FIELD"/>
+        <ITEM NAME="ROUTINE"          VALUE="ROUTINE"/>
+        <ITEM NAME="TABLE_MAX"        VALUE="TABLE_MAX"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SK_DB_SEQUENCE"
+      FIELD="TEXT"
+      NUM_ROW="61"
+      SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_INPUT_FIELD"
+      FIELD="PREV_COLUMN_LIST"
+      NUM_ROW="61"
+      SHOW_IF="SK_CREATION == 'INPUT_FIELD'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_ROUTINE"
+      FIELD="TEXT"
+      NUM_ROW="61"
+      SHOW_IF="SK_CREATION == 'ROUTINE'"
+    >
+      <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
-      NUM_ROW="61"
+      NUM_ROW="62"
       NB_LINES="2"
     >
       <ITEMS>
@@ -204,9 +252,30 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="USE_L3"
+      FIELD="CHECK"
+      NUM_ROW="100"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L3_FIELDS"
+      FIELD="TABLE"
+      NUM_ROW="110"
+      NB_LINES="5"
+      SHOW_IF="USE_L3 == 'true'"
+    >
+      <ITEMS>
+        <ITEM NAME="CURRENT_VALUE" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
-      NUM_ROW="90"
+      NUM_ROW="120"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

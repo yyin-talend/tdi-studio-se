@@ -153,9 +153,57 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SURROGATE_KEY"
+      FIELD="COLUMN_LIST"
+      NUM_ROW="71"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_CREATION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="71"
+    >
+      <ITEMS DEFAULT="AUTO_INCREMENT">
+        <ITEM NAME="DB_SEQUENCE"      VALUE="DB_SEQUENCE"/>
+        <ITEM NAME="INPUT_FIELD"      VALUE="INPUT_FIELD"/>
+        <ITEM NAME="ROUTINE"          VALUE="ROUTINE"/>
+        <ITEM NAME="TABLE_MAX"        VALUE="TABLE_MAX"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SK_DB_SEQUENCE"
+      FIELD="TEXT"
+      NUM_ROW="71"
+      SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_INPUT_FIELD"
+      FIELD="PREV_COLUMN_LIST"
+      NUM_ROW="71"
+      SHOW_IF="SK_CREATION == 'INPUT_FIELD'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="SK_ROUTINE"
+      FIELD="TEXT"
+      NUM_ROW="71"
+      SHOW_IF="SK_CREATION == 'ROUTINE'"
+    >
+      <DEFAULT>Numeric.sequence("seq", 1, 1)</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
       NAME="SOURCE_KEYS"
       FIELD="TABLE"
-      NUM_ROW="71"
+      NUM_ROW="72"
       NB_LINES="2"
     >
       <ITEMS>
