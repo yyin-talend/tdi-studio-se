@@ -204,17 +204,25 @@ class Transfer{
 			 	//column DataDefine
 			 	
 			 	MappingTypeRetriever mtr=MetadataTalendType.getMappingTypeRetriever(dbmsId);		 	
+			 
+			 
+			 
 			 	
 					if(column.getLength()==null) {column.setLength(0);};
 					if(column.getPrecision()==null) {column.setPrecision(0);};
-			 		if(column.getLength()!=0&&column.getPrecision()==0){
-			 				if(!mtr.isLengthIgnored(dbmsId,column.getType()))
+			 		if(column.getLength()!=0&&column.getPrecision()==0){     //only Length
+			 				if(!mtr.isLengthIgnored(dbmsId,column.getType()))	//and Length is not ignored
 			 					sql=sql+"("+column.getLength()+")";		 				
-			 		}else if(column.getLength()!=0&&column.getLength()!=0){
+			 		}else if(column.getLength()!=0&&column.getLength()!=0){		//Length and Precision not null
 			 				if(mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))
-			 					sql=sql+"("+column.getLength()+")";	
-			 				else if(!mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))	
-			 					sql=sql+"("+column.getPrecision()+","+column.getLength()+")";
+			 					sql=sql+"("+column.getLength()+")";				//only Precision is ignored
+			 				else if(!mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType())){
+			 					// Precision and Length are not ignored	
+			 					if(mtr.isPreBeforeLength(dbmsId,column.getType()))
+								 	sql=sql+"("+column.getPrecision()+","+column.getLength()+")"; 
+								else
+								 	sql=sql+"("+column.getLength()+","+column.getPrecision()+")"; 				
+			 				}
 			 				else
 			 					sql=sql;					 				 			
 			 		}		 	
@@ -366,6 +374,11 @@ class Transfer{
 
 		stmt<%=cid%> = con<%=cid%>.createStatement();
 	
+	
+	
+	
+	
+	
  
 <%//  special action / Main action
 	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
@@ -399,6 +412,13 @@ class Transfer{
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);
 <%}
+
+
+
+
+
+
+
 //close
 	if(dbType.equals("HSQLdb")){
 %>
