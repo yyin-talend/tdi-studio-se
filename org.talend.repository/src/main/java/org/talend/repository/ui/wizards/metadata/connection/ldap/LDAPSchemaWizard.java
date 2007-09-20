@@ -54,6 +54,7 @@ import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -240,17 +241,10 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             ldapSchemaWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage3);
 
-            ldapSchemaWizardPage4 = new LDAPSchemaWizardPage(4, connectionItem, isRepositoryObjectEditable(), null);
-            ldapSchemaWizardPage4.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
-            ldapSchemaWizardPage4.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
-            addPage(ldapSchemaWizardPage4);
-
             ldapSchemaWizardPage0.setPageComplete(false);
             ldapSchemaWizardPage1.setPageComplete(false);
             ldapSchemaWizardPage2.setPageComplete(false);
             ldapSchemaWizardPage3.setPageComplete(false);
-            ldapSchemaWizardPage4.setPageComplete(true);
         }
     }
 

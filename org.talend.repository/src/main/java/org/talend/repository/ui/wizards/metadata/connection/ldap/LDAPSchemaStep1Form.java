@@ -164,11 +164,12 @@ public class LDAPSchemaStep1Form extends AbstractForm {
                 if (!event.text.matches("[0-9]*")) {
                     event.doit = false;
                 }
-                if (portCombo.getText().length() > 4 && event.text.length() > 0) {
+                if (portCombo.getText().length() > 6 && event.text.length() > 0) {
                     event.doit = false;
+                } else {
+                    checkFieldsValue();
+                    connection.setPort(portCombo.getText().trim());
                 }
-                checkFieldsValue();
-                connection.setPort(portCombo.getText().trim());
             }
         });
         portCombo.addModifyListener(new ModifyListener() {
