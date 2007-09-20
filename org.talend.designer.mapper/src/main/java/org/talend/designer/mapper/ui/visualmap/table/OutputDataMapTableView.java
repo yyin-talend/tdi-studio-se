@@ -44,6 +44,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
+import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -71,7 +72,9 @@ public class OutputDataMapTableView extends DataMapTableView {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
      */
     @Override
@@ -79,15 +82,17 @@ public class OutputDataMapTableView extends DataMapTableView {
         createTableForColumns();
     }
 
-
     @Override
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns,
+                column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
 
             public String get(OutputColumnTableEntry bean) {
+                expressionCellEditor.setBean(bean);
                 return bean.getExpression();
             }
 
@@ -100,7 +105,6 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(!mapperManager.componentIsReadOnly());
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -253,9 +257,12 @@ public class OutputDataMapTableView extends DataMapTableView {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
         column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.filterCondition")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForFilters,
+                column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
             public String get(FilterTableEntry bean) {
+                expressionCellEditor.setBean(bean);
                 return bean.getExpression();
             }
 
@@ -267,7 +274,6 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
         column.setWeight(99);
         column.setMoveable(false);
         column.setResizable(false);
@@ -339,7 +345,9 @@ public class OutputDataMapTableView extends DataMapTableView {
         return (OutputTable) abstractDataMapTable;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
      */
     @Override
@@ -357,7 +365,9 @@ public class OutputDataMapTableView extends DataMapTableView {
         return new Zone[] { Zone.INPUTS };
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
      */
     @Override
@@ -367,5 +377,4 @@ public class OutputDataMapTableView extends DataMapTableView {
         checkChangementsAfterEntryModifiedOrAdded(false);
     }
 
-    
 }

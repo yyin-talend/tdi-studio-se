@@ -23,9 +23,11 @@ package org.talend.designer.mapper.model.tableentry;
 
 import java.util.List;
 
+import org.talend.commons.ui.swt.tableviewer.celleditor.IDataBean;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -33,7 +35,9 @@ import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
  * $Id$
  * 
  */
-public abstract class DataMapTableEntry implements ITableEntry {
+public abstract class DataMapTableEntry implements ITableEntry, IDataBean {
+
+    private List<Variable> vars;
 
     private String expression;
 
@@ -109,5 +113,30 @@ public abstract class DataMapTableEntry implements ITableEntry {
         this.problems = problems;
     }
 
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.tableviewer.celleditor.IDataBean#getBeanData()
+     */
+    public Object getBeanData() {
+        return getVars();
+    }
+
+    /**
+     * Getter for vars.
+     * 
+     * @return the vars
+     */
+    public List<Variable> getVars() {
+        return this.vars;
+    }
+
+    /**
+     * Sets the vars.
+     * 
+     * @param vars the vars to set
+     */
+    public void setVars(List<Variable> vars) {
+        this.vars = vars;
+    }
 }

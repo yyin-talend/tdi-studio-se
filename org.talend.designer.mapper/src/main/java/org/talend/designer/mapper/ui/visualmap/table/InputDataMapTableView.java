@@ -21,14 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
-import java.util.List;
-
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,32 +30,24 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
-import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
-import org.talend.commons.ui.utils.ControlUtils;
+import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.i18n.Messages;
-import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.ILookupType;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
-import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
-import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvider;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -113,9 +98,12 @@ public class InputDataMapTableView extends DataMapTableView {
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Expr")); //$NON-NLS-1$
             column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+            final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(
+                    tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
 
                 public String get(InputColumnTableEntry bean) {
+                    expressionCellEditor.setBean(bean);
                     return bean.getExpression();
                 }
 
@@ -127,7 +115,6 @@ public class InputDataMapTableView extends DataMapTableView {
             });
             column.setModifiable(!mapperManager.componentIsReadOnly());
             column.setDefaultInternalValue(""); //$NON-NLS-1$
-            createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
             column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
             column.setImageProvider(new IColumnImageProvider<InputColumnTableEntry>() {
 
@@ -247,8 +234,7 @@ public class InputDataMapTableView extends DataMapTableView {
             innerJoinCheck = new ToolItem(toolBarActions, SWT.CHECK);
             innerJoinCheck.setEnabled(!mapperManager.componentIsReadOnly());
             realToolbarSize.x += 70;
-            innerJoinCheck.setToolTipText(Messages
-                    .getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
+            innerJoinCheck.setToolTipText(Messages.getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();
             // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
             // ImageInfo.UNCHECKED_ICON);
@@ -357,6 +343,7 @@ public class InputDataMapTableView extends DataMapTableView {
                          */
                         menuItem.addSelectionListener(new SelectionAdapter() {
 
+                            @Override
                             public void widgetSelected(SelectionEvent e) {
                                 MenuItem menuItem = (MenuItem) e.widget;
                                 selectMenuItem(menuItem);
@@ -442,7 +429,7 @@ public class InputDataMapTableView extends DataMapTableView {
         if (innerJoinCheck != null) {
             updateViewAfterChangeInnerJoinCheck();
         }
-        
+
         String text = matchingMode.getLabel();
         dropDownItem.setText(text);
         dropDownItem.setToolTipText(text);
@@ -571,6 +558,7 @@ public class InputDataMapTableView extends DataMapTableView {
     /**
      * DOC amaumont Comment method "init".
      */
+    @Override
     public void loaded() {
 
         super.loaded();

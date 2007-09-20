@@ -41,6 +41,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
+import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
@@ -59,7 +60,6 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
-import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -78,19 +78,19 @@ public class VarsDataMapTableView extends DataMapTableView {
 
     protected ToolItem moveDownEntryItem;
 
-    public VarsDataMapTableView(Composite parent, int style, VarsTable abstractDataMapTable,
-            MapperManager mapperManager) {
+    public VarsDataMapTableView(Composite parent, int style, VarsTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
      */
     @Override
     protected void createContent() {
         createTableForColumns();
     }
-
 
     @Override
     protected void addListeners() {
@@ -138,9 +138,12 @@ public class VarsDataMapTableView extends DataMapTableView {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns,
+                column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 
             public String get(VarTableEntry bean) {
+                expressionCellEditor.setBean(bean);
                 return bean.getExpression();
             }
 
@@ -152,7 +155,6 @@ public class VarsDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(!mapperManager.componentIsReadOnly());
         column.setDefaultInternalValue(""); //$NON-NLS-1$
-        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         if (codeLanguage == ECodeLanguage.JAVA) {
             column.setWeight(40);
         } else {
@@ -326,6 +328,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         return false;
     }
 
+    @Override
     protected void createToolItems() {
 
         // /////////////////////////////////////////////////////////////////
@@ -394,7 +397,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             public void widgetSelected(SelectionEvent e) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewerCreatorForColumns.getTableViewer()
                         .getSelection();
-                List<ITableEntry> selectedBeans = (List<ITableEntry>) selection.toList();
+                List<ITableEntry> selectedBeans = selection.toList();
 
                 for (ITableEntry entry : selectedBeans) {
                     mapperManager.removeTableEntry(entry);
@@ -423,7 +426,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             public void widgetSelected(SelectionEvent e) {
 
-                AbstractExtendedTableViewer viewer = (AbstractExtendedTableViewer) getExtendedTableViewerForColumns();
+                AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
                 ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(),
                         true, viewer.getTableViewerCreator().getTable().getSelectionIndices());
                 viewer.executeCommand(moveCommand);
@@ -445,7 +448,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             public void widgetSelected(SelectionEvent e) {
 
-                AbstractExtendedTableViewer viewer = (AbstractExtendedTableViewer) getExtendedTableViewerForColumns();
+                AbstractExtendedTableViewer viewer = getExtendedTableViewerForColumns();
                 ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(),
                         false, viewer.getTableViewerCreator().getTable().getSelectionIndices());
                 viewer.executeCommand(moveCommand);
@@ -456,7 +459,9 @@ public class VarsDataMapTableView extends DataMapTableView {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
      */
     @Override
@@ -464,7 +469,9 @@ public class VarsDataMapTableView extends DataMapTableView {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getValidZonesForExpressionFilterField()
      */
     @Override
@@ -472,7 +479,9 @@ public class VarsDataMapTableView extends DataMapTableView {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
      */
     @Override
@@ -480,6 +489,4 @@ public class VarsDataMapTableView extends DataMapTableView {
         super.loaded();
     }
 
-    
-    
 }
