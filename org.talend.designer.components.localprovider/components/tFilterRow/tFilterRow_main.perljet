@@ -119,12 +119,16 @@ if (
                 
             advanced = advanced.replaceAll(
                 "\\$input_row\\[",
-                "\\$"+ inputRowName +"->["
+                "\\$"+ inputRowName +"["
             );
                 
             advanced = locationUtils.replaceColumnNameToConstantName(
                 advanced,
                 (EntryLocation[])locations.toArray(new EntryLocation[0])
+            );
+            advanced = advanced.replaceAll(
+                "\\$"+ inputRowName +"\\[",
+                "\\$"+ inputRowName +"->["
             );
         
             // In case the user would make some tricky Perl things, he can use
