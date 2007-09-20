@@ -21,6 +21,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
 
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+
         String commitEvery = ElementParameterParser.getValue(
             node,
             "__COMMIT_EVERY__"
@@ -151,11 +169,15 @@ my $new_nb_line_<%=cid%> =
   
 $nb_line_<%=cid%> = $new_nb_line_<%=cid%>;
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
 if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
     $nb_line_current_commit_<%=cid%> = 0;
-    $dbh_<%=cid %>->commit;
+    $<%=dbh%>->commit;
 }
 <%
+        }
     }
 }
 %>

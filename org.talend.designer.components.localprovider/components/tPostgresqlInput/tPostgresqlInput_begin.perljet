@@ -30,6 +30,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ENCODING__"
         );
         String query = ElementParameterParser.getValue(node, "__QUERY__");
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
 %>
 
 use DBI;
@@ -63,7 +81,11 @@ my %desc_<%=cid %> = (
 
 my $nb_line_<%=cid%> = 0;
 
-my $dbh_<%=cid %> = DBI->connect(
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+
+my $<%=dbh%> = DBI->connect(
     sprintf(
         'DBI:Pg:dbname=%s;host=%s;port=%s;',
         <%=dbname %>,
@@ -75,16 +97,25 @@ my $dbh_<%=cid %> = DBI->connect(
 )
     or die "can't connect to database";
 
+{
+    my $sth_<%=cid %>;
+    my $query;
+    
+    $query = '
+    set names \''.<%=encoding %>.'\'
+    ';
+    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
+    $sth_<%=cid %>->execute();
+}
+
+<%
+        }
+%>
+
 my $sth_<%=cid %>;
 my $query;
 
-$query = '
-set names \''.<%=encoding %>.'\'
-';
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
-$sth_<%=cid %>->execute();
-
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+$sth_<%=cid %> = $<%=dbh%>->prepare(
     <%=query%>
 );
 
