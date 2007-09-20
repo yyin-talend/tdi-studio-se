@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -324,7 +324,15 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 //$NON-NLS-2$
 
                 // refresh TablePreview on this step
-                ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
+                try {
+                    ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
+                }catch(Exception e)
+                {
+                    setException(e);
+                    log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                    MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
+                    return;
+                }
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
@@ -445,7 +453,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
      * refreshPreview use ShadowProcess to refresh the preview.
      */
     void refreshPreview() {
-        processor.execute();
+            processor.execute();
     }
 
     /**

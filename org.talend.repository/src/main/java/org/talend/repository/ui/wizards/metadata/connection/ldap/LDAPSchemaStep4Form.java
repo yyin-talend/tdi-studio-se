@@ -39,6 +39,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -68,6 +69,7 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
  * The class is used for LDAP schema on Repository View. <br/>
+ * 
  * @author ftang, 18/09/2007
  * 
  */
@@ -96,7 +98,7 @@ public class LDAPSchemaStep4Form extends AbstractForm {
     private boolean readOnly;
 
     private ConnectionItem connectionItem;
-    
+
     private int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
             ITalendCorePrefConstants.PREVIEW_LIMIT);
 
@@ -108,8 +110,7 @@ public class LDAPSchemaStep4Form extends AbstractForm {
     public LDAPSchemaStep4Form(Composite parent, ConnectionItem connectionItem) {
         super(parent, SWT.NONE, null);
         this.connectionItem = connectionItem;
-        this.metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables()
-        .get(0);
+        this.metadataTable = (MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection()).getTables().get(0);
         setupForm();
     }
 
@@ -291,6 +292,7 @@ public class LDAPSchemaStep4Form extends AbstractForm {
 
         // add listener to tableMetadata (listen the event of the toolbars)
         tableEditorView.getMetadataEditor().addAfterOperationListListener(new IListenableListListener() {
+
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
             }
@@ -379,7 +381,13 @@ public class LDAPSchemaStep4Form extends AbstractForm {
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
-            String[] fields = csvRows.get(0);
+            String[] fields = null;
+            try {
+                fields = csvRows.get(0);
+            } catch (Exception e) {
+                MessageBoxExceptionHandler.process(e);
+                return;
+            }
             // int numberOfCol = fields.size();
 
             Integer numberOfCol = getRightFirstRow(csvRows);
@@ -504,7 +512,7 @@ public class LDAPSchemaStep4Form extends AbstractForm {
         }
         return numbersOfColumns;
     }
-    
+
     /*
      * (non-Javadoc)
      * 

@@ -31,7 +31,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.swt.widgets.MessageBox;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
@@ -120,10 +119,10 @@ public class LDAPConnectionUtils {
 
             boolean isGetBaseDNsFromRoot = connection.isGetBaseDNsFromRoot();
 
-            if (!isGetBaseDNsFromRoot) {
+            if (isGetBaseDNsFromRoot) {
                 EList baseDNList = baseDNs;
                 for (Object tempBaseDN : baseDNList) {
-                    attributeList.addAll(getAttributeList(searchFilter, searchCtls, searchBase));
+                    attributeList.addAll(getAttributeList(searchFilter, searchCtls, (String) tempBaseDN));
                 }
             } else {
                 attributeList.addAll(getAttributeList(searchFilter, searchCtls, searchBase));
@@ -178,7 +177,7 @@ public class LDAPConnectionUtils {
                     }
 
                 } catch (NamingException e) {
-                    // System.err.println("Problem listing membership: " + e);
+                    MessageBoxExceptionHandler.process(e);
                 }
             }
         }
@@ -217,7 +216,7 @@ public class LDAPConnectionUtils {
             return list;
 
         } catch (NamingException e) {
-            MessageBoxExceptionHandler.process(e);
+            // MessageBoxExceptionHandler.process(e);
             return null;
         }
     }
