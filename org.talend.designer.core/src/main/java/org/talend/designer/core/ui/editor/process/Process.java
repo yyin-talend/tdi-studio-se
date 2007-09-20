@@ -1915,6 +1915,25 @@ public class Process extends Element implements IProcess {
                 if (componentName == null) { // means all nodes will be
                     // returned
                     matchingNodes.add(node);
+                } else if (componentName.startsWith("FAMILY:")) {
+                    String familly = componentName.substring("FAMILY:".length());
+                    if (node.getComponent().getFamily().startsWith(familly)) {
+                        matchingNodes.add(node);
+                    }
+                } else if (componentName.startsWith("REGEXP:")) {
+                    Perl5Matcher matcher = new Perl5Matcher();
+                    Perl5Compiler compiler = new Perl5Compiler();
+                    Pattern pattern;
+
+                    String regexp = componentName.substring("REGEXP:".length());
+                    try {
+                        pattern = compiler.compile(regexp); //$NON-NLS-1$
+                        if (matcher.matches(node.getComponent().getName(), pattern)) {
+                            matchingNodes.add(node);
+                        }
+                    } catch (MalformedPatternException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if ((node.getComponent().getName() != null)
                         && (node.getComponent().getName().compareTo(componentName)) == 0) {
                     matchingNodes.add(node);
