@@ -133,10 +133,12 @@ public class FunctionManagerExt extends FunctionManager {
         Map<String, List<Variable>> var = new HashMap<String, List<Variable>>();
         String[] parameter = str.split(MetadataColumnExt.PARAMETER_END);
         for (String string : parameter) {
-            String parameterName = string.substring(MetadataColumnExt.PARAMETER_BEGIN.length(), string
-                    .indexOf(MetadataColumnExt.VARIABLE_BEGIN));
-            String[] variables = string.substring(string.indexOf(MetadataColumnExt.VARIABLE_BEGIN)).split(
-                    MetadataColumnExt.VARIABLE_END);
+            int indexOf = string.indexOf(MetadataColumnExt.VARIABLE_BEGIN);
+            if (indexOf == -1) {
+                continue;
+            }
+            String parameterName = string.substring(MetadataColumnExt.PARAMETER_BEGIN.length(), indexOf);
+            String[] variables = string.substring(indexOf).split(MetadataColumnExt.VARIABLE_END);
             List<Variable> varList = new ArrayList<Variable>();
             for (String string2 : variables) {
                 String[] vv = string2.substring(MetadataColumnExt.VARIABLE_BEGIN.length()).split("=>");
