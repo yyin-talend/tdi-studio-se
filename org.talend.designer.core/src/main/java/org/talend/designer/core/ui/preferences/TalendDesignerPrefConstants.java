@@ -50,4 +50,8 @@ public class TalendDesignerPrefConstants {
     public static final String LARGE_ICONS_SIZE = "largeIconsSize"; //$NON-NLS-1$
 
     public static final String MEMO_TEXT_FONT = "memoTextFont "; //$NON-NLS-1$
+
+    public static final String EDITOR_ANTIALIASING = "editorAntialiasing "; //$NON-NLS-1$
+
+    public static final String EDITOR_INTERPOLATION = "editorInterpolation "; //$NON-NLS-1$
 }

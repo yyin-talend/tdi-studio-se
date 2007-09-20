@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.draw2d.ConnectionLayer;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -34,6 +35,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -41,12 +43,15 @@ import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -66,6 +71,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @Override
     public List getModelChildren() {
         return ((Process) this.getModel()).getElements();
     }
@@ -75,6 +81,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#activate()
      */
+    @Override
     public void activate() {
         if (isActive()) {
             return;
@@ -88,6 +95,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
      */
+    @Override
     public void deactivate() {
         if (!isActive()) {
             return;
@@ -101,6 +109,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
+    @Override
     protected IFigure createFigure() {
         Figure figure = new FreeformLayer();
         figure.setLayoutManager(new FreeformLayout());
@@ -130,6 +139,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
      */
+    @Override
     public Object getAdapter(final Class adapter) {
         if (adapter.equals(RepositoryNode.class)) {
             if (node == null) {
@@ -164,7 +174,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
                 return null;
             }
             if (snapStrategies.size() == 1) {
-                return (SnapToHelper) snapStrategies.get(0);
+                return snapStrategies.get(0);
             }
 
             SnapToHelper[] ss = new SnapToHelper[snapStrategies.size()];
@@ -180,8 +190,24 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     /*
      * (non-Javadoc)
      * 
+     * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
+     */
+    @Override
+    protected void refreshVisuals() {
+        super.refreshVisuals();
+        if (DesignerPlugin.getDefault().getPreferenceStore()
+                .getBoolean(TalendDesignerPrefConstants.EDITOR_ANTIALIASING)) {
+            ConnectionLayer cLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
+            cLayer.setAntialias(SWT.ON);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
+    @Override
     protected void createEditPolicies() {
         installEditPolicy(EditPolicy.LAYOUT_ROLE, new ProcessLayoutEditPolicy());
         installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$

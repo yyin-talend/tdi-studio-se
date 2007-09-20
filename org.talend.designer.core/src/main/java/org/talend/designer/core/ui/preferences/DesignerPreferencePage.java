@@ -70,7 +70,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
     private void checkPropertyChanged() {
         if (!oldLargeIconsSize.equals(getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE))) {
-           TalendEditor.resetPaletteRoot();
+            TalendEditor.resetPaletteRoot();
         }
     }
 
@@ -78,6 +78,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
      * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to manipulate various
      * types of preferences. Each field editor knows how to save and restore itself.
      */
+    @Override
     public void createFieldEditors() {
         StringFieldEditor labelField;
         StringFieldEditor hintField;
@@ -101,17 +102,28 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         addField(showHint);
         addField(displayComponent);
 
-        DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
-                Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
+        DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(
+                TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Messages
+                        .getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
         addField(compDefaultFileDir);
 
         addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
                 .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
-        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
-                Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { "24 pixels", "" + 24 },
-                        { "32 pixels", "" + 32 } }, getFieldEditorParent());
+        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(
+                TalendDesignerPrefConstants.LARGE_ICONS_SIZE, Messages
+                        .getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] {
+                        { "24 pixels", "" + 24 }, { "32 pixels", "" + 32 } }, getFieldEditorParent());
         addField(largeIconsSizeField);
+
+        BooleanFieldEditor antialiasing;
+        antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
+                "enhanced using antialiasing and interpolation in the Job Designer", getFieldEditorParent());
+        addField(antialiasing);
+        // BooleanFieldEditor interpolation;
+        // interpolation = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_INTERPOLATION,
+        // "interpolation in the Job Designer", getFieldEditorParent());
+        // addField(interpolation);
     }
 
 }

@@ -22,9 +22,6 @@
 package org.talend.designer.core.ui.editor.nodes;
 
 import org.eclipse.draw2d.AbstractBorder;
-import org.eclipse.draw2d.ButtonModel;
-import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -33,14 +30,12 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gmf.runtime.draw2d.ui.mapmode.IMapMode;
-import org.eclipse.gmf.runtime.draw2d.ui.mapmode.MapModeUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * This class create a figure with the given image. <br/>eh
@@ -50,15 +45,15 @@ import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
  */
 public class NodeFigure extends Figure {
 
-    private ImageFigure fig;
+    private final ImageFigure fig;
 
-    private ImageDescriptor im;
+    private final ImageDescriptor im;
 
-    private SimpleHtmlFigure hint;
+    private final SimpleHtmlFigure hint;
 
     private int alpha = -1;
 
-    private NodeBorder lineBorder = new NodeBorder();
+    private final NodeBorder lineBorder = new NodeBorder();
 
     public NodeFigure(Node node) {
         fig = new ImageFigure();
@@ -85,6 +80,7 @@ public class NodeFigure extends Figure {
         return im;
     }
 
+    @Override
     public void setBounds(final Rectangle rect) {
         super.setBounds(rect);
 
@@ -104,6 +100,10 @@ public class NodeFigure extends Figure {
     public void paint(Graphics graphics) {
         if (alpha != -1) {
             graphics.setAlpha(alpha);
+        }
+        if (DesignerPlugin.getDefault().getPreferenceStore()
+                .getBoolean(TalendDesignerPrefConstants.EDITOR_ANTIALIASING)) {
+            graphics.setInterpolation(SWT.HIGH);
         }
         super.paint(graphics);
     }
