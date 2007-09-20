@@ -13,6 +13,8 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
 String process = ElementParameterParser.getValue(
    node,
    "__PROCESS_TYPE_PROCESS__"
@@ -22,6 +24,12 @@ String context = ElementParameterParser.getValue(
    node,
    "__PROCESS_TYPE_CONTEXT__"
 );
+
+boolean transmitWholeContext = ElementParameterParser.getValue(
+   node,
+   "__TRANSMIT_WHOLE_CONTEXT__"
+).equals("true");
+
 
 List<Map<String, String>> contextParams =
     (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -109,6 +117,21 @@ my @arguments = (
 <%
 }
 
+if (transmitWholeContext) {
+%>
+foreach my $context_key (keys %_context) {
+    push(
+        @arguments,
+        sprintf(
+            '--context_param %s="%s"',
+            $context_key,
+            $_context{$context_key}
+        )
+    );
+}
+<%
+}
+
 for (int i=0; i<contextParams.size(); i++) {
     Map<String, String> contextParam = contextParams.get(i);
 
@@ -125,5 +148,5 @@ my $error = system(
 );
 
 if($error){
-    die "Process <%=process %> died.\n" ;	
+    die "Process <%=process %> died.\n" ;
 }

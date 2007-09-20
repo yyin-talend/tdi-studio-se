@@ -30,16 +30,23 @@
     <PARAMETER
       NAME="PROCESS"
       FIELD="PROCESS_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REQUIRED="true"
     />
 
-	
+    <PARAMETER
+      NAME="TRANSMIT_WHOLE_CONTEXT"
+      FIELD="CHECK"
+      NUM_ROW="20"
+      NB_LINES="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>	
 	
     <PARAMETER
       NAME="CONTEXTPARAMS"
       FIELD="TABLE"
-      NUM_ROW="3"
+      NUM_ROW="30"
       NB_LINES="2"
     >
       <ITEMS>
