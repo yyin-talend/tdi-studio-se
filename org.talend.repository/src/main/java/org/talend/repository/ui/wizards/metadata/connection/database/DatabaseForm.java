@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -36,7 +35,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -55,9 +54,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -137,6 +134,9 @@ public class DatabaseForm extends AbstractForm {
         this.connectionItem = connectionItem;
         setupForm();
         addStringConnectionControls();
+        GridLayout layout2 = (GridLayout) getLayout();
+        layout2.marginHeight = 0;
+        setLayout(layout2);
     }
 
     /**
@@ -212,6 +212,8 @@ public class DatabaseForm extends AbstractForm {
         Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 330); //$NON-NLS-1$
         Composite compositeGroupDbSettings = Form.startNewGridLayout(group, 1);
         compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 250);
+        GridLayout layout2 = (GridLayout) compositeDbSettings.getLayout();
+        layout2.marginHeight = 0;
 
         // Main Fields
 
@@ -233,7 +235,6 @@ public class DatabaseForm extends AbstractForm {
             databasePerl.remove("JavaDB Embeded");
             databasePerl.remove("JavaDB JCCJDBC");
             databasePerl.remove("JavaDB DerbyClient");
-
 
             databasePerl.remove("HSQLDB Server");
             databasePerl.remove("HSQLDB WebServer");
@@ -279,7 +280,7 @@ public class DatabaseForm extends AbstractForm {
         checkButton.setEnabled(false);
 
         // Group Database Properties
-        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties"), 70); //$NON-NLS-1$
+        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties"), 60); //$NON-NLS-1$
         // Composite compositeGroupDbProperties = Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
         Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 70);
 
@@ -445,19 +446,20 @@ public class DatabaseForm extends AbstractForm {
 
         // portText : Event modifyText
         portText.addModifyListener(new ModifyListener() {
+
             public void modifyText(final ModifyEvent e) {
                 if (!urlConnectionStringText.getEditable()) {
                     getConnection().setPort(portText.getText());
                     checkFieldsValue();
                 }
-                //Check port
-                boolean b =true;
-               if(getConnection().getDatabaseType().equals("Ingres")){
-                   b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText());
-               }else{
-                  b= Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText());
-               }
-               evaluateTextField(b);
+                // Check port
+                boolean b = true;
+                if (getConnection().getDatabaseType().equals("Ingres")) {
+                    b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText());
+                } else {
+                    b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText());
+                }
+                evaluateTextField(b);
             }
         });
 
@@ -471,7 +473,7 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
         });
-       
+
         // usernameText : Event modifyText
         usernameText.addModifyListener(new ModifyListener() {
 
@@ -813,10 +815,10 @@ public class DatabaseForm extends AbstractForm {
     }
 
     protected void evaluateTextField(boolean b) {
-       
+
         if (!b) {
             updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.portError"));
-        } 
+        }
     }
-  
+
 }
