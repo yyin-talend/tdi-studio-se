@@ -41,6 +41,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -145,8 +146,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                && param.getRepositoryValue().equals("TYPE")) {
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -163,8 +163,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         if (param.getField().equals(EParameterFieldType.TABLE)
                                 && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
-                                    .getName());
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                             RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
@@ -176,6 +175,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         refreshPropertyView();
+        if (elem instanceof Node) {
+            ((Process) ((Node) elem).getProcess()).checkProcess();
+        }
     }
 
     private String getFirstRepositoryTable(IElementParameter schemaParam, String repository) {
@@ -228,23 +230,22 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                             EmfComponent.REPOSITORY);
 
                                     IMetadataTable table = repositoryTableMap.get(repositoryTable);
-                                    if (table != null) { 
+                                    if (table != null) {
                                         table = table.clone();
                                         setDBTableFieldValue(node, table.getTableName(), null);
                                         table.setTableName(node.getMetadataList().get(0).getTableName());
                                         if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,                                                    table);
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
                                             cmd.setRepositoryMode(true);
                                             cmd.execute(true);
                                         }
                                     }
                                 }
-                            }else {
+                            } else {
                                 Node sourceNode = getRealSourceNode((INode) elem);
                                 if (sourceNode != null) {
                                     IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
-                                    Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE
-                                            .getName());
+                                    Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                                     boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
                                             && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
                                     if (isTake && getTake()) {
@@ -253,9 +254,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         cmd.execute(true);
                                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
                                         if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
-                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                                                    sourceNode.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                                                            .getName()));
+                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
+                                                    .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
                                         }
                                     }
                                 }
@@ -266,8 +266,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
                 if (queriesmap != null
-                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                                .isEmpty()) {
+                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
                 }
             } else {
@@ -288,8 +287,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         Node sourceNode = null;
         IODataComponent input = null;
         List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
-        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target
-                .getIncomingConnections();
+        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target.getIncomingConnections();
         for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
             if (connec.isActivate() && connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 input = new IODataComponent(connec);
@@ -311,24 +309,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         return sourceNode;
     }
 
-	/**
-	 * qzhang Comment method "getTake".
-	 * 
-	 * @return
-	 */
-	private Boolean take = null;
+    /**
+     * qzhang Comment method "getTake".
+     * 
+     * @return
+     */
+    private Boolean take = null;
 
-	private boolean getTake() {
-		if (take == null) {
-			take = MessageDialog
-					.openQuestion(
-							new Shell(),
-							"",
-							Messages
-									.getString("ChangeValuesFromRepository.messageDialog.takeMessage"));
-		}
-		return take;
-	}
+    private boolean getTake() {
+        if (take == null) {
+            take = MessageDialog.openQuestion(new Shell(), "", Messages
+                    .getString("ChangeValuesFromRepository.messageDialog.takeMessage"));
+        }
+        return take;
+    }
 
     @Override
     public void undo() {
