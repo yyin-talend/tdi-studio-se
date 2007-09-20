@@ -1,0 +1,81 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String table = ElementParameterParser.getValue(
+    node,
+    "__TABLE__"
+);
+
+
+String connection = ElementParameterParser.getValue(
+    node,
+    "__CONNECTION__"
+);
+
+String dbh = "dbh_" + connection ;
+
+String query = "select count(*) from " ;
+
+%>
+
+use File::Spec;
+use File::Basename;
+use talend::filesOp;
+
+$| = 1;
+
+$_globals{<%=cid %>}{CURRENT_ITERATION} = 0;
+
+my $table_<%=cid %> = <%=table%> ;
+my $value_<%=cid%> = <%=ElementParameterParser.getValue(node, "__VALUE__")%>;
+
+my $sth_<%=cid %> = $<%=dbh%>->prepare(
+    '<%=query%>' . $table_<%=cid %> 
+);
+
+
+
+while (1) {
+<%if(!ElementParameterParser.getValue(
+    node,
+    "__MAX_ITERATIONS__").equals("")){
+%>
+    last if(<%=ElementParameterParser.getValue(node, "__MAX_ITERATIONS__")%> == $_globals{<%=cid %>}{CURRENT_ITERATION});
+<%
+}
+%>
+
+
+    $sth_<%=cid %>->execute()
+        or die "can't execute count query on table <%=table%> $!\n";
+    my $res_<%=cid %> = $sth_<%=cid %>->fetchall_arrayref();
+    my $rowcount_<%=cid %> = $res_<%=cid %>->[0]->[0] ;
+
+    my $triggerOn ;
+    $triggerOn = 1 if(  $rowcount_<%=cid %> <%=ElementParameterParser.getValue(node, "__OPERATOR__")%> $value_<%=cid%> ) ;
+
+
+    $_globals{<%=cid %>}{ROW_COUNT} = $rowcount_<%=cid %> ;
+    $_globals{<%=cid %>}{CURRENT_ITERATION}++;
+    if(!$triggerOn){
+        sleep <%=ElementParameterParser.getValue(node, "__WAIT__")%> ;
+    	next ;
+    }
+
+
+
+
+    
