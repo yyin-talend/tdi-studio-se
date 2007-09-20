@@ -128,7 +128,7 @@ public class PromptDialog extends Dialog {
                     gridLayout.marginRight = 0;
                     gridLayout.marginTop = 0;
                     gridLayout.marginWidth = 0;
-                    
+
                     composite2.setLayout(gridLayout);
                     composite2.setLayoutData(new GridData(GridData.BEGINNING));
                     Label label = new Label(composite2, SWT.NONE);
@@ -231,7 +231,7 @@ public class PromptDialog extends Dialog {
                     DateDialog d = new DateDialog(((Button) e.getSource()).getShell());
                     int res = d.open();
                     if (res == Dialog.OK) {
-                        text.setText(DefaultCellEditorFactory.getInstance().getAddQuoteString(d.getTalendDateString()));
+                        text.setText(DefaultCellEditorFactory.getAddQuoteString(d.getTalendDateString()));
                     }
                 }
 
@@ -250,12 +250,11 @@ public class PromptDialog extends Dialog {
                 public void widgetSelected(SelectionEvent e) {
                     FileDialog d = new FileDialog(((Button) e.getSource()).getShell());
                     if (text.getText() != null) {
-                        d.setFileName(PathUtils.getOSPath(DefaultCellEditorFactory.getInstance().getRemoveQuoteString(
-                                text.getText())));
+                        d.setFileName(PathUtils.getOSPath(DefaultCellEditorFactory.getRemoveQuoteString(text.getText())));
                     }
                     String open = d.open();
                     if (open != null) {
-                        text.setText(DefaultCellEditorFactory.getInstance().getAddQuoteString(PathUtils.getPortablePath(open)));
+                        text.setText(DefaultCellEditorFactory.getAddQuoteString(PathUtils.getPortablePath(open)));
                     }
                 }
 
@@ -274,12 +273,11 @@ public class PromptDialog extends Dialog {
                 public void widgetSelected(SelectionEvent e) {
                     DirectoryDialog d = new DirectoryDialog(((Button) e.getSource()).getShell());
                     if (text.getText() != null) {
-                        d.setFilterPath(PathUtils.getOSPath(DefaultCellEditorFactory.getInstance().getRemoveQuoteString(
-                                text.getText())));
+                        d.setFilterPath(PathUtils.getOSPath(DefaultCellEditorFactory.getRemoveQuoteString(text.getText())));
                     }
                     String open = d.open();
                     if (open != null) {
-                        text.setText(DefaultCellEditorFactory.getInstance().getAddQuoteString(PathUtils.getPortablePath(open)));
+                        text.setText(DefaultCellEditorFactory.getAddQuoteString(PathUtils.getPortablePath(open)));
                     }
                 }
 
