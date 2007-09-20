@@ -235,7 +235,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
                                             ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,                                                    table);
                                             cmd.setRepositoryMode(true);
-                                            cmd.execute();
+                                            cmd.execute(true);
                                         }
                                     }
                                 }
