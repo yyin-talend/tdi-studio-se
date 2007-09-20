@@ -45,7 +45,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
 
     protected static Logger log = Logger.getLogger(SpagicPreferencePage.class);
 
-    protected CheckBoxFieldEditor spagoBiCheckButton;
+    protected CheckBoxFieldEditor spagicCheckButton;
 
     protected SpagicServerEditor editor;
 
@@ -77,7 +77,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
     protected void createFieldEditors() {
         parent = getFieldEditorParent();
 
-        spagoBiCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS, Messages
+        spagicCheckButton = new CheckBoxFieldEditor(SpagicPreferenceInitializer.SPAGIC_STATUS, Messages
                 .getString("SpagicPreferencePage.spagicBiCheckButton"), parent);
         editor = new SpagicServerEditor(SpagoBiServer.SPAGOBI_SERVER, Messages
                 .getString("SpagicPreferencePage.technicalStatusLabel"), parent); //$NON-NLS-1$
@@ -96,18 +96,21 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
                 updateEnableStateFromDisplay();
             }
         };
-        spagoBiCheckButton.getCheckbox().addSelectionListener(listener);
+        spagicCheckButton.getCheckbox().addSelectionListener(listener);
+
+        // disable the spagic feature
+        spagicCheckButton.setEnabled(false, parent);
     }
 
     private void updateEnableStateFromDisplay() {
-        boolean spago = spagoBiCheckButton.getBooleanValue();
+        boolean spago = spagicCheckButton.getBooleanValue();
         editor.setEnabled(spago, parent);
     }
 
     private void updateEnableStateFromPreferences() {
         IPreferenceStore preferenceStore = getPreferenceStore();
         boolean spago = preferenceStore.getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
-        spagoBiCheckButton.getCheckbox().setSelection(spago);
+        spagicCheckButton.getCheckbox().setSelection(spago);
         editor.setEnabled(spago, parent);
     }
 
