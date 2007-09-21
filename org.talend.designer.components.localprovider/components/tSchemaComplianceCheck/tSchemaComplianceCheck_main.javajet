@@ -136,15 +136,21 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         }
     }
     if(outgoingConns != null && outgoingConns.size() > 0) {
-        for(IConnection conn : outgoingConns) {
-            if(rejectConnName == null || (rejectConnName != null && !rejectConnName.equals(conn.getName()))){
-                for(IMetadataColumn metadataColumn : columnList) {
-                    %>
-                    <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
-                    <%
+        %>
+        if(isPassed) {
+        <%    
+            for(IConnection conn : outgoingConns) {
+                if(rejectConnName == null || (rejectConnName != null && !rejectConnName.equals(conn.getName()))){
+                    for(IMetadataColumn metadataColumn : columnList) {
+                        %>
+                        <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+                        <%
+                    }
                 }
             }
+        %>
         }
+        <%
     }
     if(rejectConnName != null) {
         %>
