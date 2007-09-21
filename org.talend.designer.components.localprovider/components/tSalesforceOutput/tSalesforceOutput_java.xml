@@ -36,7 +36,7 @@
       NUM_ROW="1"
       REQUIRED="true"
     >
-      <DEFAULT>"https://www.salesforce.com/services/Soap/u/9.0"</DEFAULT>
+      <DEFAULT>"https://na5-api.salesforce.com/services/Soap/u/10.0"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -73,89 +73,95 @@
   
     <PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
        <ITEMS DEFAULT="Account">
-	  <ITEM NAME="Account"   VALUE="Account" />
-      <ITEM NAME="AccountContactRole"   VALUE="AccountContactRole" />
-      <ITEM NAME="AccountPartner"   VALUE="AccountPartner" />
-      <ITEM NAME="AccountShare"   VALUE="AccountShare" />
-      <ITEM NAME="ActivityHistory"   VALUE="ActivityHistory" />
-      <ITEM NAME="Approval"   VALUE="Approval" />
-      <ITEM NAME="Asset"   VALUE="Asset" />
-      <ITEM NAME="AssignmentRule"   VALUE="AssignmentRule" />
-      <ITEM NAME="Attachment"   VALUE="Attachment" />
-      <ITEM NAME="BrandTemplate"   VALUE="BrandTemplate" />
-      <ITEM NAME="BusinessHours"   VALUE="BusinessHours" />
-      <ITEM NAME="BusinessProcess"   VALUE="BusinessProcess" />
-      <ITEM NAME="Campaign"   VALUE="Campaign" />
-      <ITEM NAME="CampaignMember"   VALUE="CampaignMember" />
-      <ITEM NAME="CampaignMemberStatus"   VALUE="CampaignMemberStatus" />
-      <ITEM NAME="Case"   VALUE="Case" />
-      <ITEM NAME="CaseComment"   VALUE="CaseComment" />
-      <ITEM NAME="CaseContactRole"   VALUE="CaseContactRole" />
-      <ITEM NAME="CaseHistory"   VALUE="CaseHistory" />
-      <ITEM NAME="CaseShare"   VALUE="CaseShare" />
-      <ITEM NAME="CaseSolution"   VALUE="CaseSolution" />
-      <ITEM NAME="CaseStatus"   VALUE="CaseStatus" />
-      <ITEM NAME="CategoryData"   VALUE="CategoryData" />
-      <ITEM NAME="CategoryNode"   VALUE="CategoryNode" />
-      <ITEM NAME="Contact"   VALUE="Contact" />
-      <ITEM NAME="Contract"   VALUE="Contract" />
-      <ITEM NAME="ContractContactRole"   VALUE="ContractContactRole" />
-      <ITEM NAME="ContractHistory"   VALUE="ContractHistory" />
-      <ITEM NAME="ContractStatus"   VALUE="ContractStatus" />
-      <ITEM NAME="Document"   VALUE="Document" />
-      <ITEM NAME="DocumentAttachmentMap"   VALUE="DocumentAttachmentMap" />
-      <ITEM NAME="EmailStatus"   VALUE="EmailStatus" />
-      <ITEM NAME="EmailTemplate"   VALUE="EmailTemplate" />
-      <ITEM NAME="Event"   VALUE="Event" />
-      <ITEM NAME="EventAttendee"   VALUE="EventAttendee" />
-      <ITEM NAME="FiscalYearSettings"   VALUE="FiscalYearSettings" />
-      <ITEM NAME="Folder"   VALUE="Folder" />
-      <ITEM NAME="ForecastShare"   VALUE="ForecastShare" />
-      <ITEM NAME="Group"   VALUE="Group" />
-      <ITEM NAME="GroupMember"   VALUE="GroupMember" />
-      <ITEM NAME="Lead"   VALUE="Lead" />
-      <ITEM NAME="LeadHistory"   VALUE="LeadHistory" />
-      <ITEM NAME="LeadShare"   VALUE="LeadShare" />
-      <ITEM NAME="LeadStatus"   VALUE="LeadStatus" />
-      <ITEM NAME="MailmergeTemplate"   VALUE="MailmergeTemplate" />
-      <ITEM NAME="Name"   VALUE="Name" />
-      <ITEM NAME="Note"   VALUE="Note" />
-      <ITEM NAME="NoteAndAttachment"   VALUE="NoteAndAttachment" />
-      <ITEM NAME="OpenActivity"   VALUE="OpenActivity" />
-      <ITEM NAME="Opportunity"   VALUE="Opportunity" />
-      <ITEM NAME="OpportunityCompetitor"   VALUE="OpportunityCompetitor" />
-      <ITEM NAME="OpportunityContactRole"   VALUE="OpportunityContactRole" />
-      <ITEM NAME="OpportunityHistory"   VALUE="OpportunityHistory" />
-      <ITEM NAME="OpportunityLineItem"   VALUE="OpportunityLineItem" />
-      <ITEM NAME="OpportunityPartner"   VALUE="OpportunityPartner" />
-      <ITEM NAME="OpportunityShare"   VALUE="OpportunityShare" />
-      <ITEM NAME="OpportunityStage"   VALUE="OpportunityStage" />
-      <ITEM NAME="Organization"   VALUE="Organization" />
-      <ITEM NAME="Partner"   VALUE="Partner" />
-      <ITEM NAME="PartnerRole"   VALUE="PartnerRole" />
-      <ITEM NAME="Period"   VALUE="Period" />
-      <ITEM NAME="Pricebook2"   VALUE="Pricebook2" />
-      <ITEM NAME="PricebookEntry"   VALUE="PricebookEntry" />
-      <ITEM NAME="ProcessInstance"   VALUE="ProcessInstance" />
-      <ITEM NAME="ProcessInstanceHistory"   VALUE="ProcessInstanceHistory" />
-      <ITEM NAME="ProcessInstanceStep"   VALUE="ProcessInstanceStep" />
-      <ITEM NAME="ProcessInstanceWorkitem"   VALUE="ProcessInstanceWorkitem" />
-      <ITEM NAME="Product2"   VALUE="Product2" />
-      <ITEM NAME="Profile"   VALUE="Profile" />
-      <ITEM NAME="QueueSobject"   VALUE="QueueSobject" />
-      <ITEM NAME="RecordType"   VALUE="RecordType" />
-      <ITEM NAME="Scontrol"   VALUE="Scontrol" />
-      <ITEM NAME="SelfServiceUser"   VALUE="SelfServiceUser" />
-      <ITEM NAME="Solution"   VALUE="Solution" />
-      <ITEM NAME="SolutionHistory"   VALUE="SolutionHistory" />
-      <ITEM NAME="SolutionStatus"   VALUE="SolutionStatus" />
-      <ITEM NAME="Task"   VALUE="Task" />
-      <ITEM NAME="TaskPriority"   VALUE="TaskPriority" />
-      <ITEM NAME="TaskStatus"   VALUE="TaskStatus" />
-      <ITEM NAME="User"   VALUE="User" />
-      <ITEM NAME="UserPreference"   VALUE="UserPreference" />
-      <ITEM NAME="UserRole"   VALUE="UserRole" />
-      <ITEM NAME="WebLink"   VALUE="WebLink" />
+		<ITEM NAME="Account"   VALUE="Account" />
+		<ITEM NAME="AccountContactRole"   VALUE="AccountContactRole" />
+		<ITEM NAME="AccountPartner"   VALUE="AccountPartner" />
+		<ITEM NAME="AccountShare"   VALUE="AccountShare" />
+		<ITEM NAME="ActivityHistory"   VALUE="ActivityHistory" />
+		<ITEM NAME="AdditionalNumber"   VALUE="AdditionalNumber" />
+		<ITEM NAME="ApexClass"   VALUE="ApexClass" />
+		<ITEM NAME="ApexTrigger"   VALUE="ApexTrigger" />
+		<ITEM NAME="Approval"   VALUE="Approval" />
+		<ITEM NAME="Asset"   VALUE="Asset" />
+		<ITEM NAME="AssignmentRule"   VALUE="AssignmentRule" />
+		<ITEM NAME="Attachment"   VALUE="Attachment" />
+		<ITEM NAME="BrandTemplate"   VALUE="BrandTemplate" />
+		<ITEM NAME="BusinessHours"   VALUE="BusinessHours" />
+		<ITEM NAME="BusinessProcess"   VALUE="BusinessProcess" />
+		<ITEM NAME="CallCenter"   VALUE="CallCenter" />
+		<ITEM NAME="Campaign"   VALUE="Campaign" />
+		<ITEM NAME="CampaignMember"   VALUE="CampaignMember" />
+		<ITEM NAME="CampaignMemberStatus"   VALUE="CampaignMemberStatus" />
+		<ITEM NAME="Case"   VALUE="Case" />
+		<ITEM NAME="CaseComment"   VALUE="CaseComment" />
+		<ITEM NAME="CaseContactRole"   VALUE="CaseContactRole" />
+		<ITEM NAME="CaseHistory"   VALUE="CaseHistory" />
+		<ITEM NAME="CaseShare"   VALUE="CaseShare" />
+		<ITEM NAME="CaseSolution"   VALUE="CaseSolution" />
+		<ITEM NAME="CaseStatus"   VALUE="CaseStatus" />
+		<ITEM NAME="CategoryData"   VALUE="CategoryData" />
+		<ITEM NAME="CategoryNode"   VALUE="CategoryNode" />
+		<ITEM NAME="Contact"   VALUE="Contact" />
+		<ITEM NAME="ContactShare"   VALUE="ContactShare" />
+		<ITEM NAME="Contract"   VALUE="Contract" />
+		<ITEM NAME="ContractContactRole"   VALUE="ContractContactRole" />
+		<ITEM NAME="ContractHistory"   VALUE="ContractHistory" />
+		<ITEM NAME="ContractStatus"   VALUE="ContractStatus" />
+		<ITEM NAME="Document"   VALUE="Document" />
+		<ITEM NAME="DocumentAttachmentMap"   VALUE="DocumentAttachmentMap" />
+		<ITEM NAME="EmailStatus"   VALUE="EmailStatus" />
+		<ITEM NAME="EmailTemplate"   VALUE="EmailTemplate" />
+		<ITEM NAME="Event"   VALUE="Event" />
+		<ITEM NAME="EventAttendee"   VALUE="EventAttendee" />
+		<ITEM NAME="FiscalYearSettings"   VALUE="FiscalYearSettings" />
+		<ITEM NAME="Folder"   VALUE="Folder" />
+		<ITEM NAME="ForecastShare"   VALUE="ForecastShare" />
+		<ITEM NAME="Group"   VALUE="Group" />
+		<ITEM NAME="GroupMember"   VALUE="GroupMember" />
+		<ITEM NAME="Lead"   VALUE="Lead" />
+		<ITEM NAME="LeadHistory"   VALUE="LeadHistory" />
+		<ITEM NAME="LeadShare"   VALUE="LeadShare" />
+		<ITEM NAME="LeadStatus"   VALUE="LeadStatus" />
+		<ITEM NAME="MailmergeTemplate"   VALUE="MailmergeTemplate" />
+		<ITEM NAME="Name"   VALUE="Name" />
+		<ITEM NAME="Note"   VALUE="Note" />
+		<ITEM NAME="NoteAndAttachment"   VALUE="NoteAndAttachment" />
+		<ITEM NAME="OpenActivity"   VALUE="OpenActivity" />
+		<ITEM NAME="Opportunity"   VALUE="Opportunity" />
+		<ITEM NAME="OpportunityCompetitor"   VALUE="OpportunityCompetitor" />
+		<ITEM NAME="OpportunityContactRole"   VALUE="OpportunityContactRole" />
+		<ITEM NAME="OpportunityHistory"   VALUE="OpportunityHistory" />
+		<ITEM NAME="OpportunityLineItem"   VALUE="OpportunityLineItem" />
+		<ITEM NAME="OpportunityPartner"   VALUE="OpportunityPartner" />
+		<ITEM NAME="OpportunityShare"   VALUE="OpportunityShare" />
+		<ITEM NAME="OpportunityStage"   VALUE="OpportunityStage" />
+		<ITEM NAME="Organization"   VALUE="Organization" />
+		<ITEM NAME="Partner"   VALUE="Partner" />
+		<ITEM NAME="PartnerRole"   VALUE="PartnerRole" />
+		<ITEM NAME="Period"   VALUE="Period" />
+		<ITEM NAME="Pricebook2"   VALUE="Pricebook2" />
+		<ITEM NAME="PricebookEntry"   VALUE="PricebookEntry" />
+		<ITEM NAME="ProcessInstance"   VALUE="ProcessInstance" />
+		<ITEM NAME="ProcessInstanceHistory"   VALUE="ProcessInstanceHistory" />
+		<ITEM NAME="ProcessInstanceStep"   VALUE="ProcessInstanceStep" />
+		<ITEM NAME="ProcessInstanceWorkitem"   VALUE="ProcessInstanceWorkitem" />
+		<ITEM NAME="Product2"   VALUE="Product2" />
+		<ITEM NAME="Profile"   VALUE="Profile" />
+		<ITEM NAME="QueueSobject"   VALUE="QueueSobject" />
+		<ITEM NAME="RecordType"   VALUE="RecordType" />
+		<ITEM NAME="Scontrol"   VALUE="Scontrol" />
+		<ITEM NAME="SelfServiceUser"   VALUE="SelfServiceUser" />
+		<ITEM NAME="Solution"   VALUE="Solution" />
+		<ITEM NAME="SolutionHistory"   VALUE="SolutionHistory" />
+		<ITEM NAME="SolutionStatus"   VALUE="SolutionStatus" />
+		<ITEM NAME="Task"   VALUE="Task" />
+		<ITEM NAME="TaskPriority"   VALUE="TaskPriority" />
+		<ITEM NAME="TaskStatus"   VALUE="TaskStatus" />
+		<ITEM NAME="User"   VALUE="User" />
+		<ITEM NAME="UserLicense"   VALUE="UserLicense" />
+		<ITEM NAME="UserPreference"   VALUE="UserPreference" />
+		<ITEM NAME="UserRole"   VALUE="UserRole" />
+		<ITEM NAME="WebLink"   VALUE="WebLink" />
        </ITEMS>
     </PARAMETER>
   
@@ -173,7 +179,7 @@
       
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
       
-      <TABLE IF="(MODULENAME=='Account') and (ACTION=='insert')">      
+      <TABLE IF="(MODULENAME=='Account') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Type" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="ParentId" TYPE="id_String"/>
@@ -201,6 +207,13 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Rating" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="Site" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CustomerPriority__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="SLA__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Active__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="UpsellOpportunity__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="SLASerialNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="SLAExpirationDate__c" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountContactRole') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -213,6 +226,40 @@
       <TABLE IF="(MODULENAME=='AccountShare') and (ACTION=='insert')">
       </TABLE>
       <TABLE IF="(MODULENAME=='ActivityHistory') and (ACTION=='insert')">
+      </TABLE>
+      <TABLE IF="(MODULENAME=='AdditionalNumber') and (ACTION=='insert')">
+         <COLUMN KEY="false" LENGTH="18" NAME="CallCenterId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="Phone" TYPE="id_String"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ApexClass') and (ACTION=='insert')">
+         <COLUMN KEY="false" LENGTH="15" NAME="NamespacePrefix" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="ApiVersion" TYPE="id_Double" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsValid" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="BodyCrc" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="100000" NAME="Body" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="LengthWithoutComments" TYPE="id_Integer"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ApexTrigger') and (ACTION=='insert')">
+         <COLUMN KEY="false" LENGTH="15" NAME="NamespacePrefix" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="TableEnumOrId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeInsert" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterInsert" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeUpdate" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterUpdate" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeDelete" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterDelete" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageIsBulk" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterUndelete" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="ApiVersion" TYPE="id_Double" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsValid" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsActive" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="BodyCrc" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="32000" NAME="Body" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="LengthWithoutComments" TYPE="id_Integer"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Approval') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="ParentId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -273,6 +320,10 @@
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="TableEnumOrId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
+      <TABLE IF="(MODULENAME=='CallCenter') and (ACTION=='insert')">
+         <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="InternalName" TYPE="id_String"/>
+      </TABLE>
       <TABLE IF="(MODULENAME=='Campaign') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Type" TYPE="id_String"/>
@@ -317,6 +368,10 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="12" NAME="EngineeringReqNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="SLAViolation__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Product__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="PotentialLiability__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseComment') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="ParentId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -378,6 +433,10 @@
          <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Level__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="Languages__c" TYPE="id_String"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ContactShare') and (ACTION=='insert')">
       </TABLE>
       <TABLE IF="(MODULENAME=='Contract') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -517,6 +576,11 @@
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsConverted" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsUnreadByOwner" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="15" NAME="SICCode__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="ProductInterest__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Primary__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadHistory') and (ACTION=='insert')">
       </TABLE>
@@ -543,7 +607,7 @@
       </TABLE>
       <TABLE IF="(MODULENAME=='OpenActivity') and (ACTION=='insert')">
       </TABLE>
-            <TABLE IF="(MODULENAME=='Opportunity') and (ACTION=='insert')">
+      <TABLE IF="(MODULENAME=='Opportunity') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="AccountId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsPrivate" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="120" NAME="Name" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -560,6 +624,11 @@
          <COLUMN KEY="false" LENGTH="18" NAME="CampaignId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="Pricebook2Id" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="DeliveryInstallationStatus__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="12" NAME="TrackingNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="8" NAME="OrderNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="MainCompetitors__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='insert')">
          <COLUMN KEY="false" LENGTH="18" NAME="OpportunityId" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -686,6 +755,10 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="CallDurationInSeconds" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="CallType" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CallDisposition" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CallObject" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="ReminderDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsReminderSet" TYPE="id_Boolean"/>
       </TABLE>
@@ -724,9 +797,13 @@
          <COLUMN KEY="false" LENGTH="18" NAME="DelegatedApproverId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsMarketingUser" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsOfflineUser" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsCallCenterAutoLogin" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsMobileUser" TYPE="id_Boolean" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="0" NAME="ForecastEnabled" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="18" NAME="CallCenterId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Extension" TYPE="id_String"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='UserLicense') and (ACTION=='insert')">
       </TABLE>
       <TABLE IF="(MODULENAME=='UserPreference') and (ACTION=='insert')">
       </TABLE>
@@ -793,18 +870,63 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Rating" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="80" NAME="Site" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CustomerPriority__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="SLA__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Active__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="UpsellOpportunity__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="SLASerialNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="10" NAME="SLAExpirationDate__c" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountContactRole') and (ACTION=='update')">
-         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>      
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
          <COLUMN KEY="false" LENGTH="18" NAME="ContactId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Role" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsPrimary" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountPartner') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AccountShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ActivityHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='AdditionalNumber') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="18" NAME="CallCenterId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="Phone" TYPE="id_String"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ApexClass') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="ApiVersion" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsValid" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="BodyCrc" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="100000" NAME="Body" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="LengthWithoutComments" TYPE="id_Integer"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ApexTrigger') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Name" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="TableEnumOrId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeInsert" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterInsert" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeUpdate" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterUpdate" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageBeforeDelete" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterDelete" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageIsBulk" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UsageAfterUndelete" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="ApiVersion" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsValid" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="IsActive" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="BodyCrc" TYPE="id_Double"/>
+         <COLUMN KEY="false" LENGTH="32000" NAME="Body" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="LengthWithoutComments" TYPE="id_Integer"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Approval') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -830,6 +952,7 @@
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='AssignmentRule') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Attachment') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -868,6 +991,9 @@
          <COLUMN KEY="false" LENGTH="80" NAME="Name" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsActive" TYPE="id_Boolean"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='CallCenter') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Campaign') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -912,6 +1038,10 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="12" NAME="EngineeringReqNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="SLAViolation__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Product__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="PotentialLiability__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseComment') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -924,12 +1054,16 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Role" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseSolution') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CaseStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='CategoryData') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -974,6 +1108,11 @@
          <COLUMN KEY="false" LENGTH="10" NAME="Birthdate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Level__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="Languages__c" TYPE="id_String"/>
+      </TABLE>
+      <TABLE IF="(MODULENAME=='ContactShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Contract') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1003,8 +1142,10 @@
          <COLUMN KEY="false" LENGTH="0" NAME="IsPrimary" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ContractHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ContractStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Document') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1027,8 +1168,10 @@
          <COLUMN KEY="false" LENGTH="0" NAME="DocumentSequence" TYPE="id_Integer"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='EmailStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='EmailTemplate') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Event') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1057,8 +1200,10 @@
          <COLUMN KEY="false" LENGTH="0" NAME="IsReminderSet" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='EventAttendee') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='FiscalYearSettings') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Folder') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1067,6 +1212,7 @@
          <COLUMN KEY="false" LENGTH="0" NAME="IsReadonly" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ForecastShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Group') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1075,6 +1221,7 @@
          <COLUMN KEY="false" LENGTH="0" NAME="DoesSendEmailToMembers" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='GroupMember') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Lead') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1102,12 +1249,20 @@
          <COLUMN KEY="false" LENGTH="0" NAME="NumberOfEmployees" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsUnreadByOwner" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="15" NAME="SICCode__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="ProductInterest__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="Primary__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='LeadStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='MailmergeTemplate') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1115,6 +1270,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Name') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Note') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1124,8 +1280,10 @@
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='NoteAndAttachment') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpenActivity') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Opportunity') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1145,6 +1303,11 @@
          <COLUMN KEY="false" LENGTH="18" NAME="CampaignId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="Pricebook2Id" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="DeliveryInstallationStatus__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="12" NAME="TrackingNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="8" NAME="OrderNumber__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="100" NAME="MainCompetitors__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityCompetitor') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1159,6 +1322,7 @@
          <COLUMN KEY="false" LENGTH="0" NAME="IsPrimary" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityLineItem') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1169,10 +1333,13 @@
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityPartner') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityShare') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='OpportunityStage') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Organization') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1196,10 +1363,13 @@
          <COLUMN KEY="false" LENGTH="40" NAME="WebToCaseDefaultOrigin" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Partner') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='PartnerRole') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Period') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Pricebook2') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1214,11 +1384,13 @@
          <COLUMN KEY="false" LENGTH="0" NAME="UseStandardPrice" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ProcessInstance') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
-
       <TABLE IF="(MODULENAME=='ProcessInstanceHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ProcessInstanceStep') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='ProcessInstanceWorkitem') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1273,10 +1445,15 @@
          <COLUMN KEY="false" LENGTH="0" NAME="PermissionsSolutionImport" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="PermissionsManageCallCenters" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="PermissionsEditReports" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="PermissionsAuthorApex" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="PermissionsManageMobile" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="PermissionsApiEnabled" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="PermissionsManageCustomReportTypes" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="PermissionsCustomSidebarOnAllPages" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="255" NAME="Description" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='QueueSobject') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='RecordType') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1318,8 +1495,10 @@
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='SolutionHistory') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='SolutionStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='Task') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1331,12 +1510,18 @@
          <COLUMN KEY="false" LENGTH="40" NAME="Priority" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="18" NAME="OwnerId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="32000" NAME="Description" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="CallDurationInSeconds" TYPE="id_Integer"/>
+         <COLUMN KEY="false" LENGTH="40" NAME="CallType" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CallDisposition" TYPE="id_String"/>
+         <COLUMN KEY="false" LENGTH="255" NAME="CallObject" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="ReminderDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="0" NAME="IsReminderSet" TYPE="id_Boolean"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='TaskPriority') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='TaskStatus') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='User') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1370,15 +1555,21 @@
          <COLUMN KEY="false" LENGTH="18" NAME="DelegatedApproverId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsMarketingUser" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsOfflineUser" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsCallCenterAutoLogin" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPermissionsMobileUser" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="ForecastEnabled" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPreferencesActivityRemindersPopup" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPreferencesEventRemindersCheckboxDefault" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPreferencesTaskRemindersCheckboxDefault" TYPE="id_Boolean"/>
          <COLUMN KEY="false" LENGTH="0" NAME="UserPreferencesReminderSoundOff" TYPE="id_Boolean"/>
+         <COLUMN KEY="false" LENGTH="18" NAME="CallCenterId" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="Extension" TYPE="id_String"/>
       </TABLE>
+      <TABLE IF="(MODULENAME=='UserLicense') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
+      </TABLE>
       <TABLE IF="(MODULENAME=='UserPreference') and (ACTION=='update')">
+         <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
       </TABLE>
       <TABLE IF="(MODULENAME=='UserRole') and (ACTION=='update')">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String" NULLABLE="false" READONLY="true"/>
@@ -1410,8 +1601,7 @@
          <COLUMN KEY="false" LENGTH="1000" NAME="Description" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="40" NAME="DisplayType" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="0" NAME="RequireRowSelection" TYPE="id_Boolean"/>
-      </TABLE>      
-            
+      </TABLE>
     
    </PARAMETER>
 
