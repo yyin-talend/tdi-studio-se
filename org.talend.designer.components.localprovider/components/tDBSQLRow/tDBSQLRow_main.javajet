@@ -49,7 +49,9 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
-
+%>
+whetherReject_<%=cid%> = false;
+<%
 int counter = 0;
 int index=dbquery.indexOf("?");
 while (index>=0) {

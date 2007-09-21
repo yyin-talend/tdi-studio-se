@@ -344,7 +344,10 @@ if(isObject){
 Operation operation = new Operation();
 
 if(incomingConnName != null && columnList != null){
-	if(dataAction.equals("INSERT")){
+    %>
+    whetherReject_<%=cid%> = false;
+    <%	
+    if(dataAction.equals("INSERT")){
 		int counter = 1;
 		
 		for(Column column:colStruct){

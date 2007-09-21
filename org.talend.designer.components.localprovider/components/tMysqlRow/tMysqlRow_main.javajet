@@ -55,6 +55,7 @@ boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
 
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 
+whetherReject_<%=cid%> = false;
 <%
 int counter = 0;
 int index=dbquery.indexOf("?");

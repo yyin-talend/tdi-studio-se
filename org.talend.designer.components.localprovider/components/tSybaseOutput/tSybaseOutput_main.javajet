@@ -343,6 +343,9 @@ if(isObject){
 Operation operation = new Operation();
 
 if(incomingConnName != null && columnList != null){
+    %>
+    whetherReject_<%=cid%> = false;
+    <%    
     if(dataAction.equals("INSERT")){
         int counter = 1;
         

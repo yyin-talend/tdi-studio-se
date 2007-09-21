@@ -46,6 +46,7 @@ boolean isSelectQuery = ((dbquery.replaceAll(" ","").toLowerCase()).indexOf("sel
 
 statement_<%=cid%> = connection_<%=cid%>.prepareStatement(<%=dbquery%>);
 
+whetherReject_<%=cid%> = false;
 <%
 if (!commitEvery.equals("") && !commitEvery.equals("0")) {
     %>
