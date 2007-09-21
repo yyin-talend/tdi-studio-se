@@ -75,7 +75,7 @@ public final class SpagoBiServerHelper {
             spagoBiServer.setPort(getPort(spagoBiServerStr));
             spagoBiServer.setLogin(getLogin(spagoBiServerStr));
             spagoBiServer.setPassword(getPassword(spagoBiServerStr));
-            spagoBiServer.setApplicationContext(getApplicationContext(spagoBiServerStr));
+            // spagoBiServer.setApplicationContext(getApplicationContext(spagoBiServerStr));
             result.add(spagoBiServer);
         }
         return Collections.unmodifiableList(result);
@@ -126,11 +126,11 @@ public final class SpagoBiServerHelper {
         return index[5];
     }
 
-    public static final String getApplicationContext(String value) {
-        check(value);
-        String[] index = value.split(ENGINE_DESCRIPTION_DELIMITER);
-        return index[6];
-    }
+    // public static final String getApplicationContext(String value) {
+    // check(value);
+    // String[] index = value.split(ENGINE_DESCRIPTION_DELIMITER);
+    // return index[6];
+    // }
 
     public static final String getString(String engineName, String shortDescription, String host, String port, String login,
             String password) {

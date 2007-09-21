@@ -155,10 +155,15 @@ public class SpagoBiServerEditor extends TableEditor {
     @Override
     protected String getExistingInputObject(String obj) {
         Shell shell = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+        // SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(),
+        // SpagoBiServerHelper.getEngineName(obj),
+        // SpagoBiServerHelper.getShortDescription(obj), SpagoBiServerHelper.getHost(obj),
+        // SpagoBiServerHelper.getPort(obj),
+        // SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper.getPassword(obj), SpagoBiServerHelper
+        // .getApplicationContext(obj));
         SpagoBiServerDialog dialog = new SpagoBiServerDialog(shell, computeCodeList(), SpagoBiServerHelper.getEngineName(obj),
                 SpagoBiServerHelper.getShortDescription(obj), SpagoBiServerHelper.getHost(obj), SpagoBiServerHelper.getPort(obj),
-                SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper.getPassword(obj), SpagoBiServerHelper
-                        .getApplicationContext(obj));
+                SpagoBiServerHelper.getLogin(obj), SpagoBiServerHelper.getPassword(obj));
 
         if (dialog.open() == Window.OK) {
             return SpagoBiServerHelper.getString(dialog.getEngineName(), dialog.getShortDescription(), dialog.getHost(), dialog
