@@ -35,7 +35,6 @@
       REQUIRED="true"
       NUM_ROW="10"
     >
-	    <TABLE READONLY="true"/>
     </PARAMETER>
 
 
