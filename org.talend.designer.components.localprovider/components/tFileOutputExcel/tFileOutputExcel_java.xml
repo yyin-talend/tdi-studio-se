@@ -53,6 +53,15 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA"

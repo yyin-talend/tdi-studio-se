@@ -89,6 +89,15 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
   </PARAMETERS>
 

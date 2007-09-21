@@ -54,6 +54,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 "__FORMATS__"
             );
 %>
+  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+//create directory only if not exists
+		 java.io.File createFile<%=cid%> = new java.io.File(<%=filename%>);
+		 if(!createFile<%=cid%>.exists()){
+		 	(new java.io.File(<%=filename.substring(0,filename.lastIndexOf("/"))%>")).mkdirs();
+		 }
+  <%}%>
 		int nb_line_<%=cid%> = 0;
 		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));

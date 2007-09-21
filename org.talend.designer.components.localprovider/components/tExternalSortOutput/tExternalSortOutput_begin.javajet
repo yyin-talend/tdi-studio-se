@@ -12,6 +12,15 @@ imports="
 	String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
 	String tempDir = ElementParameterParser.getValue(node,"__TEMP_DIR__");
 %>
+
+//create directory only if not exists
+	<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+	<%String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");%>		
+		 java.io.File createFile<%=cid%> = new java.io.File(<%=fileNewname%>);
+		 if(!createFile<%=cid%>.exists()){
+		 	(new java.io.File(<%=fileNewname.substring(0,fileNewname.lastIndexOf("/"))%>")).mkdirs();
+		 }
+	<%}%>
 		int nb_line_<%=cid%> = 0;
 		
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
