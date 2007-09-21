@@ -58,6 +58,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.lang.Class.forName("com.informix.jdbc.IfxDriver");
 
 String url_<%=cid %> = "jdbc:informix-sqli://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + ":informixserver=" + <%=dbserver%>;

@@ -360,6 +360,7 @@ if(incomingConnName != null && columnList != null){
             insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
+            whetherReject_<%=cid%> = true;
             <%
             if (dieOnError.equals("true")) {
                 %>
@@ -418,6 +419,7 @@ if(incomingConnName != null && columnList != null){
         try{
             updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e){
+            whetherReject_<%=cid%> = true;
             <%
             if (dieOnError.equals("true")) {
                 %>
@@ -492,6 +494,7 @@ if(incomingConnName != null && columnList != null){
             }
             catch(Exception e)
             {
+                whetherReject_<%=cid%> = true;
                 <%
                 if (dieOnError.equals("true")) {
                     %>
@@ -532,6 +535,7 @@ if(incomingConnName != null && columnList != null){
             }
             catch(Exception e)
             {
+                whetherReject_<%=cid%> = true;
                 <%
                 if (dieOnError.equals("true")) {
                     %>
@@ -594,6 +598,7 @@ if(incomingConnName != null && columnList != null){
             updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
+            whetherReject_<%=cid%> = true;
             <%
             if (dieOnError.equals("true")) {
                 %>
@@ -636,6 +641,7 @@ if(incomingConnName != null && columnList != null){
                 nb_line_inserted_<%=cid%>++;
             }catch(Exception e)
             {
+                whetherReject_<%=cid%> = true;
                 <%
                 if (dieOnError.equals("true")) {
                     %>
@@ -685,6 +691,7 @@ if(incomingConnName != null && columnList != null){
         	deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
+            whetherReject_<%=cid%> = true;
             <%
             if (dieOnError.equals("true")) {
                 %>
@@ -712,15 +719,21 @@ if(incomingConnName != null && columnList != null){
 	}
 	
     if(outgoingConns != null && outgoingConns.size() > 0) {
-        for(IConnection outgoingConn : outgoingConns) {
-            if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
-                for(IMetadataColumn column : columnList) {
-                    %>
-                    <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                    <%                  
+        %>
+        if(!whetherReject_<%=cid%>) {
+        <%
+            for(IConnection outgoingConn : outgoingConns) {
+                if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
+                    for(IMetadataColumn column : columnList) {
+                        %>
+                        <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                        <%                  
+                    }
                 }
             }
+        %>
         }
+        <%
     }	
 	
     ////////////commit every////////////

@@ -54,6 +54,8 @@ else
 
 java.sql.PreparedStatement pstmt_<%=cid %> = null;
 
+boolean whetherReject_<%=cid%> = false;
+
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%
 if(!useExistingConn.equals("true"))

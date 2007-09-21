@@ -87,6 +87,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
 
 String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"; 

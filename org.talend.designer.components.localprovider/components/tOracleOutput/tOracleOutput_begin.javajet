@@ -88,6 +88,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.sql.Connection conn_<%=cid%> = null;
 <%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");

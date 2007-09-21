@@ -57,6 +57,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
 
 String url_<%=cid %> = "jdbc:db2://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;

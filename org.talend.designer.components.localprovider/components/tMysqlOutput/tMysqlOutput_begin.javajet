@@ -92,6 +92,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.util.Calendar calendar_<%=cid %> = java.util.Calendar.getInstance();
 calendar_<%=cid %>.set(1, 0, 1, 0, 0, 0);
 long year1_<%=cid %> = calendar_<%=cid %>.getTime().getTime();

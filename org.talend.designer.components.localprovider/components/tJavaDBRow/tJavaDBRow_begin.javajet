@@ -121,6 +121,8 @@ int nb_line_<%=cid%> = 0;
 
 java.sql.PreparedStatement pstmt_<%=cid %> = null;
 
+boolean whetherReject_<%=cid%> = false;
+
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 
 <%

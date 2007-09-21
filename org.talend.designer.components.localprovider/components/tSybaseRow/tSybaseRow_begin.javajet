@@ -37,6 +37,8 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 
 java.sql.PreparedStatement pstmt_<%=cid %> = null;
 
+boolean whetherReject_<%=cid%> = false;
+
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){

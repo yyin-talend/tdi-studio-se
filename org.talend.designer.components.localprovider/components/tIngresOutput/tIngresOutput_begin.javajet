@@ -59,6 +59,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.lang.Class.forName("com.ingres.jdbc.IngresDriver");
 
 String url_<%=cid %> = "jdbc:ingres://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;

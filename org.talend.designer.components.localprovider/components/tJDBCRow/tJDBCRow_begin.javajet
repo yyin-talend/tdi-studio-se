@@ -29,6 +29,8 @@ java.sql.Connection connection_<%=cid%> =
 	java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
 java.sql.PreparedStatement statement_<%=cid%> = null;
 
+boolean whetherReject_<%=cid%> = false;
+
 globalMap.put("<%=cid %>_QUERY", <%=dbquery%>);
 
 <%

@@ -162,6 +162,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 Class.forName(jdbcDriver_<%=cid%>).newInstance();
 
 java.util.Properties properties_<%=cid%> = new java.util.Properties();

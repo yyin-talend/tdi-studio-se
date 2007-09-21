@@ -57,6 +57,8 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+boolean whetherReject_<%=cid%> = false;
+
 java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
 
 String url_<%=cid %> = "jdbc:sybase:Tds:"+<%=dbServer%>+":"+<%=dbport%>+"/"+<%=dbname%>; 
