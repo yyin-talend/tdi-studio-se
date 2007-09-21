@@ -57,6 +57,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.designer.core.i18n.Messages;
@@ -360,8 +361,19 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
 
                 } else {
-                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputConec.getSource(), outputMetaCopy,
-                            node, getCommandStack());
+                    Node inputNode = ((Node) inputConec.getSource());
+                    if (inputMetaCopy.getAttachedConnector() == null) {
+                        INodeConnector mainConnector;
+                        if (inputNode.isELTComponent()) {
+                            mainConnector = inputNode.getConnectorFromType(EConnectionType.TABLE);
+                        } else {
+                            mainConnector = inputNode.getConnectorFromType(EConnectionType.FLOW_MAIN);
+                        }
+                        inputMetaCopy.setAttachedConnector(mainConnector.getName());
+                    }
+
+                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, outputMetaCopy, node,
+                            getCommandStack());
                 }
 
             } else {

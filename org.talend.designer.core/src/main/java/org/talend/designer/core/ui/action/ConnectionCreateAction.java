@@ -291,12 +291,10 @@ public class ConnectionCreateAction extends SelectionAction {
                     if (connectionName.equals("")) { //$NON-NLS-1$
                         return;
                     }
-                    if (connecType.equals(EConnectionType.TABLE)
-                            || node.getProcess().checkValidConnectionName(connectionName)) {
+                    if (connecType.equals(EConnectionType.TABLE) || node.getProcess().checkValidConnectionName(connectionName)) {
                         nameOk = true;
                     } else {
-                        String message = Messages.getString(
-                                "ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
+                        String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
                         MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages
                                 .getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
                     }
@@ -347,6 +345,8 @@ public class ConnectionCreateAction extends SelectionAction {
                     connectionName = meta.getTableName();
                 }
             }
+            // for built-in only:
+            meta.setAttachedConnector(curNodeConnector.getName());
         } else {
             if (connecType.equals(EConnectionType.TABLE)) {
                 connectionName = askForConnectionName(node.getLabel());
@@ -360,7 +360,7 @@ public class ConnectionCreateAction extends SelectionAction {
             if (node.getMetadataList().size() == 0) {
                 meta = null;
             } else {
-                meta = (IMetadataTable) node.getMetadataList().get(0);
+                meta = (IMetadataTable) node.getMetadataFromConnector(curNodeConnector.getName());
             }
         }
 
