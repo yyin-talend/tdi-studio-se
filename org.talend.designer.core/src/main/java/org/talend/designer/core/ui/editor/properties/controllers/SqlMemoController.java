@@ -307,7 +307,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
         Control cLayout = dField.getLayoutControl();
         ColorStyledText queryText = (ColorStyledText) dField.getControl();
-
+        queryText.setData(PARAMETER_NAME, param.getName());
         editionControlHelper.register(param.getName(), queryText, true);
 
         FormData d = (FormData) queryText.getLayoutData();
@@ -450,5 +450,6 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
+        fixedCursorPosition(param, labelText, value, valueChanged);
     }
 }

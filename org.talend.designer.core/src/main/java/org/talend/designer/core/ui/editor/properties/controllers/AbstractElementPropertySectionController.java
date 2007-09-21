@@ -750,7 +750,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param value
      * @param valueChanged
      */
-    protected void fixedCursorPosition(IElementParameter param, Text labelText, Object value, boolean valueChanged) {
+    protected void fixedCursorPosition(IElementParameter param, Control labelText, Object value, boolean valueChanged) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IWorkbenchPart workbenchPart = page.getActivePart();
         if (workbenchPart instanceof PropertySheet) {
