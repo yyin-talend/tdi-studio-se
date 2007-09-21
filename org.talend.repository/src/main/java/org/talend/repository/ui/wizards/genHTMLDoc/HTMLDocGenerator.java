@@ -141,8 +141,8 @@ public class HTMLDocGenerator {
 
             resource.addResources(IHTMLDocConstants.PIC_FOLDER_NAME, picList);
 
-            List<URL> externalList = getExternalHtmlPath();
-            resource.addResources(IHTMLDocConstants.EXTERNAL_FOLDER_NAME, externalList);
+            // List<URL> externalList = getExternalHtmlPath();
+            // resource.addResources(IHTMLDocConstants.EXTERNAL_FOLDER_NAME, externalList);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -250,7 +250,7 @@ public class HTMLDocGenerator {
         ExternalNodeComponentHandler externalNodeComponentHandler = new ExternalNodeComponentHandler(
                 this.picFilePathMap, externalNodeElement, externalNodeComponentsList, this.sourceConnectionMap,
                 this.targetConnectionMap, this.designerCoreService, this.repositoryConnectionItemMap,
-                this.repositoryDBIdAndNameMap, externalNodeHTMLMap, tempFolderPath);
+                this.repositoryDBIdAndNameMap, externalNodeHTMLMap/* , tempFolderPath */);
 
         // Generates internal node components information.
         internalNodeComponentHandler.generateComponentInfo();
