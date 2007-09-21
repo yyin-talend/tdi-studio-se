@@ -53,6 +53,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
@@ -308,6 +309,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             if (previewInformationLabel.isDisposed()) {
                 return;
             }
+            LDAPSchemaConnection connection = (LDAPSchemaConnection) connectionItem.getConnection();
             if (getException() != null) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
@@ -316,9 +318,13 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 return;
             }
 
-            if (csvArray == null) {
+            if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
+                MessageDialog.openError(getShell(), "Error",
+                        "Preview refresh failed, please check attributes and filter.");
+                filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
+                connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
             } else {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$
                 //$NON-NLS-2$
@@ -326,12 +332,11 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 // refresh TablePreview on this step
                 try {
                     ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
-                }catch(Exception e)
-                {
-                    setException(e);
-                    log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
-                    MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
-                    return;
+                } catch (Exception e) {
+                    MessageDialog.openError(getShell(), "Error",
+                            "Preview refresh failed, please check attributes and filter.");
+                    filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
+                    connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
                 }
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
@@ -453,7 +458,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
      * refreshPreview use ShadowProcess to refresh the preview.
      */
     void refreshPreview() {
-            processor.execute();
+        processor.execute();
     }
 
     /**
@@ -516,10 +521,6 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 updateStatus(IStatus.ERROR, Messages.getString("LdifFileStep2.previewFailure")); //$NON-NLS-1$
             }
             attributeModel.registerDataList(itemTableNameList);
-
-            if (getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
-                refreshPreview();
-            }
 
             EList attributeValueList = getConnection().getValue();
             if (attributeValueList != null && !attributeValueList.isEmpty()) {

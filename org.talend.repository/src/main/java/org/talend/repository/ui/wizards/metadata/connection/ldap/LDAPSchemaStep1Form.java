@@ -125,7 +125,7 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         BaseWidgetUtils.createLabel(groupComposite, "Encryption method:", 1);
         encryptionMethodCombo = BaseWidgetUtils.createReadonlyCombo(groupComposite, encMethods, index, 2);
         // BaseWidgetUtils.createSpacer(groupComposite, 1);
-        BaseWidgetUtils.createLabel(groupComposite, "                    Cilck the button to check connection status.",
+        BaseWidgetUtils.createLabel(groupComposite, "                    Click the button below to check the connection.",
                 2);
 
         BaseWidgetUtils.createSpacer(groupComposite, 2);
@@ -213,11 +213,11 @@ public class LDAPSchemaStep1Form extends AbstractForm {
                 if (isOK) {
                     saveDialogSettings();
                     MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Check Network Parameter",
-                            "The connection was established successfully.");
+                            "The connection succeeded.");
                     updateStatus(IStatus.OK, null);
                 } else {
                     MessageDialog.openError(Display.getDefault().getActiveShell(), "Check Network Parameter",
-                            "The connection was established failed.");
+                            "The connection failed.");
                     updateStatus(IStatus.ERROR, null);
                 }
             }

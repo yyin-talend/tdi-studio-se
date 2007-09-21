@@ -120,6 +120,8 @@ public class LDAPSchemaStep2Form extends AbstractForm {
     /** The time limit text. */
     private Text timeLimitText;
 
+    private String alertForFetchBaseDNs = "Base DNs are required. Click the Fetch button to get them.";
+
     public LDAPSchemaStep2Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] tableNames) {
         super(parent, SWT.NONE, tableNames);
@@ -282,6 +284,10 @@ public class LDAPSchemaStep2Form extends AbstractForm {
                 if (authenticationMethodCombo.getText().equals(EAuthenticationMethod.ANONYMOUS.getName())) {
                     refreshAuthParamGroup(connection, false);
                     connection.setUseAuthen(false);
+                    String selectedDN = connection.getSelectedDN();
+                    if (selectedDN == null || selectedDN.length() == 0) {
+                        updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
+                    }
                 } else {
                     refreshAuthParamGroup(connection, true);
                     connection.setUseAuthen(true);
@@ -322,13 +328,12 @@ public class LDAPSchemaStep2Form extends AbstractForm {
 
                     saveDialogSettings();
                     MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-                            "Check Authentication Parameter", "The authentication check was successfully.");
-                    String alertForFetchBaseDNs = "Please click \"Fetch base DNs\" button, cannot go forward unless fetch successfully.";
+                            "Check Authentication Parameter", "The authentication check succeeded.");
                     updateStatus(IStatus.ERROR, alertForFetchBaseDNs);
                 } else {
 
                     MessageDialog.openError(Display.getDefault().getActiveShell(), "Check Authentication Parameter",
-                            "The authentication check was failed.");
+                            "The authentication check failed.");
                     updateStatus(IStatus.ERROR, null);
                 }
             }
@@ -650,7 +655,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         }
 
         checkFieldsValue();
-
+        
     }
 
     /**

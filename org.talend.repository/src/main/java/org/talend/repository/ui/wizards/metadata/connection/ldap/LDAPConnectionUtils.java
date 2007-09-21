@@ -76,8 +76,6 @@ public class LDAPConnectionUtils {
 
         String[] returnAttributes = (String[]) returnAttributeList.toArray(new String[size]);
 
-        String filter = null;
-
         try {
             javax.naming.directory.SearchControls searchCtls = new javax.naming.directory.SearchControls();
             searchCtls.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
@@ -99,9 +97,8 @@ public class LDAPConnectionUtils {
             }
 
             if (searchFilter == null) {
-                searchFilter = "(&(objectClass=*))";
-            } else {
-                filter = searchFilter;
+
+                searchFilter = ConnectionUIConstants.DEFAULT_FILTER;
             }
 
             // initialize counter to total the group members
@@ -130,6 +127,7 @@ public class LDAPConnectionUtils {
             // System.out.println("Total attrs: " + totalResults);
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
+            connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
         }
 
         return attributeList;
@@ -162,22 +160,16 @@ public class LDAPConnectionUtils {
 
             Attributes attrs = sr.getAttributes();
             if (attrs != null) {
-
-                try {
-                    for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
-                        Attribute attr = (Attribute) ae.next();
-                        // System.out.println("Attribute: " + attr.getID());
-                        if (attributeList.contains(attr) == false) {
-                            attributeList.add(attr);
-                        }
-                        // int totalResults = 1;
-                        // for (javax.naming.NamingEnumeration e = attr.getAll(); e.hasMore(); totalResults++) {
-                        // System.out.println(" " + totalResults + ". " + e.next());
-                        // }
+                for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
+                    Attribute attr = (Attribute) ae.next();
+                    // System.out.println("Attribute: " + attr.getID());
+                    if (attributeList.contains(attr) == false) {
+                        attributeList.add(attr);
                     }
-
-                } catch (NamingException e) {
-                    MessageBoxExceptionHandler.process(e);
+                    // int totalResults = 1;
+                    // for (javax.naming.NamingEnumeration e = attr.getAll(); e.hasMore(); totalResults++) {
+                    // System.out.println(" " + totalResults + ". " + e.next());
+                    // }
                 }
             }
         }

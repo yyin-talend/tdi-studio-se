@@ -153,10 +153,10 @@ public class FileTableWizardPage extends WizardPage {
             
             @Override
             public Object caseLDAPSchemaConnection(final LDAPSchemaConnection object) {
-                LDAPSchemaStep4Form ldapSchemaStep5Form = new LDAPSchemaStep4Form(parent, connectionItem);
-                ldapSchemaStep5Form.setReadOnly(!isRepositoryObjectEditable);
-                ldapSchemaStep5Form.setListener(listener);
-                return ldapSchemaStep5Form;
+                LDAPSchemaStep4Form ldapSchemaStep4Form = new LDAPSchemaStep4Form(parent, connectionItem);
+                ldapSchemaStep4Form.setReadOnly(!isRepositoryObjectEditable);
+                ldapSchemaStep4Form.setListener(listener);
+                return ldapSchemaStep4Form;
             }
 
         }.doSwitch(connection);

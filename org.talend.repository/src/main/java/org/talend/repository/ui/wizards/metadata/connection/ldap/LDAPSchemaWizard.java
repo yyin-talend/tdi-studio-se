@@ -230,13 +230,13 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             addPage(ldapSchemaWizardPage1);
 
             ldapSchemaWizardPage2 = new LDAPSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(), null);
-            ldapSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+            ldapSchemaWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage2);
 
             ldapSchemaWizardPage3 = new LDAPSchemaWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            ldapSchemaWizardPage3.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+            ldapSchemaWizardPage3.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 5"); //$NON-NLS-1$ //$NON-NLS-2$
             ldapSchemaWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldapSchemaWizardPage3);
