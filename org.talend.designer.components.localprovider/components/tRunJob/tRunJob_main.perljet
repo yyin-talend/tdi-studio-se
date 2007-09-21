@@ -143,10 +143,34 @@ push @arguments, '--context_param <%=name%>="'.<%=value%>.'"';
 }
 %>
 
-my $error = system(
-    join(' ', @arguments)
-);
+{
+    my $code = system(
+        join(' ', @arguments)
+    );
 
-if($error){
-    die "Process <%=process %> died.\n" ;
+    if ($code == -1) {
+        warn "[<%=cid%>] failed to execute: $!\n";
+        $_globals{<%=cid%>}{CHILD_RETURN_CODE} = $code;
+    }
+    elsif ($code & 127) {
+        warn sprintf(
+            "[<%=cid%>] child died with signal %d, %s coredump\n",
+            ($code & 127),
+            ($code & 128) ? 'with' : 'without'
+        );
+   
+        $_globals{<%=cid %>}{CHILD_RETURN_CODE} = ''; # TODO
+    }
+    else {
+        $_globals{<%=cid %>}{CHILD_RETURN_CODE} = $code >> 8;
+    }
+
+    # printf(
+    #     "CHILD_RETURN_CODE : %s\n",
+    #     $_globals{<%=cid%>}{CHILD_RETURN_CODE}
+    # );
+
+    if ($_globals{<%=cid%>}{CHILD_RETURN_CODE}) {
+        die "Process <%=process %> died.\n" ;	
+    }
 }

@@ -13,14 +13,23 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String returnCode = ElementParameterParser.getValue(
+    node,
+    "__RETURN_CODE__"
+);
+
+String message = ElementParameterParser.getValue(node, "__MESSAGE__");
+String code = ElementParameterParser.getValue(node, "__CODE__");
+String priority = ElementParameterParser.getValue(node, "__PRIORITY__");
+
 for (INode logCatcher : node.getProcess().getNodesOfType("tLogCatcher")) {
 %>
     <%=logCatcher.getUniqueName()%>_subprocess(
-        message => <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
-        code => <%=ElementParameterParser.getValue(node, "__CODE__") %>,
+        message => <%=message%>,
+        code => <%=code%>,
         type => 'tDie',
         origin => '<%=cid%>',
-        priority => <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>,
+        priority => <%=priority%>,
     );
 <%
 }
@@ -28,4 +37,5 @@ for (INode logCatcher : node.getProcess().getNodesOfType("tLogCatcher")) {
 
 $current_component = '<%=cid%>';
 
-die(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+warn(<%=message%>);
+exit(<%=returnCode%>);

@@ -52,6 +52,15 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="RETURN_CODE"
+      FIELD="TEXT"
+      REQUIRED="false"
+      NUM_ROW="4"
+    >
+      <DEFAULT>1</DEFAULT>
+    </PARAMETER>
+
    </PARAMETERS>
 
    <CODEGENERATION/>
