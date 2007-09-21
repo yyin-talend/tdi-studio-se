@@ -219,6 +219,8 @@ public class PropertyChangeCommand extends Command {
                     if (!oldMapping.equals(newMapping)) {
                         Node node = (Node) elem;
                         if (node.getMetadataList().size() > 0) {
+                            // to change with:
+                            // IMetadataTable metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                             IMetadataTable metadataTable = node.getMetadataList().get(0);
                             metadataTable.setDbms(newMapping);
                         }
@@ -228,9 +230,13 @@ public class PropertyChangeCommand extends Command {
                 // See issue 975, update the schema.
                 Node node = (Node) elem;
                 if (node.getMetadataList().size() > 0) {
-                    IMetadataTable metadataTable = node.getMetadataList().get(0);
+                    IMetadataTable metadataTable = node.getMetadataFromConnector(testedParam.getContext());
                     testedParam.setValueToDefault(node.getElementParameters());
                     IMetadataTable newMetadataTable = (IMetadataTable) testedParam.getValue();
+                    newMetadataTable.setTableName(metadataTable.getTableName());
+                    newMetadataTable.setAttachedConnector(metadataTable.getAttachedConnector());
+
+                    metadataTable.setListColumns(newMetadataTable.clone(true).getListColumns());
 
                     changeMetadataCommand = new ChangeMetadataCommand(node, null, metadataTable, newMetadataTable);
                     changeMetadataCommand.execute(true);
