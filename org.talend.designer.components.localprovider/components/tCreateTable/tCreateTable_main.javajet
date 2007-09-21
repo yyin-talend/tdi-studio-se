@@ -293,6 +293,15 @@ class Transfer{
        Transfer tr=new Transfer();
 %>
 
+
+try{
+
+
+
+
+
+
+
 <% 
   if (tr.isLackDBType(node)){
 %>		
@@ -374,11 +383,6 @@ class Transfer{
 
 		stmt<%=cid%> = con<%=cid%>.createStatement();
 	
-	
-	
-	
-	
-	
  
 <%//  special action / Main action
 	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
@@ -412,13 +416,6 @@ class Transfer{
 		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
 		stmt<%=cid%>.execute(sql<%=cid%>);
 <%}
-
-
-
-
-
-
-
 //close
 	if(dbType.equals("HSQLdb")){
 %>
@@ -444,7 +441,9 @@ class Transfer{
 	}
 %>
 
-
-		
+}catch(Exception e){
+	globalMap.put("ERROR_MESSAGE",e.getMessage());
+	throw new TalendException(this, e);
+	}
 
 		
