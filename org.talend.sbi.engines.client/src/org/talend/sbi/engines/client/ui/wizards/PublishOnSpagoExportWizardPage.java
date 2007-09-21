@@ -382,8 +382,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             // if (choice.equals(ExportChoice.needGenerateCode)) {
             // continue;
             // }
-            canExport = exportChoiceMap.get(choice);
-            if (canExport) {
+            if (exportChoiceMap.get(choice) != null && exportChoiceMap.get(choice)) {
+                canExport = true;
                 break;
             }
         }
@@ -394,21 +394,21 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             return false;
         }
 
-        if (!ensureTargetIsValid()) {
-            return false;
-        }
-        String topFolder = getRootFolderName();
+        // if (!ensureTargetIsValid()) {
+        // return false;
+        // }
+        // String topFolder = getRootFolderName();
 
         List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
+        // setTopFolder(resourcesToExport, topFolder);
 
         // Save dirty editors if possible but do not stop if not all are saved
-        saveDirtyEditors();
+        // saveDirtyEditors();
         // about to invoke the operation so save our state
-        saveWidgetValues();
+        // saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
-        boolean ok = executeExportOperation(exporterOperation);
+        // ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
+        // boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name
         manager.deleteTempFiles();
@@ -490,7 +490,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody());
         }
 
-        return ok;
+        // return ok;
+        return true;
     }
 
     /**
