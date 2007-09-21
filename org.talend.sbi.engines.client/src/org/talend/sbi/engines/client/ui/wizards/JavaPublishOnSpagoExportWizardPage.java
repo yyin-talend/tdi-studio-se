@@ -27,18 +27,18 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * Publish SpagoBI Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JavaPublishOnSpagoExportWizardPage.java 1 2007-04-27 12:00:07 cantoine
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JavaPublishOnSpagoExportWizardPage.java 1 2007-04-27 12:00:07
+ * cantoine
  * 
  */
 public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWizardPage {
 
     // dialog store id constants
-    public static final  String STORE_SHELL_LAUNCHER_ID = "JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
+    public static final String STORE_SHELL_LAUNCHER_ID = "JavaJobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
     public static final String STORE_SYSTEM_ROUTINE_ID = "JavaJobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
 
@@ -116,28 +116,28 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
 
-            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
-                setDestinationValue(directoryNames[0]);
-                for (int i = 0; i < directoryNames.length; i++) {
-                    addDestinationItem(directoryNames[i]);
-                }
-            }
-//            shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
-//            systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
-//            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
-//            modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-//            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-//            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            // String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            // if (directoryNames != null) {
+            // // destination
+            // setDestinationValue(directoryNames[0]);
+            // for (int i = 0; i < directoryNames.length; i++) {
+            // addDestinationItem(directoryNames[i]);
+            // }
+            // }
+            // shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
+            // systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
+            // userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
+            // modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
+            // jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            // sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-//        launcherCombo.setItems(manager.getLauncher());
-//        if (manager.getLauncher().length > 0) {
-//            launcherCombo.select(0);
-//        }
+        // launcherCombo.setItems(manager.getLauncher());
+        // if (manager.getLauncher().length > 0) {
+        // launcherCombo.select(0);
+        // }
         if (process.length > 0) {
             List<String> contextNames = manager.getJobContexts(process[0].getProcess());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));

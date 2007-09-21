@@ -65,6 +65,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.RepositoryNode;
@@ -307,11 +308,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         }
 
         if (targetFile.exists()) {
-            if (targetFile.canWrite()) {
-                if (!queryYesNoQuestion(DataTransferMessages.ZipExport_alreadyExists)) {
-                    return false;
-                }
-            } else {
+            if (!targetFile.canWrite()) {
                 displayErrorDialog(DataTransferMessages.ZipExport_alreadyExistsError);
                 giveFocusToDestination();
                 return false;
@@ -394,21 +391,21 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             return false;
         }
 
-        // if (!ensureTargetIsValid()) {
-        // return false;
-        // }
-        // String topFolder = getRootFolderName();
+        if (!ensureTargetIsValid()) {
+            return false;
+        }
+        String topFolder = getRootFolderName();
 
         List<ExportFileResource> resourcesToExport = getExportResources();
-        // setTopFolder(resourcesToExport, topFolder);
+        setTopFolder(resourcesToExport, topFolder);
 
         // Save dirty editors if possible but do not stop if not all are saved
-        // saveDirtyEditors();
+        saveDirtyEditors();
         // about to invoke the operation so save our state
-        // saveWidgetValues();
-        // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        // ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
-        // boolean ok = executeExportOperation(exporterOperation);
+        saveWidgetValues();
+        // boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(process));
+        ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
+        boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name
         manager.deleteTempFiles();
@@ -490,8 +487,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
             System.err.println("StatusLine: " + e.getStatusLine() + "responseBody: " + e.getResponseBody());
         }
 
-        // return ok;
-        return true;
+        return ok;
+        // return true;
     }
 
     /**
@@ -579,26 +576,13 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
      */
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
-        String destinationText = super.getDestinationValue();
 
-        // only append a suffix if the destination doesn't already have a . in
-        // its last path segment.
-        // Also prevent the user from selecting a directory. Allowing this will
-        // create a ".zip" file in the directory
-        if (destinationText.length() != 0 && !destinationText.endsWith(File.separator)) {
-            int dotIndex = destinationText.lastIndexOf('.');
-            if (dotIndex != -1) {
-                // the last path seperator index
-                int pathSepIndex = destinationText.lastIndexOf(File.separator);
-                if (pathSepIndex != -1 && dotIndex < pathSepIndex) {
-                    destinationText += idealSuffix;
-                }
-            } else {
-                destinationText += idealSuffix;
-            }
-        }
-
-        return destinationText;
+        String filename = "SpagoBi" + idealSuffix;
+        IPath tempPath;
+        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.FILE_PATH_TEMP));
+        tempPath = tempPath.append(filename);
+        return tempPath.toOSString();
     }
 
     /**
