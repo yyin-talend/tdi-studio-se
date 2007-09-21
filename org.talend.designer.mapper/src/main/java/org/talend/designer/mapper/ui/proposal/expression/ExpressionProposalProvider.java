@@ -38,6 +38,7 @@ import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * ContentProposalProvider which initialize valid locations of Mapper. <br/>
@@ -47,75 +48,97 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class ExpressionProposalProvider implements IContentProposalProvider {
 
-    private MapperManager mapperManager;
+	private MapperManager mapperManager;
 
-    private List<AbstractDataMapTable> tables;
+	private List<AbstractDataMapTable> tables;
 
-    private ILanguage currentLanguage;
+	private ILanguage currentLanguage;
 
-    private IContentProposalProvider[] otherContentProposalProviders;
+	private IContentProposalProvider[] otherContentProposalProviders;
 
-    private ITableEntry currentModifiedEntry;
+	private ITableEntry currentModifiedEntry;
 
-    /**
-     * Constructs a new ProcessProposalProvider.
-     * 
-     * @param tables
-     * @param control
-     */
-    public ExpressionProposalProvider(MapperManager mapperManager,
-            IContentProposalProvider[] otherContentProposalProviders) {
-        super();
-        this.mapperManager = mapperManager;
-        this.currentLanguage = LanguageProvider.getCurrentLanguage();
-        this.otherContentProposalProviders = otherContentProposalProviders;
-    }
+	/**
+	 * Constructs a new ProcessProposalProvider.
+	 * 
+	 * @param tables
+	 * @param control
+	 */
+	public ExpressionProposalProvider(MapperManager mapperManager,
+			IContentProposalProvider[] otherContentProposalProviders) {
+		super();
+		this.mapperManager = mapperManager;
+		this.currentLanguage = LanguageProvider.getCurrentLanguage();
+		this.otherContentProposalProviders = otherContentProposalProviders;
+	}
 
-    public void init(IDataMapTable currentTable, Zone[] zones, ITableEntry currentEntry) {
+	public void init(IDataMapTable currentTable, Zone[] zones,
+			ITableEntry currentEntry) {
 
-        tables = new ArrayList<AbstractDataMapTable>();
-        for (int i = 0; i < zones.length; i++) {
-            if (zones[i] == Zone.INPUTS) {
-                tables.addAll(mapperManager.getInputTables());
-            } else if (zones[i] == Zone.OUTPUTS) {
-                tables.addAll(mapperManager.getOutputTables());
-            } else if (zones[i] == Zone.VARS) {
-                tables.addAll(mapperManager.getVarsTables());
-            }
-        }
-//        if (!(currentTable instanceof VarsTable) && !(currentEntry instanceof ExpressionFilterEntry)) {
-//            tables.remove(currentTable);
-//        }
-        this.currentModifiedEntry = currentEntry;
-    }
+		tables = new ArrayList<AbstractDataMapTable>();
+		for (int i = 0; i < zones.length; i++) {
+			if (zones[i] == Zone.INPUTS) {
+				tables.addAll(mapperManager.getInputTables());
+			} else if (zones[i] == Zone.OUTPUTS) {
+				tables.addAll(mapperManager.getOutputTables());
+			} else if (zones[i] == Zone.VARS) {
+				tables.addAll(mapperManager.getVarsTables());
+			}
+		}
+		// if (!(currentTable instanceof VarsTable) && !(currentEntry instanceof
+		// ExpressionFilterEntry)) {
+		// tables.remove(currentTable);
+		// }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
-     */
-    public IContentProposal[] getProposals(String contents, int position) {
-        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+		this.currentModifiedEntry = currentEntry;
+	}
 
-        TableEntryLocation sourceEntryLocation = new TableEntryLocation();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String,
+	 *      int)
+	 */
+	public IContentProposal[] getProposals(String contents, int position) {
+		List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 
-        for (IDataMapTable table : this.tables) {
-            List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
-            for (IColumnEntry entrySource : dataMapTableEntries) {
-                sourceEntryLocation.tableName = entrySource.getParentName();
-                sourceEntryLocation.columnName = entrySource.getName();
-                if (mapperManager.getUiManager().checkSourceLocationIsValid(entrySource, currentModifiedEntry)) {
-                    proposals.add(new EntryContentProposal(entrySource, this.currentLanguage));
-                }
-            }
-        }
+		TableEntryLocation sourceEntryLocation = new TableEntryLocation();
 
-        for (IContentProposalProvider contentProposalProvider : otherContentProposalProviders) {
-            proposals.addAll(Arrays.asList(contentProposalProvider.getProposals(contents, position)));
-        }
-        IContentProposal[] res = new IContentProposal[proposals.size()];
-        res = proposals.toArray(res);
-        return res;
-    }
+		for (IDataMapTable table : this.tables) {
+			List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
+			for (IColumnEntry entrySource : dataMapTableEntries) {
+				sourceEntryLocation.tableName = entrySource.getParentName();
+				sourceEntryLocation.columnName = entrySource.getName();
+				if (mapperManager.getUiManager().checkSourceLocationIsValid(
+						entrySource, currentModifiedEntry)) {
+					proposals.add(new EntryContentProposal(entrySource,
+							this.currentLanguage));
+				}
+			}
+		}
+
+		for (IContentProposalProvider contentProposalProvider : otherContentProposalProviders) {
+			proposals.addAll(Arrays.asList(contentProposalProvider
+					.getProposals(contents, position)));
+		}
+		IContentProposal[] res = new IContentProposal[proposals.size()];
+		res = proposals.toArray(res);
+		return res;
+	}
+
+	public List<Variable> getVariables() {
+		List<Variable> variables = new ArrayList<Variable>();
+		for (IDataMapTable table : this.tables) {
+			List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
+			for (IColumnEntry entrySource : dataMapTableEntries) {
+				String variable = LanguageProvider.getCurrentLanguage()
+						.getLocation(entrySource.getParentName(),
+								entrySource.getName());
+				variables.add(new Variable(variable, ""));
+			}
+		}
+
+		return variables;
+	}
 
 }
