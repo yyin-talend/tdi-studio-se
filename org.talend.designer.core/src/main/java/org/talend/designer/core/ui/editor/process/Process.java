@@ -914,7 +914,7 @@ public class Process extends Element implements IProcess {
         for (IElementParameter currentParam : node.getElementParameters()) {
             if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter schemaParam = currentParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-                if (schemaParam != null && schemaParam.isShow(node.getElementParameters())) {
+                if (schemaParam != null && ((ElementParameter) schemaParam).isDisplayedByDefault()) {
                     if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
                         String metaRepositoryName = (String) currentParam.getChildParameters().get(
                                 EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
@@ -926,6 +926,7 @@ public class Process extends Element implements IProcess {
                             repositoryMetadata = repositoryMetadata.clone();
                             final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
                             copyOfrepositoryMetadata.setTableName(uniqueName);
+                            copyOfrepositoryMetadata.setAttachedConnector(currentParam.getContext());
 
                             IMetadataTable metadataTable = node.getMetadataFromConnector(currentParam.getContext());
                             if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
@@ -1165,8 +1166,9 @@ public class Process extends Element implements IProcess {
                 if (result.getResultType() == MetadataUpdateCheckResult.ResultType.change) {
 
                     if (result.isChecked()) {
-                        node.getMetadataTable(node.getUniqueName()).setListColumns(
-                                ((IMetadataTable) result.getParameter()).getListColumns());
+                        IMetadataTable newTable = ((IMetadataTable) result.getParameter());
+                        // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
+                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
                     } else { // result.isChecked()==false
                         node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     }

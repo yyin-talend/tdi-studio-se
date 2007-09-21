@@ -500,4 +500,8 @@ public class ElementParameter implements IElementParameter {
         this.parentParameter = parentParameter;
         parentParameter.getChildParameters().put(this.getName(), this);
     }
+
+    public boolean isDisplayedByDefault() {
+        return this.show;
+    }
 }
