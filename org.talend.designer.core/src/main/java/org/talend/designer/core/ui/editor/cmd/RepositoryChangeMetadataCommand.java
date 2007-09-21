@@ -101,7 +101,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             repositorySchemaTypeParameter.setShow(false);
         }
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
-        setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
+        setDBTableFieldValue(node, newOutputMetadata.getLabel(), oldOutputMetadata.getTableName());
         refreshPropertyView();
         super.execute();
     }
