@@ -29,6 +29,7 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -233,6 +234,13 @@ public class ContextViewComposite extends ContextComposite {
                 CCombo combo = (CCombo) e.getSource();
 
                 if (combo.getText().equals(EmfComponent.TEXT_REPOSITORY)) {
+                    boolean comfirm = MessageDialog.openConfirm(ContextViewComposite.this.getShell(), "Comfirm",
+                            "The current built-in context will be removed, are you sure to continue?");
+                    if (!comfirm) {
+                        combo.setText(EmfComponent.TEXT_BUILTIN);
+                        return;
+                    }
+
                     updateContextList();
                     if (repositoryCombo.getItemCount() == 0) {
                         repositoryCombo.setText("");
