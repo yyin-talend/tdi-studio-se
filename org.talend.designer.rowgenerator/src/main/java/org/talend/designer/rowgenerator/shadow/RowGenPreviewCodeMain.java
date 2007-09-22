@@ -65,9 +65,9 @@ public class RowGenPreviewCodeMain {
 
     private boolean killing;
 
-    private RowGeneratorComponent component;
+    private final RowGeneratorComponent component;
 
-    private List<List<String>> results;
+    private final List<List<String>> results;
 
     private Process process;
 
@@ -142,7 +142,8 @@ public class RowGenPreviewCodeMain {
             progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) {
-                    monitor.beginTask(Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                    monitor.beginTask(
+                            Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         try {
                             process = runPreviewCode();
@@ -195,9 +196,9 @@ public class RowGenPreviewCodeMain {
      * @return
      */
     protected void convert(String string) {
-        if (UIManager.isJavaProject()) {
-            string = string.substring(string.indexOf("\n") + 1);
-        }
+        // if (UIManager.isJavaProject()) {
+        // string = string.substring(string.indexOf("\n") + 1);
+        // }
         string = string.replaceAll("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
         String[] rows = string.split("\n"); //$NON-NLS-1$
         for (int i = 0; i < rows.length; i++) {
