@@ -197,13 +197,6 @@
          <COLUMN KEY="false" LENGTH="18" NAME="LastModifiedById" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="SystemModstamp" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="10" NAME="LastActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="CustomerPriority__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLA__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Active__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="UpsellOpportunity__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLASerialNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="10" NAME="SLAExpirationDate__c" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
       </TABLE>
       <TABLE IF="MODULENAME=='AccountContactRole'">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String"/>
@@ -536,10 +529,6 @@
          <COLUMN KEY="false" LENGTH="20" NAME="LastModifiedDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="18" NAME="LastModifiedById" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="SystemModstamp" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="EngineeringReqNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="SLAViolation__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Product__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="PotentialLiability__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="MODULENAME=='CaseComment'">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String"/>
@@ -671,8 +660,6 @@
          <COLUMN KEY="false" LENGTH="10" NAME="LastActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="LastCURequestDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="20" NAME="LastCUUpdateDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Level__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="Languages__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="MODULENAME=='ContactShare'">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String"/>
@@ -968,11 +955,6 @@
          <COLUMN KEY="false" LENGTH="18" NAME="LastModifiedById" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="20" NAME="SystemModstamp" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;"/>
          <COLUMN KEY="false" LENGTH="10" NAME="LastActivityDate" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&quot;"/>
-         <COLUMN KEY="false" LENGTH="15" NAME="SICCode__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="ProductInterest__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="Primary__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="0" NAME="NumberofLocations__c" TYPE="id_Double"/>
       </TABLE>
       <TABLE IF="MODULENAME=='LeadHistory'">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String"/>
@@ -1120,11 +1102,6 @@
          <COLUMN KEY="false" LENGTH="0" NAME="FiscalQuarter" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="0" NAME="FiscalYear" TYPE="id_Integer"/>
          <COLUMN KEY="false" LENGTH="6" NAME="Fiscal" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="255" NAME="DeliveryInstallationStatus__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="12" NAME="TrackingNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="8" NAME="OrderNumber__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="CurrentGenerators__c" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="100" NAME="MainCompetitors__c" TYPE="id_String"/>
       </TABLE>
       <TABLE IF="MODULENAME=='OpportunityCompetitor'">
          <COLUMN KEY="true" LENGTH="18" NAME="Id" TYPE="id_String"/>
