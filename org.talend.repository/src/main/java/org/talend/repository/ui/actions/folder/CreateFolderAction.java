@@ -32,10 +32,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -73,6 +74,9 @@ public class CreateFolderAction extends AContextualAction {
         IPath path = null;
 
         path = RepositoryNodeUtilities.getPath(node);
+        if (RepositoryConstants.isSystemFolder(path.toString())) {
+            return;
+        }
         objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
         if (objectType != null) {
