@@ -107,9 +107,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
   <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
 //create directory only if not exists
- java.io.File createFile<%=cid%> = new java.io.File(<%=fileNewname%>);
+ String fileNewName_<%=cid%> = <%=fileNewname%>;
+ java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
  if(!createFile<%=cid%>.exists()){
- 	(new java.io.File(<%=fileNewname.substring(0,fileNewname.lastIndexOf("/"))%>")).mkdirs();
+ 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
  }
 	<%}%>
 
