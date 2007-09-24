@@ -6,538 +6,282 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.ArrayList
     java.util.Map
-    org.talend.core.model.process.IConnection    
+  	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 "
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
+	IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-    	List<Map<String, String>> tree = 
-    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__MAPPING__"
-            );
-         String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-         boolean[][] nodeInfo = new boolean[tree.size()][2];//for tag: [][0]noAtt[][1]noChild; for Att: [][0]isLastAtt [][1]tagNoChild
-         int[] nodeDepth = new int[tree.size()];
-         for(int i = 0; i < nodeInfo.length; i++){
-         	for(int j = 0; j < 2; j++){
-         		nodeInfo[i][j] = false;
-         	}
-         }
-         String[] relatedColumn = new String[tree.size()];
-         String[] attributeTagLabel = new String[tree.size()];
-         for(int i = 0; i< nodeDepth.length; i++){
-         	nodeDepth[i] = Integer.parseInt(tree.get(i).get("DEPTH"));
-         }
-         for(int i = 0; i< nodeInfo.length; i++){//for tags
-         	Map<String, String> treeNode = tree.get(i);
-         	if(treeNode.get("ATTRIBUTE") == null || treeNode.get("ATTRIBUTE").equals("false")){//is tag
-         		if(treeNode.get("COLUMN") != null && !treeNode.get("COLUMN").equals("")){
-         			relatedColumn[i] = treeNode.get("COLUMN");
-         		}
-         		Map<String, String> nextTag = null;
-         		int j = i + 1;
-         		do{
-         			if(j == nodeInfo.length){
-         				break;
-         			}
-         			if(tree.get(j).get("ATTRIBUTE")== null  || tree.get(j).get("ATTRIBUTE").equals("false")){
-         				nextTag = tree.get(j);
-         				break;
-         			}
-         			j++;
-         		}while(true);
-         		if(nextTag == null){
-         			if(i + 1 == nodeInfo.length){
-         				nodeInfo[i][0] = true;
-         			}
-         			nodeInfo[i][1] = true;
-         		}else{
-					if(j == i + 1){//no atts
-						nodeInfo[i][0] = true;
-					}
-         			if(nodeDepth[j] <= nodeDepth[i]){
-         				nodeInfo[i][1] = true;
-         			}
-         		}
-         	}
-         }
-         for(int i = 0; i< nodeInfo.length; i++){//for atts
-         	Map<String, String> treeNode = tree.get(i);
-         	if(treeNode.get("ATTRIBUTE") != null && treeNode.get("ATTRIBUTE").equals("true")){//is att
-         		Map<String, String> nextNode = null;
-         		if(tree.size() > i+1){
-         			nextNode = tree.get(i+1);
-         		}
-         		if(nextNode == null){
-         			nodeInfo[i][0] = true;
-         		}else if(nextNode.get("ATTRIBUTE")== null || nextNode.get("ATTRIBUTE").equals("false")){//is tag
-         			nodeInfo[i][0] = true;
-         		}
-         		int j = i - 1;
-         		for(; j >= 0; j--){
-         			Map<String, String>  tag = tree.get(j);
-         			if(tag.get("ATTRIBUTE") == null || tag.get("ATTRIBUTE").equals("false")){//found his tag
-         				attributeTagLabel[i] = tag.get("LABEL");
-         				nodeInfo[i][1] = nodeInfo[j][1];
-         				nodeDepth[i] = nodeDepth[j];
-         				if(nodeInfo[i][1]){
-         					relatedColumn[i] = relatedColumn[j];
-         				}
-         				break;
-         			}
-         		}
-         	}
-        }
-        List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
-        List<Map<String, String>> group_tree = 
-    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__GROUPING__"
-            );
-    	int group = 0;
-    	for(int i = 0; i < group_tree.size(); i++){
-    		if(group_tree.get(i).get("ATTRIBUTE").equals("false")){
-    			group ++;
-    		}
-    	}
-    	String[] group_element = new String[group];
-    	int[] group_index = new int[group];
-    	StringBuilder group_margin = new StringBuilder();
-    	for(int i = 0, j=0; i < group; i++){
-       		while(j < group_tree.size() && !group_tree.get(j).get("ATTRIBUTE").equals("false")){
-       			j++;
-       		}
-       		group_index[i] = j+1;
-       		group_element[i] = group_tree.get(j).get("LABEL");
-       		j++;
-       		group_margin.append("  ");
-    	}
-        StringBuilder margin = new StringBuilder();
-        for(int i = 1; i < rootTags.size(); i++){
-        	margin.append("  ");
-        }
-%><%
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if(conns!=null && conns.size()>0){
-		IConnection conn = conns.get(0);
-	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
-		///group begin
-	if(group>0){
-%>String tempSt_<%=cid %> = null;
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	if(conns!=null && conns.size()>0){
+    		IConnection conn = conns.get(0);
+    		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
+            	List<Map<String, String>> rootTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
+                List<Map<String, String>> groupTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUP__");
+                List<Map<String, String>> loopTable = 
+                	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
+                String split = ElementParameterParser.getValue(node, "__SPLIT__");
+                String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+                
+                //mark the main group in groupTable
+                if(loopTable.size() > 0){
+                    String loopPath=loopTable.get(0).get("PATH");
+                    boolean isMainGroupAttribute = false;
+                    for(Map<String, String> map:groupTable){
+                    	if (map.get("ATTRIBUTE").equals("true")) {
+                    		if(isMainGroupAttribute){
+                    			map.put("TYPE","Group");
+                    		}
+                    	}else{
+                    		if( loopPath.startsWith(map.get("PATH"))){
+                    			map.put("TYPE","Main");
+                    			isMainGroupAttribute = true;
+                    		}else{
+                    			isMainGroupAttribute = false;
+                    		}
+                    	}
+                    }
+                }
+%>
+	nb_line_<%=cid%>++;
+	
+	org.dom4j.Element group4Loop_<%=cid%>=null;
 
-boolean flag_<%=cid %> = true;
- 
-groupby_new_<%=cid %> = 0;
-
+	// build root xml tree 
+	if (needRoot_<%=cid%>) {
 <%
-	}
-	for(int i = 0; i< group; i++){
-%>tempSt_<%=cid %> = "<%=margin %><%for(int ii=0; ii <= i; ii++){%>  <%}%><<%=group_element[i] %>"+<%
-						int ii = 0;
-						while(group_index[i]+ii < group_tree.size() && group_tree.get(group_index[i]+ii).get("ATTRIBUTE").equals("true")){
-							boolean needReplace = false;
-							boolean isDate = false;
-							boolean isByteArray = false;
-							String pattern = null;
-							boolean isPrimitive = false;
-							for(IMetadataColumn column:metadata.getListColumns()) {
-								if(column.getLabel().equals(group_tree.get(group_index[i]+ii).get("COLUMN"))){
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
-										needReplace = true;
-									}
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
-										pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-										if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
-											needReplace = true;
-										}
-										isDate = true;
-									}
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
-										isByteArray = true;
-									}
-									isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
-									break;
-								}
-							}
-						%>" <%=group_tree.get(group_index[i]+ii).get("LABEL") %>=\"<%
-							if(group_tree.get(group_index[i]+ii).get("COLUMN") != null && !group_tree.get(group_index[i]+ii).get("COLUMN").equals("")){
-								if(isPrimitive){
-								%>"+<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>+"<%
-								}else{
-								%>"+((<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=group_tree.get(group_index[i]+ii).get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))+"<%
-								}
-							}%>\""+<%ii++;
-						}%>">";
-
-if(!groupby_<%=cid %>[<%=i %>][0].equals(tempSt_<%=cid %>)){
-	
-	if(flag_<%=cid %>){
-	
-		groupby_new_<%=cid %> = <%=i %>;
-
-		flag_<%=cid %> = false;
-		
-		for(int i_<%=cid %> = <%=group - 1 %>; i_<%=cid %> >= groupby_new_<%=cid %> && start_<%=cid %>; i_<%=cid %>--){
-
-			out_<%=cid %>.write(groupby_<%=cid %>[i_<%=cid %>][1]);
-	
-			out_<%=cid %>.newLine();
-	
-		}	
-	}
-
-	groupby_<%=cid %>[<%=i %>][0] = tempSt_<%=cid %>;
-	
-	out_<%=cid %>.write(tempSt_<%=cid %>);
-
-	out_<%=cid %>.newLine();
-	
-	if(!start_<%=cid %>){
-			
-		start_<%=cid %> = true;
-			
-	}
-		
-}else if(!flag_<%=cid %>){
-	
-	out_<%=cid %>.write(tempSt_<%=cid %>);
-	
-	out_<%=cid %>.newLine();
-	
-	if(!start_<%=cid %>){
-			
-		start_<%=cid %> = true;
-			
-	}
-	
-}
-<%		}
-		///group end
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if(tree.size() > 0){ 
-		for(int i = 0; i < tree.size(); i++){
-			Map<String, String> treeNode = tree.get(i);
-			boolean needReplace = false;
-			boolean isDate = false;
-			boolean isByteArray = false;
-			String pattern = null;
-			boolean isPrimitive = false;
-			for(IMetadataColumn column:metadata.getListColumns()) {
-				if(column.getLabel().equals(treeNode.get("COLUMN"))){
-					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
-						needReplace = true;
-					}
-					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
-						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-						if(pattern != null && (pattern.contains("&") || pattern.contains("<") || pattern.contains(">") || pattern.contains("'") || pattern.contains("\""))){
-							needReplace = true;
-						}
-						isDate = true;
-					}
-					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
-						isByteArray = true;
-					}
-					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
-					break;
-				}
-			}
-			if(treeNode.get("ATTRIBUTE")==null || treeNode.get("ATTRIBUTE").equals("false")){//is tag
-				int flag = Integer.MAX_VALUE;
-				int j = i - 1;
-				while(true){
-					if(j < 0){
-						break;
-					}
-					Map<String, String> lastTagNode = tree.get(j);
-					if(lastTagNode.get("ATTRIBUTE")!=null && lastTagNode.get("ATTRIBUTE").equals("true")){//not a tag
-						j--;
-					}else{
-						if(nodeDepth[i] > nodeDepth[j]){
-							break;
-						}
-						if(nodeDepth[i] <= nodeDepth[j] && nodeDepth[j] < flag){
-							if(!nodeInfo[j][1]){//have child, close tag.
-%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
-out_<%=cid%>.newLine();
-<%
-							}
-							flag = nodeDepth[j];
-							if(nodeDepth[i] == flag){
-								break;
-							}
-						}
-						j--;
-					}
-				}
-				
-				
-				if(nodeInfo[i][0]){//tag have no att
-					if(nodeInfo[i][1]){//tag have no child
-						if( relatedColumn[i]== null){
-%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>/>");
-out_<%=cid%>.newLine();
+				//sort the name of Element for adding attributes, as attributes record on table must follow its ownner's
+        		String currEleName=null;
+        		int elementCount = 0;
+        		boolean isRootAttribute = false;
+            	for(Map<String, String> map:rootTable){
+            		String value = null;
+            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
+            			value = conn.getName()+"."+map.get("COLUMN");
+        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
+        				value = map.get("VALUE");
+        			}
+            		String path = map.get("PATH");
+                    if (map.get("ATTRIBUTE").equals("true")) {
+                        if(isRootAttribute){ //it is the attirbute of root
+%>
+		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
 <%
 						}else{
 %>
-out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>"+<%
-							if(isPrimitive){
-								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))<%
-							}%>+"</<%=treeNode.get("LABEL") %>>");
-out_<%=cid%>.newLine();
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
 <%
 						}
-					}else{
-%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>>");
-out_<%=cid%>.newLine();
+            		}else{
+            			if(currEleName==null){
+            				isRootAttribute = true;
+            			}else{
+            				isRootAttribute = false;
+            			}
+            			currEleName = "element"+elementCount;
+            			elementCount++;
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.makeElement(doc_<%=cid%>,"<%=path%>");		
 <%
-					}
-				}else{
-%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[i]; k++){%>  <%}%><<%=treeNode.get("LABEL") %>");
+						if(value!=null){
+%>
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+<%
+						}
+            		}
+            	}
+%>
+		needRoot_<%=cid%>=false;
+	}
+	
+	// build group xml tree 
+<%
+				if(groupTable.size()>0){
+%>
+	boolean isNewElememt = false;
 <%
 				}
-			}else{//is attribute
-				if(nodeInfo[i][0]){//is tag's last att
-					if(nodeInfo[i][1]){//tag have no child
-						if( relatedColumn[i]== null){
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
-							if(isPrimitive){
-								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))<%
-							}%>+"<%}%>\"/>");
-out_<%=cid%>.newLine();
+				//sort current attributes name for grouping judgement.
+				List<String> currAttributeNameList = new ArrayList<String>();
+				String currentGroupRoot = null;
+				String currentGroupRootPath = null;
+				int groupRootCount = 0;
+				for(Map<String, String> map:groupTable){
+            		String value = null;
+            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
+            			value = conn.getName()+"."+map.get("COLUMN");
+        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
+        				value = map.get("VALUE");
+        			}
+
+        			String path = map.get("PATH");
+                    if (map.get("ATTRIBUTE").equals("true")) {
+                    	if(map.get("TYPE")!=null && map.get("TYPE").length()>0){
+                    		currAttributeNameList.add(path);
+                    	}
+%>
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
 <%
-						}else{
-							boolean replace = false;
-							boolean date = false;
-							boolean byteArray = false;
-							String ppattern = null;
-							boolean primitive = false;
-							for(IMetadataColumn column:metadata.getListColumns()) {
-								if(column.getLabel().equals(relatedColumn[i])){
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
-										replace = true;
-									}
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.DATE){
-										ppattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-										if(ppattern != null && (ppattern.contains("&") || ppattern.contains("<") || ppattern.contains(">") || ppattern.contains("'") || ppattern.contains("\""))){
-											replace = true;
-										}
-										date = true;
-									}
-									if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
-										byteArray = true;
-									}
-									primitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
-									break;
+                    }else{
+                    	currEleName =  "element"+elementCount;
+            			elementCount++;
+                    	if(map.get("TYPE")!=null && map.get("TYPE").length()>0){
+                    		currentGroupRootPath = path;
+                    		if(currentGroupRoot!=null){ // process previous group root
+%>
+	if(isNewElememt || groupRootList_<%=cid%>.size()<=<%=groupRootCount%> || groupRootList_<%=cid%>.get(<%=groupRootCount%>)==null
+<%
+								for(String attr:currAttributeNameList)
+								{
+%>
+		|| !groupRootList_<%=cid%>.get(<%=groupRootCount%>).attribute("<%=attr%>").getText().equals(<%=currentGroupRoot%>_<%=cid%>.attribute("<%=attr%>").getText())
+<%
 								}
-							}
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
-							if(isPrimitive){
-								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))<%
-							}%>+"<%}%>\">"+<%
-							if(primitive){
-								%><%=conn.getName() %>.<%=relatedColumn[i] %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=relatedColumn[i] %> == null)?"":(<%
-									if(date && ppattern != null){
-									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=relatedColumn[i] %>, <%=ppattern %>)<%if(replace){%>)<%}%><%
-									}else if(byteArray){
-									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=relatedColumn[i] %>))<%if(replace){%>)<%}%><%
-									}else{
-									%><%if(replace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=relatedColumn[i] %><%if(replace){%>)<%}%><%
-									}%>))<%
-							}%>+"</<%=attributeTagLabel[i] %>>");
-out_<%=cid%>.newLine();
+								currAttributeNameList.clear();
+%>
+	){
+        group4Loop_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
+        group4Loop_<%=cid%> = <%=currentGroupRoot%>_<%=cid%>;
+        if(groupRootList_<%=cid%>.size()<=<%=groupRootCount%>){
+        	groupRootList_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
+        }else{
+        	groupRootList_<%=cid%>.set(<%=groupRootCount%>, <%=currentGroupRoot%>_<%=cid%>);
+        }
+        isNewElememt=true;
+	} else {
+        group4Loop_<%=cid%> = groupRootList_<%=cid%>.get(<%=groupRootCount%>);
+    }
 <%
-						}
-					}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
-							if(isPrimitive){
-								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))<%
-							}%>+"<%}%>\">");
-out_<%=cid%>.newLine();
+								groupRootCount++;
+                    		}else{ //currentGroupRoot == null
+%>
+	group4Loop_<%=cid%> = (org.dom4j.Element)doc_<%=cid%>.selectSingleNode("<%=path.substring(0,path.lastIndexOf("/") )%>");
+<%
+                    		}
+%>
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement("<%=path.substring(path.lastIndexOf("/") + 1)%>");
+<%
+							currentGroupRoot = currEleName;
+                    	}else{ //not group element
+%>
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
+		org.dom4j.DocumentHelper.makeElement(<%=currentGroupRoot%>_<%=cid%>,"<%=path.replaceFirst(currentGroupRootPath,"")%>");
+<%
+							if(value!=null){
+%>
+	<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+<%
+							}
+                    	}
+                    }
+        		}
+        		if(currentGroupRoot!=null){ // process last group root
+%>
+	if(isNewElememt || groupRootList_<%=cid%>.size()<=<%=groupRootCount%> ||groupRootList_<%=cid%>.get(<%=groupRootCount%>)==null
+<%
+					for(String attr:currAttributeNameList)
+					{
+%>
+		|| !groupRootList_<%=cid%>.get(<%=groupRootCount%>).attribute("<%=attr%>").getText().equals(<%=currentGroupRoot%>_<%=cid%>.attribute("<%=attr%>").getText())
 <%
 					}
-				}else{
-%>out_<%=cid%>.write(" <%=treeNode.get("LABEL") %>=\"<%if(treeNode.get("COLUMN")!=null && !treeNode.get("COLUMN").equals("")){%>"+<%
-							if(isPrimitive){
-								%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%
-							}else{
-								%>((<%=conn.getName() %>.<%=treeNode.get("COLUMN") %> == null)?"":(<%
-									if(isDate && pattern != null){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
-									}else if(isByteArray){
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=treeNode.get("COLUMN") %>))<%if(needReplace){%>)<%}%><%
-									}else{
-									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=treeNode.get("COLUMN") %><%if(needReplace){%>)<%}%><%
-									}%>))<%
-							}%>+"<%}%>\"");
+					currAttributeNameList.clear();
+%>
+	){
+        group4Loop_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
+        group4Loop_<%=cid%> = <%=currentGroupRoot%>_<%=cid%>;
+        if(groupRootList_<%=cid%>.size()<=<%=groupRootCount%>){
+        	groupRootList_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
+        }else{
+        	groupRootList_<%=cid%>.set(<%=groupRootCount%>, <%=currentGroupRoot%>_<%=cid%>);
+        }
+	} else {
+        group4Loop_<%=cid%> = groupRootList_<%=cid%>.get(<%=groupRootCount%>);
+    }
+<%
+						groupRootCount++;
+            		}
+%>
+	// build loop xml tree 
+<%
+				String loopRootName=null;
+				String loopRootPath = null;
+				for(Map<String, String> map:loopTable){
+            		String value = null;
+            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
+            			value = conn.getName()+"."+map.get("COLUMN");
+        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
+        				value = map.get("VALUE");
+        			}
+        			
+            		String path = map.get("PATH");
+                     if (map.get("ATTRIBUTE").equals("true")) {
+%>
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
+<%
+                    }else{
+                    	if(loopRootName == null){// the first one
+                   			loopRootName = path.substring(path.lastIndexOf("/") + 1);
+                   			loopRootPath = path;
+                   			currEleName = loopRootName;
+%>
+	if(group4Loop_<%=cid%> == null)
+	{
+		group4Loop_<%=cid%> = (org.dom4j.Element)doc_<%=cid%>.selectSingleNode("<%=path.substring(0,path.lastIndexOf("/") )%>");
+	}
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
+		org.dom4j.DocumentHelper.createElement("<%=loopRootName%>");//"<%=path%>".replaceFirst(group4Loop_<%=cid%>.getPath(), ""));
+	group4Loop_<%=cid%>.add(<%=currEleName%>_<%=cid%>);
+<%
+						}else{
+							currEleName =  "element"+elementCount;
+            				elementCount++;
+%>
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
+		org.dom4j.DocumentHelper.makeElement(<%=loopRootName%>_<%=cid%>,"<%=path.replaceFirst(loopRootPath,"")%>");
+<%
+						}
+						if(value!=null){
+%>
+	<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+<%
+						}
+                    }
+				}
+				
+				//split
+				if(split.equals("true")){
+%>
+    currentRowCount_<%=cid %>++;
+    if(currentRowCount_<%=cid %> == <%= splitEvery%>){
+        org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(new java.io.FileWriter(
+        	new java.io.File(fileName_<%=cid%>)), format_<%=cid%>);
+        output_<%=cid%>.write(doc_<%=cid%>);
+        output_<%=cid%>.close();
+        
+        currentRowCount_<%=cid %> = 0;
+        currentFileCount_<%=cid %>++;
+        doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
+    	needRoot_<%=cid%>  = true;
+    	fileName_<%=cid%> = file_<%=cid%> + currentFileCount_<%=cid %> + ".xml";
+    	groupRootList_<%=cid%>.clear();
+}
 <%
 				}
 			}
 		}
-		int i = nodeInfo.length-1;
-		while(i >= 0){
-			if(tree.get(i).get("ATTRIBUTE")==null || tree.get(i).get("ATTRIBUTE").equals("false")){//found the last tag in the tree
-				break;
-			}
-			i--;
-		}
-		int flag = nodeDepth[i];
-		int j = i - 1;
-		while(true){
-			if(j < 0){
-				break;
-			}
-			Map<String, String> lastTagNode = tree.get(j);
-			if(lastTagNode.get("ATTRIBUTE")!=null && lastTagNode.get("ATTRIBUTE").equals("true")){//not a tag
-				j--;
-			}else{
-				if(nodeDepth[j] < flag){
-					if(!nodeInfo[j][1]){//have child, close tag.
-%>out_<%=cid%>.write("<%=margin %><%=group_margin %><%for(int k = 0; k < nodeDepth[j]; k++){%>  <%}%></<%=lastTagNode.get("LABEL") %>>");
-out_<%=cid%>.newLine();
-<%
-					}
-					flag = nodeDepth[j];
-				}
-				j--;
-			}
-		}%>nb_line_<%=cid %>++;
-		<%
-		
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-}
-	//for split begin
-	if(rootTags.size()>0 && (group_tree.size() > 0 || tree.size() > 0)){
-	String split = ElementParameterParser.getValue(node, "__SPLIT__");
-	if(split.equals("true")){
-		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-%>
-currentRowCount_<%=cid %>++;
-if(currentRowCount_<%=cid %> == <%=ElementParameterParser.getValue(node, "__SPLIT_EVERY__") %>){
-<%
-	for(int i = group - 1; i >=0; i--){
-%>	
-	out_<%=cid%>.write(groupby_<%=cid %>[<%=i %>][1]);
-	out_<%=cid%>.newLine();	
-<%
-	}
-	for(int i = rootTags.size() - 1; i >= 0; i--){
-%>	
-	out_<%=cid%>.write("<%for(int j = 0; j < i; j++){%>  <%}%></<%=rootTags.get(i).get("TAG") %>>");
-	out_<%=cid%>.newLine();
-<%
-	}
-%>	
-	out_<%=cid %>.close();
-	currentFileCount_<%=cid %>++;
-<%
-if(fileName.startsWith("\"") && fileName.endsWith("\"")){
-	String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-%>
-	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-		new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
-<%
-}else{
-%>
-	out_<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-		new java.io.FileOutputStream(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
-<%
-}
-%>
-	out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
-	out_<%=cid%>.newLine();
-<%	
-	String rmargin="";
-	for (int i=0; i<rootTags.size(); i++){
-		Map<String, String> rootTag = rootTags.get(i);
-%>out_<%=cid%>.write("<%=rmargin %><<%=rootTag.get("TAG") %>>");
-
-out_<%=cid%>.newLine();
-<%
-		rmargin+="  ";
-	}
-%><%
-	if(group > 0){
-%>	start_<%=cid %> = false;  
-
-<%	}
-	for(int i = 0; i < group; i++){
-%>	groupby_<%=cid %>[<%=i %>][0] = "";
-
-<%
-	}
-%>	currentRowCount_<%=cid %> = 0;
-	
-}
-<%
-	}
-	}
-	
-	
-	
-	//for split end
-%><%
-	}
-	}
 	}
 }
 %>

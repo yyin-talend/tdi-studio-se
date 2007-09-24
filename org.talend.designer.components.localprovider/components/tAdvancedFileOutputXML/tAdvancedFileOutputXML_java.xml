@@ -48,19 +48,6 @@
     </PARAMETER> 
 
     <PARAMETER
-      NAME="ROOT_TAGS"
-      FIELD="TABLE"
-      REQUIRED="true"
-      NUM_ROW="10"
-      NB_LINES="3"
-      SHOW="false"
-    >
-      <ITEMS>
-        <ITEM NAME="TAG" VALUE="rootTag"/>
-      </ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER
       NAME="CREATE"
       FIELD="CHECK"
       REQUIRED="true"
@@ -68,35 +55,51 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
-      NAME="GROUPING"
+      NAME="ROOT"
       FIELD="TABLE"
-      REQUIRED="false"
-      NUM_ROW="20"
-      NB_LINES="5"
+      REQUIRED="true"
+      NUM_ROW="10"
+      NB_LINES="3"
       SHOW="false"
     >
       <ITEMS>
-      	<ITEM NAME="LABEL" FIELD="TEXT"/>
-        <ITEM NAME="ATTRIBUTE" FIELD="TEXT"/>
+        <ITEM NAME="PATH" FIELD="TEXT"/>
         <ITEM NAME="COLUMN" FIELD="TEXT"/>
+        <ITEM NAME="VALUE" FIELD="TEXT"/>
+        <ITEM NAME="ATTRIBUTE" FIELD="TEXT"/>
       </ITEMS>
     </PARAMETER>
     
     <PARAMETER
-      NAME="MAPPING"
+      NAME="GROUP"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="20"
+      NB_LINES="5"
+	  SHOW="false"
+    >
+      <ITEMS>
+      	<ITEM NAME="PATH" FIELD="TEXT"/>
+        <ITEM NAME="COLUMN" FIELD="TEXT"/>
+        <ITEM NAME="VALUE" FIELD="TEXT" />
+        <ITEM NAME="ATTRIBUTE" FIELD="TEXT" />
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="LOOP"
       FIELD="TABLE"
       REQUIRED="false"
       NUM_ROW="30"
-      NB_LINES="5"
       SHOW="false"
     >
       <ITEMS>
-      	<ITEM NAME="LABEL" FIELD="TEXT"/>
-        <ITEM NAME="ATTRIBUTE" FIELD="TEXT"/>
-        <ITEM NAME="DEPTH" FIELD="TEXT" />
+      	<ITEM NAME="PATH" FIELD="TEXT"/>
         <ITEM NAME="COLUMN" FIELD="TEXT"/>
+        <ITEM NAME="VALUE" FIELD="TEXT" />
+        <ITEM NAME="ATTRIBUTE" FIELD="TEXT" />
       </ITEMS>
     </PARAMETER>
     
@@ -114,7 +117,20 @@
     
    </PARAMETERS>
 
-   <CODEGENERATION/>
+   <CODEGENERATION>
+   <IMPORTS>
+      <IMPORT
+        NAME="Java_DOM4J1.6"
+        MODULE="dom4j-1.6.1.jar"
+        REQUIRED="true"
+      />
+      <IMPORT
+        NAME="Java_JAXEN1.1"
+        MODULE="jaxen-1.1-beta-6.jar"
+        REQUIRED="true"
+      />
+    </IMPORTS>
+    </CODEGENERATION>
    
    <RETURNS>
    		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />

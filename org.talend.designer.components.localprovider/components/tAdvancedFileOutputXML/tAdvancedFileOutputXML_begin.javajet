@@ -5,7 +5,9 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
-    java.util.Map
+    java.util.ArrayList
+   	org.talend.core.model.process.IConnection    
+	org.talend.core.model.process.IConnectionCategory
 "
 %>
 
@@ -16,94 +18,46 @@ String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
-%>int nb_line_<%=cid%> = 0;
-
-
-//create directory only if not exists
-	<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
-	<%String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");%>		
-		 java.io.File createFile<%=cid%> = new java.io.File(<%=fileNewname%>);
-		 if(!createFile<%=cid%>.exists()){
-		 	(new java.io.File(<%=fileNewname.substring(0,fileNewname.lastIndexOf("/"))%>")).mkdirs();
-		 }
-	<%}%>
-<%
-    List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
-    if (metadata!=null && rootTags.size() > 0) {
-    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-    String split = ElementParameterParser.getValue(node, "__SPLIT__");
-    List<Map<String, String>> group_tree = 
-    		(List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__GROUPING__"
-            );
-    int group = 0;
-    for(int i = 0; i < group_tree.size(); i++){
-    	if(group_tree.get(i).get("ATTRIBUTE").equals("false")){
-    		group ++;
-    	}
-    }
-    String[] group_element = new String[group];
-    for(int i = 0, j=0; i < group; i++){
-       	while(j < group_tree.size() && !group_tree.get(j).get("ATTRIBUTE").equals("false")){
-       		j++;
-       	}
-       	group_element[i] = group_tree.get(j).get("LABEL");
-       	j++;
-    }
-    String margin = "";
-    if(group > 0){
-%>String[][] groupby_<%=cid %> = new String[<%=group %>][2];
-
-int groupby_new_<%=cid %> = 0;
-
-boolean start_<%=cid %> = false;
-
-<%
-}
-if(!split.equals("true")){
+    if (metadata!=null) {
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+		if(conns!=null && conns.size()>0){
+    		IConnection conn = conns.get(0);
+    		if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){ 
+        		String split = ElementParameterParser.getValue(node, "__SPLIT__");
+        		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+        		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
 %>
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(<%=fileName%>), <%=encoding%>));
+int nb_line_<%=cid%> = 0;
+org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
+boolean needRoot_<%=cid%>  = true;
+String fileName_<%=cid%> = <%=fileName%>;
 <%
-}else{
+				if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
 %>
-int currentRowCount_<%=cid %> = 0;
-int currentFileCount_<%=cid %> = 0;
+java.io.File createFile<%=cid%> = new java.io.File(fileName_<%=cid%>); 
+if(!createFile<%=cid%>.exists()){ 
+	(new java.io.File(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/")))).mkdirs(); 
+} 
 <%
-	if(fileName.startsWith("\"") && fileName.endsWith("\"")){
-		String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+				}
+				if(split.equals("true")){
 %>
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-	new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+int currentRowCount_<%=cid%> = 0;
+int currentFileCount_<%=cid%> = 0;
+String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf(".xml"));
+fileName_<%=cid%> = file_<%=cid%>+"0.xml";
 <%
-	}else{
+				}
 %>
-String fn_<%=cid%> = <%=fileName%>;
-String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf(".xml"));
-java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-	new java.io.FileOutputStream(prefix_fn_<%=cid%>+currentFileCount_<%=cid %>+".xml"), <%=encoding%>));
+
+// sort group root element for judgement of group
+java.util.List<org.dom4j.Element> groupRootList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
+
+org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
+format_<%=cid%>.setEncoding(<%=encoding%>);
 <%
+			}
+		}
 	}
 }
 %>
-out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding %>+"\"?>");
-out_<%=cid%>.newLine();
-<%
-	for (int i=0; i<rootTags.size(); i++){
-		Map<String, String> rootTag = rootTags.get(i);
-%>
-out_<%=cid%>.write("<%=margin %><<%=rootTag.get("TAG") %>>");
-out_<%=cid%>.newLine();
-<%
-		margin+="  ";
-	}
-	for(int i = 0; i < group; i++){
-%>
-groupby_<%=cid %>[<%=i %>][0] = "";
-groupby_<%=cid %>[<%=i %>][1] = "<%=margin %><%for(int ii=0; ii < i; ii++){%>  <%}%></<%=group_element[i] %>>";
-
-<%
-	}
-    }
-}%>
