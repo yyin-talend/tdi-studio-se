@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.commons,
  org.talend.core,
  org.eclipse.core.resources,
- org.talend.designer.codegen
+ org.talend.designer.codegen,
+ org.talend.designer.core
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.rowgenerator,
  org.talend.designer.rowgenerator.data,
