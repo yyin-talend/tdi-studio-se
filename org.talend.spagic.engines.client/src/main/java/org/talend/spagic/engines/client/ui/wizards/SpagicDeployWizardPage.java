@@ -415,6 +415,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
         // File file = createSapgicProperty();
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
+
+        // exportResource(topFolder, "", "", 1);
         boolean ok = executeExportOperation(exporterOperation);
 
         // path can like name/name

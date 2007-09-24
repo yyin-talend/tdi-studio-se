@@ -27,7 +27,6 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.repository.ui.wizards.exportjob.ArchiveFileExportOperationFullPath;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
@@ -61,7 +60,7 @@ public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
     private static final String STORE_DESTINATION_NAMES_ID = "PerlSapgicDeployWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     protected JobScriptsManager createJobScriptsManager() {
-        return new JobPerlScriptsManager();
+        return new SpagicPerlDeployManager();
     }
 
     /**

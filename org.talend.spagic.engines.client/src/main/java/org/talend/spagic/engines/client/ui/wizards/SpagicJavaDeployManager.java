@@ -21,10 +21,8 @@
 // ============================================================================
 package org.talend.spagic.engines.client.ui.wizards;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.properties.ProcessItem;
@@ -72,7 +69,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
-            resources.addAll(getProperties(processItem, srcList));
+            // resources.addAll(getProperties(processItem, srcList));
+            resources.addAll(getProperties(processItem));
             addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
@@ -91,7 +89,10 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
         // Add the java system libraries
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
+        ExportFileResource spagicResource = new ExportFileResource(null, "");
         list.add(rootResource);
+
+        list.add(spagicResource);
         // Gets system routines
         List<URL> systemRoutineList = getSystemRoutine(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSystemRoutine)));
         rootResource.addResources(systemRoutineList);
@@ -132,34 +133,25 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         return allJobScripts;
     }
 
-    public List<URL> getProperties(ProcessItem processItem, List<URL> srcList) {
+    public List<URL> getProperties(ProcessItem processItem) {
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
-        String projectName = getCurrentProjectName();
-        String jobName = processItem.getProperty().getLabel();
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
         try {
-
-            IPath path = getSrcRootLocation();
-            File file = new File(path + PATH_SEPARATOR + "spagic.properties");
-            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
-            BufferedReader buff = new BufferedReader(new FileReader(path.toPortableString()));
-            int nbLine = 0;
-            while (buff.readLine() != null) {
-                nbLine++;
-            }
+            File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties");
             out = new FileOutputStream(file);
             PrintStream ps = new PrintStream(out);
-            p.put("talendJobClassName", getCurrentProjectName() + "."
+            p.put("JobClassName", getCurrentProjectName() + "."
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
                     + processItem.getProperty().getLabel());
-            // p.put("talendJobClassDescription",
-            // HTMLDocUtils.checkString(processItem.getProperty().getDescription()).replace("\n",
-            // "\\n"));
-            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
-            p.put("rowNumber", Integer.toString(nbLine));
-            p.put("host", "localhost");
+            p.put("JobName", processItem.getProperty().getLabel());
+            p.put("Author", processItem.getProperty().getAuthor().toString());
+            p.put("Description", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
+            p.put("Creation", processItem.getProperty().getCreationDate().toString());
+            p.put("Purpose", HTMLDocUtils.checkString(processItem.getProperty().getPurpose()));
+            p.put("Modification", processItem.getProperty().getModificationDate().toString());
+            p.put("Status", processItem.getProperty().getStatusCode());
+            p.put("Version", processItem.getProperty().getVersion());
             p.list(ps);
             ps.flush();
             list.add(file.toURI().toURL());
@@ -175,4 +167,5 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         }
         return list;
     }
+
 }
