@@ -52,6 +52,7 @@ import routines.system.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
