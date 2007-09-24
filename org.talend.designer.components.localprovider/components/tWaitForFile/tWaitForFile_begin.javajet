@@ -1,0 +1,139 @@
+<%@ jet 
+    imports="
+        org.talend.core.model.process.INode 
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+    " 
+%>
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+    boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDE_SUBDIR__").equals("true");
+%>
+       
+        class Util_<%=cid %> {
+
+            private boolean flagt = false;
+
+            private java.util.regex.Pattern fileNamePatternt = null;
+
+            java.util.List<java.io.File> getFiles() {
+                String directoryt = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
+                String filemaskt = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>+"$";
+
+                if (filemaskt.indexOf("^") == -1) {
+                    filemaskt = "^" + filemaskt;
+                }
+                if (!(filemaskt.lastIndexOf(".*$") == -1) && filemaskt.lastIndexOf("*.*$") == -1) {
+                    filemaskt = filemaskt.substring(0, filemaskt.length() - 3) + "$";
+                    flagt = true;
+                } else {
+                    filemaskt = java.util.regex.Pattern.compile("[*]").matcher(filemaskt).replaceAll(".*");
+                }
+
+                boolean case_sensitivet = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__") %>;
+                fileNamePatternt = java.util.regex.Pattern.compile(filemaskt);
+                if (!case_sensitivet) {
+                    fileNamePatternt = java.util.regex.Pattern.compile(filemaskt, java.util.regex.Pattern.CASE_INSENSITIVE);
+                }
+                java.io.File filet = new java.io.File(directoryt);
+                final java.util.List<java.io.File> list = new java.util.ArrayList<java.io.File>();
+                filet.listFiles(new java.io.FilenameFilter() {
+
+                    public boolean accept(java.io.File dir, String name) {
+                        java.io.File file = new java.io.File(dir, name);
+                        if (file.isFile()) {
+                            String fileNamet = name;
+                            if (flagt == true) {
+                                if (!(fileNamet.indexOf(".") == -1)) {
+                                    if (fileNamePatternt.matcher(fileNamet.substring(0, fileNamet.indexOf("."))).find()) {
+                                        list.add(file);
+
+                                    }
+                                } else {
+                                    if (fileNamePatternt.matcher(fileNamet).find()) {
+                                        list.add(file);
+                                    }
+                                }
+                            } else {
+                                if (fileNamePatternt.matcher(fileNamet).find()) {
+                                    list.add(file);
+                                }
+                            }
+
+                            return true;
+                        } 
+<%
+      if(incldSubdir==true)  {
+%>                          
+                        else {
+
+                            file.listFiles(this);
+                        }
+                      
+<%
+      }   
+%>                        
+                        return false;
+                    }
+
+                });
+
+                return list;
+            }
+        }
+            
+            Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
+            java.util.List<java.io.File> originalFiles_<%=cid %> = util_<%=cid %>.getFiles();
+            java.util.List<java.io.File> changeList_<%=cid %> = new java.util.ArrayList();
+            int count_<%=cid %> = 0;
+            while (true) {
+<%
+ if(!ElementParameterParser.getValue(node,"__MAX_ITERATIONS__").equals("")){
+%>                
+                if (count_<%=cid %> == <%=ElementParameterParser.getValue(node, "__MAX_ITERATIONS__") %> ) {
+                    break;
+                }
+<%
+ } 
+%>                
+
+                boolean found_<%=cid %> = false;
+                java.util.List<java.io.File> fetchFilesOneTime_<%=cid %> = util_<%=cid %>.getFiles();
+<%
+  if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filedeleted")){
+%>
+                for (java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
+                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getName());
+
+<%
+ }else if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filecreated")){
+%>
+                for (java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
+                    if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
+                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getName()); 
+
+<%
+ }
+%>
+                        changeList_<%=cid %>.add(file_<%=cid %>);
+                        found_<%=cid %> = true;
+
+                        break;
+                    }
+                }
+
+                count_<%=cid %>++;
+                
+                globalMap.put("<%=cid %>_CURRENT_ITERATION", count_<%=cid %>);
+                
+                if (!found_<%=cid %>) {
+                    try {
+                        Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%>*1000);
+                    } catch (InterruptedException e) {
+                        throw new TalendException(this, e);
+                    }
+                    continue;
+                }
