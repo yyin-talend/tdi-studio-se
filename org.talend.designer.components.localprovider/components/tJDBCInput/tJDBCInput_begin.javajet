@@ -96,6 +96,11 @@ if (metadata != null) {
 							if (tmpDate_<%=cid%> != null) {
 								<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 							}
+						
+						    <%
+			           		 }else if (typeToGenerate.equals("List")) {
+			          	    %>
+			         		<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = (List)resultSet_<%=cid%>.getObject(<%=currentColumn%>);
 				 			<%
 				 		} else {
 			   	 			%>

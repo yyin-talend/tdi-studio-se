@@ -210,6 +210,10 @@ imports="
             			 }else{
             			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
             			 }
+						 <%
+			           	 }else if (typeToGenerate.equals("List")) {
+			          	 %>
+			         		<%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
             			 <% 	
             			 }else{
              	   		 %>

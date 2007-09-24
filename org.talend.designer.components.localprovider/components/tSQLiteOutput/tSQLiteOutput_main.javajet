@@ -212,7 +212,9 @@ class Operation{
             typeToGenerate = "Date";
         }else if(typeToGenerate.equals("Integer")){
             typeToGenerate = "Int";
-        }else{
+        }else if(typeToGenerate.equals("List")){  
+ 	   	    typeToGenerate = "Object";                 
+ 	   	}else{
             typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
         }
         return typeToGenerate;

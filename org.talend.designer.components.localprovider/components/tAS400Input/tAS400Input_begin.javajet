@@ -127,8 +127,12 @@ if(conns != null && conns.size()>0){
 			 }else{
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
-			 <% 	
-			 }else{		  
+			 <%
+           	 }else if (typeToGenerate.equals("List")) {
+          	 %>
+         		<%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
+             <%
+              } else {	  
  	   	 	 %>
  	   		 	if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null)
  	   		 	{
