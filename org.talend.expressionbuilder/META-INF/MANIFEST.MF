@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.designer.core,
  org.talend.designer.runprocess,
  org.eclipse.jface.text,
- org.eclipse.draw2d
+ org.eclipse.draw2d,
+ org.eclipse.emf.ecore.xmi
 Eclipse-LazyStart: true
 Export-Package: org.talend.expressionbuilder,
  org.talend.expressionbuilder.model,
