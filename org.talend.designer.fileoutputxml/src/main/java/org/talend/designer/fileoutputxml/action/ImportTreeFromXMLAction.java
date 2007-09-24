@@ -75,7 +75,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         try {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             FOXTreeNode root = cloneATreeNode(treeNode);
-            root = ((Element) root).getChildren().get(0);
+            root = ((Element) root).getElementChildren().get(0);
             root.setParent(null);
             list.add(root);
         } catch (Exception e) {
