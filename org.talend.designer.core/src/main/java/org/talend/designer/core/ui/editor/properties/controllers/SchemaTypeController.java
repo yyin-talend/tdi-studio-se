@@ -476,6 +476,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     List<Map<String, Object>> paramValues = (List<Map<String, Object>>) parameter.getValue();
                     for (Map<String, Object> columnInfo : paramValues) {
                         if (columnInfo.get("SCHEMA_COLUMN").equals(columnCopied.getLabel())) {
+                            if (!ColumnListController.needSynchronizeSize(parameter)) {
+                                return;
+                            }
                             // codes[1] is SIZE;
                             String size = (String) columnInfo.get("SIZE");
                             int tmpSize = 0;

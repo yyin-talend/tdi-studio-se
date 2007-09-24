@@ -312,8 +312,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     // only set synWidthWithMetadataColumn =true, when use the metadataDialog to set the matadata.
     // see issue 0001676
-    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged,
-            boolean synWidthWithMetadataColumn) {
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
@@ -349,8 +348,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST
-                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
@@ -393,7 +391,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 for (int j = 0; j < columnNameList.length; j++) {
                     String columnName = columnNameList[j];
                     String[] codes = param.getListItemsDisplayCodeName();
-
                     Map<String, Object> newLine = null;
                     boolean found = false;
                     ColumnNameChanged colChanged = null;
@@ -431,7 +428,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine.put(codes[0], columnName);
                     }
                     if (synWidthWithMetadataColumn) {
-                        setColumnSize(newLine, node, codes);
+                        setColumnSize(newLine, node, codes, param);
                     }
                     newParamValues.add(j, newLine);
                 }
@@ -452,27 +449,53 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * @param newLine
      * @param node
      * @param codes
+     * @param param
      */
-    private static void setColumnSize(Map<String, Object> newLine, INode node, String[] codes) {
+    private static void setColumnSize(Map<String, Object> newLine, INode node, String[] codes, IElementParameter param) {
         if (node.getMetadataList().size() > 0) {
             IMetadataTable table = node.getMetadataList().get(0);
-            String lineName = (String) newLine.get(codes[0]);
+            String lineName = (String) newLine.get("SCHEMA_COLUMN");
             for (IMetadataColumn column : table.getListColumns()) {
+
                 if (lineName.equals(column.getLabel())) {
                     if (node.getComponent().getName().equals("tFileInputXML")) {
-                        newLine.put(codes[1], newLine.get(codes[1]));
+                        newLine.put("SIZE", newLine.get("SIZE"));
+                        break;
+                    }
+                    if (!needSynchronizeSize(param)) {
                         break;
                     }
                     if (column.getLength() != null && column.getLength().intValue() > 0) {
+
                         // codes[1] is "SIZE"
-                        newLine.put(codes[1], column.getLength().toString());
+                        newLine.put("SIZE", column.getLength().toString());
                     } else {
-                        newLine.put(codes[1], null);
+                        newLine.put("SIZE", null);
                     }
                     break;
                 }
             }
         }
+    }
+
+    /**
+     * DOC bqian Comment method "needSynchronizeSize".
+     * 
+     * @param param
+     * 
+     * @return
+     */
+    public static boolean needSynchronizeSize(IElementParameter param) {
+        Object[] paras = param.getListItemsValue();
+        for (Object object : paras) {
+            IElementParameter pamameter = (IElementParameter) object;
+            if (pamameter.getName().equals("SIZE")) {
+                if ("LENGTH".equals(pamameter.getContext())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static List<String> getColumnList(INode node) {
