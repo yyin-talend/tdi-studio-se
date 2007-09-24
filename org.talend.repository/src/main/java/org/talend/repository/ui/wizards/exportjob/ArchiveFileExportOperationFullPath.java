@@ -44,6 +44,7 @@ import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.repository.i18n.Messages;
 
 /**
  * Operation for exporting a resource and its children to a new .zip or .tar.gz file.
@@ -150,7 +151,11 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
             if (createLeadupStructure) {
                 if (rootName != null && !"".equals(destinationName)) { //$NON-NLS-1$
-                    destinationName = rootName + SEPARATOR + destinationName;
+                    if (file.getName().equals(Messages.getString("ArchiveFileExportOperationFullPath.SpecialFile"))) {
+                        destinationName = rootName.substring(0, rootName.indexOf("/")) + SEPARATOR + destinationName;
+                    } else {
+                        destinationName = rootName + SEPARATOR + destinationName;
+                    }
                 }
             }
 
