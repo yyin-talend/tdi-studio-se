@@ -137,12 +137,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 %>
 
-@$<%=cid %> = map {
+my @row_<%=cid%> = @$<%=cid %>;
+
+@row_<%=cid %> = map {
     s/</&lt;/g;
     s/>/&gt;/g;
     s/&/&amp;/g;
     $_;
-} @$<%=cid %>;
+} @row_<%=cid %>;
 
 <%
         if (useDynamicGrouping.equals("true")) {
@@ -153,7 +155,7 @@ if (not defined @current_keys_<%=cid %>) {
             for (int i=0; i<groupBys.size(); i++) {
                 Map<String, String> groupBy = groupBys.get(i);
 %>
-        $<%=cid%>->[<%=cid%>__<%=groupBy.get("COLUMN")%>],
+        $row_<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>],
 <%
             }
 %>
@@ -167,7 +169,7 @@ if (not defined @current_keys_<%=cid %>) {
         '<'.'%s %s="%s"'.">\n",
         <%=labelOfColumn.get(groupBy.get("COLUMN"))%>,
         <%=groupBy.get("ATTRIBUTE_LABEL")%>,
-        $<%=cid%>->[<%=cid%>__<%=groupBy.get("COLUMN")%>]
+        $row_<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>]
     );
 
 <%
@@ -184,12 +186,12 @@ if (not defined @current_keys_<%=cid %>) {
                     control = "if";
                 }
 %>
-<%=control%> ($<%=cid%>->[<%=cid%>__<%=groupBy.get("COLUMN")%>] ne $current_keys_<%=cid %>[<%=i%>]) {
+<%=control%> ($row_<%=cid%>[<%=cid%>__<%=groupBy.get("COLUMN")%>] ne $current_keys_<%=cid %>[<%=i%>]) {
 <%
                 for (int j=i; j<groupBys.size(); j++) {
                     Map<String, String> subgroupBy = groupBys.get(j);
 %>        
-    $current_keys_<%=cid%>[<%=j%>] = $<%=cid%>->[<%=cid%>__<%=subgroupBy.get("COLUMN")%>];
+    $current_keys_<%=cid%>[<%=j%>] = $row_<%=cid%>[<%=cid%>__<%=subgroupBy.get("COLUMN")%>];
 <%
                 }
 %>
@@ -214,7 +216,7 @@ if (not defined @current_keys_<%=cid %>) {
         '<'.'%s %s="%s"'.">\n",
         <%=labelOfColumn.get(subgroupBy.get("COLUMN"))%>,
         <%=subgroupBy.get("ATTRIBUTE_LABEL")%>,
-        $<%=cid%>->[<%=cid%>__<%=subgroupBy.get("COLUMN")%>]
+        $row_<%=cid%>[<%=cid%>__<%=subgroupBy.get("COLUMN")%>]
     );
 <%
                 }
@@ -232,7 +234,7 @@ print {$output_FH_<%=cid %>} (
 %>
     sprintf(
         ' '.<%=sc.getLabel()%>.'="%s"',
-        $<%=cid%>->[<%=cid%>__<%=sc.getId()%>]
+        $row_<%=cid%>[<%=cid%>__<%=sc.getId()%>]
     ),
 <%                
         }
@@ -250,7 +252,7 @@ print {$output_FH_<%=cid %>} (
 %>
     sprintf(
         '  <'.<%=sc.getLabel()%>.'>%s</'.<%=sc.getLabel()%>.'>'."\n",
-        $<%=cid%>->[<%=cid%>__<%=sc.getId()%>]
+        $row_<%=cid%>[<%=cid%>__<%=sc.getId()%>]
     ),
 <%
             }
