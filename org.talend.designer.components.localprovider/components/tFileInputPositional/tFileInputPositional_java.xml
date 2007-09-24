@@ -86,7 +86,7 @@
     >
       <ITEMS BASED_ON_SCHEMA="true">
 
-        <ITEM NAME="SIZE" VALUE="10" />
+        <ITEM NAME="SIZE" VALUE="10" CONTEXT="LENGTH" />
 
         <ITEM NAME="PADDING_CHAR" VALUE="' '" />
 
