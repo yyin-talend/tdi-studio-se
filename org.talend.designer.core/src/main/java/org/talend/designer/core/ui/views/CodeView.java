@@ -21,29 +21,37 @@
 // ============================================================================
 package org.talend.designer.core.ui.views;
 
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
+import org.eclipse.jdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
+import org.eclipse.jdt.ui.PreferenceConstants;
+import org.eclipse.jdt.ui.text.IJavaPartitions;
+import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
-import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.ui.viewer.java.TalendJavaViewerConfiguration;
+import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
@@ -66,7 +74,9 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
  */
 public class CodeView extends ViewPart implements ISelectionListener {
 
-    private ColorStyledText text;
+    // private StyledText text;
+
+    private IDocument document;
 
     private ICodeGenerator codeGenerator = null;
 
@@ -84,8 +94,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     private static final String ERROR_MESSAGE = Messages.getString("CodeView.Error"); //$NON-NLS-1$
 
-    private static final String MULTIPLE_COMPONENT_ERROR_MESSAGE = Messages
-            .getString("CodeView.MultipleComponentError"); //$NON-NLS-1$
+    private static final String MULTIPLE_COMPONENT_ERROR_MESSAGE = Messages.getString("CodeView.MultipleComponentError"); //$NON-NLS-1$
 
     private INode selectedNode = null;
 
@@ -159,15 +168,29 @@ public class CodeView extends ViewPart implements ISelectionListener {
     @Override
     public void createPartControl(final Composite parent) {
         parent.setLayout(new FillLayout());
-        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-        text = new ColorStyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL, colorManager, language.getName());
+        ECodeLanguage language = LanguageManager.getCurrentLanguage();
+        ISourceViewer viewer;
+        int styles = SWT.H_SCROLL | SWT.V_SCROLL;
+        document = new Document();
+        switch (language) {
+        case JAVA:
+            IPreferenceStore store = JavaPlugin.getDefault().getCombinedPreferenceStore();
+            viewer = new JavaSourceViewer(parent, null, null, false, styles, store);
+            viewer.setDocument(document);
+            JavaTextTools tools = JavaPlugin.getDefault().getJavaTextTools();
+            tools.setupJavaDocumentPartitioner(viewer.getDocument(), IJavaPartitions.JAVA_PARTITIONING);
+            SimpleJavaSourceViewerConfiguration config = new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), store,
+                    null, IJavaPartitions.JAVA_PARTITIONING, true);
+            TalendJavaViewerConfiguration config2 = new TalendJavaViewerConfiguration(tools.getColorManager(), store, null);
+            viewer.configure(config);
+            viewer.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
+            document = viewer.getDocument();
+            break;
+        default: // PERL
+            viewer = new TalendPerlSourceViewer(parent, null, styles, document);
+        }
+        viewer.setEditable(false);
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
-        text.setEditable(false);
-        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
-        text.setFont(font);
-
         createMenu();
     }
 
@@ -251,7 +274,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
                 generatingNode = selectedNode;
             }
             if (generatingNode.getComponent().getMultipleComponentManager() != null) {
-                text.setText(MULTIPLE_COMPONENT_ERROR_MESSAGE);
+                document.set(MULTIPLE_COMPONENT_ERROR_MESSAGE);
                 return;
             }
             String generatedCode = ""; //$NON-NLS-1$
@@ -286,10 +309,10 @@ public class CodeView extends ViewPart implements ISelectionListener {
                 default:
                 }
             } catch (SystemException e) {
-                text.setText(ERROR_MESSAGE);
+                document.set(ERROR_MESSAGE);
                 throw new RuntimeException(e);
             }
-            text.setText(generatedCode);
+            document.set(generatedCode);
         }
     }
 }
