@@ -44,7 +44,6 @@ import org.talend.commons.ui.swt.dnd.LocalDraggedData;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * amaumont class global comment. Detailled comment <br/>
@@ -205,7 +204,7 @@ public class Schema2XMLDragAndDropHandler {
                 }
             } else {
                 FOXTreeNode parent = targetNode.getParent();
-                if (parent.getParent() == null) {
+                if (parent == null) {
                     event.detail = DND.DROP_NONE;
                     return;
                 }
@@ -236,9 +235,6 @@ public class Schema2XMLDragAndDropHandler {
                 IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
                 targetNode.setColumn(metaColumn);
                 linker.getXMLViewer().refresh(targetNode);
-                if (TreeUtil.refreshTree((FOXTreeNode) linker.getXMLViewer().getTree().getItem(0).getData())) {
-                    linker.getXMLViewer().refresh();
-                }
                 Display display = linker.getSource().getDisplay();
                 Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
                 linker.getSource().getShell().setCursor(cursor);

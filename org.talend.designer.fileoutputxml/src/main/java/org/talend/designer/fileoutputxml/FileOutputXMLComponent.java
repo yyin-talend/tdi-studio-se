@@ -55,21 +55,21 @@ import org.talend.designer.codegen.ICodeGeneratorService;
  */
 public class FileOutputXMLComponent extends AbstractExternalNode {
 
-    public static final String ROOT_TAGS = "ROOT_TAGS"; //$NON-NLS-1$
+    public static final String ROOT = "ROOT"; //$NON-NLS-1$
 
-    public static final String TAG = "TAG"; //$NON-NLS-1$
+    public static final String GROUP = "GROUP"; //$NON-NLS-1$
 
-    public static final String MAPPING = "MAPPING"; //$NON-NLS-1$
+    public static final String LOOP = "LOOP"; //$NON-NLS-1$
+
+    public static final String PATH = "PATH"; //$NON-NLS-1$
+
+    public static final String VALUE = "VALUE"; //$NON-NLS-1$
+
+    public static final String TYPE = "TYPE"; //$NON-NLS-1$
 
     public static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
-    public static final String ATTRIBUTE = "ATTRIBUTE"; //$NON-NLS-1$
-
-    public static final String LABEL = "LABEL"; //$NON-NLS-1$
-
-    public static final String DEPTH = "DEPTH"; //$NON-NLS-1$
-
-    public static final String GROUPING = "GROUPING"; //$NON-NLS-1$
+    public static final String ATTRIBUTE = "ATTRIBUTE"; //$NON-NLS-1$s
 
     private FOXMain foxmain;
 
@@ -176,81 +176,87 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
 
     @Override
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
-        List<Map<String, String>> listM = (List<Map<String, String>>) this.getElementParameter(MAPPING).getValue();
-        boolean[] flagsM = new boolean[listM.size()];
+        List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
+        boolean flagRoot = false;
 
-        List<Map<String, String>> listG = (List<Map<String, String>>) this.getElementParameter(GROUPING).getValue();
-        boolean[] flagsG = new boolean[listG.size()];
+        List<Map<String, String>> listGroup = (List<Map<String, String>>) this.getElementParameter(GROUP).getValue();
+        boolean flagGroup = false;
+
+        List<Map<String, String>> listLoop = (List<Map<String, String>>) this.getElementParameter(LOOP).getValue();
+        boolean flagLoop = false;
 
         for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
-            // System.out.println(" -> " + col + " " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$
-            for (int i = 0; i < listM.size(); i++) {
-                if (!flagsM[i] && listM.get(i).get(COLUMN).equals(col.getOldName())) {
-                    listM.get(i).put(COLUMN, col.getNewName());
-                    flagsM[i] = true;
+            for (Map<String, String> map : listRoot) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagRoot = true;
                 }
             }
-            for (int i = 0; i < listG.size(); i++) {
-                if (!flagsG[i] && listG.get(i).get(COLUMN).equals(col.getOldName())) {
-                    listG.get(i).put(COLUMN, col.getNewName());
-                    flagsG[i] = true;
+            for (Map<String, String> map : listGroup) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagGroup = true;
+                }
+            }
+            for (Map<String, String> map : listLoop) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagLoop = true;
                 }
             }
         }
 
-        for (int i = 0; i < flagsM.length; i++) {
-            if (flagsM[i]) {
-                this.getElementParameter(MAPPING).setValue(listM);
-                break;
-            }
+        if (flagRoot) {
+            this.getElementParameter(ROOT).setValue(listRoot);
         }
-
-        for (int i = 0; i < flagsG.length; i++) {
-            if (flagsG[i]) {
-                this.getElementParameter(GROUPING).setValue(listG);
-                break;
-            }
+        if (flagGroup) {
+            this.getElementParameter(GROUP).setValue(listGroup);
         }
-
+        if (flagLoop) {
+            this.getElementParameter(LOOP).setValue(listLoop);
+        }
     }
 
     @Override
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
-        List<Map<String, String>> listM = (List<Map<String, String>>) this.getElementParameter(MAPPING).getValue();
-        boolean[] flagsM = new boolean[listM.size()];
+        List<Map<String, String>> listRoot = (List<Map<String, String>>) this.getElementParameter(ROOT).getValue();
+        boolean flagRoot = false;
 
-        List<Map<String, String>> listG = (List<Map<String, String>>) this.getElementParameter(GROUPING).getValue();
-        boolean[] flagsG = new boolean[listG.size()];
+        List<Map<String, String>> listGroup = (List<Map<String, String>>) this.getElementParameter(GROUP).getValue();
+        boolean flagGroup = false;
+
+        List<Map<String, String>> listLoop = (List<Map<String, String>>) this.getElementParameter(LOOP).getValue();
+        boolean flagLoop = false;
 
         for (ColumnNameChanged col : dataComponent.getColumnNameChanged()) {
-            // System.out.println(" -> " + col + " " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$
-            for (int i = 0; i < listM.size(); i++) {
-                if (!flagsM[i] && listM.get(i).get(COLUMN).equals(col.getOldName())) {
-                    listM.get(i).put(COLUMN, col.getNewName());
-                    flagsM[i] = true;
+            for (Map<String, String> map : listRoot) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagRoot = true;
                 }
             }
-
-            for (int i = 0; i < listG.size(); i++) {
-                if (!flagsG[i] && listG.get(i).get(COLUMN).equals(col.getOldName())) {
-                    listG.get(i).put(COLUMN, col.getNewName());
-                    flagsG[i] = true;
+            for (Map<String, String> map : listGroup) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagGroup = true;
+                }
+            }
+            for (Map<String, String> map : listLoop) {
+                if (map.get(COLUMN).equals(col.getOldName())) {
+                    map.put(COLUMN, col.getNewName());
+                    flagLoop = true;
                 }
             }
         }
 
-        for (int i = 0; i < flagsM.length; i++) {
-            if (flagsM[i]) {
-                this.getElementParameter(MAPPING).setValue(listM);
-                break;
-            }
+        if (flagRoot) {
+            this.getElementParameter(ROOT).setValue(listRoot);
         }
-
-        for (int i = 0; i < flagsG.length; i++) {
-            if (flagsG[i]) {
-                this.getElementParameter(GROUPING).setValue(listG);
-                break;
-            }
+        if (flagGroup) {
+            this.getElementParameter(GROUP).setValue(listGroup);
+        }
+        if (flagLoop) {
+            this.getElementParameter(LOOP).setValue(listLoop);
         }
     }
 
@@ -268,62 +274,30 @@ public class FileOutputXMLComponent extends AbstractExternalNode {
                     newValues.add(newMap);
                 }
                 List<Map<String, String>> oldValues = (List<Map<String, String>>) parameter.getValue();
-                if (paraName.equals(ROOT_TAGS)) {
-                    if (oldValues.size() != newValues.size()) {
-                        result = true;
-                    } else {
-                        for (int k = 0; k < oldValues.size(); k++) {
-                            if (!oldValues.get(k).get(TAG).equals(newValues.get(k).get(TAG))) {
-                                result = true;
-                                break;
-                            }
+
+                if (oldValues.size() != newValues.size()) {
+                    result = true;
+                } else {
+                    for (int k = 0; k < oldValues.size(); k++) {
+                        if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
+                            result = true;
+                            break;
+                        }
+                        if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
+                            result = true;
+                            break;
+                        }
+                        if (!oldValues.get(k).get(PATH).equals(newValues.get(k).get(PATH))) {
+                            result = true;
+                            break;
+                        }
+                        if (!oldValues.get(k).get(VALUE).equals(newValues.get(k).get(VALUE))) {
+                            result = true;
+                            break;
                         }
                     }
                 }
-                if (paraName.equals(MAPPING)) {
-                    if (oldValues.size() != newValues.size()) {
-                        result = true;
-                    } else {
-                        for (int k = 0; k < oldValues.size(); k++) {
-                            if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
-                                result = true;
-                                break;
-                            }
-                            if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
-                                result = true;
-                                break;
-                            }
-                            if (!oldValues.get(k).get(LABEL).equals(newValues.get(k).get(LABEL))) {
-                                result = true;
-                                break;
-                            }
-                            if (!oldValues.get(k).get(DEPTH).equals(newValues.get(k).get(DEPTH))) {
-                                result = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (paraName.equals(GROUPING)) {
-                    if (oldValues.size() != newValues.size()) {
-                        result = true;
-                    } else {
-                        for (int k = 0; k < oldValues.size(); k++) {
-                            if (!oldValues.get(k).get(COLUMN).equals(newValues.get(k).get(COLUMN))) {
-                                result = true;
-                                break;
-                            }
-                            if (!oldValues.get(k).get(ATTRIBUTE).equals(newValues.get(k).get(ATTRIBUTE))) {
-                                result = true;
-                                break;
-                            }
-                            if (!oldValues.get(k).get(LABEL).equals(newValues.get(k).get(LABEL))) {
-                                result = true;
-                                break;
-                            }
-                        }
-                    }
-                }
+
                 if (result) {
                     parameter.setValue(newValues);
                 }

@@ -34,7 +34,6 @@ import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
@@ -76,11 +75,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         try {
             ATreeNode treeNode = SchemaPopulationUtil.getSchemaTree(file, true, 0);
             FOXTreeNode root = cloneATreeNode(treeNode);
-            root = ((Element) root).getElementChildren().get(0);
-            Element e = (Element) root;
-            while (e.getElementChildren().size() > 1) {
-                e.getElementChildren().remove(1);
-            }
+            root = ((Element) root).getChildren().get(0);
             root.setParent(null);
             list.add(root);
         } catch (Exception e) {
@@ -123,7 +118,7 @@ public class ImportTreeFromXMLAction extends SelectionProviderAction {
         }
         foxui.getFoxManager().setTreeData(newInput);
         xmlViewer.setInput(foxui.getFoxManager().getTreeData());
-        TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        // TreeUtil.guessAndSetLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         xmlViewer.refresh();
         xmlViewer.expandAll();
         foxui.redrawLinkers();

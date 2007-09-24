@@ -64,7 +64,6 @@ import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
 import org.talend.designer.fileoutputxml.action.CreateElementAction;
 import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.action.DisconnectAction;
-import org.talend.designer.fileoutputxml.action.GuessLoopAction;
 import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
 import org.talend.designer.fileoutputxml.action.RemoveGroupAction;
 import org.talend.designer.fileoutputxml.action.SetForLoopAction;
@@ -110,7 +109,7 @@ public class FOXUI {
 
     private IAction importFromXMLAction;
 
-    private IAction guessLoopAction;
+    // private IAction guessLoopAction;
 
     private IAction setLoopAction;
 
@@ -321,7 +320,7 @@ public class FOXUI {
         manager.add(deleteAction);
         manager.add(disconnectAction);
         manager.add(new Separator());
-        manager.add(guessLoopAction);
+        // manager.add(guessLoopAction);
         manager.add(setLoopAction);
         manager.add(new Separator());
         manager.add(setGroupAction);
@@ -340,7 +339,7 @@ public class FOXUI {
         importFromXMLAction = new ImportTreeFromXMLAction(xmlViewer, this, Messages.getString("FOXUI.14")); //$NON-NLS-1$
         // importFromXMLAction
         // .setToolTipText("Discard the current tree and then import a hierachy tree from an existing xml file.");
-        guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
+        // guessLoopAction = new GuessLoopAction(xmlViewer, Messages.getString("FOXUI.15")); //$NON-NLS-1$
         setLoopAction = new SetForLoopAction(xmlViewer, Messages.getString("FOXUI.16")); //$NON-NLS-1$
         setGroupAction = new SetGroupAction(xmlViewer, Messages.getString("FOXUI.17")); //$NON-NLS-1$
         removeGroupAction = new RemoveGroupAction(xmlViewer, Messages.getString("FOXUI.18")); //$NON-NLS-1$

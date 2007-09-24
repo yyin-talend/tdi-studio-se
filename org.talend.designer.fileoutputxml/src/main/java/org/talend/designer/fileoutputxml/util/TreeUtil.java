@@ -21,9 +21,6 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
@@ -57,46 +54,6 @@ public class TreeUtil {
 
         if (e.isGroup()) {
             return true;
-        }
-
-        boolean isSubOfGroup = false;
-        Element temp = e;
-        while (temp != null) {
-            if (temp.isGroup()) {
-                isSubOfGroup = true;
-                break;
-            }
-            temp = (Element) temp.getParent();
-        }
-
-        Element father = (Element) e.getParent();
-
-        if (isSubOfGroup) {
-            do {
-                if (father.getElementChildren().size() > 1) {
-                    return false;
-                }
-                father = (Element) father.getParent();
-            } while (father != null && !father.isGroup());
-        } else {
-
-            do {
-                if (father.hasLink()) {
-                    return false;
-                }
-
-                for (FOXTreeNode att : father.getAttributeChildren()) {
-                    if (att.hasLink()) {
-                        return false;
-                    }
-                }
-
-                if (father.getElementChildren().size() > 1) {
-                    return false;
-                }
-
-                father = (Element) father.getParent();
-            } while (father != null);
         }
 
         return true;
@@ -182,17 +139,17 @@ public class TreeUtil {
      * @return
      */
     public static FOXTreeNode getLoopNode(FOXTreeNode root) {
-        if (root instanceof Element) {
+        if (root != null && root instanceof Element) {
             Element e = (Element) root;
-            do {
-                if (e.isLoop()) {
-                    return e;
+            if (e.isLoop()) {
+                return e;
+            }
+            for (FOXTreeNode child : e.getElementChildren()) {
+                FOXTreeNode loopNode = getLoopNode(child);
+                if (loopNode != null) {
+                    return loopNode;
                 }
-                if (e.getElementChildren().size() < 1) {
-                    break;
-                }
-                e = (Element) e.getElementChildren().get(0);
-            } while (true);
+            }
         }
         return null;
     }
@@ -204,132 +161,22 @@ public class TreeUtil {
      * @return
      */
     public static FOXTreeNode getGroupNode(FOXTreeNode root) {
-        if (root instanceof Element) {
+        if (root != null && root instanceof Element) {
             Element e = (Element) root;
-            do {
-                if (e.isLoop()) {
-                    return null;
+            if (e.isLoop()) {
+                return null;
+            }
+            if (e.isGroup()) {
+                return e;
+            }
+            for (FOXTreeNode child : e.getElementChildren()) {
+                FOXTreeNode loopNode = getGroupNode(child);
+                if (loopNode != null) {
+                    return loopNode;
                 }
-                if (e.isGroup()) {
-                    return e;
-                }
-                if (e.getElementChildren().size() < 1) {
-                    break;
-                }
-                e = (Element) e.getElementChildren().get(0);
-            } while (true);
+            }
         }
         return null;
-    }
-
-    /**
-     * DOC ke Comment method "refreshTree".
-     * 
-     * @param root
-     * @return
-     */
-    public static boolean refreshTree(FOXTreeNode root) {
-        List<FOXTreeNode> groupList = new ArrayList<FOXTreeNode>();
-        getGroupList(root, groupList);
-        boolean noGroup = (groupList.size() == 0);
-        if (noGroup) {
-            List<FOXTreeNode> loopList = new ArrayList<FOXTreeNode>();
-            getLoopList(root, loopList);
-            if (loopList.size() == 0) {
-                guessAndSetLoopNode(root);
-                return true;
-            }
-            FOXTreeNode loop = loopList.get(0);
-            if (!checkTreeLoopNode(loop)) {
-                loop.setLoop(false);
-                guessAndSetLoopNode(root);
-                return true;
-            }
-        } else {
-            FOXTreeNode group = groupList.get(0);
-            if (!checkTreeGroupNode(group)) {
-                group.setGroup(false);
-                clearLoopNode(root);
-                guessAndSetLoopNode(root);
-                return true;
-            } else if (!checkFromGroupNode(group)) {
-                List<FOXTreeNode> loopList = new ArrayList<FOXTreeNode>();
-                getLoopList(group, loopList);
-                if (loopList.size() > 0) {
-                    loopList.get(0).setLoop(false);
-                }
-                guessLoopWithGroup(group);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void getGroupList(FOXTreeNode root, List<FOXTreeNode> groupList) {
-        if (root instanceof Element) {
-            if (root.isGroup()) {
-                groupList.add(root);
-            } else {
-                for (FOXTreeNode ch : ((Element) root).getElementChildren()) {
-                    getGroupList(ch, groupList);
-                }
-            }
-        }
-    }
-
-    private static boolean checkFromGroupNode(final FOXTreeNode group) {
-        Element e = (Element) group;
-        while (true) {
-            if (e.hasLink() && !e.isLoop()) {
-                return false;
-            }
-            if (e.getElementChildren().size() == 0) {
-                return true;
-            }
-            if (e.isLoop()) {
-                return true;
-            }
-            if (e.getElementChildren().size() > 1) {
-                return false;
-            }
-            e = (Element) e.getElementChildren().get(0);
-        }
-    }
-
-    private static boolean checkTreeGroupNode(FOXTreeNode group) {
-        if (((Element) group).getElementChildren().size() > 1) {
-            return false;
-        }
-        Element parent = (Element) group.getParent();
-        while (parent != null) {
-            if (parent.getElementChildren().size() > 1) {
-                return false;
-            }
-            for (FOXTreeNode att : parent.getAttributeChildren()) {
-                if (att.hasLink()) {
-                    return false;
-                }
-            }
-            parent = (Element) parent.getParent();
-        }
-        return true;
-    }
-
-    /**
-     * DOC ke Comment method "getLoopList".
-     * 
-     * @param node
-     * @param loopList
-     */
-    private static void getLoopList(FOXTreeNode node, List<FOXTreeNode> loopList) {
-        if (node instanceof Element) {
-            if (node.isLoop()) {
-                loopList.add(node);
-            }
-            for (FOXTreeNode ch : ((Element) node).getElementChildren()) {
-                getLoopList(ch, loopList);
-            }
-        }
     }
 
     /**
@@ -342,47 +189,24 @@ public class TreeUtil {
         if (node instanceof Attribute || node.isGroup() || node.isLoop()) {
             return false;
         }
-        boolean result = false;
-        FOXTreeNode temp = node;
-        while (true) {
-            temp = temp.getParent();
-            if (temp == null) {
+        boolean flag = false;
+        FOXTreeNode temp = node.getParent();
+        while (temp != null) {
+            if (temp.isGroup()) {
+                flag = true;
                 break;
             }
             if (temp.isLoop()) {
                 return false;
             }
-        }
-        temp = node;
-        boolean flag = false;
-        while (true) {
             temp = temp.getParent();
-            if (temp == null) {
-                break;
-            }
-            if (temp.isGroup()) {
-                flag = true;
-                break;
-            }
         }
         if (flag) {
-            temp = node;
-            while (true) {
-                if (((Element) temp).getElementChildren().size() == 0) {
-                    result = true;
-                    break;
-                }
-                if (((Element) temp).getElementChildren().size() > 1) {
-                    break;
-                }
-                temp = ((Element) temp).getElementChildren().get(0);
-                if (temp.isLoop()) {
-                    result = true;
-                    break;
-                }
+            if (TreeUtil.findDownLoopNode(node) != null) {
+                return true;
             }
         }
-        return result;
+        return false;
     }
 
     /**
@@ -394,18 +218,16 @@ public class TreeUtil {
         if (node instanceof Attribute) {
             return;
         }
-        Element tNode = (Element) node;
-        do {
-            if (tNode.isGroup()) {
-                tNode.setGroup(false);
-                return;
-            }
-            if (tNode.isLoop() || tNode.getElementChildren().size() == 0 || tNode.getElementChildren().size() > 1) {
-                return;
-            }
-            tNode = (Element) tNode.getElementChildren().get(0);
-        } while (true);
-
+        if (node.isGroup()) {
+            node.setGroup(false);
+            return;
+        }
+        if (node.isLoop()) {
+            return;
+        }
+        for (FOXTreeNode child : node.getChildren()) {
+            clearSubGroupNode(child);
+        }
     }
 
     /**
@@ -466,36 +288,55 @@ public class TreeUtil {
             return false;
         }
 
-        Element e = (Element) node;
-
-        if (e.getParent() == null) {
+        if (node.getParent() == null) {
             return false;
         }
 
-        if (e.getElementChildren().size() > 1) {
+        FOXTreeNode loop = findDownLoopNode(node);
+        if (loop == null || loop == node) {
             return false;
         }
+        return true;
+    }
 
-        Element father = (Element) e.getParent();
-
-        do {
-            if (father.hasLink()) {
-                return false;
+    /*
+     * find the loop node in "treenode" and its children
+     */
+    private static FOXTreeNode findDownLoopNode(FOXTreeNode treeNode) {
+        if (treeNode instanceof Element) {
+            Element e = (Element) treeNode;
+            if (e.isLoop()) {
+                return e;
             }
-
-            for (FOXTreeNode att : father.getAttributeChildren()) {
-                if (att.hasLink()) {
-                    return false;
+            for (FOXTreeNode child : e.getChildren()) {
+                FOXTreeNode tmp = findDownLoopNode(child);
+                if (tmp != null) {
+                    return tmp;
                 }
             }
+        }
+        return null;
+    }
 
-            if (father.getElementChildren().size() > 1) {
-                return false;
+    public static FOXTreeNode findUpGroupNode(FOXTreeNode treeNode) {
+        if (treeNode != null) {
+            if (treeNode.isGroup()) {
+                return treeNode;
             }
+            if (treeNode instanceof Element) {
+                return findUpGroupNode(treeNode.getParent());
+            }
+        }
+        return null;
+    }
 
-            father = (Element) father.getParent();
-        } while (father != null);
-
-        return true;
+    public static String getPath(FOXTreeNode treeNode) {
+        StringBuffer path = new StringBuffer();
+        FOXTreeNode tmp = treeNode;
+        while (tmp != null) {
+            path.insert(0, "/" + tmp.getLabel());
+            tmp = tmp.getParent();
+        }
+        return path.toString();
     }
 }

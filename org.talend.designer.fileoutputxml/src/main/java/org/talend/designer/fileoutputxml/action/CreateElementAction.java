@@ -32,7 +32,6 @@ import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.StringUtil;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
@@ -73,9 +72,6 @@ public class CreateElementAction extends SelectionProviderAction {
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
         if (createChildNode(node)) {
-            if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
-                xmlViewer.refresh();
-            }
             foxui.redrawLinkers();
         }
     }
@@ -87,7 +83,8 @@ public class CreateElementAction extends SelectionProviderAction {
      */
     private boolean createChildNode(FOXTreeNode node) {
         if (node.getColumn() != null) {
-            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), Messages
+                    .getString("CreateElementAction.0"), //$NON-NLS-1$
                     Messages.getString("CreateElementAction.1") //$NON-NLS-1$
                             + node.getLabel() + "\"?")) { //$NON-NLS-1$
                 return false;
@@ -96,7 +93,8 @@ public class CreateElementAction extends SelectionProviderAction {
         }
         String label = ""; //$NON-NLS-1$
         while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null, Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
+            InputDialog dialog = new InputDialog(null,
+                    Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
                     "", null); //$NON-NLS-1$
             int status = dialog.open();
             if (status == InputDialog.OK) {
@@ -129,13 +127,15 @@ public class CreateElementAction extends SelectionProviderAction {
             this.setEnabled(false);
             return;
         }
-        Element e = (Element) node;
-        if (e.getParent() == null) {
-            if (e.getElementChildren().size() >= 1) {
-                this.setEnabled(false);
-                return;
-            }
-        }
+
+        // let user can add more children to a root.
+        // Element e = (Element) node;
+        // if (e.getParent() == null) {
+        // if (e.getElementChildren().size() >= 1) {
+        // this.setEnabled(false);
+        // return;
+        // }
+        // }
         this.setEnabled(true);
 
     }

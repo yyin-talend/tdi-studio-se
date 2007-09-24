@@ -62,9 +62,9 @@ public class SetGroupAction extends SelectionProviderAction {
             return;
         }
         TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
-        TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        // old TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         node.setGroup(true);
-        TreeUtil.guessLoopWithGroup(node);
+        // old TreeUtil.guessLoopWithGroup(node);
         xmlViewer.refresh();
     }
 

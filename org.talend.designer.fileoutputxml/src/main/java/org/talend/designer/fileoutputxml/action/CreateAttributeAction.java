@@ -111,7 +111,8 @@ public class CreateAttributeAction extends SelectionProviderAction {
         if (node != null && node.getClass() != Element.class) {
             this.setEnabled(false);
         } else {
-            if (node == null || node.getParent() == null) {
+            // let user can add the attribute to root.
+            if (node == null) {// || node.getParent() == null) {
                 this.setEnabled(false);
             } else {
                 this.setEnabled(true);

@@ -61,7 +61,12 @@ public class SetForLoopAction extends SelectionProviderAction {
         if (node.isLoop()) {
             return;
         }
+
         TreeUtil.clearSubGroupNode(node);
+        // make sure group element is a ancestor of loop, or no group element.
+        if (TreeUtil.findUpGroupNode(node) == null) {
+            TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        }
         TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         if (node.isGroup()) {
             node.setGroup(false);
