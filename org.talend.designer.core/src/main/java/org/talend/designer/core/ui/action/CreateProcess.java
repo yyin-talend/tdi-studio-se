@@ -43,6 +43,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -61,7 +62,7 @@ public class CreateProcess extends AContextualAction {
         super();
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        
+
         Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
@@ -78,7 +79,10 @@ public class CreateProcess extends AContextualAction {
 
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IPath path = service.getRepositoryPath(node);
-
+        if (RepositoryConstants.isSystemFolder(path.toString())) {
+            // Not allowed to create in system folder.
+            return;
+        }
         NewProcessWizard processWizard = new NewProcessWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
@@ -89,7 +93,8 @@ public class CreateProcess extends AContextualAction {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false);
 
                 fileEditorInput.setView(getViewPart());
-                fileEditorInput.setRepositoryNode(null); // set null temporary as it's not the correct Repository Node
+                fileEditorInput.setRepositoryNode(null); // set null temporary as it's not the correct Repository
+                // Node
 
                 IWorkbenchPage page = getActivePage();
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
@@ -110,7 +115,8 @@ public class CreateProcess extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
-        if (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().isUserReadOnlyOnCurrentProject()) {
+        if (DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                .isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         if (canWork) {
