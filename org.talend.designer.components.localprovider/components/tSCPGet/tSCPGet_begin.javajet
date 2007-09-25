@@ -1,0 +1,102 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+        CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+        INode node = (INode)codeGenArgument.getArgument();
+        String cid = node.getUniqueName();
+
+        String host = ElementParameterParser.getValue(
+            node,
+            "__HOST__"
+        );
+
+        String port = ElementParameterParser.getValue(
+            node,
+            "__PORT__"
+        );
+
+        String user = ElementParameterParser.getValue(
+            node,
+            "__USERNAME__"
+        );
+
+        String authMethod = ElementParameterParser.getValue(
+            node,
+            "__AUTH_METHOD__"
+        );
+
+        String privatekey = ElementParameterParser.getValue(
+            node,
+            "__PRIVATEKEY__"
+        );
+
+        String password = ElementParameterParser.getValue(
+            node,
+            "__PASSWORD__"
+        );
+        
+        String passphrase = ElementParameterParser.getValue(
+            node,
+            "__PASSPHRASE__"
+        );
+        
+        List<Map<String, String>> filelist =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FILELIST__"
+        );
+%>
+    String hostname_<%=cid%> = <%=host%>;
+    String username_<%=cid%> = <%=user%>;
+
+
+    /* Create a connection instance */
+<%
+        if(port.equals("")){
+%>
+              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>);
+<%
+        } else {
+%>
+              ch.ethz.ssh2.Connection conn_<%=cid%> = new ch.ethz.ssh2.Connection(hostname_<%=cid%>,<%=port%>);
+<%
+        }
+%>
+              /* Now connect */
+        conn_<%=cid%>.connect();
+<%        
+        if (authMethod.equals("PUBLICKEY")) {
+%>
+        java.io.File keyfile_<%=cid%> = new java.io.File(<%=privatekey%>); 
+            boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPublicKey(username_<%=cid%>, keyfile_<%=cid%>, <%=passphrase%>);
+              if (isAuthenticated_<%=cid%> == false)
+                      throw new java.io.IOException("Authentication failed.");
+<%
+        }
+        if (authMethod.equals("PASSWORD")) {
+%>
+        boolean isAuthenticated_<%=cid%> = conn_<%=cid%>.authenticateWithPassword(username_<%=cid%>, <%=password%>);
+        if (isAuthenticated_<%=cid%> == false)
+            throw new java.io.IOException("Authentication failed.");
+<%
+        }
+%>                 
+        ch.ethz.ssh2.SCPClient scp_<%=cid%> = new  ch.ethz.ssh2.SCPClient(conn_<%=cid%>);
+        
+        String[] sourceFileNames_<%=cid%> = new String[]{
+         <%
+             for (Map<String, String> file : filelist) {
+         %>
+             <%=file.get("SOURCE")%>,
+         <%          
+            }
+         %>
+       };
