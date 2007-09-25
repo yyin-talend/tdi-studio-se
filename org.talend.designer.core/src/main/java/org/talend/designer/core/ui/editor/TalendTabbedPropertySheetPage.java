@@ -60,9 +60,9 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
                 }
                 if (structSel.getFirstElement() instanceof EditPart) {
                     if (structSel.equals(oldSelection)) {
-                        if (getCurrentTab() != null) {
-                            getCurrentTab().setInput(part, selection);
-                        }
+                        // if (getCurrentTab() != null) {
+                        // getCurrentTab().setInput(part, selection);
+                        // }
                     } else {
                         super.selectionChanged(part, selection);
                     }
@@ -79,7 +79,7 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
                 }
                 if (structSel.getFirstElement() instanceof NodeTreeEditPart) {
                     if (structSel.equals(oldSelection)) {
-                        this.getCurrentTab().setInput(part, selection);
+                        // this.getCurrentTab().setInput(part, selection);
                     } else {
                         super.selectionChanged(part, selection);
                     }

@@ -137,6 +137,19 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setShow(false);
         param.setNumRow(1);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setNumRow(5);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        addElementParameter(param);
+
     }
 
     private void createMeterParameters(Process process) {
@@ -307,9 +320,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {
@@ -520,7 +533,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      */
     @Override
     public String getElementName() {
-        return lineStyle.getName();
+        return getUniqueName();
     }
 
     public boolean isActivate() {

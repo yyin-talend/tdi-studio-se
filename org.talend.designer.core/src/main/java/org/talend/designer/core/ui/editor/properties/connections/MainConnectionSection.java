@@ -70,7 +70,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             generator.initController(this);
             for (IElementParameter cur : listParam) {
-                if ((cur.getField() == EParameterFieldType.SCHEMA_TYPE) && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
+                if ((cur.getField() == EParameterFieldType.SCHEMA_TYPE)
+                        && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                     AbstractElementPropertySectionController contorller = generator.getController(
                             EParameterFieldType.SCHEMA_TYPE, this);
                     contorller.createControl(composite, cur, 0, 0, 0, null);
@@ -87,15 +88,15 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             if (outputMetaTable != null) {
                 // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
                 // compositeEditorView.setLayoutData(data);
-                
+
                 metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
                         + ((Connection) elem).getSource().getElementName() + " output ");
-                metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true,
-                        false, true, false);
+                metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false,
+                        true, false);
 
                 MetadataDialog.initializeMetadataTableView(metadataTableEditorView, ((Connection) elem).getSource(),
                         outputMetaTable);
-                
+
                 metadataTableEditorView.initGraphicComponents();
                 CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
                 Composite compositeEditorView = metadataTableEditorView.getMainComposite();
@@ -103,14 +104,14 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                 compositeEditorView.getParent().layout();
             }
             super.addComponents(forceRedraw, false);
-            if (forceRedraw) {
-                refresh();
-            }
+            // if (forceRedraw) {
+            // refresh();
+            // }
         } else if (conIf()) {
             super.addComponents(forceRedraw);
-            if (forceRedraw) {
-                refresh();
-            }
+            // if (forceRedraw) {
+            // refresh();
+            // }
         } else {
             disposeChildren();
         }
