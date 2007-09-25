@@ -1,0 +1,26 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String filename = ElementParameterParser.getValue(node,"__JRXML_FILE__");
+String sourceFile = ElementParameterParser.getValue(node,"__SOURCE_FILE__");
+String destinationDirectory = ElementParameterParser.getValue(node,"__DESTINATION__");
+String reportType = ElementParameterParser.getValue(node,"__REPORT_TYPE__");
+%>       
+	String fileName_<%=cid%> = <%=filename%>;
+    String jrxmlName_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("/"),fileName_<%=cid%>.lastIndexOf("."));
+	String jrxmlPath_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf("/"));
+    String sourceFile_<%=cid%> = <%=sourceFile%>;
+	String jasperFile_<%=cid%> = jrxmlPath_<%=cid%>+"/"+jrxmlName_<%=cid%> + ".jasper";
+    String reportFile_<%=cid%> = <%=destinationDirectory%>+jrxmlName_<%=cid%>+".<%=reportType%>";
