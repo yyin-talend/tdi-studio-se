@@ -1,0 +1,331 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070312A"
+    STARTABLE="true"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="DBTYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="1"
+    >
+      <ITEMS DEFAULT="ACCESS">       
+        <ITEM NAME="ACCESS"      VALUE="Access" />
+        <ITEM NAME="DB2"         VALUE="DB2"/>
+        <ITEM NAME="FIREBIRD"    VALUE="Firebird"/>
+        <ITEM NAME="HSQLDB"      VALUE="HSQLdb"/>
+        <ITEM NAME="INFORMIX"    VALUE="Informix"/>
+        <ITEM NAME="INGRES"      VALUE="Ingres"/>
+        <ITEM NAME="INTERBASE"   VALUE="Interbase"/>
+        <ITEM NAME="JAVADB"      VALUE="JavaDB"/>
+        <ITEM NAME="MSSQL" 		 VALUE="MSSQL"/>
+        <ITEM NAME="MYSQL"       VALUE="MySQL"/>
+        <ITEM NAME="DBORACLE"    VALUE="Oracle"/>
+        <ITEM NAME="POSTGRE"     VALUE="Postgre"/>
+        <ITEM NAME="SQLITE"      VALUE="SQLite"/>
+        <ITEM NAME="SYBASE"      VALUE="Sybase"/>
+        <ITEM NAME="ODBC"        VALUE="ODBC"/>       
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ORACLETYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+	  SHOW_IF="DBTYPE=='DBORACLE'"  
+    >
+      <ITEMS DEFAULT="ORACLE SID">
+        <ITEM NAME="ORACLE SID"        VALUE="Oracle SID" />
+        <ITEM NAME="ORACLE SERVICE"    VALUE="Oracle Service"/>
+      </ITEMS>
+    </PARAMETER> 
+    
+    <PARAMETER
+      NAME="JAVADBFRAME"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+	  SHOW_IF="(DBTYPE=='JAVADB')"  
+    >
+      <ITEMS DEFAULT="EMBEDED">
+        <ITEM NAME="EMBEDED"        VALUE="Embeded" />
+        <ITEM NAME="JCCJDBC"    	VALUE="JCCJDBC"/>
+        <ITEM NAME="DERBYCLIENT"    VALUE="DERBYCLIENT"/>
+      </ITEMS>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="JAVADBNETSERVER"
+      FIELD="CHECK"
+      SHOW_IF="(DBTYPE=='JAVADB' and (JAVADBFRAME == 'JCCJDBC' or JAVADBFRAME == 'DERBYCLIENT'))"
+      NUM_ROW="2"    
+    >   
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>  
+    
+    <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="DATABASE"
+    />
+    
+    <PARAMETER
+      NAME="ACCESSDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='ACCESS')"
+      REPOSITORY_VALUE="FILE"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
+    </PARAMETER> 
+	
+    <PARAMETER
+      NAME="DBPATH"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='JAVADB' and JAVADBFRAME=='EMBEDED')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="HSQLMODE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB')"     
+    >
+      <ITEMS DEFAULT="SERVER">
+        <ITEM NAME="SERVER"       VALUE="SERVER" />
+        <ITEM NAME="WEBSERVER"    VALUE="WEBSERVER"/>
+        <ITEM NAME="PROCESS"      VALUE="PROCESS"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="TLS"
+      FIELD="CHECK"
+      NUM_ROW="4"
+      SHOW_IF="(DBTYPE == 'HSQLDB') and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
+    
+    <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SERVER_NAME"
+      NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="PORT"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
+    >
+      <DEFAULT>"50000"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DBNAME"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REQUIRED="true"
+      REPOSITORY_VALUE="SID"
+      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="HSQLDATABASEALIAS"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER'))"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+     
+     <PARAMETER
+      NAME="HSQLDATABASEPATH"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+     <PARAMETER
+      NAME="HSQLDATABASE"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="INTERBASEDBNAME"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='INTERBASE')" 
+      REPOSITORY_VALUE="SID"    
+    >
+      <DEFAULT>"../test.gdb"</DEFAULT>
+    </PARAMETER> 
+    
+   <PARAMETER
+      NAME="SQLITEDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='SQLITE')"  
+      REPOSITORY_VALUE="FILE"   
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER> 
+
+    <PARAMETER
+      NAME="FIREBIRDDBNAME"
+      FIELD="FILE"
+      NUM_ROW="4"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='FIREBIRD')"   
+      REPOSITORY_VALUE="SID"  
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="INFORMIXSERVER"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='INFORMIX')"
+      REPOSITORY_VALUE="DATASOURCE"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="USERNAME"
+      REQUIRED="true"
+      NOT_SHOW_IF="DBTYPE=='SQLITE'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PASS"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="PASSWORD"
+      REQUIRED="true"
+      NOT_SHOW_IF="DBTYPE=='SQLITE'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="6"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CATALOG"
+      FIELD="TEXT"
+      NUM_ROW="7"
+      REQUIRED="true"
+      REPOSITORY_VALUE="FILE_PATH"
+    >
+      <DEFAULT>"file:catalog.xml"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="QUERY"
+      FIELD="MEMO"
+      NUM_ROW="8"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+
+   <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-MySql"         MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
+       <IMPORT NAME="Mondrian"             MODULE="mondrian.jar" REQUIRED="true" />
+       <IMPORT NAME="log4j"                MODULE="log4j-1.2.9.jar" REQUIRED="true" />
+       <IMPORT NAME="eigenbase-xom"        MODULE="eigenbase-xom.jar" REQUIRED="true" />
+       <IMPORT NAME="eigenbase-resgen"     MODULE="eigenbase-resgen.jar" REQUIRED="true" />
+       <IMPORT NAME="eigenbase-properties" MODULE="eigenbase-properties.jar" REQUIRED="true" />
+       <IMPORT NAME="javacup"              MODULE="javacup.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-dbcp"         MODULE="commons-dbcp-1.2.1.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-math"         MODULE="commons-math-1.0.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-log"          MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-pool"         MODULE="commons-pool-1.2.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-digester"     MODULE="commons-digester-1.7.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-httpclient"   MODULE="commons-httpclient-3.0.1.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-codec"        MODULE="commons-codec-1.3.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="FLOW"/>
+      <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
+   </RETURNS>
+</COMPONENT>
