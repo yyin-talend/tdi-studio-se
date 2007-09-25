@@ -74,7 +74,11 @@ if (shreshlods.size() > 0) {
         shreshlods_str.append(map.get("TOP")+ "|");
         shreshlods_str.append(map.get("COLOR").replace(";","|"));
     } 
-} 
+}
+
+%>
+$_globals{<%=cid%>}{NB_LINE} = $count_<%=cid%>;
+<%
 
 if (node.getProcess().getNodesOfType("tFlowMeterCatcher").size() > 0) {
     List<INode> meterCatchers =
