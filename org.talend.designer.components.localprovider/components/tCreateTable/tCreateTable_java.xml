@@ -405,6 +405,5 @@
    </CODEGENERATION>
    
   <RETURNS>
-    <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
   </RETURNS>
 </COMPONENT>
