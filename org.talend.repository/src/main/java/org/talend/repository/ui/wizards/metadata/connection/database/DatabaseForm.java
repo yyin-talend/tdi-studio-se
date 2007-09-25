@@ -301,7 +301,12 @@ public class DatabaseForm extends AbstractForm {
     private void checkConnection() {
 
         checkButton.setEnabled(false);
-
+        if (connectionItem.getConnection() instanceof DatabaseConnection) {
+            DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
+            if (c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
+                schemaText.setText(schemaText.getText().toUpperCase());
+            }
+        }
         ManagerConnection managerConnection = new ManagerConnection();
         // set the value
         managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText

@@ -47,7 +47,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -105,9 +104,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty
-                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                            .getUser());
+            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -117,7 +115,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             break;
 
         case REPOSITORY_ELEMENT:
-            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
+                    .getConnection();
             connectionProperty = node.getObject().getProperty();
             connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -135,8 +134,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         setWindowTitle(Messages.getString("DatabaseWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
 
-        propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_CONNECTIONS,
-                !isRepositoryObjectEditable(), creation);
+        propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave,
+                ERepositoryObjectType.METADATA_CONNECTIONS, !isRepositoryObjectEditable(), creation);
         databaseWizardPage = new DatabaseWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
@@ -171,6 +170,13 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
+                    if (connectionItem.getConnection() instanceof DatabaseConnection) {
+                        DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
+                        final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
+                        if (equals) {
+                            c.setSchema(c.getSchema().toUpperCase());
+                        }
+                    }
                     factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
                 } else {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
@@ -185,7 +191,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
