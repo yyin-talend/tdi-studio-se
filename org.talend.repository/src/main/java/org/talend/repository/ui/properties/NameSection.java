@@ -117,9 +117,11 @@ public class NameSection extends AbstractSection {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameEmpty")); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
             return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameIncorrect")); //$NON-NLS-1$
-        } else if (!isValid(text)) {
-            return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameExist")); //$NON-NLS-1$
-        } else {
+        }
+        // else if (!isValid(text)) {
+        // return createStatus(IStatus.ERROR, Messages.getString("NameSection.NameExist")); //$NON-NLS-1$
+        // }
+        else {
             return createOkStatus();
         }
     }
