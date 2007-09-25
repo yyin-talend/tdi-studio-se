@@ -61,7 +61,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     @Override
     public void addComponents(boolean forceRedraw) {
-
         if (conSchema()) {
             disposeChildren();
             curRowSize = 0;
@@ -93,25 +92,18 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                         + ((Connection) elem).getSource().getElementName() + " output ");
                 metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false,
                         true, false);
-
                 MetadataDialog.initializeMetadataTableView(metadataTableEditorView, ((Connection) elem).getSource(),
                         outputMetaTable);
-
                 metadataTableEditorView.initGraphicComponents();
+                metadataTableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
                 CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
                 Composite compositeEditorView = metadataTableEditorView.getMainComposite();
                 compositeEditorView.setLayoutData(data);
                 compositeEditorView.getParent().layout();
             }
             super.addComponents(forceRedraw, false);
-            // if (forceRedraw) {
-            // refresh();
-            // }
         } else if (conIf()) {
             super.addComponents(forceRedraw);
-            // if (forceRedraw) {
-            // refresh();
-            // }
         } else {
             disposeChildren();
         }

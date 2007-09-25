@@ -44,12 +44,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.views.properties.tabbed.view.TabbedPropertyComposite;
-import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -89,6 +86,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -148,6 +146,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private static DynamicTabbedPropertySection lastPropertyUsed;
 
     private int lastCompositeSize = 0;
+
+    private boolean propertyResized;
 
     /**
      * ftang Comment method "showQueryStoreRepositoryList".
@@ -589,7 +589,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
-        int estimatedHeightSize = 0, estimatedMaxRowSize = 0;
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
@@ -707,57 +706,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         // System.out.println("********************** NEW ADDCOMPONENTS
         // **********************");
-        int additionalHeightSize = 0;
         TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
-        if (tabbedPropertyComposite != null) {
-            int compositeHeight = tabbedPropertyComposite.getClientArea().height
-                    - tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-
-            // System.out.println("size composite:" + compositeHeight);
-
-            int nbDynamic = 0;
-            for (int curRow = 1; curRow <= maxRow; curRow++) {
-                estimatedMaxRowSize = 0;
-                for (int i = 0; i < listParam.size(); i++) {
-                    IElementParameter curParam = listParam.get(i);
-                    if (curParam.getCategory() == section) {
-                        if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
-                            // System.out.println("test:" + curParam.getName() + "
-                            // field:"+curParam.getField());
-                            if (curParam.isShow(listParam)) {
-                                // System.out.println("show:" + curParam.getName()+
-                                // " field:"+curParam.getField());
-                                AbstractElementPropertySectionController controller = generator.getController(
-                                        curParam.getField(), this);
-
-                                if (controller == null) {
-                                    break;
-                                }
-                                int estimatedSize = controller.estimateRowSize(composite, curParam);
-                                if (controller.hasDynamicRowSize()) {
-                                    nbDynamic++;
-                                }
-                                // System.out.println("param:" + curParam.getName()
-                                // + " - estimatedSize:" + estimatedSize);
-
-                                if (estimatedSize > estimatedMaxRowSize) {
-                                    estimatedMaxRowSize = estimatedSize;
-                                }
-                            }
-                        }
-                    }
-                }
-                estimatedHeightSize += estimatedMaxRowSize;
-            }
-            // System.out.println("*** ESTIMATED SIZE:" + estimatedHeightSize + "
-            // ***");
-            int emptySpace = compositeHeight - estimatedHeightSize;
-            // System.out.println("--- EMPTY SPACE:" + emptySpace);
-            if (emptySpace > 0 && nbDynamic > 0) {
-                additionalHeightSize = emptySpace / nbDynamic;
-                // System.out.println("--- DIVIDED ADDITIONAL HEIGHT (for each
-                // dynamic):" + additionalHeightSize);
-            }
+        int additionalHeightSize = 0;
+        if (tabbedPropertyComposite != null && (!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
+            additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam, tabbedPropertyComposite);
         }
 
         for (int curRow = 1; curRow <= maxRow; curRow++) {
@@ -811,8 +763,69 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             heightSize += maxRowSize;
 
         }
-        // System.out.println("*** FINAL SIZE =" + heightSize + " ***");
         resizeScrolledComposite();
+    }
+
+    /**
+     * DOC nrousseau Comment method "estimatePropertyHeightSize".
+     * 
+     * @param maxRow
+     * @param listParam
+     * @param tabbedPropertyComposite
+     */
+    private int estimatePropertyHeightSize(int maxRow, List<? extends IElementParameter> listParam,
+            TabbedPropertyComposite tabbedPropertyComposite) {
+        int estimatedHeightSize = 0, estimatedMaxRowSize = 0;
+        int additionalHeightSize = 0;
+        int compositeHeight = tabbedPropertyComposite.getClientArea().height
+                - tabbedPropertyComposite.getTitle().computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
+        // System.out.println("size composite:" + compositeHeight);
+
+        int nbDynamic = 0;
+        for (int curRow = 1; curRow <= maxRow; curRow++) {
+            estimatedMaxRowSize = 0;
+            for (int i = 0; i < listParam.size(); i++) {
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getNumRow() == curRow && (curParam.getField() != EParameterFieldType.TECHNICAL)) {
+                        // System.out.println("test:" + curParam.getName() + "
+                        // field:"+curParam.getField());
+                        if (curParam.isShow(listParam)) {
+                            // System.out.println("show:" + curParam.getName()+
+                            // " field:"+curParam.getField());
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                                    this);
+
+                            if (controller == null) {
+                                break;
+                            }
+                            int estimatedSize = controller.estimateRowSize(composite, curParam);
+                            if (controller.hasDynamicRowSize()) {
+                                nbDynamic++;
+                            }
+                            // System.out.println("param:" + curParam.getName()
+                            // + " - estimatedSize:" + estimatedSize);
+
+                            if (estimatedSize > estimatedMaxRowSize) {
+                                estimatedMaxRowSize = estimatedSize;
+                            }
+                        }
+                    }
+                }
+            }
+            estimatedHeightSize += estimatedMaxRowSize;
+        }
+        // System.out.println("*** ESTIMATED SIZE:" + estimatedHeightSize + "
+        // ***");
+        int emptySpace = compositeHeight - estimatedHeightSize;
+        // System.out.println("--- EMPTY SPACE:" + emptySpace);
+        if (emptySpace > 0 && nbDynamic > 0) {
+            additionalHeightSize = emptySpace / nbDynamic;
+            // System.out.println("--- DIVIDED ADDITIONAL HEIGHT (for each
+            // dynamic):" + additionalHeightSize);
+        }
+        return additionalHeightSize;
     }
 
     private TabbedPropertyComposite getTabbedPropertyComposite() {
@@ -848,6 +861,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             tabbedPropertyComposite.getScrolledComposite().setMinSize(compositeSize);
             tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(false);
         }
+        propertyResized = true;
     }
 
     /*
@@ -891,7 +905,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(false));
             }
         }
-
         forceRedraw = false;
 
         for (int i = 0; i < listParam.size(); i++) {
@@ -905,7 +918,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
         }
-        composite.getParent().layout(true, true);
+        if (propertyResized) {
+            composite.getParent().layout(true, true);
+            propertyResized = false;
+        }
         checkErrorsWhenViewRefreshed = false;
     }
 
@@ -927,6 +943,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         }
         super.setInput(part, selection);
+        commandStackEventListener = null;
         Object input = ((IStructuredSelection) selection).getFirstElement();
         if (input instanceof NodeContainerPart) {
             NodeContainerPart nContainer = (NodeContainerPart) input;
@@ -1116,18 +1133,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                 public void stackChanged(CommandStackEvent event) {
                     int detail = event.getDetail();
-                    if (0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
-                        if (event.getCommand() instanceof IExtendedTableCommand) {
-
-                            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-                            PropertySheet sheet = (PropertySheet) view;
-                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-                            tabbedPropertySheetPage.refresh();
-
+                    if (lastPropertyUsed != null) {
+                        if ((elem instanceof org.talend.designer.core.ui.editor.connections.Connection)
+                                && (event.getCommand() instanceof ChangeMetadataCommand)) {
+                            lastPropertyUsed.addComponents(true);
+                            lastPropertyUsed.refresh();
+                        }
+                        if (0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
+                            if (event.getCommand() instanceof IExtendedTableCommand) {
+                                lastPropertyUsed.refresh();
+                            }
                         }
                     }
-
                 }
 
             };
