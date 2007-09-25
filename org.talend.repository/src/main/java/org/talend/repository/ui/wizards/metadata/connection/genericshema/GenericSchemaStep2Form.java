@@ -35,11 +35,12 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.formtools.Form;
-import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -56,6 +57,7 @@ import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.metadata.dialog.CustomTableManagerOnlyForGenericSchema;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
@@ -93,7 +95,11 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
     private LabelledText metadataCommentText;
 
-    private LabelledCheckboxCombo mappingTypeCheckBox;
+    private Label mappingTypeLabel;
+
+    private Button mappingTypeCheckBox;
+
+    private Combo mappingTypeCombo;
 
     private Dbms[] dbmsArray;
 
@@ -179,25 +185,34 @@ public class GenericSchemaStep2Form extends AbstractForm {
         metadataNameText.setText(metadataTable.getLabel());
         metadataCommentText.setText(metadataTable.getComment());
 
-        mappingTypeCheckBox.getCheckbox().setSelection(getConnection().isMappingTypeUsed());
+        boolean mappingTypeUsed = getConnection().isMappingTypeUsed();
+        mappingTypeCheckBox.setSelection(mappingTypeUsed);
 
         String mappingTypeId = getConnection().getMappingTypeId();
         String mappingTypeLabel = null;
         if (mappingTypeId != null) {
             mappingTypeLabel = getMappingTypeLabelById(mappingTypeId);
+            tableEditorView.getTable().getParent().dispose();
+            tableEditorView.setShowDbTypeColumn(true, false, true);
+            tableEditorView.setShowDbColumnName(true, true);
+            tableEditorView.setCurrentDbms(mappingTypeId);
+            tableEditorView.initGraphicComponents();
         } else {
             tableEditorView.getTable().getParent().dispose();
-
             tableEditorView.setShowDbTypeColumn(false, false, false);
             tableEditorView.setShowDbColumnName(false, false);
             tableEditorView.initGraphicComponents();
         }
 
-        mappingTypeCheckBox.getCombo().setText(mappingTypeLabel == null ? "" : mappingTypeLabel);
+        mappingTypeCombo.setText(mappingTypeLabel == null ? "" : mappingTypeLabel);
 
-        mappingTypeCheckBox.getCheckbox().setSelection(getConnection().isMappingTypeUsed());
         metadataEditor.setMetadataTable(metadataTable);
+
         tableEditorView.setMetadataEditor(metadataEditor);
+
+        // mappingTypeCheckBox.setSelection(mappingTypeUsed);
+        mappingTypeCombo.setEnabled(mappingTypeUsed);
+        CustomTableManagerOnlyForGenericSchema.addCustomManagementToTable(tableEditorView, false);
 
         tableEditorView.getTableViewerCreator().layout();
 
@@ -256,7 +271,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
         readOnly = isReadOnly();
         // guessButton.setEnabled(!isReadOnly());
         metadataNameText.setReadOnly(isReadOnly());
-        mappingTypeCheckBox.getCombo().setEnabled(isReadOnly());
+        // mappingTypeCombo.setEnabled(!isReadOnly());
         metadataCommentText.setReadOnly(isReadOnly());
         tableEditorView.setReadOnly(isReadOnly());
     }
@@ -274,8 +289,13 @@ public class GenericSchemaStep2Form extends AbstractForm {
         }
         Composite mappingTypeComposite = Form.startNewDimensionnedGridLayout(this, 3, WIDTH_GRIDDATA_PIXEL, 60);
 
-        mappingTypeCheckBox = new LabelledCheckboxCombo(mappingTypeComposite, "Mapping Type",
-                "Select the database mapping type", dbmsItems);
+        mappingTypeLabel = new Label(mappingTypeComposite, SWT.NONE);
+        mappingTypeLabel.setText("Select the database mapping type");
+
+        mappingTypeCheckBox = new Button(mappingTypeComposite, SWT.CHECK);
+
+        mappingTypeCombo = new Combo(mappingTypeComposite, SWT.NONE);
+        mappingTypeCombo.setItems(dbmsItems);
         groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280);
         compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
@@ -299,10 +319,10 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE);
 
-        tableEditorView.getTable().getParent().dispose();
-        tableEditorView.setShowDbTypeColumn(true, false, true);
-        tableEditorView.setShowDbColumnName(true, true);
-        tableEditorView.initGraphicComponents();
+        // tableEditorView.getTable().getParent().dispose();
+        // tableEditorView.setShowDbTypeColumn(true, false, true);
+        // tableEditorView.setShowDbColumnName(true, true);
+        // tableEditorView.initGraphicComponents();
 
         if (!isInWizard()) {
             // Bottom Button
@@ -351,26 +371,41 @@ public class GenericSchemaStep2Form extends AbstractForm {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (mappingTypeCheckBox.getCheckbox().getSelection()) {
+
+                boolean isMappingIdUsed = false;
+                if (mappingTypeCheckBox.getSelection()) {
+
                     tableEditorView.setShowDbTypeColumn(true, false, true);
                     tableEditorView.setShowDbColumnName(true, true);
 
                     getConnection().setMappingTypeUsed(true);
-                    mappingTypeCheckBox.getCombo().select(0);
-                    String mappingTypeValue = mappingTypeCheckBox.getCombo().getText();
+                    String mappingTypeId = mappingTypeCombo.getText().trim();
+                    isMappingIdUsed = mappingTypeId != null && mappingTypeId.length() > 0;
+                    if (isMappingIdUsed) {
+                        mappingTypeCombo.setText(mappingTypeId);
+                    } else {
+                        mappingTypeCombo.select(0);
+                        isMappingIdUsed = true;
+                    }
+                    String mappingTypeValue = mappingTypeCombo.getText();
                     getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeValue));
                     tableEditorView.setCurrentDbms(getMappingTypeIdByLabel(mappingTypeValue));
                 } else {
                     tableEditorView.setShowDbTypeColumn(false, false, false);
                     tableEditorView.setShowDbColumnName(false, false);
                     getConnection().setMappingTypeUsed(false);
-                    mappingTypeCheckBox.getCombo().select(0);
+                    mappingTypeCombo.setEnabled(false);
                     getConnection().setMappingTypeId(null);
                 }
                 if (tableEditorView.getMainComposite() != null && !tableEditorView.getMainComposite().isDisposed()) {
                     tableEditorView.getMainComposite().dispose();
                 }
+
                 tableEditorView.initGraphicComponents();
+
+                mappingTypeCombo.setEnabled(isMappingIdUsed);
+
+                CustomTableManagerOnlyForGenericSchema.addCustomManagementToTable(tableEditorView, false);
                 tableEditorView.setExtendedTableModel(metadataEditor);
                 tableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
                 compositeTable.layout();
@@ -379,22 +414,22 @@ public class GenericSchemaStep2Form extends AbstractForm {
             }
         });
 
-        mappingTypeCheckBox.getCombo().addSelectionListener(new SelectionAdapter() {
+        mappingTypeCombo.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 tableEditorView.setShowDbTypeColumn(true, false, true);
                 tableEditorView.setShowDbColumnName(true, true);
                 getConnection().setMappingTypeUsed(true);
-                getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeCheckBox.getCombo().getText()));
-                String mappingTypeValue = mappingTypeCheckBox.getCombo().getText();
-                getConnection().setMappingTypeId(getMappingTypeIdByLabel(mappingTypeValue));
-                tableEditorView.setCurrentDbms(getMappingTypeIdByLabel(mappingTypeValue));
+                String mappingTypeIdByLabel = getMappingTypeIdByLabel(mappingTypeCombo.getText());
+                getConnection().setMappingTypeId(mappingTypeIdByLabel);
+                tableEditorView.setCurrentDbms(mappingTypeIdByLabel);
 
                 if (tableEditorView.getMainComposite() != null && !tableEditorView.getMainComposite().isDisposed()) {
                     tableEditorView.getMainComposite().dispose();
                 }
                 tableEditorView.initGraphicComponents();
+                CustomTableManagerOnlyForGenericSchema.addCustomManagementToTable(tableEditorView, false);
                 tableEditorView.setExtendedTableModel(metadataEditor);
                 tableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
                 compositeTable.layout();
