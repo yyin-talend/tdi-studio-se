@@ -453,24 +453,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 }
             }
-            // if
-            // (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()))
-            // {
-            // param.setListItemsDisplayName(repositoryTableNameList);
-            // param.setListItemsValue(repositoryTableValueList);
-            // if (!repositoryTableMap.keySet().contains(param.getValue())) {
-            // List<String> list2 =
-            // tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-            // .getName()));
-            // boolean isNeeded = list2 != null && !list2.isEmpty();
-            // if (repositoryTableNameList.length > 0 &&
-            // repositoryConnectionValueList.length > 0 && isNeeded) {
-            // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-            // getDefaultRepository(
-            // true, repositoryConnectionValueList[0]));
-            // }
-            // }
-            // }
             if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
@@ -528,34 +510,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                     }
-                    // if (elem instanceof Node) {
-                    // if (("".equals(repositoryPropType) ||
-                    // !currentNodeUName.equals(((Node) elem).getUniqueName())))
-                    // {
-                    // getDefaultRepository(true, null);
-                    // } else {
-                    // if (!repositoryPropType.equals(elem
-                    // .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())))
-                    // {
-                    // if (repositoryTableNameList.length > 0) {
-                    // List<String> list2 = tablesMap.get(elem
-                    // .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                    // if (list2 != null && !list2.isEmpty()) {
-                    // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                    // getDefaultRepository(true, null));
-                    // }
-                    // }
-                    // if (repositoryQueryNameList.length > 0) {
-                    // List<String> list2 = queriesMap.get(elem
-                    // .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                    // if (list2 != null && !list2.isEmpty()) {
-                    // elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
-                    // getDefaultRepository(false, null));
-                    // }
-                    // }
-                    // }
-                    // }
-                    // }
 
                     repositoryConnectionNameList = (String[]) connectionNamesList.toArray(new String[0]);
                     repositoryConnectionValueList = (String[]) connectionValuesList.toArray(new String[0]);
@@ -663,12 +617,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 showPropertyRepositoryList(false);
             }
         }
-
-        /*
-         * oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()); if (oldPropertyType !=
-         * null) { if (oldPropertyType.equals(EmfComponent.REPOSITORY)) { showPropertyRepositoryList(true);
-         * updateRepositoryList(); } else { showPropertyRepositoryList(false); } }
-         */
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
@@ -910,12 +858,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      */
     public void createControls(final Composite parent, final TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
-
-        // ScrolledComposite scrolled = (ScrolledComposite) parent.getParent().getParent().getParent().getParent();
-        // for (Control control : scrolled.getChildren()) {
-        // control.dispose();
-        // }
-        // composite = this.getWidgetFactory().createComposite(scrolled);
         composite = parent;
 
         FormLayout layout = new FormLayout();
@@ -923,11 +865,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         layout.marginHeight = ITabbedPropertyConstants.VSPACE;
         layout.spacing = ITabbedPropertyConstants.VMARGIN + 1;
         composite.setLayout(layout);
-        // composite.getParent().getParent().setLayoutData(new FormData());
-
-        // composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        // GridData data = (GridData) composite.getLayoutData();
-        // data.grabExcessHorizontalSpace = false;
     }
 
     public void refresh() {
@@ -1012,25 +949,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if ((currentComponent == null) || (!currentComponent.equals(elem.getElementName()))) {
             forceRedraw = true;
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-            // addComponents(true);
-        } // else {
-        // if (!currentComponent.equals(elem.getElementName())) {
-        // addComponents(true);
-        // }
-        // // else { updateRepositoryList(); updateProcessList(); updateContextList(); refresh(); }
-        // }
-        currentComponent = elem.getElementName();
-
-        lastPropertyUsed = this;
-        TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
-        if (tabbedPropertyComposite != null) {
-            tabbedPropertyComposite.getScrolledComposite().setAlwaysShowScrollBars(true);
-            tabbedPropertyComposite.getScrolledComposite().getHorizontalBar().setVisible(false);
-            tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(false);
-            tabbedPropertyComposite.removeListener(SWT.Resize, REFRESH_LISTENER);
-
-            tabbedPropertyComposite.addListener(SWT.Resize, REFRESH_LISTENER);
         }
+        currentComponent = elem.getElementName();
     }
 
     private static final Listener REFRESH_LISTENER = new Listener() {
@@ -1057,10 +977,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (tabbedComposite != null) {
                         int currentSize = tabbedComposite.getClientArea().height;
                         if (lastPropertyUsed.getLastCompositeSize() != currentSize) {
-                            // System.out.println("resize : currentSize=" +
-                            // currentSize + " / lastCompositeSize="
-                            // + lastCompositeSize);
-
                             lastPropertyUsed.addComponents(true);
                             lastPropertyUsed.refresh();
                         }
@@ -1080,9 +996,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     public DynamicTabbedPropertySection(final EComponentCategory section) {
         super();
         this.section = section;
-        // currentLanguage = ((RepositoryContext)
-        // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-        // .getProject().getLanguage();
         repositoryQueryStoreMap = new HashMap<String, Query>();
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
         repositoryTableMap = new HashMap<String, IMetadataTable>();
@@ -1364,14 +1277,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#aboutToBeHidden()
+     * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#aboutToBeShown()
      */
     @Override
-    public void aboutToBeHidden() {
+    public void aboutToBeShown() {
+        lastPropertyUsed = this;
         TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
         if (tabbedPropertyComposite != null) {
-            tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(true);
+            tabbedPropertyComposite.getScrolledComposite().setAlwaysShowScrollBars(true);
+            tabbedPropertyComposite.getScrolledComposite().getHorizontalBar().setVisible(false);
+            tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(false);
             tabbedPropertyComposite.removeListener(SWT.Resize, REFRESH_LISTENER);
+
+            tabbedPropertyComposite.addListener(SWT.Resize, REFRESH_LISTENER);
         }
+        super.aboutToBeShown();
     }
 }
