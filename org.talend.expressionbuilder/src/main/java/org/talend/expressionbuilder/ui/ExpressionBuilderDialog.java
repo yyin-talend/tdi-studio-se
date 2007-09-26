@@ -27,6 +27,10 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -44,9 +48,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.IExpressionDataBean;
@@ -361,7 +372,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
             ExpressionPersistance persistance = ExpressionPersistance.getInstance();
             persistance.setOwnerId(bean.getOwnerId());
-            persistance.setPath(bean.getExpressionFilePath());
+            persistance.setPath(getExpressionStorePath());
             addVariables(persistance.loadExpression().getVariables());
         }
         open();
@@ -385,5 +396,25 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     public void addVariables(List<Variable> variables) {
         defaultVariables = variables;
+    }
+
+    /**
+     * yzhang Comment method "getPath".
+     * 
+     * @return
+     */
+    private String getExpressionStorePath() {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+        IProject p = root.getProject(project.getTechnicalLabel());
+        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        String jobName = null;
+        if (editor instanceof MultiPageTalendEditor) {
+            jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
+        }
+        IPath path = p.getLocation().append(jobName + ".xml");
+        return path.toOSString();
     }
 }

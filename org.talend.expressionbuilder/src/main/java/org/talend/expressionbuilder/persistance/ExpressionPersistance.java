@@ -64,12 +64,6 @@ public class ExpressionPersistance {
      * yzhang ExpressionPersistance constructor comment.
      */
     private ExpressionPersistance() {
-        resourceSet = new ResourceSetImpl();
-
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-                Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-
-        resourceSet.getPackageRegistry().put(ExpressionPackage.eNS_URI, ExpressionPackage.eINSTANCE);
     }
 
     /**
@@ -165,12 +159,15 @@ public class ExpressionPersistance {
      * @param expression
      */
     public void saveExpression(Expression expression) {
+
+        boolean fileExist = initContents();
+
         EMFExpression emfExpression = convert(expression);
         Resource resource = resourceSet.createResource(URI.createURI("http:///My.expression"));
 
         File file = new File(path);
 
-        if (this.contents != null) {
+        if (this.contents != null && fileExist) {
             for (EObject eObject : this.contents) {
                 if (eObject instanceof EMFExpression) {
                     if (((EMFExpression) eObject).getId().equals(this.ownerId)) {
@@ -203,6 +200,23 @@ public class ExpressionPersistance {
      */
     public Expression loadExpression() {
 
+        if (!initContents()) {
+            return new Expression();
+        }
+
+        for (EObject eObject : contents) {
+            if (eObject instanceof EMFExpression && ((EMFExpression) eObject).getId().equals(this.ownerId)) {
+                return convert((EMFExpression) eObject);
+            }
+        }
+        return new Expression();
+    }
+
+    /**
+     * yzhang Comment method "initContents".
+     */
+    private boolean initContents() {
+
         resourceSet = new ResourceSetImpl();
 
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
@@ -212,17 +226,12 @@ public class ExpressionPersistance {
 
         File file = new File(path);
         if (!file.exists()) {
-            return new Expression();
+            return false;
         }
         URI uri = URI.createFileURI(file.getAbsolutePath());
         Resource resource = resourceSet.getResource(uri, true);
         this.contents = resource.getContents();
-        for (EObject eObject : resource.getContents()) {
-            if (eObject instanceof EMFExpression && ((EMFExpression) eObject).getId().equals(this.ownerId)) {
-                return convert((EMFExpression) eObject);
-            }
-        }
-        return new Expression();
-    }
 
+        return true;
+    }
 }
