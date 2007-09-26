@@ -1,0 +1,18 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String groovyStart = ElementParameterParser.getValue(node, "__GROOVY_START__");
+groovyStart = groovyStart.replaceAll("\r\n",";");
+%>
+groovy.lang.GroovyShell shell_<%=cid%> = new groovy.lang.GroovyShell();
+shell_<%=cid%>.evaluate("<%=groovyStart%>");
+
