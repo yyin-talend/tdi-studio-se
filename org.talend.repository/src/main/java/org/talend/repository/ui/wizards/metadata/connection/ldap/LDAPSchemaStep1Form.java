@@ -45,6 +45,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.EEncryptionMethod;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
@@ -107,14 +108,14 @@ public class LDAPSchemaStep1Form extends AbstractForm {
 
         BaseWidgetUtils.createSpacer(composite, 1);
 
-        Group group = BaseWidgetUtils.createGroup(composite, "Network Parameter", 1);
+        Group group = BaseWidgetUtils.createGroup(composite, Messages.getString("LDAPSchemaStep1Form.NetWorkParameter"), 1); //$NON-NLS-1$
 
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group, 3, 1);
-        BaseWidgetUtils.createLabel(groupComposite, "Hostname:", 1);
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep1Form.HostName"), 1); //$NON-NLS-1$
         String[] hostHistory = new String[] {};
         hostCombo = BaseWidgetUtils.createCombo(groupComposite, hostHistory, -1, 2);
 
-        BaseWidgetUtils.createLabel(groupComposite, "Port:", 1);
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep1Form.Port"), 1); //$NON-NLS-1$
         String[] portHistory = new String[] {};
         portCombo = BaseWidgetUtils.createCombo(groupComposite, portHistory, -1, 2);
 
@@ -122,10 +123,10 @@ public class LDAPSchemaStep1Form extends AbstractForm {
                 EEncryptionMethod.SSL_ENCRYPTION_METHOD.getName(),
                 EEncryptionMethod.STARTTSL_EXTENSION_METHOD.getName() };
         int index = 0;
-        BaseWidgetUtils.createLabel(groupComposite, "Encryption method:", 1);
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep1Form.EncryptionMethod"), 1); //$NON-NLS-1$
         encryptionMethodCombo = BaseWidgetUtils.createReadonlyCombo(groupComposite, encMethods, index, 2);
         // BaseWidgetUtils.createSpacer(groupComposite, 1);
-        BaseWidgetUtils.createLabel(groupComposite, "                    Click the button below to check the connection.",
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep1Form.CheckConnection"), //$NON-NLS-1$
                 2);
 
         BaseWidgetUtils.createSpacer(groupComposite, 2);
@@ -134,7 +135,7 @@ public class LDAPSchemaStep1Form extends AbstractForm {
         gd.horizontalAlignment = SWT.RIGHT;
         gd.verticalAlignment = SWT.BOTTOM;
         checkConnectionButton.setLayoutData(gd);
-        checkConnectionButton.setText("Check Network Parameter");
+        checkConnectionButton.setText(Messages.getString("LDAPSchemaStep1Form.CheckNetWorkParameter")); //$NON-NLS-1$
 
         checkFieldsValue();
     }
@@ -212,11 +213,11 @@ public class LDAPSchemaStep1Form extends AbstractForm {
 
                 if (isOK) {
                     saveDialogSettings();
-                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Check Network Parameter",
+                    MessageDialog.openInformation(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
                             "The connection succeeded.");
                     updateStatus(IStatus.OK, null);
                 } else {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Check Network Parameter",
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("LDAPSchemaStep1Form.CheckNetWorkParameter"), //$NON-NLS-1$
                             "The connection failed.");
                     updateStatus(IStatus.ERROR, null);
                 }

@@ -125,7 +125,7 @@ public class InputDataMapTableView extends DataMapTableView {
         final TableViewerCreatorColumn columnOperator = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         columnOperator.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Operator"));
         columnOperator.setId(DataMapTableView.ID_OPERATOR);
-        columnOperator.setToolTipHeader("Operator");
+        columnOperator.setToolTipHeader(Messages.getString("InputDataMapTableView.Operator")); //$NON-NLS-1$
         columnOperator.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
 
             public String get(InputColumnTableEntry bean) {

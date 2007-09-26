@@ -171,7 +171,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         ldapSchemaWizardPage4 = null;
 
         if (creation) {
-            setWindowTitle("Create new LDAP schema");// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate")); //$NON-NLS-1$
             // //$NON-NLS-1$
             ldapSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), creation);
@@ -212,7 +212,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else {
 
-            setWindowTitle("Update LDAP schema");// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate")); //$NON-NLS-1$
             // //$NON-NLS-1$
 
             ldapSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,

@@ -223,7 +223,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
     protected void createOptions(Composite optionsGroup, Font font) {
         // create directory structure radios
         shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        shellLauncherButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.shellLauncher")); //$NON-NLS-1$
+        shellLauncherButton.setText(Messages.getString("SpagicDeployWizardPage.shellLauncher")); //$NON-NLS-1$
         shellLauncherButton.setSelection(true);
         shellLauncherButton.setFont(font);
 
@@ -236,12 +236,12 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
         // create directory structure radios
         systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        systemRoutineButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.systemRoutines")); //$NON-NLS-1$
+        systemRoutineButton.setText(Messages.getString("SpagicDeployWizardPage.systemRoutines")); //$NON-NLS-1$
         systemRoutineButton.setSelection(true);
         systemRoutineButton.setFont(font);
 
         userRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        userRoutineButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
+        userRoutineButton.setText(Messages.getString("SpagicDeployWizardPage.userRoutines")); //$NON-NLS-1$
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
         gd = new GridData();
@@ -249,8 +249,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         userRoutineButton.setLayoutData(gd);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        modelButton
-                .setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.requiredTalendPerlModules")); //$NON-NLS-1$
+        modelButton.setText(Messages.getString("SpagicDeployWizardPage.requiredTalendPerlModules")); //$NON-NLS-1$
         modelButton.setSelection(true);
         modelButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -258,7 +257,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         modelButton.setLayoutData(gd);
 
         jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
+        jobButton.setText(Messages.getString("SpagicDeployWizardPage.jobPerlScripts")); //$NON-NLS-1$
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -266,7 +265,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         jobButton.setLayoutData(gd);
 
         sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        sourceButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+        sourceButton.setText(Messages.getString("SpagicDeployWizardPage.sourceFiles")); //$NON-NLS-1$
         sourceButton.setSelection(true);
         sourceButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -274,14 +273,14 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         sourceButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        contextButton.setText(org.talend.repository.i18n.Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
+        contextButton.setText(Messages.getString("SpagicDeployWizardPage.contextPerlScripts")); //$NON-NLS-1$
         contextButton.setSelection(true);
         contextButton.setFont(font);
 
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        applyToChildrenButton.setText("Apply to children");
+        applyToChildrenButton.setText(Messages.getString("SpagicDeployWizardPage.ApplyToChildren"));
         applyToChildrenButton.setSelection(true);
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
@@ -394,8 +393,8 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         }
         if (!canExport) {
             MessageDialog.openInformation(getContainer().getShell(), Messages
-                    .getString("JobScriptsExportWizardPage.exportResourceError"), //$NON-NLS-1$
-                    Messages.getString("JobScriptsExportWizardPage.chooseResource")); //$NON-NLS-1$
+                    .getString("SpagicDeployWizardPage.exportResourceError"), //$NON-NLS-1$
+                    Messages.getString("SpagicDeployWizardPage.chooseResource")); //$NON-NLS-1$
             return false;
         }
 

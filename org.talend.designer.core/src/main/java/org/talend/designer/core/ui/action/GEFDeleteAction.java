@@ -31,6 +31,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
@@ -85,7 +86,7 @@ public class GEFDeleteAction extends DeleteAction {
 
         if (others.size() == 0) { // so notes & nodes only
             CompoundCommand cpdCmd = new CompoundCommand();
-            cpdCmd.setLabel("Delete items");
+            cpdCmd.setLabel(Messages.getString("GEFDeleteAction.DeleteItems")); //$NON-NLS-1$
             if (nodeParts.size() != 0) {
                 GroupRequest deleteReq = new GroupRequest(RequestConstants.REQ_DELETE);
                 deleteReq.setEditParts(nodeParts);

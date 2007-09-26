@@ -157,10 +157,10 @@ public class CategoryComposite extends Composite {
         docComposite.setLayout(docLayout);
 
         Label docLabel = new Label(docComposite, SWT.NONE);
-        docLabel.setText("Help");
+        docLabel.setText(Messages.getString("CategoryComposite.Help")); //$NON-NLS-1$
 
         final Browser docDisplayer = new Browser(docComposite, SWT.BORDER);
-        docDisplayer.setText("Please select a category and function.");
+        docDisplayer.setText(Messages.getString("CategoryComposite.SelectCategoryAndFunction")); //$NON-NLS-1$
         docDisplayer.setLayoutData(new GridData(GridData.FILL_BOTH));
         sashForm.setWeights(new int[] { 2, 1 });
 

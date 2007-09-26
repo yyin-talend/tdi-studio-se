@@ -46,6 +46,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -66,7 +67,7 @@ public class MergeOrderDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setSize(new Point(300, 400));
-        newShell.setText(mergeNode.getUniqueName() + " - Modify the merge order");
+        newShell.setText(mergeNode.getUniqueName() + Messages.getString("MergeOrderDialog.ModifyMergeOrder")); //$NON-NLS-1$
     }
 
     private List<Connection> connectionList;
@@ -111,10 +112,10 @@ public class MergeOrderDialog extends Dialog {
                 | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Order");
+        column.setTitle(Messages.getString("MergeOrderDialog.Order")); //$NON-NLS-1$
         column.setModifiable(true);
         column.setWidth(50);
-        column.setToolTipHeader("Current order for the connection");
+        column.setToolTipHeader(Messages.getString("MergeOrderDialog.CurrentOrderConnection")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Connection, String>() {
 
             public String get(Connection bean) {
@@ -145,7 +146,7 @@ public class MergeOrderDialog extends Dialog {
         buttonComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 
         Button moveUp = new Button(buttonComposite, SWT.PUSH);
-        moveUp.setToolTipText("Move Up");
+        moveUp.setToolTipText(Messages.getString("MergeOrderDialog.MoveUp")); //$NON-NLS-1$
         moveUp.setImage(ImageProvider.getImage(EImage.UP_ICON));
 
         moveUp.addListener(SWT.Selection, new Listener() {
@@ -164,7 +165,7 @@ public class MergeOrderDialog extends Dialog {
         });
 
         Button moveDown = new Button(buttonComposite, SWT.PUSH);
-        moveDown.setToolTipText("Move Down");
+        moveDown.setToolTipText(Messages.getString("MergeOrderDialog.MoveDown")); //$NON-NLS-1$
         moveDown.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
 
         final int nbConn = mergeNode.getIncomingConnections(EConnectionType.FLOW_MERGE).size();

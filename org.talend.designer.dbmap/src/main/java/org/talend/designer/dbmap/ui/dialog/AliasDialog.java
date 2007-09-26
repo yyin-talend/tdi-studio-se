@@ -272,7 +272,7 @@ public class AliasDialog {
             // create message
             
             Label label = new Label(composite, SWT.WRAP);
-            label.setText("Select the Table to use :");
+            label.setText(Messages.getString("AliasDialog.SelectTableToUse")); //$NON-NLS-1$
 
             combo = new Combo((Composite) composite, SWT.DROP_DOWN | SWT.READ_ONLY);
             combo.setItems(physicalTables);

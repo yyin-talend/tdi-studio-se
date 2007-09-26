@@ -137,7 +137,7 @@ public class BuildInDBStructure extends SashForm {
 		Tree tree = treeViewer.getTree();
 		tree.setHeaderVisible(true);
 		TreeColumn treeColumn = new TreeColumn(tree, SWT.LEFT);
-		treeColumn.setText("Current Schema");
+		treeColumn.setText(Messages.getString("BuildInDBStructure.CurrentSchema")); //$NON-NLS-1$
 		treeColumn.setWidth(300);
 		SchemaTreePrivder schemaTreePrivder = new SchemaTreePrivder();
 		treeViewer.setContentProvider(schemaTreePrivder);

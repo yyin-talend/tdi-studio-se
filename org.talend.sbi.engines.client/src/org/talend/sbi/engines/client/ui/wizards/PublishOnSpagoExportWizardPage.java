@@ -258,7 +258,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         // displayErrorDialog(e.getMessage());
         // }
 
-        serverSpagoBi = new LabelledCombo(optionsGroup, "Serveur SpagoBI", "specify your server to publish your job", listEngine);
+        serverSpagoBi = new LabelledCombo(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.SpagoBI.Server"), Messages.getString("PublishOnSpagoExportWizardPage.SpecifyServer.PublishJob"), listEngine); //$NON-NLS-1$ //$NON-NLS-2$
         serverSpagoBi.select(0);
 
         jobLabel = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobLabel"), true);

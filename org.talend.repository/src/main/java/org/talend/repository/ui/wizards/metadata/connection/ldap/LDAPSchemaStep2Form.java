@@ -51,6 +51,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.EAliasesDereference;
 import org.talend.repository.model.EAuthenticationMethod;
 import org.talend.repository.model.EReferrals;
@@ -164,20 +165,20 @@ public class LDAPSchemaStep2Form extends AbstractForm {
     private void addAuthParameterInput(Composite inputComposite) {
         Composite composite2 = BaseWidgetUtils.createColumnContainer(inputComposite, 1, 1);
         // composite2.setEnabled(false);
-        authParamGroup = BaseWidgetUtils.createGroup(composite2, "Authentication Parameter", 1);
+        authParamGroup = BaseWidgetUtils.createGroup(composite2, Messages.getString("LDAPSchemaStep2Form.AuthenticationParameter"), 1); //$NON-NLS-1$
         Composite composite = BaseWidgetUtils.createColumnContainer(authParamGroup, 3, 1);
 
         // composite.setEnabled(false);
-        BaseWidgetUtils.createLabel(composite, "Bind DN or user:", 1);
+        BaseWidgetUtils.createLabel(composite, Messages.getString("LDAPSchemaStep2Form.BindDnOrUser"), 1); //$NON-NLS-1$
         // String[] dnHistory = HistoryUtils.load(ConnectionUIConstants.DIALOGSETTING_KEY_PRINCIPAL_HISTORY);
         String[] dnHistory = new String[] {};
         bindPrincipalCombo = BaseWidgetUtils.createCombo(composite, dnHistory, -1, 2);
 
-        BaseWidgetUtils.createLabel(composite, "Bind password:", 1);
+        BaseWidgetUtils.createLabel(composite, Messages.getString("LDAPSchemaStep2Form.BindPassword"), 1); //$NON-NLS-1$
         bindPasswordText = BaseWidgetUtils.createPasswordText(composite, "", 2);
 
         BaseWidgetUtils.createSpacer(composite, 1);
-        saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite, "Save password", 1);
+        saveBindPasswordButton = BaseWidgetUtils.createCheckbox(composite, Messages.getString("LDAPSchemaStep2Form.SavePassword"), 1); //$NON-NLS-1$
         saveBindPasswordButton.setSelection(true);
         saveBindPasswordButton.setEnabled(true);
 
@@ -185,7 +186,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalAlignment = SWT.RIGHT;
         checkPrincipalPasswordAuthButton.setLayoutData(gd);
-        checkPrincipalPasswordAuthButton.setText("Check Authentication");
+        checkPrincipalPasswordAuthButton.setText(Messages.getString("LDAPSchemaStep2Form.CheckAuthentication")); //$NON-NLS-1$
         checkPrincipalPasswordAuthButton.setEnabled(true);
     }
 
@@ -195,7 +196,7 @@ public class LDAPSchemaStep2Form extends AbstractForm {
     private void addAuthMethodInput(Composite composite) {
         Composite composite1 = BaseWidgetUtils.createColumnContainer(composite, 1, 1);
 
-        Group group1 = BaseWidgetUtils.createGroup(composite1, "Authentication Method", 1);
+        Group group1 = BaseWidgetUtils.createGroup(composite1, Messages.getString("LDAPSchemaStep2Form.AuthenticationMethod"), 1); //$NON-NLS-1$
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group1, 1, 1);
 
         String[] authMethods = new String[] { EAuthenticationMethod.ANONYMOUS.getName(),
@@ -212,21 +213,21 @@ public class LDAPSchemaStep2Form extends AbstractForm {
     private void addBaseDNInput(Composite parent) {
         Composite composite = BaseWidgetUtils.createColumnContainer(parent, 1, 1);
 
-        Group group = BaseWidgetUtils.createGroup(composite, "Base DN", 1);
+        Group group = BaseWidgetUtils.createGroup(composite, Messages.getString("LDAPSchemaStep2Form.BaseDN"), 1); //$NON-NLS-1$
         Composite groupComposite = BaseWidgetUtils.createColumnContainer(group, 3, 1);
         GridData gd;
 
-        autoFetchBaseDnsButton = BaseWidgetUtils.createCheckbox(groupComposite, "Get base DNs from Root DSE", 2);
+        autoFetchBaseDnsButton = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("LDAPSchemaStep2Form.GetBaseDNS"), 2); //$NON-NLS-1$
         autoFetchBaseDnsButton.setSelection(true);
 
         fetchBaseDnsButton = new Button(groupComposite, SWT.PUSH);
-        fetchBaseDnsButton.setText("Fetch Base DNs");
+        fetchBaseDnsButton.setText(Messages.getString("LDAPSchemaStep2Form.FetchBaseDNs")); //$NON-NLS-1$
         fetchBaseDnsButton.setEnabled(true);
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         fetchBaseDnsButton.setLayoutData(gd);
 
-        BaseWidgetUtils.createLabel(groupComposite, "Base DN:", 1);
+        BaseWidgetUtils.createLabel(groupComposite, Messages.getString("LDAPSchemaStep2Form.Base.DN"), 1); //$NON-NLS-1$
         baseDNCombo = BaseWidgetUtils.createCombo(groupComposite, new String[0], 0, 2);
     }
 

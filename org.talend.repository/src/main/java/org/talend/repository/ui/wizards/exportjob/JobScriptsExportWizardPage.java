@@ -293,7 +293,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        applyToChildrenButton.setText("Apply to children");
+        applyToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyToChildren")); //$NON-NLS-1$
         applyToChildrenButton.setSelection(true);
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$

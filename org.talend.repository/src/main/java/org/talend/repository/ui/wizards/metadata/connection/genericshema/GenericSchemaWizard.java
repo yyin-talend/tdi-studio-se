@@ -155,7 +155,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
         genericSchemaWizardPage1 = null;
 
         if (creation) {
-            setWindowTitle("Create new generic schema");// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate")); //$NON-NLS-1$
             // //$NON-NLS-1$
             genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), creation);
@@ -166,7 +166,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
             genericSchemaWizardPage1 = new GenericSchemaWizardPage(2, connectionItem, isRepositoryObjectEditable(),
                     null);
-            genericSchemaWizardPage1.setTitle("Create new generic schema" // Messages.getString("FileWizardPage.titleCreate")
+            genericSchemaWizardPage1.setTitle(Messages.getString("GenericSchemaWizard.CreateNewGenericSchema") // Messages.getString("FileWizardPage.titleCreate") //$NON-NLS-1$
                     // + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("FileWizardPage.of") + " 2"); //$NON-NLS-1$ //$NON-NLS-2$
             genericSchemaWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
@@ -176,7 +176,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
 
         } else if (this.isSinglePageOnly == false) {
 
-            setWindowTitle("Update generic schema");// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.UpdateGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate")); //$NON-NLS-1$
             // //$NON-NLS-1$
             
             genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
@@ -197,7 +197,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             genericSchemaWizardPage0.setPageComplete(true);
             genericSchemaWizardPage1.setPageComplete(isRepositoryObjectEditable());
         } else {
-            setWindowTitle("Save as generic schema");// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("GenericSchemaWizard.SaveAsGenericSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate")); //$NON-NLS-1$
             // //$NON-NLS-1$
             genericSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), true);

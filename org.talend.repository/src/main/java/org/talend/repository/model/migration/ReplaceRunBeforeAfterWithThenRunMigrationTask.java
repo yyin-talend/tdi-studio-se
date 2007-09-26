@@ -38,6 +38,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -98,9 +99,9 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractMigra
 
                     ConnectionType currentConnection = (ConnectionType) o;
 
-                    if (currentConnection.getLabel().equals("RunAfter")) {
+                    if (currentConnection.getLabel().equals(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.RunAfter"))) { //$NON-NLS-1$
 
-                        currentConnection.setLabel("ThenRun");
+                        currentConnection.setLabel(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.ThenRun")); //$NON-NLS-1$
                         currentConnection.setLineStyle(EConnectionType.THEN_RUN.getId());
 
                         String sourceKey = currentConnection.getSource();
@@ -114,9 +115,9 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractMigra
 
                         modified = true;
 
-                    } else if (currentConnection.getLabel().equals("RunBefore")) {
+                    } else if (currentConnection.getLabel().equals(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.RunBefore"))) { //$NON-NLS-1$
 
-                        currentConnection.setLabel("ThenRun");
+                        currentConnection.setLabel(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.ThenRun")); //$NON-NLS-1$
                         String target = currentConnection.getTarget();
                         currentConnection.setTarget(currentConnection.getSource());
                         currentConnection.setSource(target);
@@ -181,7 +182,7 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractMigra
         Map<String, Integer> map = new HashMap<String, Integer>();
         for (ConnectionType conn : connections) {
 
-            if (conn.getLabel().equals("RunAfter") || conn.getLabel().equals("RunBefore")) {
+            if (conn.getLabel().equals(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.RunAfter")) || conn.getLabel().equals(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.RunBefore"))) { //$NON-NLS-1$ //$NON-NLS-2$
                 if (map.containsKey(conn.getTarget())) {
                     int i = map.get(conn.getTarget());
                     map.put(conn.getTarget(), ++i);

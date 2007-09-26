@@ -290,7 +290,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
         Composite mappingTypeComposite = Form.startNewDimensionnedGridLayout(this, 3, WIDTH_GRIDDATA_PIXEL, 60);
 
         mappingTypeLabel = new Label(mappingTypeComposite, SWT.NONE);
-        mappingTypeLabel.setText("Select the database mapping type");
+        mappingTypeLabel.setText(Messages.getString("GenericSchemaStep2Form.SelectDatabaseType")); //$NON-NLS-1$
 
         mappingTypeCheckBox = new Button(mappingTypeComposite, SWT.CHECK);
 
