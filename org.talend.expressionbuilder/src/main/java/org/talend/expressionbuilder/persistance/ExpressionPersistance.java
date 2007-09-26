@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -55,7 +56,9 @@ public class ExpressionPersistance {
 
     private String path;
 
-    private final ResourceSet resourceSet;
+    private ResourceSet resourceSet;
+
+    private EList<EObject> contents;
 
     /**
      * yzhang ExpressionPersistance constructor comment.
@@ -167,7 +170,21 @@ public class ExpressionPersistance {
 
         File file = new File(path);
 
-        resource.getContents().add(emfExpression);
+        if (this.contents != null) {
+            for (EObject eObject : this.contents) {
+                if (eObject instanceof EMFExpression) {
+                    if (((EMFExpression) eObject).getId().equals(this.ownerId)) {
+                        this.contents.remove(eObject);
+                        break;
+                    }
+                }
+            }
+            this.contents.add(emfExpression);
+            resource.getContents().addAll(this.contents);
+        } else {
+            resource.getContents().add(emfExpression);
+        }
+
         try {
             if (!file.exists()) {
                 file.createNewFile();
@@ -184,20 +201,28 @@ public class ExpressionPersistance {
      * 
      * @return
      */
-    public List<Expression> loadExpression() {
-        List<Expression> expressionList = new ArrayList<Expression>();
+    public Expression loadExpression() {
+
+        resourceSet = new ResourceSetImpl();
+
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+                Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+
+        resourceSet.getPackageRegistry().put(ExpressionPackage.eNS_URI, ExpressionPackage.eINSTANCE);
+
         File file = new File(path);
         if (!file.exists()) {
-            return expressionList;
+            return new Expression();
         }
         URI uri = URI.createFileURI(file.getAbsolutePath());
         Resource resource = resourceSet.getResource(uri, true);
+        this.contents = resource.getContents();
         for (EObject eObject : resource.getContents()) {
-            if (eObject instanceof EMFExpression) {
-                expressionList.add(convert((EMFExpression) eObject));
+            if (eObject instanceof EMFExpression && ((EMFExpression) eObject).getId().equals(this.ownerId)) {
+                return convert((EMFExpression) eObject);
             }
         }
-        return expressionList;
+        return new Expression();
     }
 
 }

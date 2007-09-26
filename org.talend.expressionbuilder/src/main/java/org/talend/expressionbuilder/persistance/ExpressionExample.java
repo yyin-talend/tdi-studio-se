@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.talend.core.model.expression.EMFExpression;
+import org.talend.core.model.expression.EMFVariable;
 import org.talend.core.model.expression.ExpressionFactory;
 import org.talend.core.model.expression.ExpressionPackage;
 
@@ -70,6 +71,13 @@ public class ExpressionExample {
             try {
                 Resource resource = resourceSet.createResource(URI.createURI("http:///My.expression"));
                 EMFExpression root = ExpressionFactory.eINSTANCE.createEMFExpression();
+                EMFVariable var1 = ExpressionFactory.eINSTANCE.createEMFVariable();
+                root.setExpression("expression");
+                root.setId("expression_id");
+
+                var1.setName("name01");
+                var1.setValue("value01");
+                root.getVariables().add(var1);
                 resource.getContents().add(root);
                 resource.save(System.out, null);
             } catch (IOException exception) {

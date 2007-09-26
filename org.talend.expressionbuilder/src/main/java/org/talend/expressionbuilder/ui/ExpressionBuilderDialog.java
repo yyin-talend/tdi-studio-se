@@ -53,6 +53,7 @@ import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
 import org.talend.expressionbuilder.persistance.ExpressionPersistance;
+import org.talend.expressionbuilder.test.shadow.Expression;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.xml.sax.SAXException;
 
@@ -339,8 +340,10 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     protected void okPressed() {
 
         consumer.setVariables(testComposite.getVariableList());
-
         consumer.setConsumerExpression(expressionComposite.getExpression() + " ");
+
+        ExpressionPersistance.getInstance().saveExpression(
+                new Expression(expressionComposite.getExpression(), testComposite.getVariableList()));
 
         super.okPressed();
     }
@@ -355,9 +358,11 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
             IExpressionDataBean bean = (IExpressionDataBean) obj;
             setDefaultExpression(bean.getExpression());
             addVariables(bean.getVariables());
+
             ExpressionPersistance persistance = ExpressionPersistance.getInstance();
             persistance.setOwnerId(bean.getOwnerId());
-
+            persistance.setPath(bean.getExpressionFilePath());
+            addVariables(persistance.loadExpression().getVariables());
         }
         open();
         setBlockOnOpen(true);
