@@ -148,6 +148,21 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
 
+                IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY);
+                Project project = repositoryContext.getProject();
+                IProject p = root.getProject(project.getTechnicalLabel());
+                IEditorPart editor2 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .getActiveEditor();
+                String jobName = null;
+                if (editor2 instanceof MultiPageTalendEditor) {
+                    jobName = ((MultiPageTalendEditor) editor2).getTalendEditor().getCurrentJobResource().getJobName();
+                }
+                IPath path = p.getLocation().append(jobName + ".xml");
+
+                cellEditor.setPath(path.toOSString());
+
                 return bean.getValue();
             }
 
@@ -176,19 +191,6 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         behavior.setCellEditorDialog(dialog);
         cellEditor.setCellEditorBehavior(behavior);
 
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-        IProject p = root.getProject(project.getLabel());
-        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        String jobName = null;
-        if (editor instanceof MultiPageTalendEditor) {
-            jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
-        }
-        IPath path = p.getLocation().append(jobName + ".xml");
-
-        cellEditor.setPath(path.toOSString());
         cellEditor.init();
         cellEditor.setContentProposalProvider(getProcessProposals());
         column.setCellEditor(cellEditor);
