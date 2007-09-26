@@ -23,6 +23,11 @@ package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.EditPart;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -37,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
@@ -46,8 +52,13 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.process.INode;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.rowgenerator.data.Function;
@@ -87,7 +98,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
     }
 
     @Override
-    protected void createColumns(TableViewerCreator<Parameter> tableViewerCreator, Table table) {
+    protected void createColumns(TableViewerCreator<Parameter> tableViewerCreator, final Table table) {
         this.tableViewerCreator = tableViewerCreator;
 
         IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
@@ -121,6 +132,22 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
+                StringBuffer id = new StringBuffer();
+
+                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .getActiveEditor();
+                Object obj = ((MultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(
+                        0);
+                EditPart editorPart = (EditPart) obj;
+                id.append(((INode) editorPart.getModel()).getLabel() + "=>");
+
+                TableItem[] item = rowGenTableEditor2.getTable().getSelection();
+                if (item.length == 1) {
+                    id.append(((MetadataColumnExt) item[0].getData()).getLabel() + "=>");
+                }
+
+                cellEditor.setOwnerId(id.append(bean.getName()).toString());
+
                 return bean.getValue();
             }
 
@@ -148,6 +175,20 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
         behavior.setCellEditorDialog(dialog);
         cellEditor.setCellEditorBehavior(behavior);
+
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+        IProject p = root.getProject(project.getLabel());
+        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        String jobName = null;
+        if (editor instanceof MultiPageTalendEditor) {
+            jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
+        }
+        IPath path = p.getLocation().append(jobName + ".xml");
+
+        cellEditor.setPath(path.toOSString());
         cellEditor.init();
         cellEditor.setContentProposalProvider(getProcessProposals());
         column.setCellEditor(cellEditor);

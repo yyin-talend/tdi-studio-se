@@ -1,12 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RowGenerator component Plug-in
-Bundle-SymbolicName: org.talend.designer.rowgenerator; singleton:=true
+Bundle-SymbolicName: org.talend.designer.rowgenerator;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.rowgenerator.RowGeneratorPlugin
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Eclipse-LazyStart: true
+Export-Package: org.talend.designer.rowgenerator,
+ org.talend.designer.rowgenerator.data,
+ org.talend.designer.rowgenerator.managers,
+ org.talend.designer.rowgenerator.shadow,
+ org.talend.designer.rowgenerator.ui.editor
+Require-Bundle: org.eclipse.gef,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.libraries,
  org.talend.commons,
@@ -14,9 +21,3 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.talend.designer.codegen,
  org.talend.designer.core
-Eclipse-LazyStart: true
-Export-Package: org.talend.designer.rowgenerator,
- org.talend.designer.rowgenerator.data,
- org.talend.designer.rowgenerator.managers,
- org.talend.designer.rowgenerator.shadow,
- org.talend.designer.rowgenerator.ui.editor
