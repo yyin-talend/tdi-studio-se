@@ -24,10 +24,6 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalListener;
@@ -114,10 +110,7 @@ import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
@@ -132,7 +125,6 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.DataMapTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
@@ -1438,8 +1430,10 @@ public abstract class DataMapTableView extends Composite {
         TableItem[] items = tableViewerCreator.getTable().getSelection();
         if (items.length == 1) {
             TableItem item = items[0];
-            DataMapTableEntry entry = (DataMapTableEntry) item.getData();
-            id.append(entry.getExpression());
+            AbstractInOutTableEntry entry = (AbstractInOutTableEntry) item.getData();
+            id.append(entry.getParent().getName()+"=>");
+            id.append(entry.getMetadataColumn().getLabel());
+            
         }
 
         cellEditor.setOwnerId(id.toString());
@@ -1480,21 +1474,6 @@ public abstract class DataMapTableView extends Composite {
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
         behavior.setCellEditorDialog(dialog);
         cellEditor.setCellEditorBehavior(behavior);
-
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-        IProject p = root.getProject(project.getTechnicalLabel());
-        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        String jobName = null;
-        if (editor instanceof MultiPageTalendEditor) {
-            jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
-        }
-        IPath path = p.getLocation().append(jobName + ".xml");
-
-        cellEditor.setPath(path.toOSString());
-
         cellEditor.init();
 
         final Text expressionTextEditor = cellEditor.getTextControl();
