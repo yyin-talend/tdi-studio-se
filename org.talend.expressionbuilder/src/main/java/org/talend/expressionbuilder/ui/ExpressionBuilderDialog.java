@@ -23,6 +23,7 @@ package org.talend.expressionbuilder.ui;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -366,14 +367,31 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      */
     public void openDialog(Object obj) {
         if (obj instanceof IExpressionDataBean) {
+
+            List<Variable> vars = new ArrayList<Variable>();
             IExpressionDataBean bean = (IExpressionDataBean) obj;
             setDefaultExpression(bean.getExpression());
-            addVariables(bean.getVariables());
+            if (bean.getVariables() != null) {
+                vars.addAll(bean.getVariables());
+            }
 
             ExpressionPersistance persistance = ExpressionPersistance.getInstance();
             persistance.setOwnerId(bean.getOwnerId());
             persistance.setPath(getExpressionStorePath());
-            addVariables(persistance.loadExpression().getVariables());
+            for (Variable var1 : persistance.loadExpression().getVariables()) {
+                boolean needAdd = true;
+                for (Variable var2 : vars) {
+                    if (var1.getName().equals(var2.getName())) {
+                        needAdd = false;
+                        break;
+                    }
+                }
+                if (needAdd) {
+                    vars.add(var1);
+                }
+            }
+
+            addVariables(vars);
         }
         open();
         setBlockOnOpen(true);
@@ -409,6 +427,15 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
+        // IFolder folder = p.getFolder("configuration");
+        // if (!folder.exists()) {
+        // try {
+        // folder.create(true, false, null);
+        // } catch (CoreException e) {
+        // RuntimeExceptionHandler.process(e);
+        // }
+        // }
+
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         String jobName = null;
         if (editor instanceof MultiPageTalendEditor) {
