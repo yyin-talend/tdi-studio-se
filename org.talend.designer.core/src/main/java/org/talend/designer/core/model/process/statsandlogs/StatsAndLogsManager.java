@@ -239,6 +239,7 @@ public class StatsAndLogsManager {
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
                     table.setTableName(LOG_UNIQUE_NAME);
+                    table.setAttachedConnector(currentParam.getContext());
                     logsNode.getMetadataList().add(table);
                 }
                 found = true;
@@ -267,6 +268,7 @@ public class StatsAndLogsManager {
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
                     table.setTableName(STAT_UNIQUE_NAME);
+                    table.setAttachedConnector(currentParam.getContext());
                     statsNode.getMetadataList().add(table);
                 }
                 found = true;
@@ -295,6 +297,7 @@ public class StatsAndLogsManager {
                 if (value instanceof IMetadataTable) {
                     IMetadataTable table = ((IMetadataTable) value).clone();
                     table.setTableName(METER_UNIQUE_NAME);
+                    table.setAttachedConnector(currentParam.getContext());
                     statsNode.getMetadataList().add(table);
                 }
                 found = true;
