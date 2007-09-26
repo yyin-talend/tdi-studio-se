@@ -235,18 +235,20 @@ public class ChangeMetadataCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
-        if (currentTab == null) {
-            return;
-        }
-        ISection[] sections = currentTab.getSections();
         final List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldTable, newTable);
-        for (int i = 0; i < sections.length; i++) {
-            if (sections[i] instanceof DynamicTabbedPropertySection) {
-                DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
-                if (currentSection.getElement().equals(node)) {
-                    currentSection.refresh();
+        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+            Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
+            if (currentTab == null) {
+                return;
+            }
+            ISection[] sections = currentTab.getSections();
+            for (int i = 0; i < sections.length; i++) {
+                if (sections[i] instanceof DynamicTabbedPropertySection) {
+                    DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
+                    if (currentSection.getElement().equals(node)) {
+                        currentSection.refresh();
+                    }
                 }
             }
         }
