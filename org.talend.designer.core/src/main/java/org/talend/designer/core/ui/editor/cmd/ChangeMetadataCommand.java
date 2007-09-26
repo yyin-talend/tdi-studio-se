@@ -415,8 +415,7 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)
-                && (schemaParam == null || !schemaParam.isReadOnly())) {
+        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
             MetadataTool.copyTable(newOutputMetadata, currentOutputMetadata);
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -427,10 +426,8 @@ public class ChangeMetadataCommand extends Command {
         }
 
         for (INodeConnector connector : node.getListConnector()) {
-            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)
-                    && (!node.getSchemaParameterFromConnector(connector.getName()).isReadOnly())) {
-                // if there is some other schema dependant of this one, modify
-                // them
+            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
+                // if there is some other schema dependant of this one, modify them
                 MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
             }
         }
