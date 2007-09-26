@@ -34,8 +34,12 @@ import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.HTMLDocUtils;
+import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
@@ -70,7 +74,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
             // resources.addAll(getProperties(processItem, srcList));
-            resources.addAll(getProperties(processItem));
+            resources.addAll(getProperties(processItem, contextName));
             addContextScripts(process[i], BooleanUtils.isTrue(exportChoice.get(ExportChoice.needContext)));
 
             // add children jobs
@@ -133,7 +137,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         return allJobScripts;
     }
 
-    public List<URL> getProperties(ProcessItem processItem) {
+    public List<URL> getProperties(ProcessItem processItem, String contextName) {
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
@@ -141,17 +145,16 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties");
             out = new FileOutputStream(file);
             PrintStream ps = new PrintStream(out);
+            IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
+            IProcess process = service.getProcessFromProcessItem(processItem);
+            List<IContextParameter> ctxParams = process.getContextManager().getContext(contextName).getContextParameterList();
+            for (IContextParameter ctxParam : ctxParams) {
+                p.put(ctxParam.getName(), ctxParam.getValue());
+            }
             p.put("JobClassName", getCurrentProjectName() + "."
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
                     + processItem.getProperty().getLabel());
-            p.put("JobName", processItem.getProperty().getLabel());
-            p.put("Author", processItem.getProperty().getAuthor().toString());
-            p.put("Description", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
-            p.put("Creation", processItem.getProperty().getCreationDate().toString());
-            p.put("Purpose", HTMLDocUtils.checkString(processItem.getProperty().getPurpose()));
-            p.put("Modification", processItem.getProperty().getModificationDate().toString());
-            p.put("Status", processItem.getProperty().getStatusCode());
-            p.put("Version", processItem.getProperty().getVersion());
+            p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
             p.list(ps);
             ps.flush();
             list.add(file.toURI().toURL());
@@ -167,5 +170,4 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         }
         return list;
     }
-
 }
