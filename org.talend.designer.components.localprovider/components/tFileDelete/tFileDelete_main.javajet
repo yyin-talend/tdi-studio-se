@@ -6,19 +6,28 @@
 		java.util.List
 		java.util.Map"
 %>
-	<%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-	%>
-     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+String failon = ElementParameterParser.getValue(node, "__FAILON__");
+%>
+    java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
     if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile())
-     {
-    
-     	 file_<%=cid%>.delete();
-     }else{
-     	throw new Exception();
-     }
+    {
+    	file_<%=cid%>.delete();
+    }
+<%
+	if(failon.equals("true")){
+%>
+    else{
+    	throw new Exception();
+    }
+<%
+	}
+%>
+    	
+    	
      
  

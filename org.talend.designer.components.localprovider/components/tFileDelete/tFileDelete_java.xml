@@ -36,6 +36,14 @@
     >
     <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="FAILON"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+    <DEFAULT>true</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
    <CODEGENERATION/>
   <RETURNS/>
