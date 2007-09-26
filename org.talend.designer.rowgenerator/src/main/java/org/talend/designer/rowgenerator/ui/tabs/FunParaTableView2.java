@@ -23,10 +23,6 @@ package org.talend.designer.rowgenerator.ui.tabs;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -52,12 +48,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -147,21 +139,6 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 }
 
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
-
-                IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY);
-                Project project = repositoryContext.getProject();
-                IProject p = root.getProject(project.getTechnicalLabel());
-                IEditorPart editor2 = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .getActiveEditor();
-                String jobName = null;
-                if (editor2 instanceof MultiPageTalendEditor) {
-                    jobName = ((MultiPageTalendEditor) editor2).getTalendEditor().getCurrentJobResource().getJobName();
-                }
-                IPath path = p.getLocation().append(jobName + ".xml");
-
-                cellEditor.setPath(path.toOSString());
 
                 return bean.getValue();
             }
