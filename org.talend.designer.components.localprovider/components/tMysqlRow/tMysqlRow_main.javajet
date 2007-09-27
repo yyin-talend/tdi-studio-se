@@ -8,7 +8,7 @@ imports="
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
-		
+        org.talend.core.model.process.IConnectionCategory		
 		java.util.List	
 	"
 %>
@@ -147,10 +147,12 @@ while (index>=0) {
         <%
             for(IConnection outgoingConn : outgoingConns) {
                 if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
-                    for(IMetadataColumn column : columnList) {
-                        %>
-                        <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
-                        <%                  
+                    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                        for(IMetadataColumn column : columnList) {
+                            %>
+                            <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
+                            <%                  
+                        }
                     }
                 }
             }
