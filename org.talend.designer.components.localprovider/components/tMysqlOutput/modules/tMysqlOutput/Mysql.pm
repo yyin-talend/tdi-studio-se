@@ -6,7 +6,7 @@ sub getTableCreationQuery {
     my %param = @_;
 
     my %talendtype_to_dbtype = (
-        boolean    => 'TINYINT',
+        boolean    => 'BOOL',
         date     => 'DATE',
         datetime  => 'DATETIME',
         decimal   => 'DECIMAL',
