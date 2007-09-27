@@ -17,6 +17,7 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
+	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
 	
 	String cid = node.getUniqueName();
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -43,8 +44,8 @@ imports="
 						}else if(!insertMode.equals("DELETE")){
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
-    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(",")>0){
-    		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(",")){
+    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separator%>)>0){
+    		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(<%=separator%>)){
     			entry_<%=cid%>.put("<%=column.getLabel()%>",value_<%=cid%>);
     		}
     	}else{
