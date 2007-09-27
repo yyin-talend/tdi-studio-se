@@ -353,7 +353,6 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     @Override
     protected void okPressed() {
 
-        consumer.setVariables(testComposite.getVariableList());
         consumer.setConsumerExpression(expressionComposite.getExpression() + " ");
 
         ExpressionPersistance.getInstance().saveExpression(
@@ -419,7 +418,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     }
 
     /**
-     * yzhang Comment method "getPath".
+     * yzhang Comment method "getExpressionStorePath".
      * 
      * @return
      */
@@ -429,10 +428,20 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
-        IFolder folder = p.getFolder("configuration/ExpressionBuilder");
-        if (!folder.exists()) {
+
+        IFolder configurationFolder = p.getFolder("configuration");
+        if (!configurationFolder.exists()) {
             try {
-                folder.create(true, true, null);
+                configurationFolder.create(true, true, null);
+            } catch (CoreException e) {
+                RuntimeExceptionHandler.process(e);
+            }
+        }
+
+        IFolder expressionFolder = configurationFolder.getFolder("ExpressionBuilder");
+        if (!expressionFolder.exists()) {
+            try {
+                expressionFolder.create(true, true, null);
             } catch (CoreException e) {
                 RuntimeExceptionHandler.process(e);
             }
@@ -443,7 +452,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         if (editor instanceof MultiPageTalendEditor) {
             jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
         }
-        IPath path = folder.getLocation().append(jobName + ".xml");
+        IPath path = expressionFolder.getLocation().append(jobName + ".xml");
         return path.toOSString();
     }
 }
