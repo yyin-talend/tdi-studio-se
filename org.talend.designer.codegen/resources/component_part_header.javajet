@@ -40,7 +40,7 @@ ok_Hash.put("<%=node.getUniqueName() %>", false);
 start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 <%
 		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
-		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
+		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) && (statCatcher.equals("true"))) {
 			for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcherNode.getUniqueName() %>.addMessage("begin","<%=node.getUniqueName() %>");
