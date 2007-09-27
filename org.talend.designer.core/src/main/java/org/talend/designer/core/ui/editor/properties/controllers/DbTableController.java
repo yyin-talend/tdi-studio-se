@@ -320,13 +320,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
             protected IStatus run(final IProgressMonitor monitor) {
                 monitor.beginTask("Waiting for opening Database Table Selector Dialog...", IProgressMonitor.UNKNOWN);
                 SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+                if (connParameters == null) {
+                    initConnectionParameters();
+                }
                 final IMetadataConnection iMetadataConnection = ConvertionHelper.convert(manager
                         .createConnection(connParameters));
                 final List<String> returnTablesFormConnection = ExtractMetaDataFromDataBase
                         .returnTablesFormConnection(iMetadataConnection);
-                if (connParameters == null) {
-                    initConnectionParameters();
-                }
                 boolean isStatus = checkConnection(iMetadataConnection);
                 if (!monitor.isCanceled()) {
                     try {

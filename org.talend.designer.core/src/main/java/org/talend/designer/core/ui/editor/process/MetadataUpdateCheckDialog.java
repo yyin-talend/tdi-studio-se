@@ -110,6 +110,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         selectButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 selectAll(true);
             }
@@ -121,6 +122,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
 
         deselectButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 selectAll(false);
             }
@@ -162,6 +164,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         // shell.setSize(SIZING_SELECTION_WIDGET_WIDTH, SIZING_SELECTION_WIDGET_HEIGHT);
@@ -170,6 +173,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         // page group
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -211,8 +215,6 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
         });
 
         tableViewerCreator.init(inputElement);
-
-        tableViewerCreator.getTableViewer().setCellEditors(null);
 
         addSelectionButtons(composite);
 
@@ -310,6 +312,7 @@ public class MetadataUpdateCheckDialog extends SelectionDialog {
      * The <code>ListSelectionDialog</code> implementation of this <code>Dialog</code> method builds a list of the
      * selected elements for later retrieval by the client and closes this dialog.
      */
+    @Override
     protected void okPressed() {
 
         List<MetadataUpdateCheckResult> list = new ArrayList<MetadataUpdateCheckResult>();

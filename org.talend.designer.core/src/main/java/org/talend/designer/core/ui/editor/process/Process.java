@@ -59,11 +59,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
@@ -119,6 +115,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
@@ -148,15 +145,15 @@ public class Process extends Element implements IProcess {
 
     protected List<Note> notes = new ArrayList<Note>();
 
-    private String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
+    private final String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
     private boolean activate = true;
 
     // list where is stored each unique name for the connections
-    private List<String> uniqueConnectionNameList = new ArrayList<String>();
+    private final List<String> uniqueConnectionNameList = new ArrayList<String>();
 
     // list where is stored each unique name for the nodes
-    private List<String> uniqueNodeNameList = new ArrayList<String>();
+    private final List<String> uniqueNodeNameList = new ArrayList<String>();
 
     private boolean readOnly;
 
@@ -505,7 +502,7 @@ public class Process extends Element implements IProcess {
                                 strValue = (String) o;
                             } else {
                                 if (o instanceof Boolean) {
-                                    strValue = (String) ((Boolean) o).toString();
+                                    strValue = ((Boolean) o).toString();
                                 }
                             }
                         }
@@ -518,7 +515,7 @@ public class Process extends Element implements IProcess {
                     pType.setValue(""); //$NON-NLS-1$
                 } else {
                     if (value instanceof Boolean) {
-                        pType.setValue((String) ((Boolean) value).toString());
+                        pType.setValue(((Boolean) value).toString());
                     } else {
                         if (value instanceof String) {
                             pType.setValue((String) value);
@@ -541,8 +538,8 @@ public class Process extends Element implements IProcess {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
                     if (param.isReadOnly()
-                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
-                                    EParameterName.VERSION.getName()))) {
+                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
+                                    .equals(EParameterName.VERSION.getName()))) {
                         continue; // if the parameter is read only, don't load
                         // it (this will prevent to overwrite the
                         // value)
@@ -603,7 +600,8 @@ public class Process extends Element implements IProcess {
         ParametersType params = fileFact.createParametersType();
         process.setParameters(params);
 
-        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(), process);
+        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(),
+                process);
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
@@ -913,7 +911,8 @@ public class Process extends Element implements IProcess {
         // node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         for (IElementParameter currentParam : node.getElementParameters()) {
             if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                IElementParameter schemaParam = currentParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+                IElementParameter schemaParam = currentParam.getChildParameters().get(
+                        EParameterName.SCHEMA_TYPE.getName());
                 if (schemaParam != null && ((ElementParameter) schemaParam).isDisplayedByDefault()) {
                     if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
                         String metaRepositoryName = (String) currentParam.getChildParameters().get(
@@ -957,14 +956,19 @@ public class Process extends Element implements IProcess {
     }
 
     private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            if (tabbedPropertySheetPage.getCurrentTab() != null) {
-                tabbedPropertySheetPage.refresh();
-            }
+
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
+        // tabbedPropertySheetPage.refresh();
+        // }
+        // }
+        if (DynamicTabbedPropertySection.getLastPropertyUsed() != null) {
+            // DynamicTabbedPropertySection.getLastPropertyUsed().addComponents(true)
+            DynamicTabbedPropertySection.getLastPropertyUsed().refresh();
         }
     }
 
@@ -992,9 +996,8 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
-                            tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                                    .getConnection();
+                        if (value.equals(node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                            tmpRepositoryConnection = connectionItem.getConnection();
                         }
                     }
                 }
@@ -1008,7 +1011,7 @@ public class Process extends Element implements IProcess {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                            Object objectValue = (Object) RepositoryToComponentProperty.getValue(repositoryConnection,
+                            Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection,
                                     repositoryValue);
 
                             if (objectValue != null) {
@@ -1026,7 +1029,31 @@ public class Process extends Element implements IProcess {
                                     }
                                 } else {
                                     // check the value
-                                    if (!param.getValue().equals(objectValue)) {
+                                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                                        if ((param.getValue() instanceof List) && (objectValue instanceof List)) {
+                                            List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param
+                                                    .getValue();
+                                            List<Map<String, Object>> newMaps = (List<Map<String, Object>>) objectValue;
+
+                                            // sameValues = oldMaps.size() == newMaps.size();
+                                            for (int i = 0; i < newMaps.size() && sameValues; i++) {
+                                                Map<String, Object> newmap = newMaps.get(i);
+                                                Map<String, Object> oldmap = null; // oldMaps.get(i);
+                                                if (i < oldMaps.size()) {
+                                                    oldmap = oldMaps.get(i);
+                                                }
+                                                // for (int j = 0; j < oldMaps.size(); j++) {
+                                                // if (oldMaps.get(j).get("SCHEMA_COLUMN").equals(
+                                                // newmap.get("SCHEMA_COLUMN"))) {
+                                                // oldmap = oldMaps.get(j);
+                                                // }
+                                                // }
+                                                if (oldmap != null && sameValues) {
+                                                    sameValues = newmap.get("QUERY").equals(oldmap.get("QUERY"));
+                                                }
+                                            }
+                                        }
+                                    } else if (!param.getValue().equals(objectValue)) {
                                         sameValues = false;
                                     }
                                 }
@@ -1074,10 +1101,10 @@ public class Process extends Element implements IProcess {
         List<MetadataUpdateCheckResult> resultList = new ArrayList<MetadataUpdateCheckResult>();
         boolean modified = false;
         for (Node node : nodes) {
-            if (checkNodePropertiesFromRepository(node, resultList)) {
+            if (checkNodeSchemaFromRepository(node, resultList)) {
                 modified = true;
             }
-            if (checkNodeSchemaFromRepository(node, resultList)) {
+            if (checkNodePropertiesFromRepository(node, resultList)) {
                 modified = true;
             }
         }
@@ -1125,9 +1152,9 @@ public class Process extends Element implements IProcess {
                             String repositoryValue = param.getRepositoryValue();
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                                Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                        repositoryValue);
+                                Object objectValue = RepositoryToComponentProperty.getValue(
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result
+                                                .getParameter(), repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1168,7 +1195,8 @@ public class Process extends Element implements IProcess {
                     if (result.isChecked()) {
                         IMetadataTable newTable = ((IMetadataTable) result.getParameter());
                         // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
+                        MetadataTool
+                                .copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
                     } else { // result.isChecked()==false
                         node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     }
@@ -1199,8 +1227,8 @@ public class Process extends Element implements IProcess {
 
         for (int i = 0; i < connecList.size(); i++) {
             cType = (ConnectionType) connecList.get(i);
-            source = (Node) nodesHashtable.get(cType.getSource());
-            target = (Node) nodesHashtable.get(cType.getTarget());
+            source = nodesHashtable.get(cType.getSource());
+            target = nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
             String connectorName = cType.getConnectorName();
             boolean connectionTypeFound = false;
@@ -1231,12 +1259,12 @@ public class Process extends Element implements IProcess {
             // end of fix
 
             if (connectionTypeFound) {
-                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, metaname,
-                        cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName,
+                        metaname, cType.getLabel(), cType.getMetaname());
             } else {
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname, cType
-                        .getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
+                        cType.getLabel(), cType.getMetaname());
             }
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
@@ -1711,7 +1739,8 @@ public class Process extends Element implements IProcess {
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
                     returnValue = connec.getInputId();
                     break;
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
+                        && connec.getTarget() != null) {
                     returnValue = getMergelinkOrder(connec.getTarget());
                 }
             }
@@ -1739,7 +1768,8 @@ public class Process extends Element implements IProcess {
                     map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());
                     break;
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
+                        && connec.getTarget() != null) {
                     map = getLinkedMergeInfo(connec.getTarget());
                 }
             }
@@ -1814,6 +1844,7 @@ public class Process extends Element implements IProcess {
         }
     }
 
+    @Override
     public String toString() {
         return "Process:" + getLabel(); //$NON-NLS-1$
     }
@@ -1878,7 +1909,8 @@ public class Process extends Element implements IProcess {
     @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
