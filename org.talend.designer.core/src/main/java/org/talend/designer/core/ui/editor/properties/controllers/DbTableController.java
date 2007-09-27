@@ -325,12 +325,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 }
                 final IMetadataConnection iMetadataConnection = ConvertionHelper.convert(manager
                         .createConnection(connParameters));
-                final List<String> returnTablesFormConnection = ExtractMetaDataFromDataBase
-                        .returnTablesFormConnection(iMetadataConnection);
                 boolean isStatus = checkConnection(iMetadataConnection);
                 if (!monitor.isCanceled()) {
                     try {
                         if (isStatus) {
+                            final List<String> returnTablesFormConnection = ExtractMetaDataFromDataBase
+                                    .returnTablesFormConnection(iMetadataConnection);
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
