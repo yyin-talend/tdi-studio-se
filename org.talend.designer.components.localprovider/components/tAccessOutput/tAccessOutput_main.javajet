@@ -573,7 +573,7 @@ if(incomingConnName != null && columnList != null){
 <%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 %>
-
+	int updateFlag_<%=cid%>=0;
 <%
 		int counterColUpdate = 1;
 		for(Column columnUpdate:colStruct){
@@ -604,7 +604,8 @@ if(incomingConnName != null && columnList != null){
 	%>
 
          try{
-	           updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
+             updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
+             updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
            }catch(Exception e)
            {
                whetherReject_<%=cid%> = true;
@@ -631,7 +632,7 @@ if(incomingConnName != null && columnList != null){
                } 
                %>
            }
-           if(updatedCount_<%=cid%> == 0) {
+           if(updateFlag_<%=cid%> == 0) {
         		<%
         		int counter = 1;
         		
