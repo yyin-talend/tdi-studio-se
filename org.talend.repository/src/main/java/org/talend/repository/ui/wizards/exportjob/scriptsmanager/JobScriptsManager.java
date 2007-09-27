@@ -84,7 +84,7 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
         exportChoiceMap.put(ExportChoice.needJob, true);
-        exportChoiceMap.put(ExportChoice.needSource, true);
+        exportChoiceMap.put(ExportChoice.needSource, false);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, true);
         return exportChoiceMap;
@@ -351,6 +351,7 @@ public abstract class JobScriptsManager {
 
     protected List<URL> getSource(ProcessItem processItem, boolean needChoice) {
         List<String> list = new ArrayList<String>();
+        IResource[] resources = new IResource[0]; 
         if (needChoice) {
             try {
                 String name = processItem.getProperty().getLabel() + "_" + processItem.getProperty().getVersion(); //$NON-NLS-1$
@@ -358,14 +359,13 @@ public abstract class JobScriptsManager {
                 list.add(name + ".item"); //$NON-NLS-1$
                 list.add(name + ".properties"); //$NON-NLS-1$
                 list.add(FileConstants.LOCAL_PROJECT_FILENAME);
-
+                resources = this.getAllSourceFiles();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
 
         }
 
-        IResource[] resources = this.getAllSourceFiles();
         return getResourcesURL(resources, list);
     }
 
