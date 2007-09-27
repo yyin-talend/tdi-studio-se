@@ -537,10 +537,12 @@ if (inMetadata != null && metadata != null) {
     String keyClausesString = StringUtils.join(keyClauses.toArray(), " AND ");
     String l1fieldClausesString = StringUtils.join(l1fieldClauses.toArray(), ", ");
     
-    %>
-    String l1QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
-    java.sql.PreparedStatement l1Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l1QueryString_<%=cid%>);
-    <%
+    if (useL1) {
+	    %>
+	    String l1QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
+	    java.sql.PreparedStatement l1Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l1QueryString_<%=cid%>);
+        <%
+    }
     
     // L2 query generation
     if (useL2) {

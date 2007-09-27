@@ -33,13 +33,19 @@ if (metadatas != null && metadatas.size() > 0) {
 // We only generate output if incoming and outgoing schema are defined
 if (inMetadata != null && metadata != null) {
     boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+	boolean useL1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
 	boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
 	boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
 	
 	%>
 	insertQuery_<%=cid%>.close();
-	l1Query_<%=cid%>.close();
 	<%
+	if (useL1) {
+		%>
+		l1Query_<%=cid%>.close();
+		<%
+	}
+	
 	if (useL2) {
 		%>
 		l2Query_<%=cid%>.close();
