@@ -24,15 +24,13 @@ package org.talend.designer.core.ui.editor.connections;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 
 /**
  * Edit part of connection performance.
@@ -47,11 +45,40 @@ public class ConnectionPerformanceEditPart extends AbstractGraphicalEditPart imp
     /*
      * (non-Javadoc)
      * 
+     * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getLayer(java.lang.Object)
+     */
+    @Override
+    protected IFigure getLayer(Object layer) {
+        // TODO Auto-generated method stub
+        return super.getLayer(layer);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.editparts.AbstractConnectionEditPart#createFigure()
      */
     @Override
     protected IFigure createFigure() {
-        SimpleHtmlFigure label = new SimpleHtmlFigure();
+        SimpleHtmlFigure label = new SimpleHtmlFigure() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.utils.workbench.gef.SimpleHtmlFigure#paint(org.eclipse.draw2d.Graphics)
+             */
+            @Override
+            public void paint(Graphics graphics) {
+                // see bug 2074
+                if (GlobalConstant.generatingScreenShoot) {
+                    return;
+                }
+
+                super.paint(graphics);
+
+            }
+
+        };
         return label;
     }
 
@@ -115,8 +142,7 @@ public class ConnectionPerformanceEditPart extends AbstractGraphicalEditPart imp
 
         Point offset = pefModel.getOffset();
 
-        ConnLabelConstraint constraint = new ConnLabelConstraint(htmlFigure.getPreferredSize(),
-                "middle", offset, connFigure); //$NON-NLS-1$
+        ConnLabelConstraint constraint = new ConnLabelConstraint(htmlFigure.getPreferredSize(), "middle", offset, connFigure); //$NON-NLS-1$
         parent.setLayoutConstraint(this, htmlFigure, constraint);
     }
 }

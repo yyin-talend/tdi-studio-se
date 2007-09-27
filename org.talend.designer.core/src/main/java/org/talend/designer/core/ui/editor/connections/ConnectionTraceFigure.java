@@ -35,6 +35,7 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -73,6 +74,15 @@ public class ConnectionTraceFigure extends Figure {
         }
     }
 
+    @Override
+    public void paint(Graphics graphics) {
+        // see bug 2074
+        if (GlobalConstant.generatingScreenShoot) {
+            return;
+        }
+        super.paint(graphics);
+    }
+
     public void setTraceData(String data) {
         if (data != null) {
             List childrens = this.getChildren();
@@ -92,8 +102,7 @@ public class ConnectionTraceFigure extends Figure {
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
                 titleFigure.setOpaque(true);
-                titleFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP
-                        | SWT.BOTTOM));
+                titleFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             }
             titleFigure.getPreferredSize().expand(0, 3);
             add(titleFigure);
@@ -224,8 +233,7 @@ public class ConnectionTraceFigure extends Figure {
             }
             if (tooltip != null) {
                 if (variableFigure != null) {
-                    variableFigure
-                            .setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
+                    variableFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.BOTTOM | SWT.RIGHT));
                 }
             }
             if (noVarNameDefined) {
@@ -310,8 +318,8 @@ public class ConnectionTraceFigure extends Figure {
         public void paint(IFigure figure, Graphics graphics, Insets insets) {
             graphics.setForegroundColor(color);
             if ((orientation & SWT.TOP) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft().translate(0, topOffset), tempRect
-                        .getTopRight().translate(0, topOffset));
+                graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft().translate(0, topOffset), tempRect.getTopRight()
+                        .translate(0, topOffset));
             }
             if ((orientation & SWT.LEFT) != 0) {
                 graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft().translate(leftOffset, 0), tempRect
@@ -322,8 +330,8 @@ public class ConnectionTraceFigure extends Figure {
                         .getBottomRight().translate(rightOffset, 0));
             }
             if ((orientation & SWT.BOTTOM) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getBottomLeft().translate(0, bottomOffset),
-                        tempRect.getBottomRight().translate(0, bottomOffset));
+                graphics.drawLine(getPaintRectangle(figure, insets).getBottomLeft().translate(0, bottomOffset), tempRect
+                        .getBottomRight().translate(0, bottomOffset));
             }
         }
     }

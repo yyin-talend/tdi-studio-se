@@ -24,6 +24,7 @@ package org.talend.designer.core.ui.editor.nodes;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -31,6 +32,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
+import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 
 /**
@@ -85,7 +87,25 @@ public class NodePerformanceEditPart extends AbstractGraphicalEditPart implement
      */
     @Override
     protected IFigure createFigure() {
-        SimpleHtmlFigure label = new SimpleHtmlFigure();
+        SimpleHtmlFigure label = new SimpleHtmlFigure() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.utils.workbench.gef.SimpleHtmlFigure#paint(org.eclipse.draw2d.Graphics)
+             */
+            @Override
+            public void paint(Graphics graphics) {
+                // see bug 2074
+                if (GlobalConstant.generatingScreenShoot) {
+                    return;
+                }
+
+                super.paint(graphics);
+
+            }
+
+        };
         return label;
     }
 
