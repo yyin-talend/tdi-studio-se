@@ -44,6 +44,8 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorInput;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.DesignerPlugin;
@@ -65,6 +67,10 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     private FreeformLayer fig2;
 
     private RepositoryNode node;
+
+    private static final Color READ_WRITE_COLOR = new Color(null, new RGB(255, 255, 255));
+
+    private static final Color READ_ONLY_COLOR = new Color(null, new RGB(0xE7, 0xE7, 0xE7));
 
     /*
      * (non-Javadoc)
@@ -126,10 +132,10 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      */
     public void ajustReadOnly() {
         if (((Process) getModel()).isReadOnly()) {
-            fig2.setBackgroundColor(Process.READ_ONLY_COLOR);
+            fig2.setBackgroundColor(READ_ONLY_COLOR);
             fig2.setOpaque(true);
         } else {
-            fig2.setBackgroundColor(Process.READ_WRITE_COLOR);
+            fig2.setBackgroundColor(READ_WRITE_COLOR);
             fig2.setOpaque(true);
         }
     }

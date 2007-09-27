@@ -32,6 +32,8 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.designer.core.DesignerPlugin;
@@ -54,6 +56,8 @@ public class NodeFigure extends Figure {
     private int alpha = -1;
 
     private final NodeBorder lineBorder = new NodeBorder();
+
+    public static final Color START_COLOR = new Color(null, new RGB(0xB0, 0xE7, 0));
 
     public NodeFigure(Node node) {
         fig = new ImageFigure();
@@ -118,7 +122,7 @@ public class NodeFigure extends Figure {
 
     public void setStart(boolean start) {
         if (start) {
-            setBackgroundColor(Node.START_COLOR);
+            setBackgroundColor(START_COLOR);
             setOpaque(true);
         } else {
             setOpaque(false);

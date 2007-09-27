@@ -68,7 +68,7 @@ public class ProcessResizableEditPolicy extends ResizableEditPolicy {
             Node node = (Node) modelPart;
             figure = new NodeFigure(node);
             if (node.isStart()) {
-                figure.setBackgroundColor(Node.START_COLOR);
+                figure.setBackgroundColor(NodeFigure.START_COLOR);
             } else {
                 figure.setOpaque(false);
             }

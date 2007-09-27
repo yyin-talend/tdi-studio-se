@@ -55,8 +55,6 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -158,10 +156,6 @@ public class Process extends Element implements IProcess {
     private boolean readOnly;
 
     private GraphicalViewer viewer = null;
-
-    public static final Color READ_ONLY_COLOR = new Color(null, new RGB(0xE7, 0xE7, 0xE7));
-
-    public static final Color READ_WRITE_COLOR = new Color(null, new RGB(255, 255, 255));
 
     private IContextManager contextManager;
 

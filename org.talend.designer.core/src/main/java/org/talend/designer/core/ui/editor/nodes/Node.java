@@ -43,8 +43,6 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -165,8 +163,6 @@ public class Node extends Element implements INode {
     private Process process = null;
 
     private String pluginFullName;
-
-    public static final Color START_COLOR = new Color(null, new RGB(0xB0, 0xE7, 0));
 
     private boolean readOnly = false;
 

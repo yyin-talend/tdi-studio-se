@@ -24,8 +24,8 @@ package org.talend.designer.core.ui.editor.connections;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
+import org.eclipse.swt.graphics.Color;
 import org.talend.core.model.process.IConnectionProperty;
-import org.talend.core.model.process.INodeConnector;
 
 /**
  * Figure corresponding the the connection. <br/>
@@ -60,7 +60,7 @@ public class ConnectionFigure extends PolylineConnection {
 
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {
         setLineStyle(connectionProperty.getLineStyle());
-        setForegroundColor(connectionProperty.getColor());
+        setForegroundColor(new Color(null, connectionProperty.getRGB()));
     }
 
 }

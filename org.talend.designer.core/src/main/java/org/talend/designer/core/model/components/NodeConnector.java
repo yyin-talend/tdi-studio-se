@@ -24,7 +24,7 @@ package org.talend.designer.core.model.components;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.INodeConnector;
@@ -58,7 +58,7 @@ public class NodeConnector implements INodeConnector {
     private String menuName;
 
     private String linkName;
-    
+
     private String baseSchema;
 
     private Map<EConnectionType, IConnectionProperty> propertyMap = new HashMap<EConnectionType, IConnectionProperty>();
@@ -201,10 +201,10 @@ public class NodeConnector implements INodeConnector {
         this.name = name;
     }
 
-    public void addConnectionProperty(EConnectionType type, Color color, Integer lineStyle) {
-        propertyMap.put(type, new ConnectionProperty(color, lineStyle));
+    public void addConnectionProperty(EConnectionType type, RGB rgb, Integer lineStyle) {
+        propertyMap.put(type, new ConnectionProperty(rgb, lineStyle));
     }
-    
+
     public IConnectionProperty getConnectionProperty(EConnectionType type) {
         return propertyMap.get(type);
     }
@@ -225,20 +225,19 @@ public class NodeConnector implements INodeConnector {
     }
 
     /**
-     * DOC nrousseau NodeConnector class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC nrousseau NodeConnector class global comment. Detailled comment <br/>
+     * 
      */
     private class ConnectionProperty implements IConnectionProperty {
 
         private Integer lineStyle;
 
-        private Color color;
+        private RGB rgb;
 
-        public ConnectionProperty(Color color, Integer lineStyle) {
+        public ConnectionProperty(RGB rgb, Integer lineStyle) {
             super();
             this.lineStyle = lineStyle;
-            this.color = color;
+            this.rgb = rgb;
         }
 
         /**
@@ -246,8 +245,8 @@ public class NodeConnector implements INodeConnector {
          * 
          * @return the color
          */
-        public Color getColor() {
-            return color;
+        public RGB getRGB() {
+            return rgb;
         }
 
         /**
@@ -255,8 +254,8 @@ public class NodeConnector implements INodeConnector {
          * 
          * @param color the color to set
          */
-        public void setColor(Color color) {
-            this.color = color;
+        public void setRGB(RGB rgb) {
+            this.rgb = rgb;
         }
 
         /**
@@ -278,18 +277,18 @@ public class NodeConnector implements INodeConnector {
         }
     }
 
-    
     /**
      * Getter for baseSchema.
+     * 
      * @return the baseSchema
      */
     public String getBaseSchema() {
         return baseSchema;
     }
 
-    
     /**
      * Sets the baseSchema.
+     * 
      * @param baseSchema the baseSchema to set
      */
     public void setBaseSchema(String baseSchema) {
