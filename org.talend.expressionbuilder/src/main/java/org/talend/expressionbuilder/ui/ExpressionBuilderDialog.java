@@ -62,11 +62,11 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.expressionbuilder.ExpressionFileOperation;
+import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
-import org.talend.expressionbuilder.persistance.ExpressionPersistance;
 import org.talend.expressionbuilder.test.shadow.Expression;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.xml.sax.SAXException;
@@ -429,7 +429,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
 
-        IFolder configurationFolder = p.getFolder("configuration");
+        IFolder configurationFolder = p.getFolder(ExpressionPersistance.CONFIGURATION_FOLDER_NAME);
         if (!configurationFolder.exists()) {
             try {
                 configurationFolder.create(true, true, null);
@@ -438,7 +438,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
             }
         }
 
-        IFolder expressionFolder = configurationFolder.getFolder("ExpressionBuilder");
+        IFolder expressionFolder = configurationFolder.getFolder(ExpressionPersistance.EXPRESSION_FOLDER_NAME);
         if (!expressionFolder.exists()) {
             try {
                 expressionFolder.create(true, true, null);
