@@ -30,7 +30,6 @@ Require-Bundle: org.eclipse.core.resources,
  javax.xml.rpc
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
- org.talend.repository.exception,
  org.talend.repository.i18n,
  org.talend.repository.model,
  org.talend.repository.preview,
