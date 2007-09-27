@@ -175,8 +175,8 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
 
                                 if (repositoryConnection != null) {
-                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-                                            repositoryConnection, name, value);
+                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, name,
+                                            value);
                                     changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
                                     return changeValuesFromRepository;
                                 }
@@ -184,8 +184,8 @@ public class ComboController extends AbstractElementPropertySectionController {
 
                             else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
                                 String connectionSelected;
-                                connectionSelected = (String) elem
-                                        .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                                connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                        .getName());
 
                                 if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
                                     repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
@@ -195,8 +195,8 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 }
 
                                 if (repositoryConnection != null) {
-                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-                                            repositoryConnection, name, value);
+                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, name,
+                                            value);
 
                                     changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
                                     return changeValuesFromRepository;
@@ -210,8 +210,8 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     this.dynamicTabbedPropertySection.updateRepositoryList();
                                     String querySelected;
                                     Query repositoryQuery = null;
-                                    querySelected = (String) elem
-                                            .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                                    querySelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+                                            .getName());
 
                                     Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
                                             .getRepositoryQueryStoreMap();
@@ -223,8 +223,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     }
 
                                     if (repositoryQuery != null) {
-                                        Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery, name,
-                                                value);
+                                        Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery, name, value);
                                         getCommandStack().execute(cmd);
                                     } else {
                                         Command cmd = new PropertyChangeCommand(elem, name, value);
@@ -367,8 +366,7 @@ public class ComboController extends AbstractElementPropertySectionController {
      * @param numInRow
      * @param top
      */
-    private void addGuessQueryButton(Composite subComposite, IElementParameter param, Control lastControl,
-            int numInRow, int top) {
+    private void addGuessQueryButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int top) {
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
@@ -446,8 +444,8 @@ public class ComboController extends AbstractElementPropertySectionController {
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
             Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
             String paramName;
-            IElementParameter repositorySchemaTypeParameter = elem
-                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                    .getName());
             Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
             paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
@@ -529,7 +527,7 @@ public class ComboController extends AbstractElementPropertySectionController {
     public void refresh(IElementParameter param, boolean check) {
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
-        if (combo == null) {
+        if (combo == null || combo.isDisposed()) {
             return;
         }
         Object value = param.getValue();
@@ -578,7 +576,7 @@ public class ComboController extends AbstractElementPropertySectionController {
             combo.setText(strValue);
         }
     }
-    
+
     private String[] getListToDisplay(IElementParameter param) {
         String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();

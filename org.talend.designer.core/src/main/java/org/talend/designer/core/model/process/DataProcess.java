@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -171,8 +169,8 @@ public class DataProcess {
         return dataNode;
     }
 
-    private static INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection,
-            IProcess process, List<? extends IElementParameter> parameters) {
+    private static INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
+            List<? extends IElementParameter> parameters) {
         // from current node to vFlowMeter node.
         DataConnection dataConnec = new DataConnection();
         dataConnec.setActivate(connection.isActivate());
@@ -292,8 +290,7 @@ public class DataProcess {
      * @param dataNode
      */
     private static void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
-            IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode,
-            INode previousNode) {
+            IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode, INode previousNode) {
         List<IConnection> incomingConnections, outgoingConnections;
 
         for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
@@ -425,8 +422,7 @@ public class DataProcess {
             targetNode = itemsMap.get(itemList.get(i));
             targetFound = false;
             for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
-                if (targetNode.getElementParameters().get(j).getName().equals(
-                        EParameterName.TSTATCATCHER_STATS.getName())) {
+                if (targetNode.getElementParameters().get(j).getName().equals(EParameterName.TSTATCATCHER_STATS.getName())) {
                     IElementParameter param = targetNode.getElementParameters().get(j);
                     boolean statsFound = false;
                     for (int k = 0; k < graphicalNode.getElementParameters().size() && !statsFound; k++) {
@@ -512,8 +508,7 @@ public class DataProcess {
         }
         checkRefList.add(graphicalNode);
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-            if (connection.isActivate()
-                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 // retrieve the starts node of each current nodes to add a before link
@@ -540,11 +535,9 @@ public class DataProcess {
                 // dataConnec.setSource(subDataNodeStartTarget);
                 dataConnec.setTarget(subDataNodeStartTarget);
                 // dataConnec.setTarget(subDataNodeStartSource);
-                List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
-                        .getOutgoingConnections();
+                List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
                 outgoingConnections.add(dataConnec);
-                List<IConnection> incomingConnections = (List<IConnection>) subDataNodeStartTarget
-                        .getIncomingConnections();
+                List<IConnection> incomingConnections = (List<IConnection>) subDataNodeStartTarget.getIncomingConnections();
                 incomingConnections.add(dataConnec);
 
                 // add a new hash node
@@ -573,7 +566,7 @@ public class DataProcess {
                 DataNode hashNode = new DataNode(component, uniqueName);
                 hashNode.setActivate(connection.isActivate());
                 hashNode.setStart(false);
-                IMetadataTable newMetadata = refSource.getMetadataList().get(0).clone();
+                IMetadataTable newMetadata = connection.getMetadataTable().clone();
                 newMetadata.setTableName(uniqueName);
                 hashNode.getMetadataList().remove(0);
                 hashNode.getMetadataList().add(newMetadata);
@@ -590,7 +583,7 @@ public class DataProcess {
                 dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.FLOW_MAIN);
-                dataConnec.setMetadataTable(refSource.getMetadataList().get(0));
+                dataConnec.setMetadataTable(newMetadata);
                 dataConnec.setName(connection.getName());
                 // dataConnec.setName(refSource.getUniqueName() + "_to_hash_" + connection.getName());
                 dataConnec.setSource(refSource);
@@ -677,8 +670,8 @@ public class DataProcess {
 
         if (StatsAndLogsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
-            Boolean realTimeStats = ((Boolean) process.getElementParameter(
-                    EParameterName.CATCH_REALTIME_STATS.getName()).getValue())
+            Boolean realTimeStats = ((Boolean) process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName())
+                    .getValue())
                     && process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName()).isShow(
                             process.getElementParameters());
 
