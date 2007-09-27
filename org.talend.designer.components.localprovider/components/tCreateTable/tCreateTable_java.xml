@@ -396,11 +396,8 @@
 		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v033-nested.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SQLITE-JDBC" MODULE="sqlitejdbc.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
-		
+		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc_v037_nested.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />		
      </IMPORTS>
    </CODEGENERATION>
    
