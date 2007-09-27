@@ -28,9 +28,11 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -427,21 +429,21 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
         IProject p = root.getProject(project.getTechnicalLabel());
-        // IFolder folder = p.getFolder("configuration");
-        // if (!folder.exists()) {
-        // try {
-        // folder.create(true, false, null);
-        // } catch (CoreException e) {
-        // RuntimeExceptionHandler.process(e);
-        // }
-        // }
+        IFolder folder = p.getFolder("configuration/ExpressionBuilder");
+        if (!folder.exists()) {
+            try {
+                folder.create(true, true, null);
+            } catch (CoreException e) {
+                RuntimeExceptionHandler.process(e);
+            }
+        }
 
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         String jobName = null;
         if (editor instanceof MultiPageTalendEditor) {
             jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
         }
-        IPath path = p.getLocation().append(jobName + ".xml");
+        IPath path = folder.getLocation().append(jobName + ".xml");
         return path.toOSString();
     }
 }
