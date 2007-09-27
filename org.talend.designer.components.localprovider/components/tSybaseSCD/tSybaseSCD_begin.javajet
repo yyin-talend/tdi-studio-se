@@ -83,7 +83,11 @@ if (inMetadata != null && metadata != null) {
     }
 	
     String startdateField = ElementParameterParser.getValue(node, "__L2_STARTDATE_FIELD__");
+    String startdateValue = ElementParameterParser.getValue(node, "__L2_STARTDATE_VALUE__");
+    String startdateInputField = ElementParameterParser.getValue(node, "__L2_STARTDATE_INPUT_FIELD__");
     String enddateField = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIELD__");
+    String enddateValue = ElementParameterParser.getValue(node, "__L2_ENDDATE_VALUE__");
+    String enddateYear = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIXED_VALUE__");
     
     boolean useActive = ElementParameterParser.getValue(node, "__USE_L2_ACTIVE__").equals("true");
     String activeField = ElementParameterParser.getValue(node, "__L2_ACTIVE_FIELD__");
@@ -291,9 +295,15 @@ if (inMetadata != null && metadata != null) {
     String dbquery_<%=cid %> = "SELECT <%=selectColumnsString%> FROM " + <%=dbtable%>
     <%
     if (useL2) {
-    	%>
-		+ " WHERE <%=enddateField%> IS NULL"
-		<%
+    	if (enddateValue.equals("NULL_VALUE")) {
+	    	%>
+			+ " WHERE <%=enddateField%> IS NULL"
+			<%
+		} else {
+	    	%>
+			+ " WHERE YEAR(<%=enddateField%>) = " + <%=enddateYear%>
+			<%
+		}
     }
     %>;
 	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
@@ -419,13 +429,11 @@ if (inMetadata != null && metadata != null) {
 		        }
 			}
 			%>
+			
+			statement_<%=cid%>.close();
 	    }
 	    <%
 	}
-	
-	%>
-	statement_<%=cid%>.close();
-	<%
 	
 	if (debug) {
 		%>
@@ -490,7 +498,7 @@ if (inMetadata != null && metadata != null) {
 		colposition++;
 		
         colnames.add(enddateField);
-        parameters.add("NULL");
+        parameters.add(enddateValue.equals("NULL_VALUE") ? "NULL" : "'\" + " + enddateYear + "+ \"-01-01'");
     }
 	
     String colnamesString = StringUtils.join(colnames.toArray(), ", ");
@@ -501,8 +509,13 @@ if (inMetadata != null && metadata != null) {
     String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyField + ", " : ""%><%=colnamesString%>) " +
     	"VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "\" + " + skSequence + " + \".nextval, " : ""%><%=parametersString%>)";
     java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
-    insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
     <%
+    if (startdateValue.equals("JOB_START_TIME")) {
+    	%>
+	    insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>,
+	    	new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+    	<%
+    }
     
     // L1 query generation
     List keyClauses = new ArrayList();
@@ -546,10 +559,24 @@ if (inMetadata != null && metadata != null) {
 	    }
 	    %>
 			"WHERE <%=keyClausesString%> " +
-		    "AND <%=enddateField%> IS NULL";
-	    java.sql.PreparedStatement l2Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l2QueryString_<%=cid%>);
-	    l2Query_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
 		<%
+		if (enddateValue.equals("NULL_VALUE")) {
+	    	%>
+			" AND <%=enddateField%> IS NULL";
+			<%
+		} else {
+	    	%>
+			" AND YEAR(<%=enddateField%>) = " + <%=enddateYear%>;
+			<%
+		}
+		%>
+	    java.sql.PreparedStatement l2Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l2QueryString_<%=cid%>);
+	    <%
+	    if (startdateValue.equals("JOB_START_TIME")) {
+	    	%>
+		    l2Query_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+	    	<%
+	    }
 	}
 	
 	// L3 query generation
@@ -582,9 +609,15 @@ if (inMetadata != null && metadata != null) {
 	    	"SET <%=l3fieldClausesString%> " +
 	    	"WHERE <%=keyClausesString%>"<%
 	    if (useL2) {
-	    	%>
-		    + " AND <%=enddateField%> IS NULL"
-		    <%
+	    	if (enddateValue.equals("NULL_VALUE")) {
+		    	%>
+				+ " AND <%=enddateField%> IS NULL";
+				<%
+			} else {
+		    	%>
+				+ " AND YEAR(<%=enddateField%>) = " + <%=enddateYear%>;
+				<%
+			}
 		}
 		%>;
 	    java.sql.PreparedStatement l3Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l3QueryString_<%=cid%>);

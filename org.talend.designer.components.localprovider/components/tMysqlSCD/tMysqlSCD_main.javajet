@@ -512,7 +512,7 @@ if (inMetadata != null && metadata != null) {
 				
 				if (useVersion) {
 					generator.generateSetStatement(cid, "insertQuery_" + cid,
-						"cacheRow_" + cid + "." + versionField + " + 1", colposition, versionType);
+						"cacheRow_" + cid + "." + versionField + " + 1", colposition++, versionType);
 				}
 				
 			    if (startdateValue.equals("INPUT_FIELD")) {

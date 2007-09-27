@@ -211,17 +211,58 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="L2_STARTDATE_VALUE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="82"
+      SHOW_IF="USE_L2 == 'true'"
+    >
+      <ITEMS DEFAULT="JOB_START_TIME">
+        <ITEM NAME="JOB_START_TIME"   VALUE="JOB_START_TIME" />
+        <ITEM NAME="INPUT_FIELD"      VALUE="INPUT_FIELD"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L2_STARTDATE_INPUT_FIELD"
+      FIELD="PREV_COLUMN_LIST"
+      NUM_ROW="82"
+      SHOW_IF="L2_STARTDATE_VALUE == 'INPUT_FIELD'"
+    >
+    </PARAMETER>
+
+    <PARAMETER
       NAME="L2_ENDDATE_FIELD"
       FIELD="COLUMN_LIST"
-      NUM_ROW="82"
+      NUM_ROW="83"
       SHOW_IF="USE_L2 == 'true'"
     >
     </PARAMETER>
 
     <PARAMETER
+      NAME="L2_ENDDATE_VALUE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="83"
+      SHOW_IF="USE_L2 == 'true'"
+    >
+      <ITEMS DEFAULT="NULL_VALUE">
+        <ITEM NAME="NULL_VALUE"   VALUE="NULL_VALUE" />
+        <ITEM NAME="FIXED_VALUE"  VALUE="FIXED_VALUE"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="L2_ENDDATE_FIXED_VALUE"
+      FIELD="TEXT"
+      NUM_ROW="83"
+      SHOW_IF="L2_ENDDATE_VALUE == 'FIXED_VALUE'"
+    >
+      <DEFAULT>"2500"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="USE_L2_ACTIVE"
       FIELD="CHECK"
-      NUM_ROW="83"
+      NUM_ROW="84"
       SHOW_IF="USE_L2 == 'true'"
     >
       <DEFAULT>false</DEFAULT>
@@ -230,7 +271,7 @@
     <PARAMETER
       NAME="L2_ACTIVE_FIELD"
       FIELD="COLUMN_LIST"
-      NUM_ROW="83"
+      NUM_ROW="84"
       SHOW_IF="USE_L2_ACTIVE == 'true'"
     >
     </PARAMETER>
@@ -238,7 +279,7 @@
     <PARAMETER
       NAME="USE_L2_VERSION"
       FIELD="CHECK"
-      NUM_ROW="84"
+      NUM_ROW="85"
       SHOW_IF="USE_L2 == 'true'"
     >
       <DEFAULT>false</DEFAULT>
@@ -247,7 +288,7 @@
     <PARAMETER
       NAME="L2_VERSION_FIELD"
       FIELD="COLUMN_LIST"
-      NUM_ROW="84"
+      NUM_ROW="85"
       SHOW_IF="USE_L2_VERSION == 'true'"
     >
     </PARAMETER>
