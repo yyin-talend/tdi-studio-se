@@ -34,6 +34,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -73,6 +74,7 @@ public class DeleteAction extends AContextualAction {
         return singleton;
     }
 
+    @Override
     public void run() {
         ISelection selection = getSelection();
         Boolean confirm = null;
@@ -84,14 +86,15 @@ public class DeleteAction extends AContextualAction {
                 try {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         IRepositoryObject objToDelete = node.getObject();
-                        
+
                         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
+                                .getProperties(EProperties.CONTENT_TYPE);
                         if (nodeType.isSubItem()) {
                             new DeleteTableAction().run();
                             return;
                         }
-                        
+
                         if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
                             if (confirm == null) {
                                 String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
@@ -101,10 +104,12 @@ public class DeleteAction extends AContextualAction {
                             }
                             if (confirm) {
                                 factory.deleteObjectPhysical(objToDelete);
+                                ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
                             }
                         } else {
                             factory.deleteObjectLogical(objToDelete);
                         }
+
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
                         if (!node.hasChildren()) {
                             IPath path = RepositoryNodeUtilities.getPath(node);
@@ -136,7 +141,7 @@ public class DeleteAction extends AContextualAction {
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             visible = false;
         }
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
+        for (Object o : (selection).toArray()) {
             if (visible) {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {
@@ -216,6 +221,7 @@ public class DeleteAction extends AContextualAction {
      * 
      * @return the visible
      */
+    @Override
     public boolean isVisible() {
         return this.visible;
     }
