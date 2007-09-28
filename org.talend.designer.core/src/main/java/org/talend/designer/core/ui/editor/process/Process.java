@@ -1004,7 +1004,7 @@ public class Process extends Element implements IProcess {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
-
+                            
                             if (objectValue != null) {
                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                         && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1020,6 +1020,37 @@ public class Process extends Element implements IProcess {
                                     }
                                 } else {
                                     // check the value
+<<<<<<< .mine
+                                    if (!param.getValue().equals(objectValue)) {
+                                        sameValues = false;
+                                    }
+                                }
+                            } else if (param.getField().equals(EParameterFieldType.TABLE)
+                                    && "XML_MAPPING".equals(repositoryValue)) {
+                                List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
+                                        repositoryConnection, node.getMetadataList().get(0));
+                                if ((param.getValue() instanceof List) && newMaps != null) {
+                                    List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
+                                    // sameValues = oldMaps.size() == newMaps.size();
+                                    for (int i = 0; i < newMaps.size() && sameValues; i++) {
+                                        Map<String, Object> newmap = newMaps.get(i);
+                                        Map<String, Object> oldmap = null; // oldMaps.get(i);
+                                        if (i < oldMaps.size()) {
+                                            oldmap = oldMaps.get(i);
+                                        }
+                                        // for (int j = 0; j < oldMaps.size(); j++) {
+                                        // if (oldMaps.get(j).get("SCHEMA_COLUMN").equals(
+                                        // newmap.get("SCHEMA_COLUMN"))) {
+                                        // oldmap = oldMaps.get(j);
+                                        // }
+                                        // }
+                                        if (oldmap != null && sameValues) {
+                                            Object o = newmap.get("QUERY");
+                                            if (o != null) {
+                                                sameValues = newmap.get("QUERY").equals(oldmap.get("QUERY"));
+                                            } else {
+                                                sameValues = oldmap.get("QUERY") == null;
+=======
                                     if (param.getField().equals(EParameterFieldType.TABLE)) {
                                         if ((param.getValue() instanceof List) && (objectValue instanceof List)) {
                                             List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
@@ -1043,8 +1074,6 @@ public class Process extends Element implements IProcess {
                                                 }
                                             }
                                         }
-                                    } else if (!param.getValue().equals(objectValue)) {
-                                        sameValues = false;
                                     }
                                 }
                             }
@@ -1159,8 +1188,14 @@ public class Process extends Element implements IProcess {
                                     } else {
                                         node.setPropertyValue(param.getName(), objectValue);
                                     }
-                                    param.setRepositoryValueUsed(true);
+                                } else if (param.getField().equals(EParameterFieldType.TABLE)
+                                        && "XML_MAPPING".equals(repositoryValue)) {
+                                    RepositoryToComponentProperty.getTableXMLMappingValue(
+                                            (org.talend.core.model.metadata.builder.connection.Connection) result
+                                                    .getParameter(), (List<Map<String, Object>>) param.getValue(), node
+                                                    .getMetadataList().get(0));
                                 }
+                                param.setRepositoryValueUsed(true);
                             }
                         }
                     } else { // result.isChecked() == false
