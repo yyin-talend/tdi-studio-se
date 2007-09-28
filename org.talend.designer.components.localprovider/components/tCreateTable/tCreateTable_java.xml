@@ -392,6 +392,7 @@
 		<IMPORT NAME="Driver-INFORMIX-LSUPP" MODULE="ifxlsupp.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-SQLJ" MODULE="ifxsqlj.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-INFORMIX-TOOLS" MODULE="ifxtools.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-INGRES" MODULE="iijdbc.jar" REQUIRED="true"/>
 		<IMPORT NAME="Driver-Interbase" MODULE="interclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBY" MODULE="derby.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
