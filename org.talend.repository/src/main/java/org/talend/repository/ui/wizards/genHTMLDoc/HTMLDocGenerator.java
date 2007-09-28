@@ -21,7 +21,10 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.genHTMLDoc;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -41,10 +44,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.HTMLHandler;
@@ -55,6 +61,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.repository.RepositoryPlugin;
@@ -117,16 +124,18 @@ public class HTMLDocGenerator {
 
             final URL xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(
                     IHTMLDocConstants.MAIN_XSL_FILE_PATH), null));
-            final URL logoFileUrl = FileLocator.toFileURL(FileLocator.find(b,
-                    new Path(IHTMLDocConstants.LOGO_FILE_PATH), null));
+            // final URL logoFileUrl = FileLocator.toFileURL(FileLocator.find(b,
+            // new Path(IHTMLDocConstants.LOGO_FILE_PATH), null));
+
+            File logoFile = new File(picFolderPath + File.separatorChar + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
+            saveLogoImage(SWT.IMAGE_JPEG, logoFile);
 
             String xslFilePath = xslFileUrl.getPath();
-            String logoFilePath = logoFileUrl.getPath();
+            // String logoFilePath = logoFileUrl.getPath();
+            // FileCopyUtils.copy(logoFilePath, picFolderPath + File.separatorChar
+            // + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
 
-            FileCopyUtils.copy(logoFilePath, picFolderPath + File.separatorChar
-                    + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
-
-            picList.add(new File(picFolderPath + File.separatorChar + IHTMLDocConstants.TALEND_LOGO_FILE_NAME).toURL());
+            picList.add(logoFile.toURL());
 
             Set keySet = picFilePathMap.keySet();
             for (Object key : keySet) {
@@ -414,11 +423,12 @@ public class HTMLDocGenerator {
         projectElement.addAttribute("name", getProject().getLabel());
         projectElement.addAttribute("logo", IHTMLDocConstants.PICTUREFOLDERPATH
                 + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
-        projectElement.addAttribute("title", IHTMLDocConstants.TITLE);
+        projectElement.addAttribute("title", IHTMLDocConstants.TITLE_GEN + getFullProductName());
         projectElement.addAttribute("link", IHTMLDocConstants.WEBSITE_LINK);
         projectElement.addAttribute("language", getProject().getLanguage().getName());
         projectElement.addAttribute("description", getProject().getDescription());
         projectElement.addAttribute("generatedDate", DateFormat.getDateTimeInstance().format(new Date()));
+        projectElement.addAttribute("versionName", getProductVersionName());
         projectElement.addAttribute("version", getCurrentTOSVersion());
         return projectElement;
     }
@@ -516,4 +526,40 @@ public class HTMLDocGenerator {
         return externalList;
     }
 
+    /**
+     * 
+     * DOC ggu Comment method "getProductName".
+     * 
+     * @return
+     */
+    private String getFullProductName() {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+
+        return brandingService.getFullProductName();
+    }
+
+    private String getProductVersionName() {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+
+        return brandingService.getShortProductName() + IHTMLDocConstants.VERSION;
+    }
+
+    private void saveLogoImage(int type, File file) throws IOException {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        ImageData imageData = brandingService.getLoginHImage().getImageData();
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+        ImageLoader imageLoader = new ImageLoader();
+        imageLoader.data = new ImageData[] { imageData };
+
+        imageLoader.save(result, type);
+
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(result.toByteArray());
+        fos.close();
+
+    }
 }

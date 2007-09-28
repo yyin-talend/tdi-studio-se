@@ -64,7 +64,7 @@
 						<!-- <td width="1%" rowspan="2" align="middle"></td> -->
 						<td width="58%">
 							<strong>
-								<font size="200" color="#B5DC10">Job&#160;</font>
+								<font size="200" color="#818181">Job&#160;</font>
 								<font size="200" color="#818181">documentation</font>
 							</strong>
 						</td>
@@ -96,7 +96,8 @@
 							<td align="middle" width="25%">
 								<xsl:value-of select="/project/job/@author"/>
 							</td>
-							<td align="middle" width="25%" class="TABLECOLUMNSTYLE">T.O.S VERSION
+							<td align="middle" width="25%" class="TABLECOLUMNSTYLE">
+								<xsl:value-of select="/project/@versionName"/>
 	          </td>
 							<td align="middle" width="25%" class="FONTSTYLE">
 								<xsl:value-of select="/project/@version"/>

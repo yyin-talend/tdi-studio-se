@@ -58,7 +58,7 @@ public class JobHTMLScriptsManager {
         String tmpFold = HTMLDocUtils.getTmpFolder();
         File dir = new File(tmpFold);
         if (dir.exists()) {
-            deleteDirectory(dir);
+            // deleteDirectory(dir);
         }
     }
 
