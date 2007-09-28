@@ -509,8 +509,7 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
-        if ((inNode != null) && (inNode.getComponentName() != null)
-                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -560,5 +559,25 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
     public Set<String> getNeededLibraries(boolean withChildrens) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getMergelinkOrder(org.talend.core.model.process.INode)
+     */
+    public int getMergelinkOrder(INode node) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#isThereLinkWithHash(org.talend.core.model.process.INode)
+     */
+    public boolean isThereLinkWithHash(INode node) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

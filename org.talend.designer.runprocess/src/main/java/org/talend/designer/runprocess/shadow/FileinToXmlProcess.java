@@ -556,4 +556,24 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
         return null;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getMergelinkOrder(org.talend.core.model.process.INode)
+     */
+    public int getMergelinkOrder(INode node) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#isThereLinkWithHash(org.talend.core.model.process.INode)
+     */
+    public boolean isThereLinkWithHash(INode node) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }
