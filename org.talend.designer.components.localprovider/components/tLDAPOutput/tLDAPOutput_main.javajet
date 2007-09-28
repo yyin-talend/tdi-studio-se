@@ -45,9 +45,11 @@ imports="
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
     	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separator%>)>0){
+    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getLabel()%>");
     		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(<%=separator%>)){
-    			entry_<%=cid%>.put("<%=column.getLabel()%>",value_<%=cid%>);
+    			attr_<%=cid%>.add(value_<%=cid%>);    		
     		}
+    		entry_<%=cid%>.put(attr_<%=cid%>);
     	}else{
     		entry_<%=cid%>.put("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel()%>);
     	}
