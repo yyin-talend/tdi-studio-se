@@ -907,6 +907,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
+        previewButton.setEnabled(false);
 
         // Separator Combo (field and row)
         if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
@@ -966,6 +967,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
         updateStatus(IStatus.OK, null);
+        previewButton.setEnabled(true);
         return true;
     }
 

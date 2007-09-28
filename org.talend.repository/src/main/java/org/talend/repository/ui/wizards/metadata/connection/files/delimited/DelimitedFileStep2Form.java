@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.delimited;
 
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -36,8 +35,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -978,7 +975,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-        // updateStatus(IStatus.OK, null);
+         updateStatus(IStatus.OK, null);
+         previewButton.setEnabled(false);
 
         // Separator Combo (field and row)
         if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
@@ -1033,6 +1031,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         }
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
+        previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
         return true;
     }

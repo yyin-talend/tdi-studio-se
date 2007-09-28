@@ -864,6 +864,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
+        previewButton.setEnabled(false);
 
         // Separator Combo (field and row)
         if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$
@@ -906,6 +907,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         }
 
         previewInformationLabel.setText(""); //$NON-NLS-1$
+        previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
         return true;
     }
