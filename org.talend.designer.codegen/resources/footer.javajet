@@ -187,7 +187,7 @@
         }            
     }
 <%
-	}else{ //isRunInMultiThread
+	}else{ // isRunInMultiThread
 %>
 	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 	try {
@@ -209,13 +209,25 @@
 		e.printStackTrace();
 	} finally {
 <%
-	}//end if(isRunInMultiThread)
+	}// end if(isRunInMultiThread)
 %>	
 		end = java.util.Calendar.getInstance().getTimeInMillis();
 		if (watch) {
     		System.out.println((end-start)+" milliseconds");
 	    }
 <%
+	if (stats) {
+%>
+	runStat.stopThreadStat();
+<%	
+	}
+
+	if (trace) {
+%>
+		runTrace.stopThreadTrace();
+<%
+	}
+	
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-start));
@@ -228,20 +240,10 @@
     }
     if(!(isRunInMultiThread 
     	&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1)){
+    // next brace is end of finally.
 %>
         
 	}
-<%
-	}
-	
-    if (stats) {
-%>
-	runStat.stopThreadStat();
-<%
-	}
-	if (trace) {
-%>
-	runTrace.stopThreadTrace();
 <%
 	}
 %>
