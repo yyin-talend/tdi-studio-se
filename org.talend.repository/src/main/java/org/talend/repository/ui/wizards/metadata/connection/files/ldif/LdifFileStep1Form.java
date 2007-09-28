@@ -110,6 +110,9 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
             serverCombo.setText(getConnection().getServer());
         }
         serverCombo.clearSelection();
+        
+        //Just mask it.
+        serverCombo.setReadOnly(true);
 
         if (getConnection().getFilePath() != null) {
             fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -126,7 +129,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-        serverCombo.setReadOnly(isReadOnly());
+//        serverCombo.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
 
@@ -291,15 +294,15 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
      */
     protected boolean checkFieldsValue() {
         // The fields
-        serverCombo.setEnabled(true);
-
-        if (serverCombo.getText() == "") { //$NON-NLS-1$
-            fileField.setEditable(false);
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
-            return false;
-        } else {
+//        serverCombo.setEnabled(true);
+//
+//        if (serverCombo.getText() == "") { //$NON-NLS-1$
+//            fileField.setEditable(false);
+//            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
+//            return false;
+//        } else {
             fileField.setEditable(true);
-        }
+//        }
 
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
