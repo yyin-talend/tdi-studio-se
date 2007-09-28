@@ -363,8 +363,7 @@ if(incomingConnName != null && columnList != null){
         }
     %>
         try{
-            pstmt_<%=cid %>.executeUpdate();
-            nb_line_inserted_<%=cid%>++;
+            insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
             whetherReject_<%=cid%> = true;
@@ -423,8 +422,7 @@ if(incomingConnName != null && columnList != null){
 
     %>
         try{
-            pstmt_<%=cid %>.executeUpdate();
-            nb_line_update_<%=cid%> ++;
+            updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
             whetherReject_<%=cid%> = true;
@@ -498,8 +496,7 @@ if(incomingConnName != null && columnList != null){
             }
             %>
             try{
-                pstmtUpdate_<%=cid %>.executeUpdate();
-                nb_line_update_<%=cid%> ++;
+                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 whetherReject_<%=cid%> = true;
@@ -539,8 +536,7 @@ if(incomingConnName != null && columnList != null){
             }
             %>
             try{
-                pstmtInsert_<%=cid %>.executeUpdate();
-                nb_line_inserted_<%=cid%>++;
+                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 whetherReject_<%=cid%> = true;
@@ -602,7 +598,6 @@ int updateFlag_<%=cid%>=0;
         }
     %>
     
-        int updateCount_<%=cid%> = -1;
         try{
             updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
             updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
@@ -648,9 +643,7 @@ int updateFlag_<%=cid%>=0;
             }
             %>
             try{
-                pstmtInsert_<%=cid %>.executeUpdate();
-            
-                nb_line_inserted_<%=cid%>++;  
+                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate(); 
             }catch(Exception e)
             {
                 whetherReject_<%=cid%> = true;
@@ -678,11 +671,7 @@ int updateFlag_<%=cid%>=0;
                 %>
             }
         }
-        else
-        {
-            nb_line_update_<%=cid%> ++;     
-        }
-
+        
 <%
     
     }else if (dataAction.equals("DELETE")){
@@ -701,7 +690,7 @@ int updateFlag_<%=cid%>=0;
         }
     %>
         try{
-            deletedCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
+            deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
         }catch(Exception e)
         {
             whetherReject_<%=cid%> = true;
@@ -763,7 +752,7 @@ int updateFlag_<%=cid%>=0;
             commitCounter_<%=cid%>=0;       
             
         }   
-        nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
+        
     <%
     }
 }

@@ -648,7 +648,6 @@ if(incomingConnName != null && columnList != null){
         		%>
                 try{
         			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-        			nb_line_inserted_<%=cid%>++;
                 }catch(Exception e)
                 {
                     whetherReject_<%=cid%> = true;
@@ -675,9 +674,7 @@ if(incomingConnName != null && columnList != null){
                     } 
                     %>
                 }
-           } else {
-               nb_line_update_<%=cid%> ++;
-           }
+           } 
 <%
 	
 	}else if (dataAction.equals("DELETE")){

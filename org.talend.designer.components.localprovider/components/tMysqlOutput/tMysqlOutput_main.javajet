@@ -637,7 +637,6 @@ int updateFlag_<%=cid%>=0;
     		%>
             try{
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                nb_line_inserted_<%=cid%>++;
             }catch(Exception e)
             {
                 whetherReject_<%=cid%> = true;
@@ -665,11 +664,6 @@ int updateFlag_<%=cid%>=0;
                 %>
             }
         }
-        else {
-            nb_line_update_<%=cid%> ++;
-        }
-
-
 <%
 	
 	}else if (dataAction.equals("DELETE")){
