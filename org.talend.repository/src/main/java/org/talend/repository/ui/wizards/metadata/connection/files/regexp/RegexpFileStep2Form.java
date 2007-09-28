@@ -54,7 +54,6 @@ import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
@@ -174,14 +173,17 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         if (i > 0) {
             rowsToSkipHeaderCheckboxCombo.setText("" + getConnection().getHeaderValue()); //$NON-NLS-1$
         }
+        rowsToSkipHeaderCheckboxCombo.getCombo().setEnabled(i > 0);
         i = getConnection().getFooterValue();
         if (i > 0) {
             rowsToSkipFooterCheckboxCombo.setText("" + getConnection().getFooterValue()); //$NON-NLS-1$
         }
+        rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(i > 0);
         i = getConnection().getLimitValue();
         if (i > 0) {
             rowsToSkipLimitCheckboxCombo.setText("" + getConnection().getLimitValue()); //$NON-NLS-1$
         }
+        rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(i > 0);
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
@@ -204,9 +206,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
         encodingCombo.setReadOnly(isReadOnly());
         rowSeparatorCombo.setReadOnly(isReadOnly());
         rowSeparatorText.setReadOnly(isReadOnly());
-        rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
-        rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
-        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
         emptyRowsToSkipCheckbox.setEnabled(!isReadOnly());
         firstRowIsCaptionCheckbox.setEnabled(!isReadOnly());
     }
@@ -641,7 +643,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
 
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    if (Character.getNumericValue(e.character) >= 10) {
+                    String string = String.valueOf(e.character);
+                    // Check if input is number, backspace key and delete key of keyboard.
+                    if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
                         e.doit = false;
                     }
                 }
@@ -658,6 +662,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
                         getConnection().setHeaderValue(0);
 
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
                         // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
                         // unusable.
                         firstRowIsCaptionCheckbox.setSelection(false);
@@ -683,6 +689,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
+
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
                     } else {
                         getConnection().setFooterValue(new Integer(rowsToSkipFooterCheckboxCombo.getText()));
                     }
@@ -702,6 +711,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
                         rowsToSkipLimitCheckboxCombo.deselectAll();
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
                         getConnection().setLimitValue(0);
+
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
                     } else {
                         getConnection().setLimitValue(new Integer(rowsToSkipLimitCheckboxCombo.getText()));
                     }
@@ -887,7 +899,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
                     return false;
                 }
             }

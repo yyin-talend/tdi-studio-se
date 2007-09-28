@@ -139,7 +139,10 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             serverCombo.setText(value);
         }
         serverCombo.clearSelection();
-
+        
+        //Just mask it. 
+        serverCombo.setReadOnly(true);
+        
         fileField.setText(getConnection().getFilePath());
 
         value = getConnection().getFieldSeparatorValue();
@@ -165,7 +168,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-        serverCombo.setReadOnly(isReadOnly());
+//        serverCombo.setReadOnly(isReadOnly());
         fieldSeparatorText.setReadOnly(isReadOnly());
         filePositionalViewer.setEnabled(!isReadOnly());
         fieldPositionText.setReadOnly(isReadOnly());
@@ -561,17 +564,17 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      */
     protected boolean checkFieldsValue(boolean checkViewerField) {
         // The fields
-        serverCombo.setEnabled(true);
+//        serverCombo.setEnabled(true);
 
-        if (serverCombo.getText() == "") { //$NON-NLS-1$
-            fileField.setEditable(false);
-            fileFormatCombo.setEnabled(false);
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
-            return false;
-        } else {
+//        if (serverCombo.getText() == "") { //$NON-NLS-1$
+//            fileField.setEditable(false);
+//            fileFormatCombo.setEnabled(false);
+//            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
+//            return false;
+//        } else {
             fileField.setEditable(true);
             fileFormatCombo.setEnabled(true);
-        }
+//        }
 
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$

@@ -53,7 +53,6 @@ import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -169,14 +168,17 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         if (i > 0) {
             rowsToSkipHeaderCheckboxCombo.setText("" + getConnection().getHeaderValue()); //$NON-NLS-1$
         }
+        rowsToSkipHeaderCheckboxCombo.getCombo().setEnabled(i > 0);
         i = getConnection().getFooterValue();
         if (i > 0) {
             rowsToSkipFooterCheckboxCombo.setText("" + getConnection().getFooterValue()); //$NON-NLS-1$
         }
+        rowsToSkipFooterCheckboxCombo.getCombo().setEnabled(i > 0);
         i = getConnection().getLimitValue();
         if (i > 0) {
             rowsToSkipLimitCheckboxCombo.setText("" + getConnection().getLimitValue()); //$NON-NLS-1$
         }
+        rowsToSkipLimitCheckboxCombo.getCombo().setEnabled(i > 0);
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
         firstRowIsCaptionCheckbox.setSelection(getConnection().isFirstLineCaption());
@@ -221,9 +223,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
         rowSeparatorText.setReadOnly(isReadOnly());
         escapeCharCombo.setReadOnly(isReadOnly());
         textEnclosureCombo.setReadOnly(isReadOnly());
-        rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
-        rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
-        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipHeaderCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipFooterCheckboxCombo.setReadOnly(isReadOnly());
+        // rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
         emptyRowsToSkipCheckbox.setEnabled(!isReadOnly());
         firstRowIsCaptionCheckbox.setEnabled(!isReadOnly());
     }
@@ -680,7 +682,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
 
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    if (Character.getNumericValue(e.character) >= 10) {
+                    String string = String.valueOf(e.character);
+                    // Check if input is number, backspace key and delete key of keyboard.
+                    if (!(string.matches("[0-9]*")) && e.keyCode != 8 && e.keyCode != SWT.DEL) {
                         e.doit = false;
                     }
                 }
@@ -698,6 +702,10 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         getConnection().setHeaderValue(0);
                         // if rowsHeaderToSkip isn't integer or is equals to 0, the firstRowIsCaptionCheckbox is
                         // unusable.
+
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipHeaderCheckboxCombo.getCombo().setFocus();
+
                         firstRowIsCaptionCheckbox.setSelection(false);
                         getConnection().setFirstLineCaption(false);
                     } else {
@@ -721,6 +729,10 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
+
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipFooterCheckboxCombo.getCombo().setFocus();
+
                     } else {
                         getConnection().setFooterValue(new Integer(rowsToSkipFooterCheckboxCombo.getText()));
                     }
@@ -740,6 +752,10 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
                         rowsToSkipLimitCheckboxCombo.deselectAll();
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
                         getConnection().setLimitValue(0);
+
+                        updateStatus(IStatus.ERROR, "Number allowed only.");
+                        rowsToSkipLimitCheckboxCombo.getCombo().setFocus();
+
                     } else {
                         getConnection().setLimitValue(new Integer(rowsToSkipLimitCheckboxCombo.getText()));
                     }
@@ -929,7 +945,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
+                            + " " + Messages.getString("FileStep2.mustBePrecised")); //$NON-NLS-1$
                     return false;
                 }
             }
