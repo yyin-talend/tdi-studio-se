@@ -134,9 +134,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 boolean nullable = ((AbstractInOutTableEntry) entrySource).getMetadataColumn().isNullable();
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
-                            nullable).toString()));
+                            nullable).toString(), talendType, nullable));
                 } else {
-                    variables.add(new Variable(variable, ""));
+                    variables.add(new Variable(variable, "", talendType, nullable));
                 }
             }
         }
