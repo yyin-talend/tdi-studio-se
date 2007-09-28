@@ -279,7 +279,7 @@ class Transfer{
     public String fillValue(String value, String colType) {
 	  if(value==null){
 	  		return " ";
-	  	}else if((value.startsWith("\"")||value.startsWith("'") )&& (value.endsWith("\"")||value.endsWith("'")))
+	  	}else if((value.startsWith("\"")||value.startsWith("'") )&& (value.endsWith("\"")||value.endsWith("'"))){
 			return "default '"+value.substring(1,value.length()-1)+"' ";
 	   	}else if(value.equalsIgnoreCase("null")){
 	   		return "default null ";
