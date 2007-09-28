@@ -985,9 +985,9 @@ public class Node extends Element implements INode {
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
             if (metadataList.get(i).getTableName().equals(metaName)/*
-             * &&
-             * metadataList.get(i).getAttachedConnector().equals(connectorName)
-             */) {
+                                                                     * &&
+                                                                     * metadataList.get(i).getAttachedConnector().equals(connectorName)
+                                                                     */) {
                 return metadataList.get(i);
             }
         }
@@ -1365,9 +1365,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1378,9 +1378,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
@@ -1837,5 +1837,47 @@ public class Node extends Element implements INode {
      */
     public List<? extends INodeConnector> getListConnector() {
         return listConnector;
+    }
+
+    /**
+     * Test if the current node can be the start of the job not.
+     * 
+     * @return
+     */
+    public boolean checkIfCanBeStart() {
+        if (isELTComponent()) {
+            // is there condition link, then can't set the start.
+            boolean isThereConditionLink = false;
+            for (int j = 0; j < getIncomingConnections().size() && !isThereConditionLink; j++) {
+                Connection connection = (Connection) getIncomingConnections().get(j);
+                if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
+                    isThereConditionLink = true;
+                }
+            }
+            return !isThereConditionLink;
+        } else {
+            boolean canBeStart = false;
+            boolean isActivatedConnection = false;
+            for (int j = 0; j < getIncomingConnections().size() && !isActivatedConnection; j++) {
+                Connection connection = (Connection) getIncomingConnections().get(j);
+                // connection that will generate a hash file are not
+                // considered as activated for this test.
+                if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+                    isActivatedConnection = true;
+                }
+            }
+            if (!isActivatedConnection) {
+                if (!getProcess().isThereLinkWithHash(this) && (getProcess().getMergelinkOrder(this) <= 1)) {
+                    canBeStart = true;
+                }
+            } else {
+                if (getIncomingConnections().size() == 0 && (getProcess().getMergelinkOrder(this) <= 1)) {
+                    if (!getProcess().isThereLinkWithHash(this)) {
+                        canBeStart = true;
+                    }
+                }
+            }
+            return canBeStart;
+        }
     }
 }

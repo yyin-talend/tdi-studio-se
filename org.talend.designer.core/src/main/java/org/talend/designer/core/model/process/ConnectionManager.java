@@ -23,7 +23,6 @@ package org.talend.designer.core.model.process;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -193,6 +192,9 @@ public class ConnectionManager {
     public static boolean canConnectToTarget(Node source, Node oldTarget, Node newTarget, EConnectionType lineStyle,
             String connectorName, String connectionName) {
         newlineStyle = lineStyle;
+        if (source.equals(newTarget)) {
+            return false;
+        }
 
         INode processStartNode = source.getProcessStartNode(true);
         // if the target is the start of the (source) process, then can't connect.

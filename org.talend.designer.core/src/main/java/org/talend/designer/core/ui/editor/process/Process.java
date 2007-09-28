@@ -532,8 +532,8 @@ public class Process extends Element implements IProcess {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
                 if (param != null) {
                     if (param.isReadOnly()
-                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName()
-                                    .equals(EParameterName.VERSION.getName()))) {
+                            && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
+                                    EParameterName.VERSION.getName()))) {
                         continue; // if the parameter is read only, don't load
                         // it (this will prevent to overwrite the
                         // value)
@@ -594,8 +594,7 @@ public class Process extends Element implements IProcess {
         ParametersType params = fileFact.createParametersType();
         process.setParameters(params);
 
-        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(),
-                process);
+        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(), process);
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
@@ -905,8 +904,7 @@ public class Process extends Element implements IProcess {
         // node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         for (IElementParameter currentParam : node.getElementParameters()) {
             if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                IElementParameter schemaParam = currentParam.getChildParameters().get(
-                        EParameterName.SCHEMA_TYPE.getName());
+                IElementParameter schemaParam = currentParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
                 if (schemaParam != null && ((ElementParameter) schemaParam).isDisplayedByDefault()) {
                     if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
                         String metaRepositoryName = (String) currentParam.getChildParameters().get(
@@ -1005,8 +1003,7 @@ public class Process extends Element implements IProcess {
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
                         if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                            Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection,
-                                    repositoryValue);
+                            Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
 
                             if (objectValue != null) {
                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
@@ -1025,8 +1022,7 @@ public class Process extends Element implements IProcess {
                                     // check the value
                                     if (param.getField().equals(EParameterFieldType.TABLE)) {
                                         if ((param.getValue() instanceof List) && (objectValue instanceof List)) {
-                                            List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param
-                                                    .getValue();
+                                            List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
                                             List<Map<String, Object>> newMaps = (List<Map<String, Object>>) objectValue;
 
                                             // sameValues = oldMaps.size() == newMaps.size();
@@ -1147,8 +1143,8 @@ public class Process extends Element implements IProcess {
                             if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                     && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                                 Object objectValue = RepositoryToComponentProperty.getValue(
-                                        (org.talend.core.model.metadata.builder.connection.Connection) result
-                                                .getParameter(), repositoryValue);
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        repositoryValue);
                                 if (objectValue != null) {
                                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                             && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
@@ -1189,8 +1185,7 @@ public class Process extends Element implements IProcess {
                     if (result.isChecked()) {
                         IMetadataTable newTable = ((IMetadataTable) result.getParameter());
                         // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-                        MetadataTool
-                                .copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
+                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
                     } else { // result.isChecked()==false
                         node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     }
@@ -1253,12 +1248,12 @@ public class Process extends Element implements IProcess {
             // end of fix
 
             if (connectionTypeFound) {
-                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName,
-                        metaname, cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), connectorName, metaname,
+                        cType.getLabel(), cType.getMetaname());
             } else {
                 EConnectionType type = EConnectionType.getTypeFromId(lineStyleId);
-                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname,
-                        cType.getLabel(), cType.getMetaname());
+                connec = new Connection(source, target, type, source.getConnectorFromType(type).getName(), metaname, cType
+                        .getLabel(), cType.getMetaname());
             }
             // if ((!source.isActivate()) || (!target.isActivate())) {
             // connec.setActivate(false);
@@ -1676,41 +1671,7 @@ public class Process extends Element implements IProcess {
         for (Node node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 if (node.isActivate()) {
-                    if (node.isELTComponent()) {
-                        // is there condition link, then don't set the start.
-                        boolean isThereConditionLink = false;
-                        for (int j = 0; j < node.getIncomingConnections().size() && !isThereConditionLink; j++) {
-                            Connection connection = (Connection) node.getIncomingConnections().get(j);
-                            if (connection.isActivate()
-                                    && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
-                                isThereConditionLink = true;
-                            }
-                        }
-                        node.setStart(!isThereConditionLink);
-                    } else {
-                        node.setStart(false);
-                        boolean isActivatedConnection = false;
-                        for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
-                            Connection connection = (Connection) node.getIncomingConnections().get(j);
-                            // connection that will generate a hash file are not
-                            // considered as activated for this test.
-                            if (connection.isActivate()
-                                    && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
-                                isActivatedConnection = true;
-                            }
-                        }
-                        if (!isActivatedConnection) {
-                            if (!isThereLinkWithHash(node) && (getMergelinkOrder(node) <= 1)) {
-                                node.setStart(true);
-                            }
-                        } else {
-                            if (node.getIncomingConnections().size() == 0 && (getMergelinkOrder(node) <= 1)) {
-                                if (!isThereLinkWithHash(node)) {
-                                    node.setStart(true);
-                                }
-                            }
-                        }
-                    }
+                    node.setStart(node.checkIfCanBeStart());
                 }
             }
         }
@@ -1733,8 +1694,7 @@ public class Process extends Element implements IProcess {
                 if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MERGE)) {
                     returnValue = connec.getInputId();
                     break;
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
-                        && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
                     returnValue = getMergelinkOrder(connec.getTarget());
                 }
             }
@@ -1762,8 +1722,7 @@ public class Process extends Element implements IProcess {
                     map = new HashMap<INode, Integer>();
                     map.put(connec.getTarget(), connec.getInputId());
                     break;
-                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN)
-                        && connec.getTarget() != null) {
+                } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null) {
                     map = getLinkedMergeInfo(connec.getTarget());
                 }
             }
@@ -1903,8 +1862,7 @@ public class Process extends Element implements IProcess {
     @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
