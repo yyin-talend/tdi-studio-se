@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -100,15 +101,17 @@ public class ChangeMetadataCommand extends Command {
     public ChangeMetadataCommand() {
     }
 
-    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode, IMetadataTable currentInputMetadata,
-            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, IElementParameter schemaParam, Node inputNode,
+            IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata,
+            IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.schemaParam = schemaParam;
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -139,7 +142,8 @@ public class ChangeMetadataCommand extends Command {
         if (schemaParam == null) {
             currentConnector = EConnectionType.FLOW_MAIN.getName();
             for (IElementParameter param : node.getElementParameters()) {
-                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(currentConnector)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)
+                        && param.getContext().equals(currentConnector)) {
                     this.schemaParam = param;
                 }
             }
@@ -262,7 +266,8 @@ public class ChangeMetadataCommand extends Command {
                         end = true;
                         if (parameter != null) {
                             List<Map<String, Object>> map2 = (List<Map<String, Object>>) parameter.getValue();
-                            if (map2 != null && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
+                            if (map2 != null
+                                    && inputNode.getMetadataList().get(0).getListColumns().size() != map2.size()) {
                                 ColumnListController.updateColumnList(inputNode, columnNameChanged);
                             }
                         }
@@ -311,8 +316,8 @@ public class ChangeMetadataCommand extends Command {
                 boolean sourceIsBuiltIn = ((Node) currentIO.getSource()).getConnectorFromType(
                         currentIO.getConnection().getLineStyle()).isBuiltIn();
 
-                boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(currentIO.getConnection().getLineStyle())
-                        .isBuiltIn();
+                boolean targetIsBuiltIn = ((Node) targetNode).getConnectorFromType(
+                        currentIO.getConnection().getLineStyle()).isBuiltIn();
                 if (baseConnector.equals(currentConnector)
                         && (targetIsBuiltIn || (!newOutputMetadata.sameMetadataAs(targetNode
                                 .getMetadataFromConnector(baseConnector))))) {
@@ -323,19 +328,21 @@ public class ChangeMetadataCommand extends Command {
                                     && targetNode.getMetadataList().size() > 0) {
                                 IMetadataTable tmpClone;
                                 if (sourceIsBuiltIn) {
-                                    tmpClone = node.getMetadataTable(currentIO.getConnection().getMetadataTable().getTableName())
-                                            .clone(true);
+                                    tmpClone = node.getMetadataTable(
+                                            currentIO.getConnection().getMetadataTable().getTableName()).clone(true);
                                 } else {
-                                    tmpClone = node.getMetadataFromConnector(currentIO.getConnection().getConnectorName()).clone(
-                                            true);
+                                    tmpClone = node.getMetadataFromConnector(
+                                            currentIO.getConnection().getConnectorName()).clone(true);
                                 }
                                 IMetadataTable toCopy = newOutputMetadata.clone();
                                 // to keep customs
                                 MetadataTool.copyTable(toCopy, tmpClone);
                                 toCopy = tmpClone;
-                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector).clone(true);
+                                IMetadataTable copy = ((Node) targetNode).getMetadataFromConnector(baseConnector)
+                                        .clone(true);
                                 MetadataTool.copyTable(toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy);
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null,
+                                        copy);
                                 if (outputdataContainer.getOuputs().size() > 0) {
                                     List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
                                             .getColumnNameChanged();
@@ -354,8 +361,8 @@ public class ChangeMetadataCommand extends Command {
                             if (!targetIsBuiltIn && getPropagate()) {
                                 if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     if (outputdataContainer.getOuputs().size() > 0) {
-                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
-                                                .getColumnNameChanged();
+                                        List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs()
+                                                .get(0).getColumnNameChanged();
                                         for (ChangeMetadataCommand cmd : propagatedChange) {
                                             for (IODataComponent dataComp : cmd.outputdataContainer.getOuputs()) {
                                                 dataComp.setColumnNameChanged(columnNameChanged);
@@ -434,7 +441,9 @@ public class ChangeMetadataCommand extends Command {
             }
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
+                newOutputMetadata);
+        setXMLMAPPING();
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -442,6 +451,24 @@ public class ChangeMetadataCommand extends Command {
             ((Process) node.getProcess()).checkProcess();
         }
 
+    }
+
+    private org.talend.core.model.metadata.builder.connection.Connection connection;
+
+    /**
+     * qzhang Comment method "setXMLMAPPING".
+     */
+    protected void setXMLMAPPING() {
+        if (getConnection() != null) {
+            for (IElementParameter parameter : node.getElementParameters()) {
+                if (parameter.getField() == EParameterFieldType.TABLE
+                        && parameter.getRepositoryValue().equals("XML_MAPPING")) {
+                    List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
+                    RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata);
+                    parameter.setRepositoryValueUsed(true);
+                }
+            }
+        }
     }
 
     @Override
@@ -473,7 +500,8 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata,
+                oldOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
@@ -495,6 +523,24 @@ public class ChangeMetadataCommand extends Command {
                 tabbedPropertySheetPage.refresh();
             }
         }
+    }
+
+    /**
+     * Getter for connection.
+     * 
+     * @return the connection
+     */
+    public org.talend.core.model.metadata.builder.connection.Connection getConnection() {
+        return this.connection;
+    }
+
+    /**
+     * Sets the connection.
+     * 
+     * @param connection the connection to set
+     */
+    public void setConnection(org.talend.core.model.metadata.builder.connection.Connection connection) {
+        this.connection = connection;
     }
 
     /**

@@ -246,7 +246,7 @@ public class FileController extends AbstractElementPropertySectionController {
         final String name2 = param.getName();
         Text labelText = (Text) hashCurControls.get(name2);
         Object value = param.getValue();
-        if (labelText == null) {
+        if (labelText == null || labelText.isDisposed()) {
             return;
         }
 
