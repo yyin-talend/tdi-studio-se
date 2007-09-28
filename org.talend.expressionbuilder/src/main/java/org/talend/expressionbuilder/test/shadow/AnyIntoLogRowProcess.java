@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
@@ -41,7 +39,6 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.shadow.LogRowNode;
 import org.talend.designer.rowgenerator.shadow.RowGenContextManager;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.shadow.ShadowConnection;
 import org.talend.designer.runprocess.shadow.ShadowNode;
 
@@ -185,8 +182,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      */
     public List<? extends INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
-        if ((inNode != null) && (inNode.getComponentName() != null)
-                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+        if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
             matchingNodes.add(inNode);
         }
         if ((outNode != null) && (outNode.getComponentName() != null)
@@ -491,6 +487,26 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getMergelinkOrder(org.talend.core.model.process.INode)
+     */
+    public int getMergelinkOrder(INode node) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#isThereLinkWithHash(org.talend.core.model.process.INode)
+     */
+    public boolean isThereLinkWithHash(INode node) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
