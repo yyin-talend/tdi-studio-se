@@ -321,6 +321,18 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    
+    <PARAMETER
+      NAME="SCHEMA_POSTGRES"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="SCHEMA"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='POSTGRE')" 
+     >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
         
 
     

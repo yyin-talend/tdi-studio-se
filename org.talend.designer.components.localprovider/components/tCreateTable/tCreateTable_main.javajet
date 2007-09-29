@@ -182,7 +182,15 @@ class Transfer{
 	
 	
 	public String sql(String dbType,String tableName,INode node){
-	String sql="create table "+protectChar(dbType, tableName)+" (";
+	String sql="";
+	//table name (special postgres schema)
+	if(dbType.equals("Postgre")){
+		String schema = ElementParameterParser.getValue(node,"__SCHEMA_POSTGRES__");
+		sql="create table \\\"\"+"+schema+"+\"\\\"."+protectChar(dbType, tableName)+" (";
+	}else{
+		sql="create table "+protectChar(dbType, tableName)+" (";
+	}
+	
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		List PKey=new ArrayList();	
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
