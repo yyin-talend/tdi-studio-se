@@ -305,7 +305,7 @@ public class ChangeMetadataCommand extends Command {
 
                 Node sourceNode = (Node) currentIO.getSource();
                 nodeConnector = sourceNode.getConnectorFromName(currentIO.getConnection().getConnectorName());
-                baseConnector = nodeConnector.getBaseSchema().equals(INodeConnector.INPUT_FLOW) ? "FLOW":nodeConnector.getBaseSchema();
+                baseConnector = nodeConnector.getBaseSchema();
 
                 INode targetNode = currentIO.getTarget();
 
@@ -429,9 +429,7 @@ public class ChangeMetadataCommand extends Command {
         }
 
         for (INodeConnector connector : node.getListConnector()) {
-            if ((!connector.getName().equals(currentConnector))
-                    && (connector.getBaseSchema().equals(currentConnector) || connector.getBaseSchema().equals(
-                            INodeConnector.INPUT_FLOW))) {
+            if ((!connector.getName().equals(currentConnector)) && connector.getBaseSchema().equals(currentConnector)) {
                 // if there is some other schema dependant of this one, modify them
                 MetadataTool.copyTable(newOutputMetadata, node.getMetadataFromConnector(connector.getName()));
             }
