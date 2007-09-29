@@ -48,7 +48,7 @@ if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
-boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
+
 %>
 whetherReject_<%=cid%> = false;
 <%
@@ -60,7 +60,7 @@ while (index>=0) {
 } 
 
 	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)&&!isSelectQuery) {
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 			if (metadata!=null) {
 				List< ? extends IConnection> conns = node.getIncomingConnections();
