@@ -108,7 +108,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     public void initGraphicComponents() {
         mainComposite = new Composite(parentComposite, SWT.NONE);
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(mainComposite.getBackground())) {
+        if (parentComposite.getBackground() != null
+                && !parentComposite.getBackground().equals(mainComposite.getBackground())) {
             mainComposite.setBackground(parentComposite.getBackground());
         }
         GridLayout layout = new GridLayout();
@@ -217,14 +218,16 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
-                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
+                if (bean.getFunction() != null
+                        && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     return ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
                 }
                 return bean.getParameter();
             }
 
             public void set(MetadataColumnExt bean, String value) {
-                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
+                if (bean.getFunction() != null
+                        && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     ((StringParameter) bean.getFunction().getParameters().get(0)).setValue(value);
                 }
                 bean.setChanged(true);
@@ -239,7 +242,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
      * @param tableViewerCreator
      */
     private void configureFunctionColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator) {
-        CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
+        CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory
+                .getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
         final TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
@@ -269,7 +273,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         column.setWidth(45);
     }
 
-    protected IBeanPropertyAccessors<MetadataColumnExt, String> getFunctionAccessor(final ComboBoxCellEditor functComboBox) {
+    protected IBeanPropertyAccessors<MetadataColumnExt, String> getFunctionAccessor(
+            final ComboBoxCellEditor functComboBox) {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
@@ -311,6 +316,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     ext.setFunction(functionManager.getDefaultFunction(ext, value));
                     ext.setChanged(true);
                 }
+                bean.setPattern(MetadataTableEditorViewExt.this.getJavaDateTypeForDefaultPattern(bean));
+
             }
 
         };
@@ -522,7 +529,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
         Label previewLabel = new Label(preCom, SWT.NONE);
         previewLabel.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(previewLabel.getBackground())) {
+        if (parentComposite.getBackground() != null
+                && !parentComposite.getBackground().equals(previewLabel.getBackground())) {
             previewLabel.setBackground(parentComposite.getBackground());
         }
         Button refresh = new Button(preCom, SWT.NONE);
@@ -574,7 +582,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         GridData funLabelGd = new GridData(GridData.FILL_BOTH);
         funLabel.setLayoutData(funLabelGd);
 
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(funLabel.getBackground())) {
+        if (parentComposite.getBackground() != null
+                && !parentComposite.getBackground().equals(funLabel.getBackground())) {
             funLabel.setBackground(parentComposite.getBackground());
         }
         return funLabel;
@@ -603,7 +612,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
         Label titleLabel = new Label(schCom, SWT.NONE);
         titleLabel.setLayoutData(gridData);
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(titleLabel.getBackground())) {
+        if (parentComposite.getBackground() != null
+                && !parentComposite.getBackground().equals(titleLabel.getBackground())) {
             titleLabel.setBackground(parentComposite.getBackground());
         }
         return titleLabel;
@@ -666,8 +676,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
             funColumn.setWidth(0);
             funColumn.getTableColumn().setResizable(false);
             funColumn.setMoveable(false);
-            if ((id.equals(ID_COLUMN_FUNCTION) && getTableViewerCreator().getColumn(ID_COLUMN_PARAMETER).getTableColumn()
-                    .getWidth() == 0)
+            if ((id.equals(ID_COLUMN_FUNCTION) && getTableViewerCreator().getColumn(ID_COLUMN_PARAMETER)
+                    .getTableColumn().getWidth() == 0)
                     || ((id.equals(ID_COLUMN_PARAMETER)) && getTableViewerCreator().getColumn(ID_COLUMN_FUNCTION)
                             .getTableColumn().getWidth() == 0)) {
                 funCom.setVisible(false);
