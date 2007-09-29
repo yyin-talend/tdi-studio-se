@@ -99,7 +99,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
         spagicCheckButton.getCheckbox().addSelectionListener(listener);
 
         // disable the spagic feature
-        // spagicCheckButton.setEnabled(false, parent);
+        spagicCheckButton.setEnabled(false, parent);
     }
 
     private void updateEnableStateFromDisplay() {
