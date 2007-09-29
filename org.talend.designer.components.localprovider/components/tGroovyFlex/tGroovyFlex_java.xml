@@ -28,42 +28,8 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="1"
-    />
-
-    <PARAMETER
-      NAME="GROOVY_START"
-      FIELD="MEMO_JAVA"
-      REQUIRED="false"
-      NUM_ROW="2"
-      NB_LINES="9"
-    >
-      <DEFAULT></DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="GROOVY_MAIN"
-      FIELD="MEMO_JAVA"
-      REQUIRED="false"
-      NUM_ROW="3"
-      NB_LINES="9"
-    >
-      <DEFAULT></DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="GROOVY_END"
-      FIELD="MEMO_JAVA"
-      REQUIRED="false"
-      NUM_ROW="4"
-      NB_LINES="9"
-    >
-      <DEFAULT></DEFAULT>
+    <PARAMETER NAME="GROOVY_FILE" FIELD="FILE" NUM_ROW="2" REQUIRED="true" REPOSITORY_VALUE="FILE_PATH">
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/groovy.txt"</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
 
