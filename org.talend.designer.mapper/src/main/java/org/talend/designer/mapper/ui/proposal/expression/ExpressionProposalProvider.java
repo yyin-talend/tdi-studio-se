@@ -39,6 +39,7 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.expressionbuilder.test.shadow.Variable;
 
@@ -130,13 +131,22 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
             for (IColumnEntry entrySource : dataMapTableEntries) {
                 String variable = LanguageProvider.getCurrentLanguage().getLocation(entrySource.getParentName(),
                         entrySource.getName());
-                String talendType = ((AbstractInOutTableEntry) entrySource).getMetadataColumn().getTalendType();
-                boolean nullable = ((AbstractInOutTableEntry) entrySource).getMetadataColumn().isNullable();
-                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
-                            nullable).toString(), talendType, nullable));
-                } else {
-                    variables.add(new Variable(variable, "", talendType, nullable));
+                String talendType = null;
+                boolean nullable = true;
+                if (entrySource instanceof AbstractInOutTableEntry) {
+                    talendType = ((AbstractInOutTableEntry) entrySource).getMetadataColumn().getTalendType();
+                    nullable = ((AbstractInOutTableEntry) entrySource).getMetadataColumn().isNullable();
+                } else if (entrySource instanceof VarTableEntry) {
+                    talendType = ((VarTableEntry) entrySource).getType();
+                    nullable = ((VarTableEntry) entrySource).isNullable();
+                }
+                if (talendType != null) {
+                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
+                                nullable).toString(), talendType, nullable));
+                    } else {
+                        variables.add(new Variable(variable, "", talendType, nullable));
+                    }
                 }
             }
         }

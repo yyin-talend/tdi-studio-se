@@ -127,6 +127,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ExpressionFilterEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
@@ -1429,11 +1430,17 @@ public abstract class DataMapTableView extends Composite {
 
         TableItem[] items = tableViewerCreator.getTable().getSelection();
         if (items.length == 1) {
-            TableItem item = items[0];
-            AbstractInOutTableEntry entry = (AbstractInOutTableEntry) item.getData();
-            id.append(entry.getParent().getName()+"=>");
-            id.append(entry.getMetadataColumn().getLabel());
-            
+            Object item = items[0].getData();
+            if (item instanceof AbstractInOutTableEntry) {
+                AbstractInOutTableEntry entry = (AbstractInOutTableEntry) item;
+                id.append(entry.getParent().getName() + "=>");
+                id.append(entry.getMetadataColumn().getLabel());
+            } else if (item instanceof VarTableEntry) {
+                VarTableEntry entry = (VarTableEntry) item;
+                id.append(entry.getParent().getName() + "=>");
+                id.append(entry.getName());
+            }
+
         }
 
         cellEditor.setOwnerId(id.toString());
