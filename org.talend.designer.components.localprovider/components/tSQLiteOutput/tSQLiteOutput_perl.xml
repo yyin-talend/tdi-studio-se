@@ -35,7 +35,15 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SQLITE"
     />
-    
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>SQLite</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"

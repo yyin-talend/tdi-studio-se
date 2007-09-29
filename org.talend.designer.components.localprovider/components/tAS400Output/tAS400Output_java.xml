@@ -46,7 +46,15 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>AS400</DEFAULT>
+    </PARAMETER>   
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"

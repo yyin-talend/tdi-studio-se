@@ -48,6 +48,16 @@
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Access</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"

@@ -55,7 +55,15 @@
     >
       <DEFAULT>"II7"</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Ingres</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"

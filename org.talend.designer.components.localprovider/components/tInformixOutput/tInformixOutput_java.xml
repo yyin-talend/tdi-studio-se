@@ -55,7 +55,15 @@
     >
       <DEFAULT>"1533"</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Informix</DEFAULT>
+    </PARAMETER>   
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"

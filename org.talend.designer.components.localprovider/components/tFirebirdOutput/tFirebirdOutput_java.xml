@@ -46,7 +46,15 @@
     >
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
-    
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>FireBird</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"

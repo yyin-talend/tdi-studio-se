@@ -95,7 +95,7 @@
     </PARAMETER>
 	<PARAMETER
       NAME="DBTABLE"
-      FIELD="DBTABLE"
+      FIELD="TEXT"
       NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>

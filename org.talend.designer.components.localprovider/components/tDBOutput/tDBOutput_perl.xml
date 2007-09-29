@@ -74,7 +74,20 @@
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="2"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <ITEMS DEFAULT="undef;sun.jdbc.odbc.JdbcOdbcDriver;MICROSOFT SQL SERVER (ODBC DRIVER);MSODBC">
+        <ITEM
+          NAME="ODBC"
+          VALUE="undef;sun.jdbc.odbc.JdbcOdbcDriver;MICROSOFT SQL SERVER (ODBC DRIVER);MSODBC"
+          REPOSITORY_ITEM="ODBC"
+        />
+      </ITEMS>
+    </PARAMETER>
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"

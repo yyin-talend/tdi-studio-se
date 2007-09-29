@@ -179,7 +179,15 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
-    
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>HSQLDB</DEFAULT>
+    </PARAMETER>   
     <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"

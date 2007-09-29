@@ -50,7 +50,15 @@
         <ITEM NAME="DERBYCLIENT"     VALUE="DERBYCLIENT"/>
       </ITEMS>
     </PARAMETER>
-    
+    <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>JavaDB</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="CONNECTION_FLAG"
       FIELD="CHECK"

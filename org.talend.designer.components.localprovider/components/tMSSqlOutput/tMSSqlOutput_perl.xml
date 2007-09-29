@@ -37,7 +37,15 @@
     />
 
 
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>MSSQL</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="DSN"
       FIELD="TEXT"

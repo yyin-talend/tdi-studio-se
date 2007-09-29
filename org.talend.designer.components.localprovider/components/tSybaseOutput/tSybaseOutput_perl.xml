@@ -35,7 +35,15 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SYBASE"
     />
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>SybaseASE</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"

@@ -47,7 +47,15 @@
     >    
        <DEFAULT>""</DEFAULT>
     </PARAMETER>
-     
+     <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>SQLite</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"

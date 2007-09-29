@@ -43,7 +43,15 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>MySQL</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
