@@ -59,6 +59,7 @@ import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.filepositionalviewer.FilePositionalViewer;
 import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule;
@@ -139,17 +140,16 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             serverCombo.setText(value);
         }
         serverCombo.clearSelection();
-        
-        //Just mask it. 
+
+        // Just mask it.
         serverCombo.setReadOnly(true);
-        
+
         fileField.setText(getConnection().getFilePath());
 
         value = getConnection().getFieldSeparatorValue();
 
         // remove quotes.
-        if (!value.equals("*"))
-        {
+        if (!value.equals("*")) {
             value = value.substring(1, value.length() - 1);
         }
         checkFilePathAndManageIt(false);
@@ -166,9 +166,10 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
+    @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-//        serverCombo.setReadOnly(isReadOnly());
+        // serverCombo.setReadOnly(isReadOnly());
         fieldSeparatorText.setReadOnly(isReadOnly());
         filePositionalViewer.setEnabled(!isReadOnly());
         fieldPositionText.setReadOnly(isReadOnly());
@@ -176,6 +177,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         fileFormatCombo.setReadOnly(isReadOnly());
     }
 
+    @Override
     protected void addFields() {
         int heightViewer = 150;
 
@@ -254,12 +256,14 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         addUtilsButtonListeners();
     }
 
+    @Override
     protected void addUtilsButtonListeners() {
 
         if (!isInWizard()) {
             // Event cancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -275,6 +279,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
 
         // Synchronise the graphicRule width the scrolledCompositeFileViewer
@@ -419,6 +424,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         // Separator Text : check Key Listener
         fieldSeparatorText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 e.doit = charIsAcceptedOnFieldSeparator(fieldSeparatorText.getText(), e.character, fieldSeparatorText
                         .getSelection().x);
@@ -461,6 +467,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         // Position Text : Key Listener
         fieldPositionText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 e.doit = charIsAcceptedOnFieldPosition(fieldPositionText.getText(), e.character, fieldPositionText
                         .getSelection().x);
@@ -476,9 +483,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
         filePathIsDone = false;
         if (fileField.getText() == "") { //$NON-NLS-1$
-            filePositionalViewer
-                    .setText("\n" + Messages.getString("FileStep1.fileViewerTip1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                          
+            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         } else {
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -553,6 +559,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         return checkFieldsValue(true);
     }
@@ -564,17 +571,17 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      */
     protected boolean checkFieldsValue(boolean checkViewerField) {
         // The fields
-//        serverCombo.setEnabled(true);
+        // serverCombo.setEnabled(true);
 
-//        if (serverCombo.getText() == "") { //$NON-NLS-1$
-//            fileField.setEditable(false);
-//            fileFormatCombo.setEnabled(false);
-//            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
-//            return false;
-//        } else {
-            fileField.setEditable(true);
-            fileFormatCombo.setEnabled(true);
-//        }
+        // if (serverCombo.getText() == "") { //$NON-NLS-1$
+        // fileField.setEditable(false);
+        // fileFormatCombo.setEnabled(false);
+        // updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
+        // return false;
+        // } else {
+        fileField.setEditable(true);
+        fileFormatCombo.setEnabled(true);
+        // }
 
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
@@ -668,17 +675,18 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
         if (super.isVisible()) {
             // Adapt the UI fieldSeparator and Position to step1
             String value = getConnection().getFieldSeparatorValue();
-            if(!value.equals("*"))
-            {
-                value = value.substring(1,value.length()-1);
-            }
+            value = TalendTextUtils.removeQuotes(value);
             fieldSeparatorText.setText(value);
+            if (value.endsWith("*")) {
+                value = value.substring(0, value.length() - 1);
+            }
             filePositionalViewer.setSeparatorValue(value, true);
             String newPosition = filePositionalViewer.calculatePositionX();
             if (!fieldPositionText.getText().equals(newPosition)) {

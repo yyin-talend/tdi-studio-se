@@ -68,7 +68,7 @@ public class FilePositionalViewer extends Composite {
 
     protected static int decalScreen;
 
-    private Text text;
+    private final Text text;
 
     private static List<VerticalMarkerEditor> listVerticalMarker;
 
@@ -140,6 +140,7 @@ public class FilePositionalViewer extends Composite {
          */
         MouseAdapter mouseAdapter = new MouseAdapter() {
 
+            @Override
             public void mouseDown(MouseEvent e) {
                 if (isEnabled) {
                     int posXpix = calculatePositionByPixel(e.x);
@@ -217,6 +218,9 @@ public class FilePositionalViewer extends Composite {
             String[] drawLine = s.split(","); //$NON-NLS-1$
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {
+                if ("".equals(drawLine[i])) {
+                    continue;
+                }
                 int lineToPrint = (new Integer(drawLine[i]).intValue()) + oldToPrint;
                 drawVerticalMarker(adjustPositionWithPixel(lineToPrint));
                 GraphicRule.drawGraphicRule(adjustPositionWithPixel(lineToPrint));
@@ -505,7 +509,7 @@ public class FilePositionalViewer extends Composite {
 
         boolean stopDrag = false;
 
-        private final  ResizeHelper resizeHelper = new ResizeHelper();
+        private final ResizeHelper resizeHelper = new ResizeHelper();
 
         public TopMarkerEditor(Composite parent, int style) {
             super(parent, style);
@@ -562,8 +566,8 @@ public class FilePositionalViewer extends Composite {
                                 if (resizeHelper.isDragging()) {
                                     for (VerticalMarkerEditor marker : listVerticalMarker) {
                                         if (posX == marker.getPosX()) {
-                                            if (!composite.translateVerticalMarker(marker, adjustPositionWithPixel(marker.posX),
-                                                    newPoint.x)) {
+                                            if (!composite.translateVerticalMarker(marker,
+                                                    adjustPositionWithPixel(marker.posX), newPoint.x)) {
                                                 stopDrag = true;
                                                 event.type = SWT.MouseUp;
                                                 break;
@@ -572,7 +576,8 @@ public class FilePositionalViewer extends Composite {
                                     }
                                     for (TopMarkerEditor top : listTopMarkerEditor) {
                                         if (posX == top.getPosX()) {
-                                            composite.translateTopMarker(top, adjustPositionWithPixel(top.posX), newPoint.x);
+                                            composite.translateTopMarker(top, adjustPositionWithPixel(top.posX),
+                                                    newPoint.x);
                                         }
                                     }
                                     resizeHelper.setLastDragPoint(newPoint);
@@ -660,7 +665,8 @@ public class FilePositionalViewer extends Composite {
         }
 
         private void setDeleteCursor() {
-            Cursor cursor = new Cursor(this.getDisplay(), ImageProvider.getImageDesc(EImage.DELETE_ICON).getImageData(), 0, 0);
+            Cursor cursor = new Cursor(this.getDisplay(),
+                    ImageProvider.getImageDesc(EImage.DELETE_ICON).getImageData(), 0, 0);
             this.setCursor(cursor);
         }
 
@@ -677,6 +683,7 @@ public class FilePositionalViewer extends Composite {
      * 
      * Resize the Text before the composite.
      */
+    @Override
     public void layout() {
         super.layout();
         text.pack();
@@ -712,6 +719,7 @@ public class FilePositionalViewer extends Composite {
      * 
      * @return the isEnabled
      */
+    @Override
     public boolean isEnabled() {
         return this.isEnabled;
     }
@@ -721,6 +729,7 @@ public class FilePositionalViewer extends Composite {
      * 
      * @param isEnabled the isEnabled to set
      */
+    @Override
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
