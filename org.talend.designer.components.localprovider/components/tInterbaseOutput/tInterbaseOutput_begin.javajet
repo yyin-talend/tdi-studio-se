@@ -250,13 +250,13 @@ for(IMetadataColumn column:columnList){
 				}
 				
 				if(addCol.get("POS").equals("AFTER")){
-					Column insertAfter = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					Column insertAfter = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
 					stmtStructure.add(stmtIndex+1,insertAfter);
 				}else if(addCol.get("POS").equals("BEFORE")){
-					Column insertBefore = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					Column insertBefore = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
 					stmtStructure.add(stmtIndex,insertBefore);
 				}else if(addCol.get("POS").equals("REPLACE")){
-					Column replacementCol = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
+					Column replacementCol = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
 					Column replacedCol = (Column) stmtStructure.get(stmtIndex);
 					replacedCol.replace(replacementCol);
 				}

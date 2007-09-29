@@ -184,7 +184,7 @@ if(conns != null && conns.size()>0){
 		 			if(column.isNullable())
 		 			{
 		 			%>
-		 			<%=firstConnName%>.<%=column.getLabel()%> = null;
+		 				<%=firstConnName%>.<%=column.getLabel()%> = null;
 		 			<%
 		 			}
 		 			%>

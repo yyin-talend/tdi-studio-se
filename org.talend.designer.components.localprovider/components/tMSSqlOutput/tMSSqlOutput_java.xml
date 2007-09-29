@@ -104,9 +104,9 @@
 			NUM_ROW="10" NB_LINES="3">
 			<ITEMS>
 
-				<ITEM NAME="NAME" VALUE="colname" />
+				<ITEM NAME="NAME" VALUE='"colname"' />
 
-				<ITEM NAME="SQL" VALUE="now()" />
+        		 <ITEM NAME="SQL" VALUE='"now()"' />
 
 				<ITEM NAME="POS" FIELD="CLOSED_LIST">
 					<ITEMS DEFAULT="BEFORE">
