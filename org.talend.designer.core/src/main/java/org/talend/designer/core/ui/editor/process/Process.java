@@ -865,6 +865,10 @@ public class Process extends Element implements IProcess {
             listMetaData.add(metadataTable);
             if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
                 addUniqueConnectionName(metadataTable.getTableName());
+            } else {
+                if (metadataTable.getTableName() == null) {
+                    metadataTable.setTableName(nc.getUniqueName());
+                }
             }
             if (nc.isELTComponent()) {
                 metadataTable.setAttachedConnector(EConnectionType.TABLE.getName());
