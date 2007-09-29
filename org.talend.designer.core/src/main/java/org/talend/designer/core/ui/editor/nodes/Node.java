@@ -558,9 +558,8 @@ public class Node extends Element implements INode {
                 }
             }
 
+            IMetadataTable inputTable = connection.getMetadataTable();
             if (component.isSchemaAutoPropagated() && !repositoryMode) {
-                IMetadataTable inputTable = connection.getMetadataTable();
-
                 // if the selected connector's schema type is in repository
                 // mode or read only, then don't propagate.
                 for (INodeConnector connector : getListConnector()) {
@@ -584,6 +583,28 @@ public class Node extends Element implements INode {
                     }
                 }
             } else {
+                // check if there is some data to propagate for specific connectors
+
+                for (INodeConnector connector : getListConnector()) {
+                    if (INodeConnector.INPUT_FLOW.equals(connector.getBaseSchema())) {
+                        IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
+                        boolean customFound = false;
+                        for (int i = 0; i < targetTable.getListColumns().size(); i++) {
+                            IMetadataColumn column = targetTable.getListColumns().get(i);
+                            if (column.isCustom()) {
+                                customFound = true;
+                                break;
+                            }
+                        }
+                        if (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection.getLineStyle() == EConnectionType.FLOW_MERGE))
+                                && (inputTable.getListColumns().size() != 0)) {
+                            // For the auto propagate.
+                            MetadataTool.copyTable(inputTable, targetTable);
+                            ColumnListController.updateColumnList(this, null);
+                        }
+                    }
+                }
+
                 // schema not auto-propagated or in repository mode
                 if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
                     IConnection outputConnection = null;
@@ -709,6 +730,24 @@ public class Node extends Element implements INode {
 
             for (INodeConnector connector : getListConnector()) {
                 if (mainConnector.getName().equals(connector.getBaseSchema())) {
+                    IElementParameter schemaParam = getSchemaParameterFromConnector(connector.getName());
+                    IMetadataTable originTable = getMetadataFromConnector(connector.getName());
+                    if ((schemaParam == null || !schemaParam.isReadOnly()) && originTable.isReadOnly()) {
+                        List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
+                        for (IMetadataColumn column : originTable.getListColumns()) {
+                            if (column.isCustom()) {
+                                columnToSave.add(column);
+                            }
+                        }
+                        originTable.getListColumns().clear();
+                        originTable.getListColumns().addAll(columnToSave);
+                        originTable.sortCustomColumns();
+                    }
+                }
+            }
+        } else {
+            for (INodeConnector connector : getListConnector()) {
+                if (INodeConnector.INPUT_FLOW.equals(connector.getBaseSchema())) {
                     IElementParameter schemaParam = getSchemaParameterFromConnector(connector.getName());
                     IMetadataTable originTable = getMetadataFromConnector(connector.getName());
                     if ((schemaParam == null || !schemaParam.isReadOnly()) && originTable.isReadOnly()) {
