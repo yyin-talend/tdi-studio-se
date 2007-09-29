@@ -143,8 +143,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 this.dynamicTabbedPropertySection.updateRepositoryList();
                 if (repositoryTableMap.containsKey(value)) {
                     repositoryMetadata = repositoryTableMap.get(value);
-                    connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(
-                            value.substring(0, value.indexOf(" - "))).getConnection();
+                    IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE
+                            .getName());
+                    if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
+                        String propertySelected = (String) ((Node) elem).getElementParameter(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
+                        connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap()
+                                .get(propertySelected).getConnection();
+                    }
                 } else {
                     repositoryMetadata = new MetadataTable();
                 }
@@ -189,12 +195,19 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
                 } else {
                     this.dynamicTabbedPropertySection.updateRepositoryList();
+                    IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE
+                            .getName());
+                    if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
+                        String propertySelected = (String) ((Node) elem).getElementParameter(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
+                        connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap()
+                                .get(propertySelected).getConnection();
+                    }
+
                     String schemaSelected = (String) param.getParentParameter().getChildParameters().get(
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                        connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(
-                                schemaSelected.substring(0, schemaSelected.indexOf(" - "))).getConnection();
                     } else {
                         if (repositoryTableMap.keySet().size() == 0) {
                             repositoryMetadata = new MetadataTable();

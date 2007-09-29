@@ -443,8 +443,8 @@ public class ChangeMetadataCommand extends Command {
 
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
                 newOutputMetadata);
-        setXMLMAPPING();
         ColumnListController.updateColumnList(node, columnNameChanged, true);
+        setXMLMAPPING();
 
         if (!internal) {
             updateColumnList(oldOutputMetadata, newOutputMetadata);

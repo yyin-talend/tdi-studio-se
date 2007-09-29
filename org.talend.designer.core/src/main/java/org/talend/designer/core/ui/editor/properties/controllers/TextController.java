@@ -177,7 +177,7 @@ public class TextController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Text labelText = (Text) hashCurControls.get(param.getName());
-        if (labelText == null) {
+        if (labelText == null || labelText.isDisposed()) {
             return;
         }
         Object value = param.getValue();

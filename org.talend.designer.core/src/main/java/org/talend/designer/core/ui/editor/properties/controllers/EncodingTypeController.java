@@ -270,7 +270,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         CCombo combo = (CCombo) hashCurControls.get(EParameterName.ENCODING_TYPE.getName());
-        if (combo == null) {
+        if (combo == null || combo.isDisposed()) {
             return;
         }
         IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());

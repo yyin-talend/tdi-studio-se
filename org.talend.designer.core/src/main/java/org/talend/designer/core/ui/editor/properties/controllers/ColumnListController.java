@@ -312,7 +312,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     // only set synWidthWithMetadataColumn =true, when use the metadataDialog to set the matadata.
     // see issue 0001676
-    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged,
+            boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
@@ -348,7 +349,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if (param.getField() == EParameterFieldType.COLUMN_LIST
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
@@ -458,10 +460,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             for (IMetadataColumn column : table.getListColumns()) {
 
                 if (lineName.equals(column.getLabel())) {
-                    if (node.getComponent().getName().equals("tFileInputXML")) {
-                        newLine.put("SIZE", newLine.get("SIZE"));
-                        break;
-                    }
+                    // if (node.getComponent().getName().equals("tFileInputXML")) {
+                    // // newLine.put("SIZE", newLine.get("SIZE"));
+                    // break;
+                    // }
                     if (!needSynchronizeSize(param)) {
                         break;
                     }
@@ -489,10 +491,10 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         Object[] paras = param.getListItemsValue();
         for (Object object : paras) {
             IElementParameter pamameter = (IElementParameter) object;
-            if (pamameter.getName().equals("SIZE")) {
-                if ("LENGTH".equals(pamameter.getContext())) {
-                    return true;
-                }
+            if ("LENGTH".equals(pamameter.getContext())) {
+                // if (pamameter.getName().equals("SIZE")) {
+                return true;
+                // }
             }
         }
         return false;

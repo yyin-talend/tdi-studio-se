@@ -1055,6 +1055,15 @@ public class Process extends Element implements IProcess {
                                             }
                                         }
                                     }
+                                    if (oldMaps.size() > newMaps.size()) {
+                                        int size = newMaps.size();
+                                        for (int i = size; i < oldMaps.size(); i++) {
+                                            Map<String, Object> map = new HashMap<String, Object>();
+                                            map.put("QUERY", "");
+                                            newMaps.add(map);
+                                        }
+                                        sameValues = false;
+                                    }
                                 }
                             }
                         }

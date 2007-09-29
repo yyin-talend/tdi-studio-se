@@ -215,6 +215,10 @@ public class TableController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean check) {
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
+        if (tableViewerCreator == null || tableViewerCreator.getTable() == null
+                || tableViewerCreator.getTable().isDisposed()) {
+            return;
+        }
         Object value = param.getValue();
         if (value instanceof List) {
             updateTableValues(param);
@@ -247,7 +251,7 @@ public class TableController extends AbstractElementPropertySectionController {
         }
 
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
-        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        Object[] itemsValue = param.getListItemsValue();
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
@@ -290,7 +294,7 @@ public class TableController extends AbstractElementPropertySectionController {
     private void updateConnectionList(IElementParameter param) {
         // update table values
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
-        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        Object[] itemsValue = param.getListItemsValue();
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
@@ -343,7 +347,7 @@ public class TableController extends AbstractElementPropertySectionController {
     private void updateComponentList(IElementParameter param) {
         // update table values
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
-        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        Object[] itemsValue = param.getListItemsValue();
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
@@ -424,7 +428,7 @@ public class TableController extends AbstractElementPropertySectionController {
         }
         // update table values
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
-        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        Object[] itemsValue = param.getListItemsValue();
         if (tableViewerCreator != null) {
             List colList = tableViewerCreator.getColumns();
             for (int j = 0; j < itemsValue.length; j++) {
@@ -472,8 +476,8 @@ public class TableController extends AbstractElementPropertySectionController {
 
     public static Map<String, Object> createNewLine(IElementParameter param) {
         Map<String, Object> line = new HashMap<String, Object>();
-        String[] items = (String[]) param.getListItemsDisplayCodeName();
-        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        String[] items = param.getListItemsDisplayCodeName();
+        Object[] itemsValue = param.getListItemsValue();
         IElementParameter tmpParam;
 
         tmpParam = (IElementParameter) itemsValue[0];
