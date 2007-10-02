@@ -138,26 +138,12 @@
 <%
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
-		runningThreadCount.add(1);
-		new Thread(){
-	    	public void run()
-	   		{
-	        	try {
-	            	<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
-	            } catch (TalendException e) {
-	            	status="failure";
-	            	e.printStackTrace();
-	         	}finally
-	         	{
-	            	runningThreadCount.add(-1);
-	        	}
-	    	}
-		}.start();
-		
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");	
 <%
     	}
 		for (INode rootNode : rootNodes) {
+			String componentName = (String) rootNode.getComponent().getName();
+            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
 		runningThreadCount.add(1);
    		new Thread(){
@@ -176,6 +162,7 @@
 		}.start();
 		
 <%
+			}
 		}
 %>
 	while(<%=process.getName() %>Class.runningThreadCount.getCount()>0)
@@ -195,13 +182,15 @@
    		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
 <%
     	}
 		for (INode rootNode : rootNodes) {
+			String componentName = (String) rootNode.getComponent().getName();
+            if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
 		<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
+			}
 		}
 %>
 	} catch(TalendException e) {
