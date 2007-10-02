@@ -56,7 +56,7 @@ public abstract class Processor implements IProcessor {
 
     private static Logger log = Logger.getLogger(Processor.class);
 
-    private static final String CTX_ARG = "--context="; //$NON-NLS-1$
+    public static final String CTX_ARG = "--context="; //$NON-NLS-1$
 
     private static final String STAT_PORT_ARG = "--stat_port="; //$NON-NLS-1$
 
@@ -201,8 +201,8 @@ public abstract class Processor implements IProcessor {
      * @param codeOptions
      * @return
      */
-    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
-            int traceOption, String... codeOptions) {
+    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption, int traceOption,
+            String... codeOptions) {
         String[] cmd = commandLine;
         if (codeOptions != null) {
             for (int i = 0; i < codeOptions.length; i++) {

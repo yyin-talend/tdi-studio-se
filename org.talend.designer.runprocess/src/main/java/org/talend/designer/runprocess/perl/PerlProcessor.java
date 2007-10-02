@@ -80,8 +80,6 @@ public class PerlProcessor extends Processor {
 
     public static final String PROCESSOR_TYPE = "perlProcessor"; //$NON-NLS-1$
 
-    private static final String CTX_ARG = "--context="; //$NON-NLS-1$
-
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
 
