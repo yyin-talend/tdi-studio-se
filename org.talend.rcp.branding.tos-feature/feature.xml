@@ -48,17 +48,17 @@
          search-location="self"/>
 
    <includes
-         id="org.talend.designer.business_feature"
+         id="org.talend.rcp_feature"
          version="0.0.0"
          search-location="self"/>
-
+         
    <includes
          id="org.talend.designer_feature"
          version="0.0.0"
          search-location="self"/>
-
+         
    <includes
-         id="org.talend.rcp_feature"
+         id="org.talend.designer.business_feature"
          version="0.0.0"
          search-location="self"/>
 
