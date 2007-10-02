@@ -109,12 +109,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             } else {
                 spliteResult_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=separator %>);
             }
-            for(int i = 0 ; i < spliteResult_<%=cid%>.length ; i++) {
+            for(int i_<%=cid%> = 0 ; i_<%=cid%> < spliteResult_<%=cid%>.length ; i_<%=cid%>++) {
                 <%
                 for(IMetadataColumn metadataColumn : metadataColumns) {
                     if(metadataColumn.getLabel().equals(normalizeColumn)) {
                         %>
-                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = spliteResult_<%=cid%>[i];
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = spliteResult_<%=cid%>[i_<%=cid%>];
                         <%
                     } else {
                         %>
