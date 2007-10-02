@@ -100,6 +100,13 @@ public class Connection extends Element implements IConnection, IPerformance {
         init(source, target, lineStyle, connectorName, metaName, linkName);
     }
 
+    // used only in ConnectionManager to test if we can connect or not.
+    public Connection(Node source, Node target, EConnectionType lineStyle) {
+        this.source = source;
+        this.target = target;
+        this.lineStyle = lineStyle;
+    }
+
     private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
         performance = new ConnectionPerformance(this);
 
@@ -320,9 +327,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {

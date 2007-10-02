@@ -190,7 +190,9 @@ public class ConnectionCreateCommand extends Command {
         nodeConnectorTarget = connection.getTargetNodeConnector();
         nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
         ((Process) source.getProcess()).checkStartNodes();
-        ((Process) source.getProcess()).checkProcess();
+        source.checkAndRefreshNode();
+        target.checkAndRefreshNode();
+        // ((Process) source.getProcess()).checkProcess();
     }
 
     public void undo() {
@@ -204,7 +206,9 @@ public class ConnectionCreateCommand extends Command {
             source.getMetadataList().remove(newMetadata);
         }
         ((Process) source.getProcess()).checkStartNodes();
-        ((Process) source.getProcess()).checkProcess();
+        source.checkAndRefreshNode();
+        target.checkAndRefreshNode();
+        // ((Process) source.getProcess()).checkProcess();
     }
 
     public void redo() {

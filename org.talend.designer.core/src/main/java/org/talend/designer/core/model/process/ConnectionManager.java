@@ -21,8 +21,10 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -112,11 +114,38 @@ public class ConnectionManager {
         if (targetHasHashLinks && source.hasRunIfLink()) {
             return false;
         }
+
+        if (testIfNoStartAfterAddConnection(source, target)) {
+            return false;
+        }
+
         return true;
     }
 
+    private static boolean testIfNoStartAfterAddConnection(Node source, Node target) {
+        // connection is added only to test if there is still a start
+        // it will be removed after the test
+        Connection connection = new Connection(source, target, newlineStyle);
+        ((List<IConnection>) source.getOutgoingConnections()).add(connection);
+        ((List<IConnection>) target.getIncomingConnections()).add(connection);
+        INode sourceStartNode = source.getProcessStartNode(true);
+        boolean noStart = (!((Node) sourceStartNode).checkIfCanBeStart());
+        ((List<IConnection>) source.getOutgoingConnections()).remove(connection);
+        ((List<IConnection>) target.getIncomingConnections()).remove(connection);
+        return noStart;
+    }
+
     private static int countNbMergeOutgoing(INode node) {
+        return countNbMergeOutgoing(node, new HashSet<INode>());
+    }
+
+    private static int countNbMergeOutgoing(INode node, Set<INode> checkedNode) {
         int curNb = 0;
+
+        if (checkedNode.contains(node)) {
+            return 0;
+        }
+        checkedNode.add(node);
 
         if (node.getComponent().useMerge()) {
             // if the component use merge even if there is no connection, then add one merge.
@@ -128,7 +157,7 @@ public class ConnectionManager {
                 curNb++;
             } else if (curConnec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                 // if main, then test the next component to check if there is a merge
-                curNb += countNbMergeOutgoing(curConnec.getTarget());
+                curNb += countNbMergeOutgoing(curConnec.getTarget(), checkedNode);
             }
         }
         return curNb;
