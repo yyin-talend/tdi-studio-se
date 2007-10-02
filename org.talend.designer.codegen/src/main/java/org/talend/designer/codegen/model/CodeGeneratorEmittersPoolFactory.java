@@ -48,7 +48,6 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.utils.StringUtils;
@@ -107,7 +106,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     try {
                         initInProgress = true;
                         IProgressMonitor monitorWrap = null;
-                        if (PlatformUI.isWorkbenchRunning()) {
+                        if (!CorePlugin.getContext().isHeadless()) {
                             monitorWrap = new CodeGeneratorProgressMonitor(monitor);
                         } else {
                             monitorWrap = new NullProgressMonitor();

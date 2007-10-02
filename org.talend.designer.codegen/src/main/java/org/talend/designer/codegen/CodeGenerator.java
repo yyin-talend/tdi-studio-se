@@ -30,7 +30,6 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.codegen.jet.JETException;
-import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -373,10 +372,10 @@ public class CodeGenerator implements ICodeGenerator {
     }
 
     private boolean getRunInMultiThread() {
-        //this preferencestore initialize epic preferencestore
-        //and the epic's preferencestore initializer instanciate swt objects !
-        //so in headless mode, we'll always use MultiThreading by default        
-        if (PlatformUI.isWorkbenchRunning()) {
+        // this preferencestore initialize epic preferencestore
+        // and the epic's preferencestore initializer instanciate swt objects !
+        // so in headless mode, we'll always use MultiThreading by default
+        if (!CorePlugin.getContext().isHeadless()) {
             return CorePlugin.getDefault().getPreferenceStore()
                     .getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
         } else {

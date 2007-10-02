@@ -1317,7 +1317,7 @@ public class Process extends Element implements IProcess {
                     message += ","; //$NON-NLS-1$
                 }
             }
-            if (PlatformUI.isWorkbenchRunning()) {
+            if (!CorePlugin.getContext().isHeadless()) {
                 MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
                 mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
                 mb.setMessage(message);

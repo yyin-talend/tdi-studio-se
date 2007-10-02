@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -77,7 +78,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
-        if (PlatformUI.isWorkbenchRunning()) {
+        if (!CorePlugin.getContext().isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
             store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
             store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);
