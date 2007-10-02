@@ -34,10 +34,12 @@ $Archive::Extract::PREFER_BIN = 1 ;
 my $status = $ae->extract( to => <%=directory%> ) or die '[<%=cid%>] '.$ae->error ;
 my @files = $ae->files ;
 
-for my $filename (@{ $ae->files }) {
-	$_globals{<%=cid%>}{CURRENT_FILE} = basename($filename) ;
-	$_globals{<%=cid%>}{CURRENT_FILEPATH} = File::Spec->catfile( <%=directory%>, $filename) ;
-
+for my $file (@{ $ae->files }) {
+    my $filepath = File::Spec->catfile( <%=directory%>, $file) ;
+    if( -f $filepath ){    
+        $_globals{<%=cid%>}{CURRENT_FILE} = $file ;
+        $_globals{<%=cid%>}{CURRENT_FILEPATH} = $filepath ;
+    
 
 
 
