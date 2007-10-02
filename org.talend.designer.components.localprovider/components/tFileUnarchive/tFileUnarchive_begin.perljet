@@ -8,7 +8,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
+        String cid = node.getUniqueName();
 
 	String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
 	String archFile = ElementParameterParser.getValue(node, "__ARCHFILE__");
@@ -37,7 +37,7 @@ my @files = $ae->files ;
 for my $filename (@{ $ae->files }) {
 	$_globals{<%=cid%>}{CURRENT_FILE} = basename($filename) ;
 	$_globals{<%=cid%>}{CURRENT_FILEPATH} = File::Spec->catfile( <%=directory%>, $filename) ;
-}
+
 
 
 
