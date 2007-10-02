@@ -48,10 +48,10 @@
          search-location="self"/>
 
    <includes
-         id="org.talend.rcp_feature"
+         id="org.talend.repository_feature"
          version="0.0.0"
          search-location="self"/>
-         
+                
    <includes
          id="org.talend.designer_feature"
          version="0.0.0"
@@ -63,7 +63,7 @@
          search-location="self"/>
 
    <includes
-         id="org.talend.repository_feature"
+         id="org.talend.rcp_feature"
          version="0.0.0"
          search-location="self"/>
 
