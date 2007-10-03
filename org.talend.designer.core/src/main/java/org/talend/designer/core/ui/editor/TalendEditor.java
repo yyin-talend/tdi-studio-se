@@ -395,14 +395,16 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         // save image using swt
         // get root figure
         IFigure backgroundLayer = layerManager.getLayer(LayerConstants.GRID_LAYER);
-
         IFigure contentLayer = layerManager.getLayer(LayerConstants.PRINTABLE_LAYERS);
 
         // create image from root figure
         Image img = new Image(null, contentLayer.getSize().width, contentLayer.getSize().height);
         GC gc = new GC(img);
         Graphics graphics = new SWTGraphics(gc);
-        graphics.translate(contentLayer.getBounds().getLocation());
+        Point point = contentLayer.getBounds().getTopLeft();
+        graphics.translate(-point.x, -point.y);
+        process.setPropertyValue(Process.SCREEN_OFFSET_X, String.valueOf(-point.x));
+        process.setPropertyValue(Process.SCREEN_OFFSET_Y, String.valueOf(-point.y));
         backgroundLayer.paint(graphics);
         contentLayer.paint(graphics);
         graphics.dispose();

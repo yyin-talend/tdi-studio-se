@@ -324,6 +324,22 @@ public class Process extends Element implements IProcess {
         param.setShow(false);
         param.setReadOnly(true);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(SCREEN_OFFSET_X);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setReadOnly(false);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(SCREEN_OFFSET_Y);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setReadOnly(false);
+        addElementParameter(param);
     }
 
     /**
