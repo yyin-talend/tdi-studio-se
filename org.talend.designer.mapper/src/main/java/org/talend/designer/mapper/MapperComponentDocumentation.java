@@ -35,10 +35,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.HTMLHandler;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.genhtml.XMLHandler;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
@@ -67,18 +70,15 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      */
     public URL getHTMLFile() {
 
-        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.XML_FILE_SUFFIX;
+        String xmlFilepath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.XML_FILE_SUFFIX;
 
-        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName
-                + IHTMLDocConstants.HTML_FILE_SUFFIX;
+        String htmlFilePath = this.tempFolderPath + File.separatorChar + this.componentName + IHTMLDocConstants.HTML_FILE_SUFFIX;
 
         final Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
 
         URL xslFileUrl = null;
         try {
-            xslFileUrl = FileLocator.toFileURL(FileLocator
-                    .find(b, new Path(IHTMLDocConstants.TMAP_XSL_FILE_PATH), null));
+            xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(IHTMLDocConstants.TMAP_XSL_FILE_PATH), null));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -153,8 +153,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      * 
      * @param mapperTableType
      */
-    private void handleMapperTablesInfo(List<ExternalMapperTable> inputTables, Element externalNodeElement,
-            String mapperTableType) {
+    private void handleMapperTablesInfo(List<ExternalMapperTable> inputTables, Element externalNodeElement, String mapperTableType) {
         List<ExternalMapperTable> tables = inputTables;
         if (!HTMLDocUtils.checkList(tables)) {
             return;
@@ -169,8 +168,7 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
      * @param tables
      * @param mapperTableType
      */
-    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalMapperTable> tables,
-            String mapperTableType) {
+    private void generateMapperTablesInfo(Element externalNodeElement, List<ExternalMapperTable> tables, String mapperTableType) {
         Element mapperTableElement = externalNodeElement.addElement("mapperTable");
         mapperTableElement.addAttribute("type", HTMLDocUtils.checkString(mapperTableType));
         Element tableElement = null;
@@ -208,7 +206,12 @@ public class MapperComponentDocumentation implements IComponentDocumentation {
     private void generateTablesEntriesInfo(Element metadataTableEntriesElement, ExternalMapperTableEntry entry) {
         Element entryElement = metadataTableEntriesElement.addElement("entry");
         entryElement.addAttribute("name", HTMLDocUtils.checkString(entry.getName()));
-        entryElement.addAttribute("type", HTMLDocUtils.checkString(entry.getType()));
+        String type = HTMLDocUtils.checkString(entry.getType());
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            type = JavaTypesManager.getTypeToGenerate(entry.getType(), entry.isNullable());
+        }
+
+        entryElement.addAttribute("type", type);
         entryElement.addAttribute("expression", HTMLDocUtils.checkString(entry.getExpression()));
         entryElement.addAttribute("isNullable", String.valueOf(entry.isNullable()));
     }
