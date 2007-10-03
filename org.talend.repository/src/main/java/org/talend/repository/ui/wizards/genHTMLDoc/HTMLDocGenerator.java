@@ -64,6 +64,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
@@ -122,8 +123,8 @@ public class HTMLDocGenerator {
 
             final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
 
-            final URL xslFileUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(
-                    IHTMLDocConstants.MAIN_XSL_FILE_PATH), null));
+            final URL xslFileUrl = FileLocator.toFileURL(FileLocator
+                    .find(b, new Path(IHTMLDocConstants.MAIN_XSL_FILE_PATH), null));
             // final URL logoFileUrl = FileLocator.toFileURL(FileLocator.find(b,
             // new Path(IHTMLDocConstants.LOGO_FILE_PATH), null));
 
@@ -246,20 +247,21 @@ public class HTMLDocGenerator {
         List<INode> externalNodeComponentsList = allList.get(2);
 
         // Generates information for 'Component List' part in exported HTML file.
-        generateAllComponentsSummaryInfo(jobElement, allComponentsList);
+        generateAllComponentsSummaryInfo(processItem, jobElement, allComponentsList);
 
         Element internalNodeElement = jobElement.addElement("internalNodeComponents");
         Element externalNodeElement = jobElement.addElement("externalNodeComponents");
 
-        InternalNodeComponentHandler internalNodeComponentHandler = new InternalNodeComponentHandler(
-                this.picFilePathMap, internalNodeElement, internalNodeComponentsList, this.sourceConnectionMap,
-                this.targetConnectionMap, this.designerCoreService, this.repositoryConnectionItemMap,
-                this.repositoryDBIdAndNameMap);
+        InternalNodeComponentHandler internalNodeComponentHandler = new InternalNodeComponentHandler(this.picFilePathMap,
+                internalNodeElement, internalNodeComponentsList, this.sourceConnectionMap, this.targetConnectionMap,
+                this.designerCoreService, this.repositoryConnectionItemMap, this.repositoryDBIdAndNameMap);
 
-        ExternalNodeComponentHandler externalNodeComponentHandler = new ExternalNodeComponentHandler(
-                this.picFilePathMap, externalNodeElement, externalNodeComponentsList, this.sourceConnectionMap,
-                this.targetConnectionMap, this.designerCoreService, this.repositoryConnectionItemMap,
-                this.repositoryDBIdAndNameMap, externalNodeHTMLMap/* , tempFolderPath */);
+        ExternalNodeComponentHandler externalNodeComponentHandler = new ExternalNodeComponentHandler(this.picFilePathMap,
+                externalNodeElement, externalNodeComponentsList, this.sourceConnectionMap, this.targetConnectionMap,
+                this.designerCoreService, this.repositoryConnectionItemMap, this.repositoryDBIdAndNameMap, externalNodeHTMLMap/*
+                                                                                                                                 * ,
+                                                                                                                                 * tempFolderPath
+                                                                                                                                 */);
 
         // Generates internal node components information.
         internalNodeComponentHandler.generateComponentInfo();
@@ -282,18 +284,34 @@ public class HTMLDocGenerator {
     /**
      * Generates all components summary information.
      * 
+     * @param processItem
+     * 
      * @param inputJobElement
      * @param allComponentsList
      */
-    public void generateAllComponentsSummaryInfo(Element inputJobElement, List<INode> allComponentsList) {
+    public void generateAllComponentsSummaryInfo(ProcessItem processItem, Element inputJobElement, List<INode> allComponentsList) {
         Element componentNameListElement = null;
+        Point screenshotOffset = new Point();
+
+        if (processItem.getProcess().getParameters() != null) {
+            List<ElementParameterType> elemParamList = processItem.getProcess().getParameters().getElementParameter();
+            for (ElementParameterType curElem : elemParamList) {
+                if (curElem.getName().equals(IProcess.SCREEN_OFFSET_X)) {
+                    screenshotOffset.x = Integer.valueOf("".equals(HTMLDocUtils.checkString(curElem.getValue())) ? "0" : curElem
+                            .getValue());
+                } else if (curElem.getName().equals(IProcess.SCREEN_OFFSET_Y)) {
+                    screenshotOffset.y = Integer.valueOf("".equals(HTMLDocUtils.checkString(curElem.getValue())) ? "0" : curElem
+                            .getValue());
+                }
+            }
+        }
 
         int x = 0, y = 0, width = 0, height = 0;
         for (INode node : allComponentsList) {
             if (node.getLocation() != null) {
                 Point point = node.getLocation();
-                x = point.x;
-                y = point.y;
+                x = point.x + screenshotOffset.x;
+                y = point.y + screenshotOffset.y;
             }
 
             ImageData imageData = node.getComponent().getIcon32().getImageData();
@@ -400,8 +418,7 @@ public class HTMLDocGenerator {
         jobElement.addAttribute("modification", HTMLDocUtils.checkDate(property.getModificationDate()));
 
         String picName = jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX;
-        IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE,
-                picName);
+        IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE, picName);
         String filePathStr = filePath.toOSString();
         File file = new File(filePathStr);
         if (file.exists()) {
@@ -421,8 +438,7 @@ public class HTMLDocGenerator {
     private Element generateProjectInfo(Document document) {
         Element projectElement = document.addElement("project");
         projectElement.addAttribute("name", getProject().getLabel());
-        projectElement.addAttribute("logo", IHTMLDocConstants.PICTUREFOLDERPATH
-                + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
+        projectElement.addAttribute("logo", IHTMLDocConstants.PICTUREFOLDERPATH + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
         projectElement.addAttribute("title", IHTMLDocConstants.TITLE_GEN + getFullProductName());
         projectElement.addAttribute("link", IHTMLDocConstants.WEBSITE_LINK);
         projectElement.addAttribute("language", getProject().getLanguage().getName());
