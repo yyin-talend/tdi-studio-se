@@ -30,15 +30,18 @@ import java.util.Map;
 import org.dom4j.Element;
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.genhtml.IHTMLDocConstants;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
+import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.utils.RepositoryPathProvider;
 
@@ -126,8 +129,7 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
         if (isExternalNodeComponent) {
             previewImagePath = getPreviewImagePath(elementParameters);
             if (!previewImagePath.equals("")) {
-                IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY,
-                        previewImagePath);
+                IPath filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, previewImagePath);
                 File file = new File(filePath.toOSString());
                 if (file.exists()) {
                     storedPreviewImagePath = filePath.toOSString();
@@ -209,8 +211,14 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
         Element schemasElement = null;
         if (metaDataList != null && metaDataList.size() != 0) {
             schemasElement = componentElement.addElement("schemas");
+            boolean isBuiltIn = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).isBuiltIn()
+                    || node.getConnectorFromName(EConnectionType.TABLE.getName()).isBuiltIn();
 
             for (int j = 0; j < metaDataList.size(); j++) {
+                if ((!isBuiltIn) && (j > 0)) {
+                    // if the component's main connector is not built-in
+                    break;
+                }
                 IMetadataTable table = (IMetadataTable) metaDataList.get(j);
                 List columnTypeList = table.getListColumns();
                 Element schemaElement = schemasElement.addElement("schema");
@@ -220,20 +228,50 @@ public abstract class AbstractComponentHandler implements IComponentHandler {
                     metaName = table.getTableName();
                 }
                 schemaElement.addAttribute("name", HTMLDocUtils.checkString(metaName));
+                boolean dbComponent = false;
+                if (node.getComponent().getFamily().startsWith("Database") || node.getComponent().getFamily().startsWith("ELT")) {
+                    dbComponent = true;
+                }
 
                 for (int k = 0; k < columnTypeList.size(); k++) {
                     IMetadataColumn columnType = (IMetadataColumn) columnTypeList.get(k);
                     Element columnElement = schemaElement.addElement("column");
 
                     columnElement.addAttribute("name", HTMLDocUtils.checkString(columnType.getLabel()));
+                    // if (dbComponent) {
+                    // columnElement.addAttribute("dbColumn",
+                    // HTMLDocUtils.checkString(columnType.getOriginalDbColumnName()));
+                    // }
 
                     columnElement.addAttribute("key", HTMLDocUtils.checkString(columnType.isKey() + ""));
-                    columnElement.addAttribute("type", HTMLDocUtils.checkString(columnType.getType()));
-                    columnElement.addAttribute("length", HTMLDocUtils.checkString(columnType.getLength() + ""));
-                    columnElement.addAttribute("precision", HTMLDocUtils.checkString(columnType.getPrecision() + ""));
+                    String type = HTMLDocUtils.checkString(columnType.getTalendType());
+                    if (node.getComponent().getFamily().startsWith("ELT")) {
+                        // if ELT then use the db type
+                        type = HTMLDocUtils.checkString(columnType.getType());
+                    } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+                        type = JavaTypesManager.getTypeToGenerate(columnType.getTalendType(), columnType.isNullable());
+                    }
+                    columnElement.addAttribute("type", type);
+                    // if (dbComponent) {
+                    // columnElement.addAttribute("dbType", HTMLDocUtils.checkString(columnType.getType()));
+                    // }
+                    String length;
+                    if ((columnType.getLength() == null) || (columnType.getLength() == 0)) {
+                        length = "";
+                    } else {
+                        length = String.valueOf(columnType.getLength());
+                    }
+                    columnElement.addAttribute("length", length);
+                    String precision;
+                    if ((columnType.getPrecision() == null) || (columnType.getPrecision() == 0)) {
+                        precision = "";
+                    } else {
+                        precision = String.valueOf(columnType.getPrecision());
+                    }
+                    columnElement.addAttribute("precision", precision);
                     columnElement.addAttribute("nullable", HTMLDocUtils.checkString(columnType.isNullable() + ""));
-                    columnElement.addAttribute("comment", HTMLDocUtils.checkString(ElementParameterParser.parse(node,
-                            columnType.getComment())));
+                    columnElement.addAttribute("comment", HTMLDocUtils.checkString(ElementParameterParser.parse(node, columnType
+                            .getComment())));
                 }
             }
         }

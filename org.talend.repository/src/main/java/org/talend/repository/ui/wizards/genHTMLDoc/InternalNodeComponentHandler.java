@@ -72,9 +72,9 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      * @param name
      */
     public InternalNodeComponentHandler(Map<String, String> picFilePathMap, Element internalNodeElement,
-            List<INode> allComponentsList, Map<String, List> sourceConnectionMap,
-            Map<String, List> targetConnectionMap, IDesignerCoreService designerCoreService,
-            Map<String, ConnectionItem> repositoryConnectionItemMap, Map<String, String> repositoryDBIdAndNameMap) {
+            List<INode> allComponentsList, Map<String, List> sourceConnectionMap, Map<String, List> targetConnectionMap,
+            IDesignerCoreService designerCoreService, Map<String, ConnectionItem> repositoryConnectionItemMap,
+            Map<String, String> repositoryDBIdAndNameMap) {
 
         this.picFilePathMap = picFilePathMap;
         this.internalNodeElement = internalNodeElement;
@@ -94,9 +94,8 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      */
     public void generateComponentInfo() {
         for (INode node : this.componentsList) {
-            Element componentElement = generateComponentDetailsInfo(false, node, this.internalNodeElement,
-                    this.picFilePathMap, this.sourceConnectionMap, this.targetConnectionMap,
-                    this.repositoryDBIdAndNameMap);
+            Element componentElement = generateComponentDetailsInfo(false, node, this.internalNodeElement, this.picFilePathMap,
+                    this.sourceConnectionMap, this.targetConnectionMap, this.repositoryDBIdAndNameMap);
 
             generateComponentElemParamters(node, componentElement);
         }
@@ -128,8 +127,8 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      * @param elementParameterList
      * @param node
      */
-    private void generateComponentElementParamInfo(boolean istRunJob, Element parametersElement,
-            List elementParameterList, INode node) {
+    private void generateComponentElementParamInfo(boolean istRunJob, Element parametersElement, List elementParameterList,
+            INode node) {
 
         List<IElementParameter> copyElementParameterList = new ArrayList(elementParameterList);
 
@@ -144,7 +143,8 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
                         || elemparameter.getCategory().equals(EComponentCategory.VIEW)
                         || elemparameter.getName().equals(IHTMLDocConstants.REPOSITORY)
                         || elemparameter.getName().equals("SCHEMA") || elemparameter.getName().equals("QUERYSTORE")
-                        || elemparameter.getName().equals("PROPERTY")) {
+                        || elemparameter.getName().equals("PROPERTY")
+                        || elemparameter.getName().equals(EParameterFieldType.ENCODING_TYPE.getName())) {
                     continue;
                 }
                 // String value = HTMLDocUtils.checkString(elemparameter.getValue().toString());
@@ -158,25 +158,25 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
                         && value.equals(IHTMLDocConstants.REPOSITORY)) {
                     String repositoryValueForPropertyType = getRepositoryValueForPropertyType(copyElementParameterList,
                             "REPOSITORY_PROPERTY_TYPE");
-                    value = repositoryValueForPropertyType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value
-                            .toString().toLowerCase()
+                    value = repositoryValueForPropertyType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value.toString()
+                            .toLowerCase()
                             + ": " + repositoryValueForPropertyType;
                 } else if (elemparameter.getName().equals(EParameterFieldType.SCHEMA_TYPE.getName())
                         && value.equals(IHTMLDocConstants.REPOSITORY)) {
                     String repositoryValueForSchemaType = getRepositoryValueForSchemaType(copyElementParameterList,
                             "REPOSITORY_SCHEMA_TYPE");
-                    value = repositoryValueForSchemaType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value
-                            .toString().toLowerCase()
+                    value = repositoryValueForSchemaType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value.toString()
+                            .toLowerCase()
                             + ": " + repositoryValueForSchemaType;
                 }
 
                 else if (elemparameter.getName().equals(EParameterFieldType.QUERYSTORE_TYPE.getName())
                         && value.equals(IHTMLDocConstants.REPOSITORY)) {
 
-                    String repositoryValueForQueryStoreType = getRepositoryValueForQueryStoreType(
-                            copyElementParameterList, "REPOSITORY_QUERYSTORE_TYPE");
-                    value = repositoryValueForQueryStoreType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value
-                            .toString().toLowerCase()
+                    String repositoryValueForQueryStoreType = getRepositoryValueForQueryStoreType(copyElementParameterList,
+                            "REPOSITORY_QUERYSTORE_TYPE");
+                    value = repositoryValueForQueryStoreType == null ? IHTMLDocConstants.REPOSITORY_BUILT_IN : value.toString()
+                            .toLowerCase()
                             + ": " + repositoryValueForQueryStoreType;
                 }
                 // } else if (type.getName().equals("TYPE")) {
@@ -202,8 +202,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      * @param repositoryName
      * @return
      */
-    private String getRepositoryValueForPropertyType(List<IElementParameter> copyElementParameterList,
-            String repositoryName) {
+    private String getRepositoryValueForPropertyType(List<IElementParameter> copyElementParameterList, String repositoryName) {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
@@ -225,8 +224,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      * @param repositoryName
      * @return
      */
-    private String getRepositoryValueForSchemaType(List<IElementParameter> copyElementParameterList,
-            String repositoryName) {
+    private String getRepositoryValueForSchemaType(List<IElementParameter> copyElementParameterList, String repositoryName) {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
@@ -252,8 +250,7 @@ public class InternalNodeComponentHandler extends AbstractComponentHandler {
      * @param repositoryName
      * @return
      */
-    private String getRepositoryValueForQueryStoreType(List<IElementParameter> copyElementParameterList,
-            String repositoryName) {
+    private String getRepositoryValueForQueryStoreType(List<IElementParameter> copyElementParameterList, String repositoryName) {
         String value = null;
         for (IElementParameter elemParameter : copyElementParameterList) {
             if (elemParameter.getName().equals(repositoryName)) {
