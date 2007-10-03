@@ -125,11 +125,13 @@ public class ConnectionManager {
     private static boolean testIfNoStartAfterAddConnection(Node source, Node target) {
         // connection is added only to test if there is still a start
         // it will be removed after the test
+        INode targetStartNode = target.getProcessStartNode(true);
+        INode sourceStartNode = source.getProcessStartNode(true);
         Connection connection = new Connection(source, target, newlineStyle);
         ((List<IConnection>) source.getOutgoingConnections()).add(connection);
         ((List<IConnection>) target.getIncomingConnections()).add(connection);
-        INode sourceStartNode = source.getProcessStartNode(true);
-        boolean noStart = (!((Node) sourceStartNode).checkIfCanBeStart());
+        boolean noStart = (!((Node) sourceStartNode).checkIfCanBeStart())
+                && ((targetStartNode == null) || (!((Node) targetStartNode).checkIfCanBeStart()));
         ((List<IConnection>) source.getOutgoingConnections()).remove(connection);
         ((List<IConnection>) target.getIncomingConnections()).remove(connection);
         return noStart;
