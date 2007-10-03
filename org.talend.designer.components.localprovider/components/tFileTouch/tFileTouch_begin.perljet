@@ -12,4 +12,4 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
 
-use File::Touch;
+use tFileTouch::Touch;
