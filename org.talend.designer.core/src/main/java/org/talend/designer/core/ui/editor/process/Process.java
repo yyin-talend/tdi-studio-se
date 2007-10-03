@@ -1701,6 +1701,10 @@ public class Process extends Element implements IProcess {
         }
     }
 
+    public int getMergelinkOrder(final INode node) {
+        return getMergelinkOrder(node, new HashSet<INode>());
+    }
+
     /**
      * If the node link with the merge node, it will return the merge link order, or it will return -1 Purpose: only in
      * the branch of the first merge link can be as a start node.
@@ -1708,10 +1712,11 @@ public class Process extends Element implements IProcess {
      * @param node
      * @return
      */
-    public int getMergelinkOrder(final INode node) {
+    public int getMergelinkOrder(final INode node, final Set<INode> checkedNode) {
 
         List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
         int returnValue = -1;
+        checkedNode.add(node);
         for (int i = 0; (i < outgoingConnections.size()) && (returnValue == -1); i++) {
             IConnection connec = outgoingConnections.get(i);
             if (connec.isActivate()) {
@@ -1719,8 +1724,8 @@ public class Process extends Element implements IProcess {
                     returnValue = connec.getInputId();
                     break;
                 } else if (connec.getLineStyle().hasConnectionCategory(EConnectionType.MAIN) && connec.getTarget() != null
-                        && (!connec.getTarget().equals(node))) {
-                    returnValue = getMergelinkOrder(connec.getTarget());
+                        && (!connec.getTarget().equals(node)) && (!checkedNode.contains(connec.getTarget()))) {
+                    returnValue = getMergelinkOrder(connec.getTarget(), checkedNode);
                 }
             }
         }
