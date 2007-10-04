@@ -19,12 +19,12 @@
 	// cmd.exe /c dir (for example)
 %>
 
-Runtime runtime = Runtime.getRuntime();
-final Process ps<%=cid %> = runtime.exec(<%=command %>);
-Thread normal = new Thread() {
+Runtime runtime_<%=cid %> = Runtime.getRuntime();
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>);
+Thread normal_<%=cid %> = new Thread() {
 	public void run() {
 		try {
-			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getInputStream()));
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
 			String line = "";
 			try {
 				while((line = reader.readLine()) != null) {
@@ -52,12 +52,12 @@ Thread normal = new Thread() {
 		}
 	}
 };
-normal.start();
+normal_<%=cid %>.start();
 
-Thread error = new Thread() {
+Thread error_<%=cid %> = new Thread() {
 	public void run() {
 		try {
-			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getErrorStream()));
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
 			String line = "";
 			try {
 				while((line = reader.readLine()) != null) {
@@ -85,8 +85,8 @@ Thread error = new Thread() {
 		}
 	}
 };
-error.start();
+error_<%=cid %>.start();
 
-ps<%=cid %>.waitFor();
-normal.interrupt();
-error.interrupt();
+ps_<%=cid %>.waitFor();
+normal_<%=cid %>.interrupt();
+error_<%=cid %>.interrupt();
