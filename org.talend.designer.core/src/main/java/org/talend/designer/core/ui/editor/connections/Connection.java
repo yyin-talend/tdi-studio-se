@@ -105,6 +105,17 @@ public class Connection extends Element implements IConnection, IPerformance {
         this.source = source;
         this.target = target;
         this.lineStyle = lineStyle;
+
+        // add activate parameter
+        IElementParameter param = new ElementParameter(this);
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setValue(Boolean.TRUE);
+        param.setName(EParameterName.ACTIVATE.getName());
+        param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
+        param.setShow(false);
+        param.setNumRow(1);
+        addElementParameter(param);
     }
 
     private void init(Node source, Node target, EConnectionType lineStyle, String connectorName, String metaName, String linkName) {
@@ -327,9 +338,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {

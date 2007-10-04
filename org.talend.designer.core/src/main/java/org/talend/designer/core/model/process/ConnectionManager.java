@@ -115,9 +115,9 @@ public class ConnectionManager {
             return false;
         }
 
-        if (testIfNoStartAfterAddConnection(source, target)) {
-            return false;
-        }
+        // if (testIfNoStartAfterAddConnection(source, target)) {
+        // return false;
+        // }
 
         return true;
     }
