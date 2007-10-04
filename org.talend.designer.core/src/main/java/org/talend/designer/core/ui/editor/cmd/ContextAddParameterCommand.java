@@ -66,7 +66,7 @@ public class ContextAddParameterCommand extends Command {
         if (currentPage instanceof TabbedPropertySheetPage) {
             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
             tabbedPropertySheetPage.refresh();
-        } 
+        }
     }
 
     /**
@@ -79,13 +79,14 @@ public class ContextAddParameterCommand extends Command {
             ((ContextsView) view2).updateContextView(true);
         }
     }
-    
+
     @Override
     public void execute() {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
             IContext context = contextManager.getListContext().get(i);
             IContextParameter toAdd = contextParam.clone();
             addedParameters.put(context, toAdd);
+            toAdd.setContext(context);
             context.getContextParameterList().add(toAdd);
         }
         contextManager.fireContextsChangedEvent();
