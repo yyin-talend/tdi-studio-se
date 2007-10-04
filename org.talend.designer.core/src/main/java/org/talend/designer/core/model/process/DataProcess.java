@@ -258,7 +258,7 @@ public class DataProcess {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 AbstractConnection asbractConnect = (AbstractConnection) connection;
                 asbractConnect.setSource(dataNode);
-                outgoingConnections.add(connection);
+                outgoingConnections.add(0, connection);
             }
         }
 
@@ -364,7 +364,15 @@ public class DataProcess {
                 dataConnec.setTarget(nodeTarget);
                 dataConnec.setCondition(""); //$NON-NLS-1$
                 outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
-                outgoingConnections.add(dataConnec);
+                int indexOfFirstThenRun = 0;
+                for (IConnection connection : outgoingConnections) {
+                    if (connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
+                        break;
+                    }
+                    indexOfFirstThenRun++;
+                }
+                // outgoingConnections.add(indexOfFirstThenRun, dataConnec);
+                outgoingConnections.add(0, dataConnec);
                 incomingConnections = (List<IConnection>) nodeTarget.getIncomingConnections();
                 incomingConnections.add(dataConnec);
             }
