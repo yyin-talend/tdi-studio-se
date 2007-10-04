@@ -767,4 +767,11 @@ public class SelectorTableForm extends AbstractForm {
         super.dispose();
         threadExecutor.shutdownNow();
     }
+
+    /**
+     * DOC nrousseau Comment method "performCancel".
+     */
+    public void performCancel() {
+        threadExecutor.shutdownNow();
+    }
 }

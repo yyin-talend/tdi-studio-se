@@ -176,4 +176,15 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.RepositoryWizard#performCancel()
+     */
+    @Override
+    public boolean performCancel() {
+        selectorWizardPage.performCancel();
+        return super.performCancel();
+    }
+
 }

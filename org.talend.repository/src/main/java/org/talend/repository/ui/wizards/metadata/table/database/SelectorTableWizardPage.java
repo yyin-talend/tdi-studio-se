@@ -62,7 +62,7 @@ public class SelectorTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new SelectorTableForm(parent, connectionItem,this);
+        tableForm = new SelectorTableForm(parent, connectionItem, this);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
@@ -78,6 +78,13 @@ public class SelectorTableWizardPage extends WizardPage {
         };
         tableForm.setListener(listener);
         setControl(tableForm);
+    }
+
+    /**
+     * DOC nrousseau Comment method "performCancel".
+     */
+    public void performCancel() {
+        tableForm.performCancel();
     }
 
 }
