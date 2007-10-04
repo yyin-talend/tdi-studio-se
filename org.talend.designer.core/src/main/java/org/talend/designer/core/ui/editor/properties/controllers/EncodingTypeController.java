@@ -42,7 +42,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -85,21 +87,32 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
      * @return
      */
     private Command createComboCommand(CCombo combo) {
-        String paramName;
-
-        paramName = EParameterName.ENCODING_TYPE.getName();
         String value = new String(""); //$NON-NLS-1$
+        String paramName = "";
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(paramName)) {
-                for (int j = 0; j < param.getListItemsValue().length; j++) {
-                    if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
-                        value = (String) param.getListItemsValue()[j];
+            if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                paramName = param.getName();
+                IElementParameter comboParam = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
+                for (int j = 0; j < comboParam.getListItemsValue().length; j++) {
+                    if (combo.getText().equals(comboParam.getListItemsDisplayName()[j])) {
+                        value = (String) comboParam.getListItemsValue()[j];
                     }
                 }
             }
         }
-        return new EncodingTypeChangeCommand(elem, paramName, value);
+        if ("".equals(paramName)) {
+            return null;
+        }
+
+        String tempValue = (String) value;
+        if (!EmfComponent.ENCODING_TYPE_CUSTOM.equals(value)) {
+            tempValue = tempValue.replaceAll("'", "");
+            tempValue = tempValue.replaceAll("\"", "");
+            tempValue = TalendTextUtils.addQuotes(tempValue);
+        }
+
+        return new EncodingTypeChangeCommand(elem, paramName, tempValue);
     }
 
     /*
@@ -116,7 +129,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
 
         if (elem instanceof Node) {
             combo = new CCombo(subComposite, SWT.BORDER);
-            IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+            IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
             FormData data;
             String[] originalList = encodingTypeParameter.getListItemsDisplayName();
             List<String> stringToDisplay = new ArrayList<String>();
@@ -179,8 +192,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             lastControlUsed = combo;
             String encodingType = (String) encodingTypeParameter.getValue();
             if (encodingType != null && encodingType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-                lastControlUsed = addCustomEncodingTypeText(subComposite, param, lastControlUsed, numInRow, nbInRow,
-                        top);
+                lastControlUsed = addCustomEncodingTypeText(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
             }
 
             // **********************
@@ -219,21 +231,18 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
      * @param top
      * @return
      */
-    private Control addCustomEncodingTypeText(Composite subComposite, IElementParameter param, Control lastControl,
-            int numInRow, int nbInRow, int top) {
+    private Control addCustomEncodingTypeText(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
+            int nbInRow, int top) {
         FormData data;
         Text labelText;
 
-        IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_ENCODING_TYPE
-                .getName());
-
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
-        if (encodingTypeParameter.isRequired()) {
+        if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
-        if (encodingTypeParameter.isRepositoryValueUsed()) {
+        if (param.isRepositoryValueUsed()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
             decoration.setDescription(Messages.getString("TextController.decoration.description")); //$NON-NLS-1$
@@ -241,19 +250,19 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         }
         Control cLayout = dField.getLayoutControl();
         labelText = (Text) dField.getControl();
-        labelText.setData(PARAMETER_NAME, encodingTypeParameter.getName());
+        labelText.setData(PARAMETER_NAME, param.getName());
 
-        editionControlHelper.register(encodingTypeParameter.getName(), labelText, true);
+        editionControlHelper.register(param.getName(), labelText, true);
 
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!encodingTypeParameter.isReadOnly());
-        labelText.setToolTipText(VARIABLE_TOOLTIP + encodingTypeParameter.getVariableName());
+        labelText.setEditable(!param.isReadOnly());
+        labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
-        hashCurControls.put(encodingTypeParameter.getName(), labelText);
+        hashCurControls.put(param.getName(), labelText);
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
@@ -273,7 +282,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         if (combo == null || combo.isDisposed()) {
             return;
         }
-        IElementParameter encodingTypeParameter = elem.getElementParameter(EParameterName.ENCODING_TYPE.getName());
+        IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
         Object value = encodingTypeParameter.getValue();
 
         if (value instanceof String) {
@@ -294,13 +303,12 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             combo.setText(strValue);
         }
 
-        encodingTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_ENCODING_TYPE.getName());
-        if (hashCurControls.get(encodingTypeParameter.getName()) instanceof Text) {
-            Text labelText = (Text) hashCurControls.get(encodingTypeParameter.getName());
+        if (hashCurControls.get(param.getName()) instanceof Text) {
+            Text labelText = (Text) hashCurControls.get(param.getName());
             if (labelText == null) {
                 return;
             }
-            Object value1 = encodingTypeParameter.getValue();
+            Object value1 = param.getValue();
             boolean valueChanged = false;
             if (value1 == null) {
                 labelText.setText(""); //$NON-NLS-1$

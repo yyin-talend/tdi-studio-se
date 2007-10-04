@@ -77,7 +77,6 @@ public enum EParameterName {
     TSTATCATCHER_STATS(Messages.getString("EParameterName.tStatCatcherStats")), //$NON-NLS-1$
     COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"), //$NON-NLS-1$  Hidden parameter so no translation needed
     REPOSITORY_ALLOW_AUTO_SWITCH("REPOSITORY_ALLOW_AUTO_SWITCH"), //$NON-NLS-1$  Hidden parameter so no translation needed
-    REPOSITORY_ENCODING_TYPE(Messages.getString("EParameterName.repository")), //$NON-NLS-1$
     ENCODING_TYPE(Messages.getString("EParameterName.encodingType")), //$NON-NLS-1$
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$

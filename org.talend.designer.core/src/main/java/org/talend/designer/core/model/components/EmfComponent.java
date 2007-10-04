@@ -60,7 +60,6 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
@@ -556,24 +555,8 @@ public class EmfComponent implements IComponent {
             newParam.setShow(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
-
-            newParam = new ElementParameter(node);
-            newParam.setCategory(EComponentCategory.PROPERTY);
-            newParam.setName(EParameterName.REPOSITORY_ENCODING_TYPE.getName());
-            newParam.setDisplayName(EParameterName.REPOSITORY_ENCODING_TYPE.getDisplayName());
-            newParam.setListItemsDisplayName(new String[] {});
-            newParam.setListItemsValue(new String[] {});
-            newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.TECHNICAL);
-            newParam.setValue(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
-            newParam.setShow(false);
-            newParam.setRequired(true);
-            newParam.setShowIf(xmlParam.getSHOWIF());
-            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
         }// Ends
         if (type == EParameterFieldType.QUERYSTORE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);

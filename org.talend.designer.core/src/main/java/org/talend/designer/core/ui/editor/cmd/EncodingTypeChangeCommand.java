@@ -21,14 +21,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import java.util.List;
-
-import org.talend.core.model.process.EParameterFieldType;
+import org.apache.commons.lang.ArrayUtils;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
 /**
  * This class is used for encoding type changing command. <br/>
@@ -38,64 +36,47 @@ import org.talend.designer.core.model.components.EmfComponent;
  */
 public class EncodingTypeChangeCommand extends PropertyChangeCommand {
 
-    @Override
-    public void modifyValue(String value) {
-        this.setPropertyValue(value);
-        super.modifyValue(value);
-    }
+    private String oldType;
+
+    private String newRealValue;
+
+    private IElementParameter paramEncoding;
 
     public EncodingTypeChangeCommand(Element elem, String propName, Object propValue) {
-        super(elem, propName, propValue);
+        super(elem, propName, EmfComponent.ENCODING_TYPE_CUSTOM.equals(propValue) ? elem.getPropertyValue(propName) : propValue);
+        newRealValue = (String) propValue;
+        IElementParameter curParam = getElement().getElementParameter(getPropName());
+        paramEncoding = curParam.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
     }
 
     @Override
     public void execute() {
-        this.setPropertyValue(getNewValue());
-        super.execute();
+        oldType = (String) paramEncoding.getValue();
+
+        String tempValue = newRealValue;
+        tempValue = tempValue.replaceAll("'", "");
+        tempValue = tempValue.replaceAll("\"", "");
+        if (ArrayUtils.contains(paramEncoding.getListItemsValue(), tempValue)
+                && (!EmfComponent.ENCODING_TYPE_CUSTOM.equals(tempValue))) {
+            paramEncoding.setValue(tempValue);
+            super.execute();
+        } else {
+            paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+            getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            if (DynamicTabbedPropertySection.getLastPropertyUsed() != null) {
+                DynamicTabbedPropertySection.getLastPropertyUsed().refresh();
+            }
+            // IElementParameter curParam = getElement().getElementParameter(getPropName());
+            // curParam.setShow(true);
+        }
     }
 
     @Override
     public void undo() {
-        this.setPropertyValue(getOldValue());
+        if (!oldType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
+            paramEncoding.setValue(oldType);
+            paramEncoding.setShow(false);
+        }
         super.undo();
-    }
-
-    @Override
-    public void redo() {
-        this.setPropertyValue(getNewValue());
-        super.redo();
-
-    }
-
-    /**
-     * DOC ftang Comment method "getEncodingTypeRepositoryName".
-     * 
-     * @param type
-     * @return
-     */
-    private String getEncodingTypeRepositoryName(EParameterFieldType type) {
-        for (IElementParameter param : (List<IElementParameter>) getElement().getElementParameters()) {
-            if (param.getField() == type) {
-                return (String) param.getName();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * DOC ftang Comment method "setPropertyValue".
-     */
-    private void setPropertyValue(Object value) {
-        if (value.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
-            getElement().setPropertyValue(getEncodingTypeRepositoryName(EParameterFieldType.ENCODING_TYPE),
-                    getElement().getPropertyValue(EParameterName.REPOSITORY_ENCODING_TYPE.getName()));
-        } else {
-            String tempValue = (String) value;
-            tempValue = tempValue.replaceAll("'", "");
-            tempValue = tempValue.replaceAll("\"", "");
-            tempValue = TalendTextUtils.addQuotes(tempValue);
-
-            getElement().setPropertyValue(getEncodingTypeRepositoryName(EParameterFieldType.ENCODING_TYPE), tempValue);
-        }
     }
 }

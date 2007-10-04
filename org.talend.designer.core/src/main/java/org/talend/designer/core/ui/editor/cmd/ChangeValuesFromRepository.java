@@ -146,8 +146,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
 
-                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                && param.getRepositoryValue().equals("TYPE")) {
+                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST) && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -157,21 +156,24 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 }
                             }
                         } else {
+                            if (repositoryValue.equals("ENCODING")) {
+                                IElementParameter paramEncoding = param.getChildParameters().get(
+                                        EParameterName.ENCODING_TYPE.getName());
+                                paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                            }
                             elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);
-                    } else {
-                        if (param.getField().equals(EParameterFieldType.TABLE)
-                                && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
-                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
-                                    .getName());
-                            IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
-                            RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
-                                    table, metaTable);
-                            param.setRepositoryValueUsed(true);
-                        }
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                        IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
+                        RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
+                                table, metaTable);
+                        param.setRepositoryValueUsed(true);
                     }
+
                 }
             }
         }
@@ -237,8 +239,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         setDBTableFieldValue(node, table.getTableName(), null);
                                         table.setTableName(node.getMetadataList().get(0).getTableName());
                                         if (!table.sameMetadataAs(node.getMetadataList().get(0))) {
-                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null,
-                                                    table);
+                                            ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, param, null, table);
                                             cmd.setRepositoryMode(true);
                                             cmd.execute(true);
                                         }
@@ -248,8 +249,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 Node sourceNode = getRealSourceNode((INode) elem);
                                 if (sourceNode != null) {
                                     IMetadataTable sourceMetadataTable = sourceNode.getMetadataList().get(0);
-                                    Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE
-                                            .getName());
+                                    Object sourceSchema = sourceNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                                     boolean isTake = !sourceNode.isExternalNode() && sourceSchema != null
                                             && elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()) != null;
                                     if (isTake && getTake()) {
@@ -258,9 +258,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                         cmd.execute(true);
                                         elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), sourceSchema);
                                         if (sourceSchema.equals(EmfComponent.REPOSITORY)) {
-                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                                                    sourceNode.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                                                            .getName()));
+                                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), sourceNode
+                                                    .getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()));
                                         }
                                     }
                                 }
@@ -271,8 +270,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
                 if (queriesmap != null
-                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))
-                                .isEmpty()) {
+                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
                 }
             } else {
@@ -293,8 +291,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         Node sourceNode = null;
         IODataComponent input = null;
         List<org.talend.designer.core.ui.editor.connections.Connection> incomingConnections = null;
-        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target
-                .getIncomingConnections();
+        incomingConnections = (List<org.talend.designer.core.ui.editor.connections.Connection>) target.getIncomingConnections();
         for (org.talend.designer.core.ui.editor.connections.Connection connec : incomingConnections) {
             if (connec.isActivate() && connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 input = new IODataComponent(connec);

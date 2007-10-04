@@ -86,6 +86,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -576,6 +577,30 @@ public class Process extends Element implements IProcess {
                             }
                         }
                         elemParam.setPropertyValue(pType.getName(), tableValues);
+                    } else if (param.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+                        // fix for bug 2193
+                        boolean setToCustom = false;
+                        if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
+                                && param.getRepositoryValue().equals("ENCODING")) {
+                            setToCustom = true;
+                        }
+                        String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
+                                .getValue();
+                        if (!tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
+                            tempValue = tempValue.replaceAll("'", "");
+                            tempValue = tempValue.replaceAll("\"", "");
+                            tempValue = TalendTextUtils.addQuotes(tempValue);
+                            if (!tempValue.equals(pType.getValue())) {
+                                setToCustom = true;
+                            }
+                        }
+
+                        if (setToCustom) {
+                            param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(
+                                    EmfComponent.ENCODING_TYPE_CUSTOM);
+                        }
+                        elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                        // end of fix for bug 2193
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), pType.getValue());
                     }
@@ -1917,8 +1942,7 @@ public class Process extends Element implements IProcess {
     @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
-                || id.equals(EParameterName.ENCODING_TYPE.getName())) {
+                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
 
