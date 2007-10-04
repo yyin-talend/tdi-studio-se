@@ -1126,8 +1126,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 public void stackChanged(CommandStackEvent event) {
                     int detail = event.getDetail();
                     if (lastPropertyUsed != null) {
-                        if ((elem instanceof org.talend.designer.core.ui.editor.connections.Connection)
-                                && (event.getCommand() instanceof ChangeMetadataCommand)) {
+                        if ((lastPropertyUsed.getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
+                                && (event.getCommand() instanceof ChangeMetadataCommand)
+                                && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) // 
+                                || 0 != (detail & CommandStack.POST_REDO))) {
                             lastPropertyUsed.addComponents(true);
                             lastPropertyUsed.refresh();
                         }
