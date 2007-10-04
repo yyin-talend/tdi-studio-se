@@ -63,7 +63,10 @@ public class ContextRepositoryComposite extends ContextComposite {
     public void onContextAddParameter(IContextManager contextManager, IContextParameter contextParam) {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
             IContext context = contextManager.getListContext().get(i);
-            context.getContextParameterList().add(contextParam.clone());
+
+            IContextParameter toAdd = contextParam.clone();
+            toAdd.setContext(context);
+            context.getContextParameterList().add(toAdd);
         }
         refresh();
     }
