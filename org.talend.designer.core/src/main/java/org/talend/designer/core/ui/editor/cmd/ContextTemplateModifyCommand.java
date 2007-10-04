@@ -84,6 +84,7 @@ public class ContextTemplateModifyCommand extends Command {
         for (IContext context : contextManager.getListContext()) {
             IContextParameter paramToModify = context.getContextParameter(param.getName());
             paramToModify.setType(param.getType());
+            paramToModify.setComment(param.getComment());
         }
     }
 
