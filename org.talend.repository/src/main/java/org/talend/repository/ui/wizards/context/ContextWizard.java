@@ -116,9 +116,11 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
-        setWindowTitle("Create / Edit a context"); //$NON-NLS-1$
+        setWindowTitle("Create / Edit a context group"); //$NON-NLS-1$
         contextWizardPage0 = new Step0WizardPage(contextProperty, pathToSave, ERepositoryObjectType.CONTEXT,
                 !isRepositoryObjectEditable(), creation);
+        contextWizardPage0.setTitle("");
+        contextWizardPage0.setDescription("");
         addPage(contextWizardPage0);
         if (creation) {
             contextWizardPage0.setPageComplete(false);
