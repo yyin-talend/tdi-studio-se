@@ -31,7 +31,7 @@ ThenRunStruct<%=destination%> struct_<%=cid%> = new ThenRunStruct<%=destination%
 <%
 for (Map<String, String> mappingColumn : mapping) {
 %>
-struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = (String)<%=mappingColumn.get("VALUE")%>;
+struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = <%=mappingColumn.get("VALUE")%>;
 <%
 }
 %>
