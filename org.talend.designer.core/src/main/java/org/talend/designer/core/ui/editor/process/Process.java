@@ -581,7 +581,7 @@ public class Process extends Element implements IProcess {
                         // fix for bug 2193
                         boolean setToCustom = false;
                         if (EmfComponent.REPOSITORY.equals(elemParam.getPropertyValue(EParameterName.PROPERTY_TYPE.getName()))
-                                && param.getRepositoryValue().equals("ENCODING")) {
+                                && param.getRepositoryValue() != null && param.getRepositoryValue().equals("ENCODING")) {
                             setToCustom = true;
                         }
                         String tempValue = (String) param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName())
