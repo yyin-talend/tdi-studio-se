@@ -39,7 +39,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -163,27 +162,20 @@ public class ProcessContextComposite extends Composite {
 
     protected void getInformationsFromContextManager(IContextManager contextManager) {
         List<IContext> internalContextList = new ArrayList<IContext>();
-        IContext oldSelectedCopiedContext = null;
         IContext newSelectedCopiedContext = null;
 
-        if (!contextComboViewer.getSelection().isEmpty()) {
-            oldSelectedCopiedContext = (IContext) ((StructuredSelection) contextComboViewer.getSelection()).getFirstElement();
-        }
+        // if (!contextComboViewer.getSelection().isEmpty()) {
+        // oldSelectedCopiedContext = (IContext) ((StructuredSelection)
+        // contextComboViewer.getSelection()).getFirstElement();
+        // }
 
         for (IContext context : contextManager.getListContext()) {
             IContext copiedContext = context.clone();
-            if (newSelectedCopiedContext == null) {
-                if (contextManager.getDefaultContext().equals(context)) {
-                    newSelectedCopiedContext = copiedContext;
-                }
-            } else {
-                if (oldSelectedCopiedContext != null) {
-                    if (oldSelectedCopiedContext.getName().equals(context.getName())) {
-                        newSelectedCopiedContext = copiedContext;
-                    }
-                }
-            }
             internalContextList.add(copiedContext);
+            if (contextManager.getDefaultContext().equals(context)) {
+                newSelectedCopiedContext = copiedContext;
+            }
+
         }
         contextComboViewer.setInput(internalContextList);
 
@@ -191,7 +183,7 @@ public class ProcessContextComposite extends Composite {
             contextComboViewer.setSelection(new StructuredSelection(newSelectedCopiedContext));
             contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
         }
-      
+
     }
 
     protected IContext getSelectedContext() {
