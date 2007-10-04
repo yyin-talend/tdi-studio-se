@@ -46,6 +46,15 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="DISABLE_WARNINGS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="3"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
 
    </PARAMETERS>
    <CODEGENERATION/>
