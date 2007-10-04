@@ -529,6 +529,13 @@
             id="org.talend.repository.model.migration.AddDdColumn"
             name="Add DdColumn name for all DB components">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ConvertOldPerlTypesMigrationTask"
+            description="%migrationtask.convertOldPerlTypes.description"
+            id="org.talend.repository.migration.convertOldPerlTypes"
+            name="%migrationtask.convertOldPerlTypes.title">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
