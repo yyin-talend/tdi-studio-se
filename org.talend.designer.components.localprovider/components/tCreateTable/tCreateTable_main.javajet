@@ -285,7 +285,7 @@ class Transfer{
     
     
     public String fillValue(String value, String colType) {
-	  if(value==null){
+		if(value==null || value.equals("\"\"")){
 	  		return " ";
 	  	}else if((value.startsWith("\"")||value.startsWith("'") )&& (value.endsWith("\"")||value.endsWith("'"))){
 			return "default '"+value.substring(1,value.length()-1)+"' ";
@@ -293,7 +293,7 @@ class Transfer{
 	   		return "default null ";
 	   	}else if(value.equals("")){
 	   		return " ";
-	   	}else{
+		}else{
 			return "default "+value+" ";
 		}
 	}
@@ -327,7 +327,6 @@ try{
 		java.sql.Connection con<%=cid%>=null;
 		java.sql.Statement stmt<%=cid%>=null;
 		String sql<%=cid%>=null;
-		
 <%
 	String useExistingConn = ElementParameterParser.getValue(node,"__EXISTINGCONNECTION__");
 	String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
