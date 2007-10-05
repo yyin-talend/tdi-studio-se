@@ -44,6 +44,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
 
@@ -120,6 +122,22 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         return registry;
     }
 
+    /**
+     * Returns the action registed with the given text editor.
+     * 
+     * @return IAction or null if editor is null.
+     */
+    protected IAction getAction(IEditorPart editor, String actionID) {
+        if (editor instanceof ITextEditor) {
+            return ((ITextEditor) editor).getAction(actionID);
+        }
+        if (editor instanceof TalendEditor) {
+            return ((TalendEditor) editor).getAction(actionID);
+        }
+
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -132,19 +150,42 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
         activeEditorPart = activeEditor;
 
-        IActionBars bars = getActionBars();
-        if (bars != null) {
+        IActionBars actionBars = getActionBars();
+        if (actionBars != null) {
 
-            if (activeEditor instanceof TalendEditor) {
-                ActionRegistry reg = (ActionRegistry) activeEditor.getAdapter(ActionRegistry.class);
-                for (int i = 0; i < designActionKeys.size(); i++) {
-                    String id = (String) designActionKeys.get(i);
-                    bars.setGlobalActionHandler(id, reg.getAction(id));
-                }
-
-            }
-            getActionBars().updateActionBars();
+            actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(activeEditor,
+                    ITextEditorActionConstants.DELETE));
+            // actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
+            // ITextEditorActionConstants.UNDO));
+            // actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor,
+            // ITextEditorActionConstants.REDO));
+            actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(activeEditor, ITextEditorActionConstants.CUT));
+            actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+                    getAction(activeEditor, ITextEditorActionConstants.COPY));
+            actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor,
+                    ITextEditorActionConstants.PASTE));
+            // actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor,
+            // ITextEditorActionConstants.SELECT_ALL));
+            // actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor,
+            // ITextEditorActionConstants.FIND));
+            // actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor,
+            // IDEActionFactory.BOOKMARK
+            // .getId()));
+            actionBars.updateActionBars();
         }
+
+        // if (bars != null) {
+        //
+        // if (activeEditor instanceof TalendEditor) {
+        // ActionRegistry reg = (ActionRegistry) activeEditor.getAdapter(ActionRegistry.class);
+        // for (int i = 0; i < designActionKeys.size(); i++) {
+        // String id = (String) designActionKeys.get(i);
+        // bars.setGlobalActionHandler(id, reg.getAction(id));
+        // }
+        //
+        // }
+        // getActionBars().updateActionBars();
+        // }
     }
 
     /*

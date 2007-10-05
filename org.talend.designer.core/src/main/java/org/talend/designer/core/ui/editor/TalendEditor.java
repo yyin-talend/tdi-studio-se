@@ -24,6 +24,7 @@ package org.talend.designer.core.ui.editor;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -91,10 +93,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -106,6 +110,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -187,6 +192,9 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private final Map<String, JobResource> protectedJobs;
 
+    /** The verify key listener for activation code triggering. */
+    private ActivationCodeTrigger fActivationCodeTrigger = new ActivationCodeTrigger();
+
     public TalendEditor() {
         this(false);
     }
@@ -202,7 +210,214 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 .getLabel();
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
+        initializeKeyBindingScopes();
+    }
 
+    private String[] fKeyBindingScopes;
+
+    /**
+     * Sets the key binding scopes for this editor.
+     * 
+     * @param scopes a non-empty array of key binding scope identifiers
+     * @since 2.1
+     */
+    protected void setKeyBindingScopes(String[] scopes) {
+        Assert.isTrue(scopes != null && scopes.length > 0);
+        fKeyBindingScopes = scopes;
+    }
+
+    /*
+     * @see ITextEditor#setAction(String, IAction)
+     */
+    public void setAction(String actionID, IAction action) {
+        Assert.isNotNull(actionID);
+        if (action == null) {
+            action = (IAction) getActionRegistry().getAction(actionID);
+            if (action != null)
+                fActivationCodeTrigger.unregisterActionFromKeyActivation(action);
+        } else {
+            // getActionRegistry().registerAction(action);
+            fActivationCodeTrigger.registerActionForKeyActivation(action);
+        }
+    }
+
+    /**
+     * Initializes the key binding scopes of this editor.
+     */
+    protected void initializeKeyBindingScopes() {
+        setKeyBindingScopes(new String[] { "org.eclipse.ui.textEditorScope" }); //$NON-NLS-1$
+    }
+
+    /**
+     * Internal key verify listener for triggering action activation codes.
+     */
+    class ActivationCodeTrigger implements VerifyKeyListener {
+
+        /** Indicates whether this trigger has been installed. */
+        private boolean fIsInstalled = false;
+
+        /**
+         * The key binding service to use.
+         * 
+         * @since 2.0
+         */
+        private IKeyBindingService fKeyBindingService;
+
+        /*
+         * @see VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
+         */
+        public void verifyKey(VerifyEvent event) {
+
+            // ActionActivationCode code = null;
+            // int size = fActivationCodes.size();
+            // for (int i = 0; i < size; i++) {
+            // code = (ActionActivationCode) fActivationCodes.get(i);
+            // if (code.matches(event)) {
+            // IAction action = getAction(code.fActionId);
+            // if (action != null) {
+            //
+            // if (action instanceof IUpdate)
+            // ((IUpdate) action).update();
+            //
+            // if (!action.isEnabled() && action instanceof IReadOnlyDependent) {
+            // IReadOnlyDependent dependent = (IReadOnlyDependent) action;
+            // boolean writable = dependent.isEnabled(true);
+            // if (writable) {
+            // event.doit = false;
+            // return;
+            // }
+            // } else if (action.isEnabled()) {
+            // event.doit = false;
+            // action.run();
+            // return;
+            // }
+            // }
+            // }
+            // }
+        }
+
+        /**
+         * Installs this trigger on the editor's text widget.
+         * 
+         * @since 2.0
+         */
+        public void install() {
+            if (!fIsInstalled) {
+
+                // if (fSourceViewer instanceof ITextViewerExtension) {
+                // ITextViewerExtension e = (ITextViewerExtension) fSourceViewer;
+                // e.prependVerifyKeyListener(this);
+                // } else {
+                // StyledText text = fSourceViewer.getTextWidget();
+                // text.addVerifyKeyListener(this);
+                // }
+
+                fKeyBindingService = getEditorSite().getKeyBindingService();
+                fIsInstalled = true;
+            }
+        }
+
+        /**
+         * Uninstalls this trigger from the editor's text widget.
+         * 
+         * @since 2.0
+         */
+        public void uninstall() {
+            if (fIsInstalled) {
+
+                // if (fSourceViewer instanceof ITextViewerExtension) {
+                // ITextViewerExtension e = (ITextViewerExtension) fSourceViewer;
+                // e.removeVerifyKeyListener(this);
+                // } else if (fSourceViewer != null) {
+                // StyledText text = fSourceViewer.getTextWidget();
+                // if (text != null && !text.isDisposed())
+                // text.removeVerifyKeyListener(fActivationCodeTrigger);
+                // }
+
+                fIsInstalled = false;
+                fKeyBindingService = null;
+            }
+        }
+
+        /**
+         * Registers the given action for key activation.
+         * 
+         * @param action the action to be registered
+         * @since 2.0
+         */
+        public void registerActionForKeyActivation(IAction action) {
+            if (action.getActionDefinitionId() != null)
+                fKeyBindingService.registerAction(action);
+        }
+
+        /**
+         * The given action is no longer available for key activation
+         * 
+         * @param action the action to be unregistered
+         * @since 2.0
+         */
+        public void unregisterActionFromKeyActivation(IAction action) {
+            if (action.getActionDefinitionId() != null)
+                fKeyBindingService.unregisterAction(action);
+        }
+
+        /**
+         * Sets the key binding scopes for this editor.
+         * 
+         * @param keyBindingScopes the key binding scopes
+         * @since 2.1
+         */
+        public void setScopes(String[] keyBindingScopes) {
+            if (keyBindingScopes != null && keyBindingScopes.length > 0)
+                fKeyBindingService.setScopes(keyBindingScopes);
+        }
+    }
+
+    /**
+     * Representation of action activation codes.
+     */
+    static class ActionActivationCode {
+
+        /** The action id. */
+        public String fActionId;
+
+        /** The character. */
+        public char fCharacter;
+
+        /** The key code. */
+        public int fKeyCode = -1;
+
+        /** The state mask. */
+        public int fStateMask = SWT.DEFAULT;
+
+        /**
+         * Creates a new action activation code for the given action id.
+         * 
+         * @param actionId the action id
+         */
+        public ActionActivationCode(String actionId) {
+            fActionId = actionId;
+        }
+
+        /**
+         * Returns <code>true</code> if this activation code matches the given verify event.
+         * 
+         * @param event the event to test for matching
+         * @return whether this activation code matches <code>event</code>
+         */
+        public boolean matches(VerifyEvent event) {
+            return (event.character == fCharacter && (fKeyCode == -1 || event.keyCode == fKeyCode) && (fStateMask == SWT.DEFAULT || event.stateMask == fStateMask));
+        }
+    }
+
+    /**
+     * Initializes the activation code trigger.
+     * 
+     * @since 2.1
+     */
+    private void initializeActivationCodeTrigger() {
+        fActivationCodeTrigger.install();
+        fActivationCodeTrigger.setScopes(fKeyBindingScopes);
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -234,6 +449,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     @Override
     public void setFocus() {
         super.setFocus();
+
         if (!readOnly) {
             // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
             // 1. Enabled/disabled components :
@@ -321,14 +537,17 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction copyAction = new GEFCopyAction(this);
         getActionRegistry().registerAction(copyAction);
         getSelectionActions().add(copyAction.getId());
+        // setAction(copyAction.getId(), copyAction);
 
         IAction pasteAction = new GEFPasteAction(this);
         getActionRegistry().registerAction(pasteAction);
         getSelectionActions().add(pasteAction.getId());
+        // setAction(pasteAction.getId(), pasteAction);
 
         IAction deleteAction = new GEFDeleteAction(this);
         getActionRegistry().registerAction(deleteAction);
         getSelectionActions().add(deleteAction.getId());
+        // setAction(deleteAction.getId(), deleteAction);
 
         IAction setRefAction = new ConnectionSetAsMainRef(this);
         getActionRegistry().registerAction(setRefAction);
@@ -344,6 +563,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         // set the factory to use for creating EditParts for elements in the model
         getGraphicalViewer().setEditPartFactory(partFactory);
         getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
+
+        initializeActivationCodeTrigger();
 
         /** * Management of the context menu ** */
 
@@ -372,6 +593,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 new Boolean(false/* getProcess().isSnapToGeometryEnabled() */));
         IAction snapAction = new ToggleSnapToGeometryAction(getGraphicalViewer());
         getActionRegistry().registerAction(snapAction);
+
+        for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
+            String actionID = (String) iterator.next();
+            IAction action = getActionRegistry().getAction(actionID);
+            setAction(actionID, action);
+        }
+
     }
 
     /*
@@ -747,6 +975,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             super.dispose();
             TalendEditor.this.outlinePage = null;
             outlinePage = null;
+            if (fActivationCodeTrigger != null) {
+                fActivationCodeTrigger.uninstall();
+                fActivationCodeTrigger = null;
+            }
         }
 
         public Object getAdapter(final Class type) {
@@ -927,7 +1159,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     }
 
     /**
-     * DOC bqian class global comment. Detailled comment <br/>
+     * bqian class global comment. Detailled comment <br/>
      * 
      * $Id$
      * 
@@ -1024,4 +1256,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             }
         }
     }
+
+    /**
+     * Comment method "getAction".
+     * 
+     * @param actionID
+     * @return
+     */
+    public IAction getAction(String actionID) {
+        return getActionRegistry().getAction(actionID);
+    }
+
 }
