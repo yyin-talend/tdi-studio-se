@@ -45,7 +45,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
 
@@ -153,39 +152,17 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         IActionBars actionBars = getActionBars();
         if (actionBars != null) {
 
-            actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(activeEditor,
-                    ITextEditorActionConstants.DELETE));
-            // actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor,
-            // ITextEditorActionConstants.UNDO));
-            // actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor,
-            // ITextEditorActionConstants.REDO));
-            actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(activeEditor, ITextEditorActionConstants.CUT));
-            actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
-                    getAction(activeEditor, ITextEditorActionConstants.COPY));
-            actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor,
-                    ITextEditorActionConstants.PASTE));
-            // actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor,
-            // ITextEditorActionConstants.SELECT_ALL));
-            // actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor,
-            // ITextEditorActionConstants.FIND));
-            // actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor,
-            // IDEActionFactory.BOOKMARK
-            // .getId()));
+            actionBars
+                    .setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(activeEditor, ActionFactory.DELETE.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(activeEditor, ActionFactory.UNDO.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(activeEditor, ActionFactory.REDO.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(activeEditor, ActionFactory.CUT.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(activeEditor, ActionFactory.COPY.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor, ActionFactory.PASTE.getId()));
+            actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(activeEditor, ActionFactory.SELECT_ALL
+                    .getId()));
             actionBars.updateActionBars();
         }
-
-        // if (bars != null) {
-        //
-        // if (activeEditor instanceof TalendEditor) {
-        // ActionRegistry reg = (ActionRegistry) activeEditor.getAdapter(ActionRegistry.class);
-        // for (int i = 0; i < designActionKeys.size(); i++) {
-        // String id = (String) designActionKeys.get(i);
-        // bars.setGlobalActionHandler(id, reg.getAction(id));
-        // }
-        //
-        // }
-        // getActionBars().updateActionBars();
-        // }
     }
 
     /*
