@@ -106,14 +106,14 @@
 %>
                 for (java.io.File file_<%=cid %> : originalFiles_<%=cid %>) {
                     if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !fetchFilesOneTime_<%=cid %>.contains(file_<%=cid %>)) {
-                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getName());
+                        globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
 
 <%
  }else if(ElementParameterParser.getValue(node, "__ACTION_ON__").equals("filecreated")){
 %>
                 for (java.io.File file_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                     if (!changeList_<%=cid %>.contains(file_<%=cid %>) && !originalFiles_<%=cid %>.contains(file_<%=cid %>)) {
-                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getName()); 
+                        globalMap.put("<%=cid %>_CREATED_FILE", file_<%=cid %>.getAbsolutePath()); 
 
 <%
  }
@@ -130,10 +130,6 @@
                 globalMap.put("<%=cid %>_CURRENT_ITERATION", count_<%=cid %>);
                 
                 if (!found_<%=cid %>) {
-                    try {
-                        Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%>*1000);
-                    } catch (InterruptedException e) {
-                        throw new TalendException(this, e);
-                    }
+                	Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%>*1000);
                     continue;
                 }
