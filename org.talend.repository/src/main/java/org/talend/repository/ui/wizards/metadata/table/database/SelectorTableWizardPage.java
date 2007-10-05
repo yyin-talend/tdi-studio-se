@@ -84,7 +84,9 @@ public class SelectorTableWizardPage extends WizardPage {
      * DOC nrousseau Comment method "performCancel".
      */
     public void performCancel() {
-        tableForm.performCancel();
+        if (tableForm != null) {
+            tableForm.performCancel();
+        }
     }
 
 }
