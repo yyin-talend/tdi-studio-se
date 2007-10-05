@@ -124,7 +124,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
@@ -133,7 +133,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="7"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>

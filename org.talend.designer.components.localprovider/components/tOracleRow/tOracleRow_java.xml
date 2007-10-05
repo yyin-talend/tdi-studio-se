@@ -202,7 +202,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="12"
+      NUM_ROW="9"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
