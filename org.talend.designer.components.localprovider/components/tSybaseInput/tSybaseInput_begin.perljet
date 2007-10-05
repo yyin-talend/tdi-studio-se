@@ -100,7 +100,7 @@ while (my $_<%=cid %> = $sth_<%=cid %>->fetchrow_arrayref()) {
 
     my $<%=cid %> = [];
     if($noSlicing_<%=cid%>){
-        $<%=cid %> = $_<%=cid %> ;
+        $<%=cid %> = [ @$_<%=cid %> ] ;
     }
     else {
         $<%=cid %> = [
