@@ -60,7 +60,7 @@ sub getTableCreationQuery {
         $query.= $column_href->{name};
         $query.= ' '.$column_href->{dbtype};
 
-        if (grep /^$column_href->{dbtype}$/, qw/INTEGER NUMERIC VARCHAR/
+        if (grep /^$column_href->{dbtype}$/, qw/NUMERIC VARCHAR/
             and defined $column_href->{len}
             and $column_href->{len} != -1
         ) {
