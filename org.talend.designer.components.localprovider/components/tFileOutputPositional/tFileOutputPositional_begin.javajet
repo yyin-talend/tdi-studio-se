@@ -87,7 +87,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			tempLengthB<%=cid %>=tempStringB<%=cid %>.length();
     			
             	if (tempLengthB<%=cid %> > <%=format.get("SIZE")%>) {
-                    tempStringB<%=cid %> = tempStringB<%=cid %>.substring(0,<%=format.get("SIZE")%>);
+                    <%
+                    if (format.get("KEEP").equals("\'A\'")) {%>
+                        
+                    <%
+                    } else if (format.get("KEEP").equals("\'R\'")) {%>
+                        tempStringB<%=cid %> = tempStringB<%=cid %>.substring(tempLengthB<%=cid %>-<%=format.get("SIZE")%>);
+                    <%
+                    } else if (format.get("KEEP").equals("\'M\'")) {%>
+                        int begin<%=cid %>=(tempLengthB<%=cid %>-<%=format.get("SIZE")%>)/2;
+                        tempStringB<%=cid %> = tempStringB<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
+                    <%
+                    } else {%>
+                    tempStringB<%=cid %> = tempStringB<%=cid %>.substring(0, <%=format.get("SIZE")%>);
+                    <%
+                    }%>
                 }else if(tempLengthB<%=cid %><<%=format.get("SIZE")%>){
                     StringBuilder result<%=cid %> = new StringBuilder();
                     <%
@@ -95,13 +109,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     %>
                         result<%=cid %>.append(tempStringB<%=cid %>);
                         for(int i<%=cid %>=0; i<%=cid %>< <%=format.get("SIZE")%>-tempLengthB<%=cid %>; i<%=cid %>++){
-                            result<%=cid %>.append(" ");
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
                         tempStringB<%=cid %> = result<%=cid %>.toString();
                     <%
                     } else if (format.get("ALIGN").equals("\'R\'")) {%>
                         for(int i<%=cid %>=0; i<%=cid %>< <%=format.get("SIZE")%>-tempLengthB<%=cid %>; i<%=cid %>++){
-                            result<%=cid %>.append(" ");
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
                         result<%=cid %>.append(tempStringB<%=cid %>);
                         tempStringB<%=cid %> = result<%=cid %>.toString();
@@ -109,14 +123,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     } else {%>
                         int temp<%=cid %>= (<%=format.get("SIZE")%>-tempLengthB<%=cid %>)/2;
                         for(int i<%=cid %>=0;i<%=cid %><temp<%=cid %>;i<%=cid %>++){
-                            result<%=cid %>.append(" ");
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
                         result<%=cid %>.append(tempStringB<%=cid %>);
                         for(int i<%=cid %>=0;i<%=cid %><temp<%=cid %>;i<%=cid %>++){
-                            result<%=cid %>.append(" ");
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
                         if((temp<%=cid %>+temp<%=cid %>)!=(<%=format.get("SIZE")%>-tempLengthB<%=cid %>)){
-                            result<%=cid %>.append(" ");
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
                         tempStringB<%=cid %> = result<%=cid %>.toString();
                     <%
