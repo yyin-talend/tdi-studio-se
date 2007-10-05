@@ -31,17 +31,30 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class ResizeNodeCommand extends Command {
 
-    private Node node;
+    private final Node node;
 
     private Dimension oldSize;
 
-    private Dimension newSize;
+    private final Dimension newSize;
 
     public ResizeNodeCommand(Node node, Dimension newSize) {
         super(Messages.getString("ResizeNodeCommand.Name")); //$NON-NLS-1$
         this.node = node;
         this.newSize = new Dimension((newSize.width / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE,
                 (newSize.height / TalendEditor.GRID_SIZE) * TalendEditor.GRID_SIZE);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.commands.Command#canExecute()
+     */
+    @Override
+    public boolean canExecute() {
+        if (newSize.height == 0 || newSize.width == 0) {
+            return false;
+        }
+        return true;
     }
 
     @Override
