@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -58,11 +57,8 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.registeruser.RegisterManagement;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
-import org.talend.repository.ui.wizards.register.RegisterWizard;
-import org.talend.repository.ui.wizards.register.RegisterWizardDialog;
 
 /**
  * Login dialog. <br/>
@@ -139,7 +135,8 @@ public class LoginDialog extends TitleAreaDialog {
                 }
             }
         } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
+            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
+                    RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
@@ -189,29 +186,22 @@ public class LoginDialog extends TitleAreaDialog {
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().logOnProject(project);
-                        } catch (PersistenceException e) {
-                            throw new InvocationTargetException(e);
-                        } catch (LoginException e) {
+                        } catch (Exception e) {
                             throw new InvocationTargetException(e);
                         }
                     }
                 };
                 new ProgressMonitorDialog(getShell()).run(true, false, op);
             } catch (InvocationTargetException e) {
-                if (e.getTargetException() instanceof PersistenceException) {
-                    throw (PersistenceException) e.getTargetException();
-                }
-                if (e.getTargetException() instanceof LoginException) {
-                    throw (LoginException) e.getTargetException();
-                }
+                throw (Exception) e.getTargetException();
             } catch (InterruptedException e) {
                 //
             }
-        } catch (PersistenceException e) {
-            MessageBoxExceptionHandler.process(e, getShell());
-            return;
         } catch (LoginException e) {
             setErrorMessage(e.getMessage());
+            return;
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e, getShell());
             return;
         }
 
