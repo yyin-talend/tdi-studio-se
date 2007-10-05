@@ -268,7 +268,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType,metadataColumn.isNullable());
                             if(!isPrimitive) {
                                 %>
-                                (<%=inputRowName%>.<%=condition.get("INPUT_COLUMN")%> == null || <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>)
+                                (<%=inputRowName%>.<%=condition.get("INPUT_COLUMN")%> != null && <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>)
                                 <%
                             } else {
                                 %>
@@ -362,11 +362,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    <%
  		}
  		%>
-
-
-
-
-
 <%
  }
 }
