@@ -15,8 +15,21 @@
 	boolean rootName = ElementParameterParser.getValue(node, "__ROOTNAME__").equals("true");
 	boolean extractPath = ElementParameterParser.getValue(node, "__EXTRACTPATH__").equals("true");	
 %>      
+		class UnzippedFile_<%=cid %> {
+			public String fileName;
+			public String filePath;
+			
+			public UnzippedFile_<%=cid %>(String fileName, filePath) {
+				this.fileName = fileName;
+				this.filePath = filePath;				
+			} 
+			
+		}
+		
 		class Util_<%=cid %>
         {
+        	public java.util.List<UnzippedFile_<%=cid %>> unzippedFiles = new java.util.List<UnzippedFile_<%=cid %>>();
+        	
             public void deleteDir(java.io.File dir) {
                 if (dir.isDirectory()) {
                     String[] children = dir.list();
@@ -78,16 +91,11 @@
                     fos.write(buffer, 0, len);
                 }
                 fos.close();
-                String currentFileName = f.getName(); 
-                String currentFilePath = f.getAbsolutePath();
-                
-                globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName);
-                globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath);
+                unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
             }
         } 
        
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
-		
         
         String zipFileURL_<%=cid %> = <%=zipFile %>;
         zipFileURL_<%=cid %> = zipFileURL_<%=cid %>.toLowerCase();
@@ -113,7 +121,6 @@
 <%
   }
 %>
-  
 
 	if (zipFileURL_<%=cid %>.endsWith(".tar.gz") || zipFileURL_<%=cid %>.endsWith(".tgz")){   
       
@@ -164,3 +171,11 @@
 		}
 		zip_<%=cid %>.close();
 	}
+
+<%
+	// iterate output
+%>
+	for (UnzippedFile_<%=cid %> uf : util_<%=cid %>.unzippedFiles) {
+		globalMap.put("<%=cid %>_CURRENT_FILE", uf.fileName);
+		globalMap.put("<%=cid %>_CURRENT_FILEPATH", uf.filePath);
+	
