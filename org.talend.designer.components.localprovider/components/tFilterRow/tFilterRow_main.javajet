@@ -265,12 +265,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         if(metadataColumn.getLabel().equals(condition.get("INPUT_COLUMN"))) {
                             javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
                             typeName = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+                            boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType,metadataColumn.isNullable());
+                            if(!isPrimitive) {
+                                %>
+                                (<%=inputRowName%>.<%=condition.get("INPUT_COLUMN")%> == null || <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>)
+                                <%
+                            } else {
+                                %>
+                                <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>
+                                <%
+                            }
                             break;
                         }
                     }
-                    %>
-                    <%=tr.operator(condition.get("OPERATOR"),condition.get("RVALUE"),condition.get("FUNCTION"),inputRowName,condition.get("INPUT_COLUMN"),typeName,javaType)%>
-                    <%
                     isFirst = false ;                        
                 }//for            
         }
