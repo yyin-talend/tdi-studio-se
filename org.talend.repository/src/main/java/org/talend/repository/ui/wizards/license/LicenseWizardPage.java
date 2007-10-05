@@ -70,6 +70,8 @@ public class LicenseWizardPage extends WizardPage {
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
     public void createControl(Composite parent) {
+        ((GridData) parent.getLayoutData()).widthHint = 520;
+        ((GridData) parent.getLayoutData()).heightHint = 280;
         Composite container = new Composite(parent, SWT.NONE);
 
         GridLayout layout = new GridLayout(1, false);
@@ -84,7 +86,7 @@ public class LicenseWizardPage extends WizardPage {
         String license = getLicense();
         clufText.setText(license);
 
-        GridData data = new GridData(450, 300);
+        GridData data = new GridData(GridData.FILL_BOTH);
         clufText.setLayoutData(data);
 
         // Label footerLabel = new Label(container, SWT.NONE);
