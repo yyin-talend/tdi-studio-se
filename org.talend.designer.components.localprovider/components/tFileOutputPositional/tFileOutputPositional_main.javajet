@@ -79,7 +79,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	if (tempLengthM<%=cid %> >=<%=format.get("SIZE")%>) {
                     <%
                     if (format.get("KEEP").equals("\'A\'")) {%>
-                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
+                        sb_<%=cid %>.append(tempStringM<%=cid %>);
                     <%
                     } else if (format.get("KEEP").equals("\'R\'")) {%>
                         sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
