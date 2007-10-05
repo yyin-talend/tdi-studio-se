@@ -419,6 +419,7 @@ try{
         if(!flag_<%=cid%>)
         {
            sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
+           globalMap.put("<%=cid%>_QUERY",sql<%=cid%>);
            stmt<%=cid%>.execute(sql<%=cid%>);         	
         }  				
 <%}else{%>// just create
