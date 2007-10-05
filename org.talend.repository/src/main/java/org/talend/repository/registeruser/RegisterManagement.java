@@ -59,6 +59,9 @@ public class RegisterManagement {
             System.setProperty("http.proxyPort", proxyPort); //$NON-NLS-1$
 
             // override automatic update parameters
+            if (proxyPort != null && proxyPort.trim().equals("")) {
+                proxyPort = null;
+            }
             CorePreferenceInitializer.setProxy(proxyHost, proxyPort);
         }
 
